@@ -169,13 +169,11 @@ sealed abstract class IterateeT[E, F[_], A] {
   def zip[B](other: IterateeT[E, F, B])(implicit
       F: Monad[F]): IterateeT[E, F, (A, B)] = {
     def step[Z](i: IterateeT[E, F, Z], in: Input[E]) =
-      IterateeT
-        .IterateeTMonadTrans[E]
-        .liftM(
-          i.foldT[(Option[(Z, Input[E])], IterateeT[E, F, Z])](
-            cont = k => F.point((None, k(in))),
-            done = (a, x) => F.point((Some((a, x)), done(a, x)))
-          ))
+      IterateeT.IterateeTMonadTrans[E].liftM(
+        i.foldT[(Option[(Z, Input[E])], IterateeT[E, F, Z])](
+          cont = k => F.point((None, k(in))),
+          done = (a, x) => F.point((Some((a, x)), done(a, x)))
+        ))
     def loop(x: IterateeT[E, F, A], y: IterateeT[E, F, B])(
         in: Input[E]): IterateeT[E, F, (A, B)] =
       in(

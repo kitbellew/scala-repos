@@ -92,9 +92,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
 
     val (field, getter, setter, annotations) = property
 
-    val colAnnotation = annotations
-      .find(a => a.isInstanceOf[Column])
-      .map(a => a.asInstanceOf[Column])
+    val colAnnotation = annotations.find(a => a.isInstanceOf[Column]).map(a =>
+      a.asInstanceOf[Column])
 
     val fieldsValueType = metaField match {
       case (f: SquerylRecordField)    => f.classOfPersistentField
@@ -240,13 +239,9 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
 
     // Extract the MetaRecord for the companion object. This
     // is done only once for each class.
-    val metaRecord = Class
-      .forName(
-        posoMetaData.clasz.getName +
-          "$")
-      .getField("MODULE$")
-      .get(null)
-      .asInstanceOf[MetaRecord[_]]
+    val metaRecord = Class.forName(
+      posoMetaData.clasz.getName +
+        "$").getField("MODULE$").get(null).asInstanceOf[MetaRecord[_]]
 
     () => metaRecord.createRecord.asInstanceOf[AnyRef]
   }

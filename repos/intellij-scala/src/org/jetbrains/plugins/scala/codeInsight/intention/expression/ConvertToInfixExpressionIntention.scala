@@ -125,29 +125,22 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
       text,
       element.getManager) match {
       case infixExpr: ScInfixExpr =>
-        infixExpr
-          .asInstanceOf[ScInfixExpr]
-          .getBaseExpr
-          .replaceExpression(exprA, removeParenthesis = true)
-        infixExpr
-          .asInstanceOf[ScInfixExpr]
-          .getArgExpr
-          .replaceExpression(exprB, removeParenthesis = true)
+        infixExpr.asInstanceOf[ScInfixExpr].getBaseExpr.replaceExpression(
+          exprA,
+          removeParenthesis = true)
+        infixExpr.asInstanceOf[ScInfixExpr].getArgExpr.replaceExpression(
+          exprB,
+          removeParenthesis = true)
 
-        val size = infixExpr
-          .asInstanceOf[ScInfixExpr]
-          .operation
-          .nameId
-          .getTextRange
-          .getStartOffset -
+        val size = infixExpr.asInstanceOf[
+          ScInfixExpr].operation.nameId.getTextRange.getStartOffset -
           infixExpr.getTextRange.getStartOffset
 
         inWriteAction {
           methodCallExpr.replaceExpression(infixExpr, removeParenthesis = true)
           editor.getCaretModel.moveToOffset(start + diff + size)
-          PsiDocumentManager
-            .getInstance(project)
-            .commitDocument(editor.getDocument)
+          PsiDocumentManager.getInstance(project).commitDocument(
+            editor.getDocument)
         }
       case x =>
         throw new IllegalStateException(s"$text should be infix expression")

@@ -89,14 +89,14 @@ class DeploymentActorTest
 
     val plan = DeploymentPlan(origGroup, targetGroup)
 
-    when(tracker.appTasksLaunchedSync(app1.id))
-      .thenReturn(Set(task1_1, task1_2))
+    when(tracker.appTasksLaunchedSync(app1.id)).thenReturn(
+      Set(task1_1, task1_2))
     when(tracker.appTasksLaunchedSync(app2.id)).thenReturn(Set(task2_1))
     when(tracker.appTasksLaunchedSync(app3.id)).thenReturn(Set(task3_1))
     when(tracker.appTasksLaunchedSync(app4.id)).thenReturn(Set(task4_1))
 
-    when(driver.killTask(task1_2.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_2.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -114,8 +114,8 @@ class DeploymentActorTest
         }
       })
 
-    when(driver.killTask(task2_1.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task2_1.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -178,8 +178,8 @@ class DeploymentActorTest
       }
     })
 
-    when(driver.killTask(task4_1.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task4_1.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -261,8 +261,8 @@ class DeploymentActorTest
       List(DeploymentStep(List(RestartApplication(appNew)))),
       Timestamp.now())
 
-    when(driver.killTask(task1_1.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_1.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -279,8 +279,8 @@ class DeploymentActorTest
         }
       })
 
-    when(driver.killTask(task1_2.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_2.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -422,11 +422,11 @@ class DeploymentActorTest
       target = targetGroup,
       toKill = Map(app1.id -> Set(task1_2)))
 
-    when(tracker.appTasksLaunchedSync(app1.id))
-      .thenReturn(Set(task1_1, task1_2, task1_3))
+    when(tracker.appTasksLaunchedSync(app1.id)).thenReturn(
+      Set(task1_1, task1_2, task1_3))
 
-    when(driver.killTask(task1_2.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_2.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(

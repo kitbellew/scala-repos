@@ -209,8 +209,8 @@ object EvaluatePython {
     def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
       out.write(Opcodes.GLOBAL)
       out.write(
-        (module + "\n" + "_parse_datatype_json_string" + "\n")
-          .getBytes(StandardCharsets.UTF_8))
+        (module + "\n" + "_parse_datatype_json_string" + "\n").getBytes(
+          StandardCharsets.UTF_8))
       val schema = obj.asInstanceOf[StructType]
       pickler.save(schema.json)
       out.write(Opcodes.TUPLE1)
@@ -235,8 +235,8 @@ object EvaluatePython {
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
-          (module + "\n" + "_create_row_inbound_converter" + "\n")
-            .getBytes(StandardCharsets.UTF_8))
+          (module + "\n" + "_create_row_inbound_converter" + "\n").getBytes(
+            StandardCharsets.UTF_8))
       } else {
         // it will be memorized by Pickler to save some bytes
         pickler.save(this)

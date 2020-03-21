@@ -325,8 +325,8 @@ class StreamingKMeans @Since("1.2.0") (
       : JavaPairDStream[K, java.lang.Integer] = {
     implicit val tag = fakeClassTag[K]
     JavaPairDStream.fromPairDStream(
-      predictOnValues(data.dstream)
-        .asInstanceOf[DStream[(K, java.lang.Integer)]])
+      predictOnValues(data.dstream).asInstanceOf[DStream[
+        (K, java.lang.Integer)]])
   }
 
   /** Check whether cluster centers have been initialized. */

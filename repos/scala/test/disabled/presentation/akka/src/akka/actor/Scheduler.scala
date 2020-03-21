@@ -42,13 +42,11 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .scheduleAtFixedRate(
-          new Runnable { def run = receiver ! message },
-          initialDelay,
-          delay,
-          timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
+      service.scheduleAtFixedRate(
+        new Runnable { def run = receiver ! message },
+        initialDelay,
+        delay,
+        timeUnit).asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
         val error = SchedulerException(
@@ -80,9 +78,11 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .scheduleAtFixedRate(runnable, initialDelay, delay, timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
+      service.scheduleAtFixedRate(
+        runnable,
+        initialDelay,
+        delay,
+        timeUnit).asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
         val error = SchedulerException("Failed to schedule a Runnable", e)
@@ -100,12 +100,10 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .schedule(
-          new Runnable { def run = receiver ! message },
-          delay,
-          timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
+      service.schedule(
+        new Runnable { def run = receiver ! message },
+        delay,
+        timeUnit).asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
         val error = SchedulerException(
@@ -135,9 +133,8 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .schedule(runnable, delay, timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
+      service.schedule(runnable, delay, timeUnit).asInstanceOf[ScheduledFuture[
+        AnyRef]]
     } catch {
       case e: Exception =>
         val error = SchedulerException("Failed to scheduleOnce a Runnable", e)

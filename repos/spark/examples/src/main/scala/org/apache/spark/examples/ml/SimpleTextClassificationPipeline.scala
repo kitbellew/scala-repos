@@ -83,8 +83,7 @@ object SimpleTextClassificationPipeline {
         Document(7L, "apache hadoop")))
 
     // Make predictions on test documents.
-    model
-      .transform(test.toDF())
+    model.transform(test.toDF())
       .select("id", "text", "probability", "prediction")
       .collect()
       .foreach {

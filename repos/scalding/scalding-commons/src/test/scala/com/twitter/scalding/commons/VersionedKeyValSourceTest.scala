@@ -60,7 +60,9 @@ class ToIteratorJob(args: Args) extends Job(args) {
 
   val duplicatedPipe = TypedPipe.from(source) ++ iteratorPipe
 
-  duplicatedPipe.group.sum
+  duplicatedPipe
+    .group
+    .sum
     .writeIncremental(VersionedKeyValSource[Int, Int]("output"))
 }
 
@@ -77,10 +79,8 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
             assert(outputBuffer.size === input.size)
             val singleInj = implicitly[Injection[Int, Array[Byte]]]
             assert(
-              input
-                .map { k => (k, k) }
-                .sortBy(_._1)
-                .toString === outputBuffer.sortBy(_._1).toList.toString)
+              input.map { k => (k, k) }.sortBy(
+                _._1).toString === outputBuffer.sortBy(_._1).toList.toString)
           }
       }
       .run
@@ -97,10 +97,8 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
             assert(outputBuffer.size === input.size)
             val singleInj = implicitly[Injection[Int, Array[Byte]]]
             assert(
-              input
-                .map { k => (k, k) }
-                .sortBy(_._1)
-                .toString === outputBuffer.sortBy(_._1).toList.toString)
+              input.map { k => (k, k) }.sortBy(
+                _._1).toString === outputBuffer.sortBy(_._1).toList.toString)
           }
       }
       .run

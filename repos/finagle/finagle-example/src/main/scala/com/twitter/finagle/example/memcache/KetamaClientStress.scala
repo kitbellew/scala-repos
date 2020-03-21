@@ -68,12 +68,9 @@ object KetamaClientStress extends App {
 
   private[this] def createCluster(hosts: String): Cluster[CacheNode] = {
     CachePoolCluster.newStaticCluster(
-      PartitionedClient
-        .parseHostPortWeights(hosts)
-        .map {
-          case (host, port, weight) => new CacheNode(host, port, weight)
-        }
-        .toSet)
+      PartitionedClient.parseHostPortWeights(hosts).map {
+        case (host, port, weight) => new CacheNode(host, port, weight)
+      }.toSet)
   }
 
   def main() {
@@ -113,8 +110,7 @@ object KetamaClientStress extends App {
     }
 
     if (replicaPool == null) {
-      val ketamaClient = memcached
-        .KetamaClientBuilder()
+      val ketamaClient = memcached.KetamaClientBuilder()
         .clientBuilder(builder)
         .cachePoolCluster(primaryPool)
         .failureAccrualParams(Int.MaxValue, Duration.Top)
@@ -305,8 +301,7 @@ object KetamaClientStress extends App {
       }
 
       // quit the loop when all load is drained
-      if (howmuch_load >= config.cap() && (config
-            .loadrate() == 0 || howmuch_throughput >= howmuch_load)) {
+      if (howmuch_load >= config.cap() && (config.loadrate() == 0 || howmuch_throughput >= howmuch_load)) {
         sys.exit()
       }
     }

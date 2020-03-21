@@ -74,8 +74,8 @@ object ExtractionBugs extends Specification {
   }
 
   "Extraction should work with unicode encoded field names (issue 1075)" in {
-    parse("""{"foo.bar,baz":"x"}""")
-      .extract[UnicodeFieldNames] mustEqual UnicodeFieldNames("x")
+    parse("""{"foo.bar,baz":"x"}""").extract[
+      UnicodeFieldNames] mustEqual UnicodeFieldNames("x")
   }
 
   "Extraction should not fail if case class has a companion object" in {

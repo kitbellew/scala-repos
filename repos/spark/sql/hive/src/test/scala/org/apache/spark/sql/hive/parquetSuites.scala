@@ -180,10 +180,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     }
 
     (1 to 10).map(i => (i, s"str$i")).toDF("a", "b").registerTempTable("jt")
-    (1 to 10)
-      .map(i => Tuple1(Seq(new Integer(i), null)))
-      .toDF("a")
-      .registerTempTable("jt_array")
+    (1 to 10).map(i => Tuple1(Seq(new Integer(i), null))).toDF(
+      "a").registerTempTable("jt_array")
 
     setConf(HiveContext.CONVERT_METASTORE_PARQUET, true)
   }
@@ -400,13 +398,11 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
   def collectHadoopFsRelation(df: DataFrame): HadoopFsRelation = {
     val plan = df.queryExecution.analyzed
-    plan
-      .collectFirst {
-        case LogicalRelation(r: HadoopFsRelation, _, _) => r
-      }
-      .getOrElse {
-        fail(s"Expecting a HadoopFsRelation 2, but got:\n$plan")
-      }
+    plan.collectFirst {
+      case LogicalRelation(r: HadoopFsRelation, _, _) => r
+    }.getOrElse {
+      fail(s"Expecting a HadoopFsRelation 2, but got:\n$plan")
+    }
   }
 
   test(
@@ -452,8 +448,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     val _catalog = sessionState.catalog
     def checkCached(tableIdentifier: _catalog.QualifiedTableName): Unit = {
       // Converted test_parquet should be cached.
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) match {
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) match {
         case null =>
           fail("Converted test_parquet should be cached in the cache.")
         case logical @ LogicalRelation(
@@ -488,8 +484,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
     // First, make sure the converted test_parquet is not cached.
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     // Table lookup will make the table cached.
     table("test_insert_parquet")
     checkCached(tableIdentifier)
@@ -497,8 +493,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     // so the converted test_insert_parquet should be cached.
     invalidateTable("test_insert_parquet")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     sql("""
         |INSERT INTO TABLE test_insert_parquet
         |select a, b from jt
@@ -511,8 +507,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     // Invalidate the cache.
     invalidateTable("test_insert_parquet")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
 
     // Create a partitioned table.
     sql(
@@ -533,8 +529,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       "default",
       "test_parquet_partitioned_cache_test")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     sql("""
         |INSERT INTO TABLE test_parquet_partitioned_cache_test
         |PARTITION (`date`='2015-04-01')
@@ -543,16 +539,16 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     // Right now, insert into a partitioned Parquet is not supported in data source Parquet.
     // So, we expect it is not cached.
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     sql("""
         |INSERT INTO TABLE test_parquet_partitioned_cache_test
         |PARTITION (`date`='2015-04-02')
         |select a, b from jt
       """.stripMargin)
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
 
     // Make sure we can cache the partitioned table.
     table("test_parquet_partitioned_cache_test")
@@ -570,8 +566,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
     invalidateTable("test_parquet_partitioned_cache_test")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
 
     dropTables("test_insert_parquet", "test_parquet_partitioned_cache_test")
   }
@@ -640,10 +636,8 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
 
     // Create a DataFrame with two partitions. So, the created table will have two parquet files.
     val df1 = (1 to 10).map(Tuple1(_)).toDF("a").coalesce(2)
-    df1.write
-      .mode(SaveMode.Overwrite)
-      .format("parquet")
-      .saveAsTable("spark_6016_fix")
+    df1.write.mode(SaveMode.Overwrite).format("parquet").saveAsTable(
+      "spark_6016_fix")
     checkAnswer(
       sql("select * from spark_6016_fix"),
       (1 to 10).map(i => Row(i))
@@ -651,10 +645,8 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
 
     // Create a DataFrame with four partitions. So, the created table will have four parquet files.
     val df2 = (1 to 10).map(Tuple1(_)).toDF("b").coalesce(4)
-    df2.write
-      .mode(SaveMode.Overwrite)
-      .format("parquet")
-      .saveAsTable("spark_6016_fix")
+    df2.write.mode(SaveMode.Overwrite).format("parquet").saveAsTable(
+      "spark_6016_fix")
     // For the bug of SPARK-6016, we are caching two outdated footers for df1. Then,
     // since the new table has four parquet files, we are trying to read new footers from two files
     // and then merge metadata in footers of these four (two outdated ones and two latest one),
@@ -730,11 +722,8 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
     val filePath2 = new File(tempDir, "testParquet2").getCanonicalPath
 
     val df = Seq(1, 2, 3).map(i => (i, i.toString)).toDF("int", "str")
-    val df2 = df
-      .as('x)
-      .join(df.as('y), $"x.str" === $"y.str")
-      .groupBy("y.str")
-      .max("y.int")
+    val df2 = df.as('x).join(df.as('y), $"x.str" === $"y.str").groupBy(
+      "y.str").max("y.int")
     intercept[Throwable](df2.write.parquet(filePath))
 
     val df3 = df2.toDF("str", "max_int")
@@ -766,68 +755,53 @@ abstract class ParquetPartitioningTest
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDir, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
+      sparkContext.makeRDD(1 to 10)
         .map(i => ParquetData(i, s"part-$p"))
         .toDF()
-        .write
-        .parquet(partDir.getCanonicalPath)
+        .write.parquet(partDir.getCanonicalPath)
     }
 
     sparkContext
       .makeRDD(1 to 10)
       .map(i => ParquetData(i, s"part-1"))
       .toDF()
-      .write
-      .parquet(new File(normalTableDir, "normal").getCanonicalPath)
+      .write.parquet(new File(normalTableDir, "normal").getCanonicalPath)
 
     partitionedTableDirWithKey = Utils.createTempDir()
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDirWithKey, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
+      sparkContext.makeRDD(1 to 10)
         .map(i => ParquetDataWithKey(p, i, s"part-$p"))
         .toDF()
-        .write
-        .parquet(partDir.getCanonicalPath)
+        .write.parquet(partDir.getCanonicalPath)
     }
 
     partitionedTableDirWithKeyAndComplexTypes = Utils.createTempDir()
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDirWithKeyAndComplexTypes, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
-        .map { i =>
-          ParquetDataWithKeyAndComplexTypes(
-            p,
-            i,
-            s"part-$p",
-            StructContainer(i, f"${i}_string"),
-            1 to i)
-        }
-        .toDF()
-        .write
-        .parquet(partDir.getCanonicalPath)
+      sparkContext.makeRDD(1 to 10).map { i =>
+        ParquetDataWithKeyAndComplexTypes(
+          p,
+          i,
+          s"part-$p",
+          StructContainer(i, f"${i}_string"),
+          1 to i)
+      }.toDF().write.parquet(partDir.getCanonicalPath)
     }
 
     partitionedTableDirWithComplexTypes = Utils.createTempDir()
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDirWithComplexTypes, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
-        .map { i =>
-          ParquetDataWithComplexTypes(
-            i,
-            s"part-$p",
-            StructContainer(i, f"${i}_string"),
-            1 to i)
-        }
-        .toDF()
-        .write
-        .parquet(partDir.getCanonicalPath)
+      sparkContext.makeRDD(1 to 10).map { i =>
+        ParquetDataWithComplexTypes(
+          i,
+          s"part-$p",
+          StructContainer(i, f"${i}_string"),
+          1 to i)
+      }.toDF().write.parquet(partDir.getCanonicalPath)
     }
   }
 
@@ -932,12 +906,9 @@ abstract class ParquetPartitioningTest
     test(s"hive udfs $table") {
       checkAnswer(
         sql(s"SELECT concat(stringField, stringField) FROM $table"),
-        sql(s"SELECT stringField FROM $table").rdd
-          .map {
-            case Row(s: String) => Row(s + s)
-          }
-          .collect()
-          .toSeq
+        sql(s"SELECT stringField FROM $table").rdd.map {
+          case Row(s: String) => Row(s + s)
+        }.collect().toSeq
       )
     }
   }

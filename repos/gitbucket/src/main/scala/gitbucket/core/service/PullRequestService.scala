@@ -18,12 +18,10 @@ trait PullRequestService { self: IssuesService =>
   def getPullRequest(owner: String, repository: String, issueId: Int)(implicit
       s: Session): Option[(Issue, PullRequest)] =
     getIssue(owner, repository, issueId.toString).flatMap { issue =>
-      PullRequests
-        .filter(_.byPrimaryKey(owner, repository, issueId))
-        .firstOption
-        .map {
-          pullreq => (issue, pullreq)
-        }
+      PullRequests.filter(
+        _.byPrimaryKey(owner, repository, issueId)).firstOption.map {
+        pullreq => (issue, pullreq)
+      }
     }
 
   def updateCommitId(
@@ -32,8 +30,7 @@ trait PullRequestService { self: IssuesService =>
       issueId: Int,
       commitIdTo: String,
       commitIdFrom: String)(implicit s: Session): Unit =
-    PullRequests
-      .filter(_.byPrimaryKey(owner, repository, issueId))
+    PullRequests.filter(_.byPrimaryKey(owner, repository, issueId))
       .map(pr => pr.commitIdTo -> pr.commitIdFrom)
       .update((commitIdTo, commitIdFrom))
 
@@ -42,8 +39,7 @@ trait PullRequestService { self: IssuesService =>
       owner: Option[String],
       repository: Option[String])(implicit s: Session): List[PullRequestCount] =
     PullRequests
-      .innerJoin(Issues)
-      .on { (t1, t2) =>
+      .innerJoin(Issues).on { (t1, t2) =>
         t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
       }
       .filter {
@@ -103,8 +99,7 @@ trait PullRequestService { self: IssuesService =>
       branch: String,
       closed: Boolean)(implicit s: Session): List[PullRequest] =
     PullRequests
-      .innerJoin(Issues)
-      .on { (t1, t2) =>
+      .innerJoin(Issues).on { (t1, t2) =>
         t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
       }
       .filter {
@@ -131,8 +126,7 @@ trait PullRequestService { self: IssuesService =>
       defaultBranch: String)(implicit
       s: Session): Option[(PullRequest, Issue)] =
     PullRequests
-      .innerJoin(Issues)
-      .on { (t1, t2) =>
+      .innerJoin(Issues).on { (t1, t2) =>
         t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
       }
       .filter {
@@ -154,10 +148,9 @@ trait PullRequestService { self: IssuesService =>
       implicit s: Session): Unit =
     getPullRequestsByRequest(owner, repository, branch, false).foreach {
       pullreq =>
-        if (Repositories
-              .filter(_.byRepository(pullreq.userName, pullreq.repositoryName))
-              .exists
-              .run) {
+        if (Repositories.filter(_.byRepository(
+              pullreq.userName,
+              pullreq.repositoryName)).exists.run) {
           val (commitIdTo, commitIdFrom) = JGitUtil.updatePullRequest(
             pullreq.userName,
             pullreq.repositoryName,
@@ -185,8 +178,7 @@ trait PullRequestService { self: IssuesService =>
       None
     } else {
       PullRequests
-        .innerJoin(Issues)
-        .on { (t1, t2) =>
+        .innerJoin(Issues).on { (t1, t2) =>
           t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
         }
         .filter {
@@ -221,26 +213,28 @@ object PullRequestService {
       commitIdTo: String) {
 
     val statuses: List[CommitStatus] =
-      commitStatues ++ (branchProtection.contexts.toSet -- commitStatues
-        .map(_.context)
-        .toSet).map(CommitStatus
-        .pending(branchProtection.owner, branchProtection.repository, _))
+      commitStatues ++ (branchProtection.contexts.toSet -- commitStatues.map(
+        _.context).toSet).map(
+        CommitStatus.pending(
+          branchProtection.owner,
+          branchProtection.repository,
+          _))
     val hasRequiredStatusProblem =
       needStatusCheck && branchProtection.contexts.exists(context =>
         statuses.find(_.context == context).map(_.state) != Some(
           CommitState.SUCCESS))
     val hasProblem =
-      hasRequiredStatusProblem || hasConflict || (!statuses.isEmpty && CommitState
-        .combine(statuses.map(_.state).toSet) != CommitState.SUCCESS)
+      hasRequiredStatusProblem || hasConflict || (!statuses.isEmpty && CommitState.combine(
+        statuses.map(_.state).toSet) != CommitState.SUCCESS)
     val canUpdate = branchIsOutOfDate && !hasConflict
     val canMerge =
       hasMergePermission && !hasConflict && !hasRequiredStatusProblem
     lazy val commitStateSummary: (CommitState, String) = {
       val stateMap = statuses.groupBy(_.state)
       val state = CommitState.combine(stateMap.keySet)
-      val summary = stateMap
-        .map { case (keyState, states) => states.size + " " + keyState.name }
-        .mkString(", ")
+      val summary = stateMap.map {
+        case (keyState, states) => states.size + " " + keyState.name
+      }.mkString(", ")
       state -> summary
     }
     lazy val statusesAndRequired: List[(CommitStatus, Boolean)] = statuses.map {

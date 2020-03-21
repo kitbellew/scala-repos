@@ -41,8 +41,13 @@ class CokleisliTests extends SlowCatsSuite {
 
   checkAll(
     "Cokleisli[Option, Int, Int]",
-    ProfunctorTests[Cokleisli[Option, ?, ?]]
-      .profunctor[Int, Int, Int, Int, Int, Int])
+    ProfunctorTests[Cokleisli[Option, ?, ?]].profunctor[
+      Int,
+      Int,
+      Int,
+      Int,
+      Int,
+      Int])
   checkAll(
     "Profunctor[Cokleisli[Option, ?, ?]",
     SerializableTests.serializable(Profunctor[Cokleisli[Option, ?, ?]]))

@@ -47,8 +47,8 @@ object OrmToSlick extends App {
     val setup = DBIO.seq(
       addresses.schema.create,
       people.schema.create,
-      sql"ALTER TABLE PERSON ALTER COLUMN NAME VARCHAR(255) DEFAULT('')"
-        .as[Int],
+      sql"ALTER TABLE PERSON ALTER COLUMN NAME VARCHAR(255) DEFAULT('')".as[
+        Int],
       sql"ALTER TABLE PERSON ALTER COLUMN AGE INT DEFAULT(-1)".as[Int],
       sql"ALTER TABLE PERSON ALTER COLUMN ADDRESS_ID INT DEFAULT(1)".as[Int],
       SqlToSlick.inserts
@@ -92,8 +92,7 @@ object OrmToSlick extends App {
     {
       //#criteriaQuery
       val id = Property.forName("id")
-      val q = session
-        .createCriteria(classOf[Person])
+      val q = session.createCriteria(classOf[Person])
         .add(id in Array(2, 99, 17, 234))
       //#criteriaQuery
       //#criteriaQueryComposition
@@ -108,8 +107,7 @@ object OrmToSlick extends App {
     {
       //#criteriaComposition
       val age = Property.forName("age")
-      val q = session
-        .createCriteria(classOf[Person])
+      val q = session.createCriteria(classOf[Person])
         .add(
           Restrictions.disjunction
             .add(age lt 5)

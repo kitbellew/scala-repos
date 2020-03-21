@@ -391,9 +391,8 @@ abstract class Erasure
       val throwsArgs = sym0.annotations flatMap ThrownException.unapply
       if (needsJavaSig(info, throwsArgs)) {
         try Some(
-          jsig(info, toplevel = true) + throwsArgs
-            .map("^" + jsig(_, toplevel = true))
-            .mkString(""))
+          jsig(info, toplevel = true) + throwsArgs.map(
+            "^" + jsig(_, toplevel = true)).mkString(""))
         catch { case ex: UnknownSig => None }
       } else None
     }
@@ -690,8 +689,10 @@ abstract class Erasure
           } else
             treeCopy.Apply(
               tree,
-              treeCopy
-                .TypeApply(ta, treeCopy.Select(sel, qual1, name), List(targ)),
+              treeCopy.TypeApply(
+                ta,
+                treeCopy.Select(sel, qual1, name),
+                List(targ)),
               List())
 
         case Apply(TypeApply(sel @ Select(qual, name), List(targ)), List())
@@ -1122,8 +1123,10 @@ abstract class Erasure
                 // elimination of SelectFromArray, no boxing or unboxing is done there.
                 treeCopy.Apply(
                   tree,
-                  SelectFromArray(qual, name, erasure(tree.symbol)(qual.tpe))
-                    .copyAttrs(fn),
+                  SelectFromArray(
+                    qual,
+                    name,
+                    erasure(tree.symbol)(qual.tpe)).copyAttrs(fn),
                   args)
               }
             } else if (args.isEmpty && interceptedMethods(fn.symbol)) {
@@ -1229,8 +1232,9 @@ abstract class Erasure
             }
 
             def isJvmAccessible(sym: Symbol) =
-              (sym.isClass && !sym.isJavaDefined) || localTyper.context
-                .isAccessible(sym, sym.owner.thisType)
+              (sym.isClass && !sym.isJavaDefined) || localTyper.context.isAccessible(
+                sym,
+                sym.owner.thisType)
             if (!isJvmAccessible(owner) && qual.tpe != null) {
               qual match {
                 case Super(_, _) =>
@@ -1303,12 +1307,10 @@ abstract class Erasure
             case EmptyTree | TypeTree() =>
               tree1 setType specialScalaErasure(tree1.tpe)
             case ArrayValue(elemtpt, trees) =>
-              treeCopy
-                .ArrayValue(
-                  tree1,
-                  elemtpt setType specialScalaErasure.applyInArray(elemtpt.tpe),
-                  trees map transform)
-                .clearType()
+              treeCopy.ArrayValue(
+                tree1,
+                elemtpt setType specialScalaErasure.applyInArray(elemtpt.tpe),
+                trees map transform).clearType()
             case DefDef(_, _, _, _, tpt, _) =>
               try super.transform(tree1).clearType()
               finally tpt setType specialErasure(tree1.symbol)(

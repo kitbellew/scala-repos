@@ -386,8 +386,8 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
 
           case _ =>
             logger.warn(
-              s"Got a content security violation report we couldn't interpret: '${request.body
-                .map(new String(_, "UTF-8"))}'."
+              s"Got a content security violation report we couldn't interpret: '${request.body.map(
+                new String(_, "UTF-8"))}'."
             )
 
             Full(

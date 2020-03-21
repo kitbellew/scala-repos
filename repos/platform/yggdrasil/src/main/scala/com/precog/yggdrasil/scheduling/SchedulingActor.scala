@@ -355,11 +355,10 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
             error match {
               case None =>
                 logger.info(
-                  "Scheduled task %s completed with %d records in %d millis"
-                    .format(
-                      id,
-                      total,
-                      (new JodaDuration(startAt, endedAt)).getMillis))
+                  "Scheduled task %s completed with %d records in %d millis".format(
+                    id,
+                    total,
+                    (new JodaDuration(startAt, endedAt)).getMillis))
 
               case Some(error) =>
                 logger.warn(

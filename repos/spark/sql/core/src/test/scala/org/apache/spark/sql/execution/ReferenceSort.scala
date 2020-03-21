@@ -41,30 +41,25 @@ case class ReferenceSort(
 
   protected override def doExecute(): RDD[InternalRow] =
     attachTree(this, "sort") {
-      child
-        .execute()
-        .mapPartitions(
-          { iterator =>
-            val ordering = newOrdering(sortOrder, child.output)
-            val sorter = new ExternalSorter[InternalRow, Null, InternalRow](
-              TaskContext.get(),
-              ordering = Some(ordering))
-            sorter.insertAll(iterator.map(r => (r.copy(), null)))
-            val baseIterator = sorter.iterator.map(_._1)
-            val context = TaskContext.get()
-            context.taskMetrics().incDiskBytesSpilled(sorter.diskBytesSpilled)
-            context
-              .taskMetrics()
-              .incMemoryBytesSpilled(sorter.memoryBytesSpilled)
-            context
-              .taskMetrics()
-              .incPeakExecutionMemory(sorter.peakMemoryUsedBytes)
-            CompletionIterator[InternalRow, Iterator[InternalRow]](
-              baseIterator,
-              sorter.stop())
-          },
-          preservesPartitioning = true
-        )
+      child.execute().mapPartitions(
+        { iterator =>
+          val ordering = newOrdering(sortOrder, child.output)
+          val sorter = new ExternalSorter[InternalRow, Null, InternalRow](
+            TaskContext.get(),
+            ordering = Some(ordering))
+          sorter.insertAll(iterator.map(r => (r.copy(), null)))
+          val baseIterator = sorter.iterator.map(_._1)
+          val context = TaskContext.get()
+          context.taskMetrics().incDiskBytesSpilled(sorter.diskBytesSpilled)
+          context.taskMetrics().incMemoryBytesSpilled(sorter.memoryBytesSpilled)
+          context.taskMetrics().incPeakExecutionMemory(
+            sorter.peakMemoryUsedBytes)
+          CompletionIterator[InternalRow, Iterator[InternalRow]](
+            baseIterator,
+            sorter.stop())
+        },
+        preservesPartitioning = true
+      )
     }
 
   override def output: Seq[Attribute] = child.output

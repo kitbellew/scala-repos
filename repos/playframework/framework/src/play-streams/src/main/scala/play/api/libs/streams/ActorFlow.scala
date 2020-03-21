@@ -36,10 +36,9 @@ object ActorFlow {
       factory: ActorRefFactory,
       mat: Materializer): Flow[In, Out, _] = {
 
-    val (outActor, publisher) = Source
-      .actorRef[Out](bufferSize, overflowStrategy)
-      .toMat(Sink.asPublisher(false))(Keep.both)
-      .run()
+    val (outActor, publisher) =
+      Source.actorRef[Out](bufferSize, overflowStrategy)
+        .toMat(Sink.asPublisher(false))(Keep.both).run()
 
     Flow.fromSinkAndSource(
       Sink.actorRef(

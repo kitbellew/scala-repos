@@ -42,8 +42,8 @@ object GlobalPlugin {
       base: File,
       s: State,
       config: LoadBuildConfiguration): (BuildStructure, State) = {
-    val newInject = config.injectSettings
-      .copy(global = config.injectSettings.global ++ globalPluginSettings)
+    val newInject = config.injectSettings.copy(global =
+      config.injectSettings.global ++ globalPluginSettings)
     val globalConfig = config.copy(
       injectSettings = newInject,
       pluginManagement = config.pluginManagement.forGlobalPlugin)

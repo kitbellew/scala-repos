@@ -69,8 +69,9 @@ object SerializationBenchmark
     }
 
   def roundTrip[T: Serialization](ts: Iterator[T]): Unit =
-    ts.map { t => Serialization.fromBytes(Serialization.toBytes(t)).get }
-      .foreach(_ => ())
+    ts.map { t =>
+      Serialization.fromBytes(Serialization.toBytes(t)).get
+    }.foreach(_ => ())
 
   def kryoRoundTrip[T](k: KryoPool, ts: Iterator[T]): Unit =
     ts.map { t => k.fromBytes(k.toBytesWithClass(t)) }
@@ -80,9 +81,8 @@ object SerializationBenchmark
     new Ordering[Array[Byte]] {
       def compare(a: Array[Byte], b: Array[Byte]) = {
         t.compareBinary(
-            new ByteArrayInputStream(a),
-            new ByteArrayInputStream(b))
-          .unsafeToInt
+          new ByteArrayInputStream(a),
+          new ByteArrayInputStream(b)).unsafeToInt
       }
     }
   def toArrayOrd[T](k: KryoPool, ord: Ordering[T]): Ordering[Array[Byte]] =

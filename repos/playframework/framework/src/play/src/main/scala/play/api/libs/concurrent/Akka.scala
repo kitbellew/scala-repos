@@ -142,8 +142,7 @@ trait AkkaGuiceSupport {
   def bindActor[T <: Actor: ClassTag](
       name: String,
       props: Props => Props = identity): Unit = {
-    accessBinder
-      .bind(classOf[ActorRef])
+    accessBinder.bind(classOf[ActorRef])
       .annotatedWith(Names.named(name))
       .toProvider(Providers.guicify(Akka.providerOf[T](name, props)))
       .asEagerSingleton()
@@ -204,8 +203,8 @@ trait AkkaGuiceSupport {
       new FactoryModuleBuilder()
         .implement(
           classOf[Actor],
-          implicitly[ClassTag[ActorClass]].runtimeClass
-            .asInstanceOf[Class[_ <: Actor]])
+          implicitly[ClassTag[ActorClass]].runtimeClass.asInstanceOf[Class[
+            _ <: Actor]])
         .build(implicitly[ClassTag[FactoryClass]].runtimeClass))
   }
 

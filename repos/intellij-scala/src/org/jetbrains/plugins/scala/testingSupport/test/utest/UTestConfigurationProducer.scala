@@ -42,8 +42,8 @@ with AbstractTestConfigurationProducer {
       location: Location[_ <: PsiElement]): Boolean = {
     val element = location.getPsiElement
     if (element == null) return false
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] || element.isInstanceOf[
+          PsiDirectory]) {
       if (!configuration.isInstanceOf[UTestRunConfiguration]) return false
       return TestConfigurationUtil.isPackageConfiguration(
         element,
@@ -71,8 +71,8 @@ with AbstractTestConfigurationProducer {
     val element = location.getPsiElement
     if (element == null) return None
 
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] || element.isInstanceOf[
+          PsiDirectory]) {
       val name = element match {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
@@ -90,9 +90,8 @@ with AbstractTestConfigurationProducer {
     val (testClass, testName) = getLocationClassAndTest(location)
     if (testClass == null) return None
     val testClassPath = testClass.qualifiedName
-    val settings = RunManager
-      .getInstance(location.getProject)
-      .createRunConfiguration(
+    val settings =
+      RunManager.getInstance(location.getProject).createRunConfiguration(
         StringUtil.getShortName(testClassPath) +
           (if (testName != null) "\\" + testName else ""),
         confFactory)
@@ -111,8 +110,9 @@ with AbstractTestConfigurationProducer {
     } catch {
       case e: Exception =>
     }
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(runConfiguration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      runConfiguration,
+      location)
     Some((testClass, settings))
   }
 
@@ -132,12 +132,11 @@ with AbstractTestConfigurationProducer {
         tuple.getParent match {
           case patternDef: ScPatternDefinition =>
             val patterns = patternDef.pList.patterns
-            if (patterns.size == 1 && patterns.head
-                  .isInstanceOf[ScTuplePattern]) {
-              val index = tuple.exprs.zipWithIndex
-                .find { case (expr, _) => expr == testSuite }
-                .map(_._2)
-                .get
+            if (patterns.size == 1 && patterns.head.isInstanceOf[
+                  ScTuplePattern]) {
+              val index = tuple.exprs.zipWithIndex.find {
+                case (expr, _) => expr == testSuite
+              }.map(_._2).get
               val bindings = patternDef.bindings
               if (bindings.size > index) Some(bindings(index).getName) else None
             } else None
@@ -182,10 +181,10 @@ with AbstractTestConfigurationProducer {
     }
 
   private def buildPathFromTestExpr(expr: ScExpression): Option[String] =
-    expr.firstChild
-      .flatMap(
-        TestConfigurationUtil.getStaticTestName(_, allowSymbolLiterals = true))
-      .flatMap(buildTestPath(expr, _))
+    expr.firstChild.flatMap(
+      TestConfigurationUtil.getStaticTestName(
+        _,
+        allowSymbolLiterals = true)).flatMap(buildTestPath(expr, _))
 
   override def getLocationClassAndTest(
       location: Location[_ <: PsiElement]): (ScTypeDefinition, String) = {
@@ -195,8 +194,8 @@ with AbstractTestConfigurationProducer {
     var containingObject: ScTypeDefinition =
       PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
     if (containingObject == null) return fail
-    while (!containingObject
-             .isInstanceOf[ScObject] && PsiTreeUtil.getParentOfType(
+    while (!containingObject.isInstanceOf[
+             ScObject] && PsiTreeUtil.getParentOfType(
              containingObject,
              classOf[ScTypeDefinition],
              true) != null) {
@@ -215,29 +214,26 @@ with AbstractTestConfigurationProducer {
       element,
       strict = false,
       e =>
-        TestNodeProvider.isUTestInfixExpr(e) || TestNodeProvider
-          .isUTestSuiteApplyCall(e) || TestNodeProvider.isUTestApplyCall(e))
-    val testName = nameContainer
-      .flatMap {
-        case infixExpr: ScInfixExpr =>
-          //test location is a scope defined through infix '-'
-          buildPathFromTestExpr(infixExpr)
-        case methodCall: ScMethodCall
-            if TestNodeProvider.isUTestApplyCall(methodCall) =>
-          //test location is a scope define without use of '-' method
-          buildPathFromTestExpr(methodCall)
-        case methodCall: ScMethodCall =>
-          //test location is a test method definition
-          getTestSuiteName(methodCall)
-        case _ => None
-      }
-      .getOrElse(
-        //it is also possible that element is on left-hand of test suite definition
-        TestNodeProvider
-          .getUTestLeftHandTestDefinition(element)
-          .flatMap(getTestSuiteName)
-          .orNull
-      )
+        TestNodeProvider.isUTestInfixExpr(
+          e) || TestNodeProvider.isUTestSuiteApplyCall(
+          e) || TestNodeProvider.isUTestApplyCall(e))
+    val testName = nameContainer.flatMap {
+      case infixExpr: ScInfixExpr =>
+        //test location is a scope defined through infix '-'
+        buildPathFromTestExpr(infixExpr)
+      case methodCall: ScMethodCall
+          if TestNodeProvider.isUTestApplyCall(methodCall) =>
+        //test location is a scope define without use of '-' method
+        buildPathFromTestExpr(methodCall)
+      case methodCall: ScMethodCall =>
+        //test location is a test method definition
+        getTestSuiteName(methodCall)
+      case _ => None
+    }.getOrElse(
+      //it is also possible that element is on left-hand of test suite definition
+      TestNodeProvider.getUTestLeftHandTestDefinition(element).flatMap(
+        getTestSuiteName).orNull
+    )
     (containingObject, testName)
   }
 }

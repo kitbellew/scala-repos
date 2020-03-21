@@ -39,9 +39,9 @@ class PrefixComparatorsSuite extends SparkFunSuite with PropertyChecks {
       val prefixComparisonResult =
         PrefixComparators.STRING.compare(s1Prefix, s2Prefix)
 
-      val cmp = UnsignedBytes
-        .lexicographicalComparator()
-        .compare(utf8string1.getBytes.take(8), utf8string2.getBytes.take(8))
+      val cmp = UnsignedBytes.lexicographicalComparator().compare(
+        utf8string1.getBytes.take(8),
+        utf8string2.getBytes.take(8))
 
       assert(
         (prefixComparisonResult == 0 && cmp == 0) ||

@@ -60,10 +60,9 @@ class MavenCacheRepositoryResolver(val repo: MavenCache, settings: IvySettings)
         MavenRepositoryResolver.MAVEN_METADATA_XML,
         Metadata.Nature.RELEASE_OR_SNAPSHOT))
     val metadataResultOpt =
-      try system
-        .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))
-        .asScala
-        .headOption
+      try system.resolveMetadata(
+        session,
+        java.util.Arrays.asList(metadataRequest)).asScala.headOption
       catch {
         case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
           None

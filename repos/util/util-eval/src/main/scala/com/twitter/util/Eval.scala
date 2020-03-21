@@ -156,8 +156,9 @@ class Eval(target: Option[File]) {
   def apply[T](files: File*): T = {
     if (target.isDefined) {
       val targetDir = target.get
-      val unprocessedSource =
-        files.map { scala.io.Source.fromFile(_).mkString }.mkString("\n")
+      val unprocessedSource = files.map {
+        scala.io.Source.fromFile(_).mkString
+      }.mkString("\n")
       val processed = sourceForString(unprocessedSource)
       val sourceChecksum = uniqueId(processed, None)
       val checksumFile = new File(targetDir, "checksum")
@@ -214,12 +215,8 @@ class Eval(target: Option[File]) {
       code: String,
       resetState: Boolean): T = {
     val cls = compiler(wrapCodeInClass(className, code), className, resetState)
-    cls
-      .getConstructor()
-      .newInstance()
-      .asInstanceOf[() => Any]
-      .apply()
-      .asInstanceOf[T]
+    cls.getConstructor().newInstance().asInstanceOf[
+      () => Any].apply().asInstanceOf[T]
   }
 
   /**
@@ -361,10 +358,8 @@ class Eval(target: Option[File]) {
         acc: List[List[String]] = List.empty): List[List[String]] = {
       val cp = cl match {
         case urlClassLoader: URLClassLoader =>
-          urlClassLoader.getURLs
-            .filter(_.getProtocol == "file")
-            .map(u => new File(u.toURI).getPath)
-            .toList
+          urlClassLoader.getURLs.filter(_.getProtocol == "file").map(u =>
+            new File(u.toURI).getPath).toList
         case _ => Nil
       }
       cl.getParent match {
@@ -377,22 +372,19 @@ class Eval(target: Option[File]) {
     val currentClassPath = classPath.head
 
     // if there's just one thing in the classpath, and it's a jar, assume an executable jar.
-    currentClassPath ::: (if (currentClassPath.size == 1 && currentClassPath(0)
-                                .endsWith(".jar")) {
+    currentClassPath ::: (if (currentClassPath.size == 1 && currentClassPath(
+                                0).endsWith(".jar")) {
                             val jarFile = currentClassPath(0)
                             val relativeRoot = new File(jarFile).getParentFile()
-                            val nestedClassPath =
-                              new JarFile(jarFile).getManifest.getMainAttributes
-                                .getValue("Class-Path")
+                            val nestedClassPath = new JarFile(
+                              jarFile).getManifest.getMainAttributes.getValue(
+                              "Class-Path")
                             if (nestedClassPath eq null) {
                               Nil
                             } else {
-                              nestedClassPath
-                                .split(" ")
-                                .map { f =>
-                                  new File(relativeRoot, f).getAbsolutePath
-                                }
-                                .toList
+                              nestedClassPath.split(" ").map { f =>
+                                new File(relativeRoot, f).getAbsolutePath
+                              }.toList
                             }
                           } else {
                             Nil

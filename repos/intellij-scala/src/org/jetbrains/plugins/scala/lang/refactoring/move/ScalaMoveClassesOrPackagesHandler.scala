@@ -68,8 +68,9 @@ class ScalaMoveClassesOrPackagesHandler
         scalaElements.foreach(ScalaMoveUtil.saveMoveDestination(_, dir))
       case _ =>
     }
-    elements.length == scalaElements.length && super
-      .canMove(elements, targetContainer)
+    elements.length == scalaElements.length && super.canMove(
+      elements,
+      targetContainer)
   }
 
   protected override def doMoveWithMoveClassesDialog(
@@ -85,10 +86,14 @@ class ScalaMoveClassesOrPackagesHandler
           true)) {
       return
     }
-    val initialTargetPackageName: String = MoveClassesOrPackagesImpl
-      .getInitialTargetPackageName(initialTargetElement, adjustedElements)
-    val initialTargetDirectory: PsiDirectory = MoveClassesOrPackagesImpl
-      .getInitialTargetDirectory(initialTargetElement, adjustedElements)
+    val initialTargetPackageName: String =
+      MoveClassesOrPackagesImpl.getInitialTargetPackageName(
+        initialTargetElement,
+        adjustedElements)
+    val initialTargetDirectory: PsiDirectory =
+      MoveClassesOrPackagesImpl.getInitialTargetDirectory(
+        initialTargetElement,
+        adjustedElements)
     val isTargetDirectoryFixed: Boolean = initialTargetDirectory == null
     val searchTextOccurences: Boolean =
       adjustedElements.exists(TextOccurrencesUtil.isSearchTextOccurencesEnabled)

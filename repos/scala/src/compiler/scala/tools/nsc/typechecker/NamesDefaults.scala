@@ -190,21 +190,18 @@ trait NamesDefaults { self: Analyzer =>
           // to still call 'typed' is to correctly infer singleton types, SI-5259.
           val selectPos =
             if (qual.pos.isRange && baseFun1.pos.isRange)
-              qual.pos
-                .union(baseFun1.pos)
-                .withStart(Math.min(qual.pos.end, baseFun1.pos.end))
+              qual.pos.union(baseFun1.pos).withStart(
+                Math.min(qual.pos.end, baseFun1.pos.end))
             else baseFun1.pos
           val f = blockTyper.typedOperator(
-            Select(newQual, selected)
-              .setSymbol(baseFun1.symbol)
-              .setPos(selectPos))
+            Select(newQual, selected).setSymbol(baseFun1.symbol).setPos(
+              selectPos))
           if (funTargs.isEmpty) f
           else TypeApply(f, funTargs).setType(baseFun.tpe)
         }
 
         val b = Block(List(vd), baseFunTransformed)
-          .setType(baseFunTransformed.tpe)
-          .setPos(baseFun.pos.makeTransparent)
+          .setType(baseFunTransformed.tpe).setPos(baseFun.pos.makeTransparent)
         context.namedApplyBlockInfo =
           Some(
             (b, NamedApplyInfo(Some(newQual), defaultTargs, Nil, blockTyper)))
@@ -422,9 +419,8 @@ trait NamesDefaults { self: Analyzer =>
                 // cannot call blockTyper.typedBlock here, because the method expr might be partially applied only
                 val res = blockTyper.doTypedApply(tree, expr, refArgs, mode, pt)
                 res.setPos(res.pos.makeTransparent)
-                val block = Block(stats ::: valDefs.flatten, res)
-                  .setType(res.tpe)
-                  .setPos(tree.pos.makeTransparent)
+                val block = Block(stats ::: valDefs.flatten, res).setType(
+                  res.tpe).setPos(tree.pos.makeTransparent)
                 context.namedApplyBlockInfo =
                   Some((
                     block,

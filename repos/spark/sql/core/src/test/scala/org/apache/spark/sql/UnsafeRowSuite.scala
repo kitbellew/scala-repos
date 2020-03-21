@@ -72,9 +72,8 @@ class UnsafeRowSuite extends SparkFunSuite {
       UTF8String.fromString("world"),
       123)
     val arrayBackedUnsafeRow: UnsafeRow =
-      UnsafeProjection
-        .create(Array[DataType](StringType, StringType, IntegerType))
-        .apply(row)
+      UnsafeProjection.create(
+        Array[DataType](StringType, StringType, IntegerType)).apply(row)
     assert(arrayBackedUnsafeRow.getBaseObject.isInstanceOf[Array[Byte]])
     val (bytesFromArrayBackedRow, field0StringFromArrayBackedRow): (
         Array[Byte],

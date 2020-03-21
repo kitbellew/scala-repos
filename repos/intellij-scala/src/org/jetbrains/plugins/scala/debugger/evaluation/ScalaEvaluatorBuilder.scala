@@ -25,9 +25,10 @@ object ScalaEvaluatorBuilder extends EvaluatorBuilder {
       codeFragment: PsiElement,
       position: SourcePosition): ExpressionEvaluator = {
     if (codeFragment.getLanguage.isInstanceOf[JavaLanguage])
-      return EvaluatorBuilderImpl
-        .getInstance()
-        .build(codeFragment, position) //java builder (e.g. SCL-6117)
+      return EvaluatorBuilderImpl.getInstance().build(
+        codeFragment,
+        position
+      ) //java builder (e.g. SCL-6117)
 
     val scalaFragment = codeFragment match {
       case sf: ScalaCodeFragment => sf
@@ -59,9 +60,8 @@ object ScalaEvaluatorBuilder extends EvaluatorBuilder {
     def buildCompilingEvaluator: ScalaCompilingEvaluator = {
       val compilingEvaluator =
         new ScalaCompilingEvaluator(position.getElementAt, scalaFragment)
-      cache
-        .add(position, scalaFragment, compilingEvaluator)
-        .asInstanceOf[ScalaCompilingEvaluator]
+      cache.add(position, scalaFragment, compilingEvaluator).asInstanceOf[
+        ScalaCompilingEvaluator]
     }
 
     try {

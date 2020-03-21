@@ -83,30 +83,23 @@ trait DB extends Loggable {
     val toTry: List[() => Connection] = List(
       () => {
         logger.trace(
-          "Trying JNDI lookup on java:/comp/env followed by lookup on %s"
-            .format(name.jndiName))
-        (new InitialContext)
-          .lookup("java:/comp/env")
-          .asInstanceOf[Context]
-          .lookup(name.jndiName)
-          .asInstanceOf[DataSource]
-          .getConnection
+          "Trying JNDI lookup on java:/comp/env followed by lookup on %s".format(
+            name.jndiName))
+        (new InitialContext).lookup("java:/comp/env").asInstanceOf[
+          Context].lookup(name.jndiName).asInstanceOf[DataSource].getConnection
       },
       () => {
         logger.trace(
           "Trying JNDI lookup on java:/comp/env/%s".format(name.jndiName))
-        (new InitialContext)
-          .lookup("java:/comp/env/" + name.jndiName)
-          .asInstanceOf[DataSource]
-          .getConnection
+        (new InitialContext).lookup(
+          "java:/comp/env/" + name.jndiName).asInstanceOf[
+          DataSource].getConnection
 
       },
       () => {
         logger.trace("Trying JNDI lookup on %s".format(name.jndiName))
-        (new InitialContext)
-          .lookup(name.jndiName)
-          .asInstanceOf[DataSource]
-          .getConnection
+        (new InitialContext).lookup(name.jndiName).asInstanceOf[
+          DataSource].getConnection
 
       }
     )
@@ -194,9 +187,8 @@ trait DB extends Loggable {
 
   private def newConnection(name: ConnectionIdentifier): SuperConnection = {
     def cmSuperConnection(cm: ConnectionManager): Box[SuperConnection] =
-      cm.newSuperConnection(name) or cm
-        .newConnection(name)
-        .map(c => new SuperConnection(c, () => cm.releaseConnection(c)))
+      cm.newSuperConnection(name) or cm.newConnection(name).map(c =>
+        new SuperConnection(c, () => cm.releaseConnection(c)))
 
     def jndiSuperConnection: Box[SuperConnection] =
       jndiConnection(name).map(c => {
@@ -358,8 +350,10 @@ trait DB extends Loggable {
       name: ConnectionIdentifier,
       rollback: Boolean) {
     logger.trace(
-      "Request to release %s on thread %s, auto rollback=%s"
-        .format(name, Thread.currentThread, rollback))
+      "Request to release %s on thread %s, auto rollback=%s".format(
+        name,
+        Thread.currentThread,
+        rollback))
 
     (info.get(name): @unchecked) match {
       case Some(ConnectionHolder(c, 1, post, manualRollback)) => {
@@ -377,8 +371,9 @@ trait DB extends Loggable {
           info -= name
           val rolledback = rollback | manualRollback
           logger.trace(
-            "Invoking %d postTransaction functions. rollback=%s"
-              .format(post.size, rolledback))
+            "Invoking %d postTransaction functions. rollback=%s".format(
+              post.size,
+              rolledback))
           post.reverse.foreach(f => tryo(f(!rolledback)))
           logger.trace(
             "Released %s on thread %s".format(name, Thread.currentThread))
@@ -405,8 +400,9 @@ trait DB extends Loggable {
       case Some(ConnectionHolder(c, n, post, rb)) =>
         info(name) = ConnectionHolder(c, n, func :: post, rb)
         logger.trace(
-          "Appended postTransaction function on %s, new count=%d"
-            .format(name, post.size + 1))
+          "Appended postTransaction function on %s, new count=%d".format(
+            name,
+            post.size + 1))
       case _ =>
         throw new IllegalStateException(
           "Tried to append postTransaction function on illegal ConnectionIdentifer or outside transaction context")
@@ -1243,8 +1239,9 @@ class StandardDBVendor(
       case (Full(user), Full(pwd)) =>
         tryo { t: Throwable =>
           logger.error(
-            "Unable to get database connection. url=%s, user=%s"
-              .format(dbUrl, user),
+            "Unable to get database connection. url=%s, user=%s".format(
+              dbUrl,
+              user),
             t)
         }(DriverManager.getConnection(dbUrl, user, pwd))
       case _ =>
@@ -1308,8 +1305,9 @@ trait ProtoDBVendor extends ConnectionManager {
           ret.foreach(_.setAutoCommit(false))
           poolSize = poolSize + 1
           logger.debug(
-            "Created new pool entry. name=%s, poolSize=%d"
-              .format(name, poolSize))
+            "Created new pool entry. name=%s, poolSize=%d".format(
+              name,
+              poolSize))
           ret
 
         case Nil =>
@@ -1320,8 +1318,9 @@ trait ProtoDBVendor extends ConnectionManager {
           if (pool.isEmpty && poolSize == curSize && canExpand_?) {
             tempMaxSize += 1
             logger.debug(
-              "Temporarily expanding pool. name=%s, tempMaxSize=%d"
-                .format(name, tempMaxSize))
+              "Temporarily expanding pool. name=%s, tempMaxSize=%d".format(
+                name,
+                tempMaxSize))
           }
           newConnection(name)
 
@@ -1335,8 +1334,8 @@ trait ProtoDBVendor extends ConnectionManager {
             case e: Exception =>
               try {
                 logger.debug(
-                  "Test connection failed, removing connection from pool, name=%s"
-                    .format(name))
+                  "Test connection failed, removing connection from pool, name=%s".format(
+                    name))
                 poolSize = poolSize - 1
                 tryo(x.close)
                 newConnection(name)

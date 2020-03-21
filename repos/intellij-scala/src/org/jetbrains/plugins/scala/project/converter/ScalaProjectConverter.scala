@@ -69,14 +69,10 @@ private object ScalaProjectConverter {
 
   private def scalaCompilerSettingsIn(
       context: ConversionContext): Map[String, ScalaCompilerSettings] =
-    modulesIn(context)
-      .flatMap(module =>
-        ScalaFacetData
-          .findIn(module)
-          .toSeq
-          .map(facet => (module.getModuleName, facet.compilerSettings))
-          .toSeq)
-      .toMap
+    modulesIn(context).flatMap(module =>
+      ScalaFacetData.findIn(module).toSeq
+        .map(facet =>
+          (module.getModuleName, facet.compilerSettings)).toSeq).toMap
 
   private def basePackagesIn(context: ConversionContext): Seq[String] =
     scalaFacetsIn(context).flatMap(_.basePackage.toSeq)

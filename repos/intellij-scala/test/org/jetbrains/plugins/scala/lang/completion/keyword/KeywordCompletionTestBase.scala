@@ -46,16 +46,16 @@ abstract class KeywordCompletionTestBase
       new OpenFileDescriptor(getProjectAdapter, file, offset),
       false)
     val myType = CompletionType.BASIC
-    new CodeCompletionHandlerBase(myType, false, false, true)
-      .invokeCompletion(getProjectAdapter, editor)
+    new CodeCompletionHandlerBase(myType, false, false, true).invokeCompletion(
+      getProjectAdapter,
+      editor)
     val lookup: LookupImpl =
       LookupManager.getActiveLookup(editor).asInstanceOf[LookupImpl]
     val items: Array[String] =
       if (lookup == null) Array.empty
       else
-        lookup.getItems
-          .toArray(LookupElement.EMPTY_ARRAY)
-          .map(_.getLookupString)
+        lookup.getItems.toArray(LookupElement.EMPTY_ARRAY).map(
+          _.getLookupString)
 
     val res = items.filter(ScalaNamesUtil.isKeyword).sorted.mkString("\n")
 

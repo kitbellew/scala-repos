@@ -114,9 +114,9 @@ private[scalajs] object CoreJSLibs {
       else "" // blank line preserves line numbers in source maps
     }
 
-    val content = lines
-      .mkString("", "\n", "\n")
-      .replace("{{LINKER_VERSION}}", ScalaJSVersions.current)
+    val content = lines.mkString("", "\n", "\n").replace(
+      "{{LINKER_VERSION}}",
+      ScalaJSVersions.current)
 
     val content1 = outputMode match {
       case OutputMode.ECMAScript51Global =>

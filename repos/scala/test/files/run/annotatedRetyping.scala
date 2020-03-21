@@ -50,8 +50,9 @@ object Test extends DirectTest {
             val (impl, templTyper) = templates(dd.symbol.owner)
             for (stat <- impl.body.filterNot(_.isDef)) {
               println("typing " + stat)
-              val statsOwner = impl.symbol orElse templTyper.context.owner
-                .newLocalDummy(impl.pos)
+              val statsOwner =
+                impl.symbol orElse templTyper.context.owner.newLocalDummy(
+                  impl.pos)
               val tpr =
                 analyzer.newTyper(templTyper.context.make(stat, statsOwner))
               tpr.typed(stat)

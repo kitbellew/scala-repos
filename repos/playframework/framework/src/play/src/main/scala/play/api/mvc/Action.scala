@@ -114,15 +114,13 @@ trait Action[A] extends EssentialAction {
       case Right(a) =>
         val request = Request(rh, a)
         logger.trace("Invoking action with request: " + request)
-        Play.privateMaybeApplication
-          .map { app =>
-            play.utils.Threads.withContextClassLoader(app.classloader) {
-              apply(request)
-            }
-          }
-          .getOrElse {
+        Play.privateMaybeApplication.map { app =>
+          play.utils.Threads.withContextClassLoader(app.classloader) {
             apply(request)
           }
+        }.getOrElse {
+          apply(request)
+        }
     }(executionContext)
 
   /**
@@ -560,8 +558,8 @@ trait ActionRefiner[-R[_], +P[_]] extends ActionFunction[R, P] {
   protected def refine[A](request: R[A]): Future[Either[Result, P[A]]]
 
   final def invokeBlock[A](request: R[A], block: P[A] => Future[Result]) =
-    refine(request)
-      .flatMap(_.fold(Future.successful _, block))(executionContext)
+    refine(request).flatMap(_.fold(Future.successful _, block))(
+      executionContext)
 }
 
 /**

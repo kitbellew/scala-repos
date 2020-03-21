@@ -111,21 +111,17 @@ trait Reifiers { self: Quasiquotes =>
                   Ident(NoneModule))
             }
             val guard =
-              nameMap
-                .collect {
-                  case (_, nameset) if nameset.size >= 2 =>
-                    nameset.toList.sliding(2).map {
-                      case List(n1, n2) =>
-                        // q"$n1 == $n2"
-                        Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
-                    }
-                }
-                .flatten
-                .reduceOption[Tree] { (l, r) =>
-                  // q"$l && $r"
-                  Apply(Select(l, nme.ZAND), List(r))
-                }
-                .getOrElse { EmptyTree }
+              nameMap.collect {
+                case (_, nameset) if nameset.size >= 2 =>
+                  nameset.toList.sliding(2).map {
+                    case List(n1, n2) =>
+                      // q"$n1 == $n2"
+                      Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
+                  }
+              }.flatten.reduceOption[Tree] { (l, r) =>
+                // q"$l && $r"
+                Apply(Select(l, nme.ZAND), List(r))
+              }.getOrElse { EmptyTree }
             // cq"$tree if $guard => $succ" :: cq"_ => $fail" :: Nil
             CaseDef(tree, guard, succ) :: CaseDef(
               Ident(nme.WILDCARD),
@@ -384,8 +380,9 @@ trait Reifiers { self: Quasiquotes =>
             else Bind(n, Ident(nme.WILDCARD))
           if (isReifyingPatterns) result(introduceName())
           else
-            result(
-              nameMap.get(name).map { _.head }.getOrElse { introduceName() })
+            result(nameMap.get(name).map { _.head }.getOrElse {
+              introduceName()
+            })
         case _ =>
           super.reifyName(name)
       }
@@ -587,18 +584,16 @@ trait Reifiers { self: Quasiquotes =>
           case ModsPlaceholder(_) => true
           case _                  => false
         }
-        val (mods, flags) = modsPlaceholders
-          .map {
-            case ModsPlaceholder(hole: ApplyHole) => hole
-          }
-          .partition { hole =>
-            if (hole.tpe <:< modsType) true
-            else if (hole.tpe <:< flagsType) false
-            else
-              c.abort(
-                hole.pos,
-                s"$flagsType or $modsType expected but ${hole.tpe} found")
-          }
+        val (mods, flags) = modsPlaceholders.map {
+          case ModsPlaceholder(hole: ApplyHole) => hole
+        }.partition { hole =>
+          if (hole.tpe <:< modsType) true
+          else if (hole.tpe <:< flagsType) false
+          else
+            c.abort(
+              hole.pos,
+              s"$flagsType or $modsType expected but ${hole.tpe} found")
+        }
         mods match {
           case hole :: Nil =>
             if (flags.nonEmpty)

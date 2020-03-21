@@ -54,8 +54,8 @@ abstract class SbtImportNotificationProvider(
   protected def refreshProject(): Unit = {
     FileDocumentManager.getInstance.saveAllDocuments()
     ExternalSystemUtil.refreshProjects(
-      new ImportSpecBuilder(project, SbtProjectSystem.Id)
-        .forceWhenUptodate(true))
+      new ImportSpecBuilder(project, SbtProjectSystem.Id).forceWhenUptodate(
+        true))
   }
 
   protected def importProject(file: VirtualFile): Unit = {
@@ -86,18 +86,17 @@ abstract class SbtImportNotificationProvider(
         ExternalSystemApiUtil.executeProjectChangeAction(
           new DisposeAwareProjectChange(project) {
             def execute() {
-              ProjectRootManagerEx
-                .getInstanceEx(project)
-                .mergeRootsChangesDuring(new Runnable {
-                  def run() {
-                    val dataManager: ProjectDataManager =
-                      ServiceManager.getService(classOf[ProjectDataManager])
-                    dataManager.importData[ProjectData](
-                      Collections.singleton(externalProject),
-                      project,
-                      false)
-                  }
-                })
+              ProjectRootManagerEx.getInstanceEx(
+                project).mergeRootsChangesDuring(new Runnable {
+                def run() {
+                  val dataManager: ProjectDataManager =
+                    ServiceManager.getService(classOf[ProjectDataManager])
+                  dataManager.importData[ProjectData](
+                    Collections.singleton(externalProject),
+                    project,
+                    false)
+                }
+              })
             }
           })
       }
@@ -121,8 +120,8 @@ abstract class SbtImportNotificationProvider(
   protected def getProjectSettings(
       file: VirtualFile): Option[SbtProjectSettings] =
     for {
-      externalProjectPath <- Option(file.getCanonicalPath)
-        .flatMap(getExternalProject)
+      externalProjectPath <- Option(file.getCanonicalPath).flatMap(
+        getExternalProject)
       sbtSettings <- Option(SbtSystemSettings.getInstance(project))
       projectSettings <- Option(
         sbtSettings.getLinkedProjectSettings(externalProjectPath))

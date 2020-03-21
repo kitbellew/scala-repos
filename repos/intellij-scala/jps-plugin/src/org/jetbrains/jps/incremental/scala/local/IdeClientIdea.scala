@@ -41,8 +41,10 @@ class IdeClientIdea(
 
     if (source != null && content != null) {
       val sourcePath: String = FileUtil.toSystemIndependentName(source.getPath)
-      val rootDescriptor = context.getProjectDescriptor.getBuildRootIndex
-        .findJavaRootDescriptor(context, source)
+      val rootDescriptor =
+        context.getProjectDescriptor.getBuildRootIndex.findJavaRootDescriptor(
+          context,
+          source)
       if (rootDescriptor != null) {
         isTemp = rootDescriptor.isTemp
         if (!isTemp) {

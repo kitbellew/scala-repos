@@ -175,9 +175,8 @@ private[akka] class RouterActor extends Actor {
         "Router actor can only be used in RoutedActorRef, not in " + context.getClass)
   }
 
-  val routingLogicController: Option[ActorRef] = cell.routerConfig
-    .routingLogicController(cell.router.logic)
-    .map(props ⇒
+  val routingLogicController: Option[ActorRef] =
+    cell.routerConfig.routingLogicController(cell.router.logic).map(props ⇒
       context.actorOf(
         props.withDispatcher(context.props.dispatcher),
         name = "routingLogicController"))

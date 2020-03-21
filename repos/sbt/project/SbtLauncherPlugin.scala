@@ -19,9 +19,10 @@ object SbtLauncherPlugin extends AutoPlugin {
     Seq(
       libraryDependencies += Dependencies.rawLauncher % SbtLaunchConfiguration.name,
       rawSbtLaunchJar := {
-        Classpaths
-          .managedJars(SbtLaunchConfiguration, Set("jar"), update.value)
-          .headOption match {
+        Classpaths.managedJars(
+          SbtLaunchConfiguration,
+          Set("jar"),
+          update.value).headOption match {
           case Some(jar) => jar.data
           case None =>
             sys.error(

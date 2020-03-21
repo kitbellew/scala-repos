@@ -38,11 +38,9 @@ private[spark] class BlockRDD[T: ClassTag](
 
   override def getPartitions: Array[Partition] = {
     assertValid()
-    (0 until blockIds.length)
-      .map(i => {
-        new BlockRDDPartition(blockIds(i), i).asInstanceOf[Partition]
-      })
-      .toArray
+    (0 until blockIds.length).map(i => {
+      new BlockRDDPartition(blockIds(i), i).asInstanceOf[Partition]
+    }).toArray
   }
 
   override def compute(split: Partition, context: TaskContext): Iterator[T] = {

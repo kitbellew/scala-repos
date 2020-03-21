@@ -94,8 +94,8 @@ private[sql] case class LogicalRDD(
   override protected final def otherCopyArgs: Seq[AnyRef] = sqlContext :: Nil
 
   override def newInstance(): LogicalRDD.this.type =
-    LogicalRDD(output.map(_.newInstance()), rdd)(sqlContext)
-      .asInstanceOf[this.type]
+    LogicalRDD(output.map(_.newInstance()), rdd)(sqlContext).asInstanceOf[
+      this.type]
 
   override def sameResult(plan: LogicalPlan): Boolean =
     plan match {
@@ -120,8 +120,9 @@ private[sql] case class PhysicalRDD(
     extends LeafNode {
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   protected override def doExecute(): RDD[InternalRow] = {
     val numOutputRows = longMetric("numOutputRows")
@@ -159,16 +160,14 @@ private[sql] case class DataSourceScan(
     }
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   val outputUnsafeRows = relation match {
     case r: HadoopFsRelation if r.fileFormat.isInstanceOf[ParquetSource] =>
-      !SQLContext
-        .getActive()
-        .get
-        .conf
-        .getConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED)
+      !SQLContext.getActive().get.conf.getConf(
+        SQLConf.PARQUET_VECTORIZED_READER_ENABLED)
     case _: HadoopFsRelation => true
     case _                   => false
   }
@@ -188,15 +187,13 @@ private[sql] case class DataSourceScan(
             s"(${output.map(_.name).mkString(", ")})")
       }
 
-    bucketSpec
-      .map { spec =>
-        val numBuckets = spec.numBuckets
-        val bucketColumns = spec.bucketColumnNames.map(toAttribute)
-        HashPartitioning(bucketColumns, numBuckets)
-      }
-      .getOrElse {
-        UnknownPartitioning(0)
-      }
+    bucketSpec.map { spec =>
+      val numBuckets = spec.numBuckets
+      val bucketColumns = spec.bucketColumnNames.map(toAttribute)
+      HashPartitioning(bucketColumns, numBuckets)
+    }.getOrElse {
+      UnknownPartitioning(0)
+    }
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
@@ -219,8 +216,7 @@ private[sql] case class DataSourceScan(
   override def simpleString: String = {
     val metadataEntries =
       for ((key, value) <- metadata.toSeq.sorted) yield s"$key: $value"
-    s"Scan $nodeName${output
-      .mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
+    s"Scan $nodeName${output.mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {

@@ -32,8 +32,7 @@ object EventStreamSpec {
       """)
 
   val configUnhandledWithDebug =
-    ConfigFactory
-      .parseString("akka.actor.debug.event-stream = on")
+    ConfigFactory.parseString("akka.actor.debug.event-stream = on")
       .withFallback(configUnhandled)
 
   final case class M(i: Int)

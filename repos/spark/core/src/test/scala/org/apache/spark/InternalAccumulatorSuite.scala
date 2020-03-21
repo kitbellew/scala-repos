@@ -203,8 +203,7 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     sc.addSparkListener(listener)
     // Each stage creates its own set of internal accumulators so the
     // values for the same metric should not be mixed up across stages
-    val rdd = sc
-      .parallelize(1 to 100, numPartitions)
+    val rdd = sc.parallelize(1 to 100, numPartitions)
       .map { i => (i, i) }
       .mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1
@@ -234,8 +233,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       assert(
         secondStageAccum.value.get.asInstanceOf[Long] === numPartitions * 10)
       assert(
-        thirdStageAccum.value.get
-          .asInstanceOf[Long] === numPartitions * 2 * 100)
+        thirdStageAccum.value.get.asInstanceOf[
+          Long] === numPartitions * 2 * 100)
     }
     rdd.count()
   }
@@ -250,16 +249,13 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     // 2 stages. On the second stage, we trigger a fetch failure on the first stage attempt.
     // This should retry both stages in the scheduler. Note that we only want to fail the
     // first stage attempt because we want the stage to eventually succeed.
-    val x = sc
-      .parallelize(1 to 100, numPartitions)
+    val x = sc.parallelize(1 to 100, numPartitions)
       .mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1; iter
       }
       .groupBy(identity)
-    val sid = x.dependencies.head
-      .asInstanceOf[ShuffleDependency[_, _, _]]
-      .shuffleHandle
-      .shuffleId
+    val sid = x.dependencies.head.asInstanceOf[
+      ShuffleDependency[_, _, _]].shuffleHandle.shuffleId
     val rdd = x.mapPartitionsWithIndex {
       case (i, iter) =>
         // Fail the first stage attempt. Here we use the task attempt ID to determine this.

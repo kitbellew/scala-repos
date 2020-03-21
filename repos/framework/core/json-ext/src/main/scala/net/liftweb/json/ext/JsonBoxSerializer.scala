@@ -42,8 +42,10 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
           Failure(
             msg,
             deserializeException(exception),
-            extract(chain, TypeInfo(BoxClass, Some(typeHoldingFailure)))
-              .asInstanceOf[Box[Failure]])
+            extract(
+              chain,
+              TypeInfo(BoxClass, Some(typeHoldingFailure))).asInstanceOf[Box[
+              Failure]])
         case JObject(
               JField("box_failure", JString("ParamFailure")) ::
               JField("msg", JString(msg)) ::
@@ -56,8 +58,10 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
           ParamFailure(
             msg,
             deserializeException(exception),
-            extract(chain, TypeInfo(BoxClass, Some(typeHoldingFailure)))
-              .asInstanceOf[Box[Failure]],
+            extract(
+              chain,
+              TypeInfo(BoxClass, Some(typeHoldingFailure))).asInstanceOf[Box[
+              Failure]],
             extract(param, TypeInfo(clazz, None))
           )
         case x =>

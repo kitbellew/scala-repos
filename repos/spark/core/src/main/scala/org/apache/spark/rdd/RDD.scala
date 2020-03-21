@@ -539,10 +539,9 @@ abstract class RDD[T: ClassTag](
     withScope {
       val sum = weights.sum
       val normalizedCumWeights = weights.map(_ / sum).scanLeft(0.0d)(_ + _)
-      normalizedCumWeights
-        .sliding(2)
-        .map { x => randomSampleWithRange(x(0), x(1), seed) }
-        .toArray
+      normalizedCumWeights.sliding(2).map { x =>
+        randomSampleWithRange(x(0), x(1), seed)
+      }.toArray
     }
 
   /**
@@ -656,8 +655,7 @@ abstract class RDD[T: ClassTag](
       ord: Ordering[K],
       ctag: ClassTag[K]): RDD[T] =
     withScope {
-      this
-        .keyBy[K](f)
+      this.keyBy[K](f)
         .sortByKey(ascending, numPartitions)
         .values
     }
@@ -670,9 +668,7 @@ abstract class RDD[T: ClassTag](
     */
   def intersection(other: RDD[T]): RDD[T] =
     withScope {
-      this
-        .map(v => (v, null))
-        .cogroup(other.map(v => (v, null)))
+      this.map(v => (v, null)).cogroup(other.map(v => (v, null)))
         .filter {
           case (_, (leftGroup, rightGroup)) =>
             leftGroup.nonEmpty && rightGroup.nonEmpty
@@ -691,9 +687,7 @@ abstract class RDD[T: ClassTag](
   def intersection(other: RDD[T], partitioner: Partitioner)(implicit
       ord: Ordering[T] = null): RDD[T] =
     withScope {
-      this
-        .map(v => (v, null))
-        .cogroup(other.map(v => (v, null)), partitioner)
+      this.map(v => (v, null)).cogroup(other.map(v => (v, null)), partitioner)
         .filter {
           case (_, (leftGroup, rightGroup)) =>
             leftGroup.nonEmpty && rightGroup.nonEmpty
@@ -1149,8 +1143,7 @@ abstract class RDD[T: ClassTag](
           None
         }
       }
-      partiallyReduced
-        .treeAggregate(Option.empty[T])(op, op, depth)
+      partiallyReduced.treeAggregate(Option.empty[T])(op, op, depth)
         .getOrElse(throw new UnsupportedOperationException("empty collection"))
     }
 
@@ -1251,12 +1244,11 @@ abstract class RDD[T: ClassTag](
                  numPartitions.toDouble / scale)) {
           numPartitions /= scale
           val curNumPartitions = numPartitions
-          partiallyAggregated = partiallyAggregated
-            .mapPartitionsWithIndex {
-              (i, iter) => iter.map((i % curNumPartitions, _))
-            }
-            .reduceByKey(new HashPartitioner(curNumPartitions), cleanCombOp)
-            .values
+          partiallyAggregated = partiallyAggregated.mapPartitionsWithIndex {
+            (i, iter) => iter.map((i % curNumPartitions, _))
+          }.reduceByKey(
+            new HashPartitioner(curNumPartitions),
+            cleanCombOp).values
         }
         partiallyAggregated.reduce(cleanCombOp)
       }
@@ -1534,13 +1526,10 @@ abstract class RDD[T: ClassTag](
         if (mapRDDs.partitions.length == 0) {
           Array.empty
         } else {
-          mapRDDs
-            .reduce { (queue1, queue2) =>
-              queue1 ++= queue2
-              queue1
-            }
-            .toArray
-            .sorted(ord)
+          mapRDDs.reduce { (queue1, queue2) =>
+            queue1 ++= queue2
+            queue1
+          }.toArray.sorted(ord)
         }
       }
     }
@@ -1600,8 +1589,7 @@ abstract class RDD[T: ClassTag](
           (NullWritable.get(), text)
         }
       }
-      RDD
-        .rddToPairRDDFunctions(r)(nullWritableClassTag, textClassTag, null)
+      RDD.rddToPairRDDFunctions(r)(nullWritableClassTag, textClassTag, null)
         .saveAsHadoopFile[TextOutputFormat[NullWritable, Text]](path)
     }
 
@@ -1620,8 +1608,7 @@ abstract class RDD[T: ClassTag](
           (NullWritable.get(), text)
         }
       }
-      RDD
-        .rddToPairRDDFunctions(r)(nullWritableClassTag, textClassTag, null)
+      RDD.rddToPairRDDFunctions(r)(nullWritableClassTag, textClassTag, null)
         .saveAsHadoopFile[TextOutputFormat[NullWritable, Text]](path, codec)
     }
 
@@ -1630,8 +1617,7 @@ abstract class RDD[T: ClassTag](
     */
   def saveAsObjectFile(path: String): Unit =
     withScope {
-      this
-        .mapPartitions(iter => iter.grouped(10).map(_.toArray))
+      this.mapPartitions(iter => iter.grouped(10).map(_.toArray))
         .map(x => (NullWritable.get(), new BytesWritable(Utils.serialize(x))))
         .saveAsSequenceFile(path)
     }
@@ -1790,8 +1776,8 @@ abstract class RDD[T: ClassTag](
     * user instantiates this RDD himself without using any Spark operations.
     */
   @transient private[spark] val scope: Option[RDDOperationScope] = {
-    Option(sc.getLocalProperty(SparkContext.RDD_SCOPE_KEY))
-      .map(RDDOperationScope.fromJson)
+    Option(sc.getLocalProperty(SparkContext.RDD_SCOPE_KEY)).map(
+      RDDOperationScope.fromJson)
   }
 
   private[spark] def getCreationSite: String =
@@ -1808,8 +1794,7 @@ abstract class RDD[T: ClassTag](
   // and its lineage never truncated, leading to OOMs in the long run (SPARK-6847).
   private val checkpointAllMarkedAncestors =
     Option(sc.getLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
-      .map(_.toBoolean)
-      .getOrElse(false)
+      .map(_.toBoolean).getOrElse(false)
 
   /** Returns the first parent RDD */
   protected[spark] def firstParent[U: ClassTag]: RDD[U] = {
@@ -1901,15 +1886,13 @@ abstract class RDD[T: ClassTag](
 
       val persistence =
         if (storageLevel != StorageLevel.NONE) storageLevel.description else ""
-      val storageInfo = rdd.context
-        .getRDDStorageInfo(_.id == rdd.id)
-        .map(info =>
-          "    CachedPartitions: %d; MemorySize: %s; ExternalBlockStoreSize: %s; DiskSize: %s"
-            .format(
-              info.numCachedPartitions,
-              bytesToString(info.memSize),
-              bytesToString(info.externalBlockStoreSize),
-              bytesToString(info.diskSize)))
+      val storageInfo =
+        rdd.context.getRDDStorageInfo(_.id == rdd.id).map(info =>
+          "    CachedPartitions: %d; MemorySize: %s; ExternalBlockStoreSize: %s; DiskSize: %s".format(
+            info.numCachedPartitions,
+            bytesToString(info.memSize),
+            bytesToString(info.externalBlockStoreSize),
+            bytesToString(info.diskSize)))
 
       s"$rdd [$persistence]" +: storageInfo
     }

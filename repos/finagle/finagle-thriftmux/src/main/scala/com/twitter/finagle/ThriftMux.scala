@@ -120,9 +120,9 @@ object ThriftMux
   }
 
   case class Client(
-      muxer: StackClient[mux.Request, mux.Response] = Mux.client
-        .copy(stack = BaseClientStack)
-        .configured(ProtocolLibrary("thriftmux")))
+      muxer: StackClient[mux.Request, mux.Response] =
+        Mux.client.copy(stack = BaseClientStack)
+          .configured(ProtocolLibrary("thriftmux")))
       extends StackBasedClient[ThriftClientRequest, Array[Byte]]
       with Stack.Parameterized[Client]
       with Stack.Transformable[Client]

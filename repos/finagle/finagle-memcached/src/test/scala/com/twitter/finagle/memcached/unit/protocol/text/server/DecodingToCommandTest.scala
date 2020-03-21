@@ -42,8 +42,12 @@ class DecodingToCommandTest extends FunSuite {
       forAll(expireTimeTableData) {
         (expectedTime: ExpectedTimeTable, allowedDelta: Duration) =>
           val buffer = TokensWithData(
-            Seq("set", key, flags, expectedTime.expireTime.toString, dataSize)
-              .map(Buf.Utf8(_)),
+            Seq(
+              "set",
+              key,
+              flags,
+              expectedTime.expireTime.toString,
+              dataSize).map(Buf.Utf8(_)),
             Buf.Utf8(data),
             None
           )
@@ -53,8 +57,9 @@ class DecodingToCommandTest extends FunSuite {
           assert(set.key == Buf.Utf8(key))
           assert(set.value == Buf.Utf8(data))
           assert(
-            set.expiry
-              .moreOrLessEquals(expectedTime.expirationTime, allowedDelta))
+            set.expiry.moreOrLessEquals(
+              expectedTime.expirationTime,
+              allowedDelta))
       }
     }
   }

@@ -122,9 +122,8 @@ case class HandshakeResponse(
     val fixedBodySize = 34
     val dbStrSize = database.map { _.length + 1 }.getOrElse(0)
     val packetBodySize =
-      username
-        .getOrElse("")
-        .length + hashPassword.length + dbStrSize + fixedBodySize
+      username.getOrElse(
+        "").length + hashPassword.length + dbStrSize + fixedBodySize
     val bw = BufferWriter(new Array[Byte](packetBodySize))
     bw.writeInt(clientCap.mask)
     bw.writeInt(maxPacketSize)

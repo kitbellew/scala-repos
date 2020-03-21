@@ -29,8 +29,7 @@ class SbtAutoImportListener(project: Project) extends VirtualFileAdapter {
 
   private def reimportIfNeeded(file: VirtualFile): Unit = {
     val settings = Option(
-      SbtSystemSettings
-        .getInstance(project)
+      SbtSystemSettings.getInstance(project)
         .getLinkedProjectSettings(project.getBasePath))
 
     if (settings.fold(false)(_.useOurOwnAutoImport) && isBuildFile(file)) {

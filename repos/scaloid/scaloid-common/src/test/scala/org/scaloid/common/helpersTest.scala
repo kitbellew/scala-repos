@@ -83,19 +83,21 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
     val received =
       Robolectric.getShadowApplication.getReceiversForIntent(intent).asScala
     received.size shouldBe 1
-    received(0)
-      .onReceive(Robolectric.getShadowApplication.getApplicationContext, intent)
+    received(0).onReceive(
+      Robolectric.getShadowApplication.getApplicationContext,
+      intent)
     val nextIntent = Robolectric.getShadowApplication.peekNextStartedActivity
     nextIntent.getComponent.getClassName shouldBe classOf[SActivityImpl].getName
   }
 
   @Test
   def testSharedPreference(): Unit = {
-    PreferenceHelpers.defaultSharedPreferences.edit
-      .putString("foo", "bar")
-      .commit
-    PreferenceHelpers.defaultSharedPreferences
-      .getString("foo", "") shouldBe "bar"
+    PreferenceHelpers.defaultSharedPreferences.edit.putString(
+      "foo",
+      "bar").commit
+    PreferenceHelpers.defaultSharedPreferences.getString(
+      "foo",
+      "") shouldBe "bar"
   }
 
   @Test

@@ -80,8 +80,7 @@ class MarathonSchedulerTest
       .setValue("some_id")
       .build()
 
-    val masterInfo = MasterInfo
-      .newBuilder()
+    val masterInfo = MasterInfo.newBuilder()
       .setId("")
       .setIp(0)
       .setPort(5050)
@@ -106,8 +105,7 @@ class MarathonSchedulerTest
 
   test("Publishes event when reregistered") {
     val driver = mock[SchedulerDriver]
-    val masterInfo = MasterInfo
-      .newBuilder()
+    val masterInfo = MasterInfo.newBuilder()
       .setId("")
       .setIp(0)
       .setPort(5050)

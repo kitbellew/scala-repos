@@ -65,8 +65,10 @@ class Throttler(
           val sleepTime = round(observedSoFar / desiredRateMs - elapsedMs)
           if (sleepTime > 0) {
             trace(
-              "Natural rate is %f per second but desired rate is %f, sleeping for %d ms to compensate."
-                .format(rateInSecs, desiredRatePerSec, sleepTime))
+              "Natural rate is %f per second but desired rate is %f, sleeping for %d ms to compensate.".format(
+                rateInSecs,
+                desiredRatePerSec,
+                sleepTime))
             time.sleep(sleepTime)
           }
         }

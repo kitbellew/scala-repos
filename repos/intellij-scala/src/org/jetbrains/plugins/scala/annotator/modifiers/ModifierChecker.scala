@@ -138,8 +138,9 @@ private[annotator] object ModifierChecker {
                       new RemoveModifierQuickFix(owner, "final"))
                   }
                 case e: ScMember
-                    if e.getParent.isInstanceOf[ScTemplateBody] || e.getParent
-                      .isInstanceOf[ScEarlyDefinitions] =>
+                    if e.getParent.isInstanceOf[
+                      ScTemplateBody] || e.getParent.isInstanceOf[
+                      ScEarlyDefinitions] =>
                   val redundant = (e.containingClass, e) match {
                     case (obj: ScObject, valMember: ScPatternDefinition)
                         if valMember.typeElement.isEmpty &&
@@ -161,9 +162,9 @@ private[annotator] object ModifierChecker {
                     checkDublicates(modifierPsi, "final")
                   }
                 case e: ScClassParameter =>
-                  if (PsiTreeUtil
-                        .getParentOfType(e, classOf[ScTypeDefinition])
-                        .hasFinalModifier) {
+                  if (PsiTreeUtil.getParentOfType(
+                        e,
+                        classOf[ScTypeDefinition]).hasFinalModifier) {
                     if (checkDublicates(modifierPsi, "final")) {
                       proccessWarning(
                         ScalaBundle.message(
@@ -211,8 +212,8 @@ private[annotator] object ModifierChecker {
                     if !member.isInstanceOf[ScTemplateBody] &&
                       member.getParent.isInstanceOf[ScTemplateBody] =>
                   // 'abstract override' modifier only allowed for members of traits
-                  if (!member.containingClass.isInstanceOf[ScTrait] && owner
-                        .hasModifierProperty("override")) {
+                  if (!member.containingClass.isInstanceOf[
+                        ScTrait] && owner.hasModifierProperty("override")) {
                     proccessError(
                       ScalaBundle.message(
                         "abstract.override.modifier.is.not.allowed"),

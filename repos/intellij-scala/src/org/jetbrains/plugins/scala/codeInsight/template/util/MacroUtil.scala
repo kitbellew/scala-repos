@@ -47,14 +47,12 @@ object MacroUtil {
       context: ExpressionContext): Option[ScExpression] =
     try {
       Option(
-        PsiDocumentManager
-          .getInstance(context.getProject)
-          .getPsiFile(context.getEditor.getDocument))
-        .map(_.findElementAt(context.getStartOffset))
-        .filter(_ != null)
-        .map(ScalaPsiElementFactory
-          .createExpressionFromText(result.toString, _)
-          .asInstanceOf[ScExpression])
+        PsiDocumentManager.getInstance(context.getProject).getPsiFile(
+          context.getEditor.getDocument)).map(
+        _.findElementAt(context.getStartOffset)).filter(_ != null).map(
+        ScalaPsiElementFactory.createExpressionFromText(
+          result.toString,
+          _).asInstanceOf[ScExpression])
     } catch {
       case _: IncorrectOperationException => None
     }
@@ -72,44 +70,36 @@ object MacroUtil {
   def getTypeLookupItem(
       scType: ScType,
       project: Project): Option[ScalaLookupItem] = {
-    ScType
-      .extractClass(scType, Some(project))
-      .filter(_.isInstanceOf[ScTypeDefinition])
-      .map {
-        case typeDef: ScTypeDefinition =>
-          val lookupItem = new ScalaLookupItem(
-            typeDef,
-            typeDef.getTruncedQualifiedName,
-            Option(typeDef.getContainingClass))
-          lookupItem.shouldImport = true
-          lookupItem
-      }
+    ScType.extractClass(scType, Some(project)).filter(
+      _.isInstanceOf[ScTypeDefinition]).map {
+      case typeDef: ScTypeDefinition =>
+        val lookupItem = new ScalaLookupItem(
+          typeDef,
+          typeDef.getTruncedQualifiedName,
+          Option(typeDef.getContainingClass))
+        lookupItem.shouldImport = true
+        lookupItem
+    }
   }
 
   def getPrimaryConbstructorParams(context: ExpressionContext) =
     Option(
-      PsiTreeUtil
-        .getParentOfType(context.getPsiElementAtStartOffset, classOf[PsiClass]))
-      .map {
-        case obj: ScObject => obj.fakeCompanionClassOrCompanionClass
-        case other         => other
-      }
-      .filter(_.isInstanceOf[ScClass])
-      .flatMap(_.asInstanceOf[ScClass].constructor)
-      .map(_.parameterList)
+      PsiTreeUtil.getParentOfType(
+        context.getPsiElementAtStartOffset,
+        classOf[PsiClass])).map {
+      case obj: ScObject => obj.fakeCompanionClassOrCompanionClass
+      case other         => other
+    }.filter(_.isInstanceOf[ScClass]).flatMap(
+      _.asInstanceOf[ScClass].constructor).map(_.parameterList)
 
   def paramPairs(params: String): List[(String, String)] =
     if (params.length < 2) List()
     else
-      params
-        .substring(1, params.length - 1)
-        .split(",")
-        .map(l =>
-          l.split(":").map(_.trim).toList match {
-            case a :: b :: Nil => (a, b)
-            case _             => ("", "")
-          })
-        .toList
+      params.substring(1, params.length - 1).split(",").map(l =>
+        l.split(":").map(_.trim).toList match {
+          case a :: b :: Nil => (a, b)
+          case _             => ("", "")
+        }).toList
 
   val scalaIdPrefix = "scala_"
   val scalaPresentablePrefix = "scala_"

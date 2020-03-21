@@ -120,9 +120,11 @@ object PerformanceSpec {
 
 class PerformanceSpec
     extends PersistenceSpec(
-      PersistenceSpec
-        .config("leveldb", "PerformanceSpec", serialization = "off")
-        .withFallback(ConfigFactory.parseString(PerformanceSpec.config)))
+      PersistenceSpec.config(
+        "leveldb",
+        "PerformanceSpec",
+        serialization = "off").withFallback(
+        ConfigFactory.parseString(PerformanceSpec.config)))
     with ImplicitSender {
   import PerformanceSpec._
 

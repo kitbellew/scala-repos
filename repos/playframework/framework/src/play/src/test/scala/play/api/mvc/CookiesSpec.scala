@@ -109,8 +109,9 @@ object CookiesSpec extends Specification {
 
   "merging cookies" should {
     "replace old cookies with new cookies of the same name" in {
-      val originalRequest = FakeRequest()
-        .withCookies(Cookie("foo", "fooValue1"), Cookie("bar", "barValue2"))
+      val originalRequest = FakeRequest().withCookies(
+        Cookie("foo", "fooValue1"),
+        Cookie("bar", "barValue2"))
       val requestWithMoreCookies = originalRequest.withCookies(
         Cookie("foo", "fooValue2"),
         Cookie("baz", "bazValue"))
@@ -122,14 +123,12 @@ object CookiesSpec extends Specification {
       )
     }
     "return one cookie for each name" in {
-      val cookies = FakeRequest()
-        .withCookies(
-          Cookie("foo", "foo1"),
-          Cookie("foo", "foo2"),
-          Cookie("bar", "bar"),
-          Cookie("baz", "baz")
-        )
-        .cookies
+      val cookies = FakeRequest().withCookies(
+        Cookie("foo", "foo1"),
+        Cookie("foo", "foo2"),
+        Cookie("bar", "bar"),
+        Cookie("baz", "baz")
+      ).cookies
       cookies.toSet must_== Set(
         Cookie("foo", "foo2"),
         Cookie("bar", "bar"),

@@ -26,10 +26,8 @@ object SessionVar {
 
   def persist[T](key: ScopedKey[Task[T]], state: State, value: T)(implicit
       f: sbinary.Format[T]): Unit =
-    Project
-      .structure(state)
-      .streams(state)
-      .use(key)(s => Operations.write(s.binary(DefaultDataID), value)(f))
+    Project.structure(state).streams(state).use(key)(s =>
+      Operations.write(s.binary(DefaultDataID), value)(f))
 
   def clear(s: State): State = s.put(sessionVars, SessionVar.emptyMap)
 
@@ -52,10 +50,9 @@ object SessionVar {
       context: Scope,
       state: State): ScopedKey[Task[T]] = {
     val subScope = Scope.replaceThis(context)(key.scope)
-    val scope = Project
-      .structure(state)
-      .data
-      .definingScope(subScope, key.key) getOrElse subScope
+    val scope = Project.structure(state).data.definingScope(
+      subScope,
+      key.key) getOrElse subScope
     ScopedKey(scope, key.key)
   }
 

@@ -69,9 +69,8 @@ trait CodingDirectives {
           val effectiveDecoder =
             decoder.withMaxBytesPerChunk(settings.decodeMaxBytesPerChunk)
           mapRequest { request ⇒
-            effectiveDecoder
-              .decode(request)
-              .mapEntity(StreamUtils.mapEntityError {
+            effectiveDecoder.decode(request).mapEntity(
+              StreamUtils.mapEntityError {
                 case NonFatal(e) ⇒
                   IllegalRequestException(
                     StatusCodes.BadRequest,
@@ -146,9 +145,8 @@ object CodingDirectives extends CodingDirectives {
       val negotiator = EncodingNegotiator(request.headers)
       val encodings: List[HttpEncoding] =
         encoders.map(_.encoding)(collection.breakOut)
-      val bestEncoder = negotiator
-        .pickEncoding(encodings)
-        .flatMap(be ⇒ encoders.find(_.encoding == be))
+      val bestEncoder = negotiator.pickEncoding(encodings).flatMap(be ⇒
+        encoders.find(_.encoding == be))
       bestEncoder match {
         case Some(encoder) ⇒ mapResponse(encoder.encode(_))
         case _ ⇒

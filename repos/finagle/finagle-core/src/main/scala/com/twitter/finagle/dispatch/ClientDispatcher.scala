@@ -125,8 +125,7 @@ class SerialClientDispatcher[Req, Rep](
   private[this] val readTheTransport: Unit => Future[Rep] = _ => trans.read()
 
   protected def dispatch(req: Req, p: Promise[Rep]): Future[Unit] =
-    trans
-      .write(req)
+    trans.write(req)
       .rescue(wrapWriteException)
       .flatMap(readTheTransport)
       .respond(rep => p.updateIfEmpty(rep))

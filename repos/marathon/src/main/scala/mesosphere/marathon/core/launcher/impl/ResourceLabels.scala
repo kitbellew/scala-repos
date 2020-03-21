@@ -30,9 +30,7 @@ object ResourceLabels {
   }
   def apply(resource: MesosProtos.Labels): ResourceLabels = {
     import scala.collection.JavaConverters._
-    ResourceLabels(
-      resource.getLabelsList.asScala.iterator
-        .map(l => l.getKey -> l.getValue)
-        .toMap)
+    ResourceLabels(resource.getLabelsList.asScala.iterator.map(l =>
+      l.getKey -> l.getValue).toMap)
   }
 }

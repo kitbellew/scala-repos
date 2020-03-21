@@ -236,8 +236,10 @@ class ScParameterizedType private (
             case _ => Seq.empty
           }
         ScParameterizedType(
-          designator
-            .recursiveVarianceUpdateModifiable(newData, update, variance),
+          designator.recursiveVarianceUpdateModifiable(
+            newData,
+            update,
+            variance),
           typeArgs.zipWithIndex.map {
             case (ta, i) =>
               val v = if (i < des.length) des(i) else 0
@@ -433,8 +435,8 @@ case class ScTypeParameterType(
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = (((param.hashCode() * 31 + upper.hashCode) * 31 + lower
-        .hashCode()) * 31 + args.hashCode()) * 31 + name.hashCode
+      hash =
+        (((param.hashCode() * 31 + upper.hashCode) * 31 + lower.hashCode()) * 31 + args.hashCode()) * 31 + name.hashCode
     }
     hash
   }
@@ -458,12 +460,10 @@ case class ScTypeParameterType(
           new Suspension[ScType]({ () =>
             s.subst(
               ScCompoundType(
-                ptp.getExtendsListTypes
-                  .map(ScType.create(_, ptp.getProject))
-                  .toSeq ++
-                  ptp.getImplementsListTypes
-                    .map(ScType.create(_, ptp.getProject))
-                    .toSeq,
+                ptp.getExtendsListTypes.map(
+                  ScType.create(_, ptp.getProject)).toSeq ++
+                  ptp.getImplementsListTypes.map(
+                    ScType.create(_, ptp.getProject)).toSeq,
                 Map.empty,
                 Map.empty
               ))
@@ -475,9 +475,8 @@ case class ScTypeParameterType(
         case _ =>
           new Suspension[ScType]({ () =>
             s.subst(
-              ScalaPsiManager
-                .instance(ptp.getProject)
-                .psiTypeParameterUpperType(ptp))
+              ScalaPsiManager.instance(
+                ptp.getProject).psiTypeParameterUpperType(ptp))
           })
       },
       ptp)

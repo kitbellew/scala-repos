@@ -370,16 +370,14 @@ class LogTest extends JUnitSuite {
       assertEquals(
         "Messages not equal at offset " + offset,
         messageSets(i).head.message,
-        messages.head.message
-          .toFormatVersion(messageSets(i).head.message.magic))
+        messages.head.message.toFormatVersion(
+          messageSets(i).head.message.magic))
       offset = messages.head.offset + 1
     }
-    val lastRead = log
-      .read(
-        startOffset = numMessages,
-        maxLength = 1024 * 1024,
-        maxOffset = Some(numMessages + 1))
-      .messageSet
+    val lastRead = log.read(
+      startOffset = numMessages,
+      maxLength = 1024 * 1024,
+      maxOffset = Some(numMessages + 1)).messageSet
     assertEquals("Should be no more messages", 0, lastRead.size)
 
     // check that rolling the log forced a flushed the log--the flush is asyn so retry in case of failure
@@ -640,8 +638,9 @@ class LogTest extends JUnitSuite {
     for (i <- 0 until numMessages)
       log.append(TestUtils.singleMessageSet(TestUtils.randomBytes(messageSize)))
     assertEquals(
-      "After appending %d messages to an empty log, the log end offset should be %d"
-        .format(numMessages, numMessages),
+      "After appending %d messages to an empty log, the log end offset should be %d".format(
+        numMessages,
+        numMessages),
       numMessages,
       log.logEndOffset)
     val lastIndexOffset = log.activeSegment.index.lastOffset

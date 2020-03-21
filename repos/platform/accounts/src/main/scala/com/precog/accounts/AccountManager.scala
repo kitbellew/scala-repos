@@ -85,8 +85,9 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
       accountId: AccountId,
       tokenId: ResetTokenId): M[String \/ Account] = {
     logger.debug(
-      "Locating account for token id %s, account id %s"
-        .format(tokenId, accountId))
+      "Locating account for token id %s, account id %s".format(
+        tokenId,
+        accountId))
     findResetToken(accountId, tokenId).flatMap {
       case Some(token) =>
         if (token.expiresAt.isBefore(new DateTime)) {
@@ -98,15 +99,18 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
           M.point(-\/("Reset token %s has already been used".format(tokenId)))
         } else if (token.accountId != accountId) {
           logger.debug(
-            "Located reset token, but with the wrong account (expected %s): %s"
-              .format(accountId, token))
+            "Located reset token, but with the wrong account (expected %s): %s".format(
+              accountId,
+              token))
           M.point(
-            -\/("Reset token %s does not match provided account %s"
-              .format(tokenId, accountId)))
+            -\/(
+              "Reset token %s does not match provided account %s".format(
+                tokenId,
+                accountId)))
         } else {
           logger.debug("Located reset token " + token)
-          findAccountById(token.accountId)
-            .map(_.\/>("Could not find account by id " + token.accountId))
+          findAccountById(token.accountId).map(
+            _.\/>("Could not find account by id " + token.accountId))
         }
 
       case None =>

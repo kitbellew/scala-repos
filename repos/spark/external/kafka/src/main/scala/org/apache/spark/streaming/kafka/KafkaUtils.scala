@@ -689,16 +689,19 @@ private[kafka] class KafkaUtilsPythonHelper {
       topics: JMap[String, JInt],
       storageLevel: StorageLevel)
       : JavaPairReceiverInputDStream[Array[Byte], Array[Byte]] = {
-    KafkaUtils
-      .createStream[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder](
-        jssc,
-        classOf[Array[Byte]],
-        classOf[Array[Byte]],
-        classOf[DefaultDecoder],
-        classOf[DefaultDecoder],
-        kafkaParams,
-        topics,
-        storageLevel)
+    KafkaUtils.createStream[
+      Array[Byte],
+      Array[Byte],
+      DefaultDecoder,
+      DefaultDecoder](
+      jssc,
+      classOf[Array[Byte]],
+      classOf[Array[Byte]],
+      classOf[DefaultDecoder],
+      classOf[DefaultDecoder],
+      kafkaParams,
+      topics,
+      storageLevel)
   }
 
   def createRDDWithoutMessageHandler(
@@ -726,8 +729,12 @@ private[kafka] class KafkaUtilsPythonHelper {
         mmd.offset,
         mmd.key(),
         mmd.message())
-    val rdd = createRDD(jsc, kafkaParams, offsetRanges, leaders, messageHandler)
-      .mapPartitions(picklerIterator)
+    val rdd = createRDD(
+      jsc,
+      kafkaParams,
+      offsetRanges,
+      leaders,
+      messageHandler).mapPartitions(picklerIterator)
     new JavaRDD(rdd)
   }
 
@@ -738,14 +745,18 @@ private[kafka] class KafkaUtilsPythonHelper {
       leaders: JMap[TopicAndPartition, Broker],
       messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
       : RDD[V] = {
-    KafkaUtils
-      .createRDD[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder, V](
-        jsc.sc,
-        kafkaParams.asScala.toMap,
-        offsetRanges.toArray(new Array[OffsetRange](offsetRanges.size())),
-        leaders.asScala.toMap,
-        messageHandler
-      )
+    KafkaUtils.createRDD[
+      Array[Byte],
+      Array[Byte],
+      DefaultDecoder,
+      DefaultDecoder,
+      V](
+      jsc.sc,
+      kafkaParams.asScala.toMap,
+      offsetRanges.toArray(new Array[OffsetRange](offsetRanges.size())),
+      leaders.asScala.toMap,
+      messageHandler
+    )
   }
 
   def createDirectStreamWithoutMessageHandler(
@@ -778,9 +789,12 @@ private[kafka] class KafkaUtilsPythonHelper {
         mmd.offset,
         mmd.key(),
         mmd.message())
-    val stream =
-      createDirectStream(jssc, kafkaParams, topics, fromOffsets, messageHandler)
-        .mapPartitions(picklerIterator)
+    val stream = createDirectStream(
+      jssc,
+      kafkaParams,
+      topics,
+      fromOffsets,
+      messageHandler).mapPartitions(picklerIterator)
     new JavaDStream(stream)
   }
 

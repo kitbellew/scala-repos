@@ -72,16 +72,22 @@ class FormatterTest extends WordSpec {
   "Formatter" should {
     "create a prefix" in {
       assert(
-        basicFormatter
-          .formatPrefix(Level.ERROR, "20080329-05:53:16.722", "(root)") ==
+        basicFormatter.formatPrefix(
+          Level.ERROR,
+          "20080329-05:53:16.722",
+          "(root)") ==
           "ERR [20080329-05:53:16.722] (root): ")
       assert(
-        basicFormatter
-          .formatPrefix(Level.DEBUG, "20080329-05:53:16.722", "(root)") ==
+        basicFormatter.formatPrefix(
+          Level.DEBUG,
+          "20080329-05:53:16.722",
+          "(root)") ==
           "DEB [20080329-05:53:16.722] (root): ")
       assert(
-        basicFormatter
-          .formatPrefix(Level.WARNING, "20080329-05:53:16.722", "(root)") ==
+        basicFormatter.formatPrefix(
+          Level.WARNING,
+          "20080329-05:53:16.722",
+          "(root)") ==
           "WAR [20080329-05:53:16.722] (root): ")
     }
 
@@ -163,9 +169,8 @@ class FormatterTest extends WordSpec {
 
       def scrub(in: String) = {
         in.regexSub("""FormatterTest.scala:\d+""".r) { m =>
-            "FormatterTest.scala:NNN"
-          }
-          .regexSub("""FormatterTest\$[\w\\$]+""".r) { m => "FormatterTest$$" }
+          "FormatterTest.scala:NNN"
+        }.regexSub("""FormatterTest\$[\w\\$]+""".r) { m => "FormatterTest$$" }
       }
 
       "simple" in {

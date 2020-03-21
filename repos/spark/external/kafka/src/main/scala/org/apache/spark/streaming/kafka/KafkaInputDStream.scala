@@ -101,14 +101,14 @@ private[streaming] class KafkaReceiver[
     consumerConnector = Consumer.create(consumerConfig)
     logInfo("Connected to " + zkConnect)
 
-    val keyDecoder = classTag[U].runtimeClass
-      .getConstructor(classOf[VerifiableProperties])
-      .newInstance(consumerConfig.props)
-      .asInstanceOf[Decoder[K]]
-    val valueDecoder = classTag[T].runtimeClass
-      .getConstructor(classOf[VerifiableProperties])
-      .newInstance(consumerConfig.props)
-      .asInstanceOf[Decoder[V]]
+    val keyDecoder =
+      classTag[U].runtimeClass.getConstructor(classOf[VerifiableProperties])
+        .newInstance(consumerConfig.props)
+        .asInstanceOf[Decoder[K]]
+    val valueDecoder =
+      classTag[T].runtimeClass.getConstructor(classOf[VerifiableProperties])
+        .newInstance(consumerConfig.props)
+        .asInstanceOf[Decoder[V]]
 
     // Create threads for each topic/message Stream we are listening
     val topicMessageStreams =
@@ -126,8 +126,7 @@ private[streaming] class KafkaReceiver[
         }
       }
     } finally {
-      executorPool
-        .shutdown() // Just causes threads to terminate after work is done
+      executorPool.shutdown() // Just causes threads to terminate after work is done
     }
   }
 

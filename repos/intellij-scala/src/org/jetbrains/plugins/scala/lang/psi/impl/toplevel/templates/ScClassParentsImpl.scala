@@ -35,9 +35,8 @@ class ScClassParentsImpl private (
   def superTypes: Seq[ScType] = {
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScTemplateParentsStub]
-        .getTemplateParentsTypes ++ syntheticTypeElements.map(
+      return stub.asInstanceOf[
+        ScTemplateParentsStub].getTemplateParentsTypes ++ syntheticTypeElements.map(
         _.getType(TypingContext.empty).getOrAny)
     }
     allTypeElements.map(_.getType(TypingContext.empty).getOrAny)
@@ -46,9 +45,8 @@ class ScClassParentsImpl private (
   def typeElements: Seq[ScTypeElement] = {
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScTemplateParentsStub]
-        .getTemplateParentsTypeElements
+      return stub.asInstanceOf[
+        ScTemplateParentsStub].getTemplateParentsTypeElements
     }
     (constructor match {
       case Some(x) => Array[ScTypeElement](x.typeElement)

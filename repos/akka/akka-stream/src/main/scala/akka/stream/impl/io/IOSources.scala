@@ -81,8 +81,10 @@ private[akka] final class InputStreamSource(
       } catch {
         case ex: Exception ⇒
           ioResultPromise.failure(ex)
-          ErrorPublisher(ex, attributes.nameOrDefault("inputStreamSource"))
-            .asInstanceOf[Publisher[ByteString]]
+          ErrorPublisher(
+            ex,
+            attributes.nameOrDefault("inputStreamSource")).asInstanceOf[
+            Publisher[ByteString]]
       }
 
     (pub, ioResultPromise.future)

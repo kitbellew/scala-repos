@@ -75,21 +75,16 @@ object PlayRun {
           () =>
             Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
           () =>
-            Project
-              .runTask(streamsManager in scope, state)
-              .map(_._2)
-              .get
-              .toEither
-              .right
-              .toOption
+            Project.runTask(streamsManager in scope, state).map(
+              _._2).get.toEither.right.toOption
         )
 
       val runSbtTask: String => AnyRef = (task: String) => {
         val parser = Act.scopedKeyParser(state)
         val Right(sk) = complete.DefaultParsers.result(parser, task)
-        val result = Project
-          .runTask(sk.asInstanceOf[Def.ScopedKey[Task[AnyRef]]], state)
-          .map(_._2)
+        val result = Project.runTask(
+          sk.asInstanceOf[Def.ScopedKey[Task[AnyRef]]],
+          state).map(_._2)
         result.flatMap(_.toEither.right.toOption).orNull
       }
 
@@ -195,21 +190,16 @@ object PlayRun {
       //Then launch compile
       Project.synchronized {
         val start = System.currentTimeMillis
-        Project
-          .runTask(compile in Compile, newState)
-          .get
-          ._2
-          .toEither
-          .right
-          .map { _ =>
-            val duration = System.currentTimeMillis - start
-            val formatted = duration match {
-              case ms if ms < 1000 => ms + "ms"
-              case seconds         => (seconds / 1000) + "s"
-            }
-            println(
-              "[" + Colors.green("success") + "] Compiled in " + formatted)
+        Project.runTask(
+          compile in Compile,
+          newState).get._2.toEither.right.map { _ =>
+          val duration = System.currentTimeMillis - start
+          val formatted = duration match {
+            case ms if ms < 1000 => ms + "ms"
+            case seconds         => (seconds / 1000) + "s"
           }
+          println("[" + Colors.green("success") + "] Compiled in " + formatted)
+        }
       }
 
       // Avoid launching too much compilation
@@ -288,19 +278,14 @@ object PlayRun {
           extracted.get(stagingDirectory in Universal) / "bin" / extracted.get(
             executableScriptName)).map {
           f =>
-            if (System
-                  .getProperty("os.name")
-                  .toLowerCase(java.util.Locale.ENGLISH)
-                  .contains("win")) f.getAbsolutePath + ".bat"
+            if (System.getProperty("os.name").toLowerCase(
+                  java.util.Locale.ENGLISH).contains("win"))
+              f.getAbsolutePath + ".bat"
             else f.getAbsolutePath
         }.get
-        val javaProductionOptions = Project
-          .runTask(javaOptions in Production, state)
-          .get
-          ._2
-          .toEither
-          .right
-          .getOrElse(Seq[String]())
+        val javaProductionOptions = Project.runTask(
+          javaOptions in Production,
+          state).get._2.toEither.right.getOrElse(Seq[String]())
 
         // Note that I'm unable to pass system properties along with properties... if I do then I receive:
         //  java.nio.charset.IllegalCharsetNameException: "UTF-8"

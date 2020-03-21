@@ -101,9 +101,9 @@ case class DefaultClient[Req, Rep](
       case _: DefaultClient.UninitializedFailureAccrual =>
         factory: ServiceFactory[Req, Rep] => {
           val classifier = params[param.ResponseClassifier].responseClassifier
-          DefaultClient
-            .defaultFailureAccrual(statsReceiver, classifier)
-            .andThen(factory)
+          DefaultClient.defaultFailureAccrual(
+            statsReceiver,
+            classifier).andThen(factory)
         }
       case _ => failureAccrual
     }

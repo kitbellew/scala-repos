@@ -570,10 +570,8 @@ class RichPresentationCompilerSpec
     val info = cc.askInspectTypeAt(p).get
     val sup = info.supers.find(sup => sup.tpe.name == "A").get;
     {
-      val mem = sup.tpe.members
-        .find(_.name == "banana")
-        .get
-        .asInstanceOf[NamedTypeMemberInfo]
+      val mem = sup.tpe.members.find(_.name == "banana").get.asInstanceOf[
+        NamedTypeMemberInfo]
       val tpe = mem.tpe.asInstanceOf[ArrowTypeInfo]
 
       tpe.resultType.name shouldBe "List"
@@ -584,10 +582,8 @@ class RichPresentationCompilerSpec
       paramTpe.args.head.name shouldBe "String"
     }
     {
-      val mem = sup.tpe.members
-        .find(_.name == "pineapple")
-        .get
-        .asInstanceOf[NamedTypeMemberInfo]
+      val mem = sup.tpe.members.find(_.name == "pineapple").get.asInstanceOf[
+        NamedTypeMemberInfo]
       val tpe = mem.tpe.asInstanceOf[BasicTypeInfo]
       tpe.name shouldBe "List"
       tpe.args.head.name shouldBe "String"

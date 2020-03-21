@@ -647,10 +647,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     */
   def join[W](other: RDD[(K, W)], partitioner: Partitioner): RDD[(K, (V, W))] =
     self.withScope {
-      this
-        .cogroup(other, partitioner)
-        .flatMapValues(pair =>
-          for (v <- pair._1.iterator; w <- pair._2.iterator) yield (v, w))
+      this.cogroup(other, partitioner).flatMapValues(pair =>
+        for (v <- pair._1.iterator; w <- pair._2.iterator) yield (v, w))
     }
 
   /**
@@ -1327,9 +1325,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
               : Option[(OutputMetrics, () => Long)] =
             initHadoopOutputMetrics(context)
 
-          val writer = format
-            .getRecordWriter(hadoopContext)
-            .asInstanceOf[NewRecordWriter[K, V]]
+          val writer = format.getRecordWriter(hadoopContext).asInstanceOf[
+            NewRecordWriter[K, V]]
           require(writer != null, "Unable to obtain RecordWriter")
           var recordsWritten = 0L
           Utils.tryWithSafeFinallyAndFailureCallbacks {

@@ -37,10 +37,10 @@ class MultipartUnmarshallersSpec
           HttpEntity(
             `multipart/mixed` withBoundary "XYZABC" withCharset `UTF-8`,
             """--XYZABC
-            |--XYZABC--""".stripMarginWithNewline("\r\n")))
-          .to[Multipart.General] should haveParts(
-          Multipart.General.BodyPart
-            .Strict(HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`)))
+            |--XYZABC--""".stripMarginWithNewline("\r\n"))).to[
+          Multipart.General] should haveParts(
+          Multipart.General.BodyPart.Strict(
+            HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`)))
       }
       "two empty parts" in {
         Unmarshal(
@@ -48,12 +48,12 @@ class MultipartUnmarshallersSpec
             `multipart/mixed` withBoundary "XYZABC" withCharset `UTF-8`,
             """--XYZABC
             |--XYZABC
-            |--XYZABC--""".stripMarginWithNewline("\r\n")))
-          .to[Multipart.General] should haveParts(
-          Multipart.General.BodyPart
-            .Strict(HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`)),
-          Multipart.General.BodyPart
-            .Strict(HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`))
+            |--XYZABC--""".stripMarginWithNewline("\r\n"))).to[
+          Multipart.General] should haveParts(
+          Multipart.General.BodyPart.Strict(
+            HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`)),
+          Multipart.General.BodyPart.Strict(
+            HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`))
         )
       }
       "a part without entity and missing header separation CRLF" in {
@@ -225,57 +225,51 @@ class MultipartUnmarshallersSpec
             """--simple boundary
             |--simple boundary--""".stripMarginWithNewline("\r\n")
           )).to[Multipart.General] should haveParts(
-          Multipart.General.BodyPart
-            .Strict(HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`)))
+          Multipart.General.BodyPart.Strict(
+            HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`)))
       }
     }
 
     "multipartGeneralUnmarshaller should reject illegal multipart content with" - {
       "an empty entity" in {
-        Await
-          .result(
-            Unmarshal(
-              HttpEntity(
-                `multipart/mixed` withBoundary "XYZABC" withCharset `UTF-8`,
-                ByteString.empty))
-              .to[Multipart.General]
-              .failed,
-            1.second)
-          .getMessage shouldEqual "Unexpected end of multipart entity"
+        Await.result(
+          Unmarshal(
+            HttpEntity(
+              `multipart/mixed` withBoundary "XYZABC" withCharset `UTF-8`,
+              ByteString.empty))
+            .to[Multipart.General].failed,
+          1.second).getMessage shouldEqual "Unexpected end of multipart entity"
       }
       "an entity without initial boundary" in {
-        Await
-          .result(
-            Unmarshal(
-              HttpEntity(
-                `multipart/mixed` withBoundary "XYZABC" withCharset `UTF-8`,
-                """this is
+        Await.result(
+          Unmarshal(
+            HttpEntity(
+              `multipart/mixed` withBoundary "XYZABC" withCharset `UTF-8`,
+              """this is
             |just preamble text""".stripMarginWithNewline("\r\n")))
-              .to[Multipart.General]
-              .failed,
-            1.second
-          )
-          .getMessage shouldEqual "Unexpected end of multipart entity"
+            .to[Multipart.General].failed,
+          1.second
+        ).getMessage shouldEqual "Unexpected end of multipart entity"
       }
       "a stray boundary" in {
-        Await
-          .result(
-            Unmarshal(HttpEntity(
+        Await.result(
+          Unmarshal(
+            HttpEntity(
               `multipart/form-data` withBoundary "ABC" withCharset `UTF-8`,
               """--ABC
             |Content-type: text/plain; charset=UTF8
             |--ABCContent-type: application/json
             |content-disposition: form-data; name="email"
             |-----""".stripMarginWithNewline("\r\n")
-            )).to[Multipart.General].failed,
-            1.second
-          )
-          .getMessage shouldEqual "Illegal multipart boundary in message content"
+            ))
+            .to[Multipart.General].failed,
+          1.second
+        ).getMessage shouldEqual "Illegal multipart boundary in message content"
       }
       "duplicate Content-Type header" in {
-        Await
-          .result(
-            Unmarshal(HttpEntity(
+        Await.result(
+          Unmarshal(
+            HttpEntity(
               `multipart/form-data` withBoundary "-" withCharset `UTF-8`,
               """---
             |Content-type: text/plain; charset=UTF8
@@ -284,26 +278,23 @@ class MultipartUnmarshallersSpec
             |
             |test@there.com
             |-----""".stripMarginWithNewline("\r\n")
-            )).to[Multipart.General].failed,
-            1.second
-          )
-          .getMessage shouldEqual
+            ))
+            .to[Multipart.General].failed,
+          1.second
+        ).getMessage shouldEqual
           "multipart part must not contain more than one Content-Type header"
       }
       "a missing header-separating CRLF (in Strict entity)" in {
-        Await
-          .result(
-            Unmarshal(
-              HttpEntity(
-                `multipart/form-data` withBoundary "-" withCharset `UTF-8`,
-                """---
+        Await.result(
+          Unmarshal(
+            HttpEntity(
+              `multipart/form-data` withBoundary "-" withCharset `UTF-8`,
+              """---
             |not good here
             |-----""".stripMarginWithNewline("\r\n")))
-              .to[Multipart.General]
-              .failed,
-            1.second
-          )
-          .getMessage shouldEqual "Illegal character ' ' in header name"
+            .to[Multipart.General].failed,
+          1.second
+        ).getMessage shouldEqual "Illegal character ' ' in header name"
       }
       "a missing header-separating CRLF (in Default entity)" in {
         val content = """---
@@ -316,40 +307,33 @@ class MultipartUnmarshallersSpec
           content.map(c ⇒ ByteString(c.toString)) // one-char ByteStrings
         val contentType =
           `multipart/form-data` withBoundary "-" withCharset `UTF-8`
-        Await
-          .result(
-            Unmarshal(HttpEntity
-              .Default(contentType, content.length, Source(byteStrings)))
-              .to[Multipart.General]
-              .flatMap(_ toStrict 1.second)
-              .failed,
-            1.second)
-          .getMessage shouldEqual "Illegal character ' ' in header name"
+        Await.result(
+          Unmarshal(
+            HttpEntity.Default(
+              contentType,
+              content.length,
+              Source(byteStrings)))
+            .to[Multipart.General]
+            .flatMap(_ toStrict 1.second).failed,
+          1.second).getMessage shouldEqual "Illegal character ' ' in header name"
       }
       "a boundary with a trailing space" in {
-        Await
-          .result(
-            Unmarshal(
-              HttpEntity(
-                `multipart/mixed` withBoundary "simple boundary " withCharset `UTF-8`,
-                ByteString.empty))
-              .to[Multipart.General]
-              .failed,
-            1.second)
-          .getMessage shouldEqual
+        Await.result(
+          Unmarshal(
+            HttpEntity(
+              `multipart/mixed` withBoundary "simple boundary " withCharset `UTF-8`,
+              ByteString.empty))
+            .to[Multipart.General].failed,
+          1.second).getMessage shouldEqual
           "requirement failed: 'boundary' parameter of multipart Content-Type must not end with a space char"
       }
       "a boundary with an illegal character" in {
-        Await
-          .result(
-            Unmarshal(
-              HttpEntity(
-                `multipart/mixed` withBoundary "simple&boundary" withCharset `UTF-8`,
-                ByteString.empty))
-              .to[Multipart.General]
-              .failed,
-            1.second)
-          .getMessage shouldEqual
+        Await.result(
+          Unmarshal(HttpEntity(
+            `multipart/mixed` withBoundary "simple&boundary" withCharset `UTF-8`,
+            ByteString.empty))
+            .to[Multipart.General].failed,
+          1.second).getMessage shouldEqual
           "requirement failed: 'boundary' parameter of multipart Content-Type contains illegal character '&'"
       }
     }
@@ -484,15 +468,14 @@ class MultipartUnmarshallersSpec
       parts: Multipart.BodyPart.Strict*): Matcher[Future[T]] =
     equal(parts).matcher[Seq[Multipart.BodyPart.Strict]] compose { x ⇒
       Await.result(
-        x.fast
-          .flatMap {
+        x
+          .fast.flatMap {
             _.parts
-              .mapAsync(Int.MaxValue)(_ toStrict 1.second)
-              .grouped(100)
-              .runWith(Sink.head)
+            .mapAsync(Int.MaxValue)(_ toStrict 1.second)
+            .grouped(100)
+            .runWith(Sink.head)
           }
-          .fast
-          .recover { case _: NoSuchElementException ⇒ Nil },
+          .fast.recover { case _: NoSuchElementException ⇒ Nil },
         1.second
       )
     }

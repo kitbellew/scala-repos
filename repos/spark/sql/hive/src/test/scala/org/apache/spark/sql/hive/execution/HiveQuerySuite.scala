@@ -163,14 +163,13 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test("multiple generators in projection") {
     intercept[AnalysisException] {
-      sql("SELECT explode(array(key, key)), explode(array(key, key)) FROM src")
-        .collect()
+      sql(
+        "SELECT explode(array(key, key)), explode(array(key, key)) FROM src").collect()
     }
 
     intercept[AnalysisException] {
       sql(
-        "SELECT explode(array(key, key)) as k1, explode(array(key, key)) FROM src")
-        .collect()
+        "SELECT explode(array(key, key)) as k1, explode(array(key, key)) FROM src").collect()
     }
   }
 
@@ -228,8 +227,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("constant null testing timestamp") {
     val r1 = sql(
       "SELECT IF(FALSE, CAST(NULL AS TIMESTAMP), CAST(1 AS TIMESTAMP)) AS COL20")
-      .collect()
-      .head
+      .collect().head
     assert(new Timestamp(1000) == r1.getTimestamp(0))
   }
 
@@ -295,12 +293,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   // Jdk version leads to different query output for double, so not use createQueryTest here
   test("division") {
-    val res = sql("SELECT 2 / 1, 1 / 2, 1 / 3, 1 / COUNT(*) FROM src LIMIT 1")
-      .collect()
-      .head
-    Seq(2.0, 0.5, 0.3333333333333333, 0.002)
-      .zip(res.toSeq)
-      .foreach(x => assert(x._1 == x._2.asInstanceOf[Double]))
+    val res = sql(
+      "SELECT 2 / 1, 1 / 2, 1 / 3, 1 / COUNT(*) FROM src LIMIT 1").collect().head
+    Seq(2.0, 0.5, 0.3333333333333333, 0.002).zip(res.toSeq).foreach(x =>
+      assert(x._1 == x._2.asInstanceOf[Double]))
   }
 
   createQueryTest(
@@ -313,8 +309,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("Query with constant folding the CAST") {
-    sql("SELECT CAST(CAST('123' AS binary) AS binary) FROM src LIMIT 1")
-      .collect()
+    sql(
+      "SELECT CAST(CAST('123' AS binary) AS binary) FROM src LIMIT 1").collect()
   }
 
   createQueryTest(
@@ -635,10 +631,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   // Jdk version leads to different query output for double, so not use createQueryTest here
   test("timestamp cast #1") {
-    val res =
-      sql("SELECT CAST(CAST(1 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1")
-        .collect()
-        .head
+    val res = sql(
+      "SELECT CAST(CAST(1 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1").collect().head
     assert(1 == res.getDouble(0))
   }
 
@@ -647,10 +641,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SELECT CAST(CAST(1.2 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1")
 
   test("timestamp cast #3") {
-    val res =
-      sql("SELECT CAST(CAST(1200 AS TIMESTAMP) AS INT) FROM src LIMIT 1")
-        .collect()
-        .head
+    val res = sql(
+      "SELECT CAST(CAST(1200 AS TIMESTAMP) AS INT) FROM src LIMIT 1").collect().head
     assert(1200 == res.getInt(0))
   }
 
@@ -659,10 +651,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SELECT CAST(CAST(1.2 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1")
 
   test("timestamp cast #5") {
-    val res =
-      sql("SELECT CAST(CAST(-1 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1")
-        .collect()
-        .head
+    val res = sql(
+      "SELECT CAST(CAST(-1 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1").collect().head
     assert(-1 == res.get(0))
   }
 
@@ -671,10 +661,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SELECT CAST(CAST(-1.2 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1")
 
   test("timestamp cast #7") {
-    val res =
-      sql("SELECT CAST(CAST(-1200 AS TIMESTAMP) AS INT) FROM src LIMIT 1")
-        .collect()
-        .head
+    val res = sql(
+      "SELECT CAST(CAST(-1200 AS TIMESTAMP) AS INT) FROM src LIMIT 1").collect().head
     assert(-1200 == res.getInt(0))
   }
 
@@ -777,12 +765,14 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("implement identity function using case statement") {
-    val actual = sql("SELECT (CASE key WHEN key THEN key END) FROM src").rdd
+    val actual = sql("SELECT (CASE key WHEN key THEN key END) FROM src")
+      .rdd
       .map { case Row(i: Int) => i }
       .collect()
       .toSet
 
-    val expected = sql("SELECT key FROM src").rdd
+    val expected = sql("SELECT key FROM src")
+      .rdd
       .map { case Row(i: Int) => i }
       .collect()
       .toSet
@@ -794,8 +784,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   // See https://github.com/apache/spark/pull/1055#issuecomment-45820167 for a discussion.
   ignore("non-boolean conditions in a CaseWhen are illegal") {
     intercept[Exception] {
-      sql("SELECT (CASE WHEN key > 2 THEN 3 WHEN 1 THEN 2 ELSE 0 END) FROM src")
-        .collect()
+      sql(
+        "SELECT (CASE WHEN key > 2 THEN 3 WHEN 1 THEN 2 ELSE 0 END) FROM src").collect()
     }
   }
 
@@ -818,8 +808,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   def isExplanation(result: DataFrame): Boolean = {
-    val explanation =
-      result.select('plan).collect().map { case Row(plan: String) => plan }
+    val explanation = result.select('plan).collect().map {
+      case Row(plan: String) => plan
+    }
     explanation.contains("== Physical Plan ==")
   }
 
@@ -833,14 +824,12 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("SPARK-2180: HAVING support in GROUP BY clauses (positive)") {
-    val fixture =
-      List(("foo", 2), ("bar", 1), ("foo", 4), ("bar", 3)).zipWithIndex.map {
+    val fixture = List(("foo", 2), ("bar", 1), ("foo", 4), ("bar", 3))
+      .zipWithIndex.map {
         case ((value, attr), key) => HavingRow(key, value, attr)
       }
-    TestHive.sparkContext
-      .parallelize(fixture)
-      .toDF()
-      .registerTempTable("having_test")
+    TestHive.sparkContext.parallelize(fixture).toDF().registerTempTable(
+      "having_test")
     val results =
       sql(
         "SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
@@ -1026,14 +1015,12 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("SPARK-2263: Insert Map<K, V> values") {
     sql("CREATE TABLE m(value MAP<INT, STRING>)")
     sql("INSERT OVERWRITE TABLE m SELECT MAP(key, value) FROM src LIMIT 10")
-    sql("SELECT * FROM m")
-      .collect()
-      .zip(sql("SELECT * FROM src LIMIT 10").collect())
-      .foreach {
-        case (Row(map: Map[_, _]), Row(key: Int, value: String)) =>
-          assert(map.size === 1)
-          assert(map.head === (key, value))
-      }
+    sql("SELECT * FROM m").collect().zip(
+      sql("SELECT * FROM src LIMIT 10").collect()).foreach {
+      case (Row(map: Map[_, _]), Row(key: Int, value: String)) =>
+        assert(map.size === 1)
+        assert(map.head === (key, value))
+    }
   }
 
   test("ADD JAR command") {
@@ -1197,14 +1184,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test(
     "SPARK-3414 regression: should store analyzed logical plan when registering a temp table") {
-    sparkContext
-      .makeRDD(Seq.empty[LogEntry])
-      .toDF()
-      .registerTempTable("rawLogs")
-    sparkContext
-      .makeRDD(Seq.empty[LogFile])
-      .toDF()
-      .registerTempTable("logFiles")
+    sparkContext.makeRDD(Seq.empty[LogEntry]).toDF().registerTempTable(
+      "rawLogs")
+    sparkContext.makeRDD(Seq.empty[LogFile]).toDF().registerTempTable(
+      "logFiles")
 
     sql("""
       SELECT name, message
@@ -1226,7 +1209,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       sql("DROP TABLE IF EXISTS withparts")
       sql("CREATE TABLE withparts LIKE srcpart")
       sql(
-        "INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src").queryExecution.analyzed
+        "INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src")
+        .queryExecution.analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
@@ -1245,7 +1229,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
       sql("CREATE TABLE IF NOT EXISTS withparts LIKE srcpart")
       sql(
-        "INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src").queryExecution.analyzed
+        "INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src")
+        .queryExecution.analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
@@ -1281,13 +1266,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val testVal = "test.val.0"
     val nonexistentKey = "nonexistent"
     def collectResults(df: DataFrame): Set[Any] =
-      df.collect()
-        .map {
-          case Row(key: String, value: String) => key -> value
-          case Row(key: String, defaultValue: String, doc: String) =>
-            (key, defaultValue, doc)
-        }
-        .toSet
+      df.collect().map {
+        case Row(key: String, value: String) => key -> value
+        case Row(key: String, defaultValue: String, doc: String) =>
+          (key, defaultValue, doc)
+      }.toSet
     conf.clear()
 
     val expectedConfs = conf.getAllDefinedConfs.toSet

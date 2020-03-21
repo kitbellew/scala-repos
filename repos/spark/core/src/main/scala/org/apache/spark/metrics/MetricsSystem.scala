@@ -199,8 +199,7 @@ private[spark] class MetricsSystem private (
       val classPath = kv._2.getProperty("class")
       if (null != classPath) {
         try {
-          val sink = Utils
-            .classForName(classPath)
+          val sink = Utils.classForName(classPath)
             .getConstructor(
               classOf[Properties],
               classOf[MetricRegistry],

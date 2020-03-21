@@ -190,15 +190,14 @@ private[hive] case class ScriptTransformation(
             curLine = reader.readLine()
             if (!ioschema.schemaLess) {
               new GenericInternalRow(
-                prevLine
-                  .split(ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
+                prevLine.split(
+                  ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
                   .map(CatalystTypeConverters.convertToCatalyst))
             } else {
               new GenericInternalRow(
-                prevLine
-                  .split(
-                    ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
-                    2)
+                prevLine.split(
+                  ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
+                  2)
                   .map(CatalystTypeConverters.convertToCatalyst))
             }
           } else {
@@ -292,14 +291,15 @@ private class ScriptTransformationWriterThread(
             }
             outputStream.write(data.getBytes(StandardCharsets.UTF_8))
           } else {
-            val writable = inputSerde
-              .serialize(row.asInstanceOf[GenericInternalRow].values, inputSoi)
+            val writable = inputSerde.serialize(
+              row.asInstanceOf[GenericInternalRow].values,
+              inputSoi)
 
             if (scriptInputWriter != null) {
               scriptInputWriter.write(writable)
             } else {
-              prepareWritable(writable, ioschema.outputSerdeProps)
-                .write(dataOutputStream)
+              prepareWritable(writable, ioschema.outputSerdeProps).write(
+                dataOutputStream)
             }
           }
         }

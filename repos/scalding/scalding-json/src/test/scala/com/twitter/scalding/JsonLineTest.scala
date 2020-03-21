@@ -49,8 +49,8 @@ class JsonLineJob(args: Args) extends Job(args) {
 
 class JsonLineRestrictedFieldsJob(args: Args) extends Job(args) {
   try {
-    Tsv("input0", ('query, 'queryStats)).read
-      .write(JsonLine("output0", Tuple1('query)))
+    Tsv("input0", ('query, 'queryStats)).read.write(
+      JsonLine("output0", Tuple1('query)))
   } catch {
     case e: Exception => e.printStackTrace()
   }

@@ -73,10 +73,8 @@ trait CacheConditionDirectives {
       lastModified: Option[DateTime]): Directive0 = {
     def addResponseHeaders: Directive0 =
       mapResponse(
-        _.withDefaultHeaders(
-          eTag.map(ETag(_)).toList ++ lastModified
-            .map(`Last-Modified`(_))
-            .toList))
+        _.withDefaultHeaders(eTag.map(ETag(_)).toList ++ lastModified.map(
+          `Last-Modified`(_)).toList))
 
     // TODO: also handle Cache-Control and Vary
     def complete304(): Route =
@@ -92,8 +90,7 @@ trait CacheConditionDirectives {
 
         def isGetOrHead = method == HEAD || method == GET
         def unmodified(ifModifiedSince: DateTime) =
-          lastModified.get <= ifModifiedSince && ifModifiedSince.clicks < System
-            .currentTimeMillis()
+          lastModified.get <= ifModifiedSince && ifModifiedSince.clicks < System.currentTimeMillis()
 
         def step1(): Route =
           header[`If-Match`] match {

@@ -61,8 +61,9 @@ class MemoryLaws extends WordSpec {
       T: Manifest: Arbitrary,
       K: Arbitrary,
       V: Monoid: Arbitrary: Equiv] =
-    testGraph[T, K, V]
-      .singleStepChecker(sample[List[T]], sample[T => List[(K, V)]])
+    testGraph[T, K, V].singleStepChecker(
+      sample[List[T]],
+      sample[T => List[(K, V)]])
 
   /**
     * Tests the in-memory planner against a job with a single flatMap
@@ -132,29 +133,24 @@ class MemoryLaws extends WordSpec {
     val serviceFn = storeAndService.get(_)
     val lookupFn = finalStore.get(_)
 
-    val storeAndServiceMatches = MapAlgebra
-      .sumByKey(
-        items1
-          .flatMap(fnA)
-      )
-      .forall {
-        case (k, v) =>
-          val lv: JoinedU = serviceFn(k).getOrElse(Monoid.zero[JoinedU])
-          Equiv[JoinedU].equiv(v, lv)
-      }
+    val storeAndServiceMatches = MapAlgebra.sumByKey(
+      items1
+        .flatMap(fnA)
+    ).forall {
+      case (k, v) =>
+        val lv: JoinedU = serviceFn(k).getOrElse(Monoid.zero[JoinedU])
+        Equiv[JoinedU].equiv(v, lv)
+    }
 
-    val finalStoreMatches = MapAlgebra
-      .sumByKey(
-        items2
-          .flatMap(fnB)
-          .map { case (k, u) => (k, (u, serviceFn(k))) }
-          .flatMap(postJoinFn)
-      )
-      .forall {
-        case (k, v) =>
-          val lv = lookupFn(k).getOrElse(Monoid.zero[V])
-          Equiv[V].equiv(v, lv)
-      }
+    val finalStoreMatches = MapAlgebra.sumByKey(
+      items2.flatMap(fnB)
+        .map { case (k, u) => (k, (u, serviceFn(k))) }
+        .flatMap(postJoinFn)
+    ).forall {
+      case (k, v) =>
+        val lv = lookupFn(k).getOrElse(Monoid.zero[V])
+        Equiv[V].equiv(v, lv)
+    }
 
     storeAndServiceMatches && finalStoreMatches
   }
@@ -302,11 +298,9 @@ class MemoryLaws extends WordSpec {
         .sumByKey(store)
         .map {
           case (_, (existingEventOpt, currentEvent)) =>
-            existingEventOpt
-              .map { existingEvent =>
-                Semigroup.plus(existingEvent, currentEvent)
-              }
-              .getOrElse(currentEvent)
+            existingEventOpt.map { existingEvent =>
+              Semigroup.plus(existingEvent, currentEvent)
+            }.getOrElse(currentEvent)
         }
 
       val write1 = summed.write(sink)

@@ -30,15 +30,13 @@ abstract class Charset protected (canonicalName: String, aliases: Array[String])
   def canEncode(): Boolean = true
 
   private lazy val cachedDecoder = {
-    this
-      .newDecoder()
+    this.newDecoder()
       .onMalformedInput(CodingErrorAction.REPLACE)
       .onUnmappableCharacter(CodingErrorAction.REPLACE)
   }
 
   private lazy val cachedEncoder = {
-    this
-      .newEncoder()
+    this.newEncoder()
       .onMalformedInput(CodingErrorAction.REPLACE)
       .onUnmappableCharacter(CodingErrorAction.REPLACE)
   }

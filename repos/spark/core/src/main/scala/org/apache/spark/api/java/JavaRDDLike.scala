@@ -203,8 +203,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     def fn: (Iterator[T]) => Iterator[(K2, V2)] = {
       (x: Iterator[T]) => f.call(x.asJava).asScala
     }
-    JavaPairRDD
-      .fromRDD(rdd.mapPartitions(fn))(fakeClassTag[K2], fakeClassTag[V2])
+    JavaPairRDD.fromRDD(rdd.mapPartitions(fn))(
+      fakeClassTag[K2],
+      fakeClassTag[V2])
   }
 
   /**
@@ -217,8 +218,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
       (x: Iterator[T]) => f.call(x.asJava).asScala
     }
     new JavaDoubleRDD(
-      rdd
-        .mapPartitions(fn, preservesPartitioning)
+      rdd.mapPartitions(fn, preservesPartitioning)
         .map(x => x.doubleValue()))
   }
 
@@ -309,8 +309,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * a map on the other).
     */
   def zip[U](other: JavaRDDLike[U, _]): JavaPairRDD[T, U] = {
-    JavaPairRDD
-      .fromRDD(rdd.zip(other.rdd)(other.classTag))(classTag, other.classTag)
+    JavaPairRDD.fromRDD(rdd.zip(other.rdd)(other.classTag))(
+      classTag,
+      other.classTag)
   }
 
   /**
@@ -337,9 +338,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * won't trigger a spark job, which is different from [[org.apache.spark.rdd.RDD#zipWithIndex]].
     */
   def zipWithUniqueId(): JavaPairRDD[T, jl.Long] = {
-    JavaPairRDD
-      .fromRDD(rdd.zipWithUniqueId())
-      .asInstanceOf[JavaPairRDD[T, jl.Long]]
+    JavaPairRDD.fromRDD(rdd.zipWithUniqueId()).asInstanceOf[JavaPairRDD[
+      T,
+      jl.Long]]
   }
 
   /**
@@ -350,9 +351,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * This method needs to trigger a spark job when this RDD contains more than one partitions.
     */
   def zipWithIndex(): JavaPairRDD[T, jl.Long] = {
-    JavaPairRDD
-      .fromRDD(rdd.zipWithIndex())
-      .asInstanceOf[JavaPairRDD[T, jl.Long]]
+    JavaPairRDD.fromRDD(rdd.zipWithIndex()).asInstanceOf[JavaPairRDD[
+      T,
+      jl.Long]]
   }
 
   // Actions (launch a job to return a value to the user program)
@@ -490,8 +491,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * combine step happens locally on the master, equivalent to running a single reduce task.
     */
   def countByValue(): java.util.Map[T, jl.Long] =
-    mapAsSerializableJavaMap(rdd.countByValue())
-      .asInstanceOf[java.util.Map[T, jl.Long]]
+    mapAsSerializableJavaMap(rdd.countByValue()).asInstanceOf[
+      java.util.Map[T, jl.Long]]
 
   /**
     * (Experimental) Approximate version of countByValue().

@@ -357,14 +357,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
     def loadReader(name: String): Option[SourceReader] = {
       def ccon =
-        Class
-          .forName(name)
-          .getConstructor(classOf[CharsetDecoder], classOf[Reporter])
+        Class.forName(name).getConstructor(
+          classOf[CharsetDecoder],
+          classOf[Reporter])
 
       try Some(
-        ccon
-          .newInstance(charset.newDecoder(), reporter)
-          .asInstanceOf[SourceReader])
+        ccon.newInstance(charset.newDecoder(), reporter).asInstanceOf[
+          SourceReader])
       catch {
         case ex: Throwable =>
           globalError(
@@ -835,12 +834,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     *  where the value compares unequal to the previous phase's value.
     */
   def afterEachPhase[T](op: => T): List[(Phase, T)] = { // used in tests
-    phaseDescriptors
-      .map(_.ownPhase)
-      .filterNot(_ eq NoPhase)
-      .foldLeft(List[(Phase, T)]()) { (res, ph) =>
-        val value = exitingPhase(ph)(op)
-        if (res.nonEmpty && res.head._2 == value) res
+    phaseDescriptors.map(_.ownPhase).filterNot(_ eq NoPhase).foldLeft(
+      List[(Phase, T)]()) { (res, ph) =>
+      val value = exitingPhase(ph)(op)
+      if (res.nonEmpty && res.head._2 == value) res
       else ((ph, value)) :: res
     } reverse
   }
@@ -1139,9 +1136,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         try {
           // Taking 3 before, 3 after the fingered line.
           val start = 0 max (tree.pos.line - 3)
-          val xs = scala.reflect.io
-            .File(tree.pos.source.file.file)
-            .lines drop start take 7
+          val xs = scala.reflect.io.File(
+            tree.pos.source.file.file).lines drop start take 7
           val strs = xs.zipWithIndex map {
             case (line, idx) => f"${start + idx}%6d $line"
           }
@@ -1157,8 +1153,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         "while compiling" -> currentSource.path,
         "during phase" -> (if (globalPhase eq phase) phase
                            else
-                             "globalPhase=%s, enteringPhase=%s"
-                               .format(globalPhase, phase)),
+                             "globalPhase=%s, enteringPhase=%s".format(
+                               globalPhase,
+                               phase)),
         "library version" -> scala.util.Properties.versionString,
         "compiler version" -> Properties.versionString,
         "reconstructed args" -> settings.recreateArgs.mkString(" ")

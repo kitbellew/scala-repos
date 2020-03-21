@@ -67,35 +67,24 @@ object ZkSecurityMigrator extends Logging {
   def run(args: Array[String]) {
     var jaasFile = System.getProperty(JaasUtils.JAVA_LOGIN_CONFIG_PARAM)
     val parser = new OptionParser()
-    val zkAclOpt = parser
-      .accepts(
-        "zookeeper.acl",
-        "Indicates whether to make the Kafka znodes in ZooKeeper secure or unsecure."
-          + " The options are 'secure' and 'unsecure'")
-      .withRequiredArg()
-      .ofType(classOf[String])
-    val zkUrlOpt = parser
-      .accepts(
-        "zookeeper.connect",
-        "Sets the ZooKeeper connect string (ensemble). This parameter " +
-          "takes a comma-separated list of host:port pairs.")
-      .withRequiredArg()
-      .defaultsTo("localhost:2181")
-      .ofType(classOf[String])
-    val zkSessionTimeoutOpt = parser
-      .accepts(
-        "zookeeper.session.timeout",
-        "Sets the ZooKeeper session timeout.")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(30000)
-    val zkConnectionTimeoutOpt = parser
-      .accepts(
-        "zookeeper.connection.timeout",
-        "Sets the ZooKeeper connection timeout.")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(30000)
+    val zkAclOpt = parser.accepts(
+      "zookeeper.acl",
+      "Indicates whether to make the Kafka znodes in ZooKeeper secure or unsecure."
+        + " The options are 'secure' and 'unsecure'").withRequiredArg().ofType(
+      classOf[String])
+    val zkUrlOpt = parser.accepts(
+      "zookeeper.connect",
+      "Sets the ZooKeeper connect string (ensemble). This parameter " +
+        "takes a comma-separated list of host:port pairs.").withRequiredArg().defaultsTo(
+      "localhost:2181").ofType(classOf[String])
+    val zkSessionTimeoutOpt = parser.accepts(
+      "zookeeper.session.timeout",
+      "Sets the ZooKeeper session timeout.").withRequiredArg().ofType(
+      classOf[java.lang.Integer]).defaultsTo(30000)
+    val zkConnectionTimeoutOpt = parser.accepts(
+      "zookeeper.connection.timeout",
+      "Sets the ZooKeeper connection timeout.").withRequiredArg().ofType(
+      classOf[java.lang.Integer]).defaultsTo(30000)
     val helpOpt = parser.accepts("help", "Print usage information.")
 
     val options = parser.parse(args: _*)
@@ -112,8 +101,8 @@ object ZkSecurityMigrator extends Logging {
 
     if (!JaasUtils.isZkSecurityEnabled()) {
       val errorMsg =
-        "Security isn't enabled, most likely the file isn't set properly: %s"
-          .format(jaasFile)
+        "Security isn't enabled, most likely the file isn't set properly: %s".format(
+          jaasFile)
       System.out.println("ERROR: %s".format(errorMsg))
       throw new IllegalArgumentException("Incorrect configuration")
     }
@@ -199,21 +188,19 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
       Code.get(rc) match {
         case Code.OK =>
           // Set ACL for each child
-          children.asScala
-            .map { child =>
-              path match {
-                case "/"  => s"/$child"
-                case path => s"$path/$child"
-              }
+          children.asScala.map { child =>
+            path match {
+              case "/"  => s"/$child"
+              case path => s"$path/$child"
             }
-            .foreach(setAclsRecursively)
+          }.foreach(setAclsRecursively)
           promise success "done"
         case Code.CONNECTIONLOSS =>
           zkHandle.getChildren(path, false, GetChildrenCallback, ctx)
         case Code.NONODE =>
           warn(
-            "Node is gone, it could be have been legitimately deleted: %s"
-              .format(path))
+            "Node is gone, it could be have been legitimately deleted: %s".format(
+              path))
           promise success "done"
         case Code.SESSIONEXPIRED =>
           // Starting a new session isn't really a problem, but it'd complicate
@@ -247,8 +234,8 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
             ctx)
         case Code.NONODE =>
           warn(
-            "Znode is gone, it could be have been legitimately deleted: %s"
-              .format(path))
+            "Znode is gone, it could be have been legitimately deleted: %s".format(
+              path))
           promise success "done"
         case Code.SESSIONEXPIRED =>
           // Starting a new session isn't really a problem, but it'd complicate

@@ -81,8 +81,8 @@ object SpecialPolynomials {
   // Chebyshev polynomials of the second kind
   def chebyshevsSecondKind[C: Ring: Eq: ClassTag](
       num: Int): Stream[Polynomial[C]] =
-    hornerScheme(Polynomial.one[C], Polynomial.twox[C], chebyshevFn[C])
-      .take(num)
+    hornerScheme(Polynomial.one[C], Polynomial.twox[C], chebyshevFn[C]).take(
+      num)
 
   // Probability hermite polynomials
   def probHermites[C: Ring: Eq: ClassTag](num: Int): Stream[Polynomial[C]] =
@@ -90,6 +90,6 @@ object SpecialPolynomials {
 
   // Physics hermite polynomials
   def physHermites[C: Ring: Eq: ClassTag](num: Int): Stream[Polynomial[C]] =
-    hornerScheme(Polynomial.one[C], Polynomial.twox[C], hermiteFnPhys[C])
-      .take(num)
+    hornerScheme(Polynomial.one[C], Polynomial.twox[C], hermiteFnPhys[C]).take(
+      num)
 }

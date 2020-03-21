@@ -53,9 +53,8 @@ class MacroExpandAction extends AnAction {
 
     val sourceEditor =
       FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
-    val psiFile = PsiDocumentManager
-      .getInstance(e.getProject)
-      .getPsiFile(sourceEditor.getDocument)
+    val psiFile = PsiDocumentManager.getInstance(e.getProject).getPsiFile(
+      sourceEditor.getDocument)
     val candidates = psiFile match {
       case file: ScalaFile => findCandidatesInFile(file)
       case _               => Seq.empty
@@ -192,12 +191,10 @@ class MacroExpandAction extends AnAction {
                 block: ScBlock
               ) => // insert content of block expression(annotation can generate >1 expression)
             val children = block.getChildren
-            block.children
-              .find(_.isInstanceOf[ScalaPsiElement])
-              .foreach(p =>
-                p.putCopyableUserData(
-                  MacroExpandAction.EXPANDED_KEY,
-                  holder.getText))
+            block.children.find(_.isInstanceOf[ScalaPsiElement]).foreach(p =>
+              p.putCopyableUserData(
+                MacroExpandAction.EXPANDED_KEY,
+                holder.getText))
             holder.getParent.addRangeAfter(
               children.tail.head,
               children.dropRight(1).last,
@@ -245,9 +242,8 @@ class MacroExpandAction extends AnAction {
 
   def getRealOwner(expansion: MacroExpansion)(implicit
       e: AnActionEvent): Option[PsiElement] = {
-    val virtualFile = VirtualFileManager
-      .getInstance()
-      .findFileByUrl("file://" + expansion.place.sourceFile)
+    val virtualFile = VirtualFileManager.getInstance().findFileByUrl(
+      "file://" + expansion.place.sourceFile)
     val psiFile = PsiManager.getInstance(e.getProject).findFile(virtualFile)
     psiFile.findElementAt(expansion.place.offset) match {
       // macro method call has offset pointing to '(', not method name
@@ -338,10 +334,8 @@ class MacroExpandAction extends AnAction {
 
     import scala.collection._
 
-    val module = ProjectRootManager
-      .getInstance(e.getProject)
-      .getFileIndex
-      .getModuleForFile(file.getVirtualFile)
+    val module = ProjectRootManager.getInstance(
+      e.getProject).getFileIndex.getModuleForFile(file.getVirtualFile)
     if (module == null) return
     val state = module.scalaCompilerSettings.getState
 
@@ -350,8 +344,9 @@ class MacroExpandAction extends AnAction {
       options += MacroExpandAction.MACRO_DEBUG_OPTION
       state.additionalCompilerOptions = options.toArray
       module.scalaCompilerSettings.loadState(state)
-      NotificationGroup
-        .toolWindowGroup("macroexpand", ToolWindowId.PROJECT_VIEW)
+      NotificationGroup.toolWindowGroup(
+        "macroexpand",
+        ToolWindowId.PROJECT_VIEW)
         .createNotification(
           """Macro debugging options have been enabled for current module
             |Please recompile the file to gather macro expansions""".stripMargin,

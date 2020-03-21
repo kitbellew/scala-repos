@@ -61,8 +61,9 @@ object AndroidFacetDataService {
       }
 
     private def getOrCreateFacet(module: Module): AndroidFacet =
-      Option(getModifiableFacetModel(module).getFacetByType(AndroidFacet.ID))
-        .getOrElse(createFacet(module))
+      Option(
+        getModifiableFacetModel(module).getFacetByType(
+          AndroidFacet.ID)).getOrElse(createFacet(module))
 
     private def createFacet(module: Module): AndroidFacet = {
       val model = getModifiableFacetModel(module)

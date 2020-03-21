@@ -104,10 +104,8 @@ trait AbstractScreen extends Factory with Loggable {
   implicit def boxOfScreen[T <: AbstractScreen](in: T): Box[T] = Box !! in
 
   def validate: List[FieldError] =
-    screenFields
-      .filter(_.shouldDisplay_?)
-      .filter(_.show_?)
-      .flatMap(_.validate) ++ screenValidate
+    screenFields.filter(_.shouldDisplay_?).filter(_.show_?).flatMap(
+      _.validate) ++ screenValidate
 
   def validations: List[() => List[FieldError]] = Nil
 
@@ -207,10 +205,8 @@ trait AbstractScreen extends Factory with Loggable {
         AbstractScreen.this.vendForm(manifest) or otherFuncVendors(manifest) or
           LiftRules.vendForm(manifest)
 
-      func
-        .map(f => f(is, set _))
-        .filter(x => editable_?)
-        .map(ns => SHtml.ElemAttr.applyToAllElems(ns, formElemAttrs))
+      func.map(f => f(is, set _)).filter(x => editable_?).map(ns =>
+        SHtml.ElemAttr.applyToAllElems(ns, formElemAttrs))
     }
 
     protected def otherFuncVendors(what: Manifest[ValueType])
@@ -310,11 +306,9 @@ trait AbstractScreen extends Factory with Loggable {
         case Help(ns) => ns
       }).headOption
 
-      val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-        .collect({
-          case FieldTransform(func) => func
-        })
-        .toList
+      val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff.collect({
+        case FieldTransform(func) => func
+      }).toList
 
       val newShow: Box[BaseField => Boolean] = (stuff.collect {
         case DisplayIf(func) => func
@@ -481,11 +475,9 @@ trait AbstractScreen extends Factory with Loggable {
       case Help(ns) => ns
     }).headOption
 
-    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
-      })
-      .toList
+    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff.collect({
+      case FieldTransform(func) => func
+    }).toList
 
     val newShow: Box[BaseField => Boolean] = (stuff.collect {
       case DisplayIf(func) => func
@@ -586,11 +578,9 @@ trait AbstractScreen extends Factory with Loggable {
       case Help(ns) => ns
     }).headOption
 
-    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
-      })
-      .toList
+    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff.collect({
+      case FieldTransform(func) => func
+    }).toList
 
     val newShow: Box[BaseField => Boolean] = (stuff.collect {
       case DisplayIf(func) => func
@@ -667,9 +657,8 @@ trait AbstractScreen extends Factory with Loggable {
       override def get = underlying.openOrThrowException("Legacy code").get
 
       override def set(v: T) =
-        underlying
-          .openOrThrowException("Legacy code")
-          .set(setFilter.foldLeft(v)((v, f) => f(v)))
+        underlying.openOrThrowException("Legacy code").set(
+          setFilter.foldLeft(v)((v, f) => f(v)))
 
       override def uniqueFieldId: Box[String] =
         paramFieldId or underlying.flatMap(
@@ -805,8 +794,8 @@ trait AbstractScreen extends Factory with Loggable {
 
   def noticeTypeToAttr(
       screen: AbstractScreen): Box[NoticeType.Value => MetaData] =
-    inject[NoticeType.Value => MetaData] or LiftScreenRules
-      .inject[NoticeType.Value => MetaData]
+    inject[NoticeType.Value => MetaData] or LiftScreenRules.inject[
+      NoticeType.Value => MetaData]
 
   /**
     * Create a field that's added to the Screen
@@ -847,11 +836,9 @@ trait AbstractScreen extends Factory with Loggable {
       case Help(ns) => ns
     }).headOption
 
-    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
-      })
-      .toList
+    val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff.collect({
+      case FieldTransform(func) => func
+    }).toList
 
     val newShow: Box[BaseField => Boolean] = (stuff.collect {
       case DisplayIf(func) => func
@@ -1101,10 +1088,8 @@ trait AbstractScreen extends Factory with Loggable {
       in: Seq[FilterOrValidate[_]]): List[SHtml.ElemAttr] = {
     val sl = in.toList
     in.collect {
-        case FormFieldId(id) => ("id" -> id): SHtml.ElemAttr
-      }
-      .headOption
-      .toList :::
+      case FormFieldId(id) => ("id" -> id): SHtml.ElemAttr
+    }.headOption.toList :::
       sl.collect {
         case FormParam(fp) => fp
       }
@@ -1133,9 +1118,11 @@ trait AbstractScreen extends Factory with Loggable {
       default,
       field =>
         Full(
-          SHtml
-            .radio(field.otherValue, Full(field.is), field.set _, eAttr: _*)
-            .toForm),
+          SHtml.radio(
+            field.otherValue,
+            Full(field.is),
+            field.set _,
+            eAttr: _*).toForm),
       OtherValueInitializerImpl[Seq[String]](() => choices),
       stuff: _*
     )
@@ -1243,8 +1230,9 @@ trait ScreenWizardRendered extends Loggable {
 
     def fieldsWithStyle(style: BindingStyle, includeMissing: Boolean) =
       logger.trace(
-        "Looking for fields with style %s, includeMissing = %s"
-          .format(style, includeMissing),
+        "Looking for fields with style %s, includeMissing = %s".format(
+          style,
+          includeMissing),
         fields filter (field =>
           field.binding map (_.bindingStyle == style) openOr (includeMissing))
       )
@@ -1272,8 +1260,9 @@ trait ScreenWizardRendered extends Loggable {
     def defaultFields: List[CssBindFunc] =
       for ((bindingInfo, field) <- bindingInfoWithFields(Default))
         yield traceInline(
-          "Binding default field %s to %s"
-            .format(bindingInfo.selector(formName), defaultFieldNodeSeq),
+          "Binding default field %s to %s".format(
+            bindingInfo.selector(formName),
+            defaultFieldNodeSeq),
           bindingInfo.selector(formName) #> bindField(field)(
             defaultFieldNodeSeq)
         )
@@ -1284,8 +1273,9 @@ trait ScreenWizardRendered extends Loggable {
         bindingInfo <- field.binding
         custom <- Some(bindingInfo.bindingStyle) collect { case c: Custom => c }
       } yield traceInline(
-        "Binding custom field %s to %s"
-          .format(bindingInfo.selector(formName), custom.template),
+        "Binding custom field %s to %s".format(
+          bindingInfo.selector(formName),
+          custom.template),
         bindingInfo.selector(formName) #> bindField(field)(custom.template)
       )
 
@@ -1299,8 +1289,9 @@ trait ScreenWizardRendered extends Loggable {
       } yield {
         val template = dynamic.func()
         traceInline(
-          "Binding dynamic field %s to %s"
-            .format(bindingInfo.selector(formName), template),
+          "Binding dynamic field %s to %s".format(
+            bindingInfo.selector(formName),
+            template),
           bindingInfo.selector(formName) #> bindField(field)(template))
       }
 
@@ -1343,10 +1334,9 @@ trait ScreenWizardRendered extends Loggable {
           case Nil => basicLabel
           case _ =>
             val maxN =
-              myNotices
-                .map(_._1)
-                .sortWith { _.id > _.id }
-                .head // get the maximum type of notice (Error > Warning > Notice)
+              myNotices.map(_._1).sortWith {
+                _.id > _.id
+              }.head // get the maximum type of notice (Error > Warning > Notice)
             val metaData: MetaData =
               noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
             basicLabel & update(_.label, metaData)
@@ -1381,8 +1371,8 @@ trait ScreenWizardRendered extends Loggable {
       if (f.transforms.isEmpty)
         bindAll()
       else
-        (bindAll() :: f.transforms.map(_ apply (f.field)))
-          .reduceLeft(_ andThen _)
+        (bindAll() :: f.transforms.map(_ apply (f.field))).reduceLeft(
+          _ andThen _)
     }
 
     def url = S.uri
@@ -1451,8 +1441,7 @@ trait ScreenWizardRendered extends Loggable {
             SHtml.hidden(() => {
               snapshot.restore();
               val res =
-                cancelId
-                  ._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
+                cancelId._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
               if (!ajax_?) {
                 S.seeOther(Referer.get)
               }
@@ -1821,13 +1810,10 @@ trait LiftScreen
   protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel = {
     mapLocalAction(func)(name =>
       selector #> (
-        SHtml
-          .makeAjaxCall(
-            LiftRules.jsArtifacts.serialize(
-              NextId.get) + ("&" + LocalActionRef.get + "=" + name))
-          .cmd
-        )
-        .toJsCmd)
+        SHtml.makeAjaxCall(
+          LiftRules.jsArtifacts.serialize(
+            NextId.get) + ("&" + LocalActionRef.get + "=" + name)).cmd
+      ).toJsCmd)
   }
 
   protected def mapLocalAction[T](func: () => JsCmd)(f: String => T): T = {
@@ -1841,8 +1827,9 @@ trait LiftScreen
 
   protected def setLocalAction(s: String) {
     logger.trace(
-      "Setting LocalAction (%s) to %s"
-        .format(Integer.toString(System.identityHashCode(LocalAction), 16), s))
+      "Setting LocalAction (%s) to %s".format(
+        Integer.toString(System.identityHashCode(LocalAction), 16),
+        s))
     LocalAction.set(s)
   }
 
@@ -1920,19 +1907,17 @@ trait LiftScreen
       Empty, //screenCount: Box[NodeSeq],
       Empty, // wizardTop: Box[Elem],
       theScreen.screenTop, //screenTop: Box[Elem],
-      theScreen.screenFields
-        .filter(_.shouldDisplay_?)
-        .flatMap(f =>
-          if (f.show_?)
-            List(
-              ScreenFieldInfo(
-                f,
-                f.displayHtml,
-                f.helpAsHtml,
-                f.toForm,
-                fieldBinding(f),
-                fieldTransform(f)))
-          else Nil), //fields: List[ScreenFieldInfo],
+      theScreen.screenFields.filter(_.shouldDisplay_?).flatMap(f =>
+        if (f.show_?)
+          List(
+            ScreenFieldInfo(
+              f,
+              f.displayHtml,
+              f.helpAsHtml,
+              f.toForm,
+              fieldBinding(f),
+              fieldTransform(f)))
+        else Nil), //fields: List[ScreenFieldInfo],
       Empty, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
       Empty, // next: Box[Elem],

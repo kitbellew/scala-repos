@@ -93,8 +93,8 @@ abstract class AbstractFetcherThread(
       val fetchRequest = buildFetchRequest(partitionMap)
       if (fetchRequest.isEmpty) {
         trace(
-          "There are no active partitions. Back off for %d ms before sending a fetch request"
-            .format(fetchBackOffMs))
+          "There are no active partitions. Back off for %d ms before sending a fetch request".format(
+            fetchBackOffMs))
         partitionMapCond.await(fetchBackOffMs, TimeUnit.MILLISECONDS)
       }
       fetchRequest
@@ -110,8 +110,9 @@ abstract class AbstractFetcherThread(
 
     try {
       trace(
-        "Issuing to broker %d of fetch request %s"
-          .format(sourceBroker.id, fetchRequest))
+        "Issuing to broker %d of fetch request %s".format(
+          sourceBroker.id,
+          fetchRequest))
       responseData = fetch(fetchRequest)
     } catch {
       case t: Throwable =>
@@ -133,9 +134,8 @@ abstract class AbstractFetcherThread(
         responseData.foreach {
           case (topicAndPartition, partitionData) =>
             val TopicAndPartition(topic, partitionId) = topicAndPartition
-            partitionMap
-              .get(topicAndPartition)
-              .foreach(currentPartitionFetchState =>
+            partitionMap.get(topicAndPartition).foreach(
+              currentPartitionFetchState =>
                 // we append to the log if the current offset is defined and it is the same as the offset requested during fetch
                 if (fetchRequest.offset(
                       topicAndPartition) == currentPartitionFetchState.offset) {
@@ -152,9 +152,9 @@ abstract class AbstractFetcherThread(
                         partitionMap.put(
                           topicAndPartition,
                           new PartitionFetchState(newOffset))
-                        fetcherLagStats
-                          .getFetcherLagStats(topic, partitionId)
-                          .lag =
+                        fetcherLagStats.getFetcherLagStats(
+                          topic,
+                          partitionId).lag =
                           Math.max(0L, partitionData.highWatermark - newOffset)
                         fetcherStats.byteRate.mark(validBytes)
                         // Once we hand off the partition data to the subclass, we can't mess with it any more in this thread
@@ -196,8 +196,10 @@ abstract class AbstractFetcherThread(
                       } catch {
                         case e: Throwable =>
                           error(
-                            "Error getting offset for partition [%s,%d] to broker %d"
-                              .format(topic, partitionId, sourceBroker.id),
+                            "Error getting offset for partition [%s,%d] to broker %d".format(
+                              topic,
+                              partitionId,
+                              sourceBroker.id),
                             e)
                           partitionsWithError += topicAndPartition
                       }
@@ -244,15 +246,13 @@ abstract class AbstractFetcherThread(
     partitionMapLock.lockInterruptibly()
     try {
       for (partition <- partitions) {
-        partitionMap
-          .get(partition)
-          .foreach(currentPartitionFetchState =>
-            if (currentPartitionFetchState.isActive)
-              partitionMap.put(
-                partition,
-                new PartitionFetchState(
-                  currentPartitionFetchState.offset,
-                  new DelayedItem(delay))))
+        partitionMap.get(partition).foreach(currentPartitionFetchState =>
+          if (currentPartitionFetchState.isActive)
+            partitionMap.put(
+              partition,
+              new PartitionFetchState(
+                currentPartitionFetchState.offset,
+                new DelayedItem(delay))))
       }
       partitionMapCond.signalAll()
     } finally partitionMapLock.unlock()

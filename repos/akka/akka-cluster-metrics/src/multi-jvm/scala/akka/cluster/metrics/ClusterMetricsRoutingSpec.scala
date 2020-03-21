@@ -72,9 +72,8 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
   }
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
 
       # Disable legacy metrics.
       akka.cluster.metrics.enabled=off
@@ -110,8 +109,7 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
           }
         }
       }
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 
@@ -136,10 +134,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
   import AdaptiveLoadBalancingRouterConfig._
 
   def currentRoutees(router: ActorRef) =
-    Await
-      .result(router ? GetRoutees, timeout.duration)
-      .asInstanceOf[Routees]
-      .routees
+    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[
+      Routees].routees
 
   def receiveReplies(expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)

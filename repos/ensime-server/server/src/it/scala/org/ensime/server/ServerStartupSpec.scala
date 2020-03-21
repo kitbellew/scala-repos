@@ -79,8 +79,8 @@ class ServerStartupSpec
 
         val preferredTcp = 10004
         (config.cacheDir / "port").writeString(preferredTcp.toString)
-        val tcpHog = new ServerSocket()
-          .bind(new InetSocketAddress("127.0.0.1", preferredTcp))
+        val tcpHog = new ServerSocket().bind(
+          new InetSocketAddress("127.0.0.1", preferredTcp))
 
         val protocol = new SwankProtocol
         system.actorOf(Props(new ServerActor(config, protocol)), "ensime-main")
@@ -100,8 +100,8 @@ class ServerStartupSpec
         val preferredHttp = 10003
         (config.cacheDir / "http").writeString(preferredHttp.toString)
 
-        val httpHog = new ServerSocket()
-          .bind(new InetSocketAddress("127.0.0.1", preferredHttp))
+        val httpHog = new ServerSocket().bind(
+          new InetSocketAddress("127.0.0.1", preferredHttp))
 
         val protocol = new SwankProtocol
         system.actorOf(Props(new ServerActor(config, protocol)), "ensime-main")

@@ -69,11 +69,11 @@ private[orc] object OrcFileOperator extends Logging {
       hdfsPath.getFileSystem(conf)
     }
 
-    listOrcFiles(basePath, conf).iterator
-      .map { path => path -> OrcFile.createReader(fs, path) }
-      .collectFirst {
-        case (path, reader) if isWithNonEmptySchema(path, reader) => reader
-      }
+    listOrcFiles(basePath, conf).iterator.map { path =>
+      path -> OrcFile.createReader(fs, path)
+    }.collectFirst {
+      case (path, reader) if isWithNonEmptySchema(path, reader) => reader
+    }
   }
 
   def readSchema(
@@ -103,8 +103,7 @@ private[orc] object OrcFileOperator extends Logging {
     val origPath = new Path(pathStr)
     val fs = origPath.getFileSystem(conf)
     val path = origPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
-    val paths = SparkHadoopUtil.get
-      .listLeafStatuses(fs, origPath)
+    val paths = SparkHadoopUtil.get.listLeafStatuses(fs, origPath)
       .filterNot(_.isDirectory)
       .map(_.getPath)
       .filterNot(_.getName.startsWith("_"))

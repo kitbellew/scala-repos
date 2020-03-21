@@ -118,9 +118,8 @@ object TestNodeProvider {
   val pendingSuffix = " (pending)"
 
   private def getInnerInfixExprs(expr: ScInfixExpr) = {
-    expr.getLastChild.getChildren
-      .filter(_.isInstanceOf[ScInfixExpr])
-      .map(_.asInstanceOf[ScInfixExpr])
+    expr.getLastChild.getChildren.filter(_.isInstanceOf[ScInfixExpr]).map(
+      _.asInstanceOf[ScInfixExpr])
   }
 
   private def extractTestViewElementInfix(
@@ -146,8 +145,10 @@ object TestNodeProvider {
       clazz: ScTypeDefinition,
       project: Project): Option[TestStructureViewElement] = {
     import org.jetbrains.plugins.scala.testingSupport.test.TestConfigurationUtil.isInheritor
-    if (isInheritor(clazz, "utest.framework.TestSuite") && pDef.getLastChild
-          .isInstanceOf[ScMethodCall]) {
+    if (isInheritor(
+          clazz,
+          "utest.framework.TestSuite") && pDef.getLastChild.isInstanceOf[
+          ScMethodCall]) {
       val methodCall = pDef.getLastChild.asInstanceOf[ScMethodCall]
       checkScMethodCall(methodCall, "apply")
       None
@@ -186,16 +187,13 @@ object TestNodeProvider {
       children: Array[T],
       processFun: (T, Project) => Option[TestStructureViewElement],
       project: Project): Array[TreeElement] = {
-    children
-      .map(element => processFun(element, project))
-      .filter(_.isDefined)
-      .map(_.get)
+    children.map(element => processFun(element, project)).filter(
+      _.isDefined).map(_.get)
   }
 
   private def getInnerMethodCalls(expr: ScMethodCall) = {
-    expr.args.getLastChild.getChildren
-      .filter(_.isInstanceOf[ScMethodCall])
-      .map(_.asInstanceOf[ScMethodCall])
+    expr.args.getLastChild.getChildren.filter(_.isInstanceOf[ScMethodCall]).map(
+      _.asInstanceOf[ScMethodCall])
   }
 
   private def getInnerExprs(expr: PsiElement) = {
@@ -210,8 +208,8 @@ object TestNodeProvider {
     expr.getLastChild match {
       case args: ScArgumentExprList =>
         val lastChild = args.getChildren.apply(0)
-        args.getChildren.length == 1 && lastChild
-          .isInstanceOf[ScReferenceExpression] &&
+        args.getChildren.length == 1 && lastChild.isInstanceOf[
+          ScReferenceExpression] &&
         checkRefExpr(lastChild.asInstanceOf[ScReferenceExpression], "pending")
       case _ => false
     }
@@ -270,13 +268,11 @@ object TestNodeProvider {
                 innerResult.getActualElement
               case None => resolveResult.getElement
             }
-            funElement.getName == "apply" && funElement
-              .isInstanceOf[ScFunctionDefinition] &&
+            funElement.getName == "apply" && funElement.isInstanceOf[
+              ScFunctionDefinition] &&
             checkClauses(
-              funElement
-                .asInstanceOf[ScFunctionDefinition]
-                .getParameterList
-                .clauses,
+              funElement.asInstanceOf[
+                ScFunctionDefinition].getParameterList.clauses,
               paramNames: _*)
           }
         case _ => false
@@ -289,10 +285,9 @@ object TestNodeProvider {
       paramNames: List[String]*): Boolean = {
     clauses.length == paramNames.length && (clauses zip paramNames).forall {
       case (clause, names) =>
-        clause.parameters.length == names.length && (clause.parameters zip names)
-          .forall {
-            case (param, name) => param.getType.getCanonicalText == name
-          }
+        clause.parameters.length == names.length && (clause.parameters zip names).forall {
+          case (param, name) => param.getType.getCanonicalText == name
+        }
     }
   }
 
@@ -325,17 +320,14 @@ object TestNodeProvider {
       funName: String,
       funDef: Option[ScFunctionDefinition],
       paramNames: Option[Seq[List[String]]]): Boolean = {
-    funDef
-      .orElse(refExpr.resolve() match {
-        case funDef: ScFunctionDefinition => Some(funDef)
-        case _                            => None
-      })
-      .exists(funDef => {
-        funDef.getName == funName &&
-          paramNames
-            .map(checkClauses(funDef.getParameterList.clauses, _: _*))
-            .getOrElse(true)
-      })
+    funDef.orElse(refExpr.resolve() match {
+      case funDef: ScFunctionDefinition => Some(funDef)
+      case _                            => None
+    }).exists(funDef => {
+      funDef.getName == funName &&
+        paramNames.map(
+          checkClauses(funDef.getParameterList.clauses, _: _*)).getOrElse(true)
+    })
   }
 
   private def checkSpecsPending(expr: ScInfixExpr): Boolean = {
@@ -348,8 +340,8 @@ object TestNodeProvider {
           case otherExpr =>
             Option(
               otherExpr.findFirstChildByType(
-                ScalaElementTypes.REFERENCE_EXPRESSION))
-              .map(_.asInstanceOf[ScReferenceExpression])
+                ScalaElementTypes.REFERENCE_EXPRESSION)).map(
+              _.asInstanceOf[ScReferenceExpression])
         }
       case _ => None
     }).exists(refExpr =>
@@ -409,9 +401,8 @@ object TestNodeProvider {
     expr.getFirstChild match {
       case infixExpr: ScInfixExpr
           if infixExpr.getFirstChild.isInstanceOf[ScReferenceExpression] =>
-        infixExpr.getFirstChild
-          .asInstanceOf[ScReferenceExpression]
-          .resolve() match {
+        infixExpr.getFirstChild.asInstanceOf[
+          ScReferenceExpression].resolve() match {
           case pattern: ScReferencePattern if pattern.getName == "ignore" =>
             true
           case _ => false
@@ -574,50 +565,45 @@ object TestNodeProvider {
     extractScalaTestScInfixExpr(
       expr,
       ExtractEntry("in", true, true, List("void")),
-      project)
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry(
-            "should",
-            false,
-            false,
-            _ => children,
-            List("void"),
-            List("org.scalatest.words.StringVerbBlockRegistration")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry(
-            "must",
-            false,
-            false,
-            _ => children,
-            List("void"),
-            List("org.scalatest.words.StringVerbBlockRegistration")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry(
-            "can",
-            false,
-            false,
-            _ => children,
-            List("void"),
-            List("org.scalatest.words.StringVerbBlockRegistration")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry("when", false, false, _ => children, List("void")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry("which", false, false, _ => children, List("void")),
-          project))
+      project).orElse(
+      extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry(
+          "should",
+          false,
+          false,
+          _ => children,
+          List("void"),
+          List("org.scalatest.words.StringVerbBlockRegistration")),
+        project)).orElse(
+      extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry(
+          "must",
+          false,
+          false,
+          _ => children,
+          List("void"),
+          List("org.scalatest.words.StringVerbBlockRegistration")),
+        project)).orElse(
+      extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry(
+          "can",
+          false,
+          false,
+          _ => children,
+          List("void"),
+          List("org.scalatest.words.StringVerbBlockRegistration")),
+        project)).orElse(
+      extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry("when", false, false, _ => children, List("void")),
+        project)).orElse(
+      extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry("which", false, false, _ => children, List("void")),
+        project))
   }
 
   private def extractFunSpec(
@@ -634,17 +620,15 @@ object TestNodeProvider {
         _ => children,
         List("java.lang.String"),
         List("void")),
-      project)
-      .orElse(
-        extractScMethodCall(
-          expr,
-          ExtractEntry("it", true, true, scMethodCallDefaultArg: _*),
-          project))
-      .orElse(
-        extractScMethodCall(
-          expr,
-          ExtractEntry("they", true, true, scMethodCallDefaultArg: _*),
-          project))
+      project).orElse(
+      extractScMethodCall(
+        expr,
+        ExtractEntry("it", true, true, scMethodCallDefaultArg: _*),
+        project)).orElse(
+      extractScMethodCall(
+        expr,
+        ExtractEntry("they", true, true, scMethodCallDefaultArg: _*),
+        project))
   }
 
   private def extractFeatureSpec(
@@ -732,13 +716,10 @@ object TestNodeProvider {
       import scala.collection.JavaConversions._
       expr.args.findFirstChildByType(ScalaElementTypes.BLOCK_EXPR) match {
         case blockExpr: ScBlockExpr =>
-          (for (methodExpr <- blockExpr.children
-                if methodExpr.isInstanceOf[ScInfixExpr] || methodExpr
-                  .isInstanceOf[ScMethodCall])
-            yield extractUTestInner(methodExpr, project))
-            .filter(_.isDefined)
-            .map(_.get)
-            .toList
+          (for (methodExpr <- blockExpr.children if methodExpr.isInstanceOf[
+                  ScInfixExpr] || methodExpr.isInstanceOf[ScMethodCall])
+            yield extractUTestInner(methodExpr, project)).filter(
+            _.isDefined).map(_.get).toList
         case _ => new util.ArrayList[TreeElement]
       }
     } else new util.ArrayList[TreeElement]()
@@ -788,38 +769,34 @@ object TestNodeProvider {
       }
     }
 
-    checkParent(elem, classOf[ScReferencePattern])
-      .flatMap(checkParent(_, classOf[ScPatternsImpl]))
-      .flatMap(checkParent(_, classOf[ScTuplePattern]))
-      .flatMap(checkParent(_, classOf[ScPatternList])) match {
+    checkParent(elem, classOf[ScReferencePattern]).flatMap(
+      checkParent(_, classOf[ScPatternsImpl])).flatMap(
+      checkParent(_, classOf[ScTuplePattern])).flatMap(
+      checkParent(_, classOf[ScPatternList])) match {
       case Some(patternList) =>
         val refPattern = elem.getParent
         val patternsImpl = refPattern.getParent.asInstanceOf[ScPatternsImpl]
-        val index = patternsImpl.patterns.zipWithIndex
-          .find { case (pat, _) => pat == refPattern }
-          .get
-          ._2
+        val index = patternsImpl.patterns.zipWithIndex.find {
+          case (pat, _) => pat == refPattern
+        }.get._2
         Some((patternList, Some(index, patternsImpl.patterns.size)))
       case _ =>
-        checkParent(elem, classOf[ScReferencePattern])
-          .flatMap(checkParent(_, classOf[ScPatternList]))
-          .orElse(
-            elem.getParent match {
-              case parent: ScPatternDefinition if parent.bindings.size == 1 =>
-                Option(
-                  PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
-              case _ => None
-            }
-          )
-          .map((_, None))
+        checkParent(elem, classOf[ScReferencePattern]).flatMap(
+          checkParent(_, classOf[ScPatternList])).orElse(
+          elem.getParent match {
+            case parent: ScPatternDefinition if parent.bindings.size == 1 =>
+              Option(PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
+            case _ => None
+          }
+        ).map((_, None))
     }
   }
 
   def getUTestLeftHandTestDefinition(element: PsiElement) =
     findListOfPatternsWithIndex(element) match {
       case Some((pattern, indexOpt))
-          if pattern.getParent != null && pattern.getParent
-            .isInstanceOf[ScPatternDefinition] =>
+          if pattern.getParent != null && pattern.getParent.isInstanceOf[
+            ScPatternDefinition] =>
         ((pattern.getParent.getLastChild, indexOpt) match {
           case (suiteMethodCall: ScMethodCall, None) =>
             suiteMethodCall //left-hand is a simple pattern

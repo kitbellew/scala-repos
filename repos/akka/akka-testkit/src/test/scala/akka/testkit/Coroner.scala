@@ -140,15 +140,16 @@ object Coroner {
     val memMx = ManagementFactory.getMemoryMXBean()
     val threadMx = ManagementFactory.getThreadMXBean()
 
-    println(s"""#Coroner's Report: $reportTitle
+    println(
+      s"""#Coroner's Report: $reportTitle
                 #OS Architecture: ${osMx.getArch()}
                 #Available processors: ${osMx.getAvailableProcessors()}
                 #System load (last minute): ${osMx.getSystemLoadAverage()}
                 #VM start time: ${new Date(rtMx.getStartTime())}
                 #VM uptime: ${rtMx.getUptime()}ms
                 #Heap usage: ${memMx.getHeapMemoryUsage()}
-                #Non-heap usage: ${memMx
-                 .getNonHeapMemoryUsage()}""".stripMargin('#'))
+                #Non-heap usage: ${memMx.getNonHeapMemoryUsage()}""".stripMargin(
+        '#'))
 
     def dumpAllThreads: Seq[ThreadInfo] = {
       threadMx.dumpAllThreads(

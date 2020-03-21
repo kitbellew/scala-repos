@@ -24,9 +24,9 @@ private[akka] trait Children { this: ActorCell ⇒
     EmptyChildrenContainer
 
   def childrenRefs: ChildrenContainer =
-    Unsafe.instance
-      .getObjectVolatile(this, AbstractActorCell.childrenOffset)
-      .asInstanceOf[ChildrenContainer]
+    Unsafe.instance.getObjectVolatile(
+      this,
+      AbstractActorCell.childrenOffset).asInstanceOf[ChildrenContainer]
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
   final def getChildren(): java.lang.Iterable[ActorRef] =
@@ -71,9 +71,11 @@ private[akka] trait Children { this: ActorCell ⇒
   @volatile private var _functionRefsDoNotCallMeDirectly =
     Map.empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
-    Unsafe.instance
-      .getObjectVolatile(this, AbstractActorCell.functionRefsOffset)
-      .asInstanceOf[Map[String, FunctionRef]]
+    Unsafe.instance.getObjectVolatile(
+      this,
+      AbstractActorCell.functionRefsOffset).asInstanceOf[Map[
+      String,
+      FunctionRef]]
 
   private[akka] def getFunctionRefOrNobody(
       name: String,
@@ -131,9 +133,10 @@ private[akka] trait Children { this: ActorCell ⇒
   }
 
   protected def stopFunctionRefs(): Unit = {
-    val refs = Unsafe.instance
-      .getAndSetObject(this, AbstractActorCell.functionRefsOffset, Map.empty)
-      .asInstanceOf[Map[String, FunctionRef]]
+    val refs = Unsafe.instance.getAndSetObject(
+      this,
+      AbstractActorCell.functionRefsOffset,
+      Map.empty).asInstanceOf[Map[String, FunctionRef]]
     refs.valuesIterator.foreach(_.stop())
   }
 
@@ -327,9 +330,10 @@ private[akka] trait Children { this: ActorCell ⇒
             serializer match {
               case ser2: SerializerWithStringManifest ⇒
                 val manifest = ser2.manifest(o)
-                ser
-                  .deserialize(bytes, serializer.identifier, manifest)
-                  .get != null
+                ser.deserialize(
+                  bytes,
+                  serializer.identifier,
+                  manifest).get != null
               case _ ⇒
                 ser.deserialize(bytes, arg.getClass).get != null
             }
@@ -366,8 +370,7 @@ private[akka] trait Children { this: ActorCell ⇒
         } catch {
           case e: InterruptedException ⇒
             unreserveChild(name)
-            Thread
-              .interrupted() // clear interrupted flag before throwing according to java convention
+            Thread.interrupted() // clear interrupted flag before throwing according to java convention
             throw e
           case NonFatal(e) ⇒
             unreserveChild(name)

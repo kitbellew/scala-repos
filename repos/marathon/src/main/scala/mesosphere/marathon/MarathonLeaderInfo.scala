@@ -65,6 +65,8 @@ class MarathonLeaderInfo @Inject() (
 class MarathonLeaderInfoMetrics @Inject() (metrics: Metrics) {
   val getLeaderDataTimer: Timer =
     metrics.timer(
-      metrics
-        .name(MetricPrefixes.SERVICE, getClass, "current-leader-host-port"))
+      metrics.name(
+        MetricPrefixes.SERVICE,
+        getClass,
+        "current-leader-host-port"))
 }

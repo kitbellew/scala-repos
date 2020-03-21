@@ -29,17 +29,15 @@ object Test extends App {
   def patch(file: File, line: Int, prevResult: String, result: String) {
     amend(file) {
       content =>
-        content.lines.toList.zipWithIndex
-          .map {
-            case (content, i) if i == line - 1 =>
-              val newContent =
-                content.replaceAllLiterally(quote(prevResult), quote(result))
-              if (newContent != content)
-                println(s"- $content\n+ $newContent\n")
-              newContent
-            case (content, _) => content
-          }
-          .mkString("\n")
+        content.lines.toList.zipWithIndex.map {
+          case (content, i) if i == line - 1 =>
+            val newContent =
+              content.replaceAllLiterally(quote(prevResult), quote(result))
+            if (newContent != content)
+              println(s"- $content\n+ $newContent\n")
+            newContent
+          case (content, _) => content
+        }.mkString("\n")
     }
   }
 
@@ -53,11 +51,9 @@ object Test extends App {
       s"  // Generated on $timestamp with Scala ${scala.util.Properties.versionString})"
     amend(file) {
       content =>
-        content.lines.toList
-          .map {
-            f => f.replaceAll("""^ +// Generated on.*""", newComment)
-          }
-          .mkString("\n")
+        content.lines.toList.map {
+          f => f.replaceAll("""^ +// Generated on.*""", newComment)
+        }.mkString("\n")
     }
   }
 

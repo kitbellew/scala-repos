@@ -33,9 +33,9 @@ class NoShell(sshAddress: SshAddress) extends Factory[Command] {
           | Please use:
           |
           | git clone ssh://%s@%s:%d/OWNER/REPOSITORY_NAME.git
-        """.stripMargin
-            .format(user, sshAddress.host, sshAddress.port)
-            .replace("\n", "\r\n") + "\r\n"
+        """.stripMargin.format(user, sshAddress.host, sshAddress.port).replace(
+            "\n",
+            "\r\n") + "\r\n"
         err.write(Constants.encode(message))
         err.flush()
         in.close()

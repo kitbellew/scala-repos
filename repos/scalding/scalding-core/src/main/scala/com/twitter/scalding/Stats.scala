@@ -164,8 +164,8 @@ object RuntimeStats extends java.io.Serializable {
       flowProcess
     }).getOrElse {
       sys.error(
-        "Error in job deployment, the FlowProcess for unique id %s isn't available"
-          .format(uniqueId))
+        "Error in job deployment, the FlowProcess for unique id %s isn't available".format(
+          uniqueId))
     }
   }
 

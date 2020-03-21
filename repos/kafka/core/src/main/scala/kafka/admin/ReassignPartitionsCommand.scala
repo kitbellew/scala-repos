@@ -32,8 +32,8 @@ object ReassignPartitionsCommand extends Logging {
     val opts = new ReassignPartitionsCommandOptions(args)
 
     // should have exactly one action
-    val actions = Seq(opts.generateOpt, opts.executeOpt, opts.verifyOpt)
-      .count(opts.options.has _)
+    val actions = Seq(opts.generateOpt, opts.executeOpt, opts.verifyOpt).count(
+      opts.options.has _)
     if (actions != 1)
       CommandLineUtils.printUsageAndDie(
         opts.parser,
@@ -277,11 +277,10 @@ object ReassignPartitionsCommand extends Logging {
   class ReassignPartitionsCommandOptions(args: Array[String]) {
     val parser = new OptionParser
 
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the " +
-          "form host:port. Multiple URLS can be given to allow fail-over.")
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the " +
+        "form host:port. Multiple URLS can be given to allow fail-over.")
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
@@ -296,32 +295,29 @@ object ReassignPartitionsCommand extends Logging {
     val verifyOpt = parser.accepts(
       "verify",
       "Verify if the reassignment completed as specified by the --reassignment-json-file option.")
-    val reassignmentJsonFileOpt = parser
-      .accepts(
-        "reassignment-json-file",
-        "The JSON file with the partition reassignment configuration" +
-          "The format to use is - \n" +
-          "{\"partitions\":\n\t[{\"topic\": \"foo\",\n\t  \"partition\": 1,\n\t  \"replicas\": [1,2,3] }],\n\"version\":1\n}"
-      )
+    val reassignmentJsonFileOpt = parser.accepts(
+      "reassignment-json-file",
+      "The JSON file with the partition reassignment configuration" +
+        "The format to use is - \n" +
+        "{\"partitions\":\n\t[{\"topic\": \"foo\",\n\t  \"partition\": 1,\n\t  \"replicas\": [1,2,3] }],\n\"version\":1\n}"
+    )
       .withRequiredArg
       .describedAs("manual assignment json file path")
       .ofType(classOf[String])
-    val topicsToMoveJsonFileOpt = parser
-      .accepts(
-        "topics-to-move-json-file",
-        "Generate a reassignment configuration to move the partitions" +
-          " of the specified topics to the list of brokers specified by the --broker-list option. The format to use is - \n" +
-          "{\"topics\":\n\t[{\"topic\": \"foo\"},{\"topic\": \"foo1\"}],\n\"version\":1\n}"
-      )
+    val topicsToMoveJsonFileOpt = parser.accepts(
+      "topics-to-move-json-file",
+      "Generate a reassignment configuration to move the partitions" +
+        " of the specified topics to the list of brokers specified by the --broker-list option. The format to use is - \n" +
+        "{\"topics\":\n\t[{\"topic\": \"foo\"},{\"topic\": \"foo1\"}],\n\"version\":1\n}"
+    )
       .withRequiredArg
       .describedAs("topics to reassign json file path")
       .ofType(classOf[String])
-    val brokerListOpt = parser
-      .accepts(
-        "broker-list",
-        "The list of brokers to which the partitions need to be reassigned" +
-          " in the form \"0,1,2\". This is required if --topics-to-move-json-file is used to generate reassignment configuration"
-      )
+    val brokerListOpt = parser.accepts(
+      "broker-list",
+      "The list of brokers to which the partitions need to be reassigned" +
+        " in the form \"0,1,2\". This is required if --topics-to-move-json-file is used to generate reassignment configuration"
+    )
       .withRequiredArg
       .describedAs("brokerlist")
       .ofType(classOf[String])
@@ -379,16 +375,19 @@ class ReassignPartitionsCommand(
           true
         } else {
           error(
-            "Skipping reassignment of partition [%s,%d] "
-              .format(topic, partition) +
+            "Skipping reassignment of partition [%s,%d] ".format(
+              topic,
+              partition) +
               "since it doesn't exist")
           false
         }
       case None =>
         error(
           "Skipping reassignment of partition " +
-            "[%s,%d] since topic %s doesn't exist"
-              .format(topic, partition, topic))
+            "[%s,%d] since topic %s doesn't exist".format(
+              topic,
+              partition,
+              topic))
         false
     }
   }

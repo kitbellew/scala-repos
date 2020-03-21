@@ -180,8 +180,8 @@ private[changeSignature] object isAnonFunUsage {
         Some(AnonFunUsageInfo(mc, ref))
       case ChildOf(und: ScUnderscoreSection) => Some(AnonFunUsageInfo(und, ref))
       case Both(ResolvesTo(m: PsiMethod), ChildOf(elem))
-          if m.getParameterList.getParametersCount > 0 && !elem
-            .isInstanceOf[MethodInvocation] =>
+          if m.getParameterList.getParametersCount > 0 && !elem.isInstanceOf[
+            MethodInvocation] =>
         Some(AnonFunUsageInfo(ref, ref))
       case _ => None
     }
@@ -242,8 +242,9 @@ private[changeSignature] object UsageUtil {
       case sc: ScalaChangeInfo => sc.newType
       case jc: JavaChangeInfo =>
         val method = jc.getMethod
-        val javaType = jc.getNewReturnType
-          .getType(method.getParameterList, method.getManager)
+        val javaType = jc.getNewReturnType.getType(
+          method.getParameterList,
+          method.getManager)
         ScType.create(javaType, method.getProject)
       case _ => return None
     }
@@ -259,8 +260,7 @@ private[changeSignature] case class OldArgsInfo(
     namedElement: PsiNamedElement) {
 
   val byOldParameterIndex = {
-    args
-      .groupBy(a => ScalaPsiUtil.parameterOf(a).fold(-1)(_.index))
+    args.groupBy(a => ScalaPsiUtil.parameterOf(a).fold(-1)(_.index))
       .updated(-1, Seq.empty)
   }
 

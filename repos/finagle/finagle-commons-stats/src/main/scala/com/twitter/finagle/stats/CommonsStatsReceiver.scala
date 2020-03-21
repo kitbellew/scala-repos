@@ -5,8 +5,9 @@ import com.twitter.common.stats.{Percentile, Stats}
 import com.twitter.util.registry.GlobalRegistry
 
 class CommonsStatsReceiver extends StatsReceiverWithCumulativeGauges {
-  GlobalRegistry.get
-    .put(Seq("stats", "commons_stats", "counters_latched"), "false")
+  GlobalRegistry.get.put(
+    Seq("stats", "commons_stats", "counters_latched"),
+    "false")
 
   val repr = Stats.STATS_PROVIDER
 

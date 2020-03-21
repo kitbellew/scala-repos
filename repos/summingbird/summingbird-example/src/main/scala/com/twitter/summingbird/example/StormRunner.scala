@@ -129,8 +129,7 @@ object StormRunner {
 
       override def getNamedOptions: Map[String, Options] =
         Map(
-          "DEFAULT" -> Options()
-            .set(SummerParallelism(2))
+          "DEFAULT" -> Options().set(SummerParallelism(2))
             .set(FlatMapParallelism(80))
             .set(SourceParallelism(16))
             .set(CacheSize(100))

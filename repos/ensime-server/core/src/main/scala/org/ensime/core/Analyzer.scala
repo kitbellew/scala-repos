@@ -238,9 +238,10 @@ class Analyzer(
           typeFullName: String,
           memberName: Option[String],
           signatureString: Option[String]) =>
-      sender ! scalaCompiler
-        .askSymbolByName(typeFullName, memberName, signatureString)
-        .getOrElse(FalseResponse)
+      sender ! scalaCompiler.askSymbolByName(
+        typeFullName,
+        memberName,
+        signatureString).getOrElse(FalseResponse)
     case DocUriAtPointReq(file, range: OffsetRange) =>
       val p = pos(file, range)
       scalaCompiler.askLoadedTyped(p.source)
@@ -302,8 +303,9 @@ class Analyzer(
   def handleReloadFiles(files: List[SourceFileInfo]): RpcResponse = {
     val (existing, missingFiles) = files.partition(FileUtils.exists)
     if (missingFiles.nonEmpty) {
-      val missingFilePaths =
-        missingFiles.map { f => "\"" + f.file + "\"" }.mkString(",")
+      val missingFilePaths = missingFiles.map { f =>
+        "\"" + f.file + "\""
+      }.mkString(",")
       EnsimeServerError(s"file(s): $missingFilePaths do not exist")
     } else {
       val (javas, scalas) = existing.partition(_.file.getName.endsWith(".java"))

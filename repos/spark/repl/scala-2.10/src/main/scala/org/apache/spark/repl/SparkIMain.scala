@@ -448,8 +448,7 @@ class SparkIMain(
 
     // NOTE: Must use reflection until this is exposed/fixed upstream in Scala
     val fieldSetter = platform.getClass.getMethods
-      .find(_.getName.endsWith("currentClassPath_$eq"))
-      .get
+      .find(_.getName.endsWith("currentClassPath_$eq")).get
     fieldSetter.invoke(platform, Some(newClassPath))
 
     // Reload all jars specified into our compiler
@@ -489,9 +488,8 @@ class SparkIMain(
     */
   @DeveloperApi
   protected def parentClassLoader: ClassLoader =
-    SparkHelper
-      .explicitParentLoader(settings)
-      .getOrElse(this.getClass.getClassLoader())
+    SparkHelper.explicitParentLoader(settings).getOrElse(
+      this.getClass.getClassLoader())
 
   /* A single class loader is used for all commands interpreted by this Interpreter.
      It would also be possible to create a new class loader for each command
@@ -943,8 +941,10 @@ class SparkIMain(
                                 |  var value: %s = _
                               |  def set(x: Any) = value = x.asInstanceOf[%s]
                               |}
-                              """.stripMargin
-        .format(bindRep.evalName, boundType, boundType))
+                              """.stripMargin.format(
+        bindRep.evalName,
+        boundType,
+        boundType))
     bindRep.callEither("set", value) match {
       case Left(ex) =>
         logDebug(
@@ -1209,8 +1209,10 @@ class SparkIMain(
         case Array(method) => method
         case xs =>
           sys.error(
-            "Internal error: eval object " + evalClass + ", " + xs
-              .mkString("\n", "\n", ""))
+            "Internal error: eval object " + evalClass + ", " + xs.mkString(
+              "\n",
+              "\n",
+              ""))
       }
     private def compileAndSaveRun(label: String, code: String) = {
       showCodeIfDebugging(code)
@@ -1303,8 +1305,10 @@ class SparkIMain(
           List(
             "def $line  = " + tquoted(originalLine),
             "def $req = %s.requestForReqId(%s).orNull".format(path, reqId),
-            "def $trees = if ($req eq null) Nil else $req.trees"
-              .format(lineRep.readName, path, reqId)
+            "def $trees = if ($req eq null) Nil else $req.trees".format(
+              lineRep.readName,
+              path,
+              reqId)
           )
       }
 
@@ -1554,13 +1558,13 @@ class SparkIMain(
     */
   @DeveloperApi
   def symbolOfTerm(id: String): Symbol =
-    requestForIdent(newTermName(id))
-      .fold(NoSymbol: Symbol)(_ definedTermSymbol id)
+    requestForIdent(newTermName(id)).fold(NoSymbol: Symbol)(
+      _ definedTermSymbol id)
 
   // TODO: No use yet, but could be exposed as a DeveloperApi
   private def symbolOfType(id: String): Symbol =
-    requestForName(newTypeName(id))
-      .fold(NoSymbol: Symbol)(_ definedTypeSymbol id)
+    requestForName(newTypeName(id)).fold(NoSymbol: Symbol)(
+      _ definedTypeSymbol id)
 
   /**
     * Retrieves the runtime class and type representing the id (variable name,

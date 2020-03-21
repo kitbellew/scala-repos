@@ -70,33 +70,23 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
         cond.getArgExpr.getText.trim
       else "(" + cond.getArgExpr.getText.trim + ")"
 
-    expr
-      .append("if ")
-      .append(firstCond)
-      .append("\n")
-      .append("if ")
-      .append(secondCond)
-      .append(" ")
-      .append(ifStmt.thenBranch.get.getText)
+    expr.append("if ").append(firstCond).append("\n").append("if ").append(
+      secondCond).append(" ").append(ifStmt.thenBranch.get.getText)
 
     val elseBranch = ifStmt.elseBranch.orNull
     if (elseBranch != null) {
       if (expr.toString().trim.endsWith("}")) expr.append(" else ")
       else expr.append("\nelse ")
-      expr
-        .append(elseBranch.getText)
-        .append("\nelse ")
-        .append(elseBranch.getText)
+      expr.append(elseBranch.getText).append("\nelse ").append(
+        elseBranch.getText)
     }
 
-    val newIfStmt: ScExpression = ScalaPsiElementFactory
-      .createExpressionFromText(expr.toString(), element.getManager)
-    val diff = newIfStmt
-      .asInstanceOf[ScIfStmt]
-      .condition
-      .get
-      .getTextRange
-      .getStartOffset -
+    val newIfStmt: ScExpression =
+      ScalaPsiElementFactory.createExpressionFromText(
+        expr.toString(),
+        element.getManager)
+    val diff = newIfStmt.asInstanceOf[
+      ScIfStmt].condition.get.getTextRange.getStartOffset -
       newIfStmt.asInstanceOf[ScIfStmt].getTextRange.getStartOffset
 
     inWriteAction {

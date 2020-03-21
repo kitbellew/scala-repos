@@ -47,9 +47,8 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     val minSize = 2.0
     assert(bkm.getMinDivisibleClusterSize !== minSize)
     assert(
-      bkm
-        .setMinDivisibleClusterSize(minSize)
-        .getMinDivisibleClusterSize === minSize)
+      bkm.setMinDivisibleClusterSize(
+        minSize).getMinDivisibleClusterSize === minSize)
     val seed = 10L
     assert(bkm.getSeed !== seed)
     assert(bkm.setSeed(seed).getSeed === seed)

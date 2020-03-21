@@ -84,8 +84,10 @@ trait GenTypes {
       // to find out the whereabouts of the error run scalac with -Ydebug
       if (reifyDebug)
         println(
-          "launching implicit search for %s.%s[%s]"
-            .format(universe, tagFlavor, tpe))
+          "launching implicit search for %s.%s[%s]".format(
+            universe,
+            tagFlavor,
+            tpe))
       val result =
         typer.resolveTypeTag(
           defaultErrorPosition,

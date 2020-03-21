@@ -144,13 +144,11 @@ class ReplicaManager(
   val replicaFetcherManager =
     new ReplicaFetcherManager(config, this, metrics, jTime, threadNamePrefix)
   private val highWatermarkCheckPointThreadStarted = new AtomicBoolean(false)
-  val highWatermarkCheckpoints = config.logDirs
-    .map(dir =>
-      (
-        new File(dir).getAbsolutePath,
-        new OffsetCheckpoint(
-          new File(dir, ReplicaManager.HighWatermarkFilename))))
-    .toMap
+  val highWatermarkCheckpoints = config.logDirs.map(dir =>
+    (
+      new File(dir).getAbsolutePath,
+      new OffsetCheckpoint(
+        new File(dir, ReplicaManager.HighWatermarkFilename)))).toMap
   private var hwThreadInitialized = false
   this.logIdent = "[Replica Manager on Broker " + localBrokerId + "]: "
   val stateChangeLogger = KafkaController.stateChangeLogger
@@ -222,10 +220,8 @@ class ReplicaManager(
     val now = System.currentTimeMillis()
     isrChangeSet synchronized {
       if (isrChangeSet.nonEmpty &&
-          (lastIsrChangeMs
-            .get() + ReplicaManager.IsrChangePropagationBlackOut < now ||
-          lastIsrPropagationMs
-            .get() + ReplicaManager.IsrChangePropagationInterval < now)) {
+          (lastIsrChangeMs.get() + ReplicaManager.IsrChangePropagationBlackOut < now ||
+          lastIsrPropagationMs.get() + ReplicaManager.IsrChangePropagationInterval < now)) {
         ReplicationUtils.propagateIsrChanges(zkUtils, isrChangeSet)
         isrChangeSet.clear()
         lastIsrPropagationMs.set(now)
@@ -243,8 +239,9 @@ class ReplicaManager(
   def tryCompleteDelayedProduce(key: DelayedOperationKey) {
     val completed = delayedProducePurgatory.checkAndComplete(key)
     debug(
-      "Request key %s unblocked %d producer requests."
-        .format(key.keyLabel, completed))
+      "Request key %s unblocked %d producer requests.".format(
+        key.keyLabel,
+        completed))
   }
 
   /**
@@ -257,8 +254,9 @@ class ReplicaManager(
   def tryCompleteDelayedFetch(key: DelayedOperationKey) {
     val completed = delayedFetchPurgatory.checkAndComplete(key)
     debug(
-      "Request key %s unblocked %d fetch requests."
-        .format(key.keyLabel, completed))
+      "Request key %s unblocked %d fetch requests.".format(
+        key.keyLabel,
+        completed))
   }
 
   def startup() {
@@ -280,8 +278,11 @@ class ReplicaManager(
       partitionId: Int,
       deletePartition: Boolean): Short = {
     stateChangeLogger.trace(
-      "Broker %d handling stop replica (delete=%s) for partition [%s,%d]"
-        .format(localBrokerId, deletePartition.toString, topic, partitionId))
+      "Broker %d handling stop replica (delete=%s) for partition [%s,%d]".format(
+        localBrokerId,
+        deletePartition.toString,
+        topic,
+        partitionId))
     val errorCode = Errors.NONE.code
     getPartition(topic, partitionId) match {
       case Some(partition) =>
@@ -365,8 +366,10 @@ class ReplicaManager(
       replicaOpt.get
     else
       throw new ReplicaNotAvailableException(
-        "Replica %d is not available for partition [%s,%d]"
-          .format(config.brokerId, topic, partition))
+        "Replica %d is not available for partition [%s,%d]".format(
+          config.brokerId,
+          topic,
+          partition))
   }
 
   def getLeaderReplicaIfLocal(topic: String, partitionId: Int): Replica = {
@@ -374,8 +377,10 @@ class ReplicaManager(
     partitionOpt match {
       case None =>
         throw new UnknownTopicOrPartitionException(
-          "Partition [%s,%d] doesn't exist on %d"
-            .format(topic, partitionId, config.brokerId))
+          "Partition [%s,%d] doesn't exist on %d".format(
+            topic,
+            partitionId,
+            config.brokerId))
       case Some(partition) =>
         partition.leaderReplicaIfLocal match {
           case Some(leaderReplica) => leaderReplica
@@ -500,14 +505,9 @@ class ReplicaManager(
     trace("Append [%s] to local log ".format(messagesPerPartition))
     messagesPerPartition.map {
       case (topicPartition, messages) =>
-        BrokerTopicStats
-          .getBrokerTopicStats(topicPartition.topic)
-          .totalProduceRequestRate
-          .mark()
-        BrokerTopicStats
-          .getBrokerAllTopicsStats()
-          .totalProduceRequestRate
-          .mark()
+        BrokerTopicStats.getBrokerTopicStats(
+          topicPartition.topic).totalProduceRequestRate.mark()
+        BrokerTopicStats.getBrokerAllTopicsStats().totalProduceRequestRate.mark()
 
         // reject appending to internal topics if it is not allowed
         if (TopicConstants.INTERNAL_TOPICS.contains(
@@ -517,8 +517,9 @@ class ReplicaManager(
             LogAppendResult(
               LogAppendInfo.UnknownLogAppendInfo,
               Some(
-                new InvalidTopicException("Cannot append to internal topic %s"
-                  .format(topicPartition.topic)))))
+                new InvalidTopicException(
+                  "Cannot append to internal topic %s".format(
+                    topicPartition.topic)))))
         } else {
           try {
             val partitionOpt =
@@ -541,18 +542,14 @@ class ReplicaManager(
                 info.lastOffset - info.firstOffset + 1
 
             // update stats for successfully appended bytes and messages as bytesInRate and messageInRate
-            BrokerTopicStats
-              .getBrokerTopicStats(topicPartition.topic)
-              .bytesInRate
-              .mark(messages.sizeInBytes)
-            BrokerTopicStats.getBrokerAllTopicsStats.bytesInRate
-              .mark(messages.sizeInBytes)
-            BrokerTopicStats
-              .getBrokerTopicStats(topicPartition.topic)
-              .messagesInRate
-              .mark(numAppendedMessages)
-            BrokerTopicStats.getBrokerAllTopicsStats.messagesInRate
-              .mark(numAppendedMessages)
+            BrokerTopicStats.getBrokerTopicStats(
+              topicPartition.topic).bytesInRate.mark(messages.sizeInBytes)
+            BrokerTopicStats.getBrokerAllTopicsStats.bytesInRate.mark(
+              messages.sizeInBytes)
+            BrokerTopicStats.getBrokerTopicStats(
+              topicPartition.topic).messagesInRate.mark(numAppendedMessages)
+            BrokerTopicStats.getBrokerAllTopicsStats.messagesInRate.mark(
+              numAppendedMessages)
 
             trace(
               "%d bytes written to log %s-%d beginning at offset %d and ending at offset %d"
@@ -580,12 +577,9 @@ class ReplicaManager(
                 topicPartition,
                 LogAppendResult(LogAppendInfo.UnknownLogAppendInfo, Some(e)))
             case t: Throwable =>
-              BrokerTopicStats
-                .getBrokerTopicStats(topicPartition.topic)
-                .failedProduceRequestRate
-                .mark()
-              BrokerTopicStats.getBrokerAllTopicsStats.failedProduceRequestRate
-                .mark()
+              BrokerTopicStats.getBrokerTopicStats(
+                topicPartition.topic).failedProduceRequestRate.mark()
+              BrokerTopicStats.getBrokerAllTopicsStats.failedProduceRequestRate.mark()
               error(
                 "Error processing append operation on partition %s".format(
                   topicPartition),
@@ -690,8 +684,11 @@ class ReplicaManager(
         val partitionDataAndOffsetInfo =
           try {
             trace(
-              "Fetching log segment for topic %s, partition %d, offset %d, size %d"
-                .format(topic, partition, offset, fetchSize))
+              "Fetching log segment for topic %s, partition %d, offset %d, size %d".format(
+                topic,
+                partition,
+                offset,
+                fetchSize))
 
             // decide whether to only fetch from leader
             val localReplica =
@@ -719,8 +716,9 @@ class ReplicaManager(
                 log.read(offset, fetchSize, maxOffsetOpt)
               case None =>
                 error(
-                  "Leader for partition [%s,%d] does not have a local log"
-                    .format(topic, partition))
+                  "Leader for partition [%s,%d] does not have a local log".format(
+                    topic,
+                    partition))
                 FetchDataInfo(
                   LogOffsetMetadata.UnknownOffsetMetadata,
                   MessageSet.Empty)
@@ -775,17 +773,14 @@ class ReplicaManager(
                 false,
                 Some(oor))
             case e: Throwable =>
-              BrokerTopicStats
-                .getBrokerTopicStats(topic)
-                .failedFetchRequestRate
-                .mark()
-              BrokerTopicStats
-                .getBrokerAllTopicsStats()
-                .failedFetchRequestRate
-                .mark()
+              BrokerTopicStats.getBrokerTopicStats(
+                topic).failedFetchRequestRate.mark()
+              BrokerTopicStats.getBrokerAllTopicsStats().failedFetchRequestRate.mark()
               error(
-                "Error processing fetch operation on partition [%s,%d] offset %d"
-                  .format(topic, partition, offset),
+                "Error processing fetch operation on partition [%s,%d] offset %d".format(
+                  topic,
+                  partition,
+                  offset),
                 e)
               LogReadResult(
                 FetchDataInfo(
@@ -814,13 +809,12 @@ class ReplicaManager(
     replicaStateChangeLock synchronized {
       if (updateMetadataRequest.controllerEpoch < controllerEpoch) {
         val stateControllerEpochErrorMessage = ("Broker %d received update metadata request with correlation id %d from an " +
-          "old controller %d with epoch %d. Latest known controller epoch is %d")
-          .format(
-            localBrokerId,
-            correlationId,
-            updateMetadataRequest.controllerId,
-            updateMetadataRequest.controllerEpoch,
-            controllerEpoch)
+          "old controller %d with epoch %d. Latest known controller epoch is %d").format(
+          localBrokerId,
+          correlationId,
+          updateMetadataRequest.controllerId,
+          updateMetadataRequest.controllerEpoch,
+          controllerEpoch)
         stateChangeLogger.warn(stateControllerEpochErrorMessage)
         throw new ControllerMovedException(stateControllerEpochErrorMessage)
       } else {
@@ -857,13 +851,12 @@ class ReplicaManager(
           case (topicPartition, stateInfo) =>
             stateChangeLogger.warn(
               ("Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d since " +
-                "its controller epoch %d is old. Latest known controller epoch is %d")
-                .format(
-                  localBrokerId,
-                  leaderAndISRRequest.controllerId,
-                  correlationId,
-                  leaderAndISRRequest.controllerEpoch,
-                  controllerEpoch))
+                "its controller epoch %d is old. Latest known controller epoch is %d").format(
+                localBrokerId,
+                leaderAndISRRequest.controllerId,
+                correlationId,
+                leaderAndISRRequest.controllerEpoch,
+                controllerEpoch))
         }
         BecomeLeaderOrFollowerResult(
           responseMap,
@@ -1175,12 +1168,10 @@ class ReplicaManager(
       }
 
       logManager.truncateTo(
-        partitionsToMakeFollower
-          .map(partition =>
-            (
-              new TopicAndPartition(partition),
-              partition.getOrCreateReplica().highWatermark.messageOffset))
-          .toMap)
+        partitionsToMakeFollower.map(partition =>
+          (
+            new TopicAndPartition(partition),
+            partition.getOrCreateReplica().highWatermark.messageOffset)).toMap)
       partitionsToMakeFollower.foreach { partition =>
         val topicPartitionOperationKey =
           new TopicPartitionOperationKey(partition.topic, partition.partitionId)
@@ -1191,42 +1182,37 @@ class ReplicaManager(
       partitionsToMakeFollower.foreach { partition =>
         stateChangeLogger.trace(
           ("Broker %d truncated logs and checkpointed recovery boundaries for partition [%s,%d] as part of " +
-            "become-follower request with correlation id %d from controller %d epoch %d")
-            .format(
-              localBrokerId,
-              partition.topic,
-              partition.partitionId,
-              correlationId,
-              controllerId,
-              epoch))
+            "become-follower request with correlation id %d from controller %d epoch %d").format(
+            localBrokerId,
+            partition.topic,
+            partition.partitionId,
+            correlationId,
+            controllerId,
+            epoch))
       }
 
       if (isShuttingDown.get()) {
         partitionsToMakeFollower.foreach { partition =>
           stateChangeLogger.trace(
             ("Broker %d skipped the adding-fetcher step of the become-follower state change with correlation id %d from " +
-              "controller %d epoch %d for partition [%s,%d] since it is shutting down")
-              .format(
-                localBrokerId,
-                correlationId,
-                controllerId,
-                epoch,
-                partition.topic,
-                partition.partitionId))
+              "controller %d epoch %d for partition [%s,%d] since it is shutting down").format(
+              localBrokerId,
+              correlationId,
+              controllerId,
+              epoch,
+              partition.topic,
+              partition.partitionId))
         }
       } else {
         // we do not need to check if the leader exists again since this has been done at the beginning of this process
         val partitionsToMakeFollowerWithLeaderAndOffset =
-          partitionsToMakeFollower
-            .map(partition =>
-              new TopicAndPartition(partition) -> BrokerAndInitialOffset(
-                metadataCache.getAliveBrokers
-                  .find(_.id == partition.leaderReplicaIdOpt.get)
-                  .get
-                  .getBrokerEndPoint(config.interBrokerSecurityProtocol),
-                partition.getReplica().get.logEndOffset.messageOffset
-              ))
-            .toMap
+          partitionsToMakeFollower.map(partition =>
+            new TopicAndPartition(partition) -> BrokerAndInitialOffset(
+              metadataCache.getAliveBrokers.find(
+                _.id == partition.leaderReplicaIdOpt.get).get.getBrokerEndPoint(
+                config.interBrokerSecurityProtocol),
+              partition.getReplica().get.logEndOffset.messageOffset
+            )).toMap
         replicaFetcherManager.addFetcherForPartitions(
           partitionsToMakeFollowerWithLeaderAndOffset)
 
@@ -1283,8 +1269,9 @@ class ReplicaManager(
       replicaId: Int,
       readResults: Map[TopicAndPartition, LogReadResult]) {
     debug(
-      "Recording follower broker %d log read results: %s "
-        .format(replicaId, readResults))
+      "Recording follower broker %d log read results: %s ".format(
+        replicaId,
+        readResults))
     readResults.foreach {
       case (topicAndPartition, readResult) =>
         getPartition(
@@ -1299,8 +1286,8 @@ class ReplicaManager(
               new TopicPartitionOperationKey(topicAndPartition))
           case None =>
             warn(
-              "While recording the replica LEO, the partition %s hasn't been created."
-                .format(topicAndPartition))
+              "While recording the replica LEO, the partition %s hasn't been created.".format(
+                topicAndPartition))
         }
     }
   }
@@ -1312,13 +1299,11 @@ class ReplicaManager(
   // Flushes the highwatermark value for all partitions to the highwatermark file
   def checkpointHighWatermarks() {
     val replicas = allPartitions.values.flatMap(_.getReplica(config.brokerId))
-    val replicasByDir = replicas
-      .filter(_.log.isDefined)
-      .groupBy(_.log.get.dir.getParentFile.getAbsolutePath)
+    val replicasByDir = replicas.filter(_.log.isDefined).groupBy(
+      _.log.get.dir.getParentFile.getAbsolutePath)
     for ((dir, reps) <- replicasByDir) {
-      val hwms = reps
-        .map(r => new TopicAndPartition(r) -> r.highWatermark.messageOffset)
-        .toMap
+      val hwms = reps.map(r =>
+        new TopicAndPartition(r) -> r.highWatermark.messageOffset).toMap
       try {
         highWatermarkCheckpoints(dir).write(hwms)
       } catch {

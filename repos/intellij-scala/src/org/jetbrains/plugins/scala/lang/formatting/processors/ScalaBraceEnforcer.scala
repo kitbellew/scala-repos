@@ -173,8 +173,8 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
         "{\n" + expr.getText + "\n}",
         expr.getManager)
       val prev = expr.getPrevSibling
-      if (ScalaPsiUtil.isLineTerminator(prev) || prev
-            .isInstanceOf[PsiWhiteSpace]) {
+      if (ScalaPsiUtil.isLineTerminator(prev) || prev.isInstanceOf[
+            PsiWhiteSpace]) {
         CodeEditUtil.removeChild(
           SourceTreeToPsiMap.psiElementToTree(parent),
           SourceTreeToPsiMap.psiElementToTree(prev))

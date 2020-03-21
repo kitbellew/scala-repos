@@ -34,11 +34,11 @@ object TcpHelper {
   case object WriteAck extends Tcp.Event
 
   def testClientProps(connection: ActorRef): Props =
-    Props(new TestClient(connection))
-      .withDispatcher("akka.test.stream-dispatcher")
+    Props(new TestClient(connection)).withDispatcher(
+      "akka.test.stream-dispatcher")
   def testServerProps(address: InetSocketAddress, probe: ActorRef): Props =
-    Props(new TestServer(address, probe))
-      .withDispatcher("akka.test.stream-dispatcher")
+    Props(new TestServer(address, probe)).withDispatcher(
+      "akka.test.stream-dispatcher")
 
   class TestClient(connection: ActorRef) extends Actor {
     connection ! Tcp.Register(

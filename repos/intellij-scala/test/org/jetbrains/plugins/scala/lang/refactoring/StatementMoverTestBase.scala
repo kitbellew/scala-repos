@@ -33,10 +33,8 @@ abstract class StatementMoverTestBase extends SimpleTestCase {
 
     available.ifTrue {
       val it =
-        cleanCode
-          .split('\n')
-          .toList
-          .iterator // Workaround for SI-5972 (should be without "toList")
+        cleanCode.split(
+          '\n').toList.iterator // Workaround for SI-5972 (should be without "toList")
 
       val (i1, i2) =
         if (info.toMove.startLine < info.toMove2.startLine)

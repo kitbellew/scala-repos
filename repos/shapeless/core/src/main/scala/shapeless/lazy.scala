@@ -309,23 +309,22 @@ class LazyMacros(val c: whitebox.Context)
           try {
             val tree = c.inferImplicitValue(tpe, silent = true)
             if (tree.isEmpty) {
-              tpe.typeSymbol.annotations
-                .find(_.tree.tpe =:= typeOf[
-                  _root_.scala.annotation.implicitNotFound])
-                .foreach { infAnn =>
-                  val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
-                  val analyzer: global.analyzer.type = global.analyzer
-                  val gTpe = tpe.asInstanceOf[global.Type]
-                  val errorMsg = gTpe.typeSymbolDirect match {
-                    case analyzer.ImplicitNotFoundMsg(msg) =>
-                      msg.format(
-                        TermName("evidence").asInstanceOf[global.TermName],
-                        gTpe)
-                    case _ =>
-                      s"Implicit value of type $tpe not found"
-                  }
-                  setAnnotation(errorMsg)
+              tpe.typeSymbol.annotations.find(
+                _.tree.tpe =:= typeOf[
+                  _root_.scala.annotation.implicitNotFound]).foreach { infAnn =>
+                val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
+                val analyzer: global.analyzer.type = global.analyzer
+                val gTpe = tpe.asInstanceOf[global.Type]
+                val errorMsg = gTpe.typeSymbolDirect match {
+                  case analyzer.ImplicitNotFoundMsg(msg) =>
+                    msg.format(
+                      TermName("evidence").asInstanceOf[global.TermName],
+                      gTpe)
+                  case _ =>
+                    s"Implicit value of type $tpe not found"
                 }
+                setAnnotation(errorMsg)
+              }
             }
             (State.current.get, tree)
           } finally {
@@ -455,8 +454,7 @@ class LazyMacros(val c: whitebox.Context)
 
     def resolve0(state: State)(tpe: Type): Option[(State, Tree, Type)] = {
       val extInstOpt =
-        State
-          .resolveInstance(state)(tpe)
+        State.resolveInstance(state)(tpe)
           .orElse(
             stripRefinements(tpe).flatMap(State.resolveInstance(state))
           )
@@ -641,10 +639,8 @@ object LazyMacros {
 
     if (root)
       // Sometimes corrupted, and slows things too
-      lm.c.universe
-        .asInstanceOf[scala.tools.nsc.Global]
-        .analyzer
-        .resetImplicits()
+      lm.c.universe.asInstanceOf[
+        scala.tools.nsc.Global].analyzer.resetImplicits()
 
     try {
       dc.State.deriveInstance(tpe, root, mkInst)

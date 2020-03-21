@@ -67,8 +67,9 @@ object LinearRegression {
         .text(s"initial step size, default: ${defaultParams.stepSize}")
         .action((x, c) => c.copy(stepSize = x))
       opt[String]("regType")
-        .text(s"regularization type (${RegType.values.mkString(",")}), " +
-          s"default: ${defaultParams.regType}")
+        .text(
+          s"regularization type (${RegType.values.mkString(",")}), " +
+            s"default: ${defaultParams.regType}")
         .action((x, c) => c.copy(regType = RegType.withName(x)))
       opt[Double]("regParam")
         .text(s"regularization parameter, default: ${defaultParams.regParam}")
@@ -127,13 +128,11 @@ object LinearRegression {
     val prediction = model.predict(test.map(_.features))
     val predictionAndLabel = prediction.zip(test.map(_.label))
 
-    val loss = predictionAndLabel
-      .map {
-        case (p, l) =>
-          val err = p - l
-          err * err
-      }
-      .reduce(_ + _)
+    val loss = predictionAndLabel.map {
+      case (p, l) =>
+        val err = p - l
+        err * err
+    }.reduce(_ + _)
     val rmse = math.sqrt(loss / numTest)
 
     println(s"Test RMSE = $rmse.")

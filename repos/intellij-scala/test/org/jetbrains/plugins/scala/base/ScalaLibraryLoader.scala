@@ -104,10 +104,8 @@ class ScalaLibraryLoader(
     val scalaSdkJars =
       Seq(libraryPath, compilerPath) ++ (if (loadReflect) Seq(reflectPath)
                                          else Seq.empty)
-    val classRoots = scalaSdkJars
-      .map(path =>
-        JarFileSystem.getInstance.refreshAndFindFileByPath(path + "!/"))
-      .asJava
+    val classRoots = scalaSdkJars.map(path =>
+      JarFileSystem.getInstance.refreshAndFindFileByPath(path + "!/")).asJava
 
     val scalaLibrarySrc = TestUtils.getScalaLibrarySrc(sdkVersion)
     val srcsRoots = Seq(
@@ -115,10 +113,8 @@ class ScalaLibraryLoader(
         scalaLibrarySrc + "!/")).asJava
     val scalaSdkLib =
       PsiTestUtil.addProjectLibrary(module, "scala-sdk", classRoots, srcsRoots)
-    val languageLevel = Artifact.ScalaCompiler
-      .versionOf(new File(compilerPath))
-      .flatMap(ScalaLanguageLevel.from)
-      .getOrElse(ScalaLanguageLevel.Default)
+    val languageLevel = Artifact.ScalaCompiler.versionOf(new File(compilerPath))
+      .flatMap(ScalaLanguageLevel.from).getOrElse(ScalaLanguageLevel.Default)
 
     inWriteAction {
       scalaSdkLib.convertToScalaSdkWith(
@@ -128,9 +124,8 @@ class ScalaLibraryLoader(
       addedLibraries += scalaSdkLib
     }
 
-    VirtualFilePointerManager.getInstance
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance.asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
   }
 
   private def addLibrary(module: Module, lib: CommonLibrary): Unit =
@@ -160,9 +155,8 @@ class ScalaLibraryLoader(
       rootModel.commit()
     }
 
-    VirtualFilePointerManager.getInstance
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance.asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
   }
 }
 

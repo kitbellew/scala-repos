@@ -89,8 +89,9 @@ object SafeDeleteProcessorUtil {
           }
 
           val usagesToAdd = if (shouldDelete) {
-            val isInImport = PsiTreeUtil
-              .getParentOfType(element, classOf[ScImportStmt]) != null
+            val isInImport = PsiTreeUtil.getParentOfType(
+              element,
+              classOf[ScImportStmt]) != null
             if (isInImport)
               Seq(
                 new SafeDeleteReferenceJavaDeleteUsageInfo(
@@ -351,8 +352,8 @@ object SafeDeleteProcessorUtil {
       }
     }
     for (method <- overridingMethods) {
-      if (!validOverriding.contains(method) && !multipleInterfaceImplementations
-            .contains(method)) {
+      if (!validOverriding.contains(
+            method) && !multipleInterfaceImplementations.contains(method)) {
         val methodCanBePrivate: Boolean = canBePrivate(
           method,
           methodToReferences.get(method),
@@ -549,11 +550,12 @@ object SafeDeleteProcessorUtil {
                     override def deleteElement() {
                       val javadocMethodReference
                           : PsiDocMethodOrFieldRef#MyReference =
-                        element.getReference
-                          .asInstanceOf[PsiDocMethodOrFieldRef#MyReference]
+                        element.getReference.asInstanceOf[
+                          PsiDocMethodOrFieldRef#MyReference]
                       if (javadocMethodReference != null) {
-                        javadocMethodReference
-                          .bindToText(method.containingClass, newText)
+                        javadocMethodReference.bindToText(
+                          method.containingClass,
+                          newText)
                       }
                     }
                   })
@@ -580,11 +582,12 @@ object SafeDeleteProcessorUtil {
               call.getMethodExpression
             if (methodExpression.getText.equals(PsiKeyword.SUPER)) {
               isSafeDelete = true
-            } else if (methodExpression.getQualifierExpression
-                         .isInstanceOf[PsiSuperExpression]) {
+            } else if (methodExpression.getQualifierExpression.isInstanceOf[
+                         PsiSuperExpression]) {
               val superMethod: PsiMethod = call.resolveMethod
-              if (superMethod != null && MethodSignatureUtil
-                    .isSuperMethod(superMethod, method)) {
+              if (superMethod != null && MethodSignatureUtil.isSuperMethod(
+                    superMethod,
+                    method)) {
                 isSafeDelete = true
               }
             }

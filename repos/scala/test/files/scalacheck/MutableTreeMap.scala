@@ -162,18 +162,16 @@ package scala.collection.mutable {
       val map = mutable.TreeMap[K, V]()
       map ++= entries
 
-      map
-        .keysIteratorFrom(k)
-        .toSeq == entries.keysIterator.filter(_ >= k).toSeq.sorted
+      map.keysIteratorFrom(k).toSeq == entries.keysIterator.filter(
+        _ >= k).toSeq.sorted
     }
 
     property("valuesIteratorFrom") = forAll { (entries: Map[K, V], k: K) =>
       val map = mutable.TreeMap[K, V]()
       map ++= entries
 
-      map
-        .valuesIteratorFrom(k)
-        .toSeq == entries.filterKeys(_ >= k).toSeq.sorted.map(_._2)
+      map.valuesIteratorFrom(k).toSeq == entries.filterKeys(
+        _ >= k).toSeq.sorted.map(_._2)
     }
 
     property("headOption") = forAll { (map: mutable.TreeMap[K, V]) =>
@@ -244,8 +242,8 @@ package scala.collection.mutable {
         val mapView = map.rangeImpl(from, until)
         allEntries.forall {
           case (k, v) =>
-            mapView
-              .contains(k) == (in(k, from, until) && entries.contains(k)) &&
+            mapView.contains(k) == (in(k, from, until) && entries.contains(
+              k)) &&
               mapView.get(k) == (if (in(k, from, until)) entries.get(k)
                                  else None)
         }

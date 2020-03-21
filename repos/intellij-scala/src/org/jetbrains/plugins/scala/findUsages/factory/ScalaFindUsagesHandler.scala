@@ -234,9 +234,8 @@ class ScalaFindUsagesHandler(
         }
         if (s.isImplementingTypeDefinitions) {
           val res = new mutable.HashSet[PsiClass]()
-          ClassInheritorsSearch
-            .search(clazz, true)
-            .forEach(new Processor[PsiClass] {
+          ClassInheritorsSearch.search(clazz, true).forEach(
+            new Processor[PsiClass] {
               def process(t: PsiClass): Boolean = {
                 t match {
                   case p: PsiClassWrapper =>

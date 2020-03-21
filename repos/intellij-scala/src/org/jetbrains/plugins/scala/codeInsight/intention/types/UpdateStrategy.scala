@@ -141,8 +141,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
     if (expr != null) {
       val firstClause = expr.params.clauses.head
       val fcText = firstClause.getText
-      if (expr.parameters.size == 1 && fcText.startsWith("(") && fcText
-            .endsWith(")"))
+      if (expr.parameters.size == 1 && fcText.startsWith(
+            "(") && fcText.endsWith(")"))
         firstClause.replace(newClause)
       else param.replace(newParam)
     } else param.replace(newParam)
@@ -186,21 +186,17 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
       case someOrNone
           if Set("_root_.scala.Some", "_root_.scala.None").exists(
             someOrNone.canonicalText.startsWith) =>
-        val replacement = BaseTypes
-          .get(someOrNone)
-          .find(_.canonicalText.startsWith("_root_.scala.Option"))
-          .getOrElse(someOrNone)
+        val replacement = BaseTypes.get(someOrNone).find(
+          _.canonicalText.startsWith("_root_.scala.Option")).getOrElse(
+          someOrNone)
         Seq(typeElemFromType(replacement))
       case tp =>
         ScType.extractClass(tp, Option(context.getProject)) match {
           case Some(sc: ScTypeDefinition)
               if (sc +: sc.supers).exists(isSealed) =>
-            val sealedType = BaseTypes
-              .get(tp)
-              .find(
-                ScType
-                  .extractClass(_, Option(context.getProject))
-                  .exists(isSealed))
+            val sealedType = BaseTypes.get(tp).find(
+              ScType.extractClass(_, Option(context.getProject)).exists(
+                isSealed))
             (sealedType.toSeq :+ tp).map(typeElemFromType)
           case Some(sc: ScTypeDefinition)
               if sc.getTruncedQualifiedName.startsWith("scala.collection") =>
@@ -215,10 +211,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
               "_root_.scala.collection.mutable.Map[",
               "_root_.scala.collection.immutable.Map["
             )
-            val baseTypes = BaseTypes
-              .get(tp)
-              .map(_.canonicalText)
-              .filter(t => goodTypes.exists(t.startsWith))
+            val baseTypes = BaseTypes.get(tp).map(_.canonicalText).filter(t =>
+              goodTypes.exists(t.startsWith))
             (tp.canonicalText +: baseTypes).map(typeElemfromText)
           case _ => Seq(typeElemFromType(tp))
         }

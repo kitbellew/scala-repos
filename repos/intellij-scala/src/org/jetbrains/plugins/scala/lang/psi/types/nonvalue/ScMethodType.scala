@@ -210,9 +210,9 @@ case class ScMethodType(
         val inferredParamType = p.paramType.inferValueType
         if (!p.isRepeated) inferredParamType
         else {
-          val seqClass = ScalaPsiManager
-            .instance(project)
-            .getCachedClass(scope, "scala.collection.Seq")
+          val seqClass = ScalaPsiManager.instance(project).getCachedClass(
+            scope,
+            "scala.collection.Seq")
           seqClass.fold(inferredParamType) { inferred =>
             ScParameterizedType(
               ScDesignatorType(inferred),
@@ -259,11 +259,15 @@ case class ScMethodType(
       case (true, res, _) => res
       case (_, _, newData) =>
         new ScMethodType(
-          returnType
-            .recursiveVarianceUpdateModifiable(newData, update, variance),
+          returnType.recursiveVarianceUpdateModifiable(
+            newData,
+            update,
+            variance),
           params.map(p =>
-            p.copy(paramType = p.paramType
-              .recursiveVarianceUpdateModifiable(newData, update, -variance))),
+            p.copy(paramType = p.paramType.recursiveVarianceUpdateModifiable(
+              newData,
+              update,
+              -variance))),
           isImplicit)(project, scope)
     }
   }
@@ -442,9 +446,8 @@ case class ScTypePolymorphicType(
       None)
 
   def inferValueType: ValueType = {
-    polymorphicTypeSubstitutor(inferValueType = true)
-      .subst(internalType.inferValueType)
-      .asInstanceOf[ValueType]
+    polymorphicTypeSubstitutor(inferValueType = true).subst(
+      internalType.inferValueType).asInstanceOf[ValueType]
   }
 
   override def removeAbstracts =
@@ -500,21 +503,24 @@ case class ScTypePolymorphicType(
       case (true, res, _) => res
       case (_, _, newData) =>
         ScTypePolymorphicType(
-          internalType
-            .recursiveVarianceUpdateModifiable(newData, update, variance),
+          internalType.recursiveVarianceUpdateModifiable(
+            newData,
+            update,
+            variance),
           typeParameters.map(tp => {
             TypeParameter(
               tp.name,
               tp.typeParams /* todo: ? */,
               () =>
-                tp.lowerType()
-                  .recursiveVarianceUpdateModifiable(
-                    newData,
-                    update,
-                    -variance),
+                tp.lowerType().recursiveVarianceUpdateModifiable(
+                  newData,
+                  update,
+                  -variance),
               () =>
-                tp.upperType()
-                  .recursiveVarianceUpdateModifiable(newData, update, variance),
+                tp.upperType().recursiveVarianceUpdateModifiable(
+                  newData,
+                  update,
+                  variance),
               tp.ptp
             )
           })
@@ -551,25 +557,23 @@ case class ScTypePolymorphicType(
         }
         val subst = new ScSubstitutor(
           new collection.immutable.HashMap[(String, PsiElement), ScType] ++
-            typeParameters
-              .zip(p.typeParameters)
-              .map({
-                tuple =>
-                  (
-                    (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
-                    new ScTypeParameterType(
-                      tuple._2.name,
-                      tuple._2.ptp match {
-                        case p: ScTypeParam =>
-                          p.typeParameters.toList.map {
-                            new ScTypeParameterType(_, ScSubstitutor.empty)
-                          }
-                        case _ => Nil
-                      },
-                      new Suspension(tuple._2.lowerType),
-                      new Suspension(tuple._2.upperType),
-                      tuple._2.ptp))
-              }),
+            typeParameters.zip(p.typeParameters).map({
+              tuple =>
+                (
+                  (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
+                  new ScTypeParameterType(
+                    tuple._2.name,
+                    tuple._2.ptp match {
+                      case p: ScTypeParam =>
+                        p.typeParameters.toList.map {
+                          new ScTypeParameterType(_, ScSubstitutor.empty)
+                        }
+                      case _ => Nil
+                    },
+                    new Suspension(tuple._2.lowerType),
+                    new Suspension(tuple._2.upperType),
+                    tuple._2.ptp))
+            }),
           Map.empty,
           None)
         Equivalence.equivInner(

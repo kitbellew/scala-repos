@@ -69,8 +69,8 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
             if (!processor.execute(subp, state)) return false
           }
         }
-        if (bp.kinds.contains(CLASS) || bp.kinds.contains(OBJECT) || bp.kinds
-              .contains(METHOD)) {
+        if (bp.kinds.contains(CLASS) || bp.kinds.contains(
+              OBJECT) || bp.kinds.contains(METHOD)) {
           for (clazz <- getClasses) {
             if (!processor.execute(clazz, state)) return false
           }
@@ -89,31 +89,26 @@ object ScSyntheticPackage {
     import com.intellij.psi.stubs.StubIndex
 
     import scala.collection.JavaConversions._
-    val packages = StubIndex
-      .getElements(
-        ScalaIndexKeys.PACKAGE_FQN_KEY
-          .asInstanceOf[StubIndexKey[Any, ScPackageContainer]],
+    val packages = StubIndex.getElements(
+      ScalaIndexKeys.PACKAGE_FQN_KEY.asInstanceOf[
+        StubIndexKey[Any, ScPackageContainer]],
+      fqn.hashCode(),
+      project,
+      GlobalSearchScope.allScope(project),
+      classOf[ScPackageContainer]
+    ).toSeq
+
+    if (packages.isEmpty) {
+      StubIndex.getElements(
+        ScalaIndexKeys.PACKAGE_OBJECT_KEY.asInstanceOf[
+          StubIndexKey[Any, PsiClass]],
         fqn.hashCode(),
         project,
         GlobalSearchScope.allScope(project),
-        classOf[ScPackageContainer]
-      )
-      .toSeq
-
-    if (packages.isEmpty) {
-      StubIndex
-        .getElements(
-          ScalaIndexKeys.PACKAGE_OBJECT_KEY
-            .asInstanceOf[StubIndexKey[Any, PsiClass]],
-          fqn.hashCode(),
-          project,
-          GlobalSearchScope.allScope(project),
-          classOf[PsiClass]
-        )
-        .toSeq
-        .find(pc => {
-          pc.qualifiedName == fqn
-        }) match {
+        classOf[PsiClass]
+      ).toSeq.find(pc => {
+        pc.qualifiedName == fqn
+      }) match {
         case Some(obj) =>
           val pname = if (i < 0) "" else fqn.substring(0, i)
           new ScSyntheticPackage(name, PsiManager.getInstance(project)) {

@@ -64,11 +64,8 @@ object StrictForm {
         implicit mat ⇒ {
           case FromString(value) ⇒ fsu(value)
           case FromPart(value) ⇒
-            val charsetName = value.entity.contentType
-              .asInstanceOf[ContentType.NonBinary]
-              .charset
-              .nioCharset
-              .name
+            val charsetName = value.entity.contentType.asInstanceOf[
+              ContentType.NonBinary].charset.nioCharset.name
             fsu(value.entity.data.decodeString(charsetName))
         })
 
@@ -105,11 +102,8 @@ object StrictForm {
           def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(implicit
               ec: ExecutionContext,
               mat: Materializer) = {
-            val charsetName = value.entity.contentType
-              .asInstanceOf[ContentType.NonBinary]
-              .charset
-              .nioCharset
-              .name
+            val charsetName = value.entity.contentType.asInstanceOf[
+              ContentType.NonBinary].charset.nioCharset.name
             fsu(value.entity.data.decodeString(charsetName))
           }
         }
@@ -143,9 +137,8 @@ object StrictForm {
       def tryUnmarshalToMultipartForm: Future[StrictForm] =
         for {
           multiPartFD ← multipartUM(entity).fast
-          strictMultiPartFD ← multiPartFD
-            .toStrict(10.seconds)
-            .fast // TODO: make timeout configurable
+          strictMultiPartFD ← multiPartFD.toStrict(
+            10.seconds).fast // TODO: make timeout configurable
         } yield {
           new StrictForm {
             val fields = strictMultiPartFD.strictParts.map {

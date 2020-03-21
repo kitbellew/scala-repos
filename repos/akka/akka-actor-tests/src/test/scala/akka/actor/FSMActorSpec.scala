@@ -261,13 +261,12 @@ class FSMActorSpec
 
     "log events and transitions if asked to do so" in {
       import scala.collection.JavaConverters._
-      val config = ConfigFactory
-        .parseMap(
-          Map(
-            "akka.loglevel" -> "DEBUG",
-            "akka.actor.serialize-messages" -> "off",
-            "akka.actor.debug.fsm" -> true).asJava)
-        .withFallback(system.settings.config)
+      val config = ConfigFactory.parseMap(
+        Map(
+          "akka.loglevel" -> "DEBUG",
+          "akka.actor.serialize-messages" -> "off",
+          "akka.actor.debug.fsm" -> true).asJava).withFallback(
+        system.settings.config)
       val fsmEventSystem = ActorSystem("fsmEvent", config)
       try {
         new TestKit(fsmEventSystem) {

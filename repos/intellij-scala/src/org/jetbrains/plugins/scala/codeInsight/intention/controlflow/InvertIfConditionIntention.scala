@@ -81,12 +81,8 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
           "&&" -> "||",
           "||" -> "&&")
         val buf = new StringBuilder
-        buf
-          .append(first)
-          .append(" ")
-          .append(replaceOper(oper))
-          .append(" ")
-          .append(second)
+        buf.append(first).append(" ").append(replaceOper(oper)).append(
+          " ").append(second)
         buf.toString()
       case _ => IntentionUtils.negate(ifStmt.condition.get)
     }
@@ -95,12 +91,8 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
     val newThenBranch =
       if (elseBranch != null) elseBranch.asInstanceOf[ScBlockExpr].getText
       else "{\n\n}"
-    expr
-      .append("if (")
-      .append(newCond)
-      .append(")")
-      .append(newThenBranch)
-      .append(" else ")
+    expr.append("if (").append(newCond).append(")").append(
+      newThenBranch).append(" else ")
     val res = ifStmt.thenBranch.get match {
       case e: ScBlockExpr => e.getText
       case _              => "{\n" + ifStmt.thenBranch.get.getText + "\n}"

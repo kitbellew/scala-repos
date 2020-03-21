@@ -19,11 +19,8 @@ class MergeServiceSpec extends FunSpec {
     val dir = createTestRepository(getRepositoryDir(owner, name))
     using(Git.open(dir)) { git =>
       createFile(git, s"refs/heads/master", "test.txt", "hoge")
-      git
-        .branchCreate()
-        .setStartPoint(s"refs/heads/master")
-        .setName(s"refs/pull/${issueId}/head")
-        .call()
+      git.branchCreate().setStartPoint(s"refs/heads/master").setName(
+        s"refs/pull/${issueId}/head").call()
     }
     dir
   }

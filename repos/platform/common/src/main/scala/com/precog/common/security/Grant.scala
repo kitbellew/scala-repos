@@ -166,10 +166,9 @@ object Grant extends Logging {
           case _ => Set()
         }
 
-      val distinct = grants
-        .groupBy { g => (g.permissions, g.expirationDate) }
-        .map(_._2.head)
-        .toList
+      val distinct = grants.groupBy { g =>
+        (g.permissions, g.expirationDate)
+      }.map(_._2.head).toList
       minimize(tsort(distinct), perms.toList)
     }
   }

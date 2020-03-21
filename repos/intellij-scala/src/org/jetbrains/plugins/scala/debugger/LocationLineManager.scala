@@ -34,8 +34,9 @@ trait LocationLineManager {
 
   import self.caches._
 
-  private val syntheticProvider = SyntheticTypeComponentProvider.EP_NAME
-    .findExtension(classOf[ScalaSyntheticProvider])
+  private val syntheticProvider =
+    SyntheticTypeComponentProvider.EP_NAME.findExtension(
+      classOf[ScalaSyntheticProvider])
 
   def clearLocationLineCaches(): Unit = {
     customizedLocationsCache.clear()
@@ -55,8 +56,8 @@ trait LocationLineManager {
       return false
 
     val synth =
-      DebuggerSettings.getInstance().SKIP_SYNTHETIC_METHODS && syntheticProvider
-        .isSynthetic(location.method())
+      DebuggerSettings.getInstance().SKIP_SYNTHETIC_METHODS && syntheticProvider.isSynthetic(
+        location.method())
     synth || exactLineNumber(location) < 0
   }
 
@@ -106,9 +107,8 @@ trait LocationLineManager {
     if (generatingElem == null) return
     val containingFile = generatingElem.getContainingFile
     if (containingFile == null) return
-    val document = PsiDocumentManager
-      .getInstance(debugProcess.getProject)
-      .getDocument(containingFile)
+    val document = PsiDocumentManager.getInstance(
+      debugProcess.getProject).getDocument(containingFile)
     if (document == null) return
 
     def elementStartLine(e: PsiElement) =
@@ -145,10 +145,8 @@ trait LocationLineManager {
         parent == null || !PsiTreeUtil.isAncestor(generatingElem, parent, false)
       }
 
-      val methods = refType
-        .methodsByName("<init>")
-        .asScala
-        .filter(_.declaringType() == refType)
+      val methods = refType.methodsByName("<init>").asScala.filter(
+        _.declaringType() == refType)
       for {
         location <- methods.flatMap(_.allLineLocations().asScala)
       } {
@@ -184,8 +182,9 @@ trait LocationLineManager {
 
           method.allLineLocations().asScala.foreach {
             case loc
-                if BytecodeUtil
-                  .readIload(loc.codeIndex().toInt, bytecodes) == iloadCode =>
+                if BytecodeUtil.readIload(
+                  loc.codeIndex().toInt,
+                  bytecodes) == iloadCode =>
               cacheCustomLine(loc, -1)
             case _ =>
           }

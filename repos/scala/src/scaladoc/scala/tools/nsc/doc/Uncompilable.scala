@@ -41,8 +41,10 @@ trait Uncompilable {
     val comments = docPairs(f.slurp())
     if (settings.verbose)
       inform(
-        "Found %d doc comments in parse-only file %s: %s"
-          .format(comments.size, f, comments.map(_._1).mkString(", ")))
+        "Found %d doc comments in parse-only file %s: %s".format(
+          comments.size,
+          f,
+          comments.map(_._1).mkString(", ")))
 
     comments
   }
@@ -54,8 +56,9 @@ trait Uncompilable {
   def comments = {
     if (settings.debug || settings.verbose)
       inform(
-        "Found %d uncompilable files: %s"
-          .format(files.size, files mkString ", "))
+        "Found %d uncompilable files: %s".format(
+          files.size,
+          files mkString ", "))
 
     if (pairs.isEmpty)
       warning("no doc comments read from " + settings.docUncompilable.value)

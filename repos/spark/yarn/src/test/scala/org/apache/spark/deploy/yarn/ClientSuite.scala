@@ -133,16 +133,14 @@ class ClientSuite
     populateClasspath(args, conf, sparkConf, env, true)
 
     val cp = env("CLASSPATH").split(":|;|<CPS>")
-    s"$SPARK,$USER,$ADDED"
-      .split(",")
-      .foreach({ entry =>
-        val uri = new URI(entry)
-        if (LOCAL_SCHEME.equals(uri.getScheme())) {
-          cp should contain(uri.getPath())
-        } else {
-          cp should not contain (uri.getPath())
-        }
-      })
+    s"$SPARK,$USER,$ADDED".split(",").foreach({ entry =>
+      val uri = new URI(entry)
+      if (LOCAL_SCHEME.equals(uri.getScheme())) {
+        cp should contain(uri.getPath())
+      } else {
+        cp should not contain (uri.getPath())
+      }
+    })
     cp should contain(PWD)
     cp should contain(s"$PWD${Path.SEPARATOR}${LOCALIZED_CONF_DIR}")
     cp should not contain (APP_JAR)
@@ -160,8 +158,7 @@ class ClientSuite
 
       // The non-local path should be propagated by name only, since it will end up in the app's
       // staging dir.
-      val expected = ADDED
-        .split(",")
+      val expected = ADDED.split(",")
         .map(p => {
           val uri = new URI(p)
           if (LOCAL_SCHEME == uri.getScheme()) {
@@ -230,13 +227,12 @@ class ClientSuite
     appContext.getQueue should be("staging-queue")
     appContext.getAMContainerSpec should be(containerLaunchContext)
     appContext.getApplicationType should be("SPARK")
-    appContext.getClass.getMethods
-      .filter(_.getName.equals("getApplicationTags"))
-      .foreach { method =>
-        val tags = method.invoke(appContext).asInstanceOf[java.util.Set[String]]
-        tags should contain allOf ("tag1", "dup", "tag2", "multi word")
-        tags.asScala.count(_.nonEmpty) should be(4)
-      }
+    appContext.getClass.getMethods.filter(
+      _.getName.equals("getApplicationTags")).foreach { method =>
+      val tags = method.invoke(appContext).asInstanceOf[java.util.Set[String]]
+      tags should contain allOf ("tag1", "dup", "tag2", "multi word")
+      tags.asScala.count(_.nonEmpty) should be(4)
+    }
     appContext.getMaxAppAttempts should be(42)
   }
 
@@ -344,15 +340,13 @@ class ClientSuite
 
     val mapMRAppConf =
       Map(
-        "mapreduce.application.classpath" -> knownMRAppCP
-          .map(_.mkString(":"))
-          .get)
+        "mapreduce.application.classpath" -> knownMRAppCP.map(
+          _.mkString(":")).get)
 
     val mapYARNAppConf =
       Map(
-        YarnConfiguration.YARN_APPLICATION_CLASSPATH -> knownYARNAppCP
-          .map(_.mkString(":"))
-          .get)
+        YarnConfiguration.YARN_APPLICATION_CLASSPATH -> knownYARNAppCP.map(
+          _.mkString(":")).get)
 
     val mapAppConf = mapYARNAppConf ++ mapMRAppConf
   }
@@ -385,15 +379,11 @@ class ClientSuite
       clazz: Class[_],
       field: String,
       defaults: => B)(mapTo: A => B)(mapTo1: A1 => B): B = {
-    Try(clazz.getField(field))
-      .map(_.get(null))
-      .map {
-        case v: A   => mapTo(v)
-        case v1: A1 => mapTo1(v1)
-        case _      => defaults
-      }
-      .toOption
-      .getOrElse(defaults)
+    Try(clazz.getField(field)).map(_.get(null)).map {
+      case v: A   => mapTo(v)
+      case v1: A1 => mapTo1(v1)
+      case _      => defaults
+    }.toOption.getOrElse(defaults)
   }
 
   private def createClient(
@@ -402,9 +392,10 @@ class ClientSuite
       args: Array[String] = Array()): Client = {
     val clientArgs = new ClientArguments(args, sparkConf)
     val client = spy(new Client(clientArgs, conf, sparkConf))
-    doReturn(new Path("/"))
-      .when(client)
-      .copyFileToRemote(any(classOf[Path]), any(classOf[Path]), anyShort())
+    doReturn(new Path("/")).when(client).copyFileToRemote(
+      any(classOf[Path]),
+      any(classOf[Path]),
+      anyShort())
     client
   }
 

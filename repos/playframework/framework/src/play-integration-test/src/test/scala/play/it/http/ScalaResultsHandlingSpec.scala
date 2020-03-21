@@ -47,9 +47,9 @@ trait ScalaResultsHandlingSpec
       running(
         TestServer(
           port,
-          GuiceApplicationBuilder()
-            .routes { case _ => Action(result) }
-            .build())) {
+          GuiceApplicationBuilder().routes {
+            case _ => Action(result)
+          }.build())) {
         block(port)
       }
     }
@@ -85,9 +85,8 @@ trait ScalaResultsHandlingSpec
     }
 
     "chunk results for event source strategy" in makeRequest(
-      Results.Ok
-        .chunked(Source(List("a", "b")) via EventSource.flow)
-        .as("text/event-stream")
+      Results.Ok.chunked(Source(List("a", "b")) via EventSource.flow).as(
+        "text/event-stream")
     ) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
@@ -143,21 +142,17 @@ trait ScalaResultsHandlingSpec
     "close the connection when the connection close header is present" in withServer(
       Results.Ok
     ) { port =>
-      BasicHttpClient
-        .makeRequests(port, checkClosed = true)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map("Connection" -> "close"), "")
-        )(0)
-        .status must_== 200
+      BasicHttpClient.makeRequests(port, checkClosed = true)(
+        BasicRequest("GET", "/", "HTTP/1.1", Map("Connection" -> "close"), "")
+      )(0).status must_== 200
     }
 
     "close the connection when the connection when protocol is HTTP 1.0" in withServer(
       Results.Ok
     ) { port =>
-      BasicHttpClient
-        .makeRequests(port, checkClosed = true)(
-          BasicRequest("GET", "/", "HTTP/1.0", Map(), "")
-        )(0)
-        .status must_== 200
+      BasicHttpClient.makeRequests(port, checkClosed = true)(
+        BasicRequest("GET", "/", "HTTP/1.0", Map(), "")
+      )(0).status must_== 200
     }
 
     "honour the keep alive header for HTTP 1.0" in withServer(
@@ -194,12 +189,9 @@ trait ScalaResultsHandlingSpec
       Results.Ok.chunked(Source(List("a", "b", "c")))
     ) { port =>
       // will timeout if not closed
-      BasicHttpClient
-        .makeRequests(port, checkClosed = true)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map("Connection" -> "close"), "")
-        )
-        .head
-        .status must_== 200
+      BasicHttpClient.makeRequests(port, checkClosed = true)(
+        BasicRequest("GET", "/", "HTTP/1.1", Map("Connection" -> "close"), "")
+      ).head.status must_== 200
     }
 
     "keep chunked connections alive by default" in withServer(
@@ -265,11 +257,9 @@ trait ScalaResultsHandlingSpec
     "return a 500 error on response with null header" in withServer(
       Results.Ok("some body").withHeaders("X-Null" -> null)
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+      ).head
 
       response.status must_== 500
       response.body must beLeft("")
@@ -283,11 +273,9 @@ trait ScalaResultsHandlingSpec
           "aaa" -> "bbb\fccc",
           "ddd" -> "eee\u000bfff"
         )) { header =>
-        val response = BasicHttpClient
-          .makeRequests(port)(
-            BasicRequest("GET", "/", "HTTP/1.1", Map(header), "")
-          )
-          .head
+        val response = BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map(header), "")
+        ).head
 
         response.status must_== 400
         response.body must beLeft
@@ -304,11 +292,9 @@ trait ScalaResultsHandlingSpec
       } { response =>
         response.allHeaders.get(SET_COOKIE) must beSome.like {
           case rawCookieHeaders =>
-            val decodedCookieHeaders: Set[Set[Cookie]] = rawCookieHeaders
-              .map { headerValue =>
-                Cookies.decodeSetCookieHeader(headerValue).to[Set]
-              }
-              .to[Set]
+            val decodedCookieHeaders: Set[Set[Cookie]] = rawCookieHeaders.map {
+              headerValue => Cookies.decodeSetCookieHeader(headerValue).to[Set]
+            }.to[Set]
             decodedCookieHeaders must_== (Set(
               Set(aCookie),
               Set(bCookie),
@@ -322,11 +308,9 @@ trait ScalaResultsHandlingSpec
         header = ResponseHeader(NO_CONTENT),
         body = HttpEntity.Strict(ByteString("foo"), None))
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+      ).head
       response.body must beLeft("")
     }
 
@@ -335,22 +319,18 @@ trait ScalaResultsHandlingSpec
         header = ResponseHeader(NOT_MODIFIED),
         body = HttpEntity.Strict(ByteString("foo"), None))
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+      ).head
       response.body must beLeft("")
     }
 
     "not have a message body, nor Content-Length, when a 204 response is returned" in withServer(
       Results.NoContent
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+      ).head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beNone
     }
@@ -358,11 +338,9 @@ trait ScalaResultsHandlingSpec
     "not have a message body, but may have a Content-Length, when a 204 response with an explicit Content-Length is returned" in withServer(
       Results.NoContent.withHeaders("Content-Length" -> "0")
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+      ).head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beOneOf(
         None,
@@ -373,11 +351,9 @@ trait ScalaResultsHandlingSpec
     "not have a message body, nor a Content-Length, when a 304 response is returned" in withServer(
       Results.NotModified
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+      ).head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beNone
     }
@@ -385,11 +361,9 @@ trait ScalaResultsHandlingSpec
     "not have a message body, but may have a Content-Length, when a 304 response with an explicit Content-Length is returned" in withServer(
       Results.NotModified.withHeaders("Content-Length" -> "0")
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+      ).head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beOneOf(
         None,
@@ -401,11 +375,9 @@ trait ScalaResultsHandlingSpec
       // both colon and space characters are not allowed in a header's field name
       Results.Ok.withHeaders("BadFieldName: " -> "SomeContent")
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response = BasicHttpClient.makeRequests(port)(
+        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+      ).head
       response.status must_== Status.INTERNAL_SERVER_ERROR
       (response.headers -- Set(
         CONNECTION,

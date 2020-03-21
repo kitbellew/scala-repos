@@ -170,9 +170,9 @@ trait CombParserHelpers {
         case Nil      => right
         case x :: Nil => x ~ right ^^ { case ~(x, xs) => x :: xs }
         case xs =>
-          func(xs)
-            .map(_.foldRight(right)(_ ~ _ ^^ { case ~(x, xs) => x :: xs }))
-            .reduceLeft((a: Parser[List[T]], b: Parser[List[T]]) => a | b)
+          func(xs).map(_.foldRight(right)(_ ~ _ ^^ {
+            case ~(x, xs) => x :: xs
+          })).reduceLeft((a: Parser[List[T]], b: Parser[List[T]]) => a | b)
       }
     }
 

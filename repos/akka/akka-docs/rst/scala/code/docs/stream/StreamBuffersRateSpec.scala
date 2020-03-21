@@ -27,8 +27,7 @@ class StreamBuffersRateSpec extends AkkaSpec {
     //#materializer-buffer
 
     //#section-buffer
-    val section = Flow[Int]
-      .map(_ * 2)
+    val section = Flow[Int].map(_ * 2)
       .withAttributes(Attributes.inputBuffer(initial = 1, max = 1))
     val flow =
       section.via(
@@ -52,8 +51,7 @@ class StreamBuffersRateSpec extends AkkaSpec {
         interval = 3.second,
         Tick()) ~> zipper.in0
 
-      Source
-        .tick(initialDelay = 1.second, interval = 1.second, "message!")
+      Source.tick(initialDelay = 1.second, interval = 1.second, "message!")
         .conflateWithSeed(seed = (_) => 1)((count, _) =>
           count + 1) ~> zipper.in1
 

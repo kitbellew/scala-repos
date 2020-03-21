@@ -58,9 +58,8 @@ private[spark] class TaskResultGetter(
       override def run(): Unit =
         Utils.logUncaughtExceptions {
           try {
-            val (result, size) = serializer
-              .get()
-              .deserialize[TaskResult[_]](serializedData) match {
+            val (result, size) = serializer.get().deserialize[TaskResult[_]](
+              serializedData) match {
               case directResult: DirectTaskResult[_] =>
                 if (!taskSetManager.canFetchMoreResults(
                       serializedData.limit())) {
@@ -92,9 +91,8 @@ private[spark] class TaskResultGetter(
                     TaskResultLost)
                   return
                 }
-                val deserializedResult = serializer
-                  .get()
-                  .deserialize[DirectTaskResult[_]](
+                val deserializedResult =
+                  serializer.get().deserialize[DirectTaskResult[_]](
                     serializedTaskResult.get.toByteBuffer)
                 sparkEnv.blockManager.master.removeBlock(blockId)
                 (deserializedResult, size)
@@ -142,9 +140,9 @@ private[spark] class TaskResultGetter(
             val loader = Utils.getContextOrSparkClassLoader
             try {
               if (serializedData != null && serializedData.limit() > 0) {
-                reason = serializer
-                  .get()
-                  .deserialize[TaskEndReason](serializedData, loader)
+                reason = serializer.get().deserialize[TaskEndReason](
+                  serializedData,
+                  loader)
               }
             } catch {
               case cnd: ClassNotFoundException =>

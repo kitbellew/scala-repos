@@ -145,9 +145,8 @@ class ConnectionPoolSpec
     }
 
     "be able to handle 500 pipelined requests against the test server" in new TestSetup {
-      val settings = ConnectionPoolSettings(system)
-        .withMaxConnections(4)
-        .withPipeliningLimit(2)
+      val settings = ConnectionPoolSettings(system).withMaxConnections(
+        4).withPipeliningLimit(2)
       val poolFlow = Http().cachedHostConnectionPool[Int](
         serverHostName,
         serverPort,
@@ -155,16 +154,13 @@ class ConnectionPoolSpec
 
       val N = 500
       val requestIds = Source.fromIterator(() ⇒ Iterator.from(1)).take(N)
-      val idSum = requestIds
-        .map(id ⇒ HttpRequest(uri = s"/r$id") -> id)
-        .via(poolFlow)
-        .map {
-          case (Success(response), id) ⇒
-            requestUri(response) should endWith(s"/r$id")
-            id
-          case x ⇒ fail(x.toString)
-        }
-        .runFold(0)(_ + _)
+      val idSum = requestIds.map(id ⇒ HttpRequest(uri = s"/r$id") -> id).via(
+        poolFlow).map {
+        case (Success(response), id) ⇒
+          requestUri(response) should endWith(s"/r$id")
+          id
+        case x ⇒ fail(x.toString)
+      }.runFold(0)(_ + _)
 
       acceptIncomingConnection()
       acceptIncomingConnection()
@@ -210,8 +206,8 @@ class ConnectionPoolSpec
       val remainingResponsesToKill = new AtomicInteger(1)
       override def mapServerSideOutboundRawBytes(
           bytes: ByteString): ByteString =
-        if (bytes.utf8String.contains("/crash") && remainingResponsesToKill
-              .decrementAndGet() >= 0)
+        if (bytes.utf8String.contains(
+              "/crash") && remainingResponsesToKill.decrementAndGet() >= 0)
           sys.error("CRASH BOOM BANG")
         else bytes
 
@@ -237,8 +233,8 @@ class ConnectionPoolSpec
       val remainingResponsesToKill = new AtomicInteger(5)
       override def mapServerSideOutboundRawBytes(
           bytes: ByteString): ByteString =
-        if (bytes.utf8String.contains("/crash") && remainingResponsesToKill
-              .decrementAndGet() >= 0)
+        if (bytes.utf8String.contains(
+              "/crash") && remainingResponsesToKill.decrementAndGet() >= 0)
           sys.error("CRASH BOOM BANG")
         else bytes
 
@@ -377,8 +373,10 @@ class ConnectionPoolSpec
     }
 
     def responseHeaders(r: HttpRequest, connNr: Int) =
-      ConnNrHeader(connNr) +: RawHeader("Req-Uri", r.uri.toString) +: r.headers
-        .map(h ⇒ RawHeader("Req-" + h.name, h.value))
+      ConnNrHeader(connNr) +: RawHeader(
+        "Req-Uri",
+        r.uri.toString) +: r.headers.map(h ⇒
+        RawHeader("Req-" + h.name, h.value))
 
     def mapServerSideOutboundRawBytes(bytes: ByteString): ByteString = bytes
 
@@ -387,10 +385,9 @@ class ConnectionPoolSpec
       TestSubscriber.manualProbe[Http.IncomingConnection]
     val incomingConnectionsSub = {
       val rawBytesInjection = BidiFlow.fromFlows(
-        Flow[SslTlsOutbound]
-          .collect[ByteString] {
-            case SendBytes(x) ⇒ mapServerSideOutboundRawBytes(x)
-          }
+        Flow[SslTlsOutbound].collect[ByteString] {
+          case SendBytes(x) ⇒ mapServerSideOutboundRawBytes(x)
+        }
           .transform(StreamUtils.recover {
             case NoErrorComplete ⇒ ByteString.empty
           }),
@@ -399,19 +396,17 @@ class ConnectionPoolSpec
       val sink =
         if (autoAccept) Sink.foreach[Http.IncomingConnection](handleConnection)
         else Sink.fromSubscriber(incomingConnections)
-      Tcp()
-        .bind(
-          serverEndpoint.getHostString,
-          serverEndpoint.getPort,
-          idleTimeout = serverSettings.timeouts.idleTimeout)
+      Tcp().bind(
+        serverEndpoint.getHostString,
+        serverEndpoint.getPort,
+        idleTimeout = serverSettings.timeouts.idleTimeout)
         .map { c ⇒
           val layer = Http().serverLayer(serverSettings, log = log)
           Http.IncomingConnection(
             c.localAddress,
             c.remoteAddress,
             layer atop rawBytesInjection join c.flow)
-        }
-        .runWith(sink)
+        }.runWith(sink)
       if (autoAccept) null else incomingConnections.expectSubscription()
     }
 
@@ -441,8 +436,10 @@ class ConnectionPoolSpec
         idleTimeout,
         ClientConnectionSettings(system))
       flowTestBench(
-        Http()
-          .cachedHostConnectionPool[T](serverHostName, serverPort, settings))
+        Http().cachedHostConnectionPool[T](
+          serverHostName,
+          serverPort,
+          settings))
     }
 
     def superPool[T](
@@ -467,11 +464,8 @@ class ConnectionPoolSpec
         poolFlow: Flow[(HttpRequest, T), (Try[HttpResponse], T), Mat]) = {
       val requestIn = TestPublisher.probe[(HttpRequest, T)]()
       val responseOut = TestSubscriber.manualProbe[(Try[HttpResponse], T)]
-      val hcp = Source
-        .fromPublisher(requestIn)
-        .viaMat(poolFlow)(Keep.right)
-        .to(Sink.fromSubscriber(responseOut))
-        .run()
+      val hcp = Source.fromPublisher(requestIn).viaMat(poolFlow)(Keep.right).to(
+        Sink.fromSubscriber(responseOut)).run()
       val responseOutSub = responseOut.expectSubscription()
       (requestIn, responseOut, responseOutSub, hcp)
     }

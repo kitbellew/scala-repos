@@ -60,13 +60,11 @@ class Netty4ClientChannelInitializerTest
 
     def connect() = {
 
-      client
-        .connect(
-          new InetSocketAddress(
-            InetAddress.getLoopbackAddress,
-            server.getLocalPort)
-        )
-        .awaitUninterruptibly(timeout.inMilliseconds)
+      client.connect(
+        new InetSocketAddress(
+          InetAddress.getLoopbackAddress,
+          server.getLocalPort)
+      ).awaitUninterruptibly(timeout.inMilliseconds)
 
       acceptedSocket = server.accept()
       clientsideTransport = Await.result(transportP, timeout)
@@ -85,15 +83,12 @@ class Netty4ClientChannelInitializerTest
 
       // one server message produces two client transport messages
       assert(
-        Await.result(clientsideTransport.read(), timeout) == data
-          .take(frameSize)
-          .mkString
+        Await.result(clientsideTransport.read(), timeout) == data.take(
+          frameSize).mkString
       )
       assert(
-        Await.result(clientsideTransport.read(), timeout) == data
-          .drop(frameSize)
-          .take(frameSize)
-          .mkString
+        Await.result(clientsideTransport.read(), timeout) == data.drop(
+          frameSize).take(frameSize).mkString
       )
 
       server.close()
@@ -201,13 +196,9 @@ class Netty4ClientChannelInitializerTest
 
     channelInit.initChannel(ctx.client)
     val server = new ServerSocket(0, 50, InetAddress.getLoopbackAddress)
-    ctx.client
-      .connect(
-        new InetSocketAddress(
-          InetAddress.getLoopbackAddress,
-          server.getLocalPort)
-      )
-      .awaitUninterruptibly(timeout.inMilliseconds)
+    ctx.client.connect(
+      new InetSocketAddress(InetAddress.getLoopbackAddress, server.getLocalPort)
+    ).awaitUninterruptibly(timeout.inMilliseconds)
 
     val acceptedSocket = server.accept()
     val transport: Transport[Int, String] = Await.result(transportP, timeout)

@@ -162,9 +162,9 @@ private[scalajs] final class ScalaJSClassEmitter(
     require(outputMode == OutputMode.ECMAScript6)
 
     val className = tree.name.name
-    val classIdent = encodeClassVar(className)(outputMode, tree.name.pos)
-      .asInstanceOf[js.VarRef]
-      .ident
+    val classIdent = encodeClassVar(className)(
+      outputMode,
+      tree.name.pos).asInstanceOf[js.VarRef].ident
 
     val parentVar = for (parentIdent <- tree.superClass) yield {
       implicit val pos = parentIdent.pos

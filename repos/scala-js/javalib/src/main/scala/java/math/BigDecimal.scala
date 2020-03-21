@@ -906,8 +906,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
     val newScale: Long = this._scale.toLong - divisor._scale
     val lastPow = BigTenPows.length - 1
     val (integralValue, varScale) = {
-      if ((divisor.approxPrecision() + newScale > this
-            .approxPrecision() + 1L) || this.isZero) {
+      if ((divisor.approxPrecision() + newScale > this.approxPrecision() + 1L) || this.isZero) {
         // If the divisor's integer part is greater than this's integer part,
         // the result must be zero with the appropriate scale
         (BigInteger.ZERO, 0L)
@@ -1346,9 +1345,11 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
             if (exponent >= 0) {
               intString.insert(end - _scale, ".")
             } else {
-              intString
-                .insert(begin - 1, "0.")
-                .insert(begin + 1, CharZeros.mkString, 0, -exponent.toInt - 1)
+              intString.insert(begin - 1, "0.").insert(
+                begin + 1,
+                CharZeros.mkString,
+                0,
+                -exponent.toInt - 1)
             }
           } else {
             val r0 =
@@ -1378,9 +1379,11 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           if (exponent0 >= 0) {
             intString.insert(end - _scale, ".")
           } else {
-            intString
-              .insert(begin - 1, "0.")
-              .insert(begin + 1, CharZeros.mkString, 0, -exponent0.toInt - 1)
+            intString.insert(begin - 1, "0.").insert(
+              begin + 1,
+              CharZeros.mkString,
+              0,
+              -exponent0.toInt - 1)
           }
         } else {
           val delta = end - begin
@@ -1571,9 +1574,8 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           val compRem = qr.rem.shiftLeftOneBit().compareTo(powerOfTen)
           // To add two rounded bits at end of mantissa
           exponent -= 2
-          qr.quot
-            .shiftLeft(2)
-            .add(BigInteger.valueOf((compRem * (compRem + 3)) / 2 + 1))
+          qr.quot.shiftLeft(2).add(
+            BigInteger.valueOf((compRem * (compRem + 3)) / 2 + 1))
         }
       }
 

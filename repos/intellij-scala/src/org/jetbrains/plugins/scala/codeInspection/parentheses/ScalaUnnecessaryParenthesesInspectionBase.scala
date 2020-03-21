@@ -32,9 +32,10 @@ abstract class ScalaUnnecessaryParenthesesInspectionBase
 
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case parenthesized: ScParenthesisedExpr
-        if !parenthesized.getParent
-          .isInstanceOf[ScParenthesisedExpr] && IntentionAvailabilityChecker
-          .checkInspection(this, parenthesized) &&
+        if !parenthesized.getParent.isInstanceOf[
+          ScParenthesisedExpr] && IntentionAvailabilityChecker.checkInspection(
+          this,
+          parenthesized) &&
           UnnecessaryParenthesesUtil.canBeStripped(
             parenthesized,
             getIgnoreClarifying) =>
@@ -44,8 +45,9 @@ abstract class ScalaUnnecessaryParenthesesInspectionBase
         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
         new UnnecessaryParenthesesQuickFix(
           parenthesized,
-          UnnecessaryParenthesesUtil
-            .getTextOfStripped(parenthesized, getIgnoreClarifying))
+          UnnecessaryParenthesesUtil.getTextOfStripped(
+            parenthesized,
+            getIgnoreClarifying))
       )
   }
 

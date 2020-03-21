@@ -109,15 +109,13 @@ trait JsonSupport[T] extends JsonOutput[T] {
     (fmt == "json" || fmt == "xml") && !request.requestMethod.isSafe && parsedBody == JNothing
 
   def parsedBody(implicit request: HttpServletRequest): JValue =
-    request
-      .get(ParsedBodyKey)
-      .fold({
-        val fmt = requestFormat
-        var bd: JValue = JNothing
-        if (fmt == "json" || fmt == "xml") {
-          bd = parseRequestBody(fmt)
-          request(ParsedBodyKey) = bd.asInstanceOf[AnyRef]
-        }
-        bd
-      })(_.asInstanceOf[JValue])
+    request.get(ParsedBodyKey).fold({
+      val fmt = requestFormat
+      var bd: JValue = JNothing
+      if (fmt == "json" || fmt == "xml") {
+        bd = parseRequestBody(fmt)
+        request(ParsedBodyKey) = bd.asInstanceOf[AnyRef]
+      }
+      bd
+    })(_.asInstanceOf[JValue])
 }

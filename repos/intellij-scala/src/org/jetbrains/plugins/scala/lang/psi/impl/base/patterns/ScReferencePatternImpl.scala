@@ -110,18 +110,12 @@ class ScReferencePatternImpl private (
         context.getContext.deleteChildRange(context, context)
       case pList: ScPatternList
           if pList.allPatternsSimple && pList.patterns.startsWith(Seq(this)) =>
-        val end = this.nextSiblings
-          .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
-          .get
-          .getNextSiblingNotWhitespace
-          .getPrevSibling
+        val end = this.nextSiblings.find(
+          _.getNode.getElementType == ScalaTokenTypes.tCOMMA).get.getNextSiblingNotWhitespace.getPrevSibling
         pList.deleteChildRange(this, end)
       case pList: ScPatternList if pList.allPatternsSimple =>
-        val start = this.prevSiblings
-          .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
-          .get
-          .getPrevSiblingNotWhitespace
-          .getNextSibling
+        val start = this.prevSiblings.find(
+          _.getNode.getElementType == ScalaTokenTypes.tCOMMA).get.getPrevSiblingNotWhitespace.getNextSibling
         pList.deleteChildRange(start, this)
       case x =>
         // val (a, b) = t

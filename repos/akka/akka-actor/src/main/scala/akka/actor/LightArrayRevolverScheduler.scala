@@ -44,14 +44,12 @@ class LightArrayRevolverScheduler(
   import Helpers.ConfigOps
 
   val WheelSize =
-    config
-      .getInt("akka.scheduler.ticks-per-wheel")
+    config.getInt("akka.scheduler.ticks-per-wheel")
       .requiring(
         ticks ⇒ (ticks & (ticks - 1)) == 0,
         "ticks-per-wheel must be a power of 2")
   val TickDuration =
-    config
-      .getMillisDuration("akka.scheduler.tick-duration")
+    config.getMillisDuration("akka.scheduler.tick-duration")
       .requiring(
         _ >= 10.millis || !Helpers.isWindows,
         "minimum supported akka.scheduler.tick-duration on Windows is 10ms")

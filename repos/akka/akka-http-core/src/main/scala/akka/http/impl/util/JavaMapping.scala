@@ -144,18 +144,12 @@ private[http] object JavaMapping {
       : JavaMapping[javadsl.Flow[JIn, JOut, M], scaladsl.Flow[SIn, SOut, M]] =
     new JavaMapping[javadsl.Flow[JIn, JOut, M], scaladsl.Flow[SIn, SOut, M]] {
       def toScala(javaObject: javadsl.Flow[JIn, JOut, M]): S =
-        scaladsl
-          .Flow[SIn]
-          .map(inMapping.toJava)
-          .viaMat(javaObject)(scaladsl.Keep.right)
-          .map(outMapping.toScala)
+        scaladsl.Flow[SIn].map(inMapping.toJava).viaMat(javaObject)(
+          scaladsl.Keep.right).map(outMapping.toScala)
       def toJava(scalaObject: scaladsl.Flow[SIn, SOut, M]): J =
         javadsl.Flow.fromGraph {
-          scaladsl
-            .Flow[JIn]
-            .map(inMapping.toScala)
-            .viaMat(scalaObject)(scaladsl.Keep.right)
-            .map(outMapping.toJava)
+          scaladsl.Flow[JIn].map(inMapping.toScala).viaMat(scalaObject)(
+            scaladsl.Keep.right).map(outMapping.toJava)
         }
     }
 
@@ -168,18 +162,12 @@ private[http] object JavaMapping {
       Graph[FlowShape[JIn, JOut], M],
       Graph[FlowShape[SIn, SOut], M]] {
       def toScala(javaObject: Graph[FlowShape[JIn, JOut], M]): S =
-        scaladsl
-          .Flow[SIn]
-          .map(inMapping.toJava)
-          .viaMat(javaObject)(scaladsl.Keep.right)
-          .map(outMapping.toScala)
+        scaladsl.Flow[SIn].map(inMapping.toJava).viaMat(javaObject)(
+          scaladsl.Keep.right).map(outMapping.toScala)
       def toJava(scalaObject: Graph[FlowShape[SIn, SOut], M]): J =
         javadsl.Flow.fromGraph {
-          scaladsl
-            .Flow[JIn]
-            .map(inMapping.toScala)
-            .viaMat(scalaObject)(scaladsl.Keep.right)
-            .map(outMapping.toJava)
+          scaladsl.Flow[JIn].map(inMapping.toScala).viaMat(scalaObject)(
+            scaladsl.Keep.right).map(outMapping.toJava)
         }
     }
 

@@ -25,10 +25,9 @@ object TwitterStreamQuickstartDocSpec {
 
   final case class Tweet(author: Author, timestamp: Long, body: String) {
     def hashtags: Set[Hashtag] =
-      body
-        .split(" ")
-        .collect { case t if t.startsWith("#") => Hashtag(t) }
-        .toSet
+      body.split(" ").collect {
+        case t if t.startsWith("#") => Hashtag(t)
+      }.toSet
   }
 
   val akka = Hashtag("#akka")

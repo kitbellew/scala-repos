@@ -40,7 +40,7 @@ object LEventAggregator {
     events.toList
       .groupBy(_.entityId)
       .mapValues(_.sortBy(_.eventTime.getMillis)
-        .foldLeft[Prop](Prop())(propAggregator))
+      .foldLeft[Prop](Prop())(propAggregator))
       .filter { case (k, v) => v.dm.isDefined }
       .mapValues { v =>
         require(
@@ -123,12 +123,12 @@ object LEventAggregator {
           case "$set" | "$unset" | "$delete" => {
             Prop(
               dm = dataMapAggregator(p.dm, e),
-              firstUpdated = p.firstUpdated
-                .map { t => first(t, e.eventTime) }
-                .orElse(Some(e.eventTime)),
-              lastUpdated = p.lastUpdated
-                .map { t => last(t, e.eventTime) }
-                .orElse(Some(e.eventTime))
+              firstUpdated = p.firstUpdated.map { t =>
+                first(t, e.eventTime)
+              }.orElse(Some(e.eventTime)),
+              lastUpdated = p.lastUpdated.map { t =>
+                last(t, e.eventTime)
+              }.orElse(Some(e.eventTime))
             )
           }
           case _ => p // do nothing for others

@@ -181,15 +181,12 @@ class CleanerTest extends JUnitSuite {
   /* extract all the keys from a log */
   def keysInLog(log: Log): Iterable[Int] =
     log.logSegments.flatMap(s =>
-      s.log
-        .filter(!_.message.isNull)
-        .filter(_.message.hasKey)
-        .map(m => TestUtils.readString(m.message.key).toInt))
+      s.log.filter(!_.message.isNull).filter(_.message.hasKey).map(m =>
+        TestUtils.readString(m.message.key).toInt))
 
   def unkeyedMessageCountInLog(log: Log) =
-    log.logSegments
-      .map(s => s.log.filter(!_.message.isNull).count(m => !m.message.hasKey))
-      .sum
+    log.logSegments.map(s =>
+      s.log.filter(!_.message.isNull).count(m => !m.message.hasKey)).sum
 
   def abortCheckDone(topicAndPartition: TopicAndPartition) {
     throw new LogCleaningAbortedException()
@@ -236,8 +233,9 @@ class CleanerTest extends JUnitSuite {
     var i = 0
     while (log.numberOfSegments < 10) {
       log.append(
-        TestUtils
-          .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
+        TestUtils.singleMessageSet(
+          payload = "hello".getBytes,
+          key = "hello".getBytes))
       i += 1
     }
 
@@ -312,8 +310,9 @@ class CleanerTest extends JUnitSuite {
     // fill up first segment
     while (log.numberOfSegments == 1)
       log.append(
-        TestUtils
-          .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
+        TestUtils.singleMessageSet(
+          payload = "hello".getBytes,
+          key = "hello".getBytes))
 
     // forward offset and append message to next segment at offset Int.MaxValue
     val messageSet = new ByteBufferMessageSet(
@@ -326,8 +325,9 @@ class CleanerTest extends JUnitSuite {
         Message.MagicValue_V1))
     log.append(messageSet, assignOffsets = false)
     log.append(
-      TestUtils
-        .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
+      TestUtils.singleMessageSet(
+        payload = "hello".getBytes,
+        key = "hello".getBytes))
     assertEquals(Int.MaxValue, log.activeSegment.index.lastOffset)
 
     // grouping should result in a single group with maximum relative offset of Int.MaxValue
@@ -339,8 +339,9 @@ class CleanerTest extends JUnitSuite {
 
     // append another message, making last offset of second segment > Int.MaxValue
     log.append(
-      TestUtils
-        .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
+      TestUtils.singleMessageSet(
+        payload = "hello".getBytes,
+        key = "hello".getBytes))
 
     // grouping should not group the two segments to ensure that maximum relative offset in each group <= Int.MaxValue
     groups = cleaner.groupSegmentsBySize(
@@ -353,8 +354,9 @@ class CleanerTest extends JUnitSuite {
     // append more messages, creating new segments, further grouping should still occur
     while (log.numberOfSegments < 4)
       log.append(
-        TestUtils
-          .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
+        TestUtils.singleMessageSet(
+          payload = "hello".getBytes,
+          key = "hello".getBytes))
 
     groups = cleaner.groupSegmentsBySize(
       log.logSegments,

@@ -27,10 +27,9 @@ object ExpandLibJarsGlobs {
       System.arraycopy(inputArgs, 0, newArgs, 0, inputArgs.length)
 
       val existing = newArgs(libJarsIdx)
-      val replacement = existing
-        .split(",")
-        .flatMap { element => fromGlob(element).map(_.toString) }
-        .mkString(",")
+      val replacement = existing.split(",").flatMap { element =>
+        fromGlob(element).map(_.toString)
+      }.mkString(",")
 
       newArgs(libJarsIdx) = replacement
       newArgs

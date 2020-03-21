@@ -59,7 +59,8 @@ trait Reify
       case null                   => Literal(Constant(null))
       case _ =>
         throw new Error(
-          "reifee %s of type %s is not supported"
-            .format(reifee, reifee.getClass))
+          "reifee %s of type %s is not supported".format(
+            reifee,
+            reifee.getClass))
     })
 }

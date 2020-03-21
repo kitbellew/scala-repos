@@ -28,11 +28,9 @@ object StringUtil {
   def splitWords(value: String): Array[String] = value.split("[ \\t　]+")
 
   def escapeHtml(value: String): String =
-    value
-      .replace("&", "&amp;")
-      .replace("<", "&lt;")
-      .replace(">", "&gt;")
-      .replace("\"", "&quot;")
+    value.replace("&", "&amp;").replace("<", "&lt;").replace(
+      ">",
+      "&gt;").replace("\"", "&quot;")
 
   /**
     * Make string from byte array. Character encoding is detected automatically by [[StringUtil.detectEncoding]].
@@ -100,9 +98,7 @@ object StringUtil {
     * @return the iterator of issue id
     */
   def extractCloseId(message: String): Iterator[String] =
-    "(?i)(?<!\\w)(?:fix(?:e[sd])?|resolve[sd]?|close[sd]?)\\s+#(\\d+)(?!\\w)".r
-      .findAllIn(message)
-      .matchData
-      .map(_.group(1))
+    "(?i)(?<!\\w)(?:fix(?:e[sd])?|resolve[sd]?|close[sd]?)\\s+#(\\d+)(?!\\w)".r.findAllIn(
+      message).matchData.map(_.group(1))
 
 }

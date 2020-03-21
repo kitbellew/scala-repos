@@ -620,8 +620,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       def isSubType(aRefDesc: String, bClass: InternalName): Boolean =
         aRefDesc == bClass || bClass == ObjectRef.internalName || {
           (bTypeForDescriptorOrInternalNameFromClassfile(
-            aRefDesc) conformsTo classBTypeFromParsedClassfile(bClass))
-            .getOrElse(false)
+            aRefDesc) conformsTo classBTypeFromParsedClassfile(
+            bClass)).getOrElse(false)
         }
 
       lazy val typeAnalyzer = new NonLubbingTypeFlowAnalyzer(method, owner)

@@ -31,7 +31,8 @@ abstract class SnapshotStore extends SSnapshotStore with SnapshotStorePlugin {
   override final def deleteAsync(
       persistenceId: String,
       criteria: SnapshotSelectionCriteria): Future[Unit] =
-    doDeleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria)
-      .map(_ ⇒ ())
+    doDeleteAsync(
+      persistenceId: String,
+      criteria: SnapshotSelectionCriteria).map(_ ⇒ ())
 
 }

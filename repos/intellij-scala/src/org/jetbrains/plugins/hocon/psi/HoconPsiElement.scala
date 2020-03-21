@@ -35,12 +35,10 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
     }
 
   def parents: Iterator[HoconPsiElement] =
-    Iterator
-      .iterate(this)(_.parent match {
-        case Some(he: HoconPsiElement) => he
-        case _                         => null
-      })
-      .takeWhile(_ != null)
+    Iterator.iterate(this)(_.parent match {
+      case Some(he: HoconPsiElement) => he
+      case _                         => null
+    }).takeWhile(_ != null)
 
   def elementType =
     getNode.getElementType
@@ -78,8 +76,8 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
 
   def nonWhitespaceOrCommentChildren =
     allChildren.filterNot(ch =>
-      (HoconTokenSets.Comment | TokenType.WHITE_SPACE)
-        .contains(ch.getNode.getElementType))
+      (HoconTokenSets.Comment | TokenType.WHITE_SPACE).contains(
+        ch.getNode.getElementType))
 
   def findChildren[T <: HoconPsiElement: ClassTag] =
     allChildren.collect {
@@ -166,16 +164,13 @@ sealed trait HKeyedField
     this #:: forParent(
       keyedField => keyedField.fieldsInAllPathsBackward,
       objectField =>
-        objectField.parent
-          .map(
-            _.forParent(
-              file => Stream.empty,
-              obj =>
-                obj.prefixingField
-                  .map(_.fieldsInAllPathsBackward)
-                  .getOrElse(Stream.empty)
-            ))
-          .get
+        objectField.parent.map(
+          _.forParent(
+            file => Stream.empty,
+            obj =>
+              obj.prefixingField.map(_.fieldsInAllPathsBackward).getOrElse(
+                Stream.empty)
+          )).get
     )
 
   /**
@@ -255,12 +250,10 @@ final class HValuedField(ast: ASTNode)
   def subScopes =
     if (isArrayAppend) Iterator.empty
     else
-      value
-        .collect {
-          case obj: HObject         => Iterator(obj)
-          case conc: HConcatenation => conc.findChildren[HObject]
-        }
-        .getOrElse(Iterator.empty)
+      value.collect {
+        case obj: HObject         => Iterator(obj)
+        case conc: HConcatenation => conc.findChildren[HObject]
+      }.getOrElse(Iterator.empty)
 }
 
 final class HInclude(ast: ASTNode)
@@ -270,10 +263,8 @@ final class HInclude(ast: ASTNode)
 
   // there may be bound comments and text offset should be on 'include' keyword
   override def getTextOffset: Int =
-    allChildren
-      .find(_.getNode.getElementType == HoconTokenType.UnquotedChars)
-      .map(_.getTextOffset)
-      .getOrElse(super.getTextOffset)
+    allChildren.find(_.getNode.getElementType == HoconTokenType.UnquotedChars)
+      .map(_.getTextOffset).getOrElse(super.getTextOffset)
 }
 
 final class HIncluded(ast: ASTNode)
@@ -368,9 +359,8 @@ final class HPath(ast: ASTNode)
 
   def allPaths: List[HPath] = {
     def allPathsIn(path: HPath, acc: List[HPath]): List[HPath] =
-      path.prefix
-        .map(prePath => allPathsIn(prePath, path :: acc))
-        .getOrElse(path :: acc)
+      path.prefix.map(prePath => allPathsIn(prePath, path :: acc)).getOrElse(
+        path :: acc)
     allPathsIn(this, Nil)
   }
 
@@ -505,9 +495,8 @@ sealed trait HString
   def isClosed =
     stringType match {
       case HoconTokenType.QuotedString =>
-        HoconConstants.ProperlyClosedQuotedString.pattern
-          .matcher(getText)
-          .matches
+        HoconConstants.ProperlyClosedQuotedString.pattern.matcher(
+          getText).matches
       case HoconTokenType.MultilineString =>
         getText.endsWith("\"\"\"")
       case _ =>
@@ -533,7 +522,6 @@ final class HIncludeTarget(ast: ASTNode)
   type Parent = HIncluded
 
   def getFileReferences =
-    parent
-      .flatMap(_.fileReferenceSet.map(_.getAllReferences))
-      .getOrElse(FileReference.EMPTY)
+    parent.flatMap(_.fileReferenceSet.map(_.getAllReferences)).getOrElse(
+      FileReference.EMPTY)
 }

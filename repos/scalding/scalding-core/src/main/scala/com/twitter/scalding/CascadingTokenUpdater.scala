@@ -50,12 +50,10 @@ object CascadingTokenUpdater {
   private def assignTokens(
       first: Int,
       names: Iterable[String]): Map[Int, String] =
-    names
-      .foldLeft((first, Map[Int, String]())) { (idMap, clz) =>
-        val (id, m) = idMap
-        (id + 1, m + (id -> clz))
-      }
-      ._2
+    names.foldLeft((first, Map[Int, String]())) { (idMap, clz) =>
+      val (id, m) = idMap
+      (id + 1, m + (id -> clz))
+    }._2
 
   def update(config: Config, clazzes: Set[Class[_]]): Config = {
     val toks = config.getCascadingSerializationTokens

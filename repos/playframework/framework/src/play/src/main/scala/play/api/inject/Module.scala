@@ -114,9 +114,8 @@ object Modules {
       if (excludes.contains(DefaultModuleName)) None
       else
         try {
-          val defaultModuleClass = environment.classLoader
-            .loadClass(DefaultModuleName)
-            .asInstanceOf[Class[Any]]
+          val defaultModuleClass = environment.classLoader.loadClass(
+            DefaultModuleName).asInstanceOf[Class[Any]]
           Some(
             constructModule(
               environment,

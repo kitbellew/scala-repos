@@ -197,13 +197,11 @@ private[shared] object SharedParamsCodeGen {
     val defaultValue = param.defaultValueStr
     val defaultValueDoc =
       defaultValue.map { v => s" (default: $v)" }.getOrElse("")
-    val setDefault = defaultValue
-      .map { v =>
-        s"""
+    val setDefault = defaultValue.map { v =>
+      s"""
          |  setDefault($name, $v)
          |""".stripMargin
-      }
-      .getOrElse("")
+    }.getOrElse("")
     val isValid = if (param.isValid != "") {
       ", " + param.isValid
     } else {

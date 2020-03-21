@@ -42,11 +42,9 @@ object PairingSystem extends AbstractPairingSystem {
           prep.user2.some) map prep.toPairing
       }.sequenceFu
     } yield pairings
-  }.chronometer
-    .logIfSlow(500, pairingLogger) { pairings =>
-      s"createPairings ${url(tour.id)} ${pairings.size} pairings"
-    }
-    .result
+  }.chronometer.logIfSlow(500, pairingLogger) { pairings =>
+    s"createPairings ${url(tour.id)} ${pairings.size} pairings"
+  }.result
 
   private def evenOrAll(data: Data, users: WaitingUsers) =
     makePreps(data, users.evenNumber) flatMap {
@@ -76,11 +74,9 @@ object PairingSystem extends AbstractPairingSystem {
             case Nil      => Nil
           }
       }
-  }.chronometer
-    .logIfSlow(200, pairingLogger) { preps =>
-      s"makePreps ${url(data.tour.id)} ${users.size} users, ${preps.size} preps"
-    }
-    .result
+  }.chronometer.logIfSlow(200, pairingLogger) { preps =>
+    s"makePreps ${url(data.tour.id)} ${users.size} users, ${preps.size} preps"
+  }.result
 
   private def naivePairings(
       tour: Tournament,
@@ -106,14 +102,12 @@ object PairingSystem extends AbstractPairingSystem {
       type Combination = List[RankedPairing]
 
       def justPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) || lastOpponents.hash
-          .get(u2)
-          .contains(u1)
+        lastOpponents.hash.get(u1).contains(u2) || lastOpponents.hash.get(
+          u2).contains(u1)
 
       def veryMuchJustPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) && lastOpponents.hash
-          .get(u2)
-          .contains(u1)
+        lastOpponents.hash.get(u1).contains(u2) && lastOpponents.hash.get(
+          u2).contains(u1)
 
       // optimized for speed
       def score(pairs: Combination): Score = {

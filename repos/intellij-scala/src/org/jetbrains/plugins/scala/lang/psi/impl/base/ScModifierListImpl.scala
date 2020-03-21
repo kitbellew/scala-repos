@@ -148,9 +148,8 @@ class ScModifierListImpl private (
           addBefore(node)
         } else {
           for (child <- getChildren
-               if child.isInstanceOf[ScAccessModifier] && child
-                 .asInstanceOf[ScAccessModifier]
-                 .isPrivate) {
+               if child.isInstanceOf[ScAccessModifier] && child.asInstanceOf[
+                 ScAccessModifier].isPrivate) {
             getNode.removeChild(child.getNode)
             return
           }
@@ -163,9 +162,8 @@ class ScModifierListImpl private (
           addBefore(node)
         } else {
           for (child <- getChildren
-               if child.isInstanceOf[ScAccessModifier] && child
-                 .asInstanceOf[ScAccessModifier]
-                 .isProtected) {
+               if child.isInstanceOf[ScAccessModifier] && child.asInstanceOf[
+                 ScAccessModifier].isProtected) {
             getNode.removeChild(child.getNode)
             return
           }
@@ -236,19 +234,15 @@ class ScModifierListImpl private (
           ScalaElementTypes.ANNOTATIONS,
           JavaArrayFactoryUtil.ScAnnotationsFactory)
       if (annotations.length > 0) {
-        return annotations
-          .apply(0)
-          .getAnnotations
-          .map(_.asInstanceOf[PsiAnnotation])
+        return annotations.apply(0).getAnnotations.map(
+          _.asInstanceOf[PsiAnnotation])
       } else return PsiAnnotation.EMPTY_ARRAY
     }
     getParent.getNode.findChildByType(ScalaElementTypes.ANNOTATIONS) match {
       case null => PsiAnnotation.EMPTY_ARRAY
       case x =>
-        x.getPsi
-          .asInstanceOf[ScAnnotations]
-          .getAnnotations
-          .map(_.asInstanceOf[PsiAnnotation])
+        x.getPsi.asInstanceOf[ScAnnotations].getAnnotations.map(
+          _.asInstanceOf[PsiAnnotation])
     }
 
   }
@@ -286,10 +280,8 @@ class ScModifierListImpl private (
       case _ =>
         val stub = getStub
         if (stub != null)
-          stub
-            .asInstanceOf[ScModifiersStub]
-            .getModifiers
-            .contains(prop2String(prop))
+          stub.asInstanceOf[ScModifiersStub].getModifiers.contains(
+            prop2String(prop))
         else findChildByType[PsiElement](prop) != null
     }
   }

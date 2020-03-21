@@ -71,8 +71,7 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
       getSerializedSizes(operatedRDD)
     checkpoint(operatedRDD, reliableCheckpoint)
     val result = collectFunc(operatedRDD)
-    operatedRDD
-      .collect() // force re-initialization of post-checkpoint lazy variables
+    operatedRDD.collect() // force re-initialization of post-checkpoint lazy variables
     val (rddSizeAfterCheckpoint, partitionSizeAfterCheckpoint) =
       getSerializedSizes(operatedRDD)
     logInfo(
@@ -150,8 +149,7 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     // checkpoint the parent RDD, not the generated one
     parentRDDs.foreach { rdd => checkpoint(rdd, reliableCheckpoint) }
     val result = collectFunc(operatedRDD) // force checkpointing
-    operatedRDD
-      .collect() // force re-initialization of post-checkpoint lazy variables
+    operatedRDD.collect() // force re-initialization of post-checkpoint lazy variables
     val (rddSizeAfterCheckpoint, partitionSizeAfterCheckpoint) =
       getSerializedSizes(operatedRDD)
     logInfo(
@@ -308,8 +306,7 @@ class CheckpointSuite
           // Overwrite the partitioner file with garbage data
           val checkpointDir = new Path(rddWithPartitioner.getCheckpointFile.get)
           val fs = checkpointDir.getFileSystem(sc.hadoopConfiguration)
-          val partitionerFile = fs
-            .listStatus(checkpointDir)
+          val partitionerFile = fs.listStatus(checkpointDir)
             .find(_.getPath.getName.contains("partitioner"))
             .map(_.getPath)
           require(
@@ -368,8 +365,8 @@ class CheckpointSuite
     val result = parCollection.collect()
     if (reliableCheckpoint) {
       assert(
-        sc.checkpointFile[Int](parCollection.getCheckpointFile.get)
-          .collect() === result)
+        sc.checkpointFile[Int](
+          parCollection.getCheckpointFile.get).collect() === result)
     }
     assert(parCollection.dependencies != Nil)
     assert(parCollection.partitions.length === numPartitions)
@@ -389,8 +386,8 @@ class CheckpointSuite
     val result = blockRDD.collect()
     if (reliableCheckpoint) {
       assert(
-        sc.checkpointFile[String](blockRDD.getCheckpointFile.get)
-          .collect() === result)
+        sc.checkpointFile[String](
+          blockRDD.getCheckpointFile.get).collect() === result)
     }
     assert(blockRDD.dependencies != Nil)
     assert(blockRDD.partitions.length === numPartitions)
@@ -473,8 +470,10 @@ class CheckpointSuite
 
     testRDD(
       rdd => {
-        CheckpointSuite
-          .cogroup(longLineageRDD1, rdd.map(x => (x % 2, 1)), partitioner)
+        CheckpointSuite.cogroup(
+          longLineageRDD1,
+          rdd.map(x => (x % 2, 1)),
+          partitioner)
       },
       reliableCheckpoint,
       seqCollectFunc)
@@ -635,9 +634,8 @@ class FatPairRDD(parent: RDD[Int], _partitioner: Partitioner)
   @transient override val partitioner = Some(_partitioner)
 
   def compute(split: Partition, context: TaskContext): Iterator[(Int, Int)] = {
-    parent
-      .compute(split.asInstanceOf[FatPartition].partition, context)
-      .map(x => (x, x))
+    parent.compute(split.asInstanceOf[FatPartition].partition, context).map(x =>
+      (x, x))
   }
 }
 

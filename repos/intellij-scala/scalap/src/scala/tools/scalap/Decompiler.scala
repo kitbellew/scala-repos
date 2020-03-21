@@ -28,22 +28,18 @@ object Decompiler {
     val byteCode = ByteCode(bytes)
     val isPackageObject = fileName == "package.class"
     val classFile = ClassFileParser.parse(byteCode)
-    val scalaSig = classFile
-      .attribute(SCALA_SIG)
-      .map(_.byteCode)
-      .map(ScalaSigAttributeParsers.parse) match {
+    val scalaSig = classFile.attribute(SCALA_SIG).map(_.byteCode).map(
+      ScalaSigAttributeParsers.parse) match {
       // No entries in ScalaSig attribute implies that the signature is stored in the annotation
       case Some(ScalaSig(_, _, entries)) if entries.isEmpty =>
         import classFile._
-        val annotation = classFile
-          .annotation(SCALA_SIG_ANNOTATION)
+        val annotation = classFile.annotation(SCALA_SIG_ANNOTATION)
           .orElse(classFile.annotation(SCALA_LONG_SIG_ANNOTATION))
         annotation match {
           case None => null
           case Some(Annotation(_, elements)) =>
-            val bytesElem = elements
-              .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
-              .get
+            val bytesElem = elements.find(elem =>
+              constant(elem.elementNameIndex) == BYTES_VALUE).get
 
             val parts = (bytesElem.elementValue match {
               case ConstValueIndex(index) => Seq(constantWrapped(index))
@@ -107,8 +103,9 @@ object Decompiler {
           val c = classFile.header.constants(index)
           val sBytes: Array[Byte] = c match {
             case s: String => s.getBytes(UTF8)
-            case scala.tools.scalap.scalax.rules.scalasig
-                  .StringBytesPair(s: String, bytes: Array[Byte]) =>
+            case scala.tools.scalap.scalax.rules.scalasig.StringBytesPair(
+                  s: String,
+                  bytes: Array[Byte]) =>
               bytes
             case _ => Array.empty
           }

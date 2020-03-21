@@ -117,8 +117,7 @@ private[python] class PythonMLLibAPI extends Serializable {
           lrModel.intercept,
           lrModel.numFeatures,
           lrModel.numClasses)
-          .map(_.asInstanceOf[Object])
-          .asJava
+          .map(_.asInstanceOf[Object]).asJava
       } else {
         List(model.weights, model.intercept).map(_.asInstanceOf[Object]).asJava
       }
@@ -176,8 +175,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       validateData: Boolean,
       convergenceTol: Double): JList[Object] = {
     val lrAlg = new LinearRegressionWithSGD()
-    lrAlg
-      .setIntercept(intercept)
+    lrAlg.setIntercept(intercept)
       .setValidateData(validateData)
     lrAlg.optimizer
       .setNumIterations(numIterations)
@@ -203,8 +201,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       validateData: Boolean,
       convergenceTol: Double): JList[Object] = {
     val lassoAlg = new LassoWithSGD()
-    lassoAlg
-      .setIntercept(intercept)
+    lassoAlg.setIntercept(intercept)
       .setValidateData(validateData)
     lassoAlg.optimizer
       .setNumIterations(numIterations)
@@ -229,8 +226,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       validateData: Boolean,
       convergenceTol: Double): JList[Object] = {
     val ridgeAlg = new RidgeRegressionWithSGD()
-    ridgeAlg
-      .setIntercept(intercept)
+    ridgeAlg.setIntercept(intercept)
       .setValidateData(validateData)
     ridgeAlg.optimizer
       .setNumIterations(numIterations)
@@ -256,8 +252,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       validateData: Boolean,
       convergenceTol: Double): JList[Object] = {
     val SVMAlg = new SVMWithSGD()
-    SVMAlg
-      .setIntercept(intercept)
+    SVMAlg.setIntercept(intercept)
       .setValidateData(validateData)
     SVMAlg.optimizer
       .setNumIterations(numIterations)
@@ -284,8 +279,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       validateData: Boolean,
       convergenceTol: Double): JList[Object] = {
     val LogRegAlg = new LogisticRegressionWithSGD()
-    LogRegAlg
-      .setIntercept(intercept)
+    LogRegAlg.setIntercept(intercept)
       .setValidateData(validateData)
     LogRegAlg.optimizer
       .setNumIterations(numIterations)
@@ -312,8 +306,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       validateData: Boolean,
       numClasses: Int): JList[Object] = {
     val LogRegAlg = new LogisticRegressionWithLBFGS()
-    LogRegAlg
-      .setIntercept(intercept)
+    LogRegAlg.setIntercept(intercept)
       .setValidateData(validateData)
       .setNumClasses(numClasses)
     LogRegAlg.optimizer
@@ -345,9 +338,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       data: JavaRDD[Vector],
       isotonic: Boolean): JList[Object] = {
     val isotonicRegressionAlg = new IsotonicRegression().setIsotonic(isotonic)
-    val input = data.rdd
-      .map { x => (x(0), x(1), x(2)) }
-      .persist(StorageLevel.MEMORY_AND_DISK)
+    val input = data.rdd.map { x => (x(0), x(1), x(2)) }.persist(
+      StorageLevel.MEMORY_AND_DISK)
     try {
       val model = isotonicRegressionAlg.run(input)
       List[AnyRef](model.boundaryVector, model.predictionVector).asJava
@@ -1118,10 +1110,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       sample: JavaRDD[Double],
       bandwidth: Double,
       points: java.util.ArrayList[Double]): Array[Double] = {
-    new KernelDensity()
-      .setSample(sample)
-      .setBandwidth(bandwidth)
-      .estimate(points.asScala.toArray)
+    new KernelDensity().setSample(sample).setBandwidth(bandwidth).estimate(
+      points.asScala.toArray)
   }
 
   /**
@@ -1153,16 +1143,14 @@ private[python] class PythonMLLibAPI extends Serializable {
       nPoints: Int,
       seed: Int,
       eps: Double): Array[LabeledPoint] = {
-    LinearDataGenerator
-      .generateLinearInput(
-        intercept,
-        weights.asScala.toArray,
-        xMean.asScala.toArray,
-        xVariance.asScala.toArray,
-        nPoints,
-        seed,
-        eps)
-      .toArray
+    LinearDataGenerator.generateLinearInput(
+      intercept,
+      weights.asScala.toArray,
+      xMean.asScala.toArray,
+      xVariance.asScala.toArray,
+      nPoints,
+      seed,
+      eps).toArray
   }
 
   /**
@@ -1639,22 +1627,20 @@ private[spark] object SerDe extends Serializable {
   def pythonToJava(
       pyRDD: JavaRDD[Array[Byte]],
       batched: Boolean): JavaRDD[Any] = {
-    pyRDD.rdd
-      .mapPartitions { iter =>
-        initialize() // let it called in executor
-        val unpickle = new Unpickler
-        iter.flatMap { row =>
-          val obj = unpickle.loads(row)
-          if (batched) {
-            obj match {
-              case list: JArrayList[_] => list.asScala
-              case arr: Array[_]       => arr
-            }
-          } else {
-            Seq(obj)
+    pyRDD.rdd.mapPartitions { iter =>
+      initialize() // let it called in executor
+      val unpickle = new Unpickler
+      iter.flatMap { row =>
+        val obj = unpickle.loads(row)
+        if (batched) {
+          obj match {
+            case list: JArrayList[_] => list.asScala
+            case arr: Array[_]       => arr
           }
+        } else {
+          Seq(obj)
         }
       }
-      .toJavaRDD()
+    }.toJavaRDD()
   }
 }

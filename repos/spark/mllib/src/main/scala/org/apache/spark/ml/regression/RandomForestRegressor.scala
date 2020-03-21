@@ -117,13 +117,12 @@ final class RandomForestRegressor @Since("1.4.0") (
         OldAlgo.Regression,
         getOldImpurity)
     val trees =
-      RandomForest
-        .run(
-          oldDataset,
-          strategy,
-          getNumTrees,
-          getFeatureSubsetStrategy,
-          getSeed)
+      RandomForest.run(
+        oldDataset,
+        strategy,
+        getNumTrees,
+        getFeatureSubsetStrategy,
+        getSeed)
         .map(_.asInstanceOf[DecisionTreeRegressionModel])
     val numFeatures = oldDataset.first().features.size
     new RandomForestRegressionModel(trees, numFeatures)
@@ -204,8 +203,9 @@ final class RandomForestRegressionModel private[ml] (
 
   @Since("1.4.0")
   override def copy(extra: ParamMap): RandomForestRegressionModel = {
-    copyValues(new RandomForestRegressionModel(uid, _trees, numFeatures), extra)
-      .setParent(parent)
+    copyValues(
+      new RandomForestRegressionModel(uid, _trees, numFeatures),
+      extra).setParent(parent)
   }
 
   @Since("1.4.0")

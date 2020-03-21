@@ -39,11 +39,11 @@ class ExpressionToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       .write
       .saveAsTable("t1")
 
-    sqlContext
-      .range(10)
-      .select('id as 'a, 'id as 'b, 'id as 'c, 'id as 'd)
-      .write
-      .saveAsTable("t2")
+    sqlContext.range(10).select(
+      'id as 'a,
+      'id as 'b,
+      'id as 'c,
+      'id as 'd).write.saveAsTable("t2")
   }
 
   override protected def afterAll(): Unit = {

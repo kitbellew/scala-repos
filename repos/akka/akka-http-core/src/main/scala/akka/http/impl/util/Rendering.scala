@@ -295,9 +295,9 @@ private[http] class ByteArrayRendering(sizeHint: Int) extends Rendering {
       require(
         neededSize < Int.MaxValue,
         "Cannot create byte array greater than 2GB in size")
-      val newLen = math
-        .min(math.max(array.length.toLong << 1, neededSize), Int.MaxValue)
-        .toInt
+      val newLen = math.min(
+        math.max(array.length.toLong << 1, neededSize),
+        Int.MaxValue).toInt
       val newArray = new Array[Byte](newLen)
       System.arraycopy(array, 0, newArray, 0, array.length)
       array = newArray

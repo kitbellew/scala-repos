@@ -37,9 +37,8 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
       }
       res
     }
-    val classes = ScalaShortNamesCacheManager
-      .getInstance(project)
-      .getClassesByName(name, scope)
+    val classes = ScalaShortNamesCacheManager.getInstance(
+      project).getClassesByName(name, scope)
     var res: ArrayBuffer[PsiClass] = null
     var size = 0
     var lastClass: PsiClass = null
@@ -66,9 +65,8 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
     }
     if (name.endsWith("$")) {
       val nameWithoutDollar = name.substring(0, name.length() - 1)
-      val classes = ScalaShortNamesCacheManager
-        .getInstance(project)
-        .getClassesByName(nameWithoutDollar, scope)
+      val classes = ScalaShortNamesCacheManager.getInstance(
+        project).getClassesByName(nameWithoutDollar, scope)
       val classesIterator = classes.iterator
       while (classesIterator.hasNext) {
         val clazz = classesIterator.next()
@@ -83,9 +81,8 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
       }
     } else if (name.endsWith("$class")) {
       val nameWithoutDollar = name.substring(0, name.length() - 6)
-      val classes = ScalaShortNamesCacheManager
-        .getInstance(project)
-        .getClassesByName(nameWithoutDollar, scope)
+      val classes = ScalaShortNamesCacheManager.getInstance(
+        project).getClassesByName(nameWithoutDollar, scope)
       val classesIterator = classes.iterator
       while (classesIterator.hasNext) {
         val clazz = classesIterator.next()

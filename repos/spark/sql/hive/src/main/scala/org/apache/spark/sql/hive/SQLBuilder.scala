@@ -176,14 +176,12 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       case SQLTable(database, table, _, sample) =>
         val qualifiedName =
           s"${quoteIdentifier(database)}.${quoteIdentifier(table)}"
-        sample
-          .map {
-            case (lowerBound, upperBound) =>
-              val fraction =
-                math.min(100, math.max(0, (upperBound - lowerBound) * 100))
-              qualifiedName + " TABLESAMPLE(" + fraction + " PERCENT)"
-          }
-          .getOrElse(qualifiedName)
+        sample.map {
+          case (lowerBound, upperBound) =>
+            val fraction =
+              math.min(100, math.max(0, (upperBound - lowerBound) * 100))
+            qualifiedName + " TABLESAMPLE(" + fraction + " PERCENT)"
+        }.getOrElse(qualifiedName)
 
       case Sort(orders, _, RepartitionByExpression(partitionExprs, child, _))
           if orders.map(_.child) == partitionExprs =>
@@ -243,9 +241,9 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       throw new UnsupportedOperationException(
         s"unsupported row format ${ioSchema.outputRowFormat}"))
 
-    val outputSchema = plan.output
-      .map { attr => s"${attr.sql} ${attr.dataType.simpleString}" }
-      .mkString(", ")
+    val outputSchema = plan.output.map { attr =>
+      s"${attr.sql} ${attr.dataType.simpleString}"
+    }.mkString(", ")
 
     build(
       "SELECT TRANSFORM",
@@ -339,9 +337,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     // Assumption: Project's projectList is composed of
     // 1) the original output (Project's child.output),
     // 2) the aliased group by expressions.
-    val groupByExprs = project.projectList
-      .drop(numOriginalOutput)
-      .map(_.asInstanceOf[Alias].child)
+    val groupByExprs = project.projectList.drop(numOriginalOutput).map(
+      _.asInstanceOf[Alias].child)
     val groupingSQL = groupByExprs.map(_.sql).mkString(", ")
 
     // a map from group by attributes to the original group by expressions.
@@ -358,9 +355,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       }
     }
     val groupingSetSQL = "GROUPING SETS(" +
-      groupingSet
-        .map(e => s"(${e.map(_.sql).mkString(", ")})")
-        .mkString(", ") + ")"
+      groupingSet.map(e => s"(${e.map(_.sql).mkString(", ")})").mkString(
+        ", ") + ")"
 
     val aggExprs = agg.aggregateExpressions.map {
       case aggExpr =>

@@ -219,9 +219,10 @@ class MutableSettings(val errorFn: String => Unit)
   /** Retrieves the contents of resource "${id}.class.path" from `loader`
     * (wrapped in Some) or None if the resource does not exist.*/
   private def getClasspath(id: String, loader: ClassLoader): Option[String] =
-    Option(loader)
-      .flatMap(ld => Option(ld.getResource(id + ".class.path")))
-      .map { cp => Source.fromURL(cp).mkString }
+    Option(loader).flatMap(ld =>
+      Option(ld.getResource(id + ".class.path"))).map { cp =>
+      Source.fromURL(cp).mkString
+    }
 
   // a wrapper for all Setting creators to keep our list up to date
   private def add[T <: Setting](s: T): T = {

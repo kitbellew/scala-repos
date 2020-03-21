@@ -66,8 +66,8 @@ class InlinerTest extends ClearAfterClass {
 
   def checkCallsite(callsite: callGraph.Callsite, callee: MethodNode) = {
     assert(
-      callsite.callsiteMethod.instructions
-        .contains(callsite.callsiteInstruction),
+      callsite.callsiteMethod.instructions.contains(
+        callsite.callsiteInstruction),
       instructionsFromMethod(callsite.callsiteMethod))
 
     val callsiteClassNode =
@@ -82,11 +82,8 @@ class InlinerTest extends ClearAfterClass {
   }
 
   def getCallsite(method: MethodNode, calleeName: String) =
-    callGraph
-      .callsites(method)
-      .valuesIterator
-      .find(_.callee.get.callee.name == calleeName)
-      .get
+    callGraph.callsites(method).valuesIterator.find(
+      _.callee.get.callee.name == calleeName).get
 
   def gMethAndFCallsite(code: String, mod: ClassNode => Unit = _ => ()) = {
     val List(c) = compile(code)

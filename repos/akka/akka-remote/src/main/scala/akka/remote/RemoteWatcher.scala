@@ -59,9 +59,10 @@ private[akka] object RemoteWatcher {
       val watchingAddresses: Set[Address]) {
     override def toString: String = {
       def formatWatchingRefs: String =
-        watchingRefs
-          .map(x ⇒ x._2.path.name + " -> " + x._1.path.name)
-          .mkString("[", ", ", "]")
+        watchingRefs.map(x ⇒ x._2.path.name + " -> " + x._1.path.name).mkString(
+          "[",
+          ", ",
+          "]")
       def formatWatchingAddresses: String =
         watchingAddresses.mkString("[", ", ", "]")
 
@@ -158,9 +159,9 @@ private[akka] class RemoteWatcher(
 
     // test purpose
     case Stats ⇒
-      val watchSet = watching.iterator
-        .flatMap { case (wee, wers) ⇒ wers.map { wer ⇒ wee → wer } }
-        .toSet[(ActorRef, ActorRef)]
+      val watchSet = watching.iterator.flatMap {
+        case (wee, wers) ⇒ wers.map { wer ⇒ wee → wer }
+      }.toSet[(ActorRef, ActorRef)]
       sender() ! Stats(
         watching = watchSet.size,
         watchingNodes = watchingNodes.size)(watchSet, watchingNodes.toSet)

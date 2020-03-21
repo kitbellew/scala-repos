@@ -137,20 +137,16 @@ class ThreadUtilsSuite extends SparkFunSuite {
       }
     }
     assert(
-      exception
-        .asInstanceOf[IllegalArgumentException]
-        .getMessage === uniqueExceptionMessage)
+      exception.asInstanceOf[
+        IllegalArgumentException].getMessage === uniqueExceptionMessage)
     assert(
-      exception.getStackTrace
-        .mkString("\n")
-        .contains(
-          "... run in separate thread using org.apache.spark.util.ThreadUtils ...") === true,
+      exception.getStackTrace.mkString("\n").contains(
+        "... run in separate thread using org.apache.spark.util.ThreadUtils ...") === true,
       "stack trace does not contain expected place holder"
     )
     assert(
-      exception.getStackTrace
-        .mkString("\n")
-        .contains("ThreadUtils.scala") === false,
+      exception.getStackTrace.mkString("\n").contains(
+        "ThreadUtils.scala") === false,
       "stack trace contains unexpected references to ThreadUtils")
   }
 }

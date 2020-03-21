@@ -140,10 +140,10 @@ class MetricsBasedResizerSpec
       val resizer = DefaultOptimalSizeExploringResizer()
       resizer.reportMessageCount(routees(2), 0)
       resizer.record.underutilizationStreak should not be empty
-      resizer.record.underutilizationStreak.get.start
-        .isBefore(LocalDateTime.now.plusSeconds(1)) shouldBe true
-      resizer.record.underutilizationStreak.get.start
-        .isAfter(LocalDateTime.now.minusSeconds(1)) shouldBe true
+      resizer.record.underutilizationStreak.get.start.isBefore(
+        LocalDateTime.now.plusSeconds(1)) shouldBe true
+      resizer.record.underutilizationStreak.get.start.isAfter(
+        LocalDateTime.now.minusSeconds(1)) shouldBe true
     }
 
     "stop an underutilizationStreak when fully utilized" in {
@@ -277,9 +277,9 @@ class MetricsBasedResizerSpec
       resizer.reportMessageCount(router.routees, router.msgs.size)
 
       val after = LocalDateTime.now
-      resizer.performanceLog(2).toMillis shouldBe (java.time.Duration
-        .between(before, after)
-        .toMillis / 2 +- 1)
+      resizer.performanceLog(2).toMillis shouldBe (java.time.Duration.between(
+        before,
+        after).toMillis / 2 +- 1)
 
       router.close()
     }
@@ -314,9 +314,8 @@ class MetricsBasedResizerSpec
       val after = LocalDateTime.now
       val newSpeed = java.time.Duration.between(before, after).toMillis / 2
 
-      resizer
-        .performanceLog(2)
-        .toMillis shouldBe ((newSpeed + oldSpeed) / 2 +- 1)
+      resizer.performanceLog(
+        2).toMillis shouldBe ((newSpeed + oldSpeed) / 2 +- 1)
 
       router.close()
     }
@@ -395,18 +394,15 @@ class MetricsBasedResizerSpec
   "MetricsBasedResizer" must {
 
     def poolSize(router: ActorRef): Int =
-      Await
-        .result(router ? GetRoutees, timeout.duration)
-        .asInstanceOf[Routees]
-        .routees
-        .size
+      Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[
+        Routees].routees.size
 
     "start with lowerbound pool size" in {
 
       val resizer = DefaultOptimalSizeExploringResizer(lowerBound = 2)
       val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
-          .props(Props(new TestLatchingActor)))
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
+          Props(new TestLatchingActor)))
       val latches = Latches(TestLatch(), TestLatch(0))
       router ! latches
       Await.ready(latches.first, timeout.duration)

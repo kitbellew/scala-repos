@@ -70,35 +70,29 @@ trait JDBCColumnarTableModuleConfig {}
 
 object JDBCColumnarTableModule {
   def escapePath(path: String) =
-    path.toList
-      .map {
-        case '['            => "PCLBRACKET"
-        case ']'            => "PCRBRACKET"
-        case '-'            => "PCFIELDDASH"
-        case '.'            => "PCDOTSEP"
-        case ' '            => "PCSPACE"
-        case c if c.isUpper => "PCUPPER" + c
-        case c              => c.toString
-      }
-      .mkString("")
+    path.toList.map {
+      case '['            => "PCLBRACKET"
+      case ']'            => "PCRBRACKET"
+      case '-'            => "PCFIELDDASH"
+      case '.'            => "PCDOTSEP"
+      case ' '            => "PCSPACE"
+      case c if c.isUpper => "PCUPPER" + c
+      case c              => c.toString
+    }.mkString("")
 
   def unescapePath(name: String): String = {
-    val initial = name
-      .replace("PCLBRACKET", "[")
-      .replace("PCRBRACKET", "]")
-      .replace("PCFIELDDASH", "-")
-      .replace("PCDOTSEP", ".")
-      .replace("PCSPACE", " ")
+    val initial =
+      name.replace("PCLBRACKET", "[").replace("PCRBRACKET", "]").replace(
+        "PCFIELDDASH",
+        "-").replace("PCDOTSEP", ".").replace("PCSPACE", " ")
 
     val parts = initial.split("PCUPPER")
 
     if (parts.length > 1) {
-      parts.head.toLowerCase + parts.tail
-        .map { ucSeg =>
-          val (ucChar, rest) = ucSeg.splitAt(1)
-          ucChar.toUpperCase + rest.toLowerCase
-        }
-        .mkString("")
+      parts.head.toLowerCase + parts.tail.map { ucSeg =>
+        val (ucChar, rest) = ucSeg.splitAt(1)
+        ucChar.toUpperCase + rest.toLowerCase
+      }.mkString("")
     } else {
       parts.head.toLowerCase
     }
@@ -237,28 +231,24 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                 case pgo: PGobject =>
                   pgo.getType match {
                     case "hstore" =>
-                      pgo.getValue
-                        .split(",|=>")
-                        .toList
-                        .map { v =>
-                          val t = v.trim; t.substring(1, t.length - 1)
-                        }
-                        .grouped(2)
-                        .foreach {
-                          case List(key, value) =>
-                            val hsRef = ColumnRef(selector \ key, CString)
-                            val column = buildColumns
-                              .getOrElse(
-                                hsRef,
-                                ArrayStrColumn.empty(yggConfig.maxSliceSize))
-                              .asInstanceOf[ArrayStrColumn]
-                              .unsafeTap { c => c.update(rowId, value) }
-                            buildColumns += (hsRef -> column)
+                      pgo.getValue.split(",|=>").toList.map { v =>
+                        val t = v.trim; t.substring(1, t.length - 1)
+                      }.grouped(2).foreach {
+                        case List(key, value) =>
+                          val hsRef = ColumnRef(selector \ key, CString)
+                          val column = buildColumns.getOrElse(
+                            hsRef,
+                            ArrayStrColumn.empty(
+                              yggConfig.maxSliceSize)).asInstanceOf[
+                            ArrayStrColumn].unsafeTap { c =>
+                            c.update(rowId, value)
+                          }
+                          buildColumns += (hsRef -> column)
 
-                          case invalid =>
-                            logger.error(
-                              "Invalid pair in hstore value: " + invalid)
-                        }
+                        case invalid =>
+                          logger.error(
+                            "Invalid pair in hstore value: " + invalid)
+                      }
 
                     case "json" =>
                       JParser.parseFromString(pgo.getValue) match {
@@ -283,8 +273,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
                 case other =>
                   logger.warn(
-                    "Encountered unknown data from PostgreSQL: %s (%s)"
-                      .format(other, other.getClass))
+                    "Encountered unknown data from PostgreSQL: %s (%s)".format(
+                      other,
+                      other.getClass))
               }
 
           }
@@ -319,28 +310,22 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         current: Set[String]): Set[String] =
       tpe match {
         case JArrayFixedT(elements) if current.nonEmpty =>
-          elements
-            .map {
-              case (index, childType) =>
-                val newPaths = current.map { s => s + "[" + index + "]" }
-                jTypeToProperties(childType, newPaths)
-            }
-            .toSet
-            .flatten
+          elements.map {
+            case (index, childType) =>
+              val newPaths = current.map { s => s + "[" + index + "]" }
+              jTypeToProperties(childType, newPaths)
+          }.toSet.flatten
 
         case JObjectFixedT(fields) =>
-          fields
-            .map {
-              case (name, childType) =>
-                val newPaths = if (current.nonEmpty) {
-                  current.map { s => s + "." + name }
-                } else {
-                  Set(name)
-                }
-                jTypeToProperties(childType, newPaths)
-            }
-            .toSet
-            .flatten
+          fields.map {
+            case (name, childType) =>
+              val newPaths = if (current.nonEmpty) {
+                current.map { s => s + "." + name }
+              } else {
+                Set(name)
+              }
+              jTypeToProperties(childType, newPaths)
+          }.toSet.flatten
 
         case _ => current
       }
@@ -382,9 +367,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                 Some(
                   (
                     slice,
-                    nextSkip
-                      .map(InLoad(connGen, query, _, remaining))
-                      .getOrElse(InitialLoad(remaining))))
+                    nextSkip.map(
+                      InLoad(connGen, query, _, remaining)).getOrElse(
+                      InitialLoad(remaining))))
               }
 
             case InitialLoad(path :: xs) =>
@@ -413,9 +398,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                           val (slice, nextSkip) = makeSlice(connGen, query, 0)
                           Some(
                             slice,
-                            nextSkip
-                              .map(InLoad(connGen, query, _, xs))
-                              .getOrElse(InitialLoad(xs)))
+                            nextSkip.map(
+                              InLoad(connGen, query, _, xs)).getOrElse(
+                              InitialLoad(xs)))
                       } getOrElse {
                         throw new Exception(
                           "Database %s is not configured" format dbName)

@@ -133,9 +133,8 @@ trait TestAccountService
 
 class AccountServiceSpec extends TestAccountService with Tags {
   def accounts =
-    client
-      .contentType[JValue](application / (MimeTypes.json))
-      .path("/accounts/v1/accounts/")
+    client.contentType[JValue](application / (MimeTypes.json)).path(
+      "/accounts/v1/accounts/")
 
   def auth(user: String, pass: String): HttpHeader = {
     val raw = (user + ":" + pass).getBytes("utf-8")
@@ -335,9 +334,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
         case badResponse => failure("Invalid response: " + badResponse)
       }.copoint
 
-      val subkey = apiKeyManager
-        .createAPIKey(Some("subkey"), None, apiKey, Set.empty)
-        .copoint
+      val subkey = apiKeyManager.createAPIKey(
+        Some("subkey"),
+        None,
+        apiKey,
+        Set.empty).copoint
 
       getAccountByAPIKey(subkey.apiKey, rootUser, rootPass).map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>

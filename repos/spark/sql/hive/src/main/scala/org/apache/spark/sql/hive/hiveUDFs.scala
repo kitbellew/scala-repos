@@ -65,8 +65,8 @@ private[hive] class HiveFunctionRegistry(
       // We only look it up to see if it exists, but do not include it in the HiveUDF since it is
       // not always serializable.
       val functionInfo: FunctionInfo =
-        Option(getFunctionInfo(name.toLowerCase))
-          .getOrElse(throw new AnalysisException(s"undefined function $name"))
+        Option(getFunctionInfo(name.toLowerCase)).getOrElse(
+          throw new AnalysisException(s"undefined function $name"))
 
       val functionClassName = functionInfo.getFunctionClass.getName
 
@@ -151,34 +151,30 @@ private[hive] class HiveFunctionRegistry(
 
   /* List all of the registered function names. */
   override def listFunction(): Seq[String] = {
-    (FunctionRegistry.getFunctionNames.asScala ++ underlying
-      .listFunction()).toList.sorted
+    (FunctionRegistry.getFunctionNames.asScala ++ underlying.listFunction()).toList.sorted
   }
 
   /* Get the class of the registered function by specified name. */
   override def lookupFunction(name: String): Option[ExpressionInfo] = {
-    underlying
-      .lookupFunction(name)
-      .orElse(Try {
-        val info = getFunctionInfo(name)
-        val annotation =
-          info.getFunctionClass.getAnnotation(classOf[Description])
-        if (annotation != null) {
-          Some(
-            new ExpressionInfo(
-              info.getFunctionClass.getCanonicalName,
-              annotation.name(),
-              annotation.value(),
-              annotation.extended()))
-        } else {
-          Some(
-            new ExpressionInfo(
-              info.getFunctionClass.getCanonicalName,
-              name,
-              null,
-              null))
-        }
-      }.getOrElse(None))
+    underlying.lookupFunction(name).orElse(Try {
+      val info = getFunctionInfo(name)
+      val annotation = info.getFunctionClass.getAnnotation(classOf[Description])
+      if (annotation != null) {
+        Some(
+          new ExpressionInfo(
+            info.getFunctionClass.getCanonicalName,
+            annotation.name(),
+            annotation.value(),
+            annotation.extended()))
+      } else {
+        Some(
+          new ExpressionInfo(
+            info.getFunctionClass.getCanonicalName,
+            name,
+            null,
+            null))
+      }
+    }.getOrElse(None))
   }
 }
 
@@ -303,13 +299,10 @@ private[hive] case class HiveGenericUDF(
   }
 
   @transient
-  private lazy val deferredObjects = argumentInspectors
-    .zip(children)
-    .map {
-      case (inspect, child) =>
-        new DeferredObjectAdapter(inspect, child.dataType)
-    }
-    .toArray[DeferredObject]
+  private lazy val deferredObjects = argumentInspectors.zip(children).map {
+    case (inspect, child) =>
+      new DeferredObjectAdapter(inspect, child.dataType)
+  }.toArray[DeferredObject]
 
   override lazy val dataType: DataType = inspectorToDataType(returnInspector)
 
@@ -319,11 +312,9 @@ private[hive] case class HiveGenericUDF(
     var i = 0
     while (i < children.length) {
       val idx = i
-      deferredObjects(i)
-        .asInstanceOf[DeferredObjectAdapter]
-        .set(() => {
-          children(idx).eval(input)
-        })
+      deferredObjects(i).asInstanceOf[DeferredObjectAdapter].set(() => {
+        children(idx).eval(input)
+      })
       i += 1
     }
     unwrap(function.evaluate(deferredObjects), returnInspector)

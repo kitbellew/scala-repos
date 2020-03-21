@@ -56,8 +56,7 @@ class ParquetAvroCompatibilitySuite
         writer =>
           (0 until 10).foreach { i =>
             writer.write(
-              AvroPrimitives
-                .newBuilder()
+              AvroPrimitives.newBuilder()
                 .setBoolColumn(i % 2 == 0)
                 .setIntColumn(i)
                 .setLongColumn(i.toLong * 10)
@@ -97,8 +96,7 @@ class ParquetAvroCompatibilitySuite
         AvroOptionalPrimitives.getClassSchema) { writer =>
         (0 until 10).foreach { i =>
           val record = if (i % 3 == 0) {
-            AvroOptionalPrimitives
-              .newBuilder()
+            AvroOptionalPrimitives.newBuilder()
               .setMaybeBoolColumn(null)
               .setMaybeIntColumn(null)
               .setMaybeLongColumn(null)
@@ -108,8 +106,7 @@ class ParquetAvroCompatibilitySuite
               .setMaybeStringColumn(null)
               .build()
           } else {
-            AvroOptionalPrimitives
-              .newBuilder()
+            AvroOptionalPrimitives.newBuilder()
               .setMaybeBoolColumn(i % 2 == 0)
               .setMaybeIntColumn(i)
               .setMaybeLongColumn(i.toLong * 10)
@@ -157,16 +154,14 @@ class ParquetAvroCompatibilitySuite
         (0 until 10).foreach { i =>
           val record = {
             val builder =
-              AvroNonNullableArrays
-                .newBuilder()
+              AvroNonNullableArrays.newBuilder()
                 .setStringsColumn(Seq.tabulate(3)(i => s"val_$i").asJava)
 
             if (i % 3 == 0) {
               builder.setMaybeIntsColumn(null).build()
             } else {
-              builder
-                .setMaybeIntsColumn(Seq.tabulate(3)(Int.box).asJava)
-                .build()
+              builder.setMaybeIntsColumn(
+                Seq.tabulate(3)(Int.box).asJava).build()
             }
           }
 
@@ -199,13 +194,9 @@ class ParquetAvroCompatibilitySuite
         writer =>
           (0 until 10).foreach { i =>
             writer.write(
-              AvroArrayOfArray
-                .newBuilder()
-                .setIntArraysColumn(
-                  Seq
-                    .tabulate(3, 3)((i, j) => i * 3 + j: Integer)
-                    .map(_.asJava)
-                    .asJava)
+              AvroArrayOfArray.newBuilder()
+                .setIntArraysColumn(Seq.tabulate(3, 3)((i, j) =>
+                  i * 3 + j: Integer).map(_.asJava).asJava)
                 .build())
           }
       }
@@ -226,14 +217,10 @@ class ParquetAvroCompatibilitySuite
         writer =>
           (0 until 10).foreach { i =>
             writer.write(
-              AvroMapOfArray
-                .newBuilder()
-                .setStringToIntsColumn(Seq
-                  .tabulate(3) { i =>
-                    i.toString -> Seq.tabulate(3)(j => i + j: Integer).asJava
-                  }
-                  .toMap
-                  .asJava)
+              AvroMapOfArray.newBuilder()
+                .setStringToIntsColumn(Seq.tabulate(3) { i =>
+                  i.toString -> Seq.tabulate(3)(j => i + j: Integer).asJava
+                }.toMap.asJava)
                 .build())
           }
       }
@@ -243,10 +230,8 @@ class ParquetAvroCompatibilitySuite
       checkAnswer(
         sqlContext.read.parquet(path),
         (0 until 10).map { i =>
-          Row(
-            Seq
-              .tabulate(3)(i => i.toString -> Seq.tabulate(3)(j => i + j))
-              .toMap)
+          Row(Seq.tabulate(3)(i =>
+            i.toString -> Seq.tabulate(3)(j => i + j)).toMap)
         })
     }
   }
@@ -268,13 +253,11 @@ class ParquetAvroCompatibilitySuite
           Row(
             Seq.tabulate(3)(n => s"arr_${i + n}"),
             Seq.tabulate(3)(n => n.toString -> (i + n: Integer)).toMap,
-            Seq
-              .tabulate(3) { n =>
-                (i + n).toString -> Seq.tabulate(3) { m =>
-                  Row(Seq.tabulate(3)(j => i + j + m), s"val_${i + m}")
-                }
+            Seq.tabulate(3) { n =>
+              (i + n).toString -> Seq.tabulate(3) { m =>
+                Row(Seq.tabulate(3)(j => i + j + m), s"val_${i + m}")
               }
-              .toMap
+            }.toMap
           )
         }
       )
@@ -283,28 +266,23 @@ class ParquetAvroCompatibilitySuite
 
   def makeParquetAvroCompat(i: Int): ParquetAvroCompat = {
     def makeComplexColumn(i: Int): JMap[String, JList[Nested]] = {
-      Seq
-        .tabulate(3) { n =>
-          (i + n).toString -> Seq
-            .tabulate(3) { m =>
-              Nested
-                .newBuilder()
-                .setNestedIntsColumn(
-                  Seq.tabulate(3)(j => i + j + m: Integer).asJava)
-                .setNestedStringColumn(s"val_${i + m}")
-                .build()
-            }
-            .asJava
-        }
-        .toMap
-        .asJava
+      Seq.tabulate(3) { n =>
+        (i + n).toString -> Seq.tabulate(3) { m =>
+          Nested
+            .newBuilder()
+            .setNestedIntsColumn(Seq.tabulate(3)(j =>
+              i + j + m: Integer).asJava)
+            .setNestedStringColumn(s"val_${i + m}")
+            .build()
+        }.asJava
+      }.toMap.asJava
     }
 
     ParquetAvroCompat
       .newBuilder()
       .setStringsColumn(Seq.tabulate(3)(n => s"arr_${i + n}").asJava)
-      .setStringToIntColumn(
-        Seq.tabulate(3)(n => n.toString -> (i + n: Integer)).toMap.asJava)
+      .setStringToIntColumn(Seq.tabulate(3)(n =>
+        n.toString -> (i + n: Integer)).toMap.asJava)
       .setComplexColumn(makeComplexColumn(i))
       .build()
   }

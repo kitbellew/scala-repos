@@ -28,8 +28,8 @@ class CORSFilterProvider @Inject() (
     materializer: Materializer)
     extends Provider[CORSFilter] {
   lazy val get = {
-    val pathPrefixes = PlayConfig(configuration)
-      .get[Seq[String]]("play.filters.cors.pathPrefixes")
+    val pathPrefixes = PlayConfig(configuration).get[Seq[String]](
+      "play.filters.cors.pathPrefixes")
     new CORSFilter(corsConfig, errorHandler, pathPrefixes)(materializer)
   }
 }

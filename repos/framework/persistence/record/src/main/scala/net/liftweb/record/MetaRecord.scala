@@ -124,11 +124,9 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       }
 
     // sort each list based on having the most specific type and use that method
-    val realMeth = map.values
-      .map(_.sortWith {
-        case (a, b) => !a.getReturnType.isAssignableFrom(b.getReturnType)
-      })
-      .map(_.head)
+    val realMeth = map.values.map(_.sortWith {
+      case (a, b) => !a.getReturnType.isAssignableFrom(b.getReturnType)
+    }).map(_.head)
 
     for (v <- realMeth) {
       v.invoke(rec) match {
@@ -341,22 +339,18 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       case e @ <lift:field>{_*}</lift:field> =>
         e.attribute("name") match {
           case Some(name) =>
-            fieldByName(name.toString, inst)
-              .flatMap(_.toForm)
-              .openOr(NodeSeq.Empty)
+            fieldByName(name.toString, inst).flatMap(_.toForm).openOr(
+              NodeSeq.Empty)
           case _ => NodeSeq.Empty
         }
 
       case e @ <lift:field_msg>{_*}</lift:field_msg> =>
         e.attribute("name") match {
           case Some(name) =>
-            fieldByName(name.toString, inst)
-              .map(_.uniqueFieldId match {
-                case Full(id) =>
-                  <lift:msg id={id}/>
-                case _ => NodeSeq.Empty
-              })
-              .openOr(NodeSeq.Empty)
+            fieldByName(name.toString, inst).map(_.uniqueFieldId match {
+              case Full(id) => <lift:msg id={id}/>
+              case _        => NodeSeq.Empty
+            }).openOr(NodeSeq.Empty)
           case _ => NodeSeq.Empty
         }
 

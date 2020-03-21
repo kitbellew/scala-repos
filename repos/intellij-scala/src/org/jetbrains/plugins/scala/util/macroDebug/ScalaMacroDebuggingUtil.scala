@@ -101,15 +101,13 @@ object ScalaMacroDebuggingUtil {
 
       dataStream.close()
 
-      val synFile = PsiFileFactory
-        .getInstance(file.getManager.getProject)
-        .createFileFromText(
-          "expanded_" + file.getName,
-          ScalaFileType.SCALA_FILE_TYPE,
-          linesRed.toString(),
-          file.getModificationStamp,
-          true)
-        .asInstanceOf[ScalaFile]
+      val synFile = PsiFileFactory.getInstance(
+        file.getManager.getProject).createFileFromText(
+        "expanded_" + file.getName,
+        ScalaFileType.SCALA_FILE_TYPE,
+        linesRed.toString(),
+        file.getModificationStamp,
+        true).asInstanceOf[ScalaFile]
 
       SOURCE_CACHE += (canonicalPath -> synFile)
       PREIMAGE_CACHE += (synFile -> file)
@@ -182,17 +180,12 @@ object ScalaMacroDebuggingUtil {
   def expandMacros(project: Project) {
     val sourceEditor =
       FileEditorManager.getInstance(project).getSelectedTextEditor
-    val macroEditor = WorksheetEditorPrinter
-      .newMacrosheetUiFor(
-        sourceEditor,
-        PsiDocumentManager
-          .getInstance(project)
-          .getPsiFile(sourceEditor.getDocument)
-          .getVirtualFile)
-      .getViewerEditor
-    val macrosheetFile = PsiDocumentManager
-      .getInstance(project)
-      .getPsiFile(macroEditor.getDocument)
+    val macroEditor = WorksheetEditorPrinter.newMacrosheetUiFor(
+      sourceEditor,
+      PsiDocumentManager.getInstance(project).getPsiFile(
+        sourceEditor.getDocument).getVirtualFile).getViewerEditor
+    val macrosheetFile = PsiDocumentManager.getInstance(project).getPsiFile(
+      macroEditor.getDocument)
 
     copyTextBetweenEditors(sourceEditor, macroEditor, project)
 
@@ -217,8 +210,8 @@ object ScalaMacroDebuggingUtil {
                 |print("!")
                 |()
               """.stripMargin
-              val expansion = ScalaPsiElementFactory
-                .createBlockExpressionWithoutBracesFromText(
+              val expansion =
+                ScalaPsiElementFactory.createBlockExpressionWithoutBracesFromText(
                   s"{$macroExpansion}",
                   PsiManager.getInstance(project))
               var statement = macroCall.getParent.addAfter(expansion, macroCall)

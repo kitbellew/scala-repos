@@ -29,8 +29,8 @@ class ScTypeParamClauseStubImpl[ParentPsi <: PsiElement](
       typeParamClauseText: String) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.typeParamClauseText = typeParamClauseText
   }
 

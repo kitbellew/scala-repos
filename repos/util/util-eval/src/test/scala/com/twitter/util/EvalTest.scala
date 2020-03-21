@@ -21,8 +21,8 @@ class EvalTest extends WordSpec {
 
     "apply(new File(...))" in {
       assert(
-        (new Eval)
-          .apply[Int](TempFile.fromResourcePath("/OnePlusOne.scala")) == 2)
+        (new Eval).apply[Int](
+          TempFile.fromResourcePath("/OnePlusOne.scala")) == 2)
     }
 
     "apply(new File(...), new File(...))" in {
@@ -103,13 +103,13 @@ class EvalTest extends WordSpec {
 
     "apply(InputStream)" in {
       assert(
-        (new Eval)
-          .apply[Int](getClass.getResourceAsStream("/OnePlusOne.scala")) == 2)
+        (new Eval).apply[Int](
+          getClass.getResourceAsStream("/OnePlusOne.scala")) == 2)
     }
 
     "uses deprecated" in {
-      val deprecated = (new Eval)
-        .apply[() => String](TempFile.fromResourcePath("/Deprecated.scala"))
+      val deprecated = (new Eval).apply[() => String](
+        TempFile.fromResourcePath("/Deprecated.scala"))
       assert(deprecated() == "hello")
     }
 

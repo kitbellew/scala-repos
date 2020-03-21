@@ -46,10 +46,8 @@ object Scalajsld {
   private implicit object OutputModeRead extends scopt.Read[OutputMode] {
     val arity = 1
     val reads = { (s: String) =>
-      OutputMode.All
-        .find(_.toString() == s)
-        .getOrElse(
-          throw new IllegalArgumentException(s"$s is not a valid output mode"))
+      OutputMode.All.find(_.toString() == s).getOrElse(
+        throw new IllegalArgumentException(s"$s is not a valid output mode"))
     }
   }
 
@@ -160,13 +158,11 @@ object Scalajsld {
         if (options.fullOpt) options.semantics.optimized
         else options.semantics
 
-      val frontendConfig = LinkerFrontend
-        .Config()
+      val frontendConfig = LinkerFrontend.Config()
         .withBypassLinkingErrorsInternal(options.bypassLinkingErrors)
         .withCheckIR(options.checkIR)
 
-      val backendConfig = LinkerBackend
-        .Config()
+      val backendConfig = LinkerBackend.Config()
         .withRelativizeSourceMapBase(options.relativizeSourceMap)
         .withPrettyPrint(options.prettyPrint)
 

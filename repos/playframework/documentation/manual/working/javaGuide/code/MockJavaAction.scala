@@ -63,32 +63,31 @@ package javaguide.testhelpers {
         action: Action[Http.RequestBody],
         requestBuilder: play.mvc.Http.RequestBuilder)(implicit
         mat: Materializer): Result = {
-      Helpers
-        .await(requestBuilder.body() match {
-          case null =>
-            action.apply(requestBuilder.build()._underlyingRequest)
-          case other =>
-            Helpers.call(
-              action,
-              requestBuilder.build()._underlyingRequest,
-              other.asBytes())
-        })
-        .asJava
+      Helpers.await(requestBuilder.body() match {
+        case null =>
+          action.apply(requestBuilder.build()._underlyingRequest)
+        case other =>
+          Helpers.call(
+            action,
+            requestBuilder.build()._underlyingRequest,
+            other.asBytes())
+      }).asJava
     }
 
     def callWithStringBody(
         action: Action[Http.RequestBody],
         requestBuilder: play.mvc.Http.RequestBuilder,
         body: String)(implicit mat: Materializer): Result = {
-      Helpers
-        .await(
-          Helpers.call(action, requestBuilder.build()._underlyingRequest, body))
-        .asJava
+      Helpers.await(
+        Helpers.call(
+          action,
+          requestBuilder.build()._underlyingRequest,
+          body)).asJava
     }
 
     def setContext(request: play.mvc.Http.RequestBuilder): Unit = {
-      Http.Context.current
-        .set(JavaHelpers.createJavaContext(request.build()._underlyingRequest))
+      Http.Context.current.set(
+        JavaHelpers.createJavaContext(request.build()._underlyingRequest))
     }
 
     def removeContext: Unit = Http.Context.current.remove()

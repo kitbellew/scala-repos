@@ -59,15 +59,15 @@ private[hive] case class CreateTableAsSelect(
       val withFormat =
         tableDesc.withNewStorage(
           inputFormat =
-            tableDesc.storage.inputFormat
-              .orElse(Some(classOf[TextInputFormat].getName)),
+            tableDesc.storage.inputFormat.orElse(
+              Some(classOf[TextInputFormat].getName)),
           outputFormat =
             tableDesc.storage.outputFormat
               .orElse(
                 Some(
                   classOf[HiveIgnoreKeyTextOutputFormat[Text, Text]].getName)),
-          serde = tableDesc.storage.serde
-            .orElse(Some(classOf[LazySimpleSerDe].getName))
+          serde = tableDesc.storage.serde.orElse(
+            Some(classOf[LazySimpleSerDe].getName))
         )
 
       val withSchema = if (withFormat.schema.isEmpty) {
@@ -80,12 +80,14 @@ private[hive] case class CreateTableAsSelect(
         withFormat
       }
 
-      hiveContext.sessionState.catalog.client
-        .createTable(withSchema, ignoreIfExists = false)
+      hiveContext.sessionState.catalog.client.createTable(
+        withSchema,
+        ignoreIfExists = false)
 
       // Get the Metastore Relation
-      hiveContext.sessionState.catalog
-        .lookupRelation(tableIdentifier, None) match {
+      hiveContext.sessionState.catalog.lookupRelation(
+        tableIdentifier,
+        None) match {
         case r: MetastoreRelation => r
       }
     }
@@ -99,10 +101,8 @@ private[hive] case class CreateTableAsSelect(
         throw new AnalysisException(s"$tableIdentifier already exists.")
       }
     } else {
-      hiveContext
-        .executePlan(
-          InsertIntoTable(metastoreRelation, Map(), query, true, false))
-        .toRdd
+      hiveContext.executePlan(
+        InsertIntoTable(metastoreRelation, Map(), query, true, false)).toRdd
     }
 
     Seq.empty[Row]

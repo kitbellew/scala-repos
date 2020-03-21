@@ -57,9 +57,9 @@ private[remote] class AkkaProtocolSettings(config: Config) {
     else if (enabledTransports.contains("akka.remote.netty.ssl"))
       config.getMillisDuration("akka.remote.netty.ssl.connection-timeout")
     else
-      config
-        .getMillisDuration("akka.remote.handshake-timeout")
-        .requiring(_ > Duration.Zero, "handshake-timeout must be > 0")
+      config.getMillisDuration("akka.remote.handshake-timeout").requiring(
+        _ > Duration.Zero,
+        "handshake-timeout must be > 0")
   }
 }
 

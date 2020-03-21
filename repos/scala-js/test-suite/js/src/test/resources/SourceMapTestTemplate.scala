@@ -91,12 +91,8 @@ class SourceMapTest {
 
     /**/
     /**/ /***/
-    json
-      .asInstanceOf[JsArray]
-      .value(index)
-      .asInstanceOf[JsObject]
-      .value(fieldName)
-      .value
+    json.asInstanceOf[JsArray].value(index).asInstanceOf[JsObject].value(
+      fieldName).value
   }
   def run() = {
 

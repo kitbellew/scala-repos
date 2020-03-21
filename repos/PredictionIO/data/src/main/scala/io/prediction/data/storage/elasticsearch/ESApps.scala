@@ -46,11 +46,8 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
       (estype ->
         ("properties" ->
           ("name" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
-    indices
-      .preparePutMapping(index)
-      .setType(estype)
-      .setSource(compact(render(json)))
-      .get
+    indices.preparePutMapping(index).setType(estype).setSource(
+      compact(render(json))).get
   }
 
   def insert(app: App): Option[Int] = {
@@ -79,11 +76,8 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
 
   def getByName(name: String): Option[App] = {
     try {
-      val response = client
-        .prepareSearch(index)
-        .setTypes(estype)
-        .setPostFilter(termFilter("name", name))
-        .get
+      val response = client.prepareSearch(index).setTypes(estype).setPostFilter(
+        termFilter("name", name)).get
       val hits = response.getHits().hits()
       if (hits.size > 0) {
         Some(read[App](hits.head.getSourceAsString))
@@ -110,10 +104,9 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
 
   def update(app: App): Unit = {
     try {
-      val response = client
-        .prepareIndex(index, estype, app.id.toString)
-        .setSource(write(app))
-        .get()
+      val response =
+        client.prepareIndex(index, estype, app.id.toString).setSource(
+          write(app)).get()
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)

@@ -24,10 +24,9 @@ class ScClassFileViewProvider(
   override def getContents: CharSequence =
     if (!isScalaFile) ""
     else
-      DecompilerUtil
-        .decompile(getVirtualFile, getVirtualFile.contentsToByteArray)
-        .sourceText
-        .replace("\r", "")
+      DecompilerUtil.decompile(
+        getVirtualFile,
+        getVirtualFile.contentsToByteArray).sourceText.replace("\r", "")
 
   override def createFile(
       project: Project,

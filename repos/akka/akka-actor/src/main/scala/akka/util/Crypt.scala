@@ -37,9 +37,8 @@ object Crypt {
   def hexify(bytes: Array[Byte]): String = {
     val builder = new java.lang.StringBuilder(bytes.length * 2)
     bytes.foreach { byte ⇒
-      builder
-        .append(hex.charAt((byte & 0xF0) >> 4))
-        .append(hex.charAt(byte & 0xF))
+      builder.append(hex.charAt((byte & 0xF0) >> 4)).append(
+        hex.charAt(byte & 0xF))
     }
     builder.toString
   }

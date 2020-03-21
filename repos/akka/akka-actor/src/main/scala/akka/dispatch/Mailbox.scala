@@ -237,9 +237,9 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     // Note: contrary how it looks, there is no allocation here, as SystemMessageList is a value class and as such
     // it just exists as a typed view during compile-time. The actual return type is still SystemMessage.
     new LatestFirstSystemMessageList(
-      Unsafe.instance
-        .getObjectVolatile(this, AbstractMailbox.systemMessageOffset)
-        .asInstanceOf[SystemMessage])
+      Unsafe.instance.getObjectVolatile(
+        this,
+        AbstractMailbox.systemMessageOffset).asInstanceOf[SystemMessage])
 
   protected final def systemQueuePut(
       _old: LatestFirstSystemMessageList,
@@ -363,8 +363,7 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     }
     // if we got an interrupted exception while handling system messages, then rethrow it
     if (interruption ne null) {
-      Thread
-        .interrupted() // clear interrupted flag before throwing according to java convention
+      Thread.interrupted() // clear interrupted flag before throwing according to java convention
       throw interruption
     }
   }
@@ -471,13 +470,9 @@ class BoundedNodeMessageQueue(capacity: Int)
 
   final def enqueue(receiver: ActorRef, handle: Envelope): Unit =
     if (!add(handle))
-      receiver
-        .asInstanceOf[InternalActorRef]
-        .provider
-        .deadLetters
-        .tell(
-          DeadLetter(handle.message, handle.sender, receiver),
-          handle.sender)
+      receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+        DeadLetter(handle.message, handle.sender, receiver),
+        handle.sender)
 
   final def dequeue(): Envelope = poll()
 
@@ -527,8 +522,9 @@ private[akka] trait DefaultSystemMessageQueue { self: Mailbox ⇒
     val currentList = systemQueueGet
     if (currentList.head == NoMessage) {
       if (actor ne null)
-        actor.dispatcher.mailboxes.deadLetterMailbox
-          .systemEnqueue(receiver, message)
+        actor.dispatcher.mailboxes.deadLetterMailbox.systemEnqueue(
+          receiver,
+          message)
     } else {
       if (!systemQueuePut(currentList, message :: currentList)) {
         message.unlink()
@@ -618,13 +614,9 @@ trait BoundedQueueBasedMessageQueue
   def enqueue(receiver: ActorRef, handle: Envelope): Unit =
     if (pushTimeOut.length >= 0) {
       if (!queue.offer(handle, pushTimeOut.length, pushTimeOut.unit))
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(handle.message, handle.sender, receiver),
-            handle.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(handle.message, handle.sender, receiver),
+          handle.sender)
     } else queue put handle
 
   def dequeue(): Envelope = queue.poll()
@@ -677,25 +669,17 @@ trait BoundedDequeBasedMessageQueue
   def enqueue(receiver: ActorRef, handle: Envelope): Unit =
     if (pushTimeOut.length >= 0) {
       if (!queue.offer(handle, pushTimeOut.length, pushTimeOut.unit))
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(handle.message, handle.sender, receiver),
-            handle.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(handle.message, handle.sender, receiver),
+          handle.sender)
     } else queue put handle
 
   def enqueueFirst(receiver: ActorRef, handle: Envelope): Unit =
     if (pushTimeOut.length >= 0) {
       if (!queue.offerFirst(handle, pushTimeOut.length, pushTimeOut.unit))
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(handle.message, handle.sender, receiver),
-            handle.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(handle.message, handle.sender, receiver),
+          handle.sender)
     } else queue putFirst handle
 
   def dequeue(): Envelope = queue.poll()
@@ -1178,13 +1162,9 @@ object BoundedControlAwareMailbox {
         }
 
       if (!inserted) {
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(envelope.message, envelope.sender, receiver),
-            envelope.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(envelope.message, envelope.sender, receiver),
+          envelope.sender)
       }
     }
   }

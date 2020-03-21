@@ -306,10 +306,8 @@ trait BasicBackend { self =>
         ctx: Context,
         highPrio: Boolean): Future[R] = {
       val promise = Promise[R]()
-      ctx
-        .getEC(synchronousExecutionContext)
-        .prepare
-        .execute(new AsyncExecutor.PrioritizedRunnable {
+      ctx.getEC(synchronousExecutionContext).prepare.execute(
+        new AsyncExecutor.PrioritizedRunnable {
           def highPriority = highPrio
           def run: Unit =
             try {
@@ -349,10 +347,8 @@ trait BasicBackend { self =>
         ctx: StreamingContext,
         highPrio: Boolean)(initialState: a.StreamState): Unit =
       try {
-        ctx
-          .getEC(synchronousExecutionContext)
-          .prepare
-          .execute(new AsyncExecutor.PrioritizedRunnable {
+        ctx.getEC(synchronousExecutionContext).prepare.execute(
+          new AsyncExecutor.PrioritizedRunnable {
             private[this] def str(l: Long) =
               if (l != Long.MaxValue) l
               else if (GlobalConfig.unicodeDump) "\u221E"
@@ -453,8 +449,8 @@ trait BasicBackend { self =>
             case a: DBIOAction[_, _, _] => a.nonFusedEquivalentAction
             case o                      => o
           }).get(logA)
-        val msg = DumpInfo.highlight("#" + ctx.sequenceCounter) + ": " + dump
-          .substring(0, dump.length - 1)
+        val msg = DumpInfo.highlight(
+          "#" + ctx.sequenceCounter) + ": " + dump.substring(0, dump.length - 1)
         actionLogger.debug(msg)
       }
     }

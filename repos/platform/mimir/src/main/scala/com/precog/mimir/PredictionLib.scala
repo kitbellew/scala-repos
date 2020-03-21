@@ -90,40 +90,39 @@ trait PredictionLibModule[M[+_]]
                             confidence: Array[Double],
                             prediction: Array[Double])
 
-                        val res = Model
-                          .filteredRange(scannerPrelims.includedModel, range)
-                          .foldLeft(
-                            Intervals(
-                              new Array[Double](range.end),
-                              new Array[Double](range.end))) {
-                            case (Intervals(arrConf, arrPred), i) =>
-                              val includedDoubles =
-                                1.0 +: (scannerPrelims.cpaths map {
-                                  scannerPrelims.includedCols(_).apply(i)
-                                })
-                              val includedMatrix =
-                                new Matrix(Array(includedDoubles.toArray))
+                        val res = Model.filteredRange(
+                          scannerPrelims.includedModel,
+                          range).foldLeft(
+                          Intervals(
+                            new Array[Double](range.end),
+                            new Array[Double](range.end))) {
+                          case (Intervals(arrConf, arrPred), i) =>
+                            val includedDoubles =
+                              1.0 +: (scannerPrelims.cpaths map {
+                                scannerPrelims.includedCols(_).apply(i)
+                              })
+                            val includedMatrix =
+                              new Matrix(Array(includedDoubles.toArray))
 
-                              val prod = includedMatrix
-                                .times(varCovarMatrix)
-                                .times(includedMatrix.transpose())
-                                .getArray
+                            val prod =
+                              includedMatrix.times(varCovarMatrix).times(
+                                includedMatrix.transpose()).getArray
 
-                              val inner = {
-                                if (prod.length == 1 && prod.head.length == 1)
-                                  prod(0)(0)
-                                else sys.error("matrix of wrong shape")
-                              }
+                            val inner = {
+                              if (prod.length == 1 && prod.head.length == 1)
+                                prod(0)(0)
+                              else sys.error("matrix of wrong shape")
+                            }
 
-                              val conf = math.sqrt(inner)
-                              val pred = math.sqrt(
-                                math.pow(model.resStdErr, 2.0) + inner)
+                            val conf = math.sqrt(inner)
+                            val pred =
+                              math.sqrt(math.pow(model.resStdErr, 2.0) + inner)
 
-                              arrConf(i) = tStat * conf
-                              arrPred(i) = tStat * pred
+                            arrConf(i) = tStat * conf
+                            arrPred(i) = tStat * pred
 
-                              Intervals(arrConf, arrPred)
-                          }
+                            Intervals(arrConf, arrPred)
+                        }
 
                         val confidenceUpper =
                           arraySum(resultArray, res.confidence)

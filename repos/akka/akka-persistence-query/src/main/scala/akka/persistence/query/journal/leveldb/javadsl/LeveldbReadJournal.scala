@@ -94,9 +94,10 @@ class LeveldbReadJournal(
       persistenceId: String,
       fromSequenceNr: Long,
       toSequenceNr: Long): Source[EventEnvelope, NotUsed] =
-    scaladslReadJournal
-      .eventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr)
-      .asJava
+    scaladslReadJournal.eventsByPersistenceId(
+      persistenceId,
+      fromSequenceNr,
+      toSequenceNr).asJava
 
   /**
     * Same type of query as [[#eventsByPersistenceId]] but the event stream
@@ -107,9 +108,10 @@ class LeveldbReadJournal(
       persistenceId: String,
       fromSequenceNr: Long,
       toSequenceNr: Long): Source[EventEnvelope, NotUsed] =
-    scaladslReadJournal
-      .currentEventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr)
-      .asJava
+    scaladslReadJournal.currentEventsByPersistenceId(
+      persistenceId,
+      fromSequenceNr,
+      toSequenceNr).asJava
 
   /**
     * `eventsByTag` is used for retrieving events that were marked with

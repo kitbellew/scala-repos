@@ -97,9 +97,8 @@ class UISeleniumSuite
 
         // check whether statements exists
         queries.foreach { line =>
-          findAll(cssSelector("""ul table tbody tr td"""))
-            .map(_.text)
-            .toList should contain(line)
+          findAll(cssSelector("""ul table tbody tr td""")).map(
+            _.text).toList should contain(line)
         }
       }
     }

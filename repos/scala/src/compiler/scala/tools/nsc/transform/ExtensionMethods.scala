@@ -90,9 +90,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
            |
            | Candidates (signatures normalized):
            |
-           | ${candidates
-          .map(c => c.name + ":" + normalize(c.tpe, imeth.owner))
-          .mkString("\n")}
+           | ${candidates.map(c =>
+          c.name + ":" + normalize(c.tpe, imeth.owner)).mkString("\n")}
            |
            | Eligible Names: ${extensionNames(imeth).mkString(",")}" """
       )
@@ -273,8 +272,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
               .substituteSymbols(origParams, extensionParams)
               .substituteThis(origThis, extensionThis)
               .changeOwner(origMeth -> extensionMeth)
-            new SubstututeRecursion(origMeth, extensionMeth, unit)
-              .transform(tree)
+            new SubstututeRecursion(origMeth, extensionMeth, unit).transform(
+              tree)
           }
           val castBody =
             if (extensionBody.tpe <:< extensionMono.finalResultType)

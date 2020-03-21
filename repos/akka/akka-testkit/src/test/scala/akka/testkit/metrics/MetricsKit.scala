@@ -184,11 +184,10 @@ private[akka] trait MetricsKit extends MetricsKitOps {
       case Some(existing: M) ⇒ existing
       case Some(existing) ⇒
         throw new IllegalArgumentException(
-          "Key: [%s] is already for different kind of metric! Was [%s], expected [%s]"
-            .format(
-              key,
-              metric.getClass.getSimpleName,
-              tag.runtimeClass.getSimpleName))
+          "Key: [%s] is already for different kind of metric! Was [%s], expected [%s]".format(
+            key,
+            metric.getClass.getSimpleName,
+            tag.runtimeClass.getSimpleName))
       case _ ⇒ registry.register(key, metric)
     }
   }
@@ -247,9 +246,8 @@ private[akka] class MetricsKitSettings(config: Config) {
 
   object GraphiteReporter {
     val Prefix = config.getString("akka.test.metrics.reporter.graphite.prefix")
-    lazy val Host = config
-      .getString("akka.test.metrics.reporter.graphite.host")
-      .requiring(
+    lazy val Host =
+      config.getString("akka.test.metrics.reporter.graphite.host").requiring(
         v ⇒ !v.trim.isEmpty,
         "akka.test.metrics.reporter.graphite.host was used but was empty!")
     val Port = config.getInt("akka.test.metrics.reporter.graphite.port")

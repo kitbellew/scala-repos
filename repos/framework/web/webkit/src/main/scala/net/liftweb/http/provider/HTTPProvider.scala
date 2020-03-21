@@ -68,8 +68,9 @@ trait HTTPProvider {
 
       CurrentReq.doWith(newReq) {
         URLRewriter.doWith(url =>
-          NamedPF
-            .applyBox(resp.encodeUrl(url), LiftRules.urlDecorate.toList) openOr
+          NamedPF.applyBox(
+            resp.encodeUrl(url),
+            LiftRules.urlDecorate.toList) openOr
             resp.encodeUrl(url)) {
           if (!(isLiftRequest_?(newReq) &&
                 actualServlet.service(newReq, resp))) {
@@ -86,10 +87,8 @@ trait HTTPProvider {
   protected def bootLift(loader: Box[String]): Unit = {
     try {
       val b: Bootable = loader.map(b =>
-        Class
-          .forName(b)
-          .newInstance
-          .asInstanceOf[Bootable]) openOr DefaultBootstrap
+        Class.forName(b).newInstance.asInstanceOf[
+          Bootable]) openOr DefaultBootstrap
       preBoot
       b.boot
     } catch {
@@ -143,8 +142,7 @@ trait HTTPProvider {
     } catch {
       case _: Exception =>
         logger.error(
-          "LiftWeb core resource bundle for locale " + Locale
-            .getDefault() + ", was not found ! ")
+          "LiftWeb core resource bundle for locale " + Locale.getDefault() + ", was not found ! ")
     } finally {
       LiftRules.bootFinished()
     }

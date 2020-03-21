@@ -21,8 +21,9 @@ object StreamTest extends SpecLite {
 
   "Order[Stream[Int]] is consistent with Order[List[Int]]" ! forAll {
     (a: Stream[Int], b: Stream[Int]) =>
-      Order[Stream[Int]].order(a, b) must_=== Order[List[Int]]
-        .order(a.toList, b.toList)
+      Order[Stream[Int]].order(a, b) must_=== Order[List[Int]].order(
+        a.toList,
+        b.toList)
   }
 
   "Order[Stream[Int]] is lazy" ! {
@@ -40,10 +41,8 @@ object StreamTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: Stream[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
-        .zipWithIndex
-        .filter(p => isEven(p._2))
-        .map(_._1) must_=== (a)
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2)).map(
+        _._1) must_=== (a)
   }
 
   "intercalate is same as intersperse(s).flatten" ! forAll {

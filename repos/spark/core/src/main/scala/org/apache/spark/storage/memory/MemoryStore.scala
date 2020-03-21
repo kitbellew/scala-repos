@@ -117,11 +117,10 @@ private[spark] class MemoryStore(
         entries.put(blockId, entry)
       }
       logInfo(
-        "Block %s stored as bytes in memory (estimated size %s, free %s)"
-          .format(
-            blockId,
-            Utils.bytesToString(size),
-            Utils.bytesToString(blocksMemoryUsed)))
+        "Block %s stored as bytes in memory (estimated size %s, free %s)".format(
+          blockId,
+          Utils.bytesToString(size),
+          Utils.bytesToString(blocksMemoryUsed)))
       true
     } else {
       false
@@ -366,9 +365,9 @@ private[spark] class MemoryStore(
             // We don't want to evict blocks which are currently being read, so we need to obtain
             // an exclusive write lock on blocks which are candidates for eviction. We perform a
             // non-blocking "tryLock" here in order to ignore blocks which are locked for reading:
-            if (blockManager.blockInfoManager
-                  .lockForWriting(blockId, blocking = false)
-                  .isDefined) {
+            if (blockManager.blockInfoManager.lockForWriting(
+                  blockId,
+                  blocking = false).isDefined) {
               selectedBlocks += blockId
               freedMemory += pair.getValue.size
             }

@@ -161,9 +161,9 @@ verboseErrors - whether to print verbose error messages (default: false)
     val apiUrl =
       properties.getProperty("baseUrl", "http://localhost:30070/query")
     val threads = properties.getProperty("threads", "1").toInt
-    val maxQuery = properties
-      .getProperty("maxQuery", sampleSet.testQueries.size.toString)
-      .toInt
+    val maxQuery = properties.getProperty(
+      "maxQuery",
+      sampleSet.testQueries.size.toString).toInt
     val apiKey = properties.getProperty("token", "root")
     val base = properties.getProperty("queryBase", "public")
     interval = properties.getProperty("iterations", "10").toInt
@@ -184,8 +184,7 @@ verboseErrors - whether to print verbose error messages (default: false)
             try {
               val started = System.nanoTime()
 
-              val f: Future[HttpResponse[JValue]] = client
-                .path(apiUrl)
+              val f: Future[HttpResponse[JValue]] = client.path(apiUrl)
                 .query("apiKey", apiKey)
                 .query("q", query)
                 .contentType[ByteChunk](application / MimeTypes.json)
@@ -260,10 +259,8 @@ histogram('platform) :=
     val index = random.nextInt(maxQuery)
     (
       index,
-      testQueries(index)
-        .format(base)
-        .replace("\n", " ")
-        .replace("  ", " ")
-        .trim())
+      testQueries(index).format(base).replace("\n", " ").replace(
+        "  ",
+        " ").trim())
   }
 }

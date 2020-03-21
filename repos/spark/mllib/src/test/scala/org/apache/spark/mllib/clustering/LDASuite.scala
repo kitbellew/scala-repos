@@ -71,8 +71,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Train a model
     val lda = new LDA()
-    lda
-      .setK(k)
+    lda.setK(k)
       .setOptimizer(new EMLDAOptimizer)
       .setDocConcentration(topicSmoothing)
       .setTopicConcentration(termSmoothing)
@@ -92,20 +91,14 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(model.topicsMatrix === localModel.topicsMatrix)
 
     // Check: topic summaries
-    val topicSummary = model
-      .describeTopics()
-      .map {
-        case (terms, termWeights) =>
-          Vectors.sparse(tinyVocabSize, terms, termWeights)
-      }
-      .sortBy(_.toString)
-    val localTopicSummary = localModel
-      .describeTopics()
-      .map {
-        case (terms, termWeights) =>
-          Vectors.sparse(tinyVocabSize, terms, termWeights)
-      }
-      .sortBy(_.toString)
+    val topicSummary = model.describeTopics().map {
+      case (terms, termWeights) =>
+        Vectors.sparse(tinyVocabSize, terms, termWeights)
+    }.sortBy(_.toString)
+    val localTopicSummary = localModel.describeTopics().map {
+      case (terms, termWeights) =>
+        Vectors.sparse(tinyVocabSize, terms, termWeights)
+    }.sortBy(_.toString)
     topicSummary.zip(localTopicSummary).foreach {
       case (topics, topicsLocal) =>
         assert(topics ~== topicsLocal absTol 0.01)
@@ -261,11 +254,9 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val corpus = sc.parallelize(docs, 2)
 
     // Set GammaShape large to avoid the stochastic impact.
-    val op = new OnlineLDAOptimizer()
-      .setTau0(1024)
-      .setKappa(0.51)
-      .setGammaShape(1e40)
-      .setMiniBatchFraction(1)
+    val op =
+      new OnlineLDAOptimizer().setTau0(1024).setKappa(0.51).setGammaShape(1e40)
+        .setMiniBatchFraction(1)
     val lda =
       new LDA().setK(k).setMaxIterations(1).setOptimizer(op).setSeed(12345)
 
@@ -296,13 +287,10 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("OnlineLDAOptimizer with toy data") {
     val docs = sc.parallelize(toyData)
-    val op = new OnlineLDAOptimizer()
-      .setMiniBatchFraction(1)
-      .setTau0(1024)
-      .setKappa(0.51)
+    val op = new OnlineLDAOptimizer().setMiniBatchFraction(1).setTau0(
+      1024).setKappa(0.51)
       .setGammaShape(1e10)
-    val lda = new LDA()
-      .setK(2)
+    val lda = new LDA().setK(2)
       .setDocConcentration(0.01)
       .setTopicConcentration(0.01)
       .setMaxIterations(100)
@@ -327,10 +315,12 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val ldaModel: LocalLDAModel = toyModel
 
     val docsSingleWord = sc.parallelize(
-      Array(Vectors.sparse(6, Array(0), Array(1))).zipWithIndex
+      Array(Vectors.sparse(6, Array(0), Array(1)))
+        .zipWithIndex
         .map { case (wordCounts, docId) => (docId.toLong, wordCounts) })
     val docsRepeatedWord = sc.parallelize(
-      Array(Vectors.sparse(6, Array(0), Array(5))).zipWithIndex
+      Array(Vectors.sparse(6, Array(0), Array(5)))
+        .zipWithIndex
         .map { case (wordCounts, docId) => (docId.toLong, wordCounts) })
 
     /* Verify results using gensim:
@@ -418,14 +408,12 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       (1, 0.99504))
 
     val actualPredictions = ldaModel.topicDistributions(docs).cache()
-    val topTopics = actualPredictions
-      .map {
-        case (id, topics) =>
-          // convert results to expectedPredictions format, which only has highest probability topic
-          val topicsBz = topics.toBreeze.toDenseVector
-          (id, (argmax(topicsBz), max(topicsBz)))
-      }
-      .sortByKey()
+    val topTopics = actualPredictions.map {
+      case (id, topics) =>
+        // convert results to expectedPredictions format, which only has highest probability topic
+        val topicsBz = topics.toBreeze.toDenseVector
+        (id, (argmax(topicsBz), max(topicsBz)))
+    }.sortByKey()
       .values
       .collect()
 
@@ -435,8 +423,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           expected._1 === actual._1 && (expected._2 ~== actual._2 relTol 1e-3d))
     }
 
-    docs
-      .collect()
+    docs.collect()
       .map(doc => ldaModel.topicDistribution(doc._2))
       .zip(actualPredictions.map(_._2).collect())
       .foreach {
@@ -448,13 +435,10 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("OnlineLDAOptimizer with asymmetric prior") {
     val docs = sc.parallelize(toyData)
-    val op = new OnlineLDAOptimizer()
-      .setMiniBatchFraction(1)
-      .setTau0(1024)
-      .setKappa(0.51)
+    val op = new OnlineLDAOptimizer().setMiniBatchFraction(1).setTau0(
+      1024).setKappa(0.51)
       .setGammaShape(1e10)
-    val lda = new LDA()
-      .setK(2)
+    val lda = new LDA().setK(2)
       .setDocConcentration(Vectors.dense(0.00001, 0.1))
       .setTopicConcentration(0.01)
       .setMaxIterations(100)
@@ -495,15 +479,11 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
   test("OnlineLDAOptimizer alpha hyperparameter optimization") {
     val k = 2
     val docs = sc.parallelize(toyData)
-    val op = new OnlineLDAOptimizer()
-      .setMiniBatchFraction(1)
-      .setTau0(1024)
-      .setKappa(0.51)
-      .setGammaShape(100)
-      .setOptimizeDocConcentration(true)
-      .setSampleWithReplacement(false)
-    val lda = new LDA()
-      .setK(k)
+    val op = new OnlineLDAOptimizer().setMiniBatchFraction(1).setTau0(
+      1024).setKappa(0.51)
+      .setGammaShape(100).setOptimizeDocConcentration(
+        true).setSampleWithReplacement(false)
+    val lda = new LDA().setK(k)
       .setDocConcentration(1d / k)
       .setTopicConcentration(0.01)
       .setMaxIterations(100)
@@ -530,8 +510,9 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
      */
 
     assert(
-      ldaModel.docConcentration ~== Vectors
-        .dense(0.42582646, 0.43511073) absTol 0.05)
+      ldaModel.docConcentration ~== Vectors.dense(
+        0.42582646,
+        0.43511073) absTol 0.05)
   }
 
   test("model save/load") {
@@ -549,8 +530,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val docConcentration = 1.2
     val topicConcentration = 1.5
     val lda = new LDA()
-    lda
-      .setK(k)
+    lda.setK(k)
       .setDocConcentration(docConcentration)
       .setTopicConcentration(topicConcentration)
       .setMaxIterations(5)
@@ -591,21 +571,13 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       val graph = distributedModel.graph
       val sameGraph = sameDistributedModel.graph
       assert(
-        graph.vertices.sortByKey().collect() === sameGraph.vertices
-          .sortByKey()
-          .collect())
-      val edge = graph.edges
-        .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
-        }
-        .sortBy(x => (x._1, x._2))
-        .collect()
-      val sameEdge = sameGraph.edges
-        .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
-        }
-        .sortBy(x => (x._1, x._2))
-        .collect()
+        graph.vertices.sortByKey().collect() === sameGraph.vertices.sortByKey().collect())
+      val edge = graph.edges.map {
+        case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
+      }.sortBy(x => (x._1, x._2)).collect()
+      val sameEdge = sameGraph.edges.map {
+        case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
+      }.sortBy(x => (x._1, x._2)).collect()
       assert(edge === sameEdge)
     } finally {
       Utils.deleteRecursively(tempDir1)
@@ -617,10 +589,11 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val vocabSize = 6
     val emptyDocsArray =
       Array.fill(6)(Vectors.sparse(vocabSize, Array.empty, Array.empty))
-    val emptyDocs = emptyDocsArray.zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
-    }
+    val emptyDocs = emptyDocsArray
+      .zipWithIndex.map {
+        case (wordCounts, docId) =>
+          (docId.toLong, wordCounts)
+      }
     val distributedEmptyDocs = sc.parallelize(emptyDocs, 2)
 
     val op = new EMLDAOptimizer()
@@ -638,10 +611,11 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val vocabSize = 6
     val emptyDocsArray =
       Array.fill(6)(Vectors.sparse(vocabSize, Array.empty, Array.empty))
-    val emptyDocs = emptyDocsArray.zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
-    }
+    val emptyDocs = emptyDocsArray
+      .zipWithIndex.map {
+        case (wordCounts, docId) =>
+          (docId.toLong, wordCounts)
+      }
     val distributedEmptyDocs = sc.parallelize(emptyDocs, 2)
 
     val op = new OnlineLDAOptimizer()

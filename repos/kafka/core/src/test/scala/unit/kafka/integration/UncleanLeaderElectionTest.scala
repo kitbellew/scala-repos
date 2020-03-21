@@ -213,20 +213,17 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
     assertEquals(List("first"), consumeAllMessages(topic))
 
     // shutdown follower server
-    servers
-      .filter(server => server.config.brokerId == followerId)
-      .map(server => shutdownServer(server))
+    servers.filter(server => server.config.brokerId == followerId).map(server =>
+      shutdownServer(server))
 
     produceMessage(servers, topic, "second")
     assertEquals(List("first", "second"), consumeAllMessages(topic))
 
     // shutdown leader and then restart follower
-    servers
-      .filter(server => server.config.brokerId == leaderId)
-      .map(server => shutdownServer(server))
-    servers
-      .filter(server => server.config.brokerId == followerId)
-      .map(server => server.startup())
+    servers.filter(server => server.config.brokerId == leaderId).map(server =>
+      shutdownServer(server))
+    servers.filter(server => server.config.brokerId == followerId).map(server =>
+      server.startup())
 
     // wait until new leader is (uncleanly) elected
     waitUntilLeaderIsElectedOrChanged(
@@ -261,20 +258,17 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
     assertEquals(List("first"), consumeAllMessages(topic))
 
     // shutdown follower server
-    servers
-      .filter(server => server.config.brokerId == followerId)
-      .map(server => shutdownServer(server))
+    servers.filter(server => server.config.brokerId == followerId).map(server =>
+      shutdownServer(server))
 
     produceMessage(servers, topic, "second")
     assertEquals(List("first", "second"), consumeAllMessages(topic))
 
     // shutdown leader and then restart follower
-    servers
-      .filter(server => server.config.brokerId == leaderId)
-      .map(server => shutdownServer(server))
-    servers
-      .filter(server => server.config.brokerId == followerId)
-      .map(server => server.startup())
+    servers.filter(server => server.config.brokerId == leaderId).map(server =>
+      shutdownServer(server))
+    servers.filter(server => server.config.brokerId == followerId).map(server =>
+      server.startup())
 
     // verify that unclean election to non-ISR follower does not occur
     waitUntilLeaderIsElectedOrChanged(
@@ -295,9 +289,8 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
     assertEquals(List.empty[String], consumeAllMessages(topic))
 
     // restart leader temporarily to send a successfully replicated message
-    servers
-      .filter(server => server.config.brokerId == leaderId)
-      .map(server => server.startup())
+    servers.filter(server => server.config.brokerId == leaderId).map(server =>
+      server.startup())
     waitUntilLeaderIsElectedOrChanged(
       zkUtils,
       topic,
@@ -306,9 +299,8 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
 
     produceMessage(servers, topic, "third")
     waitUntilMetadataIsPropagated(servers, topic, partitionId)
-    servers
-      .filter(server => server.config.brokerId == leaderId)
-      .map(server => shutdownServer(server))
+    servers.filter(server => server.config.brokerId == leaderId).map(server =>
+      shutdownServer(server))
 
     // verify clean leader transition to ISR follower
     waitUntilLeaderIsElectedOrChanged(

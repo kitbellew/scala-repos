@@ -36,9 +36,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
   val numNodes = 1
 
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect)
-      .map(KafkaConfig.fromProps)
+    TestUtils.createBrokerConfigs(numNodes, zkConnect).map(
+      KafkaConfig.fromProps)
 
   val messages = new mutable.HashMap[Int, Seq[Message]]
   val topic = "topic"
@@ -95,9 +94,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
     assertFalse(iter.hasNext)
     assertEquals(0, queue.size) // Shutdown command has been consumed.
     assertEquals(5, receivedMessages.size)
-    val unconsumed = messageSet
-      .filter(_.offset >= consumedOffset)
-      .map(m => TestUtils.readString(m.message.payload))
+    val unconsumed = messageSet.filter(_.offset >= consumedOffset).map(m =>
+      TestUtils.readString(m.message.payload))
     assertEquals(unconsumed, receivedMessages)
   }
 

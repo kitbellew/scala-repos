@@ -71,22 +71,19 @@ object JasmineRunner {
      * `throwable.stack` to `throwable.stackdata.stack` (when it exists).
      */
 
-    val ThrowablePrototype = js.Object
-      .getPrototypeOf((new Throwable).asInstanceOf[js.Object])
-      .asInstanceOf[js.Object]
+    val ThrowablePrototype = js.Object.getPrototypeOf(
+      (new Throwable).asInstanceOf[js.Object]).asInstanceOf[js.Object]
 
     js.Object.defineProperty(
       ThrowablePrototype,
       "stack",
-      js.Dynamic
-        .literal(
-          configurable = false,
-          enumerable = false,
-          get = { (self: js.Dynamic) =>
-            self.stackdata && self.stackdata.stack
-          }: js.ThisFunction
-        )
-        .asInstanceOf[js.PropertyDescriptor]
+      js.Dynamic.literal(
+        configurable = false,
+        enumerable = false,
+        get = { (self: js.Dynamic) =>
+          self.stackdata && self.stackdata.stack
+        }: js.ThisFunction
+      ).asInstanceOf[js.PropertyDescriptor]
     )
   }
 

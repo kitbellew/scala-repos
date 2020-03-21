@@ -158,10 +158,8 @@ final class CategoricalSplit private[ml] (
 
   /** [0, numCategories) \ cats */
   private def setComplement(cats: Set[Double]): Set[Double] = {
-    Range(0, numCategories)
-      .map(_.toDouble)
-      .filter(cat => !cats.contains(cat))
-      .toSet
+    Range(0, numCategories).map(_.toDouble).filter(cat =>
+      !cats.contains(cat)).toSet
   }
 }
 

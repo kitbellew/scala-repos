@@ -72,9 +72,8 @@ class ConcurrentActivationTest
         // should be the size of the activated activated producers and consumers
         deactivations.size should ===(2 * number * number)
         def partitionNames(refs: immutable.Seq[ActorRef]) =
-          refs
-            .map(_.path.name)
-            .partition(_.startsWith("concurrent-test-echo-consumer"))
+          refs.map(_.path.name).partition(
+            _.startsWith("concurrent-test-echo-consumer"))
         def assertContainsSameElements(lists: (Seq[_], Seq[_])) {
           val (a, b) = lists
           a.intersect(b).size should ===(a.size)
@@ -211,10 +210,8 @@ class EchoConsumer(endpoint: String) extends Actor with Consumer {
     */
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒
-      rd.onException(classOf[Exception])
-        .handled(true)
-        .transform(Builder.exceptionMessage)
-        .end
+      rd.onException(classOf[Exception]).handled(true).transform(
+        Builder.exceptionMessage).end
 }
 
 class TestProducer(uri: String) extends Actor with Producer {

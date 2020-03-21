@@ -31,9 +31,8 @@ object EnumerateesSpec
     "combine the final results" in {
       mustExecute(1) { zipEC =>
         Await.result(
-          Enumeratee
-            .zipWith(Done[Int, Int](2), Done[Int, Int](3))(_ * _)(zipEC)
-            .unflatten,
+          Enumeratee.zipWith(Done[Int, Int](2), Done[Int, Int](3))(_ * _)(
+            zipEC).unflatten,
           Duration.Inf) must equalTo(Step.Done(6, Input.Empty))
       }
     }
@@ -139,9 +138,8 @@ object EnumerateesSpec
 
     "ignore chunks while predicate is valid" in {
       mustExecute(4) { dropWhileEC =>
-        val drop3AndConsume =
-          Enumeratee.dropWhile[String](_ != "4")(dropWhileEC) &>> Iteratee
-            .consume[String]()
+        val drop3AndConsume = Enumeratee.dropWhile[String](_ != "4")(
+          dropWhileEC) &>> Iteratee.consume[String]()
         val enumerator = Enumerator(Range(1, 20).map(_.toString): _*)
         Await.result(
           enumerator |>>> drop3AndConsume,
@@ -195,9 +193,8 @@ object EnumerateesSpec
 
     "pass chunks until condition is not met" in {
       mustExecute(4) { takeWhileEC =>
-        val take3AndConsume =
-          Enumeratee.takeWhile[String](_ != "4")(takeWhileEC) &>> Iteratee
-            .consume()
+        val take3AndConsume = Enumeratee.takeWhile[String](_ != "4")(
+          takeWhileEC) &>> Iteratee.consume()
         val enumerator = Enumerator(Range(1, 20).map(_.toString): _*)
         Await.result(
           enumerator |>>> take3AndConsume,
@@ -208,8 +205,9 @@ object EnumerateesSpec
     "passes along what's left of chunks after taking" in {
       mustExecute(4, 1, 0) { (takeWhileEC, consumeFlatMapEC, generateEC) =>
         val take3AndConsume =
-          (Enumeratee.takeWhile[String](_ != "4")(takeWhileEC) &>> Iteratee
-            .consume()).flatMap(_ => Iteratee.consume())(consumeFlatMapEC)
+          (Enumeratee.takeWhile[String](_ != "4")(
+            takeWhileEC) &>> Iteratee.consume()).flatMap(_ =>
+            Iteratee.consume())(consumeFlatMapEC)
         val enumerator = Enumerator(Range(1, 20).map(_.toString): _*)
         Await.result(
           enumerator |>>> take3AndConsume,
@@ -292,9 +290,8 @@ object EnumerateesSpec
 
     "add one to each of the ints enumerated" in {
       mustExecute(4) { mapEC =>
-        val add1AndConsume =
-          Enumeratee.map[Int](i => List(i + 1))(mapEC) &>> Iteratee
-            .consume[List[Int]]()
+        val add1AndConsume = Enumeratee.map[Int](i => List(i + 1))(
+          mapEC) &>> Iteratee.consume[List[Int]]()
         val enumerator = Enumerator(1, 2, 3, 4)
         Await.result(enumerator |>>> add1AndConsume, Duration.Inf) must equalTo(
           Seq(2, 3, 4, 5))
@@ -423,10 +420,11 @@ object EnumerateesSpec
           implicitly[String => scala.collection.TraversableLike[Char, String]],
           splitEC) &>> Iteratee.consume()
 
-        val result =
-          (Enumerator("dasdasdas ", "dadadasda\nshouldb\neinnext") &> Enumeratee
-            .grouped(upToSpace) ><> Enumeratee.map[String](_ + "|")(
-            mapEC)) |>>> Iteratee.consume[String]()
+        val result = (Enumerator(
+          "dasdasdas ",
+          "dadadasda\nshouldb\neinnext") &> Enumeratee.grouped(
+          upToSpace) ><> Enumeratee.map[String](_ + "|")(
+          mapEC)) |>>> Iteratee.consume[String]()
         Await.result(result, Duration.Inf) must equalTo(
           "dasdasdas dadadasda|shouldb|einnext|")
       }

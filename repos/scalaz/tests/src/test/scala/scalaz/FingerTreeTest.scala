@@ -84,15 +84,13 @@ object FingerTreeTest extends SpecLite {
 
   "foldLeft snoc is identity" ! forAll {
     (tree: SequenceTree[Int]) =>
-      tree
-        .foldLeft(FingerTree.empty(SizeReducer[Int]))(_ :+ _)
-        .toStream must_== (tree.toStream)
+      tree.foldLeft(FingerTree.empty(SizeReducer[Int]))(
+        _ :+ _).toStream must_== (tree.toStream)
   }
 
   "foldLeft cons is reverse" ! forAll { (tree: SequenceTree[Int]) =>
-    tree
-      .foldLeft(FingerTree.empty(SizeReducer[Int]))((x, y) => y +: x)
-      .toStream must_== (tree.toStream.reverse)
+    tree.foldLeft(FingerTree.empty(SizeReducer[Int]))((x, y) =>
+      y +: x).toStream must_== (tree.toStream.reverse)
   }
 
   "Fingertree" should {
@@ -122,8 +120,9 @@ object FingerTreeTest extends SpecLite {
     "not blow the stack" in {
       val tree: Option[FingerTree[Int, Int]] = streamToTree(
         intStream.take(32 * 1024)).traverseTree[Option, Int, Int](x => Some(x))
-      tree.map(_.toStream.take(100)) getOrElse Stream.empty must_=== (intStream
-        .take(100))
+      tree.map(
+        _.toStream.take(100)) getOrElse Stream.empty must_=== (intStream.take(
+        100))
     }
 
   }

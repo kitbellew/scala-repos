@@ -24,9 +24,9 @@ import scala.util.Try
   */
 class ScalaEditorTextProvider extends EditorTextProvider {
   def getEditorText(elementAtCaret: PsiElement): TextWithImports = {
-    val result: String = findExpressionInner(
-      elementAtCaret,
-      allowMethodCalls = true).map(_.getText).getOrElse("")
+    val result: String =
+      findExpressionInner(elementAtCaret, allowMethodCalls = true).map(
+        _.getText).getOrElse("")
     new TextWithImportsImpl(CodeFragmentKind.EXPRESSION, result)
   }
 

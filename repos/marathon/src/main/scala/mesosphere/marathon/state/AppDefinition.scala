@@ -224,9 +224,8 @@ case class AppDefinition(
       if (proto.getPortsCount > 0)
         PortDefinitions(proto.getPortsList.asScala.map(_.intValue): _*)
       else
-        proto.getPortDefinitionsList.asScala
-          .map(PortDefinitionSerializer.fromProto)
-          .to[Seq]
+        proto.getPortDefinitionsList.asScala.map(
+          PortDefinitionSerializer.fromProto).to[Seq]
 
     AppDefinition(
       id = PathId(proto.getId),
@@ -249,9 +248,8 @@ case class AppDefinition(
       fetch = proto.getCmd.getUrisList.asScala.map(FetchUri.fromProto).to[Seq],
       storeUrls = proto.getStoreUrlsList.asScala.to[Seq],
       container = containerOption,
-      healthChecks = proto.getHealthChecksList.asScala
-        .map(new HealthCheck().mergeFromProto)
-        .toSet,
+      healthChecks = proto.getHealthChecksList.asScala.map(
+        new HealthCheck().mergeFromProto).toSet,
       labels = proto.getLabelsList.asScala.map { p =>
         p.getKey -> p.getValue
       }.toMap,
@@ -576,9 +574,8 @@ object AppDefinition {
         def sameSize = fromVolumes.size == toVolumes.size
         def noChange =
           from.persistentVolumes.forall { fromVolume =>
-            toVolumes
-              .find(_.containerPath == fromVolume.containerPath)
-              .contains(fromVolume)
+            toVolumes.find(
+              _.containerPath == fromVolume.containerPath).contains(fromVolume)
           }
         sameSize && noChange
       }

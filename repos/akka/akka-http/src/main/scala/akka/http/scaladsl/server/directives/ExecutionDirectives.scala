@@ -26,8 +26,9 @@ trait ExecutionDirectives {
       try innerRouteBuilder(())(ctx).fast.recoverWith(handleException)
       catch {
         case NonFatal(e) ⇒
-          handleException
-            .applyOrElse[Throwable, Future[RouteResult]](e, throw _)
+          handleException.applyOrElse[Throwable, Future[RouteResult]](
+            e,
+            throw _)
       }
     }
 

@@ -146,19 +146,16 @@ class MasterSuite
     localCluster.start()
     try {
       eventually(timeout(5 seconds), interval(100 milliseconds)) {
-        val json = Source
-          .fromURL(s"http://localhost:${localCluster.masterWebUIPort}/json")
-          .getLines()
-          .mkString("\n")
+        val json = Source.fromURL(
+          s"http://localhost:${localCluster.masterWebUIPort}/json")
+          .getLines().mkString("\n")
         val JArray(workers) = (parse(json) \ "workers")
         workers.size should be(2)
         workers.foreach { workerSummaryJson =>
           val JString(workerWebUi) = workerSummaryJson \ "webuiaddress"
           val workerResponse = parse(
-            Source
-              .fromURL(s"${workerWebUi}/json")
-              .getLines()
-              .mkString("\n"))
+            Source.fromURL(s"${workerWebUi}/json")
+              .getLines().mkString("\n"))
           (workerResponse \ "cores").extract[Int] should be(2)
         }
       }

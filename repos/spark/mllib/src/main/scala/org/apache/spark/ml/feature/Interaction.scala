@@ -119,8 +119,9 @@ class Interaction @Since("1.6.0") (override val uid: String)
     }
     dataset.select(
       col("*"),
-      interactFunc(struct(featureCols: _*))
-        .as($(outputCol), featureAttrs.toMetadata()))
+      interactFunc(struct(featureCols: _*)).as(
+        $(outputCol),
+        featureAttrs.toMetadata()))
   }
 
   /**
@@ -148,10 +149,8 @@ class Interaction @Since("1.6.0") (override val uid: String)
         case _: NumericType | BooleanType =>
           Array(getNumFeatures(Attribute.fromStructField(f)))
         case _: VectorUDT =>
-          val attrs = AttributeGroup
-            .fromStructField(f)
-            .attributes
-            .getOrElse(throw new SparkException(
+          val attrs = AttributeGroup.fromStructField(f).attributes.getOrElse(
+            throw new SparkException(
               "Vector attributes must be defined for interaction."))
           attrs.map(getNumFeatures).toArray
       }

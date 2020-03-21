@@ -93,8 +93,8 @@ class RequestRendererSpec
           List(
             RawHeader("X-Fancy", "naa"),
             RawHeader("Cache-Control", "public"),
-            Host("spray.io")))
-          .withEntity("The content please!") should renderTo {
+            Host("spray.io"))).withEntity(
+          "The content please!") should renderTo {
           """PUT /abc/xyz HTTP/1.1
             |X-Fancy: naa
             |Cache-Control: public
@@ -390,10 +390,8 @@ class RequestRendererSpec
         request ⇒
           val byteStringSource = renderToSource(
             RequestRenderingContext(request, Host(serverAddress)))
-          val future = byteStringSource
-            .limit(1000)
-            .runWith(Sink.seq)
-            .map(_.reduceLeft(_ ++ _).utf8String)
+          val future = byteStringSource.limit(1000).runWith(Sink.seq).map(
+            _.reduceLeft(_ ++ _).utf8String)
           Await.result(future, 250.millis)
       }
   }

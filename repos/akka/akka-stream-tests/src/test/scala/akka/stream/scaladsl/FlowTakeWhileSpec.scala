@@ -22,19 +22,14 @@ class FlowTakeWhileSpec extends AkkaSpec {
   "A TakeWhile" must {
 
     "take while predicate is true" in assertAllStagesStopped {
-      Source(1 to 4)
-        .takeWhile(_ < 3)
-        .runWith(TestSink.probe[Int])
+      Source(1 to 4).takeWhile(_ < 3).runWith(TestSink.probe[Int])
         .request(3)
         .expectNext(1, 2)
         .expectComplete()
     }
 
     "complete the future for an empty stream" in assertAllStagesStopped {
-      Source
-        .empty[Int]
-        .takeWhile(_ < 2)
-        .runWith(TestSink.probe[Int])
+      Source.empty[Int].takeWhile(_ < 2).runWith(TestSink.probe[Int])
         .request(1)
         .expectComplete()
     }
@@ -42,9 +37,9 @@ class FlowTakeWhileSpec extends AkkaSpec {
     "continue if error" in assertAllStagesStopped {
       val testException = new Exception("test") with NoStackTrace
 
-      val p = Source(1 to 4)
-        .takeWhile(a ⇒ if (a == 3) throw testException else true)
-        .withAttributes(supervisionStrategy(resumingDecider))
+      val p = Source(1 to 4).takeWhile(a ⇒
+        if (a == 3) throw testException else true).withAttributes(
+        supervisionStrategy(resumingDecider))
         .runWith(TestSink.probe[Int])
         .request(4)
         .expectNext(1, 2, 4)

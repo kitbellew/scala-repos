@@ -51,14 +51,13 @@ object ClusterClientSettings {
     * the default configuration `akka.cluster.client`.
     */
   def apply(config: Config): ClusterClientSettings = {
-    val initialContacts = immutableSeq(config.getStringList("initial-contacts"))
-      .map(ActorPath.fromString)
-      .toSet
+    val initialContacts = immutableSeq(
+      config.getStringList("initial-contacts")).map(ActorPath.fromString).toSet
     new ClusterClientSettings(
       initialContacts,
-      establishingGetContactsInterval = config
-        .getDuration("establishing-get-contacts-interval", MILLISECONDS)
-        .millis,
+      establishingGetContactsInterval = config.getDuration(
+        "establishing-get-contacts-interval",
+        MILLISECONDS).millis,
       refreshContactsInterval =
         config.getDuration("refresh-contacts-interval", MILLISECONDS).millis,
       heartbeatInterval =
@@ -313,8 +312,11 @@ final class ClusterClient(settings: ClusterClientSettings)
   def scheduleRefreshContactsTick(interval: FiniteDuration): Unit = {
     refreshContactsTask foreach { _.cancel() }
     refreshContactsTask = Some(
-      context.system.scheduler
-        .schedule(interval, interval, self, RefreshContactsTick))
+      context.system.scheduler.schedule(
+        interval,
+        interval,
+        self,
+        RefreshContactsTick))
   }
 
   override def postStop(): Unit = {
@@ -518,8 +520,7 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
       // important to use val mediator here to activate it outside of ClusterReceptionist constructor
       val mediator = pubSubMediator
       system.systemActorOf(
-        ClusterReceptionist
-          .props(mediator, ClusterReceptionistSettings(config))
+        ClusterReceptionist.props(mediator, ClusterReceptionistSettings(config))
           .withDispatcher(dispatcher),
         name)
     }
@@ -543,9 +544,9 @@ object ClusterReceptionistSettings {
     new ClusterReceptionistSettings(
       role = roleOption(config.getString("role")),
       numberOfContacts = config.getInt("number-of-contacts"),
-      responseTunnelReceiveTimeout = config
-        .getDuration("response-tunnel-receive-timeout", MILLISECONDS)
-        .millis)
+      responseTunnelReceiveTimeout = config.getDuration(
+        "response-tunnel-receive-timeout",
+        MILLISECONDS).millis)
 
   /**
     * Java API: Create settings from the default configuration
@@ -619,8 +620,8 @@ object ClusterReceptionist {
   def props(
       pubSubMediator: ActorRef,
       settings: ClusterReceptionistSettings): Props =
-    Props(new ClusterReceptionist(pubSubMediator, settings))
-      .withDeploy(Deploy.local)
+    Props(new ClusterReceptionist(pubSubMediator, settings)).withDeploy(
+      Deploy.local)
 
   /**
     * INTERNAL API

@@ -19,16 +19,10 @@ private[pickling] object WillRobinsonPickling extends PicklingAlgorithm {
     val fields =
       // Note: For some reason, we sometimes see the same field twice, so we filter these out here.
       //       This is probably a bug somewhere.
-      IrSymbol
-        .allDeclaredFieldsIncludingSubclasses(tpe)
-        .filterNot(_.isMarkedTransient)
-        .toList
-        .
-        // TODO - This uniqueness enforcement is probably due to errors in the symbol loading, maybe should be enforced there.
-        groupBy(_.fieldName)
-        .map(_._2.head)
-        .toList
-        .sortBy(_.fieldName)
+      IrSymbol.allDeclaredFieldsIncludingSubclasses(tpe).filterNot(
+        _.isMarkedTransient).toList.
+      // TODO - This uniqueness enforcement is probably due to errors in the symbol loading, maybe should be enforced there.
+      groupBy(_.fieldName).map(_._2.head).toList.sortBy(_.fieldName)
     fields.map { f =>
       FieldInfo(SetField(f.fieldName, f), GetField(f.fieldName, f))
     }

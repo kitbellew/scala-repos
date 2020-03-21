@@ -115,12 +115,11 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       FileInputFormat.setInputPaths(job, paths: _*)
     }
 
-    sqlContext.sparkContext
-      .hadoopRDD(
-        conf.asInstanceOf[JobConf],
-        classOf[TextInputFormat],
-        classOf[LongWritable],
-        classOf[Text])
+    sqlContext.sparkContext.hadoopRDD(
+      conf.asInstanceOf[JobConf],
+      classOf[TextInputFormat],
+      classOf[LongWritable],
+      classOf[Text])
       .mapPartitions { iter =>
         val unsafeRow = new UnsafeRow(1)
         val bufferHolder = new BufferHolder(unsafeRow)

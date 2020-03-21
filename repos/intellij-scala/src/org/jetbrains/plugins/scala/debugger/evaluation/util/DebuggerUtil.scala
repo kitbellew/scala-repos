@@ -142,9 +142,8 @@ object DebuggerUtil {
         buff.append("[]")
         buff.toName
       case ScParameterizedType(arr, Seq(arg))
-          if ScType
-            .extractClass(arr)
-            .exists(_.qualifiedName == "scala.Array") =>
+          if ScType.extractClass(arr).exists(
+            _.qualifiedName == "scala.Array") =>
         val buff = new JVMNameBuffer()
         buff.append(getJVMQualifiedName(arg))
         buff.append("[]")
@@ -274,9 +273,8 @@ object DebuggerUtil {
       case _                     => returnType
     }
 
-    val paramText = argumentTypes
-      .map(getJVMStringForType(_, isParam = true))
-      .mkString("(", "", ")")
+    val paramText = argumentTypes.map(
+      getJVMStringForType(_, isParam = true)).mkString("(", "", ")")
     val returnTypeText = getJVMStringForType(trueReturnType, isParam = false)
     Some(paramText + returnTypeText)
   }
@@ -370,16 +368,18 @@ object DebuggerUtil {
         case Some(refType) => refType.name
         case _ =>
           throw EvaluationException(
-            DebuggerBundle
-              .message("error.class.not.loaded", getDisplayName(process)))
+            DebuggerBundle.message(
+              "error.class.not.loaded",
+              getDisplayName(process)))
       }
     }
 
     def getDisplayName(debugProcess: DebugProcessImpl): String = {
       ApplicationManager.getApplication.runReadAction(new Computable[String] {
         def compute: String = {
-          JVMNameUtil
-            .getSourcePositionClassDisplayName(debugProcess, sourcePosition)
+          JVMNameUtil.getSourcePositionClassDisplayName(
+            debugProcess,
+            sourcePosition)
         }
       })
     }
@@ -404,10 +404,8 @@ object DebuggerUtil {
   }
 
   def isScala(refType: ReferenceType, default: Boolean = true): Boolean = {
-    ScalaPositionManager
-      .cachedSourceName(refType)
-      .map(_.endsWith(".scala"))
-      .getOrElse(default)
+    ScalaPositionManager.cachedSourceName(refType).map(
+      _.endsWith(".scala")).getOrElse(default)
   }
 
   def jvmClassAtPosition(
@@ -619,14 +617,17 @@ object DebuggerUtil {
       case b: ScBindingPattern =>
         ScalaPsiUtil.nameContext(b) match {
           case v @ (_: ScValue | _: ScVariable) =>
-            !v.getContext.isInstanceOf[ScTemplateBody] && !v.getContext
-              .isInstanceOf[ScEarlyDefinitions]
+            !v.getContext.isInstanceOf[
+              ScTemplateBody] && !v.getContext.isInstanceOf[ScEarlyDefinitions]
           case clause: ScCaseClause => true
           case _                    => true //todo: for generator/enumerators
         }
       case o: ScObject =>
-        !o.getContext.isInstanceOf[ScTemplateBody] && ScalaPsiUtil
-          .getContextOfType(o, true, classOf[PsiClass]) != null
+        !o.getContext.isInstanceOf[
+          ScTemplateBody] && ScalaPsiUtil.getContextOfType(
+          o,
+          true,
+          classOf[PsiClass]) != null
       case _ => false
     }
   }

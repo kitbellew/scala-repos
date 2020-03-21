@@ -97,9 +97,8 @@ trait AnalysisTest extends PlanTest {
       analyzer.checkAnalysis(analyzer.execute(inputPlan))
     }
 
-    if (!expectedErrors
-          .map(_.toLowerCase)
-          .forall(e.getMessage.toLowerCase.contains)) {
+    if (!expectedErrors.map(_.toLowerCase).forall(
+          e.getMessage.toLowerCase.contains)) {
       fail(s"""Exception message should contain the following substrings:
            |
            |  ${expectedErrors.mkString("\n  ")}

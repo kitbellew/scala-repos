@@ -255,13 +255,11 @@ class LBFGSClusterSuite extends SparkFunSuite with LocalClusterSparkContext {
   test("task size should be small") {
     val m = 10
     val n = 200000
-    val examples = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val examples = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i => (1.0, Vectors.dense(Array.fill(n)(random.nextDouble))))
-      }
-      .cache()
+    }.cache()
     val lbfgs = new LBFGS(new LogisticGradient, new SquaredL2Updater)
       .setNumCorrections(1)
       .setConvergenceTol(1e-12)

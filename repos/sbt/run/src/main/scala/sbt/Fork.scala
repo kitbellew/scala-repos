@@ -129,9 +129,8 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
       if (bootJars.isEmpty) None
       else
         Some(
-          "-Xbootclasspath/a:" + bootJars
-            .map(_.getAbsolutePath)
-            .mkString(File.pathSeparator))
+          "-Xbootclasspath/a:" + bootJars.map(_.getAbsolutePath).mkString(
+            File.pathSeparator))
     jvmOptions ++ boot.toList ++ runnerClass.toList ++ arguments
   }
 }
@@ -163,10 +162,8 @@ object Fork {
   private[this] def optionsTooLong(options: Seq[String]): Boolean =
     options.mkString(" ").length > MaxConcatenatedOptionLength
 
-  private[this] val isWindows: Boolean = System
-    .getProperty("os.name")
-    .toLowerCase(Locale.ENGLISH)
-    .contains("windows")
+  private[this] val isWindows: Boolean = System.getProperty(
+    "os.name").toLowerCase(Locale.ENGLISH).contains("windows")
   private[this] def convertClasspathToEnv(
       options: Seq[String]): (Option[String], Seq[String]) = {
     val (preCP, cpAndPost) = options.span(opt => !isClasspathOption(opt))
@@ -331,9 +328,8 @@ object Fork {
         connectInput: Boolean,
         outputStrategy: OutputStrategy): Process = {
       if (scalaJars.isEmpty) sys.error("Scala jars not specified")
-      val scalaClasspathString = "-Xbootclasspath/a:" + scalaJars
-        .map(_.getAbsolutePath)
-        .mkString(File.pathSeparator)
+      val scalaClasspathString = "-Xbootclasspath/a:" + scalaJars.map(
+        _.getAbsolutePath).mkString(File.pathSeparator)
       val mainClass = if (mainClassName.isEmpty) Nil else mainClassName :: Nil
       val options =
         jvmOptions ++ (scalaClasspathString :: mainClass ::: arguments.toList)

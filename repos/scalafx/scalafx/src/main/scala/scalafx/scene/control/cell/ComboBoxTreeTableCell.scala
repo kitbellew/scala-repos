@@ -107,9 +107,9 @@ object ComboBoxTreeTableCell {
       items: ObservableBuffer[T])
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.ComboBoxTreeTableCell
-        .forTreeTableColumn[S, T](converter, items)
-        .call(view)
+      jfxscc.ComboBoxTreeTableCell.forTreeTableColumn[S, T](
+        converter,
+        items).call(view)
 
   /**
     * $SATISFY
@@ -135,9 +135,9 @@ object ComboBoxTreeTableCell {
       converter: StringConverter[T],
       items: T*): (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.ComboBoxTreeTableCell
-        .forTreeTableColumn[S, T](converter, items: _*)
-        .call(view)
+      jfxscc.ComboBoxTreeTableCell.forTreeTableColumn[S, T](
+        converter,
+        items: _*).call(view)
 
   /**
     * $SATISFY
@@ -158,9 +158,8 @@ object ComboBoxTreeTableCell {
   def forTreeTableColumn[S, T](
       items: T*): (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.ComboBoxTreeTableCell
-        .forTreeTableColumn[S, T](items: _*)
-        .call(view)
+      jfxscc.ComboBoxTreeTableCell.forTreeTableColumn[S, T](items: _*).call(
+        view)
 
   /**
     * $SATISFY

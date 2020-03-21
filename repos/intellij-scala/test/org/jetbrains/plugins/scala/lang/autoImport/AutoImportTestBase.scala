@@ -56,9 +56,8 @@ abstract class AutoImportTestBase
       case _ =>
         assert(assertion = false, message = "Reference must be unresolved.")
     }
-    val refPointer = SmartPointerManager
-      .getInstance(getProjectAdapter)
-      .createSmartPsiElementPointer(ref)
+    val refPointer = SmartPointerManager.getInstance(
+      getProjectAdapter).createSmartPsiElementPointer(ref)
 
     val classes = ScalaImportTypeFix.getTypesToImport(ref, getProjectAdapter)
     assert(classes.length > 0, "Haven't classes to import")
@@ -70,13 +69,13 @@ abstract class AutoImportTestBase
           def run() {
             classes(0) match {
               case ClassTypeToImport(clazz) =>
-                org.jetbrains.plugins.scala.annotator.intention.ScalaImportTypeFix
-                  .getImportHolder(ref, getProjectAdapter)
-                  .addImportForClass(clazz)
+                org.jetbrains.plugins.scala.annotator.intention.ScalaImportTypeFix.getImportHolder(
+                  ref,
+                  getProjectAdapter).addImportForClass(clazz)
               case ta =>
-                org.jetbrains.plugins.scala.annotator.intention.ScalaImportTypeFix
-                  .getImportHolder(ref, getProjectAdapter)
-                  .addImportForPath(ta.qualifiedName, ref)
+                org.jetbrains.plugins.scala.annotator.intention.ScalaImportTypeFix.getImportHolder(
+                  ref,
+                  getProjectAdapter).addImportForPath(ta.qualifiedName, ref)
             }
             UsefulTestCase.doPostponedFormatting(getProjectAdapter)
           }
@@ -85,9 +84,9 @@ abstract class AutoImportTestBase
         "Test"
       )
       res =
-        scalaFile.getText
-          .substring(0, lastPsi.getTextOffset)
-          .trim //getImportStatements.map(_.getText()).mkString("\n")
+        scalaFile.getText.substring(
+          0,
+          lastPsi.getTextOffset).trim //getImportStatements.map(_.getText()).mkString("\n")
       assert(
         refPointer.getElement.resolve != null,
         "reference is unresolved after import action")

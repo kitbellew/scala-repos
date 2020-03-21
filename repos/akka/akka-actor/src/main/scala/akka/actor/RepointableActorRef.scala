@@ -99,8 +99,12 @@ private[akka] class RepointableActorRef(
           catch {
             case NonFatal(ex) if catchFailures ⇒
               val safeDispatcher = system.dispatchers.defaultGlobalDispatcher
-              new ActorCell(system, this, props, safeDispatcher, supervisor)
-                .initWithFailure(ex)
+              new ActorCell(
+                system,
+                this,
+                props,
+                safeDispatcher,
+                supervisor).initWithFailure(ex)
           }
         /*
          * The problem here was that if the real actor (which will start running
@@ -123,8 +127,9 @@ private[akka] class RepointableActorRef(
     * unstarted cell. The cell must be fully functional.
     */
   def newCell(old: UnstartedCell): Cell =
-    new ActorCell(system, this, props, dispatcher, supervisor)
-      .init(sendSupervise = false, mailboxType)
+    new ActorCell(system, this, props, dispatcher, supervisor).init(
+      sendSupervise = false,
+      mailboxType)
 
   def start(): Unit = ()
 
@@ -274,8 +279,9 @@ private[akka] class UnstartedCell(
               self.path.toString,
               getClass,
               "dropping message of type " + msg.message.getClass + " due to enqueue failure"))
-          system.deadLetters
-            .tell(DeadLetter(msg.message, msg.sender, self), msg.sender)
+          system.deadLetters.tell(
+            DeadLetter(msg.message, msg.sender, self),
+            msg.sender)
         } else if (Mailbox.debug)
           println(s"$self temp queueing ${msg.message} from ${msg.sender}")
       } finally lock.unlock()
@@ -285,8 +291,9 @@ private[akka] class UnstartedCell(
           self.path.toString,
           getClass,
           "dropping message of type" + msg.message.getClass + " due to lock timeout"))
-      system.deadLetters
-        .tell(DeadLetter(msg.message, msg.sender, self), msg.sender)
+      system.deadLetters.tell(
+        DeadLetter(msg.message, msg.sender, self),
+        msg.sender)
     }
   }
 

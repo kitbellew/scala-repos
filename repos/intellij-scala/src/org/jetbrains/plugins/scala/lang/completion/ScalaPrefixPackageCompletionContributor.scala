@@ -38,9 +38,8 @@ class ScalaPrefixPackageCompletionContributor
     extends ScalaCompletionContributor {
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
-      .withParent(classOf[ScReferenceElement]),
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER).withParent(
+      classOf[ScReferenceElement]),
     new CompletionProvider[CompletionParameters] {
 
       def addCompletions(
@@ -75,8 +74,8 @@ object ScalaPrefixPackageCompletionContributor {
 
     def addPackageForCompletion(packageFqn: String): Unit = {
       val isExcluded: Boolean =
-        CodeInsightSettings.getInstance.EXCLUDED_PACKAGES
-          .contains(packageFqn.startsWith(_: String))
+        CodeInsightSettings.getInstance.EXCLUDED_PACKAGES.contains(
+          packageFqn.startsWith(_: String))
       if (isExcluded) return
 
       if (parameters.getInvocationCount == 0) return

@@ -45,9 +45,8 @@ class IsrExpirationTest {
   overridingProps.put(
     KafkaConfig.ReplicaFetchWaitMaxMsProp,
     replicaFetchWaitMaxMs.toString)
-  val configs = TestUtils
-    .createBrokerConfigs(2, TestUtils.MockZkConnect)
-    .map(KafkaConfig.fromProps(_, overridingProps))
+  val configs = TestUtils.createBrokerConfigs(2, TestUtils.MockZkConnect).map(
+    KafkaConfig.fromProps(_, overridingProps))
   val topic = "foo"
 
   val time = new MockTime
@@ -260,10 +259,8 @@ class IsrExpirationTest {
       logEndOffset: Long,
       expectedCalls: Int): Log = {
     val log1 = EasyMock.createMock(classOf[kafka.log.Log])
-    EasyMock
-      .expect(log1.logEndOffsetMetadata)
-      .andReturn(new LogOffsetMetadata(logEndOffset))
-      .times(expectedCalls)
+    EasyMock.expect(log1.logEndOffsetMetadata).andReturn(
+      new LogOffsetMetadata(logEndOffset)).times(expectedCalls)
     EasyMock.replay(log1)
 
     log1

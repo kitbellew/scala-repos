@@ -153,11 +153,8 @@ trait BaseReplState {
         case Some(jar) =>
           Map("tmpjars" -> {
             // Use tmpjars already in the configuration.
-            config
-              .get("tmpjars")
-              .map(_ + ",")
-              .getOrElse("")
-              // And a jar of code compiled by the REPL.
+            config.get("tmpjars").map(_ + ",").getOrElse("")
+            // And a jar of code compiled by the REPL.
               .concat("file://" + jar.getAbsolutePath)
           })
         case None =>

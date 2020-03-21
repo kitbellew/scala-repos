@@ -429,8 +429,7 @@ class ClientBuilder[
   def codec[Req1, Rep1](
       codec: Codec[Req1, Rep1]
   ): ClientBuilder[Req1, Rep1, HasCluster, Yes, HasHostConnectionLimit] =
-    this
-      .codec(Function.const(codec)(_))
+    this.codec(Function.const(codec)(_))
       .configured(ProtocolLibrary(codec.protocolLibraryName))
 
   /**
@@ -441,8 +440,7 @@ class ClientBuilder[
   def codec[Req1, Rep1](
       codecFactory: CodecFactory[Req1, Rep1]
   ): ClientBuilder[Req1, Rep1, HasCluster, Yes, HasHostConnectionLimit] =
-    this
-      .codec(codecFactory.client)
+    this.codec(codecFactory.client)
       .configured(ProtocolLibrary(codecFactory.protocolLibraryName))
 
   /**

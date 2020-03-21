@@ -102,8 +102,9 @@ object DecisionTreeExample {
             s"this option is ignored. default: ${defaultParams.fracTest}")
         .action((x, c) => c.copy(fracTest = x))
       opt[Boolean]("cacheNodeIds")
-        .text(s"whether to use node Id cache during training, " +
-          s"default: ${defaultParams.cacheNodeIds}")
+        .text(
+          s"whether to use node Id cache during training, " +
+            s"default: ${defaultParams.cacheNodeIds}")
         .action((x, c) => c.copy(cacheNodeIds = x))
       opt[String]("checkpointDir")
         .text(
@@ -114,8 +115,9 @@ object DecisionTreeExample {
             }}")
         .action((x, c) => c.copy(checkpointDir = Some(x)))
       opt[Int]("checkpointInterval")
-        .text(s"how often to checkpoint the node Id cache, " +
-          s"default: ${defaultParams.checkpointInterval}")
+        .text(
+          s"how often to checkpoint the node Id cache, " +
+            s"default: ${defaultParams.checkpointInterval}")
         .action((x, c) => c.copy(checkpointInterval = x))
       opt[String]("testInput")
         .text(
@@ -158,10 +160,8 @@ object DecisionTreeExample {
       case "libsvm" =>
         expectedNumFeatures match {
           case Some(numFeatures) =>
-            sqlContext.read
-              .option("numFeatures", numFeatures.toString)
-              .format("libsvm")
-              .load(path)
+            sqlContext.read.option("numFeatures", numFeatures.toString)
+              .format("libsvm").load(path)
           case None => sqlContext.read.format("libsvm").load(path)
         }
       case _ => throw new IllegalArgumentException(s"Bad data format: $format")
@@ -286,8 +286,8 @@ object DecisionTreeExample {
     // Get the trained Decision Tree from the fitted PipelineModel
     algo match {
       case "classification" =>
-        val treeModel = pipelineModel.stages.last
-          .asInstanceOf[DecisionTreeClassificationModel]
+        val treeModel = pipelineModel.stages.last.asInstanceOf[
+          DecisionTreeClassificationModel]
         if (treeModel.numNodes < 20) {
           println(treeModel.toDebugString) // Print full model.
         } else {

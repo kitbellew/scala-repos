@@ -93,19 +93,19 @@ trait BlockLoadSpec[M[+_]]
     val module = new BlockStoreLoadTestModule(sample)
 
     val expected = sample.data flatMap { jv =>
-      val back = module.schema
-        .foldLeft[JValue](JObject(JField("key", jv \ "key") :: Nil)) {
-          case (obj, (jpath, ctype)) => {
-            val vpath = JPath(JPathField("value") :: jpath.nodes)
-            val valueAtPath = jv.get(vpath)
+      val back = module.schema.foldLeft[JValue](
+        JObject(JField("key", jv \ "key") :: Nil)) {
+        case (obj, (jpath, ctype)) => {
+          val vpath = JPath(JPathField("value") :: jpath.nodes)
+          val valueAtPath = jv.get(vpath)
 
-            if (module.compliesWithSchema(valueAtPath, ctype)) {
-              obj.set(vpath, valueAtPath)
-            } else {
-              obj
-            }
+          if (module.compliesWithSchema(valueAtPath, ctype)) {
+            obj.set(vpath, valueAtPath)
+          } else {
+            obj
           }
         }
+      }
 
       (back \ "value" != JUndefined).option(back)
     }
@@ -114,12 +114,10 @@ trait BlockLoadSpec[M[+_]]
       case (jpath, ctype) => ColumnRef(CPath(jpath), ctype)
     }
 
-    val result = module.Table
-      .constString(Set("/test"))
-      .load("dummyAPIKey", Schema.mkType(cschema).get)
-      .flatMap(t => EitherT.right(t.toJson))
-      .run
-      .copoint
+    val result = module.Table.constString(Set("/test")).load(
+      "dummyAPIKey",
+      Schema.mkType(cschema).get).flatMap(t =>
+      EitherT.right(t.toJson)).run.copoint
     result.map(_.toList) must_== \/.right(expected.toList)
   }
 

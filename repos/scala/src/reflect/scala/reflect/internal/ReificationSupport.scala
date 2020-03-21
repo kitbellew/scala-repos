@@ -39,8 +39,10 @@ trait ReificationSupport { self: SymbolTable =>
       if (result ne NoSymbol) result.asMethod
       else
         throw new ScalaReflectionException(
-          "overloaded method %s #%d in %s not found"
-            .format(name, index, owner.fullName))
+          "overloaded method %s #%d in %s not found".format(
+            name,
+            index,
+            owner.fullName))
     }
 
     def newFreeTerm(
@@ -48,15 +50,18 @@ trait ReificationSupport { self: SymbolTable =>
         value: => Any,
         flags: Long = 0L,
         origin: String = null): FreeTermSymbol =
-      newFreeTermSymbol(newTermName(name), value, flags, origin)
-        .markFlagsCompleted(mask = AllFlags)
+      newFreeTermSymbol(
+        newTermName(name),
+        value,
+        flags,
+        origin).markFlagsCompleted(mask = AllFlags)
 
     def newFreeType(
         name: String,
         flags: Long = 0L,
         origin: String = null): FreeTypeSymbol =
-      newFreeTypeSymbol(newTypeName(name), flags, origin)
-        .markFlagsCompleted(mask = AllFlags)
+      newFreeTypeSymbol(newTypeName(name), flags, origin).markFlagsCompleted(
+        mask = AllFlags)
 
     def newNestedSymbol(
         owner: Symbol,
@@ -64,9 +69,8 @@ trait ReificationSupport { self: SymbolTable =>
         pos: Position,
         flags: Long,
         isClass: Boolean): Symbol =
-      owner
-        .newNestedSymbol(name, pos, flags, isClass)
-        .markFlagsCompleted(mask = AllFlags)
+      owner.newNestedSymbol(name, pos, flags, isClass).markFlagsCompleted(mask =
+        AllFlags)
 
     def newScopeWith(elems: Symbol*): Scope =
       self.newScopeWith(elems: _*)

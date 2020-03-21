@@ -34,9 +34,8 @@ case class ScalaSdkDescriptor(
   override protected def libraryProperties: ScalaLibraryProperties = {
     val properties = new ScalaLibraryProperties()
 
-    properties.languageLevel = version
-      .flatMap(ScalaLanguageLevel.from)
-      .getOrElse(ScalaLanguageLevel.Default)
+    properties.languageLevel = version.flatMap(
+      ScalaLanguageLevel.from).getOrElse(ScalaLanguageLevel.Default)
     properties.compilerClasspath = compilerFiles
     properties
   }
@@ -60,15 +59,12 @@ trait SdkDescriptor {
   def createNewLibraryConfiguration() = {
     new NewLibraryConfiguration(libraryName, libraryType, libraryProperties) {
       override def addRoots(editor: LibraryEditor): Unit = {
-        libraryFiles
-          .map(_.toLibraryRootURL)
-          .foreach(editor.addRoot(_, OrderRootType.CLASSES))
-        sourceFiles
-          .map(_.toLibraryRootURL)
-          .foreach(editor.addRoot(_, OrderRootType.SOURCES))
-        docFiles
-          .map(_.toLibraryRootURL)
-          .foreach(editor.addRoot(_, JavadocOrderRootType.getInstance))
+        libraryFiles.map(_.toLibraryRootURL).foreach(
+          editor.addRoot(_, OrderRootType.CLASSES))
+        sourceFiles.map(_.toLibraryRootURL).foreach(
+          editor.addRoot(_, OrderRootType.SOURCES))
+        docFiles.map(_.toLibraryRootURL).foreach(
+          editor.addRoot(_, JavadocOrderRootType.getInstance))
 
         if (sourceFiles.isEmpty && docFiles.isEmpty) {
           editor.addRoot(

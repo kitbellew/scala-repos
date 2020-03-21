@@ -99,9 +99,10 @@ private[spark] class BlockManager(
   // Port used by the external shuffle service. In Yarn mode, this may be already be
   // set through the Hadoop configuration as the server is launched in the Yarn NM.
   private val externalShuffleServicePort = {
-    val tmpPort = Utils
-      .getSparkOrYarnConfig(conf, "spark.shuffle.service.port", "7337")
-      .toInt
+    val tmpPort = Utils.getSparkOrYarnConfig(
+      conf,
+      "spark.shuffle.service.port",
+      "7337").toInt
     if (tmpPort == 0) {
       // for testing, we set "spark.shuffle.service.port" to 0 in the yarn config, so yarn finds
       // an open port.  But we still need to tell our spark apps the right port to use.  So
@@ -217,13 +218,12 @@ private[spark] class BlockManager(
     for (i <- 1 to MAX_ATTEMPTS) {
       try {
         // Synchronous and will throw an exception if we cannot connect.
-        shuffleClient
-          .asInstanceOf[ExternalShuffleClient]
-          .registerWithShuffleServer(
-            shuffleServerId.host,
-            shuffleServerId.port,
-            shuffleServerId.executorId,
-            shuffleConfig)
+        shuffleClient.asInstanceOf[
+          ExternalShuffleClient].registerWithShuffleServer(
+          shuffleServerId.host,
+          shuffleServerId.port,
+          shuffleServerId.executorId,
+          shuffleConfig)
         return
       } catch {
         case e: Exception if i < MAX_ATTEMPTS =>
@@ -499,9 +499,8 @@ private[spark] class BlockManager(
       // downstream code will throw an exception.
       Option(
         new ChunkedByteBuffer(
-          shuffleBlockResolver
-            .getBlockData(blockId.asInstanceOf[ShuffleBlockId])
-            .nioByteBuffer()))
+          shuffleBlockResolver.getBlockData(
+            blockId.asInstanceOf[ShuffleBlockId]).nioByteBuffer()))
     } else {
       blockInfoManager.lockForReading(blockId).map { info =>
         doGetLocalBytes(blockId, info)
@@ -597,13 +596,11 @@ private[spark] class BlockManager(
       logDebug(s"Getting remote block $blockId from $loc")
       val data =
         try {
-          blockTransferService
-            .fetchBlockSync(
-              loc.host,
-              loc.port,
-              loc.executorId,
-              blockId.toString)
-            .nioByteBuffer()
+          blockTransferService.fetchBlockSync(
+            loc.host,
+            loc.port,
+            loc.executorId,
+            blockId.toString).nioByteBuffer()
         } catch {
           case NonFatal(e) =>
             runningFailureCount += 1
@@ -865,13 +862,14 @@ private[spark] class BlockManager(
           reportBlockStatus(blockId, putBlockInfo, putBlockStatus)
         }
         Option(TaskContext.get()).foreach { c =>
-          c.taskMetrics()
-            .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
+          c.taskMetrics().incUpdatedBlockStatuses(
+            Seq((blockId, putBlockStatus)))
         }
       }
       logDebug(
-        "Put block %s locally took %s"
-          .format(blockId, Utils.getUsedTimeMs(startTimeMs)))
+        "Put block %s locally took %s".format(
+          blockId,
+          Utils.getUsedTimeMs(startTimeMs)))
       if (level.replication > 1) {
         // Wait for asynchronous replication to finish
         Await.ready(replicationFuture, Duration.Inf)
@@ -1008,12 +1006,13 @@ private[spark] class BlockManager(
           reportBlockStatus(blockId, putBlockInfo, putBlockStatus)
         }
         Option(TaskContext.get()).foreach { c =>
-          c.taskMetrics()
-            .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
+          c.taskMetrics().incUpdatedBlockStatuses(
+            Seq((blockId, putBlockStatus)))
         }
         logDebug(
-          "Put block %s locally took %s"
-            .format(blockId, Utils.getUsedTimeMs(startTimeMs)))
+          "Put block %s locally took %s".format(
+            blockId,
+            Utils.getUsedTimeMs(startTimeMs)))
         if (level.replication > 1) {
           val remoteStartTime = System.currentTimeMillis
           val bytesToReplicate = doGetLocalBytes(blockId, putBlockInfo)
@@ -1404,10 +1403,8 @@ private[spark] class BlockManager(
       values: Iterator[Any]): Unit = {
     val byteStream = new BufferedOutputStream(outputStream)
     val ser = defaultSerializer.newInstance()
-    ser
-      .serializeStream(wrapForCompression(blockId, byteStream))
-      .writeAll(values)
-      .close()
+    ser.serializeStream(wrapForCompression(blockId, byteStream)).writeAll(
+      values).close()
   }
 
   /** Serializes into a chunked byte buffer. */

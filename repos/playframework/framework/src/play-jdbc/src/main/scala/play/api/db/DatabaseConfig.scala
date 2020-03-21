@@ -29,12 +29,12 @@ object DatabaseConfig {
     val (url, userPass) = ConnectionPool.extractUrl(
       config.get[Option[String]]("url"),
       environment.mode)
-    val username = config
-      .getDeprecated[Option[String]]("username", "user")
-      .orElse(userPass.map(_._1))
-    val password = config
-      .getDeprecated[Option[String]]("password", "pass")
-      .orElse(userPass.map(_._2))
+    val username =
+      config.getDeprecated[Option[String]]("username", "user").orElse(
+        userPass.map(_._1))
+    val password =
+      config.getDeprecated[Option[String]]("password", "pass").orElse(
+        userPass.map(_._2))
     val jndiName = config.get[Option[String]]("jndiName")
 
     DatabaseConfig(driver, url, username, password, jndiName)

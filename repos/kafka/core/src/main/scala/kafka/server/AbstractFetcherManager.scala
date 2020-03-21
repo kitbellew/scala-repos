@@ -44,11 +44,10 @@ abstract class AbstractFetcherManager(
       // current max lag across all fetchers/topics/partitions
       def value =
         fetcherThreadMap.foldLeft(0L)((curMaxAll, fetcherThreadMapEntry) => {
-          fetcherThreadMapEntry._2.fetcherLagStats.stats
-            .foldLeft(0L)((curMaxThread, fetcherLagStatsEntry) => {
+          fetcherThreadMapEntry._2.fetcherLagStats.stats.foldLeft(0L)(
+            (curMaxThread, fetcherLagStatsEntry) => {
               curMaxThread.max(fetcherLagStatsEntry._2.lag)
-            })
-            .max(curMaxAll)
+            }).max(curMaxAll)
         })
     },
     Map("clientId" -> clientId)
@@ -60,14 +59,13 @@ abstract class AbstractFetcherManager(
         // current min fetch rate across all fetchers/topics/partitions
         def value = {
           val headRate: Double =
-            fetcherThreadMap.headOption
-              .map(_._2.fetcherStats.requestRate.oneMinuteRate)
-              .getOrElse(0)
+            fetcherThreadMap.headOption.map(
+              _._2.fetcherStats.requestRate.oneMinuteRate).getOrElse(0)
 
           fetcherThreadMap.foldLeft(headRate)(
             (curMinAll, fetcherThreadMapEntry) => {
-              fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate
-                .min(curMinAll)
+              fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate.min(
+                curMinAll)
             })
         }
       }

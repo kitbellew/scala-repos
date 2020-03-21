@@ -19,12 +19,10 @@ class StackTest extends FunSuite {
       }
 
     val newClientStack =
-      StackClient
-        .newStack[String, String]
-        .replace(
-          StackClient.Role.prepFactory,
-          (sf: ServiceFactory[String, String]) =>
-            sf.map(identity[Service[String, String]]))
+      StackClient.newStack[String, String].replace(
+        StackClient.Role.prepFactory,
+        (sf: ServiceFactory[String, String]) =>
+          sf.map(identity[Service[String, String]]))
   }
 
   test(
@@ -32,8 +30,7 @@ class StackTest extends FunSuite {
     new TestCtx {
       val server = stringServer.serve(new InetSocketAddress(0), failService)
       val client =
-        stringClient
-          .withStack(newClientStack)
+        stringClient.withStack(newClientStack)
           .newService(
             Name.bound(
               Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
@@ -76,8 +73,7 @@ class StackTest extends FunSuite {
     "Client/Server: Status.busy propagates from failFast to the top of the stack") {
     new TestCtx {
       val client =
-        stringClient
-          .withStack(newClientStack)
+        stringClient.withStack(newClientStack)
           .newService(
             Name.bound(
               Address(

@@ -171,8 +171,11 @@ final class ResponseDecodingSuite extends RedisResponseTest {
         reply match {
           case MBulkReply(msgs) =>
             assert(
-              ReplyFormat
-                .toString(msgs) == List("foo", "bar", "Hello", "World"))
+              ReplyFormat.toString(msgs) == List(
+                "foo",
+                "bar",
+                "Hello",
+                "World"))
           case _ => fail("Expected MBulkReply")
         }
       case _ => fail("Expected one element in list")

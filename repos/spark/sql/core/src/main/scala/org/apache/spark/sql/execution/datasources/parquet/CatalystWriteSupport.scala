@@ -171,10 +171,8 @@ private[parquet] class CatalystWriteSupport
           val (julianDay, timeOfDayNanos) =
             DateTimeUtils.toJulianDay(row.getLong(ordinal))
           val buf = ByteBuffer.wrap(timestampBuffer)
-          buf
-            .order(ByteOrder.LITTLE_ENDIAN)
-            .putLong(timeOfDayNanos)
-            .putInt(julianDay)
+          buf.order(ByteOrder.LITTLE_ENDIAN).putLong(timeOfDayNanos).putInt(
+            julianDay)
           recordConsumer.addBinary(Binary.fromByteArray(timestampBuffer))
         }
 

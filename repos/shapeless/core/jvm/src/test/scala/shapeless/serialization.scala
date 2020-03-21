@@ -180,11 +180,9 @@ object SerializationTestDefns {
       new Functor[F] {
         def map[A, B](fa: F[A])(f: A => B): F[B] =
           icc.pack(
-            icc
-              .unpack(fa)
-              .fold(
-                hd => Left(icc.fh.map(hd)(f)),
-                tl => Right(icc.ft.map(tl)(f))))
+            icc.unpack(fa).fold(
+              hd => Left(icc.fh.map(hd)(f)),
+              tl => Right(icc.ft.map(tl)(f))))
       }
 
     implicit def generic[F[_]](implicit gen: Generic1[F, Functor]): Functor[F] =
@@ -1149,8 +1147,9 @@ class SerializationTests {
     val l9 =
       optic.coproductSelectPrism[Int :+: String :+: Boolean :+: CNil, String]
     val l10 = optic.hlistNthLens[Int :: String :: Boolean :: HNil, _1]
-    val l11 = optic
-      .recordLens[Record.`'foo -> Int, 'bar -> String, 'baz -> Boolean`.T]('bar)
+    val l11 =
+      optic.recordLens[Record.`'foo -> Int, 'bar -> String, 'baz -> Boolean`.T](
+        'bar)
     val l12 = optic[Tree[Int]].l.r.l.t
     val l13 = optic[Node[Int]] >> 'r
     val l14 = optic[Node[Int]] >> _1

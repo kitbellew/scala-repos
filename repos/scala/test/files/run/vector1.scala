@@ -133,8 +133,8 @@ object Test {
     val a = vector("a", N)
 
     val pos = scala.util.Random.shuffle(
-      scala.collection.mutable.WrappedArray
-        .make[Int](Array.tabulate[Int](N)(i => i)))
+      scala.collection.mutable.WrappedArray.make[Int](
+        Array.tabulate[Int](N)(i => i)))
 
     var b = a
 

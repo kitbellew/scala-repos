@@ -58,9 +58,8 @@ private object RenderSupport {
   }
 
   object ChunkTransformer {
-    val flow = Flow[ChunkStreamPart]
-      .transform(() ⇒ new ChunkTransformer)
-      .named("renderChunks")
+    val flow = Flow[ChunkStreamPart].transform(() ⇒ new ChunkTransformer).named(
+      "renderChunks")
   }
 
   class ChunkTransformer
@@ -82,9 +81,9 @@ private object RenderSupport {
 
   object CheckContentLengthTransformer {
     def flow(contentLength: Long) =
-      Flow[ByteString]
-        .transform(() ⇒ new CheckContentLengthTransformer(contentLength))
-        .named("checkContentLength")
+      Flow[ByteString].transform(() ⇒
+        new CheckContentLengthTransformer(contentLength)).named(
+        "checkContentLength")
   }
 
   class CheckContentLengthTransformer(length: Long)

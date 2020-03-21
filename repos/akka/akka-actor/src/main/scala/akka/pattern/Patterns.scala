@@ -74,8 +74,8 @@ object Patterns {
       actor: ActorRef,
       messageFactory: japi.Function[ActorRef, Any],
       timeout: Timeout): Future[AnyRef] =
-    scalaAsk(actor, messageFactory.apply _)(timeout)
-      .asInstanceOf[Future[AnyRef]]
+    scalaAsk(actor, messageFactory.apply _)(timeout).asInstanceOf[Future[
+      AnyRef]]
 
   /**
     * <i>Java API for `akka.pattern.ask`:</i>
@@ -107,8 +107,9 @@ object Patterns {
     * }}}
     */
   def ask(actor: ActorRef, message: Any, timeoutMillis: Long): Future[AnyRef] =
-    scalaAsk(actor, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS))
-      .asInstanceOf[Future[AnyRef]]
+    scalaAsk(actor, message)(
+      new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).asInstanceOf[Future[
+      AnyRef]]
 
   /**
     * A variation of ask which allows to implement "replyTo" pattern by including
@@ -129,8 +130,8 @@ object Patterns {
       actor: ActorRef,
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): Future[AnyRef] =
-    scalaAsk(actor, messageFactory.apply _)(Timeout(timeoutMillis.millis))
-      .asInstanceOf[Future[AnyRef]]
+    scalaAsk(actor, messageFactory.apply _)(
+      Timeout(timeoutMillis.millis)).asInstanceOf[Future[AnyRef]]
 
   /**
     * <i>Java API for `akka.pattern.ask`:</i>
@@ -200,9 +201,9 @@ object Patterns {
       selection: ActorSelection,
       message: Any,
       timeoutMillis: Long): Future[AnyRef] =
-    scalaAsk(selection, message)(
-      new Timeout(timeoutMillis, TimeUnit.MILLISECONDS))
-      .asInstanceOf[Future[AnyRef]]
+    scalaAsk(selection, message)(new Timeout(
+      timeoutMillis,
+      TimeUnit.MILLISECONDS)).asInstanceOf[Future[AnyRef]]
 
   /**
     * A variation of ask which allows to implement "replyTo" pattern by including
@@ -223,8 +224,8 @@ object Patterns {
       selection: ActorSelection,
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): Future[AnyRef] =
-    scalaAsk(selection, messageFactory.apply _)(Timeout(timeoutMillis.millis))
-      .asInstanceOf[Future[AnyRef]]
+    scalaAsk(selection, messageFactory.apply _)(
+      Timeout(timeoutMillis.millis)).asInstanceOf[Future[AnyRef]]
 
   /**
     * Register an onComplete callback on this [[scala.concurrent.Future]] to send
@@ -278,8 +279,8 @@ object Patterns {
       target: ActorRef,
       timeout: FiniteDuration,
       stopMessage: Any): Future[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout, stopMessage)
-      .asInstanceOf[Future[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout, stopMessage).asInstanceOf[Future[
+      java.lang.Boolean]]
 
   /**
     * Returns a [[scala.concurrent.Future]] that will be completed with the success or failure of the provided Callable
@@ -344,8 +345,8 @@ object PatternsCS {
       actor: ActorRef,
       message: Any,
       timeout: Timeout): CompletionStage[AnyRef] =
-    scalaAsk(actor, message)(timeout).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(actor, message)(timeout).toJava.asInstanceOf[CompletionStage[
+      AnyRef]]
 
   /**
     * A variation of ask which allows to implement "replyTo" pattern by including
@@ -366,8 +367,8 @@ object PatternsCS {
       actor: ActorRef,
       messageFactory: japi.Function[ActorRef, Any],
       timeout: Timeout): CompletionStage[AnyRef] =
-    scalaAsk(actor, messageFactory.apply _)(timeout).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(actor, messageFactory.apply _)(timeout).toJava.asInstanceOf[
+      CompletionStage[AnyRef]]
 
   /**
     * <i>Java API for `akka.pattern.ask`:</i>
@@ -403,8 +404,8 @@ object PatternsCS {
       message: Any,
       timeoutMillis: Long): CompletionStage[AnyRef] =
     scalaAsk(actor, message)(
-      new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+      new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava.asInstanceOf[
+      CompletionStage[AnyRef]]
 
   /**
     * A variation of ask which allows to implement "replyTo" pattern by including
@@ -426,8 +427,8 @@ object PatternsCS {
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): CompletionStage[AnyRef] =
     scalaAsk(actor, messageFactory.apply _)(
-      Timeout(timeoutMillis.millis)).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+      Timeout(timeoutMillis.millis)).toJava.asInstanceOf[CompletionStage[
+      AnyRef]]
 
   /**
     * <i>Java API for `akka.pattern.ask`:</i>
@@ -462,8 +463,8 @@ object PatternsCS {
       selection: ActorSelection,
       message: Any,
       timeout: Timeout): CompletionStage[AnyRef] =
-    scalaAsk(selection, message)(timeout).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(selection, message)(timeout).toJava.asInstanceOf[CompletionStage[
+      AnyRef]]
 
   /**
     * <i>Java API for `akka.pattern.ask`:</i>
@@ -498,9 +499,9 @@ object PatternsCS {
       selection: ActorSelection,
       message: Any,
       timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(selection, message)(
-      new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(selection, message)(new Timeout(
+      timeoutMillis,
+      TimeUnit.MILLISECONDS)).toJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
     * A variation of ask which allows to implement "replyTo" pattern by including
@@ -522,8 +523,8 @@ object PatternsCS {
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): CompletionStage[AnyRef] =
     scalaAsk(selection, messageFactory.apply _)(
-      Timeout(timeoutMillis.millis)).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+      Timeout(timeoutMillis.millis)).toJava.asInstanceOf[CompletionStage[
+      AnyRef]]
 
   /**
     * Register an onComplete callback on this [[java.util.concurrent.CompletionStage]] to send
@@ -560,8 +561,8 @@ object PatternsCS {
   def gracefulStop(
       target: ActorRef,
       timeout: FiniteDuration): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout).toJava
-      .asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout).toJava.asInstanceOf[CompletionStage[
+      java.lang.Boolean]]
 
   /**
     * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with success (value `true`) when
@@ -580,8 +581,8 @@ object PatternsCS {
       target: ActorRef,
       timeout: FiniteDuration,
       stopMessage: Any): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout, stopMessage).toJava
-      .asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout, stopMessage).toJava.asInstanceOf[
+      CompletionStage[java.lang.Boolean]]
 
   /**
     * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided Callable

@@ -53,8 +53,7 @@ object ALSExample {
     import sqlContext.implicits._
 
     // $example on$
-    val ratings = sc
-      .textFile("data/mllib/als/sample_movielens_ratings.txt")
+    val ratings = sc.textFile("data/mllib/als/sample_movielens_ratings.txt")
       .map(Rating.parseRating)
       .toDF()
     val Array(training, test) = ratings.randomSplit(Array(0.8, 0.2))
@@ -69,8 +68,7 @@ object ALSExample {
     val model = als.fit(training)
 
     // Evaluate the model by computing the RMSE on the test data
-    val predictions = model
-      .transform(test)
+    val predictions = model.transform(test)
       .withColumn("rating", col("rating").cast(DoubleType))
       .withColumn("prediction", col("prediction").cast(DoubleType))
 

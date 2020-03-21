@@ -121,11 +121,8 @@ case class Model(
         }
       }
       assert(
-        foreignKeys.count(_.name.isDefined) == foreignKeys
-          .filter(_.name.isDefined)
-          .map(_.name)
-          .distinct
-          .size,
+        foreignKeys.count(_.name.isDefined) == foreignKeys.filter(
+          _.name.isDefined).map(_.name).distinct.size,
         "duplicate foreign key names detected")
       foreignKeys.foreach { fk =>
         assert(
@@ -155,11 +152,8 @@ case class Model(
         }
       }
       assert(
-        indices.count(_.name.isDefined) == indices
-          .filter(_.name.isDefined)
-          .map(_.name)
-          .distinct
-          .size,
+        indices.count(_.name.isDefined) == indices.filter(_.name.isDefined).map(
+          _.name).distinct.size,
         "duplicate index names detected")
       indices.foreach { idx =>
         assert(

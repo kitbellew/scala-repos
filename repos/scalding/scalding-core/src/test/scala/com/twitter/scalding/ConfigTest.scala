@@ -26,8 +26,8 @@ class ConfigTest extends WordSpec with Matchers {
   "A Config" should {
     "cascadingAppJar works" in {
       val cls = getClass
-      Config.default.setCascadingAppJar(cls).getCascadingAppJar should contain(
-        Success(cls))
+      Config.default.setCascadingAppJar(cls)
+        .getCascadingAppJar should contain(Success(cls))
     }
     "default has serialization set" in {
       val sers = Config.default.get("io.serializations").get.split(",").toList
@@ -55,7 +55,8 @@ class ConfigTest extends WordSpec with Matchers {
     }
     "Default serialization should have tokens" in {
       Config.default.getCascadingSerializationTokens should not be empty
-      Config.default.getCascadingSerializationTokens.values
+      Config.default.getCascadingSerializationTokens
+        .values
         .map(Class.forName)
         .filter(c => c.isPrimitive || c.isArray) shouldBe empty
 
@@ -109,8 +110,8 @@ object ConfigProps extends Properties("Config") {
   property("adding many UniqueIDs works") = forAll { (l: List[String]) =>
     val uids =
       l.filterNot { s => s.isEmpty || s.contains(",") }.map(UniqueID(_))
-    (uids
-      .foldLeft(Config.empty) { (conf, id) => conf.addUniqueId(id) }
-      .getUniqueIds == uids.toSet)
+    (uids.foldLeft(Config.empty) { (conf, id) =>
+      conf.addUniqueId(id)
+    }.getUniqueIds == uids.toSet)
   }
 }

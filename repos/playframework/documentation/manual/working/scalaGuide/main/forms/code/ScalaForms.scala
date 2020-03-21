@@ -28,9 +28,10 @@ package scalaguide.forms.scalaforms {
   class ScalaFormsSpec extends Specification with Controller {
 
     val conf = Configuration.reference
-    implicit val messages: Messages =
-      new DefaultMessagesApi(Environment.simple(), conf, new DefaultLangs(conf))
-        .preferred(Seq.empty)
+    implicit val messages: Messages = new DefaultMessagesApi(
+      Environment.simple(),
+      conf,
+      new DefaultLangs(conf)).preferred(Seq.empty)
 
     "A scala forms" should {
 
@@ -111,8 +112,9 @@ package scalaguide.forms.scalaforms {
       "display global errors user template" in {
         val userForm = controllers.Application.userFormConstraintsAdHoc
 
-        implicit val request = FakeRequest()
-          .withFormUrlEncodedBody("name" -> "Johnny Utah", "age" -> "25")
+        implicit val request = FakeRequest().withFormUrlEncodedBody(
+          "name" -> "Johnny Utah",
+          "age" -> "25")
 
         val boundForm = userForm.bindFromRequest
         boundForm.hasGlobalErrors must beTrue
@@ -510,8 +512,8 @@ package scalaguide.forms.scalaforms {
             },
             contact => {
               val contactId = Contact.save(contact)
-              Redirect(routes.Application.showContact(contactId))
-                .flashing("success" -> "Contact saved!")
+              Redirect(routes.Application.showContact(contactId)).flashing(
+                "success" -> "Contact saved!")
             }
           )
         }

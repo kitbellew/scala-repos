@@ -383,13 +383,10 @@ class WebSocketClientSpec
     def expectBytes(bytes: ByteString): Unit = netOut.expectBytes(bytes)
 
     def wipeDate(string: String) =
-      string
-        .fastSplit('\n')
-        .map {
-          case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
-          case s ⇒ s
-        }
-        .mkString("\n")
+      string.fastSplit('\n').map {
+        case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
+        case s ⇒ s
+      }.mkString("\n")
 
     def sendWireData(data: String): Unit =
       sendWireData(ByteString(data.stripMarginWithNewline("\r\n"), "ASCII"))

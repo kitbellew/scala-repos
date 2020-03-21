@@ -199,12 +199,10 @@ class EhCacheModule extends Module {
       Seq(
         ehcacheKey.to(new NamedEhCacheProvider(name)),
         cacheApiKey.to(new NamedCacheApiProvider(ehcacheKey)),
-        bind[JavaCacheApi]
-          .qualifiedWith(namedCache)
-          .to(new NamedJavaCacheApiProvider(cacheApiKey)),
-        bind[Cached]
-          .qualifiedWith(namedCache)
-          .to(new NamedCachedProvider(cacheApiKey))
+        bind[JavaCacheApi].qualifiedWith(namedCache).to(
+          new NamedJavaCacheApiProvider(cacheApiKey)),
+        bind[Cached].qualifiedWith(namedCache).to(
+          new NamedCachedProvider(cacheApiKey))
       )
     }
 
@@ -225,9 +223,8 @@ class CacheManagerProvider @Inject() (
     extends Provider[CacheManager] {
   lazy val get: CacheManager = {
     val resourceName = config.underlying.getString("play.cache.configResource")
-    val configResource = env
-      .resource(resourceName)
-      .getOrElse(env.classLoader.getResource("ehcache-default.xml"))
+    val configResource = env.resource(resourceName).getOrElse(
+      env.classLoader.getResource("ehcache-default.xml"))
     val manager = CacheManager.create(configResource)
     lifecycle.addStopHook(() => Future.successful(manager.shutdown()))
     manager
@@ -304,13 +301,10 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
   }
 
   def get[T](key: String)(implicit ct: ClassTag[T]): Option[T] = {
-    Option(cache.get(key))
-      .map(_.getObjectValue)
-      .filter { v =>
-        Primitives.wrap(ct.runtimeClass).isInstance(v) ||
-        ct == ClassTag.Nothing || (ct == ClassTag.Unit && v == ((): Unit))
-      }
-      .asInstanceOf[Option[T]]
+    Option(cache.get(key)).map(_.getObjectValue).filter { v =>
+      Primitives.wrap(ct.runtimeClass).isInstance(v) ||
+      ct == ClassTag.Nothing || (ct == ClassTag.Unit && v == ((): Unit))
+    }.asInstanceOf[Option[T]]
   }
 
   def getOrElse[A: ClassTag](key: String, expiration: Duration)(

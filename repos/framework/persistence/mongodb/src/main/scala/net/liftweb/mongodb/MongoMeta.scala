@@ -53,8 +53,9 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
    * From: http://www.mongodb.org/display/DOCS/Collections
    */
   def fixCollectionName = {
-    val colName = MongoRules.collectionName.vend
-      .apply(connectionIdentifier, _collectionName)
+    val colName = MongoRules.collectionName.vend.apply(
+      connectionIdentifier,
+      _collectionName)
 
     if (colName.contains("$")) colName.replaceAllLiterally("$", "_d_")
     else colName
@@ -165,13 +166,12 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
    */
   def update(qry: DBObject, newobj: DBObject, db: DB, opts: UpdateOption*) {
     val dboOpts = opts.toList
-    db.getCollection(collectionName)
-      .update(
-        qry,
-        newobj,
-        dboOpts.find(_ == Upsert).map(x => true).getOrElse(false),
-        dboOpts.find(_ == Multi).map(x => true).getOrElse(false)
-      )
+    db.getCollection(collectionName).update(
+      qry,
+      newobj,
+      dboOpts.find(_ == Upsert).map(x => true).getOrElse(false),
+      dboOpts.find(_ == Multi).map(x => true).getOrElse(false)
+    )
   }
 
   /*

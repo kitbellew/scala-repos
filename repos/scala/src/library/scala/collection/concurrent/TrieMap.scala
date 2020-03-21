@@ -142,8 +142,13 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 val nn = rn.updatedAt(
                   pos,
                   inode(
-                    CNode
-                      .dual(sn, sn.hc, new SNode(k, v, hc), hc, lev + 5, gen)),
+                    CNode.dual(
+                      sn,
+                      sn.hc,
+                      new SNode(k, v, hc),
+                      hc,
+                      lev + 5,
+                      gen)),
                   gen)
                 GCAS(cn, nn, ct)
               }
@@ -408,9 +413,9 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                     val sub = cn.array(pos)
                     if (sub eq this) nonlive match {
                       case tn: TNode[K, V] =>
-                        val ncn = cn
-                          .updatedAt(pos, tn.copyUntombed, gen)
-                          .toContracted(lev - 5)
+                        val ncn =
+                          cn.updatedAt(pos, tn.copyUntombed, gen).toContracted(
+                            lev - 5)
                         if (!parent.GCAS(cn, ncn, ct))
                           if (ct.readRoot().gen == startgen)
                             cleanParent(nonlive)
@@ -780,8 +785,10 @@ final class TrieMap[K, V] private (
   def this(hashf: Hashing[K], ef: Equiv[K]) =
     this(
       INode.newRootNode,
-      AtomicReferenceFieldUpdater
-        .newUpdater(classOf[TrieMap[K, V]], classOf[AnyRef], "root"),
+      AtomicReferenceFieldUpdater.newUpdater(
+        classOf[TrieMap[K, V]],
+        classOf[AnyRef],
+        "root"),
       hashf,
       ef
     )

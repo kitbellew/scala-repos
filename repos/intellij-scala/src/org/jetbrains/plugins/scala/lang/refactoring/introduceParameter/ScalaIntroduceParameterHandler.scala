@@ -123,23 +123,21 @@ class ScalaIntroduceParameterHandler
         val bodyText = elems.map(_.getText).mkString
         s"$paramsText $arrow {\n$bodyText\n}"
     }
-    val expr = ScalaPsiElementFactory
-      .createExpressionWithContextFromText(
-        funText,
-        elems.head.getContext,
-        elems.head)
-      .asInstanceOf[ScFunctionExpr]
-    val toReturn = IntroduceImplicitParameterIntention
-      .createExpressionToIntroduce(expr, withoutParameterTypes = true) match {
-      case Left(e) => e
-      case _       => expr
-    }
+    val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(
+      funText,
+      elems.head.getContext,
+      elems.head).asInstanceOf[ScFunctionExpr]
+    val toReturn =
+      IntroduceImplicitParameterIntention.createExpressionToIntroduce(
+        expr,
+        withoutParameterTypes = true) match {
+        case Left(e) => e
+        case _       => expr
+      }
     ScalaPsiUtil.adjustTypes(toReturn, addImports = false)
     (
-      CodeStyleManager
-        .getInstance(project)
-        .reformat(toReturn)
-        .asInstanceOf[ScExpression],
+      CodeStyleManager.getInstance(project).reformat(toReturn).asInstanceOf[
+        ScExpression],
       expr.getNonValueType().getOrAny)
   }
 
@@ -424,8 +422,8 @@ class ScalaIntroduceParameterHandler
   }
 
   private def isLibraryInterfaceMethod(method: PsiMethod): Boolean = {
-    (method.hasModifierPropertyScala(PsiModifier.ABSTRACT) || method
-      .isInstanceOf[ScFunctionDefinition]) &&
+    (method.hasModifierPropertyScala(
+      PsiModifier.ABSTRACT) || method.isInstanceOf[ScFunctionDefinition]) &&
     !method.getManager.isInProject(method)
   }
 

@@ -112,10 +112,8 @@ class AllProjectHighlightingTest
 
     LocalFileSystem.getInstance().refreshFiles(files)
 
-    val fileManager = PsiManager
-      .getInstance(myProject)
-      .asInstanceOf[PsiManagerEx]
-      .getFileManager
+    val fileManager = PsiManager.getInstance(myProject).asInstanceOf[
+      PsiManagerEx].getFileManager
     val annotator = new ScalaAnnotator
 
     import scala.collection.JavaConversions._

@@ -29,8 +29,8 @@ class ScImportSelectorsStubImpl[ParentPsi <: PsiElement](
       singleWildcard: Boolean) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.singleWildcard = singleWildcard
   }
 

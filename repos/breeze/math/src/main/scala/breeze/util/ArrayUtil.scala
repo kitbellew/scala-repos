@@ -71,9 +71,8 @@ object ArrayUtil {
       case x: Array[Byte]    => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
       case x: Array[Boolean] => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
       case x: Array[_] =>
-        Arrays
-          .copyOf(x.asInstanceOf[Array[AnyRef]], length)
-          .asInstanceOf[Array[V]]
+        Arrays.copyOf(x.asInstanceOf[Array[AnyRef]], length).asInstanceOf[Array[
+          V]]
       case _ => throw new RuntimeException("shouldn't be here!")
     }
   }
@@ -97,9 +96,10 @@ object ArrayUtil {
       case x: Array[Boolean] =>
         Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
       case x: Array[_] =>
-        Arrays
-          .copyOfRange(x.asInstanceOf[Array[AnyRef]], from, to)
-          .asInstanceOf[Array[V]]
+        Arrays.copyOfRange(
+          x.asInstanceOf[Array[AnyRef]],
+          from,
+          to).asInstanceOf[Array[V]]
       case _ => throw new RuntimeException("shouldn't be here!")
     }
   }

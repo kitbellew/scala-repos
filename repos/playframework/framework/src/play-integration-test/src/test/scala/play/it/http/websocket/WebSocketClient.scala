@@ -106,8 +106,9 @@ object WebSocketClient {
       .option(ChannelOption.AUTO_READ, java.lang.Boolean.FALSE)
       .handler(new ChannelInitializer[SocketChannel] {
         def initChannel(ch: SocketChannel) = {
-          ch.pipeline()
-            .addLast(new HttpClientCodec, new HttpObjectAggregator(8192))
+          ch.pipeline().addLast(
+            new HttpClientCodec,
+            new HttpObjectAggregator(8192))
         }
       })
 
@@ -130,27 +131,21 @@ object WebSocketClient {
 
       val disconnected = Promise[Unit]()
 
-      client
-        .connect(tgt.getHost, tgt.getPort)
-        .toScala
-        .map { channel =>
-          val handshaker = WebSocketClientHandshakerFactory.newHandshaker(
-            tgt,
-            version,
-            null,
-            false,
-            new DefaultHttpHeaders())
-          channel
-            .pipeline()
-            .addLast(
-              "supervisor",
-              new WebSocketSupervisor(disconnected, handshaker, onConnected))
-          handshaker.handshake(channel)
-          channel.read()
-        }
-        .onFailure {
-          case t => disconnected.tryFailure(t)
-        }
+      client.connect(tgt.getHost, tgt.getPort).toScala.map { channel =>
+        val handshaker = WebSocketClientHandshakerFactory.newHandshaker(
+          tgt,
+          version,
+          null,
+          false,
+          new DefaultHttpHeaders())
+        channel.pipeline().addLast(
+          "supervisor",
+          new WebSocketSupervisor(disconnected, handshaker, onConnected))
+        handshaker.handshake(channel)
+        channel.read()
+      }.onFailure {
+        case t => disconnected.tryFailure(t)
+      }
 
       disconnected.future
     }
@@ -283,9 +278,8 @@ object WebSocketClient {
             val merge = b.add(Merge[WebSocketFrame](2, eagerComplete = true))
 
             val handleServerClose = Flow[WebSocketFrame].filter { frame =>
-              if (frame
-                    .isInstanceOf[CloseWebSocketFrame] && !clientInitiatedClose
-                    .get()) {
+              if (frame.isInstanceOf[
+                    CloseWebSocketFrame] && !clientInitiatedClose.get()) {
                 serverInitiatedClose.set(true)
                 true
               } else {
@@ -336,9 +330,9 @@ object WebSocketClient {
 
     def toByteString(data: ByteBufHolder) = {
       val builder = ByteString.newBuilder
-      data
-        .content()
-        .readBytes(builder.asOutputStream, data.content().readableBytes())
+      data.content().readBytes(
+        builder.asOutputStream,
+        data.content().readableBytes())
       val bytes = builder.result()
       bytes
     }

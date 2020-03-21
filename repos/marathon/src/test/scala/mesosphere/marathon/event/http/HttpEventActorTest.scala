@@ -47,13 +47,9 @@ class HttpEventActorTest
 
     Then("The callback listener is rate limited")
     waitUntil("Wait for rate limiting 2 subscribers", 1.second) {
-      aut.underlyingActor
-        .limiter("host1")
-        .backoffUntil
-        .isDefined && aut.underlyingActor
-        .limiter("host2")
-        .backoffUntil
-        .isDefined
+      aut.underlyingActor.limiter(
+        "host1").backoffUntil.isDefined && aut.underlyingActor.limiter(
+        "host2").backoffUntil.isDefined
     }
   }
 
@@ -99,9 +95,8 @@ class HttpEventActorTest
     aut.underlyingActor.limiter += "host1" -> EventNotificationLimit(
       23,
       Some((-100).seconds.fromNow))
-    aut.underlyingActor.limiter
-      .map(_._2.backoffUntil)
-      .forall(_.map(_.isOverdue()).getOrElse(true))
+    aut.underlyingActor.limiter.map(_._2.backoffUntil).forall(
+      _.map(_.isOverdue()).getOrElse(true))
 
     When("An event is send to the actor")
     aut ! EventStreamAttached("remote")

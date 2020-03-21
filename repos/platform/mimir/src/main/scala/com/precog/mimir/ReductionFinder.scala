@@ -54,8 +54,9 @@ trait ReductionFinderModule[M[+_]]
     def buildReduceInfo(
         reduce: dag.Reduce,
         ctx: EvaluationContext): ReduceInfo = {
-      val (spec, ancestor) = findTransSpecAndAncestor(reduce.parent, ctx)
-        .getOrElse((Leaf(Source), reduce.parent))
+      val (spec, ancestor) =
+        findTransSpecAndAncestor(reduce.parent, ctx).getOrElse(
+          (Leaf(Source), reduce.parent))
       ReduceInfo(reduce, spec, ancestor)
     }
 
@@ -67,9 +68,8 @@ trait ReductionFinderModule[M[+_]]
         def append(x: List[dag.Reduce], y: => List[dag.Reduce]) = x ::: y
       }
 
-      val reduces = node
-        .foldDown[List[dag.Reduce]](true) {
-          case r: dag.Reduce => List(r)
+      val reduces = node.foldDown[List[dag.Reduce]](true) {
+        case r: dag.Reduce => List(r)
       } distinct
 
       val info: List[ReduceInfo] = reduces map {
@@ -88,20 +88,20 @@ trait ReductionFinderModule[M[+_]]
       }
 
       // for each ancestor, assemble a list of the parents it created
-      val parentsByAncestor = (info groupBy { _.ancestor })
-        .foldLeft(Map[DepGraph, List[DepGraph]]()) {
-          case (parentsByAncestor, (ancestor, lst)) =>
-            parentsByAncestor + (ancestor -> (lst map {
-              _.reduce.parent
-            } distinct))
-        }
+      val parentsByAncestor = (info groupBy { _.ancestor }).foldLeft(
+        Map[DepGraph, List[DepGraph]]()) {
+        case (parentsByAncestor, (ancestor, lst)) =>
+          parentsByAncestor + (ancestor -> (lst map {
+            _.reduce.parent
+          } distinct))
+      }
 
       // for each parent, assemble a list of the reduces it created
-      val reducesByParent = (info groupBy { _.reduce.parent })
-        .foldLeft(Map[DepGraph, List[dag.Reduce]]()) {
-          case (reducesByParent, (parent, lst)) =>
-            reducesByParent + (parent -> (lst map { _.reduce }))
-        }
+      val reducesByParent = (info groupBy { _.reduce.parent }).foldLeft(
+        Map[DepGraph, List[dag.Reduce]]()) {
+        case (reducesByParent, (parent, lst)) =>
+          reducesByParent + (parent -> (lst map { _.reduce }))
+      }
 
       MegaReduceState(
         ancestorByReduce,

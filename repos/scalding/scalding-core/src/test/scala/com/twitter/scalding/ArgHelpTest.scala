@@ -84,10 +84,9 @@ class ArgHelpTest extends WordSpec with Matchers {
         Args(List("--name", "Bill", "--phone", "111", "--address", "123")))
 
       intercept[DescriptionValidationException] {
-        ArgHelp
-          .validatedDescribe(args, job.unit)
-          .waitFor(config, Local(true))
-          .get
+        ArgHelp.validatedDescribe(args, job.unit).waitFor(
+          config,
+          Local(true)).get
       }
     }
   }

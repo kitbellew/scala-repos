@@ -15,9 +15,8 @@ class ScalaCurrentPackageMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result = {
-    PsiDocumentManager
-      .getInstance(context.getProject)
-      .getPsiFile(context.getEditor.getDocument) match {
+    PsiDocumentManager.getInstance(context.getProject).getPsiFile(
+      context.getEditor.getDocument) match {
       case scFile: ScalaFile => new TextResult(scFile.getPackageName)
       case _                 => new TextResult("")
     }

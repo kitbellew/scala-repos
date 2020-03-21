@@ -179,13 +179,11 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     val findOpts = opts.toList
 
     useColl { coll =>
-      val cur = f(coll)
-        .limit(
-          findOpts.find(_.isInstanceOf[Limit]).map(_.value).getOrElse(0)
-        )
-        .skip(
-          findOpts.find(_.isInstanceOf[Skip]).map(_.value).getOrElse(0)
-        )
+      val cur = f(coll).limit(
+        findOpts.find(_.isInstanceOf[Limit]).map(_.value).getOrElse(0)
+      ).skip(
+        findOpts.find(_.isInstanceOf[Skip]).map(_.value).getOrElse(0)
+      )
       sort.foreach(s => cur.sort(s))
       // This retrieves all documents and puts them in memory.
       (cur: Iterator[DBObject]).map(fromDBObject).toList
@@ -379,13 +377,11 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
         val fieldsToSet = fullFields.map(pair =>
           (pair._1, pair._2.openOrThrowException("these are all Full")))
 
-        val fieldsToUnset: List[String] = otherFields
-          .filter(pair =>
-            pair._2 match {
-              case Empty => true
-              case _     => false
-            })
-          .map(_._1)
+        val fieldsToUnset: List[String] = otherFields.filter(pair =>
+          pair._2 match {
+            case Empty => true
+            case _     => false
+          }).map(_._1)
 
         if (fieldsToSet.length > 0 || fieldsToUnset.length > 0) {
           val dbo = BasicDBObjectBuilder.start
@@ -393,22 +389,18 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
           if (fieldsToSet.length > 0) {
             dbo.add(
               "$set",
-              fieldsToSet
-                .foldLeft(BasicDBObjectBuilder.start) {
-                  (builder, pair) => builder.add(pair._1, pair._2)
-                }
-                .get
+              fieldsToSet.foldLeft(BasicDBObjectBuilder.start) {
+                (builder, pair) => builder.add(pair._1, pair._2)
+              }.get
             )
           }
 
           if (fieldsToUnset.length > 0) {
             dbo.add(
               "$unset",
-              fieldsToUnset
-                .foldLeft(BasicDBObjectBuilder.start) {
-                  (builder, fieldName) => builder.add(fieldName, 1)
-                }
-                .get
+              fieldsToUnset.foldLeft(BasicDBObjectBuilder.start) {
+                (builder, fieldName) => builder.add(fieldName, 1)
+              }.get
             )
           }
 

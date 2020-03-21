@@ -158,23 +158,18 @@ private[server] object ForwardedHeaderHandler {
           (for {
             fhs <- headers.getAll("Forwarded")
             fh <- fhs.split(",\\s*")
-          } yield fh)
-            .map(
-              _.split(";")
-                .flatMap(s => {
-                  val splitted = s.split("=", 2)
-                  if (splitted.length < 2) Seq.empty
-                  else {
-                    // Remove surrounding quotes
-                    val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
-                    val value = unquote(splitted(1))
-                    Seq(name -> value)
-                  }
-                })
-                .toMap)
-            .map { paramMap: Map[String, String] =>
-              ForwardedEntry(paramMap.get("for"), paramMap.get("proto"))
+          } yield fh).map(_.split(";").flatMap(s => {
+            val splitted = s.split("=", 2)
+            if (splitted.length < 2) Seq.empty
+            else {
+              // Remove surrounding quotes
+              val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
+              val value = unquote(splitted(1))
+              Seq(name -> value)
             }
+          }).toMap).map { paramMap: Map[String, String] =>
+            ForwardedEntry(paramMap.get("for"), paramMap.get("proto"))
+          }
         case Xforwarded =>
           def h(h: Headers, key: String) =
             h.getAll(key).flatMap(s => s.split(",\\s*")).map(unquote)
@@ -234,8 +229,9 @@ private[server] object ForwardedHeaderHandler {
   object ForwardedHeaderHandlerConfig {
     def apply(
         configuration: Option[Configuration]): ForwardedHeaderHandlerConfig = {
-      val config = PlayConfig(configuration.getOrElse(Configuration.reference))
-        .get[PlayConfig]("play.http.forwarded")
+      val config = PlayConfig(
+        configuration.getOrElse(Configuration.reference)).get[PlayConfig](
+        "play.http.forwarded")
 
       val version = config.get[String]("version") match {
         case "x-forwarded" => Xforwarded

@@ -351,9 +351,9 @@ object Collections {
     } else {
       val indices = 0 to source.size - targetSize
       val indicesInOrder = if (fromStart) indices else indices.reverse
-      indicesInOrder
-        .find { i => source.subList(i, i + target.size).equals(target) }
-        .getOrElse(-1)
+      indicesInOrder.find { i =>
+        source.subList(i, i + target.size).equals(target)
+      }.getOrElse(-1)
     }
   }
 
@@ -1071,8 +1071,8 @@ object Collections {
     }
 
     override def putAll(m: Map[_ <: K, _ <: V]): Unit = {
-      m.entrySet()
-        .foreach(entry => checkKeyAndValue(entry.getKey, entry.getValue))
+      m.entrySet().foreach(entry =>
+        checkKeyAndValue(entry.getKey, entry.getValue))
       super.putAll(m)
     }
 

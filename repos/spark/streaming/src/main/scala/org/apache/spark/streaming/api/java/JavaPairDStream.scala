@@ -245,9 +245,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   def groupByKeyAndWindow(
       windowDuration: Duration,
       slideDuration: Duration): JavaPairDStream[K, JIterable[V]] = {
-    dstream
-      .groupByKeyAndWindow(windowDuration, slideDuration)
-      .mapValues(_.asJava)
+    dstream.groupByKeyAndWindow(windowDuration, slideDuration).mapValues(
+      _.asJava)
   }
 
   /**
@@ -265,9 +264,10 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       numPartitions: Int): JavaPairDStream[K, JIterable[V]] = {
-    dstream
-      .groupByKeyAndWindow(windowDuration, slideDuration, numPartitions)
-      .mapValues(_.asJava)
+    dstream.groupByKeyAndWindow(
+      windowDuration,
+      slideDuration,
+      numPartitions).mapValues(_.asJava)
   }
 
   /**
@@ -286,9 +286,10 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       slideDuration: Duration,
       partitioner: Partitioner
   ): JavaPairDStream[K, JIterable[V]] = {
-    dstream
-      .groupByKeyAndWindow(windowDuration, slideDuration, partitioner)
-      .mapValues(_.asJava)
+    dstream.groupByKeyAndWindow(
+      windowDuration,
+      slideDuration,
+      partitioner).mapValues(_.asJava)
   }
 
   /**
@@ -651,9 +652,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       numPartitions: Int
   ): JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
-    dstream
-      .cogroup(other.dstream, numPartitions)
-      .mapValues(t => (t._1.asJava, t._2.asJava))
+    dstream.cogroup(other.dstream, numPartitions).mapValues(t =>
+      (t._1.asJava, t._2.asJava))
   }
 
   /**
@@ -665,9 +665,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       partitioner: Partitioner
   ): JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
-    dstream
-      .cogroup(other.dstream, partitioner)
-      .mapValues(t => (t._1.asJava, t._2.asJava))
+    dstream.cogroup(other.dstream, partitioner).mapValues(t =>
+      (t._1.asJava, t._2.asJava))
   }
 
   /**

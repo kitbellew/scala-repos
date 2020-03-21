@@ -35,10 +35,10 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
     when(chan.isWritable).thenReturn(false, true, false)
     when(ctx.channel).thenReturn(chan)
-    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey))
-      .thenReturn(mkAttr(true))
-    when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey))
-      .thenReturn(mkAttr(Stopwatch.start()))
+    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey)).thenReturn(
+      mkAttr(true))
+    when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey)).thenReturn(
+      mkAttr(Stopwatch.start()))
   }
 
   trait InMemoryStatsTest extends SocketTest {
@@ -84,12 +84,12 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
     val durationAttr = mock[Attribute[() => Duration]]
     when(durationAttr.get).thenReturn(() => Time.now - start)
-    when(ctx.attr(ChannelStatsHandler.ConnectionDurationKey))
-      .thenReturn(durationAttr)
-    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey))
-      .thenReturn(mkAttr(true))
-    when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey))
-      .thenReturn(mkAttr(Stopwatch.start()))
+    when(ctx.attr(ChannelStatsHandler.ConnectionDurationKey)).thenReturn(
+      durationAttr)
+    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey)).thenReturn(
+      mkAttr(true))
+    when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey)).thenReturn(
+      mkAttr(Stopwatch.start()))
   }
 
   test("ChannelStatsHandler counts connections") {

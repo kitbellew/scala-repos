@@ -38,11 +38,9 @@ abstract class ScFunctionImpl protected (
       case notNull => notNull
     }
     if (n == null) {
-      return ScalaPsiElementFactory
-        .createIdentifier(
-          getStub.asInstanceOf[ScFunctionStub].getName,
-          getManager)
-        .getPsi
+      return ScalaPsiElementFactory.createIdentifier(
+        getStub.asInstanceOf[ScFunctionStub].getName,
+        getManager).getPsi
     }
     n.getPsi
   }

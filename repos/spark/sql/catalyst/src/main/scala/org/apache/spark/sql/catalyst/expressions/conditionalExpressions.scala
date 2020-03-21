@@ -242,14 +242,10 @@ object CaseWhen {
     *                 position are branch values.
     */
   def createFromParser(branches: Seq[Expression]): CaseWhen = {
-    val cases = branches
-      .grouped(2)
-      .flatMap {
-        case cond :: value :: Nil => Some((cond, value))
-        case value :: Nil         => None
-      }
-      .toArray
-      .toSeq // force materialization to make the seq serializable
+    val cases = branches.grouped(2).flatMap {
+      case cond :: value :: Nil => Some((cond, value))
+      case value :: Nil         => None
+    }.toArray.toSeq // force materialization to make the seq serializable
     val elseValue = if (branches.size % 2 == 1) Some(branches.last) else None
     CaseWhen(cases, elseValue)
   }
@@ -261,14 +257,10 @@ object CaseWhen {
   */
 object CaseKeyWhen {
   def apply(key: Expression, branches: Seq[Expression]): CaseWhen = {
-    val cases = branches
-      .grouped(2)
-      .flatMap {
-        case cond :: value :: Nil => Some((EqualTo(key, cond), value))
-        case value :: Nil         => None
-      }
-      .toArray
-      .toSeq // force materialization to make the seq serializable
+    val cases = branches.grouped(2).flatMap {
+      case cond :: value :: Nil => Some((EqualTo(key, cond), value))
+      case value :: Nil         => None
+    }.toArray.toSeq // force materialization to make the seq serializable
     val elseValue = if (branches.size % 2 == 1) Some(branches.last) else None
     CaseWhen(cases, elseValue)
   }

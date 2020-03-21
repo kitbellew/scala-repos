@@ -174,8 +174,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       name: String,
       amount: Double,
       role: Option[String] = None): Resource = {
-    val builder = Resource
-      .newBuilder()
+    val builder = Resource.newBuilder()
       .setName(name)
       .setType(Value.Type.SCALAR)
       .setScalar(Value.Scalar.newBuilder().setValue(amount).build())
@@ -238,8 +237,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
   protected def createResource(
       resourceName: String,
       quantity: Double): Protos.Resource = {
-    Resource
-      .newBuilder()
+    Resource.newBuilder()
       .setName(resourceName)
       .setType(Value.Type.SCALAR)
       .setScalar(Value.Scalar.newBuilder().setValue(quantity).build())
@@ -254,17 +252,15 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     */
   protected def toAttributeMap(
       offerAttributes: JList[Attribute]): Map[String, GeneratedMessage] = {
-    offerAttributes.asScala
-      .map(attr => {
-        val attrValue = attr.getType match {
-          case Value.Type.SCALAR => attr.getScalar
-          case Value.Type.RANGES => attr.getRanges
-          case Value.Type.SET    => attr.getSet
-          case Value.Type.TEXT   => attr.getText
-        }
-        (attr.getName, attrValue)
-      })
-      .toMap
+    offerAttributes.asScala.map(attr => {
+      val attrValue = attr.getType match {
+        case Value.Type.SCALAR => attr.getScalar
+        case Value.Type.RANGES => attr.getRanges
+        case Value.Type.SET    => attr.getSet
+        case Value.Type.TEXT   => attr.getText
+      }
+      (attr.getName, attrValue)
+    }).toMap
   }
 
   /**
@@ -342,16 +338,12 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       Map()
     } else {
       try {
-        splitter
-          .split(constraintsVal)
-          .asScala
-          .toMap
-          .mapValues(v =>
-            if (v == null || v.isEmpty) {
-              Set[String]()
-            } else {
-              v.split(',').toSet
-            })
+        splitter.split(constraintsVal).asScala.toMap.mapValues(v =>
+          if (v == null || v.isEmpty) {
+            Set[String]()
+          } else {
+            v.split(',').toSet
+          })
       } catch {
         case NonFatal(e) =>
           throw new IllegalArgumentException(
@@ -375,11 +367,9 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
   def executorMemory(sc: SparkContext): Int = {
     sc.conf.getInt(
       "spark.mesos.executor.memoryOverhead",
-      math
-        .max(
-          MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
-          MEMORY_OVERHEAD_MINIMUM)
-        .toInt) +
+      math.max(
+        MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
+        MEMORY_OVERHEAD_MINIMUM).toInt) +
       sc.executorMemory
   }
 

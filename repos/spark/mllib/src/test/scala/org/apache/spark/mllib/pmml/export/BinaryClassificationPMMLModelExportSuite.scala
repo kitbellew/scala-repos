@@ -57,14 +57,11 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     assert(
       pmmlRegressionModel.getRegressionTables.get(1).getTargetCategory === "0")
     assert(
-      pmmlRegressionModel.getRegressionTables
-        .get(1)
-        .getNumericPredictors
-        .size === 0)
+      pmmlRegressionModel.getRegressionTables.get(
+        1).getNumericPredictors.size === 0)
     // ensure logistic regression has normalization method set to LOGIT
     assert(
-      pmmlRegressionModel
-        .getNormalizationMethod() == RegressionNormalizationMethodType.LOGIT)
+      pmmlRegressionModel.getNormalizationMethod() == RegressionNormalizationMethodType.LOGIT)
   }
 
   test("linear SVM PMML export") {
@@ -97,14 +94,11 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     assert(
       pmmlRegressionModel.getRegressionTables.get(1).getTargetCategory === "0")
     assert(
-      pmmlRegressionModel.getRegressionTables
-        .get(1)
-        .getNumericPredictors
-        .size === 0)
+      pmmlRegressionModel.getRegressionTables.get(
+        1).getNumericPredictors.size === 0)
     // ensure linear SVM has normalization method set to NONE
     assert(
-      pmmlRegressionModel
-        .getNormalizationMethod() == RegressionNormalizationMethodType.NONE)
+      pmmlRegressionModel.getNormalizationMethod() == RegressionNormalizationMethodType.NONE)
   }
 
 }

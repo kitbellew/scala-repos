@@ -96,8 +96,7 @@ class ProtobufReadOptional {
             .setRow(s.row)
             .setLetter(s.letter)
             .setSeatType(s.seatType.code)
-            .build()
-            .toByteArray
+            .build().toByteArray
       }
 
     // -- fromBinary helpers --

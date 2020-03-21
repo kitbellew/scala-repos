@@ -159,9 +159,8 @@ class IntroduceImplicitParameterIntention
         inWriteAction {
           expr.replace(newExpr)
           editor.getCaretModel.moveToOffset(startOffset)
-          PsiDocumentManager
-            .getInstance(project)
-            .commitDocument(editor.getDocument)
+          PsiDocumentManager.getInstance(project).commitDocument(
+            editor.getDocument)
         }
       case Right(message) =>
         showErrorHint(message)

@@ -14,14 +14,13 @@ import com.intellij.psi.PsiFile
 
 class ScalaUnusedSymbolPassFactory(project: Project)
     extends TextEditorHighlightingPassFactory {
-  TextEditorHighlightingPassRegistrar
-    .getInstance(project)
-    .registerTextEditorHighlightingPass(
-      this,
-      Array[Int](Pass.UPDATE_ALL),
-      null,
-      false,
-      -1)
+  TextEditorHighlightingPassRegistrar.getInstance(
+    project).registerTextEditorHighlightingPass(
+    this,
+    Array[Int](Pass.UPDATE_ALL),
+    null,
+    false,
+    -1)
 
   def projectClosed() {}
 

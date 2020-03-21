@@ -59,12 +59,10 @@ object ASMConverters {
           case l: Label => s" /*${l.offset}*/"
           case _        => ""
         }
-      dropNonOp
-        .map({
-          case i: Invoke => s""""${i.name}""""
-          case ins       => opcodeToString(ins.opcode, ins.opcode) + comment(ins)
-        })
-        .mkString("List(", ", ", ")")
+      dropNonOp.map({
+        case i: Invoke => s""""${i.name}""""
+        case ins       => opcodeToString(ins.opcode, ins.opcode) + comment(ins)
+      }).mkString("List(", ", ", ")")
     }
   }
 

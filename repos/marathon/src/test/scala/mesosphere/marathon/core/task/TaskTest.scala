@@ -22,25 +22,23 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
     val networkWithoutIp = MesosProtos.NetworkInfo.newBuilder.build()
 
     val ipString1 = "123.123.123.123"
-    val ipAddress1 = MesosProtos.NetworkInfo.IPAddress
-      .newBuilder()
-      .setIpAddress(ipString1)
-      .build()
+    val ipAddress1 =
+      MesosProtos.NetworkInfo.IPAddress.newBuilder().setIpAddress(
+        ipString1).build()
 
     val ipString2 = "123.123.123.124"
-    val ipAddress2 = MesosProtos.NetworkInfo.IPAddress
-      .newBuilder()
-      .setIpAddress(ipString2)
-      .build()
+    val ipAddress2 =
+      MesosProtos.NetworkInfo.IPAddress.newBuilder().setIpAddress(
+        ipString2).build()
 
     val networkWithOneIp1 =
       MesosProtos.NetworkInfo.newBuilder.addIpAddresses(ipAddress1).build()
     val networkWithOneIp2 =
       MesosProtos.NetworkInfo.newBuilder.addIpAddresses(ipAddress2).build()
 
-    val networkWithMultipleIps = MesosProtos.NetworkInfo.newBuilder
-      .addAllIpAddresses(Seq(ipAddress1, ipAddress2).asJava)
-      .build()
+    val networkWithMultipleIps =
+      MesosProtos.NetworkInfo.newBuilder.addAllIpAddresses(
+        Seq(ipAddress1, ipAddress2).asJava).build()
 
     val host: String = "agent1.mesos"
 

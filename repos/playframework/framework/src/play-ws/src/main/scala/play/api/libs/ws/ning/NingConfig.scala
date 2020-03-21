@@ -125,8 +125,7 @@ class NingAsyncHttpClientConfigBuilder(
       else -1
     }
 
-    builder
-      .setConnectTimeout(toMillis(config.connectionTimeout))
+    builder.setConnectTimeout(toMillis(config.connectionTimeout))
       .setReadTimeout(toMillis(config.idleTimeout))
       .setRequestTimeout(toMillis(config.requestTimeout))
       .setFollowRedirect(config.followRedirects)
@@ -169,9 +168,8 @@ class NingAsyncHttpClientConfigBuilder(
 
       case None =>
         // Otherwise, we return the default protocols in the given list.
-        Protocols.recommendedProtocols
-          .filter(existingProtocols.contains)
-          .toArray
+        Protocols.recommendedProtocols.filter(
+          existingProtocols.contains).toArray
     }
 
     if (!sslConfig.loose.allowWeakProtocols) {
@@ -276,12 +274,10 @@ class NingAsyncHttpClientConfigBuilder(
     val trustManager: X509TrustManager =
       tmf.getTrustManagers()(0).asInstanceOf[X509TrustManager]
 
-    val constraints = sslConfig.disabledKeyAlgorithms
-      .map(a =>
-        AlgorithmConstraintsParser
-          .parseAll(AlgorithmConstraintsParser.expression, a)
-          .get)
-      .toSet
+    val constraints = sslConfig.disabledKeyAlgorithms.map(a =>
+      AlgorithmConstraintsParser.parseAll(
+        AlgorithmConstraintsParser.expression,
+        a).get).toSet
     val algorithmChecker = new AlgorithmChecker(
       keyConstraints = constraints,
       signatureConstraints = Set())

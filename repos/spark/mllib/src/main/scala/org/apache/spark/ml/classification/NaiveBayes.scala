@@ -278,11 +278,8 @@ object NaiveBayesModel extends MLReadable[NaiveBayesModel] {
       // Save model data: pi, theta
       val data = Data(instance.pi, instance.theta)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 

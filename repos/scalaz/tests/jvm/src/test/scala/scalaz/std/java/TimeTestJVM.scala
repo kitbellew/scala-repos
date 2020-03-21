@@ -34,10 +34,12 @@ object TimeTestJVM extends SpecLite {
 
   implicit val zonedOffsetArbitrary: Arbitrary[ZoneOffset] =
     Arbitrary(
-      Apply[Gen]
-        .apply3(Gen.choose(0, 17), Gen.choose(0, 59), Gen.choose(0, 59))(
-          ZoneOffset.ofHoursMinutesSeconds
-        )
+      Apply[Gen].apply3(
+        Gen.choose(0, 17),
+        Gen.choose(0, 59),
+        Gen.choose(0, 59))(
+        ZoneOffset.ofHoursMinutesSeconds
+      )
     )
 
   implicit val zoneIdArbitrary: Arbitrary[ZoneId] =

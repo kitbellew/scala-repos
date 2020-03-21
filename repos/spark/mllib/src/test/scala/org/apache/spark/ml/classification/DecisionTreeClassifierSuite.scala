@@ -65,8 +65,7 @@ class DecisionTreeClassifierSuite
       sc.parallelize(
         OldDecisionTreeSuite.generateContinuousDataPointsForMulticlass())
     categoricalDataPointsForMulticlassForOrderedFeaturesRDD = sc.parallelize(
-      OldDecisionTreeSuite
-        .generateCategoricalDataPointsForMulticlassForOrderedFeatures())
+      OldDecisionTreeSuite.generateCategoricalDataPointsForMulticlassForOrderedFeatures())
   }
 
   test("params") {
@@ -99,17 +98,18 @@ class DecisionTreeClassifierSuite
       .setMaxDepth(3)
       .setMaxBins(100)
     val numClasses = 2
-    Array(orderedLabeledPointsWithLabel0RDD, orderedLabeledPointsWithLabel1RDD)
-      .foreach { rdd =>
-        DecisionTreeClassifier.supportedImpurities.foreach { impurity =>
-          dt.setImpurity(impurity)
-          compareAPIs(
-            rdd,
-            dt,
-            categoricalFeatures = Map.empty[Int, Int],
-            numClasses)
-        }
+    Array(
+      orderedLabeledPointsWithLabel0RDD,
+      orderedLabeledPointsWithLabel1RDD).foreach { rdd =>
+      DecisionTreeClassifier.supportedImpurities.foreach { impurity =>
+        dt.setImpurity(impurity)
+        compareAPIs(
+          rdd,
+          dt,
+          categoricalFeatures = Map.empty[Int, Int],
+          numClasses)
       }
+    }
   }
 
   test(
@@ -156,9 +156,9 @@ class DecisionTreeClassifierSuite
   test(
     "Multiclass classification stump with unordered categorical features," +
       " with just enough bins") {
-    val maxBins = 2 * (math
-      .pow(2, 3 - 1)
-      .toInt - 1) // just enough bins to allow unordered features
+    val maxBins = 2 * (math.pow(
+      2,
+      3 - 1).toInt - 1) // just enough bins to allow unordered features
     val rdd = categoricalDataPointsForMulticlassRDD
     val dt = new DecisionTreeClassifier()
       .setImpurity("Gini")
@@ -282,8 +282,7 @@ class DecisionTreeClassifierSuite
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(newTree)
 
-    val predictions = newTree
-      .transform(newData)
+    val predictions = newTree.transform(newData)
       .select(
         newTree.getPredictionCol,
         newTree.getRawPredictionCol,

@@ -46,8 +46,7 @@ object AttributeSet {
     new AttributeSet(
       baseSet
         .flatMap(_.references)
-        .map(new AttributeEquals(_))
-        .toSet)
+        .map(new AttributeEquals(_)).toSet)
   }
 }
 
@@ -70,9 +69,8 @@ class AttributeSet private (val baseSet: Set[AttributeEquals])
   override def equals(other: Any): Boolean =
     other match {
       case otherSet: AttributeSet =>
-        otherSet.size == baseSet.size && baseSet
-          .map(_.a)
-          .forall(otherSet.contains)
+        otherSet.size == baseSet.size && baseSet.map(_.a).forall(
+          otherSet.contains)
       case _ => false
     }
 

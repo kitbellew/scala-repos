@@ -154,21 +154,19 @@ private[serverset2] class ServiceDiscoverer(
         if (!closed) {
           @volatile var seenFailures = false
           Stat.timeFuture(readStat) {
-            Future
-              .collectToTry(paths.map { path =>
-                // note if any failed
-                cache.get(path).onFailure { _ => seenFailures = true }
-              })
-              // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
-              // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
+            Future.collectToTry(paths.map { path =>
+              // note if any failed
+              cache.get(path).onFailure { _ => seenFailures = true }
+            })
+            // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
+            // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
               .map(tries => tries.collect { case Return(e) => e }.flatten)
               .map { seq =>
                 // if we have *any* results or no-failure, we consider it a success
                 if (seenFailures && seq.isEmpty)
                   u() = Activity.Failed(EntryLookupFailureException)
                 else u() = Activity.Ok(seq)
-              }
-              .ensure {
+              }.ensure {
                 if (seenFailures) {
                   log.warning(
                     s"Failed to read all data for $parentPath. Retrying in $retryJitter")
@@ -215,8 +213,9 @@ private[serverset2] class ServiceDiscoverer(
     val es = entriesOf(path)
     val vs = vectorsOf(path)
 
-    val raw =
-      es.join(vs).map { case (ents, vecs) => zipWithWeights(ents, vecs.toSet) }
+    val raw = es.join(vs).map {
+      case (ents, vecs) => zipWithWeights(ents, vecs.toSet)
+    }
 
     // Squash duplicate updates
     Activity(Var(Activity.Pending, raw.states.dedup))

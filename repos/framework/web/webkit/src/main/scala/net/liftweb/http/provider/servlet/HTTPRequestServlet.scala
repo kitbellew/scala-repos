@@ -56,17 +56,15 @@ class HTTPRequestServlet(
 
   def headers(name: String): List[String] =
     for {
-      h <- (Box !! req.getHeaders(name))
-        .asA[java.util.Enumeration[String]]
-        .toList
+      h <- (Box !! req.getHeaders(name)).asA[
+        java.util.Enumeration[String]].toList
       li <- enumToList[String](h) if null != li
     } yield li
 
   lazy val headers: List[HTTPParam] =
     for {
-      hne <- (Box !! req.getHeaderNames)
-        .asA[java.util.Enumeration[String]]
-        .toList
+      hne <- (Box !! req.getHeaderNames).asA[
+        java.util.Enumeration[String]].toList
       n <- enumToList[String](hne) if null != n
       hl <- Full(headers(n)) if !hl.isEmpty
     } yield HTTPParam(n, hl)
@@ -173,16 +171,12 @@ class HTTPRequestServlet(
             val names: List[String] =
               if (headers eq null) Nil
               else
-                headers
-                  .getHeaderNames()
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList
+                headers.getHeaderNames().asInstanceOf[java.util.Iterator[
+                  String]].toList
             val map: Map[String, List[String]] = Map(
               names.map(n =>
-                n -> headers
-                  .getHeaders(n)
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList): _*)
+                n -> headers.getHeaders(n).asInstanceOf[java.util.Iterator[
+                  String]].toList): _*)
             LiftRules.withMimeHeaders(map) {
               LiftRules.handleMimeFile(
                 f.getFieldName,
@@ -206,16 +200,14 @@ class HTTPRequestServlet(
     asyncProvider.flatMap(_.resumeInfo)
 
   def suspend(timeout: Long): RetryState.Value =
-    asyncProvider
-      .openOrThrowException(
-        "open_! is bad, but presumably, the suspendResume support was checked")
-      .suspend(timeout)
+    asyncProvider.openOrThrowException(
+      "open_! is bad, but presumably, the suspendResume support was checked").suspend(
+      timeout)
 
   def resume(what: (Req, LiftResponse)): Boolean =
-    asyncProvider
-      .openOrThrowException(
-        "open_! is bad, but presumably, the suspendResume support was checked")
-      .resume(what)
+    asyncProvider.openOrThrowException(
+      "open_! is bad, but presumably, the suspendResume support was checked").resume(
+      what)
 
   lazy val suspendResumeSupport_? = {
     LiftRules.asyncProviderMeta.map(
@@ -287,11 +279,8 @@ private class OfflineRequestSnapshot(
 
   lazy val serverPort: Int = req.serverPort match {
     case 80 =>
-      headers("X-SSL")
-        .flatMap(Helpers.asBoolean _)
-        .filter(a => a)
-        .map(a => 443)
-        .headOption getOrElse 80
+      headers("X-SSL").flatMap(Helpers.asBoolean _).filter(a => a).map(a =>
+        443).headOption getOrElse 80
     case x => x
   }
 

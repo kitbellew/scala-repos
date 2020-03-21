@@ -567,8 +567,9 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
     val factory = new FailureAccrualFactory[Int, Int](
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff),
+      FailureAccrualPolicy.consecutiveFailures(
+        3,
+        FailureAccrualFactory.jitteredBackoff),
       new MockTimer,
       statsReceiver,
       "test")
@@ -613,8 +614,9 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     when(underlying()) thenReturn Future.exception(exc)
     val factory = new FailureAccrualFactory[Int, Int](
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff),
+      FailureAccrualPolicy.consecutiveFailures(
+        3,
+        FailureAccrualFactory.jitteredBackoff),
       new MockTimer,
       statsReceiver,
       "test")
@@ -761,9 +763,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   test("module") {
     val h = new Helper(consecutiveFailures)
     val s: Stack[ServiceFactory[Int, Int]] =
-      FailureAccrualFactory
-        .module[Int, Int]
-        .toStack(Stack.Leaf(Stack.Role("Service"), h.underlying))
+      FailureAccrualFactory.module[Int, Int].toStack(
+        Stack.Leaf(Stack.Role("Service"), h.underlying))
 
     val ps: Stack.Params = Stack.Params.empty + param.Stats(h.statsReceiver)
 
@@ -773,9 +774,9 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
       !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 
     // replaced
-    Await.ready(s
-      .make(ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
-      .toService(10))
+    Await.ready(
+      s.make(ps + FailureAccrualFactory.Replaced(
+        ServiceFactoryWrapper.identity)).toService(10))
     assert(
       !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 

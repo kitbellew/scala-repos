@@ -44,23 +44,23 @@ case class DescribeCommand(table: TableIdentifier, isExtended: Boolean)
       "col_name",
       StringType,
       nullable = false,
-      new MetadataBuilder()
-        .putString("comment", "name of the column")
-        .build())(),
+      new MetadataBuilder().putString(
+        "comment",
+        "name of the column").build())(),
     AttributeReference(
       "data_type",
       StringType,
       nullable = false,
-      new MetadataBuilder()
-        .putString("comment", "data type of the column")
-        .build())(),
+      new MetadataBuilder().putString(
+        "comment",
+        "data type of the column").build())(),
     AttributeReference(
       "comment",
       StringType,
       nullable = true,
-      new MetadataBuilder()
-        .putString("comment", "comment of the column")
-        .build())()
+      new MetadataBuilder().putString(
+        "comment",
+        "comment of the column").build())()
   )
 }
 
@@ -119,9 +119,9 @@ case class CreateTempTableUsing(
       options = options)
     sqlContext.sessionState.catalog.registerTable(
       tableIdent,
-      Dataset
-        .newDataFrame(sqlContext, LogicalRelation(dataSource.resolveRelation()))
-        .logicalPlan)
+      Dataset.newDataFrame(
+        sqlContext,
+        LogicalRelation(dataSource.resolveRelation())).logicalPlan)
 
     Seq.empty[Row]
   }

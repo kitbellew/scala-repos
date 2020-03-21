@@ -176,10 +176,9 @@ class JoinSuite extends QueryTest with SharedSQLContext {
   test("multiple-key equi-join is hash-join") {
     val x = testData2.as("x")
     val y = testData2.as("y")
-    val join = x
-      .join(y, ($"x.a" === $"y.a") && ($"x.b" === $"y.b"))
-      .queryExecution
-      .optimizedPlan
+    val join = x.join(
+      y,
+      ($"x.a" === $"y.a") && ($"x.b" === $"y.b")).queryExecution.optimizedPlan
     val planned = sqlContext.sessionState.planner.EquiJoinSelection(join)
     assert(planned.size === 1)
   }
@@ -232,10 +231,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       bigDataX.join(bigDataY).where($"x.key" === $"y.key"),
-      testData.rdd
-        .flatMap(row => Seq.fill(16)(Row.merge(row, row)))
-        .collect()
-        .toSeq)
+      testData.rdd.flatMap(row =>
+        Seq.fill(16)(Row.merge(row, row))).collect().toSeq)
   }
 
   test("cartisian product join") {
@@ -407,8 +404,10 @@ class JoinSuite extends QueryTest with SharedSQLContext {
     )
 
     checkAnswer(
-      left
-        .join(right, ($"left.N" === $"right.N") && ($"right.N" =!= 3), "full"),
+      left.join(
+        right,
+        ($"left.N" === $"right.N") && ($"right.N" =!= 3),
+        "full"),
       Row(1, "A", null, null) ::
         Row(2, "B", null, null) ::
         Row(3, "C", null, null) ::
@@ -503,8 +502,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
 
     // we set the threshold is greater than statistic of the cached table testData
     withSQLConf(
-      SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> (sizeInByteOfTestData + 1)
-        .toString()) {
+      SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> (sizeInByteOfTestData + 1).toString()) {
 
       assert(
         statisticSizeInByte(sqlContext.table("testData2")) >

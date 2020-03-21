@@ -111,9 +111,8 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
           if ((i / 4) % 2 == 0) LiteralColumn(i).result
           else DBIO.from(Future.successful(i))))
       val a4 = DBIO.seq((1 to 50000).toSeq.map(i => DBIO.successful("a4")): _*)
-      val a5 = (1 to 50000).toSeq
-        .map(i => DBIO.successful("a5"))
-        .reduceLeft(_ andThen _)
+      val a5 = (1 to 50000).toSeq.map(i => DBIO.successful("a5")).reduceLeft(
+        _ andThen _)
 
       DBIO.seq(
         a1.map(_ shouldBe (1 to 5000).toSeq),

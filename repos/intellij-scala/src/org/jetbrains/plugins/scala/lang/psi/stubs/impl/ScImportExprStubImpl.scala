@@ -38,8 +38,8 @@ class ScImportExprStubImpl[ParentPsi <: PsiElement](
       singleWildcard: Boolean) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     referenceText = StringRef.fromString(refText)
     this.singleWildcard = singleWildcard
   }

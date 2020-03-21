@@ -88,8 +88,8 @@ final class JSONIngestProcessing(
         jobId: Option[JobId],
         stream: StreamT[Future, Array[Byte]]): Future[IngestReport] = {
       val overLargeMsg =
-        "Cannot ingest values with more than %d primitive fields. This limitiation may be lifted in a future release. Thank you for your patience."
-          .format(maxFields)
+        "Cannot ingest values with more than %d primitive fields. This limitiation may be lifted in a future release. Thank you for your patience.".format(
+          maxFields)
 
       @inline def expandArraysAtRoot(values: Seq[JValue]) =
         recordStyle match {

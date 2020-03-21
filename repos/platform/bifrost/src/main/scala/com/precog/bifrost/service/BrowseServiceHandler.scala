@@ -108,21 +108,19 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
     }
 
     EitherT {
-      vfs
-        .pathStructure(apiKey, path, property, Version.Current)
-        .fold(
-          {
-            case ResourceError.NotFound(_) => \/.right(JUndefined)
-            case otherError                => \/.left(otherError)
-          },
-          {
-            case PathStructure(types, children) =>
-              \/.right(
-                JObject(
-                  "children" -> children.serialize,
-                  "types" -> JObject(normalizeTypes(types))))
-          }
-        )
+      vfs.pathStructure(apiKey, path, property, Version.Current).fold(
+        {
+          case ResourceError.NotFound(_) => \/.right(JUndefined)
+          case otherError                => \/.left(otherError)
+        },
+        {
+          case PathStructure(types, children) =>
+            \/.right(
+              JObject(
+                "children" -> children.serialize,
+                "types" -> JObject(normalizeTypes(types))))
+        }
+      )
     }
   }
 }
@@ -147,18 +145,17 @@ class BrowseServiceHandler[A](
           kids map { paths => JObject("children" -> paths) }
 
         case "structure" =>
-          val cpath = request.parameters
-            .get('property)
-            .map(CPath(_))
-            .getOrElse(CPath.Identity)
+          val cpath = request.parameters.get('property).map(CPath(_)).getOrElse(
+            CPath.Identity)
           structure(apiKey, path, cpath) map { detail =>
             JObject("structure" -> detail)
           }
 
       } getOrElse {
         logger.debug(
-          "Retrieving all available metadata for %s as %s"
-            .format(path.path, apiKey))
+          "Retrieving all available metadata for %s as %s".format(
+            path.path,
+            apiKey))
         for {
           sz <- size(apiKey, path)
           children <- if (legacy) children(apiKey, path)
@@ -176,8 +173,9 @@ class BrowseServiceHandler[A](
         _.fold(
           fatalError => {
             logger.error(
-              "A fatal error was encountered handling browse request %s: %s"
-                .format(request.shows, fatalError))
+              "A fatal error was encountered handling browse request %s: %s".format(
+                request.shows,
+                fatalError))
             HttpResponse[JValue](
               InternalServerError,
               content = Some(JObject(
@@ -188,25 +186,26 @@ class BrowseServiceHandler[A](
               HttpResponse[JValue](
                 HttpStatusCodes.NotFound,
                 content = Some(JObject("errors" -> JArray(
-                  "Could not find any resource that corresponded to path %s: %s"
-                    .format(path.path, message)
-                    .serialize)))
+                  "Could not find any resource that corresponded to path %s: %s".format(
+                    path.path,
+                    message).serialize)))
               )
 
             case PermissionsError(message) =>
               HttpResponse[JValue](
                 Forbidden,
-                content = Some(
-                  JObject("errors" -> JArray(
-                    "API key %s does not have the ability to browse path %s: %s"
-                      .format(apiKey, path.path, message)
-                      .serialize)))
+                content = Some(JObject("errors" -> JArray(
+                  "API key %s does not have the ability to browse path %s: %s".format(
+                    apiKey,
+                    path.path,
+                    message).serialize)))
               )
 
             case unexpected =>
               logger.error(
-                "An unexpected error was encountered handling browse request %s: %s"
-                  .format(request.shows, unexpected))
+                "An unexpected error was encountered handling browse request %s: %s".format(
+                  request.shows,
+                  unexpected))
               HttpResponse[JValue](
                 InternalServerError,
                 content = Some(

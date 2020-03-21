@@ -95,8 +95,7 @@ object MFDataGenerator {
 
     val omega = shuffled.slice(0, sampSize)
     val ordered = omega.sortWith(_ < _).toArray
-    val trainData: RDD[(Int, Int, Double)] = sc
-      .parallelize(ordered)
+    val trainData: RDD[(Int, Int, Double)] = sc.parallelize(ordered)
       .map(x => (x % m, x / m, fullData.values(x)))
 
     // optionally add gaussian noise
@@ -104,9 +103,8 @@ object MFDataGenerator {
       trainData.map(x => (x._1, x._2, x._3 + rand.nextGaussian * sigma))
     }
 
-    trainData
-      .map(x => x._1 + "," + x._2 + "," + x._3)
-      .saveAsTextFile(outputPath)
+    trainData.map(x => x._1 + "," + x._2 + "," + x._3).saveAsTextFile(
+      outputPath)
 
     // optionally generate testing data
     if (test) {
@@ -114,12 +112,10 @@ object MFDataGenerator {
         math.min(math.round(sampSize * testSampFact).toInt, mn - sampSize)
       val testOmega = shuffled.slice(sampSize, sampSize + testSampSize)
       val testOrdered = testOmega.sortWith(_ < _).toArray
-      val testData: RDD[(Int, Int, Double)] = sc
-        .parallelize(testOrdered)
+      val testData: RDD[(Int, Int, Double)] = sc.parallelize(testOrdered)
         .map(x => (x % m, x / m, fullData.values(x)))
-      testData
-        .map(x => x._1 + "," + x._2 + "," + x._3)
-        .saveAsTextFile(outputPath)
+      testData.map(x => x._1 + "," + x._2 + "," + x._3).saveAsTextFile(
+        outputPath)
     }
 
     sc.stop()

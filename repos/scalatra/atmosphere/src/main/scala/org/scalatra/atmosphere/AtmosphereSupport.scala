@@ -85,9 +85,8 @@ trait AtmosphereSupport
   val atmosphereFramework = new ScalatraAtmosphereFramework(isFilter, false)
 
   implicit protected def scalatraActorSystem: ActorSystem =
-    servletContext
-      .get(ActorSystemKey)
-      .map(_.asInstanceOf[ActorSystem]) getOrElse {
+    servletContext.get(ActorSystemKey).map(
+      _.asInstanceOf[ActorSystem]) getOrElse {
       val msg =
         "Scalatra Actor system not present. Creating a private actor system"
       logger.info(msg)
@@ -140,17 +139,13 @@ trait AtmosphereSupport
 
   protected def configureInterceptors(cfg: ServletConfig) = {
     atmosphereFramework.interceptor(new SessionCreationInterceptor)
-    if (cfg
-          .getInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT)
-          .isBlank)
+    if (cfg.getInitParameter(
+          ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT).isBlank)
       cfg.getServletContext.setInitParameter(
         ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT,
         "true")
-    if (trackMessageSize || cfg
-          .getInitParameter(TrackMessageSize)
-          .blankOption
-          .map(_.toCheckboxBool)
-          .getOrElse(false))
+    if (trackMessageSize || cfg.getInitParameter(
+          TrackMessageSize).blankOption.map(_.toCheckboxBool).getOrElse(false))
       atmosphereFramework.interceptor(new TrackMessageSizeInterceptor)
   }
 
@@ -159,9 +154,9 @@ trait AtmosphereSupport
     val servletRegistration = ScalatraBase.getServletRegistration(this)
     servletRegistration foreach { reg =>
       reg.getMappings.asScala foreach { mapping =>
-        atmosphereFramework
-          .addAtmosphereHandler(mapping, new ScalatraAtmosphereHandler(this))
-          .initAtmosphereHandler(cfg)
+        atmosphereFramework.addAtmosphereHandler(
+          mapping,
+          new ScalatraAtmosphereHandler(this)).initAtmosphereHandler(cfg)
       }
     }
   }
@@ -201,9 +196,8 @@ trait AtmosphereSupport
         "you should get rid of it.")
 
   private[this] def atmosphereRoutes =
-    routes.methodRoutes
-      .getOrElse(Get, noGetRoute)
-      .filter(_.metadata.contains('Atmosphere))
+    routes.methodRoutes.getOrElse(Get, noGetRoute).filter(
+      _.metadata.contains('Atmosphere))
 
   private[this] def atmosphereRoute(req: HttpServletRequest) =
     (for {

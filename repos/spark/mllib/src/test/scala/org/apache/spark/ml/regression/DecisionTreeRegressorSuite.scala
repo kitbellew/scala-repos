@@ -77,8 +77,7 @@ class DecisionTreeRegressorSuite
     val model = new DecisionTreeRegressor()
       .setImpurity("variance")
       .setMaxDepth(2)
-      .setMaxBins(8)
-      .fit(df)
+      .setMaxBins(8).fit(df)
     MLTestingUtils.checkCopy(model)
   }
 
@@ -97,8 +96,7 @@ class DecisionTreeRegressorSuite
       numClasses = 0)
     val model = dt.fit(df)
 
-    val predictions = model
-      .transform(df)
+    val predictions = model.transform(df)
       .select(model.getFeaturesCol, model.getVarianceCol)
       .collect()
 

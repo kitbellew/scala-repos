@@ -93,9 +93,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       // `throw null` is valid although scala.Null (as defined in src/library-aux) isn't a subtype of Throwable.
       // Similarly for scala.Nothing (again, as defined in src/library-aux).
       assert(
-        thrownKind.isNullType || thrownKind.isNothingType || thrownKind.asClassBType
-          .isSubtypeOf(jlThrowableRef)
-          .get)
+        thrownKind.isNullType || thrownKind.isNothingType || thrownKind.asClassBType.isSubtypeOf(
+          jlThrowableRef).get)
       genLoad(expr, thrownKind)
       lineNumber(expr)
       emit(
@@ -1194,8 +1193,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         )
 
       val isTraitCallToObjectMethod =
-        hostSymbol != methodOwner && methodOwner.isTraitOrInterface && ObjectTpe
-          .decl(method.name) != NoSymbol && method.overrideChain.last.owner == ObjectClass
+        hostSymbol != methodOwner && methodOwner.isTraitOrInterface && ObjectTpe.decl(
+          method.name) != NoSymbol && method.overrideChain.last.owner == ObjectClass
 
       // whether to reference the type of the receiver or
       // the type of the method owner
@@ -1207,8 +1206,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val receiver = if (useMethodOwner) methodOwner else hostSymbol
       val jowner = internalName(receiver)
 
-      if (style.isSuper && (isTraitCallToObjectMethod || receiver.isTraitOrInterface) && !cnode.interfaces
-            .contains(jowner))
+      if (style.isSuper && (isTraitCallToObjectMethod || receiver.isTraitOrInterface) && !cnode.interfaces.contains(
+            jowner))
         cnode.interfaces.add(jowner)
 
       val jname = method.javaSimpleName.toString
@@ -1478,8 +1477,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val mustUseAnyComparator: Boolean = {
         val areSameFinals =
           l.tpe.isFinalType && r.tpe.isFinalType && (l.tpe =:= r.tpe)
-        !areSameFinals && platform.isMaybeBoxed(l.tpe.typeSymbol) && platform
-          .isMaybeBoxed(r.tpe.typeSymbol)
+        !areSameFinals && platform.isMaybeBoxed(
+          l.tpe.typeSymbol) && platform.isMaybeBoxed(r.tpe.typeSymbol)
       }
 
       if (mustUseAnyComparator) {
@@ -1565,8 +1564,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           lambdaTarget.name.toString,
           methodBTypeFromSymbol(lambdaTarget).descriptor)
       val receiver = if (isStaticMethod) Nil else lambdaTarget.owner :: Nil
-      val (capturedParams, lambdaParams) = lambdaTarget.paramss.head
-        .splitAt(lambdaTarget.paramss.head.length - arity)
+      val (capturedParams, lambdaParams) = lambdaTarget.paramss.head.splitAt(
+        lambdaTarget.paramss.head.length - arity)
       // Requires https://github.com/scala/scala-java8-compat on the runtime classpath
       val invokedType = asm.Type.getMethodDescriptor(
         asmType(functionalInterface),
@@ -1576,9 +1575,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val constrainedType = new MethodBType(
         lambdaParams.map(p => typeToBType(p.tpe)),
         typeToBType(lambdaTarget.tpe.resultType)).toASMType
-      val sam = functionalInterface.info.decls
-        .find(_.isDeferred)
-        .getOrElse(functionalInterface.info.member(nme.apply))
+      val sam = functionalInterface.info.decls.find(_.isDeferred).getOrElse(
+        functionalInterface.info.member(nme.apply))
       val samName = sam.name.toString
       val samMethodType = methodBTypeFromSymbol(sam).toASMType
 

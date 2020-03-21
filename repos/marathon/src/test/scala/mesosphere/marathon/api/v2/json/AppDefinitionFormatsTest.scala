@@ -247,8 +247,8 @@ class AppDefinitionFormatsTest
         Residency(
           7200,
           Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER))))
-    (json \ "residency" \ "relaunchEscalationTimeoutSeconds")
-      .as[Long] should equal(7200)
+    (json \ "residency" \ "relaunchEscalationTimeoutSeconds").as[
+      Long] should equal(7200)
     (json \ "residency" \ "taskLostBehavior").as[String] should equal(
       Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER.name())
   }

@@ -152,9 +152,9 @@ class ScConstructorImpl(node: ASTNode)
           subst.subst(ta.aliasedType.getOrElse(return FAILURE))
         case _ =>
           parameterize(
-            ScSimpleTypeElementImpl
-              .calculateReferenceType(ref, shapesOnly = true)
-              .getOrElse(return FAILURE),
+            ScSimpleTypeElementImpl.calculateReferenceType(
+              ref,
+              shapesOnly = true).getOrElse(return FAILURE),
             clazz,
             subst)
       }
@@ -205,9 +205,9 @@ class ScConstructorImpl(node: ASTNode)
                     new Parameter("", None, expected, false, false, false, 0)),
                   Seq(
                     new Expression(
-                      InferUtil
-                        .undefineSubstitutor(nonValueType.typeParameters)
-                        .subst(subst.subst(tp).inferValueType))),
+                      InferUtil.undefineSubstitutor(
+                        nonValueType.typeParameters).subst(
+                        subst.subst(tp).inferValueType))),
                   nonValueType.typeParameters,
                   shouldUndefineParameters = false,
                   filterTypeParams = false
@@ -307,8 +307,7 @@ class ScConstructorImpl(node: ASTNode)
     } yield {
       arg match {
         case ScAssignStmt(refToParam: ScReferenceExpression, Some(expr)) =>
-          val param = paramClause
-            .find(_.getName == refToParam.refName)
+          val param = paramClause.find(_.getName == refToParam.refName)
             .orElse(refToParam.resolve().asOptionOf[ScParameter])
           param.map(p => (expr, new Parameter(p))).toSeq
         case expr =>

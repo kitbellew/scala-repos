@@ -129,20 +129,17 @@ trait TestShardService
 
   val expiredPath = Path("expired")
 
-  val expiredAPIKey = apiKeyManager
-    .newStandardAPIKeyRecord("expired")
-    .map(_.apiKey)
-    .flatMap { expiredAPIKey =>
-      apiKeyManager
-        .deriveAndAddGrant(
+  val expiredAPIKey =
+    apiKeyManager.newStandardAPIKeyRecord("expired").map(_.apiKey).flatMap {
+      expiredAPIKey =>
+        apiKeyManager.deriveAndAddGrant(
           None,
           None,
           testAPIKey,
           testPermissions,
           expiredAPIKey,
-          Some(new DateTime().minusYears(1000)))
-        .map(_ => expiredAPIKey)
-  } copoint
+          Some(new DateTime().minusYears(1000))).map(_ => expiredAPIKey)
+    } copoint
 
   def configureShardState(config: Configuration) =
     Future {
@@ -225,17 +222,15 @@ trait TestShardService
       def unapply(fres: Future[HttpResponse[ByteChunk]])
           : Future[HttpResponse[QueryResult]] =
         fres map { response =>
-          val contentType = response.headers
-            .header[`Content-Type`]
-            .flatMap(_.mimeTypes.headOption)
+          val contentType = response.headers.header[`Content-Type`].flatMap(
+            _.mimeTypes.headOption)
           response.status.code match {
             case OK | Accepted => //assume application/json
               response map {
                 case Left(bytes) =>
                   Left(
-                    JParser
-                      .parseFromByteBuffer(ByteBuffer.wrap(bytes))
-                      .valueOr(throw _))
+                    JParser.parseFromByteBuffer(ByteBuffer.wrap(bytes)).valueOr(
+                      throw _))
                 case Right(stream) =>
                   Right(
                     stream.map(bytes => utf8.decode(ByteBuffer.wrap(bytes))))
@@ -246,9 +241,8 @@ trait TestShardService
                 response map {
                   case Left(bytes) =>
                     Left(
-                      JParser
-                        .parseFromByteBuffer(ByteBuffer.wrap(bytes))
-                        .valueOr(throw _))
+                      JParser.parseFromByteBuffer(
+                        ByteBuffer.wrap(bytes)).valueOr(throw _))
                   case Right(stream) =>
                     Right(
                       stream.map(bytes => utf8.decode(ByteBuffer.wrap(bytes))))
@@ -259,32 +253,32 @@ trait TestShardService
                   case chunk =>
                     Right(
                       StreamT.wrapEffect(
-                        chunkToFutureString
-                          .apply(chunk)
-                          .map(s =>
-                            CharBuffer.wrap(JString(s).renderCompact) :: StreamT
-                              .empty[Future, CharBuffer])))
+                        chunkToFutureString.apply(chunk).map(s =>
+                          CharBuffer.wrap(
+                            JString(s).renderCompact) :: StreamT.empty[
+                            Future,
+                            CharBuffer])))
                 }
               }
           }
         }
     }
 
-  lazy val queryService = client
-    .contentType[QueryResult](application / (MimeTypes.json))
-    .path("/analytics/v2/analytics/fs/")
+  lazy val queryService =
+    client.contentType[QueryResult](application / (MimeTypes.json))
+      .path("/analytics/v2/analytics/fs/")
 
-  lazy val metaService = client
-    .contentType[QueryResult](application / (MimeTypes.json))
-    .path("/analytics/v2/meta/fs/")
+  lazy val metaService =
+    client.contentType[QueryResult](application / (MimeTypes.json))
+      .path("/analytics/v2/meta/fs/")
 
-  lazy val metadataService = client
-    .contentType[QueryResult](application / (MimeTypes.json))
-    .path("/analytics/v2/metadata/fs/")
+  lazy val metadataService =
+    client.contentType[QueryResult](application / (MimeTypes.json))
+      .path("/analytics/v2/metadata/fs/")
 
-  lazy val asyncService = client
-    .contentType[QueryResult](application / (MimeTypes.json))
-    .path("/analytics/v2/analytics/queries")
+  lazy val asyncService =
+    client.contentType[QueryResult](application / (MimeTypes.json))
+      .path("/analytics/v2/analytics/queries")
 
   override implicit val defaultFutureTimeouts: FutureTimeouts =
     FutureTimeouts(1, Duration(3, "second"))
@@ -293,10 +287,8 @@ trait TestShardService
 
 class ShardServiceSpec extends TestShardService {
   def syncClient(query: String, apiKey: Option[String] = Some(testAPIKey)) = {
-    apiKey
-      .map { queryService.query("apiKey", _) }
-      .getOrElse(queryService)
-      .query("q", query)
+    apiKey.map { queryService.query("apiKey", _) }.getOrElse(
+      queryService).query("q", query)
   }
 
   def query(
@@ -312,22 +304,16 @@ class ShardServiceSpec extends TestShardService {
       query: String,
       apiKey: Option[String] = Some(testAPIKey),
       path: String = ""): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { asyncService.query("apiKey", _) }
-      .getOrElse(asyncService)
-      .query("q", query)
-      .query("prefixPath", path)
-      .post[QueryResult]("") {
+    apiKey.map { asyncService.query("apiKey", _) }.getOrElse(asyncService)
+      .query("q", query).query("prefixPath", path).post[QueryResult]("") {
         Right(StreamT.empty[Future, CharBuffer])
       }
   }
 
   def asyncQueryResults(jobId: JobId, apiKey: Option[String] = Some(testAPIKey))
       : Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { asyncService.query("apiKey", _) }
-      .getOrElse(asyncService)
-      .get(jobId)
+    apiKey.map { asyncService.query("apiKey", _) }.getOrElse(asyncService).get(
+      jobId)
   }
 
   val simpleQuery = "1 + 1"
@@ -482,31 +468,24 @@ class ShardServiceSpec extends TestShardService {
   def meta(
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test"): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { metaService.query("apiKey", _) }
-      .getOrElse(metadataService)
-      .get(path)
+    apiKey.map { metaService.query("apiKey", _) }.getOrElse(
+      metadataService).get(path)
   }
 
   def browse(
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test"): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { metaService.query("apiKey", _) }
-      .getOrElse(metaService)
-      .get(path)
+    apiKey.map { metaService.query("apiKey", _) }.getOrElse(metaService).get(
+      path)
   }
 
   def structure(
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test",
       cpath: CPath = CPath.Identity): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { metaService.query("apiKey", _) }
-      .getOrElse(metaService)
-      .query("type", "structure")
-      .query("property", cpath.toString)
-      .get(path)
+    apiKey.map { metaService.query("apiKey", _) }.getOrElse(metaService).query(
+      "type",
+      "structure").query("property", cpath.toString).get(path)
   }
 
   "Shard browse service" should {
@@ -646,10 +625,11 @@ trait TestPlatform extends ManagedPlatform { self =>
           }
 
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
-            shardQueryMonad
-              .liftM[Future, EvaluationError \/ StreamT[JobQueryTF, Slice]] {
-                mu map { _ => \/.right(toSlice(JObject("value" -> JNum(2)))) }
-              }
+            shardQueryMonad.liftM[
+              Future,
+              EvaluationError \/ StreamT[JobQueryTF, Slice]] {
+              mu map { _ => \/.right(toSlice(JObject("value" -> JNum(2)))) }
+            }
           }
         } else {
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {

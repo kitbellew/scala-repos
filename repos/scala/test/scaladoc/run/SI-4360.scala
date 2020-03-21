@@ -13,11 +13,8 @@ object Test extends ScaladocModelTest {
     import access._
 
     // just need to check the member exists, access methods will throw an error if there's a problem
-    val base = rootPackage
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("prefix")
+    val base = rootPackage._package("scala")._package("test")._package(
+      "scaladoc")._package("prefix")
 
     val TEST = base._package("pack1")._package("c")._class("TEST")
     val fooCA = TEST._method("fooCA")
@@ -41,17 +38,12 @@ object Test extends ScaladocModelTest {
     for ((method, name, refs) <- expected) {
       assert(
         method.valueParams(0)(0).resultType.name == name,
-        method
-          .valueParams(0)(0)
-          .resultType
-          .name + " == " + name + " (in " + method.qualifiedName + ")")
+        method.valueParams(0)(
+          0).resultType.name + " == " + name + " (in " + method.qualifiedName + ")")
       assert(
         method.valueParams(0)(0).resultType.refEntity.size == refs,
-        method
-          .valueParams(0)(0)
-          .resultType
-          .refEntity
-          .size + " == " + refs + " (in " + method.qualifiedName + ")"
+        method.valueParams(0)(
+          0).resultType.refEntity.size + " == " + refs + " (in " + method.qualifiedName + ")"
       )
     }
 

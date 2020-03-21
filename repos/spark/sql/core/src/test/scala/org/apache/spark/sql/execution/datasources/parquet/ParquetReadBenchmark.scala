@@ -39,8 +39,9 @@ object ParquetReadBenchmark {
   val sqlContext = new SQLContext(sc)
 
   // Set default configs. Individual cases will change them if necessary.
-  sqlContext.conf
-    .setConfString(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key, "true")
+  sqlContext.conf.setConfString(
+    SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key,
+    "true")
   sqlContext.conf.setConfString(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key, "true")
 
   def withTempPath(f: File => Unit): Unit = {
@@ -79,13 +80,10 @@ object ParquetReadBenchmark {
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
-        sqlContext
-          .sql("select cast(id as INT) as id from t1")
-          .write
-          .parquet(dir.getCanonicalPath)
-        sqlContext.read
-          .parquet(dir.getCanonicalPath)
-          .registerTempTable("tempTable")
+        sqlContext.sql("select cast(id as INT) as id from t1")
+          .write.parquet(dir.getCanonicalPath)
+        sqlContext.read.parquet(dir.getCanonicalPath).registerTempTable(
+          "tempTable")
 
         sqlBenchmark.addCase("SQL Parquet Vectorized") { iter =>
           sqlContext.sql("select sum(id) from tempTable").collect()
@@ -169,28 +167,24 @@ object ParquetReadBenchmark {
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
-        sqlContext
-          .sql("select cast(id as INT) as c1, cast(id as STRING) as c2 from t1")
-          .write
-          .parquet(dir.getCanonicalPath)
-        sqlContext.read
-          .parquet(dir.getCanonicalPath)
-          .registerTempTable("tempTable")
+        sqlContext.sql(
+          "select cast(id as INT) as c1, cast(id as STRING) as c2 from t1")
+          .write.parquet(dir.getCanonicalPath)
+        sqlContext.read.parquet(dir.getCanonicalPath).registerTempTable(
+          "tempTable")
 
         val benchmark = new Benchmark("Int and String Scan", values)
 
         benchmark.addCase("SQL Parquet Vectorized") { iter =>
-          sqlContext
-            .sql("select sum(c1), sum(length(c2)) from tempTable")
-            .collect
+          sqlContext.sql(
+            "select sum(c1), sum(length(c2)) from tempTable").collect
         }
 
         benchmark.addCase("SQL Parquet MR") { iter =>
           withSQLConf(
             SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
-            sqlContext
-              .sql("select sum(c1), sum(length(c2)) from tempTable")
-              .collect
+            sqlContext.sql(
+              "select sum(c1), sum(length(c2)) from tempTable").collect
           }
         }
 
@@ -212,13 +206,11 @@ object ParquetReadBenchmark {
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
-        sqlContext
-          .sql("select cast((id % 200) + 10000 as STRING) as c1 from t1")
-          .write
-          .parquet(dir.getCanonicalPath)
-        sqlContext.read
-          .parquet(dir.getCanonicalPath)
-          .registerTempTable("tempTable")
+        sqlContext.sql(
+          "select cast((id % 200) + 10000 as STRING) as c1 from t1")
+          .write.parquet(dir.getCanonicalPath)
+        sqlContext.read.parquet(dir.getCanonicalPath).registerTempTable(
+          "tempTable")
 
         val benchmark = new Benchmark("String Dictionary", values)
 
@@ -249,14 +241,10 @@ object ParquetReadBenchmark {
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
-        sqlContext
-          .sql("select id % 2 as p, cast(id as INT) as id from t1")
-          .write
-          .partitionBy("p")
-          .parquet(dir.getCanonicalPath)
-        sqlContext.read
-          .parquet(dir.getCanonicalPath)
-          .registerTempTable("tempTable")
+        sqlContext.sql("select id % 2 as p, cast(id as INT) as id from t1")
+          .write.partitionBy("p").parquet(dir.getCanonicalPath)
+        sqlContext.read.parquet(dir.getCanonicalPath).registerTempTable(
+          "tempTable")
 
         val benchmark = new Benchmark("Partitioned Table", values)
 
@@ -291,23 +279,19 @@ object ParquetReadBenchmark {
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
-        sqlContext
-          .sql(
-            s"select IF(rand(1) < $fractionOfNulls, NULL, cast(id as STRING)) as c1, " +
-              s"IF(rand(2) < $fractionOfNulls, NULL, cast(id as STRING)) as c2 from t1")
-          .write
-          .parquet(dir.getCanonicalPath)
-        sqlContext.read
-          .parquet(dir.getCanonicalPath)
-          .registerTempTable("tempTable")
+        sqlContext.sql(
+          s"select IF(rand(1) < $fractionOfNulls, NULL, cast(id as STRING)) as c1, " +
+            s"IF(rand(2) < $fractionOfNulls, NULL, cast(id as STRING)) as c2 from t1")
+          .write.parquet(dir.getCanonicalPath)
+        sqlContext.read.parquet(dir.getCanonicalPath).registerTempTable(
+          "tempTable")
 
         val benchmark = new Benchmark("String with Nulls Scan", values)
 
         benchmark.addCase("SQL Parquet Vectorized") { iter =>
-          sqlContext
-            .sql("select sum(length(c2)) from tempTable where c1 is " +
-              "not NULL and c2 is not NULL")
-            .collect()
+          sqlContext.sql(
+            "select sum(length(c2)) from tempTable where c1 is " +
+              "not NULL and c2 is not NULL").collect()
         }
 
         val files = SpecificParquetRecordReaderBase.listDirectory(dir).toArray

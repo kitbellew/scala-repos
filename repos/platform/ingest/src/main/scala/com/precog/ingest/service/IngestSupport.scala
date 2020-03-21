@@ -85,8 +85,10 @@ trait IngestSupport extends Logging {
 
       case None =>
         logger.warn(
-          "Unable to resolve accounts for write from %s owners %s to path %s"
-            .format(apiKey, request.parameters.get('ownerAccountId), path))
+          "Unable to resolve accounts for write from %s owners %s to path %s".format(
+            apiKey,
+            request.parameters.get('ownerAccountId),
+            path))
         M.point(
           HttpResponse[JValue](
             Forbidden,

@@ -40,10 +40,8 @@ object ForkTest extends Properties("Fork") {
             val withScala =
               requiredEntries ::: relCP.map(rel => new File(dir, rel))
             val absClasspath = trimClasspath(Path.makeString(withScala))
-            val args = optionName
-              .map(_ :: absClasspath :: Nil)
-              .toList
-              .flatten ++ mainAndArgs
+            val args = optionName.map(
+              _ :: absClasspath :: Nil).toList.flatten ++ mainAndArgs
             val config = ForkOptions(outputStrategy = Some(LoggedOutput(log)))
             val exitCode =
               try Fork.java(config, args)

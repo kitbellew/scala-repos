@@ -51,38 +51,31 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
 
   def get(id: Int): Option[App] =
     DB readOnly { implicit session =>
-      sql"SELECT id, name, description FROM $tableName WHERE id = ${id}"
-        .map(rs =>
+      sql"SELECT id, name, description FROM $tableName WHERE id = ${id}".map(
+        rs =>
           App(
             id = rs.int("id"),
             name = rs.string("name"),
-            description = rs.stringOpt("description")))
-        .single()
-        .apply()
+            description = rs.stringOpt("description"))).single().apply()
     }
 
   def getByName(name: String): Option[App] =
     DB readOnly { implicit session =>
-      sql"SELECT id, name, description FROM $tableName WHERE name = ${name}"
-        .map(rs =>
+      sql"SELECT id, name, description FROM $tableName WHERE name = ${name}".map(
+        rs =>
           App(
             id = rs.int("id"),
             name = rs.string("name"),
-            description = rs.stringOpt("description")))
-        .single()
-        .apply()
+            description = rs.stringOpt("description"))).single().apply()
     }
 
   def getAll(): Seq[App] =
     DB readOnly { implicit session =>
-      sql"SELECT id, name, description FROM $tableName"
-        .map(rs =>
-          App(
-            id = rs.int("id"),
-            name = rs.string("name"),
-            description = rs.stringOpt("description")))
-        .list()
-        .apply()
+      sql"SELECT id, name, description FROM $tableName".map(rs =>
+        App(
+          id = rs.int("id"),
+          name = rs.string("name"),
+          description = rs.stringOpt("description"))).list().apply()
     }
 
   def update(app: App): Unit =

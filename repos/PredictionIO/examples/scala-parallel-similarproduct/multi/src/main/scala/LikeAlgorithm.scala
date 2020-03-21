@@ -41,13 +41,10 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
 
     // collect Item as Map and convert ID to Int index
-    val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
-      .collectAsMap
-      .toMap
+    val items: Map[Int, Item] = data.items.map {
+      case (id, item) =>
+        (itemStringIntMap(id), item)
+    }.collectAsMap.toMap
 
     val mllibRatings = data.likeEvents
       .map { r =>
@@ -65,14 +62,12 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
 
         // key is (uindex, iindex) tuple, value is (like, t) tuple
         ((uindex, iindex), (r.like, r.t))
-      }
-      .filter {
+      }.filter {
         case ((u, i), v) =>
           //val  = d
           // keep events with valid user and item index
           (u != -1) && (i != -1)
-      }
-      .reduceByKey {
+      }.reduceByKey {
         case (v1, v2) => // MODIFIED
           // An user may like an item and change to dislike it later,
           // or vice versa. Use the latest value for this case.
@@ -80,8 +75,7 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
           val (like2, t2) = v2
           // keep the latest value
           if (t1 > t2) v1 else v2
-      }
-      .map {
+      }.map {
         case ((u, i), (like, t)) => // MODIFIED
           // With ALS.trainImplicit(), we can use negative value to indicate
           // nagative siginal (ie. dislike)

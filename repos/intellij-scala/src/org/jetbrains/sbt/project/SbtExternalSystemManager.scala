@@ -59,8 +59,9 @@ class SbtExternalSystemManager
       ExternalSystemConstants.EXTERNAL_SYSTEM_ID_KEY,
       SbtProjectSystem.Id.getId)
 
-    parameters.getVMParametersList
-      .addProperty(PathManager.PROPERTY_LOG_PATH, PathManager.getLogPath)
+    parameters.getVMParametersList.addProperty(
+      PathManager.PROPERTY_LOG_PATH,
+      PathManager.getLogPath)
   }
 
   def getSystemId = SbtProjectSystem.Id
@@ -85,14 +86,15 @@ class SbtExternalSystemManager
 object SbtExternalSystemManager {
   def executionSettingsFor(project: Project, path: String) = {
     val settings = SbtSystemSettings.getInstance(project)
-    val projectSettings = Option(settings.getLinkedProjectSettings(path))
-      .getOrElse(SbtProjectSettings.default)
+    val projectSettings =
+      Option(settings.getLinkedProjectSettings(path)).getOrElse(
+        SbtProjectSettings.default)
 
-    val customLauncher = settings.customLauncherEnabled
-      .option(settings.getCustomLauncherPath)
-      .map(_.toFile)
-    val customSbtStructureFile = settings.customSbtStructurePath.nonEmpty
-      .option(settings.customSbtStructurePath.toFile)
+    val customLauncher = settings.customLauncherEnabled.option(
+      settings.getCustomLauncherPath).map(_.toFile)
+    val customSbtStructureFile =
+      settings.customSbtStructurePath.nonEmpty.option(
+        settings.customSbtStructurePath.toFile)
 
     val realProjectPath =
       Option(projectSettings.getExternalProjectPath).getOrElse(path)
@@ -170,14 +172,12 @@ object SbtExternalSystemManager {
       .flatMap(name => Option(ProjectJdkTable.getInstance().findJdk(name)))
       .flatMap { sdk =>
         try {
-          sdk.getSdkType
-            .isInstanceOf[AndroidSdkType]
-            .option(Map("ANDROID_HOME" -> sdk.getSdkModificator.getHomePath))
+          sdk.getSdkType.isInstanceOf[AndroidSdkType].option(
+            Map("ANDROID_HOME" -> sdk.getSdkModificator.getHomePath))
         } catch {
           case _: NoClassDefFoundError => None
         }
-      }
-      .getOrElse(Map.empty)
+      }.getOrElse(Map.empty)
 
   private def getVmOptions(settings: SbtSystemSettings): Seq[String] = {
     val userOptions = settings.getVmParameters.split("\\s+").toSeq

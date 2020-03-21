@@ -51,11 +51,9 @@ class MavenRemoteRepositoryResolver(
   }
   // TODO - Check if isUseCacheOnly is used correctly.
   private def isUseCacheOnly: Boolean =
-    Option(IvyContext.getContext)
-      .flatMap(x => Option(x.getResolveData))
-      .flatMap(x => Option(x.getOptions))
-      .map(_.isUseCacheOnly)
-      .getOrElse(false)
+    Option(IvyContext.getContext).flatMap(x =>
+      Option(x.getResolveData)).flatMap(x => Option(x.getOptions)).map(
+      _.isUseCacheOnly).getOrElse(false)
   protected def addRepositories(
       request: AetherDescriptorRequest): AetherDescriptorRequest =
     if (isUseCacheOnly) request else request.addRepository(aetherRepository)
@@ -87,10 +85,9 @@ class MavenRemoteRepositoryResolver(
         Metadata.Nature.RELEASE_OR_SNAPSHOT))
     if (!isUseCacheOnly) metadataRequest.setRepository(aetherRepository)
     val metadataResultOpt =
-      try system
-        .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))
-        .asScala
-        .headOption
+      try system.resolveMetadata(
+        session,
+        java.util.Arrays.asList(metadataRequest)).asScala.headOption
       catch {
         case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
           None

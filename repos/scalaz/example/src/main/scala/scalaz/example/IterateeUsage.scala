@@ -56,18 +56,13 @@ object IterateeUsage extends App {
 
   def r = enumReader[IO](new StringReader("file contents"))
 
-  ((head[IoExceptionOr[Char], IO] &= r)
-    .map(_ flatMap (_.toOption))
-    .run
-    .unsafePerformIO()) assert_=== Some('f')
+  ((head[IoExceptionOr[Char], IO] &= r).map(
+    _ flatMap (_.toOption)).run.unsafePerformIO()) assert_=== Some('f')
   ((length[IoExceptionOr[Char], IO] &= r).run.unsafePerformIO()) assert_=== 13
-  ((peek[IoExceptionOr[Char], IO] &= r)
-    .map(_ flatMap (_.toOption))
-    .run
-    .unsafePerformIO()) assert_=== Some('f')
-  ((head[IoExceptionOr[Char], IO] &= enumReader[IO](new StringReader("")))
-    .map(_ flatMap (_.toOption))
-    .run unsafePerformIO ()) assert_=== None
+  ((peek[IoExceptionOr[Char], IO] &= r).map(
+    _ flatMap (_.toOption)).run.unsafePerformIO()) assert_=== Some('f')
+  ((head[IoExceptionOr[Char], IO] &= enumReader[IO](new StringReader(""))).map(
+    _ flatMap (_.toOption)).run unsafePerformIO ()) assert_=== None
 
   // As a monad
   val m1 = head[Int, Id] flatMap (b => head[Int, Id] map (b2 => (b tuple b2)))
@@ -82,9 +77,12 @@ object IterateeUsage extends App {
 
   val colc =
     takeWhile[IoExceptionOr[Char], List](_.fold(_ => false, _ != ' ')).up[IO]
-  ((colc &= r)
-    .map(_ flatMap (_.toOption))
-    .run unsafePerformIO ()) assert_=== List('f', 'i', 'l', 'e')
+  ((colc &= r).map(
+    _ flatMap (_.toOption)).run unsafePerformIO ()) assert_=== List(
+    'f',
+    'i',
+    'l',
+    'e')
 
   val take10And5ThenHead =
     take[Int, List](10) zip take[Int, List](5) flatMap (ab =>

@@ -179,13 +179,11 @@ class KafkaServer(
   var zkUtils: ZkUtils = null
   val correlationId: AtomicInteger = new AtomicInteger(0)
   val brokerMetaPropsFile = "meta.properties"
-  val brokerMetadataCheckpoints = config.logDirs
-    .map(logDir =>
-      (
-        logDir,
-        new BrokerMetadataCheckpoint(
-          new File(logDir + File.separator + brokerMetaPropsFile))))
-    .toMap
+  val brokerMetadataCheckpoints = config.logDirs.map(logDir =>
+    (
+      logDir,
+      new BrokerMetadataCheckpoint(
+        new File(logDir + File.separator + brokerMetaPropsFile)))).toMap
 
   newGauge(
     "BrokerState",
@@ -306,8 +304,9 @@ class KafkaServer(
         // TODO: Move this logic to DynamicConfigManager
         AdminUtils.fetchAllEntityConfigs(zkUtils, ConfigType.Client).foreach {
           case (clientId, properties) =>
-            dynamicConfigHandlers(ConfigType.Client)
-              .processConfigChanges(clientId, properties)
+            dynamicConfigHandlers(ConfigType.Client).processConfigChanges(
+              clientId,
+              properties)
         }
 
         // Create the config manager. start listening to notifications
@@ -507,11 +506,11 @@ class KafkaServer(
                 true,
                 send,
                 null)
-              val clientResponse = networkClient
-                .blockingSendAndReceive(request, socketTimeoutMs)
-                .getOrElse {
-                  throw socketTimeoutException
-                }
+              val clientResponse = networkClient.blockingSendAndReceive(
+                request,
+                socketTimeoutMs).getOrElse {
+                throw socketTimeoutException
+              }
 
               val shutdownResponse = new ControlledShutdownResponse(
                 clientResponse.responseBody)
@@ -530,8 +529,8 @@ class KafkaServer(
               case ioe: IOException =>
                 ioException = true
                 warn(
-                  "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
-                    .format(ioe.getMessage))
+                  "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s".format(
+                    ioe.getMessage))
               // ignore and try again
             }
           }
@@ -562,20 +561,18 @@ class KafkaServer(
           val controllerId = zkUtils.getController()
           zkUtils.getBrokerInfo(controllerId) match {
             case Some(broker) =>
-              if (channel == null || prevController == null || !prevController
-                    .equals(broker)) {
+              if (channel == null || prevController == null || !prevController.equals(
+                    broker)) {
                 // if this is the first attempt or if the controller has changed, create a channel to the most recent
                 // controller
                 if (channel != null)
                   channel.disconnect()
 
                 channel = new BlockingChannel(
-                  broker
-                    .getBrokerEndPoint(config.interBrokerSecurityProtocol)
-                    .host,
-                  broker
-                    .getBrokerEndPoint(config.interBrokerSecurityProtocol)
-                    .port,
+                  broker.getBrokerEndPoint(
+                    config.interBrokerSecurityProtocol).host,
+                  broker.getBrokerEndPoint(
+                    config.interBrokerSecurityProtocol).port,
                   BlockingChannel.UseDefaultBufferSize,
                   BlockingChannel.UseDefaultBufferSize,
                   config.controllerSocketTimeoutMs)
@@ -598,8 +595,9 @@ class KafkaServer(
               channel.send(request)
 
               response = channel.receive()
-              val shutdownResponse = kafka.api.ControlledShutdownResponse
-                .readFrom(response.payload())
+              val shutdownResponse =
+                kafka.api.ControlledShutdownResponse.readFrom(
+                  response.payload())
               if (shutdownResponse.errorCode == Errors.NONE.code && shutdownResponse.partitionsRemaining != null &&
                   shutdownResponse.partitionsRemaining.size == 0) {
                 shutdownSucceeded = true
@@ -617,8 +615,8 @@ class KafkaServer(
                 channel.disconnect()
                 channel = null
                 warn(
-                  "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
-                    .format(ioe.getMessage))
+                  "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s".format(
+                    ioe.getMessage))
               // ignore and try again
             }
           }

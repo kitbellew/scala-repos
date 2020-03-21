@@ -73,13 +73,12 @@ class ProducerSendThread[K, V](
     var full: Boolean = false
 
     // drain the queue until you get a shutdown command
-    Iterator
-      .continually(
-        queue.poll(
-          scala.math.max(0, (lastSend + queueTime) - SystemTime.milliseconds),
-          TimeUnit.MILLISECONDS))
-      .takeWhile(item => if (item != null) item ne shutdownCommand else true)
-      .foreach {
+    Iterator.continually(
+      queue.poll(
+        scala.math.max(0, (lastSend + queueTime) - SystemTime.milliseconds),
+        TimeUnit.MILLISECONDS))
+      .takeWhile(item =>
+        if (item != null) item ne shutdownCommand else true).foreach {
         currentQueueItem =>
           val elapsed = (SystemTime.milliseconds - lastSend)
           // check if the queue time is reached. This happens when the poll method above returns after a timeout and

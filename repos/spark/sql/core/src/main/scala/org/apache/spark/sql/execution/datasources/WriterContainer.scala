@@ -79,8 +79,9 @@ private[sql] abstract class BaseWriterContainer(
   @transient private val jobContext: JobContext = job
 
   private val speculationEnabled: Boolean =
-    relation.sqlContext.sparkContext.conf
-      .getBoolean("spark.speculation", defaultValue = false)
+    relation.sqlContext.sparkContext.conf.getBoolean(
+      "spark.speculation",
+      defaultValue = false)
 
   // The following fields are initialized and used on both driver and executor side.
   @transient protected var outputCommitter: OutputCommitter = _
@@ -104,8 +105,9 @@ private[sql] abstract class BaseWriterContainer(
     // This UUID is sent to executor side together with the serialized `Configuration` object within
     // the `Job` instance.  `OutputWriters` on the executor side should use this UUID to generate
     // unique task output files.
-    job.getConfiguration
-      .set("spark.sql.sources.writeJobUUID", uniqueWriteJobId.toString)
+    job.getConfiguration.set(
+      "spark.sql.sources.writeJobUUID",
+      uniqueWriteJobId.toString)
 
     // Order of the following two lines is important.  For Hadoop 1, TaskAttemptContext constructor
     // clones the Configuration object passed in.  If we initialize the TaskAttemptContext first,
@@ -154,8 +156,8 @@ private[sql] abstract class BaseWriterContainer(
         taskAttemptContext)
     } catch {
       case e: org.apache.hadoop.fs.FileAlreadyExistsException =>
-        if (outputCommitter
-              .isInstanceOf[parquet.DirectParquetOutputCommitter]) {
+        if (outputCommitter.isInstanceOf[
+              parquet.DirectParquetOutputCommitter]) {
           // Spark-11382: DirectParquetOutputCommitter is not idempotent, meaning on retry
           // attempts, the task will fail because the output file is created from a prior attempt.
           // This often means the most visible error to the user is misleading. Augment the error
@@ -201,37 +203,35 @@ private[sql] abstract class BaseWriterContainer(
         null,
         classOf[OutputCommitter])
 
-      Option(committerClass)
-        .map { clazz =>
-          logInfo(
-            s"Using user defined output committer class ${clazz.getCanonicalName}")
+      Option(committerClass).map { clazz =>
+        logInfo(
+          s"Using user defined output committer class ${clazz.getCanonicalName}")
 
-          // Every output format based on org.apache.hadoop.mapreduce.lib.output.OutputFormat
-          // has an associated output committer. To override this output committer,
-          // we will first try to use the output committer set in SQLConf.OUTPUT_COMMITTER_CLASS.
-          // If a data source needs to override the output committer, it needs to set the
-          // output committer in prepareForWrite method.
-          if (classOf[MapReduceFileOutputCommitter].isAssignableFrom(clazz)) {
-            // The specified output committer is a FileOutputCommitter.
-            // So, we will use the FileOutputCommitter-specified constructor.
-            val ctor = clazz.getDeclaredConstructor(
-              classOf[Path],
-              classOf[TaskAttemptContext])
-            ctor.newInstance(new Path(outputPath), context)
-          } else {
-            // The specified output committer is just a OutputCommitter.
-            // So, we will use the no-argument constructor.
-            val ctor = clazz.getDeclaredConstructor()
-            ctor.newInstance()
-          }
+        // Every output format based on org.apache.hadoop.mapreduce.lib.output.OutputFormat
+        // has an associated output committer. To override this output committer,
+        // we will first try to use the output committer set in SQLConf.OUTPUT_COMMITTER_CLASS.
+        // If a data source needs to override the output committer, it needs to set the
+        // output committer in prepareForWrite method.
+        if (classOf[MapReduceFileOutputCommitter].isAssignableFrom(clazz)) {
+          // The specified output committer is a FileOutputCommitter.
+          // So, we will use the FileOutputCommitter-specified constructor.
+          val ctor = clazz.getDeclaredConstructor(
+            classOf[Path],
+            classOf[TaskAttemptContext])
+          ctor.newInstance(new Path(outputPath), context)
+        } else {
+          // The specified output committer is just a OutputCommitter.
+          // So, we will use the no-argument constructor.
+          val ctor = clazz.getDeclaredConstructor()
+          ctor.newInstance()
         }
-        .getOrElse {
-          // If output committer class is not set, we will use the one associated with the
-          // file output format.
-          logInfo(
-            s"Using output committer class ${defaultOutputCommitter.getClass.getCanonicalName}")
-          defaultOutputCommitter
-        }
+      }.getOrElse {
+        // If output committer class is not set, we will use the one associated with the
+        // file output format.
+        logInfo(
+          s"Using output committer class ${defaultOutputCommitter.getClass.getCanonicalName}")
+        defaultOutputCommitter
+      }
     }
   }
 
@@ -243,8 +243,9 @@ private[sql] abstract class BaseWriterContainer(
 
   private def setupConf(): Unit = {
     serializableConf.value.set("mapred.job.id", jobId.toString)
-    serializableConf.value
-      .set("mapred.tip.id", taskAttemptId.getTaskID.toString)
+    serializableConf.value.set(
+      "mapred.tip.id",
+      taskAttemptId.getTaskID.toString)
     serializableConf.value.set("mapred.task.id", taskAttemptId.toString)
     serializableConf.value.setBoolean("mapred.task.is.map", true)
     serializableConf.value.setInt("mapred.task.partition", 0)

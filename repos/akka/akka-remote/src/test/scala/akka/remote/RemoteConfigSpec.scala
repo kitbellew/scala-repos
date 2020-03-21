@@ -87,15 +87,15 @@ class RemoteConfigSpec
     }
 
     "contain correct netty.tcp values in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config
-        .getConfig("akka.remote.netty.tcp")
+      val c = RARP(system).provider.remoteSettings.config.getConfig(
+        "akka.remote.netty.tcp")
       val s = new NettyTransportSettings(c)
       import s._
 
       ConnectionTimeout should ===(15.seconds)
       ConnectionTimeout should ===(
-        new AkkaProtocolSettings(
-          RARP(system).provider.remoteSettings.config).HandshakeTimeout)
+        new AkkaProtocolSettings(RARP(system).provider.remoteSettings.config)
+          .HandshakeTimeout)
       WriteBufferHighWaterMark should ===(None)
       WriteBufferLowWaterMark should ===(None)
       SendBufferSize should ===(Some(256000))
@@ -113,8 +113,8 @@ class RemoteConfigSpec
     }
 
     "contain correct socket worker pool configuration values in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config
-        .getConfig("akka.remote.netty.tcp")
+      val c = RARP(system).provider.remoteSettings.config.getConfig(
+        "akka.remote.netty.tcp")
 
       // server-socket-worker-pool
       {
@@ -150,8 +150,8 @@ class RemoteConfigSpec
     }
 
     "have debug logging of the failure injector turned off in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config
-        .getConfig("akka.remote.gremlin")
+      val c = RARP(system).provider.remoteSettings.config.getConfig(
+        "akka.remote.gremlin")
       c.getBoolean("debug") should ===(false)
     }
   }

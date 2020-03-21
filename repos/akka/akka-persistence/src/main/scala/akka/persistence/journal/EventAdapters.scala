@@ -84,8 +84,7 @@ private[akka] object EventAdapters {
       boundAdapter ← boundToAdapters
     } require(
       adapterNames(boundAdapter.toString),
-      s"$fqn was bound to undefined event-adapter: $boundAdapter (bindings: ${boundToAdapters
-        .mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})"
+      s"$fqn was bound to undefined event-adapter: $boundAdapter (bindings: ${boundToAdapters.mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})"
     )
 
     // A Map of handler from alias to implementation (i.e. class implementing akka.serialization.Serializer)
@@ -124,11 +123,11 @@ private[akka] object EventAdapters {
     if (classOf[EventAdapter] isAssignableFrom clazz)
       instantiate[EventAdapter](adapterFQN, system)
     else if (classOf[WriteEventAdapter] isAssignableFrom clazz)
-      instantiate[WriteEventAdapter](adapterFQN, system)
-        .map(NoopReadEventAdapter)
+      instantiate[WriteEventAdapter](adapterFQN, system).map(
+        NoopReadEventAdapter)
     else if (classOf[ReadEventAdapter] isAssignableFrom clazz)
-      instantiate[ReadEventAdapter](adapterFQN, system)
-        .map(NoopWriteEventAdapter)
+      instantiate[ReadEventAdapter](adapterFQN, system).map(
+        NoopWriteEventAdapter)
     else
       throw new IllegalArgumentException(
         s"Configured $adapterFQN does not implement any EventAdapter interface!")

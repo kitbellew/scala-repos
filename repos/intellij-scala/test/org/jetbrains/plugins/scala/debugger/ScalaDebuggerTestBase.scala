@@ -91,13 +91,9 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   protected def getImlFile: File = {
-    if (testDataBasePath.exists())
-      testDataBasePath
-        .listFiles()
-        .find {
-          _.getName.endsWith(ModuleFileType.DOT_DEFAULT_EXTENSION)
-        }
-        .orNull
+    if (testDataBasePath.exists()) testDataBasePath.listFiles().find {
+      _.getName.endsWith(ModuleFileType.DOT_DEFAULT_EXTENSION)
+    }.orNull
     else null
   }
 

@@ -437,11 +437,8 @@ class LowLevelOutgoingConnectionSpec
           def expectEntity[T <: HttpEntity: ClassTag](bytes: Int) =
             inside(response) {
               case HttpResponse(_, _, entity: T, _) ⇒
-                entity
-                  .toStrict(100.millis)
-                  .awaitResult(100.millis)
-                  .data
-                  .utf8String shouldEqual entityBase.take(bytes)
+                entity.toStrict(100.millis).awaitResult(
+                  100.millis).data.utf8String shouldEqual entityBase.take(bytes)
             }
 
           def expectSizeErrorInEntityOfType[T <: HttpEntity: ClassTag](
@@ -450,9 +447,8 @@ class LowLevelOutgoingConnectionSpec
             inside(response) {
               case HttpResponse(_, _, entity: T, _) ⇒
                 def gatherBytes =
-                  entity.dataBytes
-                    .runFold(ByteString.empty)(_ ++ _)
-                    .awaitResult(100.millis)
+                  entity.dataBytes.runFold(ByteString.empty)(
+                    _ ++ _).awaitResult(100.millis)
                 (the[Exception] thrownBy gatherBytes).getCause shouldEqual EntityStreamSizeException(
                   limit,
                   actualSize)
@@ -517,16 +513,14 @@ class LowLevelOutgoingConnectionSpec
         maxContentLength = 12) {
         sendStandardRequest()
         sendStrictResponseWithLength(10)
-        expectResponse()
-          .mapEntity(_ withSizeLimit 10)
-          .expectStrictEntityWithLength(10)
+        expectResponse().mapEntity(
+          _ withSizeLimit 10).expectStrictEntityWithLength(10)
 
         // entities that would be strict but have a Content-Length > the configured maximum are delivered
         // as single element Default entities!
         sendStandardRequest()
         sendStrictResponseWithLength(11)
-        expectResponse()
-          .mapEntity(_ withSizeLimit 10)
+        expectResponse().mapEntity(_ withSizeLimit 10)
           .expectSizeErrorInEntityOfType[Default](
             limit = 10,
             actualSize = Some(11))
@@ -540,8 +534,7 @@ class LowLevelOutgoingConnectionSpec
 
         sendStandardRequest()
         sendDefaultResponseWithLength(11)
-        expectResponse()
-          .mapEntity(_ withSizeLimit 10)
+        expectResponse().mapEntity(_ withSizeLimit 10)
           .expectSizeErrorInEntityOfType[Default](
             limit = 10,
             actualSize = Some(11))
@@ -555,25 +548,23 @@ class LowLevelOutgoingConnectionSpec
 
         sendStandardRequest()
         sendChunkedResponseWithLength(11)
-        expectResponse()
-          .mapEntity(_ withSizeLimit 10)
-          .expectSizeErrorInEntityOfType[Chunked](limit = 10)
+        expectResponse().mapEntity(
+          _ withSizeLimit 10).expectSizeErrorInEntityOfType[Chunked](limit = 10)
       }
 
       "a smaller programmatically-set limit (close-delimited entity)" in {
         new LengthVerificationTest(maxContentLength = 12) {
           sendStandardRequest()
           sendCloseDelimitedResponseWithLength(10)
-          expectResponse()
-            .mapEntity(_ withSizeLimit 10)
-            .expectEntity[CloseDelimited](10)
+          expectResponse().mapEntity(_ withSizeLimit 10).expectEntity[
+            CloseDelimited](10)
         }
         new LengthVerificationTest(maxContentLength = 12) {
           sendStandardRequest()
           sendCloseDelimitedResponseWithLength(11)
-          expectResponse()
-            .mapEntity(_ withSizeLimit 10)
-            .expectSizeErrorInEntityOfType[CloseDelimited](limit = 10)
+          expectResponse().mapEntity(
+            _ withSizeLimit 10).expectSizeErrorInEntityOfType[CloseDelimited](
+            limit = 10)
         }
       }
 
@@ -587,8 +578,7 @@ class LowLevelOutgoingConnectionSpec
 
         sendStandardRequest()
         sendStrictResponseWithLength(11)
-        expectResponse()
-          .mapEntity(_ withSizeLimit 10)
+        expectResponse().mapEntity(_ withSizeLimit 10)
           .expectSizeErrorInEntityOfType[Default](
             limit = 10,
             actualSize = Some(11))
@@ -602,8 +592,7 @@ class LowLevelOutgoingConnectionSpec
 
         sendStandardRequest()
         sendDefaultResponseWithLength(11)
-        expectResponse()
-          .mapEntity(_ withSizeLimit 10)
+        expectResponse().mapEntity(_ withSizeLimit 10)
           .expectSizeErrorInEntityOfType[Default](
             limit = 10,
             actualSize = Some(11))
@@ -617,8 +606,7 @@ class LowLevelOutgoingConnectionSpec
 
         sendStandardRequest()
         sendChunkedResponseWithLength(11)
-        expectResponse()
-          .mapEntity(_ withSizeLimit 10)
+        expectResponse().mapEntity(_ withSizeLimit 10)
           .expectSizeErrorInEntityOfType[Chunked](limit = 10)
       }
 
@@ -626,16 +614,15 @@ class LowLevelOutgoingConnectionSpec
         new LengthVerificationTest(maxContentLength = 8) {
           sendStandardRequest()
           sendCloseDelimitedResponseWithLength(10)
-          expectResponse()
-            .mapEntity(_ withSizeLimit 10)
-            .expectEntity[CloseDelimited](10)
+          expectResponse().mapEntity(_ withSizeLimit 10).expectEntity[
+            CloseDelimited](10)
         }
         new LengthVerificationTest(maxContentLength = 8) {
           sendStandardRequest()
           sendCloseDelimitedResponseWithLength(11)
-          expectResponse()
-            .mapEntity(_ withSizeLimit 10)
-            .expectSizeErrorInEntityOfType[CloseDelimited](limit = 10)
+          expectResponse().mapEntity(
+            _ withSizeLimit 10).expectSizeErrorInEntityOfType[CloseDelimited](
+            limit = 10)
         }
       }
     }
@@ -825,36 +812,28 @@ class LowLevelOutgoingConnectionSpec
       val netOut = TestSubscriber.manualProbe[ByteString]
       val netIn = TestPublisher.manualProbe[ByteString]()
 
-      RunnableGraph
-        .fromGraph(
-          GraphDSL.create(
-            OutgoingConnectionBlueprint(
-              Host("example.com"),
-              settings,
-              NoLogging)) { implicit b ⇒ client ⇒
-            import GraphDSL.Implicits._
-            Source.fromPublisher(netIn) ~> Flow[ByteString].map(
-              SessionBytes(null, _)) ~> client.in2
-            client.out1 ~> Flow[SslTlsOutbound].collect {
-              case SendBytes(x) ⇒ x
-            } ~> Sink.fromSubscriber(netOut)
-            Source.fromPublisher(requests) ~> client.in1
-            client.out2 ~> Sink.fromSubscriber(responses)
-            ClosedShape
-          })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create(
+        OutgoingConnectionBlueprint(Host("example.com"), settings, NoLogging)) {
+        implicit b ⇒ client ⇒
+          import GraphDSL.Implicits._
+          Source.fromPublisher(netIn) ~> Flow[ByteString].map(
+            SessionBytes(null, _)) ~> client.in2
+          client.out1 ~> Flow[SslTlsOutbound].collect {
+            case SendBytes(x) ⇒ x
+          } ~> Sink.fromSubscriber(netOut)
+          Source.fromPublisher(requests) ~> client.in1
+          client.out2 ~> Sink.fromSubscriber(responses)
+          ClosedShape
+      }).run()
 
       netOut -> netIn
     }
 
     def wipeDate(string: String) =
-      string
-        .fastSplit('\n')
-        .map {
-          case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
-          case s ⇒ s
-        }
-        .mkString("\n")
+      string.fastSplit('\n').map {
+        case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
+        case s ⇒ s
+      }.mkString("\n")
 
     val netInSub = netIn.expectSubscription()
     val netOutSub = netOut.expectSubscription()

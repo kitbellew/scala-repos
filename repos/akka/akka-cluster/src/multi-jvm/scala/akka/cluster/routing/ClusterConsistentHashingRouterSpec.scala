@@ -73,10 +73,8 @@ abstract class ClusterConsistentHashingRouterSpec
   lazy val router1 = system.actorOf(FromConfig.props(Props[Echo]), "router1")
 
   def currentRoutees(router: ActorRef) =
-    Await
-      .result(router ? GetRoutees, timeout.duration)
-      .asInstanceOf[Routees]
-      .routees
+    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[
+      Routees].routees
 
   /**
     * Fills in self address for local ActorRef
@@ -162,8 +160,9 @@ abstract class ClusterConsistentHashingRouterSpec
         }
 
         val router3 = system.actorOf(
-          ConsistentHashingPool(nrOfInstances = 0, hashMapping = hashMapping)
-            .props(Props[Echo]),
+          ConsistentHashingPool(
+            nrOfInstances = 0,
+            hashMapping = hashMapping).props(Props[Echo]),
           "router3")
 
         assertHashMapping(router3)

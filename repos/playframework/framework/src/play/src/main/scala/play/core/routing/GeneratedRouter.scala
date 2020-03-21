@@ -65,14 +65,10 @@ case class RouteParams(
       binder: PathBindable[T]): Param[T] = {
     Param(
       key,
-      path
-        .get(key)
-        .map(v => v.fold(t => Left(t.getMessage), binder.bind(key, _)))
-        .getOrElse {
-          default
-            .map(d => Right(d))
-            .getOrElse(Left("Missing parameter: " + key))
-        }
+      path.get(key).map(v =>
+        v.fold(t => Left(t.getMessage), binder.bind(key, _))).getOrElse {
+        default.map(d => Right(d)).getOrElse(Left("Missing parameter: " + key))
+      }
     )
   }
 
@@ -1328,11 +1324,9 @@ abstract class GeneratedRouter extends Router {
   }
 
   def call[T](params: List[Param[_]])(generator: (Seq[_]) => Handler): Handler =
-    (params
-      .foldLeft[Either[String, Seq[_]]](Right(Seq[T]())) { (seq, param) =>
-        seq.right.flatMap(s => param.value.right.map(s :+ _))
-      })
-      .fold(badRequest, generator)
+    (params.foldLeft[Either[String, Seq[_]]](Right(Seq[T]())) { (seq, param) =>
+      seq.right.flatMap(s => param.value.right.map(s :+ _))
+    }).fold(badRequest, generator)
   def fakeValue[A]: A =
     throw new UnsupportedOperationException("Can't get a fake value")
 

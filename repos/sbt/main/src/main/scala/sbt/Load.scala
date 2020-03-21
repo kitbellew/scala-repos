@@ -217,9 +217,8 @@ object Load {
       lb: sbt.LoadedBuild,
       ref: ProjectRef,
       config: ConfigKey): Seq[ConfigKey] =
-    configurationOpt(lb.units, ref.build, ref.project, config).toList
-      .flatMap(_.extendsConfigs)
-      .map(c => ConfigKey(c.name))
+    configurationOpt(lb.units, ref.build, ref.project, config).toList.flatMap(
+      _.extendsConfigs).map(c => ConfigKey(c.name))
 
   def projectInherit(lb: sbt.LoadedBuild, ref: ProjectRef): Seq[ProjectRef] =
     getProject(lb.units, ref.build, ref.project).delegates
@@ -278,8 +277,9 @@ object Load {
         def apply[T](key: ScopedKey[T]) =
           if (key.key == streams.key)
             ScopedKey(
-              Scope
-                .fillTaskAxis(Scope.replaceThis(to.scope)(key.scope), to.key),
+              Scope.fillTaskAxis(
+                Scope.replaceThis(to.scope)(key.scope),
+                to.key),
               key.key)
           else key
       }
@@ -594,9 +594,9 @@ object Load {
   def checkProjectBase(buildBase: File, projectBase: File): Unit = {
     checkDirectory(projectBase)
     assert(
-      buildBase == projectBase || IO
-        .relativize(buildBase, projectBase)
-        .isDefined,
+      buildBase == projectBase || IO.relativize(
+        buildBase,
+        projectBase).isDefined,
       "Directory " + projectBase + " is not contained in build root " + buildBase)
   }
   def checkBuildBase(base: File) = checkDirectory(base)
@@ -629,8 +629,8 @@ object Load {
       if (!(loadedUnit.defined contains refID)) {
         val projectIDs = loadedUnit.defined.keys.toSeq.sorted
         sys.error(
-          "No project '" + refID + "' in '" + refURI + "'.\nValid project IDs: " + projectIDs
-            .mkString(", "))
+          "No project '" + refID + "' in '" + refURI + "'.\nValid project IDs: " + projectIDs.mkString(
+            ", "))
       }
     }
   }
@@ -671,8 +671,8 @@ object Load {
     val resolveBuild =
       (_: Project).resolveBuild(ref => Scope.resolveProjectBuild(unit.uri, ref))
     // although the default loader will resolve the project base directory, other loaders may not, so run resolveBase here as well
-    unit.definitions.projects
-      .map(resolveBuild compose resolveBase(unit.localBase))
+    unit.definitions.projects.map(
+      resolveBuild compose resolveBase(unit.localBase))
   }
   def getRootProject(map: Map[URI, sbt.BuildUnitBase]): URI => String =
     uri => getBuild(map, uri).rootProjects.headOption getOrElse emptyBuild(uri)
@@ -919,7 +919,8 @@ object Load {
         discover(AddSettings.defaultSbtFiles, buildBase) match {
           case DiscoveredProjects(Some(root), discovered, files, generated) =>
             log.debug(
-              s"[Loading] Found root project ${root.id} w/ remaining ${discovered.map(_.id).mkString(",")}")
+              s"[Loading] Found root project ${root.id} w/ remaining ${discovered.map(
+                _.id).mkString(",")}")
             val finalRoot = finalizeProject(root, files)
             loadTransitive(
               discovered,
@@ -964,15 +965,15 @@ object Load {
                 Build.generatedRootWithoutIvyPlugin(defaultID, buildBase, refs)
             val root = finalizeProject(root0, files)
             val result = root +: (acc ++ otherProjects.projects)
-            log.debug(
-              s"[Loading] Done in ${buildBase}, returning: ${result.map(_.id).mkString("(", ", ", ")")}")
+            log.debug(s"[Loading] Done in ${buildBase}, returning: ${result.map(
+              _.id).mkString("(", ", ", ")")}")
             LoadedProjects(
               result,
               generated ++ otherGenerated ++ generatedConfigClassFiles)
         }
       case Nil =>
-        log.debug(
-          s"[Loading] Done in ${buildBase}, returning: ${acc.map(_.id).mkString("(", ", ", ")")}")
+        log.debug(s"[Loading] Done in ${buildBase}, returning: ${acc.map(
+          _.id).mkString("(", ", ", ")")}")
         LoadedProjects(acc, generatedConfigClassFiles)
     }
   }
@@ -1029,8 +1030,9 @@ object Load {
       }
     // 2. Discover all the autoplugins and contributed configurations.
     val autoPlugins =
-      try loadedPlugins.detected
-        .deducePluginsFromProject(transformedProject, log)
+      try loadedPlugins.detected.deducePluginsFromProject(
+        transformedProject,
+        log)
       catch {
         case e: AutoPluginException =>
           throw translateAutoPluginException(e, transformedProject)
@@ -1080,10 +1082,8 @@ object Load {
       expandSettings(transformedProject.auto)
     }
     // Finally, a project we can use in buildStructure.
-    transformedProject
-      .copy(settings = allSettings)
-      .setAutoPlugins(autoPlugins)
-      .prefixConfigs(autoConfigs: _*)
+    transformedProject.copy(settings = allSettings).setAutoPlugins(
+      autoPlugins).prefixConfigs(autoConfigs: _*)
   }
 
   /**

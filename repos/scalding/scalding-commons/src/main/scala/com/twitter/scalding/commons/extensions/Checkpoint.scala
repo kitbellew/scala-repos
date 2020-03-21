@@ -98,7 +98,8 @@ object Checkpoint {
         // We have checkpoint input; read the file instead of executing the flow.
         LOG.info(
           s"""Checkpoint "${checkpointName}": reading ${format} input from "${name}"""")
-        getSource(format, name).read
+        getSource(format, name)
+          .read
           .mapTo(List.range(0, resultFields.size) -> resultFields)((x: A) => x)(
             conv,
             setter)
@@ -175,9 +176,8 @@ object Checkpoint {
       case Hdfs(_, _) | HadoopTest(_, _) => "sequencefile"
       case _                             => "tsv"
     }
-    CheckpointArg(checkpointName, "format").value
-      .getOrElse(defaultFormat)
-      .toLowerCase
+    CheckpointArg(checkpointName, "format").value.getOrElse(
+      defaultFormat).toLowerCase
   }
 
   // Returns a source for the checkpoint in the given format.

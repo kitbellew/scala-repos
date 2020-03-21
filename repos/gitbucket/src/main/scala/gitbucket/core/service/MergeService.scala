@@ -228,28 +228,26 @@ object MergeService {
     lazy val mergeBaseTip = repository.resolve(s"refs/heads/${branch}")
     lazy val mergeTip = repository.resolve(s"refs/pull/${issueId}/head")
     def checkConflictCache(): Option[Boolean] = {
-      Option(repository.resolve(mergedBranchName))
-        .flatMap { merged =>
-          if (parseCommit(merged).getParents().toSet == Set(
+      Option(repository.resolve(mergedBranchName)).flatMap { merged =>
+        if (parseCommit(merged).getParents().toSet == Set(
+              mergeBaseTip,
+              mergeTip)) {
+          // merged branch exists
+          Some(false)
+        } else {
+          None
+        }
+      }.orElse(Option(repository.resolve(conflictedBranchName)).flatMap {
+        conflicted =>
+          if (parseCommit(conflicted).getParents().toSet == Set(
                 mergeBaseTip,
                 mergeTip)) {
-            // merged branch exists
-            Some(false)
+            // conflict branch exists
+            Some(true)
           } else {
             None
           }
-        }
-        .orElse(Option(repository.resolve(conflictedBranchName)).flatMap {
-          conflicted =>
-            if (parseCommit(conflicted).getParents().toSet == Set(
-                  mergeBaseTip,
-                  mergeTip)) {
-              // conflict branch exists
-              Some(true)
-            } else {
-              None
-            }
-        })
+      })
     }
     def checkConflict(): Boolean = {
       checkConflictCache.getOrElse(checkConflictForce)
@@ -275,21 +273,15 @@ object MergeService {
           merger.getResultTreeId,
           s"Merge ${mergeTip.name} into ${mergeBaseTip.name}",
           mergedBranchName)
-        git
-          .branchDelete()
-          .setForce(true)
-          .setBranchNames(conflictedBranchName)
-          .call()
+        git.branchDelete().setForce(true).setBranchNames(
+          conflictedBranchName).call()
       } else {
         updateBranch(
           mergeTipCommit.getTree().getId(),
           s"can't merge ${mergeTip.name} into ${mergeBaseTip.name}",
           conflictedBranchName)
-        git
-          .branchDelete()
-          .setForce(true)
-          .setBranchNames(mergedBranchName)
-          .call()
+        git.branchDelete().setForce(true).setBranchNames(
+          mergedBranchName).call()
       }
       conflicted
     }

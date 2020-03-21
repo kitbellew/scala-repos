@@ -40,25 +40,18 @@ trait Parsers { self: Quasiquotes =>
           case _ :+ ((pos2, (start2, end2))) if end2 <= offset =>
             pos2.withPoint(pos2.point + (end2 - start2))
         }
-      posMapList
-        .sliding(2)
-        .collect {
-          case (pos1, (start1, end1)) :: _ if containsOffset(start1, end1) =>
-            (pos1, offset - start1)
-          case (pos1, (start1, end1)) :: (pos2, (start2, _)) :: _
-              if containsOffset(end1, start2) =>
-            (pos1, end1 - start1)
-          case _ :: (pos2, (start2, end2)) :: _
-              if containsOffset(start2, end2) =>
-            (pos2, offset - start2)
-        }
-        .map {
-          case (pos, offset) =>
-            pos.withPoint(pos.point + offset)
-        }
-        .toList
-        .headOption
-        .getOrElse(fallbackPosition)
+      posMapList.sliding(2).collect {
+        case (pos1, (start1, end1)) :: _ if containsOffset(start1, end1) =>
+          (pos1, offset - start1)
+        case (pos1, (start1, end1)) :: (pos2, (start2, _)) :: _
+            if containsOffset(end1, start2) =>
+          (pos1, end1 - start1)
+        case _ :: (pos2, (start2, end2)) :: _ if containsOffset(start2, end2) =>
+          (pos2, offset - start2)
+      }.map {
+        case (pos, offset) =>
+          pos.withPoint(pos.point + offset)
+      }.toList.headOption.getOrElse(fallbackPosition)
     }
 
     override def token2string(token: Int): String =

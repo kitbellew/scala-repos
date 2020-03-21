@@ -133,9 +133,11 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     val blockGeneratorListener = new FakeBlockGeneratorListener
     val blockIntervalMs = 100
     val maxRate = 1001
-    val conf = new SparkConf()
-      .set("spark.streaming.blockInterval", s"${blockIntervalMs}ms")
-      .set("spark.streaming.receiver.maxRate", maxRate.toString)
+    val conf = new SparkConf().set(
+      "spark.streaming.blockInterval",
+      s"${blockIntervalMs}ms").set(
+      "spark.streaming.receiver.maxRate",
+      maxRate.toString)
     val blockGenerator = new BlockGenerator(blockGeneratorListener, 1, conf)
     val expectedBlocks = 20
     val waitTime = expectedBlocks * blockIntervalMs

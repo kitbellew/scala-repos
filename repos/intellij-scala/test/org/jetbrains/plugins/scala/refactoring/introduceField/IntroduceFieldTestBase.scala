@@ -86,9 +86,9 @@ abstract class IntroduceFieldTestBase()
         scalaFile,
         startOffset,
         endOffset)
-      val aClass = expr.parents.toList
-        .filter(_.isInstanceOf[ScTemplateDefinition])(selectedClassNumber)
-        .asInstanceOf[ScTemplateDefinition]
+      val aClass =
+        expr.parents.toList.filter(_.isInstanceOf[ScTemplateDefinition])(
+          selectedClassNumber).asInstanceOf[ScTemplateDefinition]
       val ifc = new IntroduceFieldContext[ScExpression](
         getProjectAdapter,
         editor,
@@ -117,9 +117,8 @@ abstract class IntroduceFieldTestBase()
       case e: Exception =>
         assert(
           assertion = false,
-          message = e.getMessage + "\n" + e.getStackTrace
-            .map(_.toString)
-            .mkString("  \n"))
+          message = e.getMessage + "\n" + e.getStackTrace.map(
+            _.toString).mkString("  \n"))
     }
 
     val text = lastPsi.getText

@@ -47,9 +47,8 @@ class EnsembleHiddenSplitPane extends EnsembleExample {
   def getContent = {
 
     //Style Sheet loaded from external
-    val hiddenSplitPaneCss = this.getClass
-      .getResource("/scalafx/ensemble/css/HiddenSplitPane.css")
-      .toExternalForm
+    val hiddenSplitPaneCss = this.getClass.getResource(
+      "/scalafx/ensemble/css/HiddenSplitPane.css").toExternalForm
 
     // Region that will be used in the split pane
     val reg1 = new Region {

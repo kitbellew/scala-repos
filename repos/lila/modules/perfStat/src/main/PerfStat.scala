@@ -164,11 +164,11 @@ case class Avg(avg: Double, pop: Int) {
 case class RatingAt(int: Int, at: DateTime, gameId: String)
 object RatingAt {
   def agg(cur: Option[RatingAt], pov: Pov, comp: Int) =
-    pov.player.stableRatingAfter
-      .filter { r => cur.fold(true) { c => r.compare(c.int) == comp } }
-      .map {
-        RatingAt(_, pov.game.updatedAtOrCreatedAt, pov.game.id)
-      } orElse cur
+    pov.player.stableRatingAfter.filter { r =>
+      cur.fold(true) { c => r.compare(c.int) == comp }
+    }.map {
+      RatingAt(_, pov.game.updatedAtOrCreatedAt, pov.game.id)
+    } orElse cur
 }
 
 case class Result(opInt: Int, opId: UserId, at: DateTime, gameId: String)

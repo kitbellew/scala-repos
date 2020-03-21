@@ -207,8 +207,7 @@ object Main extends Main {
     }
 
   private def parseArguments(args: Array[String]) =
-    Arguments
-      .Parser('-')
+    Arguments.Parser('-')
       .withOption(opts.showPrivateDefs)
       .withOption(opts.verbose)
       .withOption(opts.version)

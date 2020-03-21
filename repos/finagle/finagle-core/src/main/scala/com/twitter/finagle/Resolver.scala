@@ -25,8 +25,8 @@ import java.util.logging.Logger
   */
 class ResolverNotFoundException(scheme: String)
     extends Exception(
-      "Resolver not found for scheme \"%s\". Please add the jar containing this resolver to your classpath"
-        .format(scheme))
+      "Resolver not found for scheme \"%s\". Please add the jar containing this resolver to your classpath".format(
+        scheme))
 
 /**
   * Indicates that multiple [[com.twitter.finagle.Resolver Resolvers]] were
@@ -123,8 +123,7 @@ private[finagle] class InetResolver(
   private[this] val dnsCond = new AsyncSemaphore(100)
   protected def resolveHost(host: String): Future[Seq[InetAddress]] = {
     dnsCond.acquire().flatMap { permit =>
-      FuturePool
-        .unboundedPool(InetAddress.getAllByName(host).toSeq)
+      FuturePool.unboundedPool(InetAddress.getAllByName(host).toSeq)
         .onFailure { e =>
           log.warning(s"Failed to resolve $host. Error $e")
           dnsLookupFailures.incr()
@@ -142,41 +141,39 @@ private[finagle] class InetResolver(
     */
   def toAddr(hp: Seq[HostPortMetadata]): Future[Addr] = {
     val elapsed = Stopwatch.start()
-    Future
-      .collectToTry(hp.map {
-        case (host, port, meta) =>
-          resolveHost(host).map { inetAddrs =>
-            inetAddrs.map { inetAddr =>
-              Address.Inet(new InetSocketAddress(inetAddr, port), meta)
-            }
-          }
-      })
-      .flatMap { seq: Seq[Try[Seq[Address]]] =>
-        // Filter out all successes. If there was at least 1 success, consider
-        // the entire operation a success
-        val results = seq.collect {
-          case Return(subset) => subset
-        }.flatten
-
-        // Consider any result a success. Ignore partial failures.
-        if (results.nonEmpty) {
-          successes.incr()
-          latencyStat.add(elapsed().inMilliseconds)
-          Future.value(Addr.Bound(results.toSet))
-        } else {
-          // Either no hosts or resolution failed for every host
-          failures.incr()
-          log.warning("Resolution failed for all hosts")
-
-          seq.collectFirst {
-            case Throw(e) => e
-          } match {
-            case Some(_: UnknownHostException) => Future.value(Addr.Neg)
-            case Some(e)                       => Future.value(Addr.Failed(e))
-            case None                          => Future.value(Addr.Bound(Set[Address]()))
+    Future.collectToTry(hp.map {
+      case (host, port, meta) =>
+        resolveHost(host).map { inetAddrs =>
+          inetAddrs.map { inetAddr =>
+            Address.Inet(new InetSocketAddress(inetAddr, port), meta)
           }
         }
+    }).flatMap { seq: Seq[Try[Seq[Address]]] =>
+      // Filter out all successes. If there was at least 1 success, consider
+      // the entire operation a success
+      val results = seq.collect {
+        case Return(subset) => subset
+      }.flatten
+
+      // Consider any result a success. Ignore partial failures.
+      if (results.nonEmpty) {
+        successes.incr()
+        latencyStat.add(elapsed().inMilliseconds)
+        Future.value(Addr.Bound(results.toSet))
+      } else {
+        // Either no hosts or resolution failed for every host
+        failures.incr()
+        log.warning("Resolution failed for all hosts")
+
+        seq.collectFirst {
+          case Throw(e) => e
+        } match {
+          case Some(_: UnknownHostException) => Future.value(Addr.Neg)
+          case Some(e)                       => Future.value(Addr.Failed(e))
+          case None                          => Future.value(Addr.Bound(Set[Address]()))
+        }
       }
+    }
   }
 
   def bindHostPortsToAddr(hosts: Seq[HostPortMetadata]): Var[Addr] = {

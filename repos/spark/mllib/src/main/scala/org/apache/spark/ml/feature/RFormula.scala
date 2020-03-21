@@ -303,11 +303,8 @@ object RFormulaModel extends MLReadable[RFormulaModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       // Save model data: resolvedFormula
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(instance.resolvedFormula))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(instance.resolvedFormula))
+        .repartition(1).write.parquet(dataPath)
       // Save pipeline model
       val pmPath = new Path(path, "pipelineModel").toString
       instance.pipelineModel.save(pmPath)
@@ -323,10 +320,10 @@ object RFormulaModel extends MLReadable[RFormulaModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("label", "terms", "hasIntercept")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select(
+        "label",
+        "terms",
+        "hasIntercept").head()
       val label = data.getString(0)
       val terms = data.getAs[Seq[Seq[String]]](1)
       val hasIntercept = data.getBoolean(2)
@@ -389,11 +386,8 @@ private object ColumnPruner extends MLReadable[ColumnPruner] {
       // Save model data: columnsToPrune
       val data = Data(instance.columnsToPrune.toSeq)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -502,11 +496,8 @@ private object VectorAttributeRewriter
       // Save model data: vectorCol, prefixesToRewrite
       val data = Data(instance.vectorCol, instance.prefixesToRewrite)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -520,10 +511,9 @@ private object VectorAttributeRewriter
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("vectorCol", "prefixesToRewrite")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select(
+        "vectorCol",
+        "prefixesToRewrite").head()
       val vectorCol = data.getString(0)
       val prefixesToRewrite = data.getAs[Map[String, String]](1)
       val rewriter =

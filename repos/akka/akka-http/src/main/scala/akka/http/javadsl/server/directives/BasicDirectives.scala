@@ -183,16 +183,16 @@ abstract class BasicDirectives extends BasicDirectivesBase {
       def returnsFuture(method: Method): Boolean =
         method.getReturnType == classOf[Future[_]] &&
           method.getGenericReturnType.isInstanceOf[ParameterizedType] &&
-          method.getGenericReturnType
-            .asInstanceOf[ParameterizedType]
-            .getActualTypeArguments()(0) == classOf[RouteResult]
+          method.getGenericReturnType.asInstanceOf[
+            ParameterizedType].getActualTypeArguments()(0) == classOf[
+            RouteResult]
 
       def returnsCompletionStage(method: Method): Boolean =
         method.getReturnType == classOf[CompletionStage[_]] &&
           method.getGenericReturnType.isInstanceOf[ParameterizedType] &&
-          method.getGenericReturnType
-            .asInstanceOf[ParameterizedType]
-            .getActualTypeArguments()(0) == classOf[RouteResult]
+          method.getGenericReturnType.asInstanceOf[
+            ParameterizedType].getActualTypeArguments()(0) == classOf[
+            RouteResult]
 
       /** Makes sure both RouteResult and Future[RouteResult] are acceptable result types. */
       def adaptResult(method: Method): (RequestContext, AnyRef) ⇒ RouteResult =
@@ -212,16 +212,17 @@ abstract class BasicDirectives extends BasicDirectivesBase {
         if (adaptParams == IdentityAdaptor)(ctx, params) ⇒
           resultAdaptor(
             ctx,
-            method
-              .invoke(instance, params.toArray.asInstanceOf[Array[AnyRef]]: _*))
+            method.invoke(
+              instance,
+              params.toArray.asInstanceOf[Array[AnyRef]]: _*))
         else
           (ctx, params) ⇒
             resultAdaptor(
               ctx,
               method.invoke(
                 instance,
-                adaptParams(ctx, params).toArray
-                  .asInstanceOf[Array[AnyRef]]: _*))
+                adaptParams(ctx, params).toArray.asInstanceOf[
+                  Array[AnyRef]]: _*))
       }
 
       object ParameterTypes {
@@ -229,16 +230,13 @@ abstract class BasicDirectives extends BasicDirectivesBase {
           Some(method.getParameterTypes.toList)
       }
 
-      methods
-        .filter(returnTypeMatches)
-        .collectFirst {
-          case method @ ParameterTypes(RequestContextClass :: rest)
-              if paramsMatch(rest) ⇒
-            methodInvocator(method, _ +: _)
-          case method @ ParameterTypes(rest) if paramsMatch(rest) ⇒
-            methodInvocator(method, IdentityAdaptor)
-        }
-        .getOrElse(throw new RuntimeException("No suitable method found"))
+      methods.filter(returnTypeMatches).collectFirst {
+        case method @ ParameterTypes(RequestContextClass :: rest)
+            if paramsMatch(rest) ⇒
+          methodInvocator(method, _ +: _)
+        case method @ ParameterTypes(rest) if paramsMatch(rest) ⇒
+          methodInvocator(method, IdentityAdaptor)
+      }.getOrElse(throw new RuntimeException("No suitable method found"))
     }
     def lookupMethod() = {
       val candidateMethods = clazz.getMethods.filter(_.getName == methodName)

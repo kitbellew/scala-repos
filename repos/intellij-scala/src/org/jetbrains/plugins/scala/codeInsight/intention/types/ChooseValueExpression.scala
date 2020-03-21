@@ -25,9 +25,8 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
 
   def calcLookupElements(): Seq[LookupElementBuilder] =
     lookupItems.map { elem =>
-      LookupElementBuilder
-        .create(elem, lookupString(elem))
-        .withInsertHandler(new InsertHandler[LookupElement] {
+      LookupElementBuilder.create(elem, lookupString(elem)).withInsertHandler(
+        new InsertHandler[LookupElement] {
           override def handleInsert(
               context: InsertionContext,
               item: LookupElement): Unit = {

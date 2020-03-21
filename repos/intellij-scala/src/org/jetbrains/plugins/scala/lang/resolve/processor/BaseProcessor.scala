@@ -201,9 +201,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
             visitedTypeParameter = visitedTypeParameter)
         } else {
           val selfType = clazz.selfType.get
-          val clazzType: ScType = clazz
-            .getTypeWithProjections(TypingContext.empty)
-            .getOrElse(return true)
+          val clazzType: ScType = clazz.getTypeWithProjections(
+            TypingContext.empty).getOrElse(return true)
           if (selfType == ScThisType(clazz)) {
             //to prevent SOE, let's process Element
             processElement(
@@ -217,9 +216,9 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
             processType(
               selfType,
               place,
-              state
-                .put(BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY, Some(t))
-                .put(ScSubstitutor.key, thisSubst),
+              state.put(BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY, Some(t)).put(
+                ScSubstitutor.key,
+                thisSubst),
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter
             )
@@ -302,8 +301,9 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           visitedTypeParameter = visitedTypeParameter)
       case j: JavaArrayType =>
         processType(
-          j.getParameterizedType(place.getProject, place.getResolveScope)
-            .getOrElse(return true),
+          j.getParameterizedType(
+            place.getProject,
+            place.getResolveScope).getOrElse(return true),
           place,
           state,
           visitedAliases = visitedAliases,
@@ -376,10 +376,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         }
 
         val scope = place.getResolveScope
-        val obj: PsiClass = ScalaPsiManager
-          .instance(place.getProject)
-          .getCachedClass(scope, "java.lang.Object")
-          .orNull
+        val obj: PsiClass = ScalaPsiManager.instance(
+          place.getProject).getCachedClass(scope, "java.lang.Object").orNull
         if (obj != null) {
           val namesSet = Set("hashCode", "toString", "equals", "getClass")
           val methods = obj.getMethods.iterator

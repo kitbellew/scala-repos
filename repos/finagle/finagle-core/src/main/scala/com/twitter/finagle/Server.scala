@@ -32,9 +32,8 @@ trait ListeningServer
     */
   def announce(addr: String): Future[Announcement] =
     synchronized {
-      val public = InetSocketAddressUtil
-        .toPublic(boundAddress)
-        .asInstanceOf[InetSocketAddress]
+      val public = InetSocketAddressUtil.toPublic(boundAddress).asInstanceOf[
+        InetSocketAddress]
       if (isClosed)
         Future.exception(new Exception("Cannot announce on a closed server"))
       else {

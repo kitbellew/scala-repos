@@ -391,24 +391,44 @@ class ProtectedBranchServiceSpec
     it("if disabled, needStatusCheck is false") {
       withTestDB { implicit session =>
         assert(
-          ProtectedBranchInfo("user1", "repo1", false, Seq("must"), true)
-            .needStatusCheck("user1") == false)
+          ProtectedBranchInfo(
+            "user1",
+            "repo1",
+            false,
+            Seq("must"),
+            true).needStatusCheck("user1") == false)
       }
     }
     it("needStatusCheck includeAdministrators") {
       withTestDB { implicit session =>
         assert(
-          ProtectedBranchInfo("user1", "repo1", true, Seq("must"), false)
-            .needStatusCheck("user2") == true)
+          ProtectedBranchInfo(
+            "user1",
+            "repo1",
+            true,
+            Seq("must"),
+            false).needStatusCheck("user2") == true)
         assert(
-          ProtectedBranchInfo("user1", "repo1", true, Seq("must"), false)
-            .needStatusCheck("user1") == false)
+          ProtectedBranchInfo(
+            "user1",
+            "repo1",
+            true,
+            Seq("must"),
+            false).needStatusCheck("user1") == false)
         assert(
-          ProtectedBranchInfo("user1", "repo1", true, Seq("must"), true)
-            .needStatusCheck("user2") == true)
+          ProtectedBranchInfo(
+            "user1",
+            "repo1",
+            true,
+            Seq("must"),
+            true).needStatusCheck("user2") == true)
         assert(
-          ProtectedBranchInfo("user1", "repo1", true, Seq("must"), true)
-            .needStatusCheck("user1") == true)
+          ProtectedBranchInfo(
+            "user1",
+            "repo1",
+            true,
+            Seq("must"),
+            true).needStatusCheck("user1") == true)
       }
     }
   }

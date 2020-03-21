@@ -43,9 +43,8 @@ object ScalaTestHighlighterUtil {
       classFqn: String,
       methodName: String,
       project: Project) =
-    classFqn != null && ScalaProjectSettings
-      .getInstance(project)
-      .isCustomScalatestSyntaxHighlighting &&
+    classFqn != null && ScalaProjectSettings.getInstance(
+      project).isCustomScalatestSyntaxHighlighting &&
       classFqn.startsWith("org.scalatest") && scalaTestKeywords.contains(
       methodName)
 }

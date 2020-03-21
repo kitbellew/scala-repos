@@ -64,20 +64,30 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
         "Create",
         "--operation",
         "ClusterAction")),
-      GroupResources -> (Set(Read)
-        .toSet[Operation], Array("--operation", "Read"))
+      GroupResources -> (Set(Read).toSet[Operation], Array(
+        "--operation",
+        "Read"))
     )
 
   private val ProducerResourceToAcls = Map[Set[Resource], Set[Acl]](
-    TopicResources -> AclCommand
-      .getAcls(Users, Allow, Set(Write, Describe), Hosts),
-    Set(Resource.ClusterResource) -> AclCommand
-      .getAcls(Users, Allow, Set(Create), Hosts)
+    TopicResources -> AclCommand.getAcls(
+      Users,
+      Allow,
+      Set(Write, Describe),
+      Hosts),
+    Set(Resource.ClusterResource) -> AclCommand.getAcls(
+      Users,
+      Allow,
+      Set(Create),
+      Hosts)
   )
 
   private val ConsumerResourceToAcls = Map[Set[Resource], Set[Acl]](
-    TopicResources -> AclCommand
-      .getAcls(Users, Allow, Set(Read, Describe), Hosts),
+    TopicResources -> AclCommand.getAcls(
+      Users,
+      Allow,
+      Set(Read, Describe),
+      Hosts),
     GroupResources -> AclCommand.getAcls(Users, Allow, Set(Read), Hosts)
   )
 
@@ -128,9 +138,8 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
       Array("--authorizer-properties", "zookeeper.connect=" + zkConnect)
 
     for ((cmd, resourcesToAcls) <- CmdToResourcesToAcl) {
-      val resourceCommand: Array[String] = resourcesToAcls.keys
-        .map(ResourceToCommand)
-        .foldLeft(Array[String]())(_ ++ _)
+      val resourceCommand: Array[String] = resourcesToAcls.keys.map(
+        ResourceToCommand).foldLeft(Array[String]())(_ ++ _)
       AclCommand.main(
         args ++ getCmd(Allow) ++ resourceCommand ++ cmd :+ "--add")
       for ((resources, acls) <- resourcesToAcls) {

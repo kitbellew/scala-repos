@@ -174,12 +174,10 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   // Lazy, so user is not forced to configure defaults when she is not using them.
   lazy val defaultInternalStashOverflowStrategy: StashOverflowStrategy =
-    system.dynamicAccess
-      .createInstanceFor[StashOverflowStrategyConfigurator](
-        config.getString("internal-stash-overflow-strategy"),
-        EmptyImmutableSeq)
-      .map(_.create(system.settings.config))
-      .get
+    system.dynamicAccess.createInstanceFor[StashOverflowStrategyConfigurator](
+      config.getString("internal-stash-overflow-strategy"),
+      EmptyImmutableSeq)
+      .map(_.create(system.settings.config)).get
 
   val settings = new PersistenceSettings(config)
 
@@ -195,17 +193,15 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   private val snapshotStoreFallbackConfigPath =
     "akka.persistence.snapshot-store-plugin-fallback"
 
-  config
-    .getStringList("journal.auto-start-journals")
-    .forEach(new Consumer[String] {
+  config.getStringList("journal.auto-start-journals").forEach(
+    new Consumer[String] {
       override def accept(id: String): Unit = {
         log.info(s"Auto-starting journal plugin `$id`")
         journalFor(id)
       }
     })
-  config
-    .getStringList("snapshot-store.auto-start-snapshot-stores")
-    .forEach(new Consumer[String] {
+  config.getStringList("snapshot-store.auto-start-snapshot-stores").forEach(
+    new Consumer[String] {
       override def accept(id: String): Unit = {
         log.info(s"Auto-starting snapshot store `$id`")
         snapshotStoreFor(id)
@@ -355,8 +351,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
       require(
         !isEmpty(configPath) && system.settings.config.hasPath(configPath),
         s"'reference.conf' is missing persistence plugin config path: '$configPath'")
-      val config: Config = system.settings.config
-        .getConfig(configPath)
+      val config: Config = system.settings.config.getConfig(configPath)
         .withFallback(system.settings.config.getConfig(fallbackPath))
       val plugin: ActorRef = createPlugin(configPath, config)
       val adapters: EventAdapters = createAdapters(configPath)

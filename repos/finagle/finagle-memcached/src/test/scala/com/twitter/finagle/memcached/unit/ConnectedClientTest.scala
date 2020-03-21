@@ -50,8 +50,8 @@ class ConnectedClientTest extends FunSuite with MockitoSugar {
   }
 
   test("cas correctly responds to the error states of the service") {
-    when(service.apply(any[Command]))
-      .thenReturn(Future.value(Error(new IllegalAccessException("exception"))))
+    when(service.apply(any[Command])).thenReturn(
+      Future.value(Error(new IllegalAccessException("exception"))))
     intercept[IllegalAccessException] {
       Await.result(client.cas(key, value, casUnique))
     }
@@ -63,8 +63,8 @@ class ConnectedClientTest extends FunSuite with MockitoSugar {
   }
 
   test("checkAndSet correctly responds to the error states of the service") {
-    when(service.apply(any[Command]))
-      .thenReturn(Future.value(Error(new IllegalAccessException("exception"))))
+    when(service.apply(any[Command])).thenReturn(
+      Future.value(Error(new IllegalAccessException("exception"))))
     intercept[IllegalAccessException] {
       Await.result(client.checkAndSet(key, value, casUnique))
     }

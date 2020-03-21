@@ -76,8 +76,8 @@ class ScalaBlock(
       mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED
     def isBlockOnlyScope(scope: PsiElement) =
       !isLeaf &&
-        Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS)
-          .contains(scope.getNode.getElementType) &&
+        Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS).contains(
+          scope.getNode.getElementType) &&
         (scope.getParent match {
           case _: ScTryBlock | _: ScForStatement | _: ScPackaging => true
           case _                                                  => false
@@ -103,8 +103,8 @@ class ScalaBlock(
           if b.lastExpr.exists(_.isInstanceOf[ScFunctionExpr]) =>
         var i = getSubBlocks().size() - newChildIndex
         val elem = b.lastExpr.get.getNode.getTreePrev
-        if (elem.getElementType != TokenType.WHITE_SPACE || !elem.getText
-              .contains("\n")) i = 0
+        if (elem.getElementType != TokenType.WHITE_SPACE || !elem.getText.contains(
+              "\n")) i = 0
         val indent = i + (if (!braceShifted) 1 else 0)
         new ChildAttributes(Indent.getSpaceIndent(indent * indentSize), null)
       case _: ScBlockExpr | _: ScEarlyDefinitions | _: ScTemplateBody |
@@ -113,14 +113,10 @@ class ScalaBlock(
         new ChildAttributes(
           if (braceShifted) Indent.getNoneIndent
           else if (mySubBlocks != null && mySubBlocks.size >= newChildIndex &&
-                   mySubBlocks
-                     .get(newChildIndex - 1)
-                     .isInstanceOf[ScalaBlock] &&
-                   mySubBlocks
-                     .get(newChildIndex - 1)
-                     .asInstanceOf[ScalaBlock]
-                     .getNode
-                     .getElementType == ScalaElementTypes.CASE_CLAUSES)
+                   mySubBlocks.get(newChildIndex - 1).isInstanceOf[
+                     ScalaBlock] &&
+                   mySubBlocks.get(newChildIndex - 1).asInstanceOf[
+                     ScalaBlock].getNode.getElementType == ScalaElementTypes.CASE_CLAUSES)
             Indent.getSpaceIndent(2 * indentSize)
           else
             Indent.getNormalIndent,
@@ -136,9 +132,9 @@ class ScalaBlock(
       case _: ScBlock =>
         val grandParent = parent.getParent
         new ChildAttributes(
-          if (grandParent != null && (grandParent
-                .isInstanceOf[ScCaseClause] || grandParent
-                .isInstanceOf[ScFunctionExpr])) Indent.getNormalIndent
+          if (grandParent != null && (grandParent.isInstanceOf[
+                ScCaseClause] || grandParent.isInstanceOf[ScFunctionExpr]))
+            Indent.getNormalIndent
           else Indent.getNoneIndent,
           null)
       case _: ScIfStmt =>
@@ -196,8 +192,8 @@ class ScalaBlock(
   private def isConstructorArgOrMemberFunctionParameter(
       paramClause: ScParameterClause): Boolean = {
     val owner = paramClause.owner
-    owner != null && (owner.isInstanceOf[ScPrimaryConstructor] || owner
-      .isInstanceOf[ScFunction])
+    owner != null && (owner.isInstanceOf[
+      ScPrimaryConstructor] || owner.isInstanceOf[ScFunction])
   }
 
   def getSpacing(child1: Block, child2: Block) = {
@@ -226,8 +222,8 @@ class ScalaBlock(
       return true
     var lastChild = node.getLastChildNode
     while (lastChild != null &&
-           (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi
-             .isInstanceOf[PsiComment])) {
+           (lastChild.getPsi.isInstanceOf[
+             PsiWhiteSpace] || lastChild.getPsi.isInstanceOf[PsiComment])) {
       lastChild = lastChild.getTreePrev
     }
     if (lastChild == null) {
@@ -251,15 +247,12 @@ class ScalaBlock(
   }
 
   def getChildBlockLastNode(childNode: ASTNode) =
-    subBlocksContext
-      .flatMap(_.childrenAdditionalContexts.get(childNode))
-      .map(_.getLastNode(childNode))
-      .orNull
+    subBlocksContext.flatMap(_.childrenAdditionalContexts.get(childNode)).map(
+      _.getLastNode(childNode)).orNull
 
   def getCustomAlignment(childNode: ASTNode): Option[Alignment] =
     subBlocksContext
-      .flatMap(_.childrenAdditionalContexts.get(childNode))
-      .flatMap(_.alignment)
+      .flatMap(_.childrenAdditionalContexts.get(childNode)).flatMap(_.alignment)
 }
 
 class SubBlocksContext(
@@ -270,10 +263,9 @@ class SubBlocksContext(
     getLastNode.filter(_ != firstNode).orNull
 
   private def getLastNode: Option[ASTNode] =
-    childrenAdditionalContexts
-      .map { case (_, context) => context.getLastNode }
-      .filter(_.isDefined)
-      .map(_.get) ++
+    childrenAdditionalContexts.map {
+      case (_, context) => context.getLastNode
+    }.filter(_.isDefined).map(_.get) ++
       additionalNodes ++ childrenAdditionalContexts.map {
       case (child, _) => child
     } match {

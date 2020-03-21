@@ -115,13 +115,14 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
       case node =>
         dag.dependantsOf(node).collect {
           case n =>
-            "cluster_%s -> cluster_%s [style=dashed]"
-              .format(node.hashCode.toHexString, n.hashCode.toHexString)
+            "cluster_%s -> cluster_%s [style=dashed]".format(
+              node.hashCode.toHexString,
+              n.hashCode.toHexString)
         }
     }
 
-    "digraph summingbirdGraph {\n" + (clusters ++ producerMappings ++ clusterMappings)
-      .mkString("\n") + "\n}"
+    "digraph summingbirdGraph {\n" + (clusters ++ producerMappings ++ clusterMappings).mkString(
+      "\n") + "\n}"
   }
 
   override def toString(): String = genClusters

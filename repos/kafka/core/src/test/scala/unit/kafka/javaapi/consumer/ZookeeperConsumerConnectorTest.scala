@@ -50,9 +50,8 @@ class ZookeeperConsumerConnectorTest
   overridingProps.put(KafkaConfig.NumPartitionsProp, numParts.toString)
 
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect)
-      .map(KafkaConfig.fromProps(_, overridingProps))
+    TestUtils.createBrokerConfigs(numNodes, zkConnect).map(
+      KafkaConfig.fromProps(_, overridingProps))
 
   val group = "group1"
   val consumer1 = "consumer1"
@@ -111,17 +110,14 @@ class ZookeeperConsumerConnectorTest
       val javaProducer: Producer[Int, String] =
         new kafka.javaapi.producer.Producer(producer)
       for (partition <- 0 until numParts) {
-        val ms = 0
-          .until(messagesPerNode)
-          .map(x => header + server.config.brokerId + "-" + partition + "-" + x)
+        val ms = 0.until(messagesPerNode).map(x =>
+          header + server.config.brokerId + "-" + partition + "-" + x)
         messages ++= ms
         import JavaConversions._
-        javaProducer.send(
-          ms.map(
-              new KeyedMessage[Int, String](
-                topic,
-                partition,
-                _)): java.util.List[KeyedMessage[Int, String]])
+        javaProducer.send(ms.map(new KeyedMessage[Int, String](
+          topic,
+          partition,
+          _)): java.util.List[KeyedMessage[Int, String]])
       }
       javaProducer.close
     }

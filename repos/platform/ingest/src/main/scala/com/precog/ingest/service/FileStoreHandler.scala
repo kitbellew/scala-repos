@@ -80,8 +80,9 @@ class FileStoreHandler(
       case (_, HttpMethods.PUT)  => Success(AccessMode.Replace)
       case (otherType, otherMethod) =>
         Failure(
-          "Content-Type %s is not supported for use with method %s."
-            .format(otherType, otherMethod))
+          "Content-Type %s is not supported for use with method %s.".format(
+            otherType,
+            otherMethod))
     }
   }
 
@@ -93,21 +94,20 @@ class FileStoreHandler(
         for {
           fn0 <- fileName.toSuccess("X-File-Name header must be provided.")
           // if the filename after URL encoding is the same as before, accept it.
-          _ <- (URLEncoder.encode(fn0, "UTF-8") == fn0)
-            .unlessM[({ type λ[α] = Validation[String, α] })#λ, Unit] {
-              Failure(
-                "\"%s\" is not a valid file name; please do not use characters which require URL encoding."
-                  .format(fn0))
-            }
+          _ <- (URLEncoder.encode(fn0, "UTF-8") == fn0).unlessM[
+            ({ type λ[α] = Validation[String, α] })#λ,
+            Unit] {
+            Failure(
+              "\"%s\" is not a valid file name; please do not use characters which require URL encoding.".format(
+                fn0))
+          }
         } yield {
           (dir: Path) => dir / Path(fn0)
         }
 
       case AccessMode.Replace =>
-        fileName
-          .toFailure(())
-          .leftMap(_ =>
-            "X-File-Name header not respected for PUT requests; please specify the resource to update via the URL.") map {
+        fileName.toFailure(()).leftMap(_ =>
+          "X-File-Name header not respected for PUT requests; please specify the resource to update via the URL.") map {
           _ => (resource: Path) => resource
         }
     }
@@ -117,10 +117,9 @@ class FileStoreHandler(
     NotServed,
     (APIKey, Path) => Future[HttpResponse[JValue]]] =
     (request: HttpRequest[ByteChunk]) => {
-      val contentType0 = request.headers
-        .header[`Content-Type`]
-        .flatMap(_.mimeTypes.headOption)
-        .toSuccess("Unable to determine content type for file create.")
+      val contentType0 = request.headers.header[`Content-Type`].flatMap(
+        _.mimeTypes.headOption).toSuccess(
+        "Unable to determine content type for file create.")
       val storeMode0 = contentType0 flatMap {
         validateWriteMode(_: MimeType, request.method)
       }
@@ -141,19 +140,16 @@ class FileStoreHandler(
               Some(timestamp.toInstant)) { authorities =>
               request.content map { content =>
                 (for {
-                  jobId <- jobManager
-                    .createJob(
-                      apiKey,
-                      "ingest-" + path,
-                      "ingest",
-                      None,
-                      Some(timestamp))
-                    .map(_.id)
-                    .leftMap { errors =>
-                      logger.error(
-                        "File creation failed due to errors in job service: " + errors)
-                      serverError(errors)
-                    }
+                  jobId <- jobManager.createJob(
+                    apiKey,
+                    "ingest-" + path,
+                    "ingest",
+                    None,
+                    Some(timestamp)).map(_.id).leftMap { errors =>
+                    logger.error(
+                      "File creation failed due to errors in job service: " + errors)
+                    serverError(errors)
+                  }
                   bytes <- EitherT {
                     // FIXME: This should only read at most approximately the upload limit,
                     // so we don't read GB of data into memory from users.

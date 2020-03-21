@@ -93,13 +93,8 @@ class MarathonHealthCheckManagerTest
   def makeRunningTask(appId: PathId, version: Timestamp) = {
     val taskId = Task.Id.forApp(appId)
 
-    val taskStatus = MarathonTestHelper
-      .runningTask(taskId.idString)
-      .launched
-      .get
-      .status
-      .mesosStatus
-      .get
+    val taskStatus = MarathonTestHelper.runningTask(
+      taskId.idString).launched.get.status.mesosStatus.get
     val marathonTask =
       MarathonTestHelper.stagedTask(taskId.idString, appVersion = version)
 
@@ -119,11 +114,11 @@ class MarathonHealthCheckManagerTest
       .setHealthy(healthy)
       .build
 
-    EventFilter
-      .info(start = "Received health result for app", occurrences = 1)
-      .intercept {
-        hcManager.update(taskStatus, version)
-      }
+    EventFilter.info(
+      start = "Received health result for app",
+      occurrences = 1).intercept {
+      hcManager.update(taskStatus, version)
+    }
   }
 
   test("Add") {
@@ -141,13 +136,8 @@ class MarathonHealthCheckManagerTest
 
     val taskId = Task.Id.forApp(appId)
 
-    val taskStatus = MarathonTestHelper
-      .unhealthyTask(taskId.idString)
-      .launched
-      .get
-      .status
-      .mesosStatus
-      .get
+    val taskStatus = MarathonTestHelper.unhealthyTask(
+      taskId.idString).launched.get.status.mesosStatus.get
 
     val marathonTask =
       MarathonTestHelper.stagedTask(taskId.idString, appVersion = app.version)
@@ -164,26 +154,24 @@ class MarathonHealthCheckManagerTest
     assert(status1 == Seq(Health(taskId)))
 
     // send unhealthy task status
-    EventFilter
-      .info(start = "Received health result for app", occurrences = 1)
-      .intercept {
-        hcManager.update(
-          taskStatus.toBuilder.setHealthy(false).build,
-          app.version)
-      }
+    EventFilter.info(
+      start = "Received health result for app",
+      occurrences = 1).intercept {
+      hcManager.update(
+        taskStatus.toBuilder.setHealthy(false).build,
+        app.version)
+    }
 
     val Seq(health2) = hcManager.status(appId, taskId).futureValue
     assert(health2.lastFailure.isDefined)
     assert(health2.lastSuccess.isEmpty)
 
     // send healthy task status
-    EventFilter
-      .info(start = "Received health result for app", occurrences = 1)
-      .intercept {
-        hcManager.update(
-          taskStatus.toBuilder.setHealthy(true).build,
-          app.version)
-      }
+    EventFilter.info(
+      start = "Received health result for app",
+      occurrences = 1).intercept {
+      hcManager.update(taskStatus.toBuilder.setHealthy(true).build, app.version)
+    }
 
     val Seq(health3) = hcManager.status(appId, taskId).futureValue
     assert(health3.lastFailure.isDefined)
@@ -254,8 +242,7 @@ class MarathonHealthCheckManagerTest
         state: mesos.TaskState = mesos.TaskState.TASK_RUNNING) =
       mesos.TaskStatus.newBuilder
         .setTaskId(
-          mesos.TaskID
-            .newBuilder()
+          mesos.TaskID.newBuilder()
             .setValue(task.getId)
             .build)
         .setState(state)
@@ -277,14 +264,12 @@ class MarathonHealthCheckManagerTest
         task: Task,
         version: Timestamp,
         healthChecks: Set[HealthCheck]) = {
-      appRepository
-        .store(
-          AppDefinition(
-            id = appId,
-            versionInfo = AppDefinition.VersionInfo.forNewConfig(version),
-            healthChecks = healthChecks
-          ))
-        .futureValue
+      appRepository.store(
+        AppDefinition(
+          id = appId,
+          versionInfo = AppDefinition.VersionInfo.forNewConfig(version),
+          healthChecks = healthChecks
+        )).futureValue
       taskCreationHandler.created(task).futureValue
       taskUpdater.statusUpdate(appId, taskStatus(task.marathonTask)).futureValue
     }

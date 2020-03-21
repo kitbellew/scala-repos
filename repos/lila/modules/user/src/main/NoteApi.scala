@@ -19,16 +19,12 @@ final class NoteApi(
   private implicit val noteBSONHandler = Macros.handler[Note]
 
   def get(user: User, me: User, myFriendIds: Set[String]): Fu[List[Note]] =
-    coll
-      .find(
-        BSONDocument(
-          "to" -> user.id,
-          "from" -> BSONDocument("$in" -> (myFriendIds + me.id))
-        ) ++ me.troll.fold(BSONDocument(), BSONDocument("troll" -> false))
-      )
-      .sort(BSONDocument("date" -> -1))
-      .cursor[Note]()
-      .collect[List](100)
+    coll.find(
+      BSONDocument(
+        "to" -> user.id,
+        "from" -> BSONDocument("$in" -> (myFriendIds + me.id))
+      ) ++ me.troll.fold(BSONDocument(), BSONDocument("troll" -> false))
+    ).sort(BSONDocument("date" -> -1)).cursor[Note]().collect[List](100)
 
   def write(to: User, text: String, from: User) = {
 

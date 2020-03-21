@@ -51,8 +51,7 @@ object Args {
             (noDashes -> List()) :: acc
         }
         //Now reverse the values to keep the same order
-        .map { case (key, value) => key -> value.reverse }
-        .toMap)
+        .map { case (key, value) => key -> value.reverse }.toMap)
   }
 
   def isNumber(arg: String): Boolean = {
@@ -181,14 +180,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     }
 
   def int(key: String, default: Int): Int = {
-    optional(key)
-      .map(value =>
-        try value.toInt
-        catch {
-          case NonFatal(_) =>
-            throw ArgsException(s"Invalid value ${value} for -- ${key}")
-        })
-      .getOrElse(default)
+    optional(key).map(value =>
+      try value.toInt
+      catch {
+        case NonFatal(_) =>
+          throw ArgsException(s"Invalid value ${value} for -- ${key}")
+      }).getOrElse(default)
   }
 
   def int(key: String): Int = {
@@ -201,14 +198,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
   }
 
   def long(key: String, default: Long): Long = {
-    optional(key)
-      .map(value =>
-        try value.toLong
-        catch {
-          case NonFatal(_) =>
-            throw ArgsException(s"Invalid value ${value} for -- ${key}")
-        })
-      .getOrElse(default)
+    optional(key).map(value =>
+      try value.toLong
+      catch {
+        case NonFatal(_) =>
+          throw ArgsException(s"Invalid value ${value} for -- ${key}")
+      }).getOrElse(default)
   }
 
   def long(key: String): Long = {
@@ -221,14 +216,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
   }
 
   def float(key: String, default: Float): Float = {
-    optional(key)
-      .map(value =>
-        try value.toFloat
-        catch {
-          case NonFatal(_) =>
-            throw ArgsException(s"Invalid value ${value} for -- ${key}")
-        })
-      .getOrElse(default)
+    optional(key).map(value =>
+      try value.toFloat
+      catch {
+        case NonFatal(_) =>
+          throw ArgsException(s"Invalid value ${value} for -- ${key}")
+      }).getOrElse(default)
   }
 
   def float(key: String): Float = {
@@ -241,14 +234,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
   }
 
   def double(key: String, default: Double): Double = {
-    optional(key)
-      .map(value =>
-        try value.toDouble
-        catch {
-          case NonFatal(_) =>
-            throw ArgsException(s"Invalid value ${value} for -- ${key}")
-        })
-      .getOrElse(default)
+    optional(key).map(value =>
+      try value.toDouble
+      catch {
+        case NonFatal(_) =>
+          throw ArgsException(s"Invalid value ${value} for -- ${key}")
+      }).getOrElse(default)
   }
 
   def double(key: String): Double = {

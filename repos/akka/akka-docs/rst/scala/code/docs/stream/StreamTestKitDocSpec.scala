@@ -45,9 +45,8 @@ class StreamTestKitDocSpec extends AkkaSpec {
     //#folded-stream
     val flowUnderTest = Flow[Int].takeWhile(_ < 5)
 
-    val future = Source(1 to 10)
-      .via(flowUnderTest)
-      .runWith(Sink.fold(Seq.empty[Int])(_ :+ _))
+    val future = Source(1 to 10).via(flowUnderTest).runWith(
+      Sink.fold(Seq.empty[Int])(_ :+ _))
     val result = Await.result(future, 100.millis)
     assert(result == (1 to 4))
     //#folded-stream
@@ -88,10 +87,8 @@ class StreamTestKitDocSpec extends AkkaSpec {
     val sinkUnderTest =
       Flow[Int].map(_.toString).toMat(Sink.fold("")(_ + _))(Keep.right)
 
-    val (ref, future) = Source
-      .actorRef(8, OverflowStrategy.fail)
-      .toMat(sinkUnderTest)(Keep.both)
-      .run()
+    val (ref, future) = Source.actorRef(8, OverflowStrategy.fail)
+      .toMat(sinkUnderTest)(Keep.both).run()
 
     ref ! 1
     ref ! 2
@@ -119,8 +116,7 @@ class StreamTestKitDocSpec extends AkkaSpec {
     //#test-source-probe
     val sinkUnderTest = Sink.cancelled
 
-    TestSource
-      .probe[Int]
+    TestSource.probe[Int]
       .toMat(sinkUnderTest)(Keep.left)
       .run()
       .expectCancellation()
@@ -131,8 +127,7 @@ class StreamTestKitDocSpec extends AkkaSpec {
     //#injecting-failure
     val sinkUnderTest = Sink.head[Int]
 
-    val (probe, future) = TestSource
-      .probe[Int]
+    val (probe, future) = TestSource.probe[Int]
       .toMat(sinkUnderTest)(Keep.both)
       .run()
     probe.sendError(new Exception("boom"))
@@ -151,8 +146,7 @@ class StreamTestKitDocSpec extends AkkaSpec {
         Future.successful(sleep))
     }
 
-    val (pub, sub) = TestSource
-      .probe[Int]
+    val (pub, sub) = TestSource.probe[Int]
       .via(flowUnderTest)
       .toMat(TestSink.probe[Int])(Keep.both)
       .run()

@@ -109,9 +109,8 @@ class HistoryServer(
       // the app's UI, and all we need to do is redirect the user to the same URI that was
       // requested, and the proper data should be served at that point.
       // Also, make sure that the redirect url contains the query string present in the request.
-      val requestURI = req.getRequestURI + Option(req.getQueryString)
-        .map("?" + _)
-        .getOrElse("")
+      val requestURI = req.getRequestURI + Option(req.getQueryString).map(
+        "?" + _).getOrElse("")
       res.sendRedirect(res.encodeRedirectURL(requestURI))
     }
 
@@ -206,8 +205,8 @@ class HistoryServer(
   }
 
   def getApplicationInfoList: Iterator[ApplicationInfo] = {
-    getApplicationList().iterator
-      .map(ApplicationsListResource.appHistoryInfoToPublicAppInfo)
+    getApplicationList().iterator.map(
+      ApplicationsListResource.appHistoryInfoToPublicAppInfo)
   }
 
   override def writeEventLogs(
@@ -280,11 +279,9 @@ object HistoryServer extends Logging {
     initSecurity()
     val securityManager = new SecurityManager(conf)
 
-    val providerName = conf
-      .getOption("spark.history.provider")
+    val providerName = conf.getOption("spark.history.provider")
       .getOrElse(classOf[FsHistoryProvider].getName())
-    val provider = Utils
-      .classForName(providerName)
+    val provider = Utils.classForName(providerName)
       .getConstructor(classOf[SparkConf])
       .newInstance(conf)
       .asInstanceOf[ApplicationHistoryProvider]

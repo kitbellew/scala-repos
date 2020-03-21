@@ -80,11 +80,9 @@ class HttpConnectHandler(
       hostNameWithPort)
     req.headers().set("Host", hostNameWithPort)
     proxyCredentials.foreach { creds =>
-      req
-        .headers()
-        .set(
-          HttpHeaders.Names.PROXY_AUTHORIZATION,
-          proxyAuthorizationHeader(creds))
+      req.headers().set(
+        HttpHeaders.Names.PROXY_AUTHORIZATION,
+        proxyAuthorizationHeader(creds))
     }
     Channels.write(ctx, Channels.future(ctx.getChannel), req, null)
   }

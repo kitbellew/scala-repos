@@ -34,8 +34,9 @@ class SamplingTracerTest extends FunSuite with MockitoSugar {
     val samplingTracer = new SamplingTracer(tracer, 1f, sink)
     samplingTracer.record(record)
 
-    verify(sink, times(1))
-      .event(ZipkinTracer.Trace, objectVal = record.annotation)
+    verify(sink, times(1)).event(
+      ZipkinTracer.Trace,
+      objectVal = record.annotation)
   }
 
   test("does not send events to sink when not sampled") {

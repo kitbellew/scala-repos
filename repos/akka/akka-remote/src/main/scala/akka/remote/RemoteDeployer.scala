@@ -36,8 +36,8 @@ private[akka] class RemoteDeployer(
               s"unparseable remote node name [${str}]")
           case _ ⇒
             val nodes =
-              immutableSeq(deploy.config.getStringList("target.nodes"))
-                .map(AddressFromURIString(_))
+              immutableSeq(deploy.config.getStringList("target.nodes")).map(
+                AddressFromURIString(_))
             if (nodes.isEmpty || deploy.routerConfig == NoRouter) d
             else
               deploy.routerConfig match {

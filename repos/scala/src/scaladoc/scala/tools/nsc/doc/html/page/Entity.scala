@@ -127,7 +127,10 @@ trait EntityPage extends HtmlPage {
                     </li>
 
       // Get path from root
-      val rootToParentLis = tpl.toRoot.tail.reverse.zipWithIndex
+      val rootToParentLis = tpl.toRoot
+        .tail
+        .reverse
+        .zipWithIndex
         .map {
           case (pack, ind) =>
             memberToHtml(
@@ -308,10 +311,8 @@ trait EntityPage extends HtmlPage {
             <span class="filtertype">Ordering</span>
             <ol>
               {
-          if (!universe.settings.docGroups.value || (tpl.members
-                .map(_.group)
-                .distinct
-                .length == 1))
+          if (!universe.settings.docGroups.value || (tpl.members.map(
+                _.group).distinct.length == 1))
             NodeSeq.Empty
           else
             <li class="group out"><span>Grouped</span></li>
@@ -474,10 +475,8 @@ trait EntityPage extends HtmlPage {
         <div id="groupedMembers">
         {
       val allGroups = tpl.members.map(_.group).distinct
-      val orderedGroups = allGroups
-        .map(group => (tpl.groupPriority(group), group))
-        .sorted
-        .map(_._2)
+      val orderedGroups = allGroups.map(group =>
+        (tpl.groupPriority(group), group)).sorted.map(_._2)
       // linearization
       NodeSeq fromSeq (for (group <- orderedGroups)
         yield <div class="group" name={group}>

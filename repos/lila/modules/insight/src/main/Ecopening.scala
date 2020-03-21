@@ -16,15 +16,11 @@ case class Ecopening(
   lazy val size = moveList.size
 
   lazy val formattedMoves: String =
-    moveList
-      .grouped(2)
-      .zipWithIndex
-      .map {
-        case (List(w, b), i) => s"${i + 1}. $w $b"
-        case (List(w), i)    => s"${i + 1}. $w"
-        case _               => ""
-      }
-      .mkString(" ")
+    moveList.grouped(2).zipWithIndex.map {
+      case (List(w, b), i) => s"${i + 1}. $w $b"
+      case (List(w), i)    => s"${i + 1}. $w"
+      case _               => ""
+    }.mkString(" ")
 
   def ecoName = s"$eco $name"
 
@@ -42,24 +38,21 @@ object Ecopening {
   def makeFamilies(ops: Iterable[Ecopening]): Map[FamilyName, Family] =
     ops.foldLeft(Map.empty[FamilyName, Family]) {
       case (fams, op) =>
-        fams + (op.family -> fams
-          .get(op.family)
-          .fold(Family(op.family, List(op.eco))) {
-            existing => existing.copy(ecos = op.eco :: existing.ecos)
-          })
+        fams + (op.family -> fams.get(op.family).fold(
+          Family(op.family, List(op.eco))) {
+          existing => existing.copy(ecos = op.eco :: existing.ecos)
+        })
     }
 
   def fromGame(game: lila.game.Game): Option[Ecopening] =
     if (game.playable || game.turns < 4 || game.fromPosition || game.variant.exotic)
       none
     else
-      chess.Replay
-        .boards(
-          moveStrs = game.pgnMoves take EcopeningDB.MAX_MOVES,
-          initialFen = none,
-          variant = chess.variant.Standard
-        )
-        .toOption flatMap matchChronoBoards
+      chess.Replay.boards(
+        moveStrs = game.pgnMoves take EcopeningDB.MAX_MOVES,
+        initialFen = none,
+        variant = chess.variant.Standard
+      ).toOption flatMap matchChronoBoards
 
   private def matchChronoBoards(boards: List[chess.Board]): Option[Ecopening] =
     boards.reverse.foldLeft(none[Ecopening]) {

@@ -88,10 +88,8 @@ private class ClientEndpoint(
         }
 
         val extraJavaOptsConf = "spark.driver.extraJavaOptions"
-        val extraJavaOpts = sys.props
-          .get(extraJavaOptsConf)
-          .map(Utils.splitCommandString)
-          .getOrElse(Seq.empty)
+        val extraJavaOpts = sys.props.get(extraJavaOptsConf)
+          .map(Utils.splitCommandString).getOrElse(Seq.empty)
         val sparkJavaOpts = Utils.sparkJavaOpts(conf)
         val javaOpts = sparkJavaOpts ++ extraJavaOpts
         val command = new Command(
@@ -127,13 +125,11 @@ private class ClientEndpoint(
   private def ayncSendToMasterAndForwardReply[T: ClassTag](
       message: Any): Unit = {
     for (masterEndpoint <- masterEndpoints) {
-      masterEndpoint
-        .ask[T](message)
-        .onComplete {
-          case Success(v) => self.send(v)
-          case Failure(e) =>
-            logWarning(s"Error sending messages to master $masterEndpoint", e)
-        }(forwardMessageExecutionContext)
+      masterEndpoint.ask[T](message).onComplete {
+        case Success(v) => self.send(v)
+        case Failure(e) =>
+          logWarning(s"Error sending messages to master $masterEndpoint", e)
+      }(forwardMessageExecutionContext)
     }
   }
 
@@ -259,9 +255,8 @@ object Client {
         conf,
         new SecurityManager(conf))
 
-    val masterEndpoints = driverArgs.masters
-      .map(RpcAddress.fromSparkURL)
-      .map(rpcEnv.setupEndpointRef(_, Master.ENDPOINT_NAME))
+    val masterEndpoints = driverArgs.masters.map(RpcAddress.fromSparkURL).map(
+      rpcEnv.setupEndpointRef(_, Master.ENDPOINT_NAME))
     rpcEnv.setupEndpoint(
       "client",
       new ClientEndpoint(rpcEnv, driverArgs, masterEndpoints, conf))

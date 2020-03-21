@@ -17,9 +17,8 @@ class HikariCPConfigSpec extends Specification {
     "set dataSourceClassName when present" in new Configs {
       val config = from(
         "hikaricp.dataSourceClassName" -> "org.postgresql.ds.PGPoolingDataSource")
-      new HikariCPConfig(
-        DatabaseConfig(None, None, None, None, None),
-        config).toHikariConfig.getDataSourceClassName must beEqualTo(
+      new HikariCPConfig(DatabaseConfig(None, None, None, None, None), config)
+        .toHikariConfig.getDataSourceClassName must beEqualTo(
         "org.postgresql.ds.PGPoolingDataSource")
     }
 

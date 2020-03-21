@@ -86,9 +86,9 @@ trait InteractiveAnalyzer extends Analyzer {
           defAtt.defaultGetters foreach enterIfNotThere
       } else if (sym != null && sym.isClass && sym.isImplicit) {
         val owningInfo = sym.owner.info
-        val existingDerivedSym = owningInfo
-          .decl(sym.name.toTermName)
-          .filter(sym => sym.isSynthetic && sym.isMethod)
+        val existingDerivedSym =
+          owningInfo.decl(sym.name.toTermName).filter(sym =>
+            sym.isSynthetic && sym.isMethod)
         existingDerivedSym.alternatives foreach (owningInfo.decls.unlink)
         val defTree = tree match {
           case dd: DocDef =>
@@ -297,8 +297,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
   def enableIgnoredFile(file: AbstractFile) {
     ignoredFiles -= file
     debugLog(
-      "Removed crashed file %s. Still in the ignored buffer: %s"
-        .format(file, ignoredFiles))
+      "Removed crashed file %s. Still in the ignored buffer: %s".format(
+        file,
+        ignoredFiles))
   }
 
   /** The currently active typer run */
@@ -485,30 +486,29 @@ with ContextTrees with RichCompilationUnits with Picklers {
               demandNewCompilerRun()
 
             case Some(ShutdownReq) =>
-              scheduler
-                .synchronized { // lock the work queue so no more items are posted while we clean it up
-                  val units = scheduler.dequeueAll {
-                    case item: WorkItem => Some(item.raiseMissing())
-                    case _              => Some(())
-                  }
-
-                  // don't forget to service interrupt requests
-                  scheduler.dequeueAllInterrupts(_.execute())
-
-                  debugLog(
-                    "ShutdownReq: cleaning work queue (%d items)".format(
-                      units.size))
-                  debugLog(
-                    "Cleanup up responses (%d loadedType pending, %d parsedEntered pending)"
-                      .format(
-                        waitLoadedTypeResponses.size,
-                        getParsedEnteredResponses.size))
-                  checkNoResponsesOutstanding()
-
-                  log.flush()
-                  scheduler = new NoWorkScheduler
-                  throw ShutdownReq
+              scheduler.synchronized { // lock the work queue so no more items are posted while we clean it up
+                val units = scheduler.dequeueAll {
+                  case item: WorkItem => Some(item.raiseMissing())
+                  case _              => Some(())
                 }
+
+                // don't forget to service interrupt requests
+                scheduler.dequeueAllInterrupts(_.execute())
+
+                debugLog(
+                  "ShutdownReq: cleaning work queue (%d items)".format(
+                    units.size))
+                debugLog(
+                  "Cleanup up responses (%d loadedType pending, %d parsedEntered pending)"
+                    .format(
+                      waitLoadedTypeResponses.size,
+                      getParsedEnteredResponses.size))
+                checkNoResponsesOutstanding()
+
+                log.flush()
+                scheduler = new NoWorkScheduler
+                throw ShutdownReq
+              }
 
             case Some(ex: Throwable) => log.flush(); throw ex
             case _                   =>
@@ -554,8 +554,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   override def assertCorrectThread() {
     assert(
       initializing || anyThread || onCompilerThread,
-      "Race condition detected: You are running a presentation compiler method outside the PC thread.[phase: %s]"
-        .format(globalPhase) +
+      "Race condition detected: You are running a presentation compiler method outside the PC thread.[phase: %s]".format(
+        globalPhase) +
         " Please file a ticket with the current stack trace at https://www.assembla.com/spaces/scala-ide/support/tickets"
     )
   }
@@ -628,13 +628,14 @@ with ContextTrees with RichCompilationUnits with Picklers {
           lastException = Some(ex)
           ignoredFiles += unit.source.file
           println(
-            "[%s] marking unit as crashed (crashedFiles: %s)"
-              .format(unit, ignoredFiles))
+            "[%s] marking unit as crashed (crashedFiles: %s)".format(
+              unit,
+              ignoredFiles))
 
           reporter.error(
             unit.body.pos,
-            "Presentation compiler crashed while type checking this file: %s"
-              .format(ex.toString()))
+            "Presentation compiler crashed while type checking this file: %s".format(
+              ex.toString()))
       }
     }
 
@@ -1212,8 +1213,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
       */
     def viewApply(view: SearchResult): Tree = {
       assert(view.tree != EmptyTree)
-      analyzer
-        .newTyper(context.makeImplicit(reportAmbiguousErrors = false))
+      analyzer.newTyper(context.makeImplicit(reportAmbiguousErrors = false))
         .typed(Apply(view.tree, List(tree)) setPos tree.pos)
         .onTypeError(EmptyTree)
     }
@@ -1269,9 +1269,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
       results filter { (member: Member) =>
         val symbol = member.sym
         def isStable =
-          member.tpe.isStable || member.sym.isStable || member.sym
-            .getterIn(member.sym.owner)
-            .isStable
+          member.tpe.isStable || member.sym.isStable || member.sym.getterIn(
+            member.sym.owner).isStable
         def isJunk =
           symbol.name.isEmpty || !isIdentifierStart(
             member.sym.name.charAt(0)
@@ -1326,14 +1325,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
             case Nil => entered.isEmpty && matchCount > 0
             case head :: tail =>
               val enteredAlternatives = Set(entered, entered.capitalize)
-              head.inits
-                .filter(_.length <= entered.length)
-                .exists(init =>
-                  enteredAlternatives.exists(entered =>
-                    lenientMatch(
-                      entered.stripPrefix(init),
-                      tail,
-                      matchCount + (if (init.isEmpty) 0 else 1))))
+              head.inits.filter(_.length <= entered.length).exists(init =>
+                enteredAlternatives.exists(entered =>
+                  lenientMatch(
+                    entered.stripPrefix(init),
+                    tail,
+                    matchCount + (if (init.isEmpty) 0 else 1))))
           }
         }
         val containsAllEnteredChars = {
@@ -1356,10 +1353,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
       val qualPos = qual.pos
       val allTypeMembers = typeMembers(qualPos).toList.flatten
       val positionDelta: Int = pos.start - nameStart
-      val subName: Name = name
-        .newName(
-          new String(pos.source.content, nameStart, pos.start - nameStart))
-        .encodedName
+      val subName: Name = name.newName(
+        new String(
+          pos.source.content,
+          nameStart,
+          pos.start - nameStart)).encodedName
       CompletionResult.TypeMembers(
         positionDelta,
         qual,
@@ -1385,9 +1383,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
         val qualPos = qual.pos
         def fallback = qualPos.end + 2
         val source = pos.source
-        val nameStart: Int = (qualPos.end + 1 until focus1.pos.end)
-          .find(p => source.identifier(source.position(p)).exists(_.length > 0))
-          .getOrElse(fallback)
+        val nameStart: Int =
+          (qualPos.end + 1 until focus1.pos.end).find(p =>
+            source.identifier(source.position(p)).exists(
+              _.length > 0)).getOrElse(fallback)
         typeCompletions(sel, qual, nameStart, name)
       case Ident(name) =>
         val allMembers = scopeMembers(pos)

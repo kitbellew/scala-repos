@@ -229,8 +229,9 @@ private[spark] object ClosureCleaner extends Logging {
       // all of its inner closures. If transitive cleaning is enabled, this may recursively
       // visits methods that belong to other classes in search of transitively referenced fields.
       for (cls <- func.getClass :: innerClasses) {
-        getClassReader(cls)
-          .accept(new FieldAccessFinder(accessedFields, cleanTransitively), 0)
+        getClassReader(cls).accept(
+          new FieldAccessFinder(accessedFields, cleanTransitively),
+          0)
       }
     }
 
@@ -435,15 +436,13 @@ private[util] class FieldAccessFinder(
             if (!visitedMethods.contains(m)) {
               // Keep track of visited methods to avoid potential infinite cycles
               visitedMethods += m
-              ClosureCleaner
-                .getClassReader(cl)
-                .accept(
-                  new FieldAccessFinder(
-                    fields,
-                    findTransitively,
-                    Some(m),
-                    visitedMethods),
-                  0)
+              ClosureCleaner.getClassReader(cl).accept(
+                new FieldAccessFinder(
+                  fields,
+                  findTransitively,
+                  Some(m),
+                  visitedMethods),
+                0)
             }
           }
         }

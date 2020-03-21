@@ -327,8 +327,9 @@ object SwaggerSerializers {
             case x: ModelProperty =>
               val json: JValue =
                 ("description" -> x.description) ~ ("position" -> x.position)
-              (json merge writeDataType(x.`type`, "$ref")) merge Extraction
-                .decompose(x.allowableValues)
+              (json merge writeDataType(
+                x.`type`,
+                "$ref")) merge Extraction.decompose(x.allowableValues)
           }))
 
   class ModelSerializer
@@ -396,11 +397,8 @@ object SwaggerSerializers {
                 t,
                 (json \ "description").getAs[String].flatMap(_.blankOption),
                 (json \ "notes").getAs[String].flatMap(_.blankOption),
-                (json \ "paramType")
-                  .getAs[String]
-                  .flatMap(_.blankOption)
-                  .map(ParamType.withName)
-                  .getOrElse(ParamType.Query),
+                (json \ "paramType").getAs[String].flatMap(_.blankOption).map(
+                  ParamType.withName).getOrElse(ParamType.Query),
                 json \ "defaultValue" match {
                   case JInt(num)     => Some(num.toString)
                   case JBool(value)  => Some(value.toString)
@@ -487,9 +485,8 @@ object SwaggerSerializers {
             case value =>
               Endpoint(
                 (value \ "path").extract[String],
-                (value \ "description")
-                  .extractOpt[String]
-                  .flatMap(_.blankOption),
+                (value \ "description").extractOpt[String].flatMap(
+                  _.blankOption),
                 (value \ "operations").extract[List[Operation]])
           },
           {
@@ -508,16 +505,14 @@ object SwaggerSerializers {
                 (json \ "apiVersion").extractOrElse(""),
                 (json \ "swaggerVersion").extractOrElse(""),
                 (json \ "resourcePath").extractOrElse(""),
-                (json \ "description")
-                  .extractOpt[String]
-                  .flatMap(_.blankOption),
+                (json \ "description").extractOpt[String].flatMap(
+                  _.blankOption),
                 (json \ "produces").extractOrElse(List.empty[String]),
                 (json \ "consumes").extractOrElse(List.empty[String]),
                 (json \ "protocols").extractOrElse(List.empty[String]),
                 (json \ "apis").extractOrElse(List.empty[Endpoint]),
-                (json \ "models")
-                  .extractOpt[Map[String, Model]]
-                  .getOrElse(Map.empty),
+                (json \ "models").extractOpt[Map[String, Model]].getOrElse(
+                  Map.empty),
                 (json \ "authorizations").extractOrElse(List.empty[String]),
                 (json \ "position").extractOrElse(0)
               )
@@ -566,8 +561,8 @@ object SwaggerSerializers {
                 TokenRequestEndpoint(
                   (value \ "tokenRequestEndpoint" \ "url").as[String],
                   (value \ "tokenRequestEndpoint" \ "clientIdName").as[String],
-                  (value \ "tokenRequestEndpoint" \ "clientSecretName")
-                    .as[String]
+                  (value \ "tokenRequestEndpoint" \ "clientSecretName").as[
+                    String]
                 ),
                 TokenEndpoint(
                   (value \ "tokenEndpoint" \ "url").as[String],
@@ -596,10 +591,8 @@ object SwaggerSerializers {
           {
             case value if value \ "type" == JString("apiKey") =>
               ApiKey(
-                (value \ "keyname")
-                  .extractOpt[String]
-                  .flatMap(_.blankOption)
-                  .getOrElse("apiKey"),
+                (value \ "keyname").extractOpt[String].flatMap(
+                  _.blankOption).getOrElse("apiKey"),
                 (value \ "passAs").extract[String])
             case value if value \ "type" == JString("oauth2") =>
               OAuth(

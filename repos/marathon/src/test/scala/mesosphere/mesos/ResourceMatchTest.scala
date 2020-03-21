@@ -21,14 +21,19 @@ class ResourceMatchTest extends FunSuite with GivenWhenThen with Matchers {
           "mem",
           128.0,
           consumed = Iterable(
-            ScalarMatch
-              .Consumption(128.0, "role1", reservation = Some(memReservation))),
+            ScalarMatch.Consumption(
+              128.0,
+              "role1",
+              reservation = Some(memReservation))),
           scope = ScalarMatchResult.Scope.NoneDisk
         )
       ),
       portsMatch = PortsMatch(
-        Seq(PortsMatcher
-          .PortWithRole("role2", 80, reservation = Some(portReservation))))
+        Seq(
+          PortsMatcher.PortWithRole(
+            "role2",
+            80,
+            reservation = Some(portReservation))))
     )
 
     When("converting it to resources")
@@ -42,8 +47,11 @@ class ResourceMatchTest extends FunSuite with GivenWhenThen with Matchers {
           128,
           "role1",
           reservation = Some(memReservation)),
-        MarathonTestHelper
-          .portsResource(80, 80, "role2", reservation = Some(portReservation))
+        MarathonTestHelper.portsResource(
+          80,
+          80,
+          "role2",
+          reservation = Some(portReservation))
       )
     )
   }

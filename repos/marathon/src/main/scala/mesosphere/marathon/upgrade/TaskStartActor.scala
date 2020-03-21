@@ -24,10 +24,8 @@ class TaskStartActor(
     with StartingBehavior {
 
   val nrToStart: Int =
-    scaleTo - taskQueue
-      .get(app.id)
-      .map(_.finalTaskCount)
-      .getOrElse(taskTracker.countLaunchedAppTasksSync(app.id))
+    scaleTo - taskQueue.get(app.id).map(_.finalTaskCount).getOrElse(
+      taskTracker.countLaunchedAppTasksSync(app.id))
 
   override def initializeStart(): Unit = {
     if (nrToStart > 0)

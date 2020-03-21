@@ -129,10 +129,10 @@ class File(jfile: JFile)(implicit constructorCodec: Codec)
         classOf[Boolean])
       catch { case _: NoSuchMethodException => return false }
 
-    try method
-      .invoke(jfile, executable: JBoolean, ownerOnly: JBoolean)
-      .asInstanceOf[JBoolean]
-      .booleanValue
+    try method.invoke(
+      jfile,
+      executable: JBoolean,
+      ownerOnly: JBoolean).asInstanceOf[JBoolean].booleanValue
     catch { case _: Exception => false }
   }
 }

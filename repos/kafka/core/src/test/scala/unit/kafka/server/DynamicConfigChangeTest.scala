@@ -72,10 +72,8 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
     AdminUtils.changeClientIdConfig(zkUtils, clientId, props)
 
     TestUtils.retry(10000) {
-      val configHandler = this
-        .servers(0)
-        .dynamicConfigHandlers(ConfigType.Client)
-        .asInstanceOf[ClientIdConfigHandler]
+      val configHandler = this.servers(0).dynamicConfigHandlers(
+        ConfigType.Client).asInstanceOf[ClientIdConfigHandler]
       val quotaManagers: Map[Short, ClientQuotaManager] =
         servers(0).apis.quotaManagers
       val overrideProducerQuota =
@@ -117,8 +115,9 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
     val propertiesArgument = EasyMock.newCapture[Properties]
     val handler = EasyMock.createNiceMock(classOf[ConfigHandler])
     handler.processConfigChanges(
-      EasyMock
-        .and(EasyMock.capture(entityArgument), EasyMock.isA(classOf[String])),
+      EasyMock.and(
+        EasyMock.capture(entityArgument),
+        EasyMock.isA(classOf[String])),
       EasyMock.and(
         EasyMock.capture(propertiesArgument),
         EasyMock.isA(classOf[Properties]))

@@ -161,9 +161,7 @@ class ReliableKafkaStreamSuite
       partition: Int): Option[Long] = {
     val topicDirs = new ZKGroupTopicDirs(groupId, topic)
     val zkPath = s"${topicDirs.consumerOffsetDir}/$partition"
-    ZkUtils
-      .readDataMaybeNull(kafkaTestUtils.zookeeperClient, zkPath)
-      ._1
-      .map(_.toLong)
+    ZkUtils.readDataMaybeNull(kafkaTestUtils.zookeeperClient, zkPath)._1.map(
+      _.toLong)
   }
 }

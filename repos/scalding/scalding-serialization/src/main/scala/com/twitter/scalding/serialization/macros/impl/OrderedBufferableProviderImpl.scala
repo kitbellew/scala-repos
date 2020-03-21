@@ -51,8 +51,7 @@ object OrderedSerializationProviderImpl {
     val sealedTraitDispatcher =
       SealedTraitOrderedBuf.dispatch(c)(buildDispatcher)
 
-    OrderedSerializationProviderImpl
-      .normalizedDispatcher(c)(buildDispatcher)
+    OrderedSerializationProviderImpl.normalizedDispatcher(c)(buildDispatcher)
       .orElse(primitiveDispatcher)
       .orElse(unitDispatcher)
       .orElse(optionDispatcher)
@@ -76,14 +75,13 @@ object OrderedSerializationProviderImpl {
     def buildDispatcher: PartialFunction[c.Type, TreeOrderedBuf[c.type]] =
       OrderedSerializationProviderImpl.dispatcher(c)
 
-    scaldingBasicDispatchers(c)(buildDispatcher)
-      .orElse(fallbackImplicitDispatcher(c))
-      .orElse {
-        case tpe: Type =>
-          c.abort(
-            c.enclosingPosition,
-            s"""Unable to find OrderedSerialization for type ${tpe}""")
-      }
+    scaldingBasicDispatchers(c)(buildDispatcher).orElse(
+      fallbackImplicitDispatcher(c)).orElse {
+      case tpe: Type =>
+        c.abort(
+          c.enclosingPosition,
+          s"""Unable to find OrderedSerialization for type ${tpe}""")
+    }
   }
 
   def apply[T](c: Context)(implicit

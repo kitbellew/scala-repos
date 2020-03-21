@@ -56,26 +56,20 @@ class JDBCAccessKeys(
 
   def get(key: String): Option[AccessKey] =
     DB readOnly { implicit session =>
-      sql"SELECT accesskey, appid, events FROM $tableName WHERE accesskey = $key"
-        .map(resultToAccessKey)
-        .single()
-        .apply()
+      sql"SELECT accesskey, appid, events FROM $tableName WHERE accesskey = $key".map(
+        resultToAccessKey).single().apply()
     }
 
   def getAll(): Seq[AccessKey] =
     DB readOnly { implicit session =>
-      sql"SELECT accesskey, appid, events FROM $tableName"
-        .map(resultToAccessKey)
-        .list()
-        .apply()
+      sql"SELECT accesskey, appid, events FROM $tableName".map(
+        resultToAccessKey).list().apply()
     }
 
   def getByAppid(appid: Int): Seq[AccessKey] =
     DB readOnly { implicit session =>
-      sql"SELECT accesskey, appid, events FROM $tableName WHERE appid = $appid"
-        .map(resultToAccessKey)
-        .list()
-        .apply()
+      sql"SELECT accesskey, appid, events FROM $tableName WHERE appid = $appid".map(
+        resultToAccessKey).list().apply()
     }
 
   def update(accessKey: AccessKey): Unit =

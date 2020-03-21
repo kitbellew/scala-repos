@@ -243,8 +243,10 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     assert(Utils.splitCommandString("a \"b c\" d") === Seq("a", "b c", "d"))
     assert(Utils.splitCommandString("\"b c\"") === Seq("b c"))
     assert(
-      Utils
-        .splitCommandString("a 'b\" c' \"d' e\"") === Seq("a", "b\" c", "d' e"))
+      Utils.splitCommandString("a 'b\" c' \"d' e\"") === Seq(
+        "a",
+        "b\" c",
+        "d' e"))
     assert(Utils.splitCommandString("a\t'b\nc'\nd") === Seq("a", "b\nc", "d"))
     assert(Utils.splitCommandString("a \"b\\\\c\"") === Seq("a", "b\\c"))
     assert(Utils.splitCommandString("a \"b\\\"c\"") === Seq("a", "b\"c"))
@@ -472,8 +474,9 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
 
     // Test Windows paths
     assert(
-      Utils
-        .nonLocalPaths("C:/some/path.jar", testWindows = true) === Array.empty)
+      Utils.nonLocalPaths(
+        "C:/some/path.jar",
+        testWindows = true) === Array.empty)
     assert(
       Utils.nonLocalPaths(
         "file:/C:/some/path.jar",

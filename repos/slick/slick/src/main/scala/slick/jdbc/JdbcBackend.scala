@@ -397,8 +397,8 @@ trait JdbcBackend extends RelationalBackend {
         columnIndexes: Array[Int]): PreparedStatement = {
       if (JdbcBackend.statementLogger.isDebugEnabled)
         JdbcBackend.logStatement(
-          "Preparing insert statement (returning indexes: " + columnIndexes
-            .mkString(",") + ")",
+          "Preparing insert statement (returning indexes: " + columnIndexes.mkString(
+            ",") + ")",
           sql)
       val s = loggingPreparedStatement(
         decorateStatement(conn.prepareStatement(sql, columnIndexes)))

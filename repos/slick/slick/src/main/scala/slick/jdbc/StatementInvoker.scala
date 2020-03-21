@@ -21,8 +21,9 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
 
   def iteratorTo(maxRows: Int)(implicit
       session: JdbcBackend#Session): CloseableIterator[R] =
-    results(maxRows)
-      .fold(r => new CloseableIterator.Single[R](r.asInstanceOf[R]), identity)
+    results(maxRows).fold(
+      r => new CloseableIterator.Single[R](r.asInstanceOf[R]),
+      identity)
 
   /** Invoke the statement and return the raw results. */
   def results(
@@ -50,9 +51,8 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
           val meta = rs.getMetaData
           Vector(
             1.to(meta.getColumnCount).map(_.toString),
-            1.to(meta.getColumnCount)
-              .map(idx => meta.getColumnLabel(idx))
-              .to[ArrayBuffer]
+            1.to(meta.getColumnCount).map(idx => meta.getColumnLabel(idx)).to[
+              ArrayBuffer]
           )
         } else null
         val logBuffer =
@@ -62,9 +62,8 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
           def close() = {
             st.close()
             if (doLogResult) {
-              StatementInvoker
-                .tableDump(logHeader, logBuffer)
-                .foreach(s => StatementInvoker.resultLogger.debug(s))
+              StatementInvoker.tableDump(logHeader, logBuffer).foreach(s =>
+                StatementInvoker.resultLogger.debug(s))
               val rest = rowCount - logBuffer.length
               if (rest > 0)
                 StatementInvoker.resultLogger.debug(
@@ -76,10 +75,8 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
           def extractValue(pr: PositionedResult) = {
             if (doLogResult) {
               if (logBuffer.length < StatementInvoker.maxLogResults)
-                logBuffer += 1
-                  .to(logHeader(0).length)
-                  .map(idx => rs.getObject(idx): Any)
-                  .to[ArrayBuffer]
+                logBuffer += 1.to(logHeader(0).length).map(idx =>
+                  rs.getObject(idx): Any).to[ArrayBuffer]
               rowCount += 1
             }
             self.extractValue(pr)

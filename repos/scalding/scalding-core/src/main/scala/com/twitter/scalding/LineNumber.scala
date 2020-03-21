@@ -37,8 +37,7 @@ object LineNumber {
   private[this] def ignorePaths(
       classPrefixes: Set[String],
       stack: Seq[StackTraceElement]): Option[StackTraceElement] =
-    stack
-      .drop(2)
+    stack.drop(2)
       .dropWhile { ste =>
         classPrefixes.exists { prefix => ste.getClassName.startsWith(prefix) }
       }
@@ -75,7 +74,8 @@ object LineNumber {
       else None
 
     val scaldingJobCaller = headOption(
-      stack.iterator
+      stack
+        .iterator
         .filter { se => se.getClassName.startsWith(scaldingPrefix) }
         .filter { se =>
           val cls = Class.forName(se.getClassName)

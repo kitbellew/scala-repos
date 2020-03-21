@@ -15,8 +15,11 @@ trait Reifiers {
 
   def reifyTree(universe: Tree, mirror: Tree, tree: Tree): Tree = {
     assert(ExprClass != NoSymbol)
-    val result = scala.reflect.reify.`package`
-      .reifyTree(self.universe)(callsiteTyper, universe, mirror, tree)
+    val result = scala.reflect.reify.`package`.reifyTree(self.universe)(
+      callsiteTyper,
+      universe,
+      mirror,
+      tree)
     logFreeVars(enclosingPosition, result)
     result
   }
@@ -27,19 +30,25 @@ trait Reifiers {
       tpe: Type,
       concrete: Boolean = false): Tree = {
     assert(TypeTagsClass != NoSymbol)
-    val result = scala.reflect.reify.`package`
-      .reifyType(self.universe)(callsiteTyper, universe, mirror, tpe, concrete)
+    val result = scala.reflect.reify.`package`.reifyType(self.universe)(
+      callsiteTyper,
+      universe,
+      mirror,
+      tpe,
+      concrete)
     logFreeVars(enclosingPosition, result)
     result
   }
 
   def reifyRuntimeClass(tpe: Type, concrete: Boolean = true): Tree =
-    scala.reflect.reify.`package`
-      .reifyRuntimeClass(universe)(callsiteTyper, tpe, concrete = concrete)
+    scala.reflect.reify.`package`.reifyRuntimeClass(universe)(
+      callsiteTyper,
+      tpe,
+      concrete = concrete)
 
   def reifyEnclosingRuntimeClass: Tree =
-    scala.reflect.reify.`package`
-      .reifyEnclosingRuntimeClass(universe)(callsiteTyper)
+    scala.reflect.reify.`package`.reifyEnclosingRuntimeClass(universe)(
+      callsiteTyper)
 
   def unreifyTree(tree: Tree): Tree = {
     assert(ExprSplice != NoSymbol)

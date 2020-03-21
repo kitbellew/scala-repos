@@ -29,8 +29,8 @@ sealed trait FileEdit extends Ordered[FileEdit] {
   import scala.math.Ordered.orderingToOrdered
 
   def compare(that: FileEdit): Int =
-    (this.file, this.from, this.to, this.text)
-      .compare((that.file, that.from, that.to, that.text))
+    (this.file, this.from, this.to, this.text).compare(
+      (that.file, that.from, that.to, that.text))
 }
 
 case class TextEdit(file: File, from: Int, to: Int, text: String)

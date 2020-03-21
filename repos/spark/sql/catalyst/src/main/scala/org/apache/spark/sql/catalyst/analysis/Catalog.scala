@@ -159,9 +159,8 @@ trait OverrideCatalog extends Catalog {
 
         // If an alias was specified by the lookup, wrap the plan in a sub-query so that attributes
         // are properly qualified with this alias.
-        alias
-          .map(a => SubqueryAlias(a, tableWithQualifiers))
-          .getOrElse(tableWithQualifiers)
+        alias.map(a => SubqueryAlias(a, tableWithQualifiers)).getOrElse(
+          tableWithQualifiers)
 
       case None => super.lookupRelation(tableIdent, alias)
     }

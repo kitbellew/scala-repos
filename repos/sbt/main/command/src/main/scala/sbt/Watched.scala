@@ -89,8 +89,9 @@ object Watched {
 
     if (triggered) {
       printIfDefined(watched triggeredMessage newWatchState)
-      (ClearOnFailure :: next :: FailureWall :: repeat :: s)
-        .put(ContinuousState, newWatchState)
+      (ClearOnFailure :: next :: FailureWall :: repeat :: s).put(
+        ContinuousState,
+        newWatchState)
     } else {
       while (System.in.available() > 0) System.in.read()
       s.put(ContinuousState, WatchState.empty)

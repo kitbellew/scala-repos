@@ -20,8 +20,9 @@ object QaComment extends QaController {
             data =>
               api.comment.create(data, Left(q), me) map { comment =>
                 Redirect(
-                  routes.QaQuestion
-                    .show(q.id, q.slug) + "#comment-" + comment.id)
+                  routes.QaQuestion.show(
+                    q.id,
+                    q.slug) + "#comment-" + comment.id)
               }
           )
         }
@@ -39,8 +40,9 @@ object QaComment extends QaController {
               data =>
                 api.comment.create(data, Right(a), me) map { comment =>
                   Redirect(
-                    routes.QaQuestion
-                      .show(q.id, q.slug) + "#comment-" + comment.id)
+                    routes.QaQuestion.show(
+                      q.id,
+                      q.slug) + "#comment-" + comment.id)
                 }
             )
           case _ => notFound

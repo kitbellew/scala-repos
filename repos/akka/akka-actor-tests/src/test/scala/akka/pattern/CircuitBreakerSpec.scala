@@ -21,10 +21,8 @@ object CircuitBreakerSpec {
     val openLatch = new TestLatch(1)
     val closedLatch = new TestLatch(1)
     def apply(): CircuitBreaker = instance
-    instance
-      .onClose(closedLatch.countDown())
-      .onHalfOpen(halfOpenLatch.countDown())
-      .onOpen(openLatch.countDown())
+    instance.onClose(closedLatch.countDown()).onHalfOpen(
+      halfOpenLatch.countDown()).onOpen(openLatch.countDown())
   }
 
   def shortCallTimeoutCb()(implicit

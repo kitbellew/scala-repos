@@ -114,9 +114,8 @@ class ScalaMavenImporter
         val compilerClasspath =
           configuration.compilerClasspath.map(mavenProject.localPathTo)
 
-        val libraryModel = modelsProvider
-          .getModifiableLibraryModel(scalaLibrary)
-          .asInstanceOf[LibraryEx.ModifiableModelEx]
+        val libraryModel = modelsProvider.getModifiableLibraryModel(
+          scalaLibrary).asInstanceOf[LibraryEx.ModifiableModelEx]
         convertToScalaSdk(libraryModel, languageLevel, compilerClasspath)
       }
     }
@@ -185,15 +184,11 @@ private class ScalaConfiguration(project: MavenProject) {
     new MavenId("org.scala-lang", "scala-reflect", versionNumber)
 
   private def compilerPlugin: Option[MavenPlugin] =
-    project
-      .findPlugin("org.scala-tools", "maven-scala-plugin")
-      .toOption
-      .filter(!_.isDefault)
-      .orElse(
-        project
-          .findPlugin("net.alchim31.maven", "scala-maven-plugin")
-          .toOption
-          .filter(!_.isDefault))
+    project.findPlugin("org.scala-tools", "maven-scala-plugin").toOption.filter(
+      !_.isDefault).orElse(
+      project.findPlugin(
+        "net.alchim31.maven",
+        "scala-maven-plugin").toOption.filter(!_.isDefault))
 
   private def compilerConfigurations: Seq[Element] =
     compilerPlugin.toSeq.flatMap { plugin =>
@@ -210,10 +205,8 @@ private class ScalaConfiguration(project: MavenProject) {
   }
 
   def compilerVersion: Option[Version] =
-    element("scalaVersion")
-      .map(_.getTextTrim)
-      .orElse(standardLibrary.map(_.getVersion))
-      .map(Version(_))
+    element("scalaVersion").map(_.getTextTrim)
+      .orElse(standardLibrary.map(_.getVersion)).map(Version(_))
 
   private def usesReflect: Boolean =
     compilerVersion.exists(it => it.toLanguageLevel.exists(_ >= Scala_2_10))
@@ -224,12 +217,9 @@ private class ScalaConfiguration(project: MavenProject) {
 
   def plugins: Seq[MavenId] = {
     elements("compilerPlugins", "compilerPlugin").flatMap { plugin =>
-      plugin
-        .getChildTextTrim("groupId")
-        .toOption
+      plugin.getChildTextTrim("groupId").toOption
         .zip(plugin.getChildTextTrim("artifactId").toOption)
-        .zip(plugin.getChildTextTrim("version").toOption)
-        .map {
+        .zip(plugin.getChildTextTrim("version").toOption).map {
           case ((groupId, artifactId), version) =>
             new MavenId(groupId, artifactId, version)
         }

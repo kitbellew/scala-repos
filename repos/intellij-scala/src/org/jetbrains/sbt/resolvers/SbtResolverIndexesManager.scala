@@ -59,17 +59,15 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
 
     var indexesToUpdate = Seq.empty[SbtResolverIndex]
     updatingIndexes synchronized {
-      indexesToUpdate = resolvers
-        .filterNot(r => updatingIndexes.exists(r.root == _.root))
-        .map(add)
+      indexesToUpdate = resolvers.filterNot(r =>
+        updatingIndexes.exists(r.root == _.root)).map(add)
       updatingIndexes ++= indexesToUpdate
     }
 
     if (indexesToUpdate.isEmpty) return
 
-    ProgressManager
-      .getInstance()
-      .run(new Task.Backgroundable(null, "Indexing resolvers") {
+    ProgressManager.getInstance().run(
+      new Task.Backgroundable(null, "Indexing resolvers") {
         def run(progressIndicator: ProgressIndicator): Unit =
           indexesToUpdate.foreach {
             index =>

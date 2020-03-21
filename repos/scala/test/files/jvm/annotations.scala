@@ -129,8 +129,10 @@ object Test4 {
     def printSourceAnnotation(a: Annotation) {
       val ann = a.asInstanceOf[SourceAnnotation]
       println(
-        "@test.SourceAnnotation(mails=" + ann.mails.deep
-          .mkString("{", ",", "}") +
+        "@test.SourceAnnotation(mails=" + ann.mails.deep.mkString(
+          "{",
+          ",",
+          "}") +
           ", value=" + ann.value + ")")
     }
     def printSourceAnnotations(target: AnnotatedElement) {

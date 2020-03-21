@@ -31,14 +31,10 @@ class VectorClockPerfSpec extends WordSpec with Matchers {
   import VectorClock._
   import VectorClockPerfSpec._
 
-  val clockSize = sys.props
-    .get("akka.cluster.VectorClockPerfSpec.clockSize")
-    .getOrElse("1000")
-    .toInt
-  val iterations = sys.props
-    .get("akka.cluster.VectorClockPerfSpec.iterations")
-    .getOrElse("10000")
-    .toInt
+  val clockSize = sys.props.get(
+    "akka.cluster.VectorClockPerfSpec.clockSize").getOrElse("1000").toInt
+  val iterations = sys.props.get(
+    "akka.cluster.VectorClockPerfSpec.iterations").getOrElse("10000").toInt
 
   val (vcBefore, nodes) = createVectorClockOfSize(clockSize)
   val firstNode = nodes.head

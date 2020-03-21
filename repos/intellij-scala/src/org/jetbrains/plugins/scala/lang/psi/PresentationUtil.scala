@@ -29,9 +29,8 @@ object PresentationUtil {
         buffer.append("(")
         if (clause.isImplicit) buffer.append("implicit ")
         buffer.append(
-          clause.parameters
-            .map(presentationString(_, substitutor))
-            .mkString(", "))
+          clause.parameters.map(presentationString(_, substitutor)).mkString(
+            ", "))
         buffer.append(")")
         buffer.toString()
       case param: ScParameter =>
@@ -53,9 +52,10 @@ object PresentationUtil {
           ScType.create(tp, DecompilerUtil.obtainProject),
           substitutor)
       case tp: ScTypeParamClause =>
-        tp.typeParameters
-          .map(t => presentationString(t, substitutor))
-          .mkString("[", ", ", "]")
+        tp.typeParameters.map(t => presentationString(t, substitutor)).mkString(
+          "[",
+          ", ",
+          "]")
       case param: ScTypeParam =>
         var paramText = param.name
         if (param.isContravariant) paramText = "-" + paramText
@@ -86,9 +86,10 @@ object PresentationUtil {
         //todo: possibly add supers and extends?
         paramText
       case params: PsiParameterList =>
-        params.getParameters
-          .map(presentationString(_, substitutor))
-          .mkString("(", ", ", ")")
+        params.getParameters.map(presentationString(_, substitutor)).mkString(
+          "(",
+          ", ",
+          ")")
       case param: PsiParameter =>
         val buffer: StringBuilder = new StringBuilder("")
         val list = param.getModifierList
@@ -124,9 +125,8 @@ object PresentationUtil {
           case Some(tpc) => buffer.append(presentationString(tpc))
           case _         =>
         }
-        buffer
-          .append(presentationString(fun.paramClauses, substitutor))
-          .append(": ")
+        buffer.append(presentationString(fun.paramClauses, substitutor)).append(
+          ": ")
         buffer.append(presentationString(fun.returnType.getOrAny, substitutor))
         buffer.toString()
       case elem: PsiElement => elem.getText

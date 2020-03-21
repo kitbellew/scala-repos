@@ -40,8 +40,7 @@ private[spark] class PruneDependency[T](
 
   @transient
   val partitions: Array[Partition] = rdd.partitions
-    .filter(s => partitionFilterFunc(s.index))
-    .zipWithIndex
+    .filter(s => partitionFilterFunc(s.index)).zipWithIndex
     .map {
       case (split, idx) =>
         new PartitionPruningRDDPartition(idx, split): Partition
@@ -49,10 +48,8 @@ private[spark] class PruneDependency[T](
 
   override def getParents(partitionId: Int): List[Int] = {
     List(
-      partitions(partitionId)
-        .asInstanceOf[PartitionPruningRDDPartition]
-        .parentSplit
-        .index)
+      partitions(partitionId).asInstanceOf[
+        PartitionPruningRDDPartition].parentSplit.index)
   }
 }
 

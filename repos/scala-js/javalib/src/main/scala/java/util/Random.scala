@@ -36,8 +36,8 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
 
     @inline
     def rawToInt(x: Double): Int =
-      (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic])
-        .asInstanceOf[Int]
+      (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic]).asInstanceOf[
+        Int]
 
     @inline
     def _24msbOf(x: Double): Int = rawToInt(x / (1 << 24).toDouble)

@@ -23,9 +23,9 @@ object HelpersSpec extends Specification {
 
     "allow setting a custom id" in {
 
-      val body = inputText
-        .apply(Form(single("foo" -> Forms.text))("foo"), 'id -> "someid")
-        .body
+      val body = inputText.apply(
+        Form(single("foo" -> Forms.text))("foo"),
+        'id -> "someid").body
 
       val idAttr = "id=\"someid\""
       body must contain(idAttr)
@@ -36,15 +36,15 @@ object HelpersSpec extends Specification {
     }
 
     "default to a type of text" in {
-      inputText
-        .apply(Form(single("foo" -> Forms.text))("foo"))
-        .body must contain("type=\"text\"")
+      inputText.apply(
+        Form(single("foo" -> Forms.text))("foo")).body must contain(
+        "type=\"text\"")
     }
 
     "allow setting a custom type" in {
-      val body = inputText
-        .apply(Form(single("foo" -> Forms.text))("foo"), 'type -> "email")
-        .body
+      val body = inputText.apply(
+        Form(single("foo" -> Forms.text))("foo"),
+        'type -> "email").body
 
       val typeAttr = "type=\"email\""
       body must contain(typeAttr)
@@ -59,9 +59,9 @@ object HelpersSpec extends Specification {
     "allow to check more than one checkbox" in {
       val form =
         Form(single("hobbies" -> Forms.list(Forms.text))).fill(List("S", "B"))
-      val body = inputCheckboxGroup
-        .apply(form("hobbies"), Seq(("S", "Surfing"), ("B", "Biking")))
-        .body
+      val body = inputCheckboxGroup.apply(
+        form("hobbies"),
+        Seq(("S", "Surfing"), ("B", "Biking"))).body
 
       // Append [] to the name for the form binding
       body must contain("name=\"hobbies[]\"")
@@ -77,12 +77,10 @@ object HelpersSpec extends Specification {
 
     "allow setting a custom id" in {
 
-      val body = select
-        .apply(
-          Form(single("foo" -> Forms.text))("foo"),
-          Seq(("0", "test")),
-          'id -> "someid")
-        .body
+      val body = select.apply(
+        Form(single("foo" -> Forms.text))("foo"),
+        Seq(("0", "test")),
+        'id -> "someid").body
 
       val idAttr = "id=\"someid\""
       body must contain(idAttr)
@@ -95,12 +93,10 @@ object HelpersSpec extends Specification {
     "allow setting custom data attributes" in {
       import Implicits.toAttributePair
 
-      val body = select
-        .apply(
-          Form(single("foo" -> Forms.text))("foo"),
-          Seq(("0", "test")),
-          "data-test" -> "test")
-        .body
+      val body = select.apply(
+        Form(single("foo" -> Forms.text))("foo"),
+        Seq(("0", "test")),
+        "data-test" -> "test").body
 
       val dataTestAttr = "data-test=\"test\""
       body must contain(dataTestAttr)
@@ -125,12 +121,10 @@ object HelpersSpec extends Specification {
     "Work as a multiple select" in {
       val form =
         Form(single("foo" -> Forms.list(Forms.text))).fill(List("0", "1"))
-      val body = select
-        .apply(
-          form("foo"),
-          Seq(("0", "test"), ("1", "test")),
-          'multiple -> None)
-        .body
+      val body = select.apply(
+        form("foo"),
+        Seq(("0", "test"), ("1", "test")),
+        'multiple -> None).body
 
       // Append [] to the name for the form binding
       body must contain("name=\"foo[]\"")
@@ -143,12 +137,10 @@ object HelpersSpec extends Specification {
     "allow disabled options" in {
       val form =
         Form(single("foo" -> Forms.list(Forms.text))).fill(List("0", "1"))
-      val body = select
-        .apply(
-          form("foo"),
-          Seq("0" -> "test0", "1" -> "test1", "2" -> "test2"),
-          '_disabled -> Seq("0", "2"))
-        .body
+      val body = select.apply(
+        form("foo"),
+        Seq("0" -> "test0", "1" -> "test1", "2" -> "test2"),
+        '_disabled -> Seq("0", "2")).body
 
       body must contain("""<option value="0" disabled>test0</option>""")
       body must contain("""<option value="1">test1</option>""")
@@ -159,11 +151,9 @@ object HelpersSpec extends Specification {
   "@repeat" should {
     val form = Form(single("foo" -> Forms.seq(Forms.text)))
     def renderFoo(form: Form[_], min: Int = 1) =
-      repeat
-        .apply(form("foo"), min) { f =>
-          Html(f.name + ":" + f.value.getOrElse(""))
-        }
-        .map(_.toString)
+      repeat.apply(form("foo"), min) { f =>
+        Html(f.name + ":" + f.value.getOrElse(""))
+      }.map(_.toString)
 
     val complexForm = Form(
       single(
@@ -174,14 +164,12 @@ object HelpersSpec extends Specification {
               "b" -> Forms.text
             ))))
     def renderComplex(form: Form[_], min: Int = 1) =
-      repeat
-        .apply(form("foo"), min) { f =>
-          val a = f("a")
-          val b = f("b")
-          Html(
-            s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
-        }
-        .map(_.toString)
+      repeat.apply(form("foo"), min) { f =>
+        val a = f("a")
+        val b = f("b")
+        Html(
+          s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
+      }.map(_.toString)
 
     "render a sequence of fields" in {
       renderFoo(form.fill(Seq("a", "b", "c"))) must exactly(
@@ -234,11 +222,9 @@ object HelpersSpec extends Specification {
       implicit val lang = Lang("en-US")
 
       val roleForm = Form(single("role" -> Forms.text)).fill("foo")
-      val body = repeat
-        .apply(roleForm("bar"), min = 1) { roleField =>
-          select.apply(roleField, Seq("baz" -> "qux"), '_default -> "Role")
-        }
-        .mkString("")
+      val body = repeat.apply(roleForm("bar"), min = 1) { roleField =>
+        select.apply(roleField, Seq("baz" -> "qux"), '_default -> "Role")
+      }.mkString("")
 
       body must contain("""label for="bar_0">bar.0""")
     }

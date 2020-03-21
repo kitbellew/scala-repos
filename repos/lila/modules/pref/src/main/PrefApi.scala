@@ -99,12 +99,10 @@ final class PrefApi(coll: Coll, cacheTtl: Duration, bus: lila.common.Bus) {
   }
 
   def saveTag(user: User, name: String, value: String) =
-    coll
-      .update(
-        BSONDocument("_id" -> user.id),
-        BSONDocument("$set" -> BSONDocument(s"tags.$name" -> value)),
-        upsert = true)
-      .void >>- { cache remove user.id }
+    coll.update(
+      BSONDocument("_id" -> user.id),
+      BSONDocument("$set" -> BSONDocument(s"tags.$name" -> value)),
+      upsert = true).void >>- { cache remove user.id }
 
   def getPrefById(id: String): Fu[Pref] =
     cache(id) map (_ getOrElse Pref.create(id))
@@ -118,9 +116,9 @@ final class PrefApi(coll: Coll, cacheTtl: Duration, bus: lila.common.Bus) {
     getPref(userId) map pref
 
   def followable(userId: String): Fu[Boolean] =
-    coll
-      .find(BSONDocument("_id" -> userId), BSONDocument("follow" -> true))
-      .one[BSONDocument] map {
+    coll.find(
+      BSONDocument("_id" -> userId),
+      BSONDocument("follow" -> true)).one[BSONDocument] map {
       _ flatMap (_.getAs[Boolean]("follow")) getOrElse Pref.default.follow
     }
 

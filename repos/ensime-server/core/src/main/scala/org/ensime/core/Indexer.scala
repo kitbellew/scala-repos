@@ -31,12 +31,9 @@ class Indexer(
     )
 
   def oldSearchTypes(query: String, max: Int) =
-    index
-      .searchClasses(query, max)
-      .filterNot {
-        name => name.fqn.endsWith("$") || name.fqn.endsWith("$class")
-      }
-      .map(typeResult)
+    index.searchClasses(query, max).filterNot {
+      name => name.fqn.endsWith("$") || name.fqn.endsWith("$class")
+    }.map(typeResult)
 
   def oldSearchSymbols(terms: List[String], max: Int) =
     index.searchClassesMethods(terms, max).flatMap {

@@ -138,8 +138,10 @@ object ClusterSingletonManager {
       terminationMessage: Any,
       settings: ClusterSingletonManagerSettings): Props =
     Props(
-      new ClusterSingletonManager(singletonProps, terminationMessage, settings))
-      .withDeploy(Deploy.local)
+      new ClusterSingletonManager(
+        singletonProps,
+        terminationMessage,
+        settings)).withDeploy(Deploy.local)
 
   /**
     * INTERNAL API
@@ -324,8 +326,8 @@ object ClusterSingletonManager {
         case state: CurrentClusterState ⇒ handleInitial(state)
         case MemberUp(m) ⇒ add(m)
         case mEvent: MemberEvent
-            if (mEvent.isInstanceOf[MemberExited] || mEvent
-              .isInstanceOf[MemberRemoved]) ⇒
+            if (mEvent.isInstanceOf[MemberExited] || mEvent.isInstanceOf[
+              MemberRemoved]) ⇒
           remove(mEvent.member)
         case GetNext if changes.isEmpty ⇒
           context.become(deliverNext, discardOld = false)
@@ -346,8 +348,8 @@ object ClusterSingletonManager {
             context.unbecome()
           }
         case mEvent: MemberEvent
-            if (mEvent.isInstanceOf[MemberExited] || mEvent
-              .isInstanceOf[MemberRemoved]) ⇒
+            if (mEvent.isInstanceOf[MemberExited] || mEvent.isInstanceOf[
+              MemberRemoved]) ⇒
           remove(mEvent.member)
           if (changes.nonEmpty) {
             sendFirstChange()
@@ -440,8 +442,8 @@ class ClusterSingletonManager(
 
   val (maxHandOverRetries, maxTakeOverRetries) = {
     val n = (removalMargin.toMillis / handOverRetryInterval.toMillis).toInt
-    val minRetries = context.system.settings.config
-      .getInt("akka.cluster.singleton.min-number-of-hand-over-retries")
+    val minRetries = context.system.settings.config.getInt(
+      "akka.cluster.singleton.min-number-of-hand-over-retries")
     require(minRetries >= 1, "min-number-of-hand-over-retries must be >= 1")
     val handOverRetries = math.max(minRetries, n + 3)
     val takeOverRetries = math.max(1, handOverRetries - 3)
@@ -509,8 +511,8 @@ class ClusterSingletonManager(
   when(Start) {
     case Event(StartOldestChangedBuffer, _) ⇒
       oldestChangedBuffer = context.actorOf(
-        Props(classOf[OldestChangedBuffer], role)
-          .withDispatcher(context.props.dispatcher))
+        Props(classOf[OldestChangedBuffer], role).withDispatcher(
+          context.props.dispatcher))
       getNextOldestChanged()
       stay
 

@@ -63,13 +63,18 @@ object IntroduceVariableTestUtil {
       file: ScalaFile,
       startOffset: Int,
       endOffset: Int): ScalaVariableValidator = {
-    val (expr: ScExpression, _) = ScalaRefactoringUtil
-      .getExpression(project, editor, file, startOffset, endOffset)
-      .get
+    val (expr: ScExpression, _) = ScalaRefactoringUtil.getExpression(
+      project,
+      editor,
+      file,
+      startOffset,
+      endOffset).get
 
     val fileEncloser = ScalaRefactoringUtil.fileEncloser(startOffset, file)
-    val occurrences: Array[TextRange] = ScalaRefactoringUtil
-      .getOccurrenceRanges(ScalaRefactoringUtil.unparExpr(expr), fileEncloser)
+    val occurrences: Array[TextRange] =
+      ScalaRefactoringUtil.getOccurrenceRanges(
+        ScalaRefactoringUtil.unparExpr(expr),
+        fileEncloser)
 
     val container: PsiElement = ScalaRefactoringUtil.enclosingContainer(
       ScalaRefactoringUtil.commonParent(file, occurrences: _*))
@@ -90,9 +95,12 @@ object IntroduceVariableTestUtil {
       file: ScalaFile,
       startOffset: Int,
       endOffset: Int): ScalaTypeValidator = {
-    val typeElement = ScalaRefactoringUtil
-      .getTypeElement(project, editor, file, startOffset, endOffset)
-      .get
+    val typeElement = ScalaRefactoringUtil.getTypeElement(
+      project,
+      editor,
+      file,
+      startOffset,
+      endOffset).get
 
     val fileEncloser = ScalaRefactoringUtil.fileEncloser(startOffset, file)
     val occurrences =

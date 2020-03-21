@@ -65,11 +65,10 @@ class ColumnStatsSuite extends SparkFunSuite {
 
     test(s"$columnStatsName: empty") {
       val columnStats = columnStatsClass.newInstance()
-      columnStats.collectedStatistics.values
-        .zip(initialStatistics.values)
-        .foreach {
-          case (actual, expected) => assert(actual === expected)
-        }
+      columnStats.collectedStatistics.values.zip(
+        initialStatistics.values).foreach {
+        case (actual, expected) => assert(actual === expected)
+      }
     }
 
     test(s"$columnStatsName: non-empty") {
@@ -80,9 +79,8 @@ class ColumnStatsSuite extends SparkFunSuite {
         Seq.fill(10)(makeRandomRow(columnType)) ++ Seq.fill(10)(makeNullRow(1))
       rows.foreach(columnStats.gatherStats(_, 0))
 
-      val values = rows
-        .take(10)
-        .map(_.get(0, columnType.dataType).asInstanceOf[T#InternalType])
+      val values = rows.take(10).map(
+        _.get(0, columnType.dataType).asInstanceOf[T#InternalType])
       val ordering =
         columnType.dataType.ordering.asInstanceOf[Ordering[T#InternalType]]
       val stats = columnStats.collectedStatistics
@@ -107,11 +105,10 @@ class ColumnStatsSuite extends SparkFunSuite {
 
     test(s"$columnStatsName: empty") {
       val columnStats = new DecimalColumnStats(15, 10)
-      columnStats.collectedStatistics.values
-        .zip(initialStatistics.values)
-        .foreach {
-          case (actual, expected) => assert(actual === expected)
-        }
+      columnStats.collectedStatistics.values.zip(
+        initialStatistics.values).foreach {
+        case (actual, expected) => assert(actual === expected)
+      }
     }
 
     test(s"$columnStatsName: non-empty") {
@@ -122,9 +119,8 @@ class ColumnStatsSuite extends SparkFunSuite {
         Seq.fill(10)(makeRandomRow(columnType)) ++ Seq.fill(10)(makeNullRow(1))
       rows.foreach(columnStats.gatherStats(_, 0))
 
-      val values = rows
-        .take(10)
-        .map(_.get(0, columnType.dataType).asInstanceOf[T#InternalType])
+      val values = rows.take(10).map(
+        _.get(0, columnType.dataType).asInstanceOf[T#InternalType])
       val ordering =
         columnType.dataType.ordering.asInstanceOf[Ordering[T#InternalType]]
       val stats = columnStats.collectedStatistics

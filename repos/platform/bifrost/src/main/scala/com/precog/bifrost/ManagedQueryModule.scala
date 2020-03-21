@@ -123,18 +123,16 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
       timeout: Option[Duration])(implicit
       asyncContext: ExecutionContext): Future[JobQueryTFMonad] = {
     val start = System.currentTimeMillis
-    val futureJob = jobManager
-      .createJob(
-        apiKey,
-        "Quirrel Query",
-        "bifrost-query",
-        data,
-        Some(yggConfig.clock.now()))
-      .onComplete {
-        _ =>
-          logger.debug(
-            "Job created in %d ms".format(System.currentTimeMillis - start))
-      }
+    val futureJob = jobManager.createJob(
+      apiKey,
+      "Quirrel Query",
+      "bifrost-query",
+      data,
+      Some(yggConfig.clock.now())).onComplete {
+      _ =>
+        logger.debug(
+          "Job created in %d ms".format(System.currentTimeMillis - start))
+    }
     for {
       job <- futureJob map { job => Some(job) } recover { case _ => None }
       queryStateManager = job map { job =>
@@ -182,8 +180,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
           case Running(_, value) =>
             value
           case Cancelled =>
-            M.jobId map (jobManager
-              .abort(_, "Query was cancelled.", yggConfig.clock.now()))
+            M.jobId map (jobManager.abort(
+              _,
+              "Query was cancelled.",
+              yggConfig.clock.now()))
             throw QueryCancelledException(
               "Query was cancelled before it was completed.")
           case Expired =>
@@ -275,8 +275,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     def start(): Unit =
       lock.synchronized {
         if (poller.isEmpty) {
-          poller = Some(jobActorSystem.scheduler
-            .schedule(yggConfig.jobPollFrequency, yggConfig.jobPollFrequency) {
+          poller = Some(
+            jobActorSystem.scheduler.schedule(
+              yggConfig.jobPollFrequency,
+              yggConfig.jobPollFrequency) {
               poll()
             })
         }

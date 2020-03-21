@@ -10,6 +10,6 @@ object TestBuild extends Build {
       proj("b", "b")
     )
   def proj(id: String, dir: String) =
-    Project(id, file(dir), settings = Seq(name := id))
-      .settingSets(buildScalaFiles)
+    Project(id, file(dir), settings = Seq(name := id)).settingSets(
+      buildScalaFiles)
 }

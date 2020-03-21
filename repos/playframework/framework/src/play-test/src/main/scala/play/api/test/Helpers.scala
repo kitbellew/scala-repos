@@ -238,9 +238,9 @@ trait EssentialActionCaller {
     import play.api.http.HeaderNames._
     val newContentType =
       rh.headers.get(CONTENT_TYPE).fold(w.contentType)(_ => None)
-    val rhWithCt = newContentType
-      .map { ct => rh.copy(headers = rh.headers.replace(CONTENT_TYPE -> ct)) }
-      .getOrElse(rh)
+    val rhWithCt = newContentType.map { ct =>
+      rh.copy(headers = rh.headers.replace(CONTENT_TYPE -> ct))
+    }.getOrElse(rh)
 
     val requestBody = Source.single(w.transform(body))
     action(rhWithCt).run(requestBody)
@@ -336,11 +336,8 @@ trait ResultExtractors {
     */
   def contentType(of: Future[Result])(implicit
       timeout: Timeout): Option[String] = {
-    Await
-      .result(of, timeout.duration)
-      .body
-      .contentType
-      .map(_.split(";").take(1).mkString.trim)
+    Await.result(of, timeout.duration).body.contentType.map(
+      _.split(";").take(1).mkString.trim)
   }
 
   /**

@@ -159,10 +159,8 @@ private[round] final class Round(
     case HoldAlert(playerId, mean, sd, ip) =>
       handle(playerId) { pov =>
         !pov.player.hasHoldAlert ?? {
-          lila
-            .log("cheat")
-            .info(
-              s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov.game.turns} ${pov.player.userId | "anon"} mean: $mean SD: $sd")
+          lila.log("cheat").info(
+            s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov.game.turns} ${pov.player.userId | "anon"} mean: $mean SD: $sd")
           lila.mon.cheat.holdAlert()
           GameRepo.setHoldAlert(pov, mean, sd) inject List[Event]()
         }
@@ -202,9 +200,9 @@ private[round] final class Round(
       handle { game =>
         game.clock.filter(_ => game.playable) ?? { clock =>
           val freeSeconds = 15
-          val newClock = clock
-            .giveTime(Color.White, freeSeconds)
-            .giveTime(Color.Black, freeSeconds)
+          val newClock = clock.giveTime(Color.White, freeSeconds).giveTime(
+            Color.Black,
+            freeSeconds)
           val progress = (game withClock newClock) + Event.Clock(newClock)
           messenger.system(game, (_.untranslated("Lichess has been updated")))
           messenger.system(
@@ -240,8 +238,9 @@ private[round] final class Round(
       game,
       _.Outoftime,
       Some(!game.player.color) filterNot { color =>
-        game.toChess.board.variant
-          .insufficientWinningMaterial(game.toChess.situation.board, color)
+        game.toChess.board.variant.insufficientWinningMaterial(
+          game.toChess.situation.board,
+          color)
       })
 
   protected def handle[A](op: Game => Fu[Events]): Funit =
@@ -249,8 +248,8 @@ private[round] final class Round(
 
   protected def handle(playerId: String)(op: Pov => Fu[Events]): Funit =
     handlePov(
-      (GameRepo pov PlayerRef(gameId, playerId))
-        .mon(_.round.move.segment.fetch))(op)
+      (GameRepo pov PlayerRef(gameId, playerId)).mon(
+        _.round.move.segment.fetch))(op)
 
   protected def handle(color: Color)(op: Pov => Fu[Events]): Funit =
     handlePov(GameRepo pov PovRef(gameId, color))(op)

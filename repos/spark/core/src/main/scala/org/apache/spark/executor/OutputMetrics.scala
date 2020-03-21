@@ -44,12 +44,15 @@ class OutputMetrics private (
 
   private[executor] def this(accumMap: Map[String, Accumulator[_]]) {
     this(
-      TaskMetrics
-        .getAccum[Long](accumMap, InternalAccumulator.output.BYTES_WRITTEN),
-      TaskMetrics
-        .getAccum[Long](accumMap, InternalAccumulator.output.RECORDS_WRITTEN),
-      TaskMetrics
-        .getAccum[String](accumMap, InternalAccumulator.output.WRITE_METHOD))
+      TaskMetrics.getAccum[Long](
+        accumMap,
+        InternalAccumulator.output.BYTES_WRITTEN),
+      TaskMetrics.getAccum[Long](
+        accumMap,
+        InternalAccumulator.output.RECORDS_WRITTEN),
+      TaskMetrics.getAccum[String](
+        accumMap,
+        InternalAccumulator.output.WRITE_METHOD))
   }
 
   /**
@@ -61,10 +64,8 @@ class OutputMetrics private (
     */
   private[executor] def this() {
     this(
-      InternalAccumulator
-        .createOutputAccums()
-        .map { a => (a.name.get, a) }
-        .toMap[String, Accumulator[_]])
+      InternalAccumulator.createOutputAccums()
+        .map { a => (a.name.get, a) }.toMap[String, Accumulator[_]])
   }
 
   /**

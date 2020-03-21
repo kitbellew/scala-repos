@@ -224,9 +224,8 @@ class ClusterMetricsView(system: ExtendedActorSystem) extends Closeable {
             case _ ⇒
             // Ignore.
           }
-        })
-        .withDispatcher(Dispatchers.DefaultDispatcherId)
-        .withDeploy(Deploy.local),
+        }).withDispatcher(Dispatchers.DefaultDispatcherId).withDeploy(
+        Deploy.local),
       name = "metrics-event-bus-listener"
     )
   }

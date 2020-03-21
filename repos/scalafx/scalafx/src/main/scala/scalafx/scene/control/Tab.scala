@@ -109,8 +109,9 @@ class Tab(override val delegate: jfxsc.Tab = new jfxsc.Tab)
   def onCloseRequest: ObjectProperty[jfxe.EventHandler[jfxe.Event]] =
     delegate.onCloseRequestProperty()
   def onCloseRequest_=(v: jfxe.EventHandler[jfxe.Event]) {
-    ObjectProperty
-      .fillProperty[jfxe.EventHandler[jfxe.Event]](onCloseRequest, v)
+    ObjectProperty.fillProperty[jfxe.EventHandler[jfxe.Event]](
+      onCloseRequest,
+      v)
   }
 
   /**

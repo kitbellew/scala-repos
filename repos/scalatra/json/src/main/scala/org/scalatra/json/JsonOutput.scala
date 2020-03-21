@@ -70,8 +70,9 @@ trait JsonOutput[T] extends ApiFormats with JsonMethods[T] {
             status = 200
             if (rosettaFlashGuard) writer.write("/**/")
             writer.write(
-              "%s(%s);"
-                .format(some, compact(render(transformResponseBody(jv)))))
+              "%s(%s);".format(
+                some,
+                compact(render(transformResponseBody(jv)))))
           case _ =>
             contentType = formats("json")
             if (jsonVulnerabilityGuard) writer.write(VulnerabilityPrelude)

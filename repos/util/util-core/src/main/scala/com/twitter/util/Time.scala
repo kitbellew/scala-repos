@@ -523,8 +523,7 @@ class TimeFormat(
   /** Create a new TimeFormat with the default locale and timezone. **/
   def this(pattern: String) = this(pattern, None, TimeZone.getTimeZone("UTC"))
 
-  private[this] val format = locale
-    .map(TwitterDateFormat(pattern, _))
+  private[this] val format = locale.map(TwitterDateFormat(pattern, _))
     .getOrElse(TwitterDateFormat(pattern))
 
   format.setTimeZone(timezone)

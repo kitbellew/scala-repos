@@ -86,9 +86,9 @@ class ScalaFindUsagesHandlerFactory(project: Project)
     replacedElement match {
       case function: ScFunction if function.isLocal => Array(function)
       case named: ScNamedElement if !forHighlightUsages =>
-        val supers = RenameSuperMembersUtil
-          .allSuperMembers(named, withSelfType = true)
-          .filter(needToAsk)
+        val supers = RenameSuperMembersUtil.allSuperMembers(
+          named,
+          withSelfType = true).filter(needToAsk)
         if (supers.nonEmpty) chooseSuper(named.name, supers)
       case _ =>
     }

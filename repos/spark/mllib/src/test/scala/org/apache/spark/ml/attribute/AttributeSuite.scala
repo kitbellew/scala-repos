@@ -72,17 +72,12 @@ class AttributeSuite extends SparkFunSuite {
       .putString("name", "test")
       .build()
     assert(
-      attr
-        .toStructField(existingMetadata)
-        .metadata
-        .getString("name") === "test")
+      attr.toStructField(existingMetadata).metadata.getString(
+        "name") === "test")
 
     val attr2 =
-      attr.withoutName.withoutIndex
-        .withMin(0.0)
-        .withMax(1.0)
-        .withStd(0.5)
-        .withSparsity(0.3)
+      attr.withoutName.withoutIndex.withMin(0.0).withMax(1.0).withStd(
+        0.5).withSparsity(0.3)
     assert(attr2.name.isEmpty)
     assert(attr2.index.isEmpty)
     assert(attr2.min === Some(0.0))

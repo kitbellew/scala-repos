@@ -618,8 +618,9 @@ object Rational extends RationalInstances {
             val dgcd: Long = spire.math.gcd(d, (r.d % d).toLong)
             if (dgcd == 1L) {
               Rational(
-                spire.math
-                  .gcd(spire.math.abs(n), spire.math.abs((r.n % n).toLong)),
+                spire.math.gcd(
+                  spire.math.abs(n),
+                  spire.math.abs((r.n % n).toLong)),
                 SafeLong(d) * r.d)
             } else {
               val lm = d / dgcd

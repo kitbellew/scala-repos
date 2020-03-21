@@ -196,8 +196,11 @@ private[spark] class AppClient(
             memory: Int) =>
         val fullId = appId + "/" + id
         logInfo(
-          "Executor added: %s on %s (%s) with %d cores"
-            .format(fullId, workerId, hostPort, cores))
+          "Executor added: %s on %s (%s) with %d cores".format(
+            fullId,
+            workerId,
+            hostPort,
+            cores))
         listener.executorAdded(fullId, workerId, hostPort, cores, memory)
 
       case ExecutorUpdated(id, state, message, exitStatus) =>
@@ -333,8 +336,8 @@ private[spark] class AppClient(
     */
   def requestTotalExecutors(requestedTotal: Int): Boolean = {
     if (endpoint.get != null && appId.get != null) {
-      endpoint.get
-        .askWithRetry[Boolean](RequestExecutors(appId.get, requestedTotal))
+      endpoint.get.askWithRetry[Boolean](
+        RequestExecutors(appId.get, requestedTotal))
     } else {
       logWarning(
         "Attempted to request executors before driver fully initialized.")

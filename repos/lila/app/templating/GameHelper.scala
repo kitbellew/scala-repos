@@ -153,8 +153,8 @@ trait GameHelper {
           val content = playerUsername(player, withRating)
           val diff =
             (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
-          val mark = engine ?? s"""<span class="engine_mark" title="${trans
-            .thisPlayerUsesChessComputerAssistance()}"></span>"""
+          val mark =
+            engine ?? s"""<span class="engine_mark" title="${trans.thisPlayerUsesChessComputerAssistance()}"></span>"""
           val dataIcon = withOnline ?? """data-icon="r""""
           val space = if (withOnline) "&nbsp;" else ""
           val tag = if (link) "a" else "span"
@@ -271,19 +271,18 @@ trait GameHelper {
     Html {
       var isLive = pov.game.isBeingPlayed
       val variant = pov.game.variant.key
-      s"""<a href="%s%s" title="%s" class="mini_board mini_board_${pov.game.id} parse_fen is2d %s $variant" data-live="%s" data-color="%s" data-fen="%s" data-lastmove="%s"%s>$miniBoardContent</a>"""
-        .format(
-          blank ?? netBaseUrl,
-          tv.fold(
-            routes.Tv.index,
-            routes.Round.watcher(pov.game.id, pov.color.name)),
-          gameTitle(pov.game, pov.color),
-          isLive ?? ("live live_" + pov.game.id),
-          isLive ?? pov.game.id,
-          pov.color.name,
-          Forsyth exportBoard pov.game.toChess.board,
-          ~pov.game.castleLastMoveTime.lastMoveString,
-          blank ?? """ target="_blank""""
-        )
+      s"""<a href="%s%s" title="%s" class="mini_board mini_board_${pov.game.id} parse_fen is2d %s $variant" data-live="%s" data-color="%s" data-fen="%s" data-lastmove="%s"%s>$miniBoardContent</a>""".format(
+        blank ?? netBaseUrl,
+        tv.fold(
+          routes.Tv.index,
+          routes.Round.watcher(pov.game.id, pov.color.name)),
+        gameTitle(pov.game, pov.color),
+        isLive ?? ("live live_" + pov.game.id),
+        isLive ?? pov.game.id,
+        pov.color.name,
+        Forsyth exportBoard pov.game.toChess.board,
+        ~pov.game.castleLastMoveTime.lastMoveString,
+        blank ?? """ target="_blank""""
+      )
     }
 }

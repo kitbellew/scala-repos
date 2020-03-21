@@ -39,8 +39,10 @@ private[akka] class ProtobufEncoder extends OneToOneEncoder {
     msg match {
       case m: Message ⇒
         val bytes = m.toByteArray()
-        ctx.getChannel.getConfig.getBufferFactory
-          .getBuffer(bytes, 0, bytes.length)
+        ctx.getChannel.getConfig.getBufferFactory.getBuffer(
+          bytes,
+          0,
+          bytes.length)
       case other ⇒ other
     }
 }
@@ -78,11 +80,11 @@ private[akka] class TestConductorPipelineFactory(
       new ProtobufEncoder,
       new ProtobufDecoder(TestConductorProtocol.Wrapper.getDefaultInstance))
     val msg = List(new MsgEncoder, new MsgDecoder)
-    (encap ::: proto ::: msg ::: handler :: Nil)
-      .foldLeft(new DefaultChannelPipeline) {
-        (pipe, handler) ⇒
-          pipe.addLast(Logging.simpleName(handler.getClass), handler); pipe
-      }
+    (encap ::: proto ::: msg ::: handler :: Nil).foldLeft(
+      new DefaultChannelPipeline) {
+      (pipe, handler) ⇒
+        pipe.addLast(Logging.simpleName(handler.getClass), handler); pipe
+    }
   }
 }
 

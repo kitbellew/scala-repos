@@ -228,8 +228,9 @@ class Word2VecModel private[ml] (
     val sc = SparkContext.getOrCreate()
     val sqlContext = SQLContext.getOrCreate(sc)
     import sqlContext.implicits._
-    sc.parallelize(wordVectors.findSynonyms(word, num))
-      .toDF("word", "similarity")
+    sc.parallelize(wordVectors.findSynonyms(word, num)).toDF(
+      "word",
+      "similarity")
   }
 
   /** @group setParam */
@@ -293,11 +294,8 @@ object Word2VecModel extends MLReadable[Word2VecModel] {
         instance.wordVectors.wordIndex,
         instance.wordVectors.wordVectors.toSeq)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -308,8 +306,7 @@ object Word2VecModel extends MLReadable[Word2VecModel] {
     override def load(path: String): Word2VecModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
+      val data = sqlContext.read.parquet(dataPath)
         .select("wordIndex", "wordVectors")
         .head()
       val wordIndex = data.getAs[Map[String, Int]](0)

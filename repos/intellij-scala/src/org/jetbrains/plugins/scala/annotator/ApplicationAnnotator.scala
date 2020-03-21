@@ -179,8 +179,8 @@ trait ApplicationAnnotator {
               case _ =>
                 r.problems.foreach {
                   case MissedParametersClause(clause)
-                      if !reference
-                        .isInstanceOf[ScInterpolatedPrefixReference] =>
+                      if !reference.isInstanceOf[
+                        ScInterpolatedPrefixReference] =>
                     holder.createErrorAnnotation(
                       reference,
                       "Missing arguments for method " + nameOf(f))
@@ -360,9 +360,8 @@ trait ApplicationAnnotator {
       }
       parenthesise(parts)
     }
-    paramClauses.clauses
-      .map(clause => formatParams(clause.parameters, clause.paramTypes))
-      .mkString
+    paramClauses.clauses.map(clause =>
+      formatParams(clause.parameters, clause.paramTypes)).mkString
   }
 
   private def formatJavaParams(parameters: Seq[PsiParameter]): String = {

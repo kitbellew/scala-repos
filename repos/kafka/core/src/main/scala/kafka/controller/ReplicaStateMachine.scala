@@ -72,8 +72,7 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     handleStateChanges(controllerContext.allLiveReplicas(), OnlineReplica)
 
     info(
-      "Started replica state machine with initial state -> " + replicaState
-        .toString())
+      "Started replica state machine with initial state -> " + replicaState.toString())
   }
 
   // register ZK listeners of the replica state machine
@@ -114,8 +113,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
       callbacks: Callbacks = (new CallbackBuilder).build) {
     if (replicas.size > 0) {
       info(
-        "Invoking state change to %s for replicas %s"
-          .format(targetState, replicas.mkString(",")))
+        "Invoking state change to %s for replicas %s".format(
+          targetState,
+          replicas.mkString(",")))
       try {
         brokerRequestBatch.newBatch()
         replicas.foreach(r => handleStateChange(r, targetState, callbacks))
@@ -194,8 +194,11 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
             List(NonExistentReplica),
             targetState)
           // start replica as a follower to the current leader for its partition
-          val leaderIsrAndControllerEpochOpt = ReplicationUtils
-            .getLeaderIsrAndEpochForPartition(zkUtils, topic, partition)
+          val leaderIsrAndControllerEpochOpt =
+            ReplicationUtils.getLeaderIsrAndEpochForPartition(
+              zkUtils,
+              topic,
+              partition)
           leaderIsrAndControllerEpochOpt match {
             case Some(leaderIsrAndControllerEpoch) =>
               if (leaderIsrAndControllerEpoch.leaderAndIsr.leader == replicaId)
@@ -310,8 +313,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
               val currentAssignedReplicas =
                 controllerContext.partitionReplicaAssignment(topicAndPartition)
               if (!currentAssignedReplicas.contains(replicaId))
-                controllerContext.partitionReplicaAssignment
-                  .put(topicAndPartition, currentAssignedReplicas :+ replicaId)
+                controllerContext.partitionReplicaAssignment.put(
+                  topicAndPartition,
+                  currentAssignedReplicas :+ replicaId)
               stateChangeLogger.trace(
                 "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
                   .format(
@@ -402,8 +406,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
               case None =>
                 true
             }
-          if (leaderAndIsrIsEmpty && !controller.deleteTopicManager
-                .isPartitionToBeDeleted(topicAndPartition))
+          if (leaderAndIsrIsEmpty && !controller.deleteTopicManager.isPartitionToBeDeleted(
+                topicAndPartition))
             throw new StateChangeFailedException(
               "Failed to change state of replica %d for partition %s since the leader and isr path in zookeeper is empty"
                 .format(replicaId, topicAndPartition))
@@ -430,8 +434,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     val replicaStatesForTopic =
       replicasForTopic.map(r => (r, replicaState(r))).toMap
     debug(
-      "Are all replicas for topic %s deleted %s"
-        .format(topic, replicaStatesForTopic))
+      "Are all replicas for topic %s deleted %s".format(
+        topic,
+        replicaStatesForTopic))
     replicaStatesForTopic.forall(_._2 == ReplicaDeletionSuccessful)
   }
 
@@ -458,9 +463,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
       ReplicaDeletionStarted,
       ReplicaDeletionSuccessful,
       ReplicaDeletionIneligible)
-    replicaState
-      .filter(r => r._1.topic.equals(topic) && deletionStates.contains(r._2))
-      .keySet
+    replicaState.filter(r =>
+      r._1.topic.equals(topic) && deletionStates.contains(r._2)).keySet
   }
 
   private def assertValidPreviousStates(
@@ -476,13 +480,15 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
   }
 
   private def registerBrokerChangeListener() = {
-    zkUtils.zkClient
-      .subscribeChildChanges(ZkUtils.BrokerIdsPath, brokerChangeListener)
+    zkUtils.zkClient.subscribeChildChanges(
+      ZkUtils.BrokerIdsPath,
+      brokerChangeListener)
   }
 
   private def deregisterBrokerChangeListener() = {
-    zkUtils.zkClient
-      .unsubscribeChildChanges(ZkUtils.BrokerIdsPath, brokerChangeListener)
+    zkUtils.zkClient.unsubscribeChildChanges(
+      ZkUtils.BrokerIdsPath,
+      brokerChangeListener)
   }
 
   /**
@@ -513,10 +519,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
   def partitionsAssignedToBroker(
       topics: Seq[String],
       brokerId: Int): Seq[TopicAndPartition] = {
-    controllerContext.partitionReplicaAssignment
-      .filter(_._2.contains(brokerId))
-      .keySet
-      .toSeq
+    controllerContext.partitionReplicaAssignment.filter(
+      _._2.contains(brokerId)).keySet.toSeq
   }
 
   /**
@@ -529,16 +533,15 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
         parentPath: String,
         currentBrokerList: java.util.List[String]) {
       info(
-        "Broker change listener fired for path %s with children %s"
-          .format(parentPath, currentBrokerList.sorted.mkString(",")))
+        "Broker change listener fired for path %s with children %s".format(
+          parentPath,
+          currentBrokerList.sorted.mkString(",")))
       inLock(controllerContext.controllerLock) {
         if (hasStarted.get) {
           ControllerStats.leaderElectionTimer.time {
             try {
-              val curBrokers = currentBrokerList
-                .map(_.toInt)
-                .toSet
-                .flatMap(zkUtils.getBrokerInfo)
+              val curBrokers = currentBrokerList.map(_.toInt).toSet.flatMap(
+                zkUtils.getBrokerInfo)
               val curBrokerIds = curBrokers.map(_.id)
               val liveOrShuttingDownBrokerIds =
                 controllerContext.liveOrShuttingDownBrokerIds

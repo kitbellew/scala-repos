@@ -40,11 +40,9 @@ trait CheckAnalysis {
   }
 
   protected def containsMultipleGenerators(exprs: Seq[Expression]): Boolean = {
-    exprs
-      .flatMap(_.collect {
-        case e: Generator => e
-      })
-      .length > 1
+    exprs.flatMap(_.collect {
+      case e: Generator => e
+    }).length > 1
   }
 
   def checkAnalysis(plan: LogicalPlan): Unit = {
@@ -138,9 +136,8 @@ trait CheckAnalysis {
             def checkValidJoinConditionExprs(expr: Expression): Unit =
               expr match {
                 case p: Predicate =>
-                  p.asInstanceOf[Expression]
-                    .children
-                    .foreach(checkValidJoinConditionExprs)
+                  p.asInstanceOf[Expression].children.foreach(
+                    checkValidJoinConditionExprs)
                 case e if e.dataType.isInstanceOf[BinaryType] =>
                   failAnalysis(
                     s"binary type expression ${e.sql} cannot be used " +
@@ -226,9 +223,8 @@ trait CheckAnalysis {
           case s: Union
               if s.children.exists(
                 _.output.length != s.children.head.output.length) =>
-            val firstError = s.children
-              .find(_.output.length != s.children.head.output.length)
-              .get
+            val firstError = s.children.find(
+              _.output.length != s.children.head.output.length).get
             failAnalysis(s"""
                 |Unions can only be performed on tables with the same number of columns,
                 | but one table has '${firstError.output.length}' columns and another table has

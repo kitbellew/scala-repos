@@ -77,14 +77,17 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
 
     if (isInDocComment(element)) { //we don't have to check offset >= 3 because "/**" is already has 3 characters
       myTask = getScaladocTask(text, offset)
-    } else if (c == ' ' && offset >= 6 && offset < text.length && text
-                 .substring(offset - 6, offset) == " case ") {
+    } else if (c == ' ' && offset >= 6 && offset < text.length && text.substring(
+                 offset - 6,
+                 offset) == " case ") {
       myTask = indentCase(file)
-    } else if (c == ' ' && offset >= 6 && offset < text.length && text
-                 .substring(offset - 6, offset) == " else ") {
+    } else if (c == ' ' && offset >= 6 && offset < text.length && text.substring(
+                 offset - 6,
+                 offset) == " else ") {
       myTask = indentElse(file)
-    } else if (c == '{' && offset >= 2 && offset < text.length && text
-                 .substring(offset - 2, offset) == " {") {
+    } else if (c == '{' && offset >= 2 && offset < text.length && text.substring(
+                 offset - 2,
+                 offset) == " {") {
       myTask = indentValBraceStyle(file)
     } else if (isInPlace(element, classOf[ScXmlExpr], classOf[ScXmlPattern])) {
       chooseXmlTask(withAttr = true)
@@ -97,9 +100,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       chooseXmlTask(withAttr = false)
     } else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
       val ltIndex = element.getPrevSibling.getText.indexOf("<")
-      if (ltIndex > "case ".length - 1 && element.getPrevSibling.getText
-            .substring(0, ltIndex)
-            .trim() == "case") {
+      if (ltIndex > "case ".length - 1 && element.getPrevSibling.getText.substring(
+            0,
+            ltIndex).trim() == "case") {
         chooseXmlTask(withAttr = false)
       }
     } else if (c == '{' && (element.getParent match {
@@ -118,15 +121,13 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     } else if (offset > 1) {
       val prevPositionElement = file.findElementAt(offset - 2)
       if (ScalaPsiUtil.isLineTerminator(prevPositionElement)) {
-        prevPositionElement
-          .getPrevSiblingCondition(_.getTextLength != 0)
-          .foreach(_.getNode.getElementType match {
-            case ScalaTokenTypes.tDOT   => myTask = indentRefExprDot(file)
-            case ScalaTokenTypes.tCOMMA => myTask = indentParametersComma(file)
-            case ScalaTokenTypes.tASSIGN =>
-              myTask = indentDefinitionAssign(file)
-            case _ =>
-          })
+        prevPositionElement.getPrevSiblingCondition(
+          _.getTextLength != 0).foreach(_.getNode.getElementType match {
+          case ScalaTokenTypes.tDOT    => myTask = indentRefExprDot(file)
+          case ScalaTokenTypes.tCOMMA  => myTask = indentParametersComma(file)
+          case ScalaTokenTypes.tASSIGN => myTask = indentDefinitionAssign(file)
+          case _                       =>
+        })
       }
     }
 
@@ -170,8 +171,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           ScalaTokenTypes.tMULTILINE_STRING,
           ScalaTokenTypes.tINTERPOLATED_STRING_END).contains(elementType) &&
         element.getTextOffset + element.getTextLength - offset < 4) ||
-        isInDocComment(element) && (elementType
-          .isInstanceOf[ScaladocSyntaxElementType] ||
+        isInDocComment(element) && (elementType.isInstanceOf[
+          ScaladocSyntaxElementType] ||
         elementType == ScalaDocTokenType.DOC_INNER_CLOSE_CODE_TAG) &&
         element.getParent.getLastChild == element && element.getText.startsWith(
           "" + c) &&
@@ -193,9 +194,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     } else if (c == '>' && settings.REPLACE_CASE_ARROW_WITH_UNICODE_CHAR && prevElement != null &&
                prevElement.getNode.getElementType == ScalaTokenTypes.tFUNTYPE) {
       return Result.STOP
-    } else if (c == '"' && prevElement != null && ScalaApplicationSettings
-                 .getInstance()
-                 .INSERT_MULTILINE_QUOTES) {
+    } else if (c == '"' && prevElement != null && ScalaApplicationSettings.getInstance().INSERT_MULTILINE_QUOTES) {
       val prevType = prevElement.getNode.getElementType
 
       if (elementType != ScalaTokenTypes.tSTRING && prevType == ScalaTokenTypes.tSTRING &&
@@ -208,11 +207,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       }
     } else if (c == '.' && ScalaPsiUtil.isLineTerminator(prevElement)) {
       //hacky way to introduce indent without calling formatter; this is better then turning formatting model into a mess
-      val indent = CodeStyleSettingsManager
-        .getSettings(project)
-        .getCommonSettings(ScalaLanguage.Instance)
-        .getIndentOptions
-        .CONTINUATION_INDENT_SIZE
+      val indent =
+        CodeStyleSettingsManager.getSettings(project).getCommonSettings(
+          ScalaLanguage.Instance).getIndentOptions.CONTINUATION_INDENT_SIZE
       val indentString = (for (i <- 1 to indent) yield " ").foldLeft("")(_ + _)
       extensions.inWriteAction {
         val document = editor.getDocument
@@ -245,8 +242,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    if (element.getNode.getElementType
-          .isInstanceOf[ScaladocSyntaxElementType] || tagToInsert == "}}}") {
+    if (element.getNode.getElementType.isInstanceOf[
+          ScaladocSyntaxElementType] || tagToInsert == "}}}") {
       insertAndCommit(offset, tagToInsert, document, project)
     }
   }
@@ -256,8 +253,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    if (element.getNode.getElementType
-          .isInstanceOf[ScaladocSyntaxElementType]) {
+    if (element.getNode.getElementType.isInstanceOf[
+          ScaladocSyntaxElementType]) {
       insertAndCommit(offset, "'", document, project)
     }
   }
@@ -274,9 +271,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     }
 
     def check(tag: ScXmlStartTag) {
-      if (Option(tag.getClosingTag)
-            .map(_.getTagName != tag.getTagName)
-            .getOrElse(true))
+      if (Option(tag.getClosingTag).map(
+            _.getTagName != tag.getTagName).getOrElse(true))
         doInsert(tag)
     }
 
@@ -304,8 +300,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes._
 
     if (element.getNode.getElementType == tLBRACE &&
-        Option(element.getParent.getPrevSibling)
-          .exists(_.getNode.getElementType == tINTERPOLATED_STRING_INJECTION) &&
+        Option(element.getParent.getPrevSibling).exists(
+          _.getNode.getElementType == tINTERPOLATED_STRING_INJECTION) &&
         (element.getNextSibling == null || element.getNextSibling.getNode.getElementType != tRBRACE)) {
       insertAndCommit(offset, "}", document, project)
     }
@@ -382,8 +378,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       element,
       offset,
       elem =>
-        elem.getNode.getElementType == ScalaTokenTypes.kCASE && elem.getParent
-          .isInstanceOf[ScCaseClause])
+        elem.getNode.getElementType == ScalaTokenTypes.kCASE && elem.getParent.isInstanceOf[
+          ScCaseClause])
   }
 
   private def indentElse(file: PsiFile)(
@@ -397,8 +393,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       element,
       offset,
       elem =>
-        elem.getNode.getElementType == ScalaTokenTypes.kELSE && elem.getParent
-          .isInstanceOf[ScIfStmt])
+        elem.getNode.getElementType == ScalaTokenTypes.kELSE && elem.getParent.isInstanceOf[
+          ScIfStmt])
   }
 
   private def indentRefExprDot(file: PsiFile)(
@@ -482,9 +478,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       if (prevCondition(anotherElement)) {
         extensions.inWriteAction {
           PsiDocumentManager.getInstance(project).commitDocument(document)
-          CodeStyleManager
-            .getInstance(project)
-            .adjustLineIndent(file, anotherElement.getTextRange)
+          CodeStyleManager.getInstance(project).adjustLineIndent(
+            file,
+            anotherElement.getTextRange)
         }
       }
     }
@@ -544,14 +540,12 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       file: PsiFile,
       editor: Editor,
       project: Project): Unit = {
-    AutoPopupController
-      .getInstance(project)
-      .scheduleAutoPopup(
-        editor,
-        new Condition[PsiFile] {
-          def value(t: PsiFile): Boolean = t == file
-        }
-      )
+    AutoPopupController.getInstance(project).scheduleAutoPopup(
+      editor,
+      new Condition[PsiFile] {
+        def value(t: PsiFile): Boolean = t == file
+      }
+    )
   }
 
   private def startAutopopupCompletionInInterpolatedString(
@@ -592,15 +586,13 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
               if (l.getText.filter(_ == '$').length == 1 && file.getText.charAt(
                     offset - 2) == '$') {
                 extensions.inWriteAction {
-                  if (file.getText.charAt(offset) != '}' && CodeInsightSettings
-                        .getInstance()
-                        .AUTOINSERT_PAIR_BRACKET) {
+                  if (file.getText.charAt(
+                        offset) != '}' && CodeInsightSettings.getInstance().AUTOINSERT_PAIR_BRACKET) {
                     document.insertString(offset, "}")
                   }
                   document.insertString(l.getTextRange.getStartOffset, "s")
-                  PsiDocumentManager
-                    .getInstance(project)
-                    .commitDocument(document)
+                  PsiDocumentManager.getInstance(project).commitDocument(
+                    document)
                 }
               }
             case _ =>
@@ -616,8 +608,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       element: PsiElement,
       offset: Int) {
     if (element != null && element.getNode.getElementType == ScalaXmlTokenTypes.XML_DATA_CHARACTERS && element.getText == "/" &&
-        element.getPrevSibling != null && element.getPrevSibling
-          .isInstanceOf[ScXmlStartTag]) {
+        element.getPrevSibling != null && element.getPrevSibling.isInstanceOf[
+          ScXmlStartTag]) {
       val xmlLexer = new PatchedXmlLexer
       xmlLexer.start(element.getPrevSibling.getText + "/>")
       xmlLexer.advance()

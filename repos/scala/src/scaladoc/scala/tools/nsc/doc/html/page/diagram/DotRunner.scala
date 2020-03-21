@@ -152,8 +152,9 @@ class DotProcess(settings: doc.Settings) {
         settings.printMsg(errorBuffer.toString)
         settings.printMsg("  Cleanup: Last template: " + templateName)
         settings.printMsg(
-          "  Cleanup: Last dot input: \n    " + templateInput
-            .replaceAll("\n", "\n    ") + "\n")
+          "  Cleanup: Last dot input: \n    " + templateInput.replaceAll(
+            "\n",
+            "\n    ") + "\n")
         settings.printMsg(
           "  Cleanup: Dot path: " + settings.docDiagramsDotPath.value)
         if (process != null)

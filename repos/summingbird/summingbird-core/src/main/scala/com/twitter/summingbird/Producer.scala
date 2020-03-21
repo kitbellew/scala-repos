@@ -352,8 +352,7 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
   def leftJoin[RightV](
       stream: KeyedProducer[P, K, RightV],
       buffer: P#Buffer[K, RightV]): KeyedProducer[P, K, (V, Option[RightV])] =
-    stream
-      .write(buffer)
+    stream.write(buffer)
       .also(leftJoin(buffer))
 
   /**

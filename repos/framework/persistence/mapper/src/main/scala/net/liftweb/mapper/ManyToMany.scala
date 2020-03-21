@@ -221,11 +221,12 @@ trait ManyToMany extends BaseKeyedMapper {
         otherFK(join)(f => f.get != f.defaultValue)
       }
       _joins foreach {
-        thisField
-          .actualField(_)
-          .asInstanceOf[MappedForeignKey[K, O, X] forSome {
-            type X <: KeyedMapper[K, X]
-          }] set ManyToMany.this.primaryKeyField.get.asInstanceOf[K]
+        thisField.actualField(_).asInstanceOf[MappedForeignKey[
+          K,
+          O,
+          X] forSome {
+          type X <: KeyedMapper[K, X]
+        }] set ManyToMany.this.primaryKeyField.get.asInstanceOf[K]
       }
 
       removedJoins.forall {

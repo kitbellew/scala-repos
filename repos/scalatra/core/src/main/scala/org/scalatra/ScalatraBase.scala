@@ -61,9 +61,8 @@ object ScalatraBase {
 
   def callbacks(implicit
       request: HttpServletRequest): List[(Try[Any]) => Unit] =
-    request
-      .getOrElse(Callbacks, List.empty[Try[Any] => Unit])
-      .asInstanceOf[List[Try[Any] => Unit]]
+    request.getOrElse(Callbacks, List.empty[Try[Any] => Unit]).asInstanceOf[
+      List[Try[Any] => Unit]]
 
   def addCallback(callback: Try[Any] => Unit)(implicit
       request: HttpServletRequest): Unit = {
@@ -77,9 +76,9 @@ object ScalatraBase {
 
   def renderCallbacks(implicit
       request: HttpServletRequest): List[(Try[Any]) => Unit] = {
-    request
-      .getOrElse(RenderCallbacks, List.empty[Try[Any] => Unit])
-      .asInstanceOf[List[Try[Any] => Unit]]
+    request.getOrElse(
+      RenderCallbacks,
+      List.empty[Try[Any] => Unit]).asInstanceOf[List[Try[Any] => Unit]]
   }
 
   def addRenderCallback(callback: Try[Any] => Unit)(implicit
@@ -434,12 +433,9 @@ trait ScalatraBase
     case is: java.io.InputStream => MimeTypes(is)
     case file: File              => MimeTypes(file)
     case actionResult: ActionResult =>
-      actionResult.headers
-        .find {
-          case (name, value) => name equalsIgnoreCase "CONTENT-TYPE"
-        }
-        .getOrElse(("Content-Type", contentTypeInferrer(actionResult.body)))
-        ._2
+      actionResult.headers.find {
+        case (name, value) => name equalsIgnoreCase "CONTENT-TYPE"
+      }.getOrElse(("Content-Type", contentTypeInferrer(actionResult.body)))._2
     //    case Unit | _: Unit => null
     case _ => "text/html"
   }
@@ -781,10 +777,8 @@ trait ScalatraBase
 
   protected def needsHttps: Boolean = {
     allCatch.withApply(_ => false) {
-      servletContext
-        .getInitParameter(ForceHttpsKey)
-        .blankOption
-        .map(_.toBoolean) getOrElse false
+      servletContext.getInitParameter(ForceHttpsKey).blankOption.map(
+        _.toBoolean) getOrElse false
     }
   }
 
@@ -846,9 +840,8 @@ trait ScalatraBase
   }
 
   def serverPort(implicit request: HttpServletRequest): Int = {
-    initParameter(PortKey)
-      .flatMap(_.blankOption)
-      .map(_.toInt) getOrElse request.getServerPort
+    initParameter(PortKey).flatMap(_.blankOption).map(
+      _.toInt) getOrElse request.getServerPort
   }
 
   protected def contextPath: String = servletContext.contextPath

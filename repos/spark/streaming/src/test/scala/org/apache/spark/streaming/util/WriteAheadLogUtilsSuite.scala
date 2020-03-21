@@ -93,8 +93,9 @@ class WriteAheadLogUtilsSuite extends SparkFunSuite {
 
   test("wrap WriteAheadLog in BatchedWriteAheadLog when batching is enabled") {
     def getBatchedSparkConf: SparkConf =
-      new SparkConf()
-        .set("spark.streaming.driver.writeAheadLog.allowBatching", "true")
+      new SparkConf().set(
+        "spark.streaming.driver.writeAheadLog.allowBatching",
+        "true")
 
     val justBatchingConf = getBatchedSparkConf
     assertDriverLogClass[FileBasedWriteAheadLog](

@@ -2111,9 +2111,8 @@ private[optimizer] abstract class OptimizerCore(
           InlineClassBeingConstructedReplacement(
             inputFieldsLocalDefs,
             cancelFun))
-        val statsScope = bodyScope
-          .inlining(targetID)
-          .withEnv(bodyScope.env.withLocalDef("this", thisLocalDef))
+        val statsScope = bodyScope.inlining(targetID).withEnv(
+          bodyScope.env.withLocalDef("this", thisLocalDef))
         inlineClassConstructorBodyList(
           allocationSite,
           thisLocalDef,
@@ -3526,30 +3525,27 @@ private[optimizer] abstract class OptimizerCore(
               val (actualTypes, origTypes) = returnedTypes.unzip
               val refinedOrigType =
                 origTypes.reduce(constrainedLub(_, _, resultType))
-              actualTypes
-                .collectFirst {
-                  case actualType: RecordType => actualType
-                }
-                .fold[TailRec[Tree]] {
-                  // None of the returned types are records
-                  cont(
-                    PreTransTree(
-                      doMakeTree(newBody, actualTypes),
-                      refinedOrigType))
-                } { recordType =>
-                  if (actualTypes.exists(t =>
-                        t != recordType && t != NothingType))
-                    cancelFun()
+              actualTypes.collectFirst {
+                case actualType: RecordType => actualType
+              }.fold[TailRec[Tree]] {
+                // None of the returned types are records
+                cont(
+                  PreTransTree(
+                    doMakeTree(newBody, actualTypes),
+                    refinedOrigType))
+              } { recordType =>
+                if (actualTypes.exists(t =>
+                      t != recordType && t != NothingType))
+                  cancelFun()
 
-                  val resultTree = doMakeTree(newBody, actualTypes)
+                val resultTree = doMakeTree(newBody, actualTypes)
 
-                  if (origTypes.exists(t =>
-                        t != refinedOrigType && !t.isNothingType))
-                    cancelFun()
+                if (origTypes.exists(t =>
+                      t != refinedOrigType && !t.isNothingType))
+                  cancelFun()
 
-                  cont(
-                    PreTransRecordTree(resultTree, refinedOrigType, cancelFun))
-                }
+                cont(PreTransRecordTree(resultTree, refinedOrigType, cancelFun))
+              }
             }
           }(bodyScope)
         } { () =>

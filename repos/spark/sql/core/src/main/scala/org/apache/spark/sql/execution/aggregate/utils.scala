@@ -221,8 +221,7 @@ object Utils {
       // been evaluated. At here, we need to replace original children
       // to AttributeReferences.
       case agg @ AggregateExpression(aggregateFunction, mode, true) =>
-        aggregateFunction
-          .transformDown(distinctColumnAttributeLookup)
+        aggregateFunction.transformDown(distinctColumnAttributeLookup)
           .asInstanceOf[AggregateFunction]
     }
 

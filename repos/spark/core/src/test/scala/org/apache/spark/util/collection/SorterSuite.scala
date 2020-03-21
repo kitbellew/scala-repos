@@ -33,8 +33,11 @@ class SorterSuite extends SparkFunSuite with Logging {
     val data2 = data0.clone()
 
     Arrays.sort(data0)
-    new Sorter(new IntArraySortDataFormat)
-      .sort(data1, 0, data1.length, Ordering.Int)
+    new Sorter(new IntArraySortDataFormat).sort(
+      data1,
+      0,
+      data1.length,
+      Ordering.Int)
     new Sorter(new KeyReuseIntArraySortDataFormat)
       .sort(data2, 0, data2.length, Ordering[IntWrapper])
 
@@ -54,10 +57,9 @@ class SorterSuite extends SparkFunSuite with Logging {
 
     // Map from generated keys to values, to verify correctness later
     val kvMap =
-      keyValueArray
-        .grouped(2)
-        .map { case Array(k, v) => k.doubleValue() -> v.intValue() }
-        .toMap
+      keyValueArray.grouped(2).map {
+        case Array(k, v) => k.doubleValue() -> v.intValue()
+      }.toMap
 
     Arrays.sort(keys)
     new Sorter(new KVArraySortDataFormat[Double, Number])
@@ -73,8 +75,11 @@ class SorterSuite extends SparkFunSuite with Logging {
   // http://www.envisage-project.eu/timsort-specification-and-verification/
   test("SPARK-5984 TimSort bug") {
     val data = TestTimSort.getTimSortBugTestSet(67108864)
-    new Sorter(new IntArraySortDataFormat)
-      .sort(data, 0, data.length, Ordering.Int)
+    new Sorter(new IntArraySortDataFormat).sort(
+      data,
+      0,
+      data.length,
+      Ordering.Int)
     (0 to data.length - 2).foreach(i => assert(data(i) <= data(i + 1)))
   }
 
@@ -133,9 +138,8 @@ class SorterSuite extends SparkFunSuite with Logging {
           kvTupleArray,
           new Comparator[AnyRef] {
             override def compare(x: AnyRef, y: AnyRef): Int =
-              x.asInstanceOf[(JFloat, _)]
-                ._1
-                .compareTo(y.asInstanceOf[(JFloat, _)]._1)
+              x.asInstanceOf[(JFloat, _)]._1.compareTo(
+                y.asInstanceOf[(JFloat, _)]._1)
           })
       },
       prepareKvTupleArray
@@ -226,16 +230,22 @@ class SorterSuite extends SparkFunSuite with Logging {
     val sorterWithoutKeyReuse = new Sorter(new IntArraySortDataFormat)
     runExperiment("Sorter without key reuse on primitive int array")(
       {
-        sorterWithoutKeyReuse
-          .sort(intPrimitiveArray, 0, numElements, Ordering[Int])
+        sorterWithoutKeyReuse.sort(
+          intPrimitiveArray,
+          0,
+          numElements,
+          Ordering[Int])
       },
       prepareIntPrimitiveArray)
 
     val sorterWithKeyReuse = new Sorter(new KeyReuseIntArraySortDataFormat)
     runExperiment("Sorter with key reuse on primitive int array")(
       {
-        sorterWithKeyReuse
-          .sort(intPrimitiveArray, 0, numElements, Ordering[IntWrapper])
+        sorterWithKeyReuse.sort(
+          intPrimitiveArray,
+          0,
+          numElements,
+          Ordering[IntWrapper])
       },
       prepareIntPrimitiveArray)
   }

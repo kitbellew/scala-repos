@@ -41,8 +41,7 @@ object MyExecJob extends ExecutionApp {
     Execution.getConfig.flatMap { config =>
       val args = config.getArgs
 
-      TypedPipe
-        .from(TextLine(args("input")))
+      TypedPipe.from(TextLine(args("input")))
         .flatMap(_.split("\\s+"))
         .map((_, 1L))
         .sumByKey

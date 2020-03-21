@@ -9,9 +9,8 @@ object Benchmark {
     Def.inputTask {
       val args: Seq[String] = spaceDelimited("<arg>").parsed
       val wrappedProjectCP = (dependencyClasspath in Runtime).value
-      val projectCP = wrappedProjectCP
-        .map(_.data)
-        .mkString(java.io.File.pathSeparatorChar.toString)
+      val projectCP = wrappedProjectCP.map(_.data).mkString(
+        java.io.File.pathSeparatorChar.toString)
       val toolCP =
         projectCP // TODO: segregate compiler jars from the rest of dependencies
       val libraryCP = projectCP

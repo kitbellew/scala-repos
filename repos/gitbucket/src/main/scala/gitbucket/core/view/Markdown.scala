@@ -152,9 +152,8 @@ object Markdown {
           (link, link)
         }
 
-        val url = repository.httpUrl
-          .replaceFirst("/git/", "/")
-          .stripSuffix(".git") + "/wiki/" + StringUtil.urlEncode(page)
+        val url = repository.httpUrl.replaceFirst("/git/", "/").stripSuffix(
+          ".git") + "/wiki/" + StringUtil.urlEncode(page)
         if (pages.contains(page)) {
           "<a href=\"" + url + "\">" + escape(label) + "</a>"
         } else {
@@ -166,8 +165,8 @@ object Markdown {
     }
 
     private def fixUrl(url: String, isImage: Boolean = false): String = {
-      if (url.startsWith("http://") || url.startsWith("https://") || url
-            .startsWith("/")) {
+      if (url.startsWith("http://") || url.startsWith(
+            "https://") || url.startsWith("/")) {
         url
       } else if (url.startsWith("#")) {
         ("#" + generateAnchorName(url.substring(1)))
@@ -179,36 +178,29 @@ object Markdown {
           val branch =
             if (paths.length > 3) paths.drop(4).mkString("/")
             else repository.repository.defaultBranch
-          repository.httpUrl
-            .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
-                                                                      "?raw=true"
-                                                                    else "")
+          repository.httpUrl.replaceFirst("/git/", "/").stripSuffix(
+            ".git") + "/blob/" + branch + "/" + url + (if (isImage) "?raw=true"
+                                                       else "")
         } else {
           val paths = context.currentPath.split("/")
           val branch =
             if (paths.length > 3) paths.last
             else repository.repository.defaultBranch
-          repository.httpUrl
-            .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
-                                                                      "?raw=true"
-                                                                    else "")
+          repository.httpUrl.replaceFirst("/git/", "/").stripSuffix(
+            ".git") + "/blob/" + branch + "/" + url + (if (isImage) "?raw=true"
+                                                       else "")
         }
       } else {
-        repository.httpUrl
-          .replaceFirst("/git/", "/")
-          .stripSuffix(".git") + "/wiki/_blob/" + url
+        repository.httpUrl.replaceFirst("/git/", "/").stripSuffix(
+          ".git") + "/wiki/_blob/" + url
       }
     }
 
   }
 
   def escapeTaskList(text: String): String = {
-    Pattern
-      .compile("""^( *)- \[([x| ])\] """, Pattern.MULTILINE)
-      .matcher(text)
-      .replaceAll("$1* task:$2: ")
+    Pattern.compile("""^( *)- \[([x| ])\] """, Pattern.MULTILINE).matcher(
+      text).replaceAll("$1* task:$2: ")
   }
 
   def generateAnchorName(text: String): String = {
@@ -221,10 +213,9 @@ object Markdown {
 
   def convertCheckBox(text: String, hasWritePermission: Boolean): String = {
     val disabled = if (hasWritePermission) "" else "disabled"
-    text
-      .replaceAll(
-        "task:x:",
-        """<input type="checkbox" class="task-list-item-checkbox" checked="checked" """ + disabled + "/>")
+    text.replaceAll(
+      "task:x:",
+      """<input type="checkbox" class="task-list-item-checkbox" checked="checked" """ + disabled + "/>")
       .replaceAll(
         "task: :",
         """<input type="checkbox" class="task-list-item-checkbox" """ + disabled + "/>")

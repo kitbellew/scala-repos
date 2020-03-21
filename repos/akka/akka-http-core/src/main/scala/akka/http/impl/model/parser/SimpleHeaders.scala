@@ -17,8 +17,8 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7233#section-2.3
   def `accept-ranges` =
     rule {
-      ("none" ~ push(Nil) | zeroOrMore(ws(',')) ~ oneOrMore(`range-unit`)
-        .separatedBy(listSep)) ~ EOI ~> (`Accept-Ranges`(_))
+      ("none" ~ push(Nil) | zeroOrMore(ws(',')) ~ oneOrMore(
+        `range-unit`).separatedBy(listSep)) ~ EOI ~> (`Accept-Ranges`(_))
     }
 
   // http://www.w3.org/TR/cors/#access-control-allow-credentials-response-header
@@ -97,9 +97,10 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7231#appendix-D
   def `content-encoding` =
     rule {
-      oneOrMore(token ~> (x ⇒
-        HttpEncodings.getForKeyCaseInsensitive(x) getOrElse HttpEncoding.custom(
-          x)))
+      oneOrMore(
+        token ~> (x ⇒
+          HttpEncodings.getForKeyCaseInsensitive(
+            x) getOrElse HttpEncoding.custom(x)))
         .separatedBy(listSep) ~ EOI ~> (`Content-Encoding`(_))
     }
 

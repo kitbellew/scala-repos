@@ -53,10 +53,9 @@ private[http] trait LiftMerge {
   // Gather all page-specific JS into one JsCmd.
   private[this] def assemblePageSpecificJavaScript(eventJs: JsCmd): JsCmd = {
     val allJs =
-      LiftRules.javaScriptSettings
-        .vend()
-        .map { settingsFn => LiftJavaScript.initCmd(settingsFn(this)) }
-        .toList ++
+      LiftRules.javaScriptSettings.vend().map { settingsFn =>
+        LiftJavaScript.initCmd(settingsFn(this))
+      }.toList ++
         S.jsToAppend() ++
         List(eventJs)
 
@@ -82,8 +81,8 @@ private[http] trait LiftMerge {
     def waitUntilSnippetsDone() {
       val myMillis = millis
       snippetHashs.synchronized {
-        if (myMillis >= waitUntil || snippetHashs.isEmpty || !snippetHashs.values.toIterator
-              .contains(Empty)) ()
+        if (myMillis >= waitUntil || snippetHashs.isEmpty || !snippetHashs.values.toIterator.contains(
+              Empty)) ()
         else {
           snippetHashs.wait(waitUntil - myMillis)
           waitUntilSnippetsDone()

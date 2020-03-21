@@ -37,17 +37,21 @@ class RepositoryServiceSpec
 
       renameRepository("root", "repo", "tester", "repo2")
 
-      val neo = service
-        .getCommitStatus("tester", "repo2", org.commitId, org.context)
-        .get
+      val neo = service.getCommitStatus(
+        "tester",
+        "repo2",
+        org.commitId,
+        org.context).get
       assert(
         neo == org.copy(
           commitStatusId = neo.commitStatusId,
           repositoryName = "repo2",
           userName = "tester"))
       assert(
-        service.getProtectedBranchInfo("tester", "repo2", "branch") == orgPbi
-          .copy(owner = "tester", repository = "repo2"))
+        service.getProtectedBranchInfo(
+          "tester",
+          "repo2",
+          "branch") == orgPbi.copy(owner = "tester", repository = "repo2"))
     }
   }
 }

@@ -139,10 +139,13 @@ object Actor extends ListenerManagement {
   val registry = new ActorRegistry
 
   lazy val remote: RemoteSupport = {
-    ReflectiveAccess.Remote.defaultRemoteSupport
+    ReflectiveAccess
+      .Remote
+      .defaultRemoteSupport
       .map(_())
-      .getOrElse(throw new UnsupportedOperationException(
-        "You need to have akka-remote.jar on classpath"))
+      .getOrElse(
+        throw new UnsupportedOperationException(
+          "You need to have akka-remote.jar on classpath"))
   }
 
   private[akka] val TIMEOUT =

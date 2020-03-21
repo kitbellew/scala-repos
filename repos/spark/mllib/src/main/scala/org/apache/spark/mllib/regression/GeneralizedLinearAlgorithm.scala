@@ -282,8 +282,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       * Currently, it's only enabled in LogisticRegressionWithLBFGS
       */
     val scaler = if (useFeatureScaling) {
-      new StandardScaler(withStd = true, withMean = false)
-        .fit(input.map(_.features))
+      new StandardScaler(withStd = true, withMean = false).fit(
+        input.map(_.features))
     } else {
       null
     }
@@ -293,9 +293,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     val data =
       if (addIntercept) {
         if (useFeatureScaling) {
-          input
-            .map(lp => (lp.label, appendBias(scaler.transform(lp.features))))
-            .cache()
+          input.map(lp =>
+            (lp.label, appendBias(scaler.transform(lp.features)))).cache()
         } else {
           input.map(lp => (lp.label, appendBias(lp.features))).cache()
         }
@@ -362,9 +361,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
           val start = i * n
           val end = (i + 1) * n - { if (addIntercept) 1 else 0 }
 
-          val partialWeightsArray = scaler
-            .transform(Vectors.dense(weightsArray.slice(start, end)))
-            .toArray
+          val partialWeightsArray = scaler.transform(
+            Vectors.dense(weightsArray.slice(start, end))).toArray
 
           System.arraycopy(
             partialWeightsArray,

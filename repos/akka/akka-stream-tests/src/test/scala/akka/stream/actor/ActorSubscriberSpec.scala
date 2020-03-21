@@ -17,8 +17,8 @@ import scala.util.control.NoStackTrace
 object ActorSubscriberSpec {
 
   def manualSubscriberProps(probe: ActorRef): Props =
-    Props(new ManualSubscriber(probe))
-      .withDispatcher("akka.test.stream-dispatcher")
+    Props(new ManualSubscriber(probe)).withDispatcher(
+      "akka.test.stream-dispatcher")
 
   class ManualSubscriber(probe: ActorRef) extends ActorSubscriber {
     import ActorSubscriberMessage._
@@ -37,8 +37,8 @@ object ActorSubscriberSpec {
   }
 
   def immediatelyCancelledSubscriberProps(probe: ActorRef): Props =
-    Props(new ImmediatelyCancelledSubscriber(probe))
-      .withDispatcher("akka.test.stream-dispatcher")
+    Props(new ImmediatelyCancelledSubscriber(probe)).withDispatcher(
+      "akka.test.stream-dispatcher")
 
   class ImmediatelyCancelledSubscriber(probe: ActorRef)
       extends ManualSubscriber(probe) {
@@ -52,8 +52,8 @@ object ActorSubscriberSpec {
   def requestStrategySubscriberProps(
       probe: ActorRef,
       strat: RequestStrategy): Props =
-    Props(new RequestStrategySubscriber(probe, strat))
-      .withDispatcher("akka.test.stream-dispatcher")
+    Props(new RequestStrategySubscriber(probe, strat)).withDispatcher(
+      "akka.test.stream-dispatcher")
 
   class RequestStrategySubscriber(probe: ActorRef, strat: RequestStrategy)
       extends ActorSubscriber {
@@ -121,8 +121,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
   "An ActorSubscriber" must {
 
     "receive requested elements" in {
-      val ref = Source(List(1, 2, 3))
-        .runWith(Sink.actorSubscriber(manualSubscriberProps(testActor)))
+      val ref = Source(List(1, 2, 3)).runWith(
+        Sink.actorSubscriber(manualSubscriberProps(testActor)))
       expectNoMsg(200.millis)
       ref ! "ready" // requesting 2
       expectMsg(OnNext(1))
@@ -135,9 +135,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
 
     "signal error" in {
       val e = new RuntimeException("simulated") with NoStackTrace
-      val ref = Source
-        .fromIterator(() ⇒ throw e)
-        .runWith(Sink.actorSubscriber(manualSubscriberProps(testActor)))
+      val ref = Source.fromIterator(() ⇒ throw e).runWith(
+        Sink.actorSubscriber(manualSubscriberProps(testActor)))
       ref ! "ready"
       expectMsg(OnError(e))
     }
@@ -162,8 +161,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
     }
 
     "not deliver more after cancel" in {
-      val ref = Source(1 to 5)
-        .runWith(Sink.actorSubscriber(manualSubscriberProps(testActor)))
+      val ref = Source(1 to 5).runWith(
+        Sink.actorSubscriber(manualSubscriberProps(testActor)))
       ref ! "ready"
       expectMsg(OnNext(1))
       expectMsg(OnNext(2))
@@ -172,8 +171,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
     }
 
     "terminate after cancel" in {
-      val ref = Source(1 to 5)
-        .runWith(Sink.actorSubscriber(manualSubscriberProps(testActor)))
+      val ref = Source(1 to 5).runWith(
+        Sink.actorSubscriber(manualSubscriberProps(testActor)))
       watch(ref)
       ref ! "requestAndCancel"
       expectTerminated(ref, 200.millis)
@@ -213,9 +212,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
 
     "suport custom max in flight request strategy with child workers" in {
       val N = 117
-      Source(1 to N)
-        .map(Msg(_, testActor))
-        .runWith(Sink.actorSubscriber(streamerProps))
+      Source(1 to N).map(Msg(_, testActor)).runWith(
+        Sink.actorSubscriber(streamerProps))
       receiveN(N).toSet should be((1 to N).map(Done).toSet)
     }
 

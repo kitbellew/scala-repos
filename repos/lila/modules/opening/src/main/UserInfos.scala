@@ -33,17 +33,13 @@ object UserInfos {
         user ?? { apply(_) map (_.some) }
 
       private def fetchAttempts(userId: String): Fu[List[Attempt]] =
-        attemptColl
-          .find(
-            BSONDocument(
-              Attempt.BSONFields.userId -> userId
-            ))
-          .sort(
-            BSONDocument(
-              Attempt.BSONFields.date -> -1
-            ))
-          .cursor[Attempt]()
-          .collect[List](math.max(historySize, chartSize))
+        attemptColl.find(
+          BSONDocument(
+            Attempt.BSONFields.userId -> userId
+          )).sort(
+          BSONDocument(
+            Attempt.BSONFields.date -> -1
+          )).cursor[Attempt]().collect[List](math.max(historySize, chartSize))
     }
 
   private def makeHistory(attempts: List[Attempt]) = attempts.take(historySize)

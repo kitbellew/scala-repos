@@ -68,8 +68,8 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
     catch {
       case e: Exception =>
         throw new RuntimeException(
-          "Unable to load template for " + templateManager
-            .internalTemplateToSubject(templateName),
+          "Unable to load template for " + templateManager.internalTemplateToSubject(
+            templateName),
           e)
     }
 
@@ -108,9 +108,10 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
       name: String,
       text: String,
       project: Project): PsiFile =
-    PsiFileFactory
-      .getInstance(project)
-      .createFileFromText(name, getFileType, text)
+    PsiFileFactory.getInstance(project).createFileFromText(
+      name,
+      getFileType,
+      text)
 }
 
 object NewTypeDefinitionBase {

@@ -274,8 +274,7 @@ object AdminUtils extends Logging {
 
   private[admin] def getInverseMap(
       brokerRackMap: Map[Int, String]): Map[String, Seq[Int]] = {
-    brokerRackMap.toSeq
-      .map { case (id, rack) => (rack, id) }
+    brokerRackMap.toSeq.map { case (id, rack) => (rack, id) }
       .groupBy { case (rack, _) => rack }
       .map {
         case (rack, rackAndIdList) =>
@@ -464,9 +463,8 @@ object AdminUtils extends Logging {
       rackAwareMode: RackAwareMode = RackAwareMode.Enforced,
       brokerList: Option[Seq[Int]] = None): Seq[BrokerMetadata] = {
     val allBrokers = zkUtils.getAllBrokersInCluster()
-    val brokers = brokerList
-      .map(brokerIds => allBrokers.filter(b => brokerIds.contains(b.id)))
-      .getOrElse(allBrokers)
+    val brokers = brokerList.map(brokerIds =>
+      allBrokers.filter(b => brokerIds.contains(b.id))).getOrElse(allBrokers)
     val brokersWithRack = brokers.filter(_.rack.nonEmpty)
     if (rackAwareMode == RackAwareMode.Enforced && brokersWithRack.nonEmpty && brokersWithRack.size < brokers.size) {
       throw new AdminOperationException(
@@ -526,8 +524,9 @@ object AdminUtils extends Logging {
           allTopics.filter(t => Topic.hasCollision(topic, t))
         if (collidingTopics.nonEmpty) {
           throw new InvalidTopicException(
-            "Topic \"%s\" collides with existing topics: %s"
-              .format(topic, collidingTopics.mkString(", ")))
+            "Topic \"%s\" collides with existing topics: %s".format(
+              topic,
+              collidingTopics.mkString(", ")))
         }
       }
     }
@@ -570,8 +569,9 @@ object AdminUtils extends Logging {
         zkUtils.updatePersistentPath(zkPath, jsonPartitionData)
       }
       debug(
-        "Updated path %s with %s for replica assignment"
-          .format(zkPath, jsonPartitionData))
+        "Updated path %s with %s for replica assignment".format(
+          zkPath,
+          jsonPartitionData))
     } catch {
       case e: ZkNodeExistsException =>
         throw new TopicExistsException("topic %s already exists".format(topic))
@@ -696,19 +696,14 @@ object AdminUtils extends Logging {
   }
 
   def fetchAllTopicConfigs(zkUtils: ZkUtils): Map[String, Properties] =
-    zkUtils
-      .getAllTopics()
-      .map(topic =>
-        (topic, fetchEntityConfig(zkUtils, ConfigType.Topic, topic)))
-      .toMap
+    zkUtils.getAllTopics().map(topic =>
+      (topic, fetchEntityConfig(zkUtils, ConfigType.Topic, topic))).toMap
 
   def fetchAllEntityConfigs(
       zkUtils: ZkUtils,
       entityType: String): Map[String, Properties] =
-    zkUtils
-      .getAllEntitiesWithConfig(entityType)
-      .map(entity => (entity, fetchEntityConfig(zkUtils, entityType, entity)))
-      .toMap
+    zkUtils.getAllEntitiesWithConfig(entityType).map(entity =>
+      (entity, fetchEntityConfig(zkUtils, entityType, entity))).toMap
 
   def fetchTopicMetadataFromZk(
       topic: String,
@@ -750,13 +745,16 @@ object AdminUtils extends Logging {
           leaderInfo = leader match {
             case Some(l) =>
               try {
-                getBrokerInfoFromCache(zkUtils, cachedBrokerInfo, List(l)).head
-                  .getNode(protocol)
+                getBrokerInfoFromCache(
+                  zkUtils,
+                  cachedBrokerInfo,
+                  List(l)).head.getNode(protocol)
               } catch {
                 case e: Throwable =>
                   throw new LeaderNotAvailableException(
-                    "Leader not available for partition [%s,%d]"
-                      .format(topic, partition),
+                    "Leader not available for partition [%s,%d]".format(
+                      topic,
+                      partition),
                     e)
               }
             case None =>
@@ -767,24 +765,23 @@ object AdminUtils extends Logging {
             replicaInfo =
               getBrokerInfoFromCache(zkUtils, cachedBrokerInfo, replicas).map(
                 _.getNode(protocol))
-            isrInfo =
-              getBrokerInfoFromCache(zkUtils, cachedBrokerInfo, inSyncReplicas)
-                .map(_.getNode(protocol))
+            isrInfo = getBrokerInfoFromCache(
+              zkUtils,
+              cachedBrokerInfo,
+              inSyncReplicas).map(_.getNode(protocol))
           } catch {
             case e: Throwable => throw new ReplicaNotAvailableException(e)
           }
           if (replicaInfo.size < replicas.size)
             throw new ReplicaNotAvailableException(
               "Replica information not available for following brokers: " +
-                replicas
-                  .filterNot(replicaInfo.map(_.id).contains(_))
-                  .mkString(","))
+                replicas.filterNot(replicaInfo.map(_.id).contains(_)).mkString(
+                  ","))
           if (isrInfo.size < inSyncReplicas.size)
             throw new ReplicaNotAvailableException(
               "In Sync Replica information not available for following brokers: " +
-                inSyncReplicas
-                  .filterNot(isrInfo.map(_.id).contains(_))
-                  .mkString(","))
+                inSyncReplicas.filterNot(
+                  isrInfo.map(_.id).contains(_)).mkString(","))
           new MetadataResponse.PartitionMetadata(
             Errors.NONE,
             partition,
@@ -794,8 +791,9 @@ object AdminUtils extends Logging {
         } catch {
           case e: Throwable =>
             debug(
-              "Error while fetching metadata for partition [%s,%d]"
-                .format(topic, partition),
+              "Error while fetching metadata for partition [%s,%d]".format(
+                topic,
+                partition),
               e)
             new MetadataResponse.PartitionMetadata(
               Errors.forException(e),

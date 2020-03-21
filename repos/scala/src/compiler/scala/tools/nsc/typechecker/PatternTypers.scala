@@ -287,8 +287,10 @@ trait PatternTypers {
       // as instantiateTypeVar's bounds would end up there
       val ctorContext = context.makeNewScope(tree, context.owner)
       freeVars foreach ctorContext.scope.enter
-      newTyper(ctorContext).infer
-        .inferConstructorInstance(tree1, caseClass.typeParams, ptSafe)
+      newTyper(ctorContext).infer.inferConstructorInstance(
+        tree1,
+        caseClass.typeParams,
+        ptSafe)
 
       // simplify types without losing safety,
       // so that we get rid of unnecessary type slack, and so that error messages don't unnecessarily refer to skolems
@@ -382,9 +384,10 @@ trait PatternTypers {
         val glbType = glb(ensureFullyDefined(pt) :: unapplyArg.tpe_* :: Nil)
         val wrapInTypeTest =
           canRemedy && !(fun1.symbol.owner isNonBottomSubClass ClassTagClass)
-        val formals = patmat
-          .alignPatterns(context.asInstanceOf[analyzer.Context], fun1, args)
-          .unexpandedFormals
+        val formals = patmat.alignPatterns(
+          context.asInstanceOf[analyzer.Context],
+          fun1,
+          args).unexpandedFormals
         val args1 = typedArgsForFormals(args, formals, mode)
         val result = UnApply(fun1, args1) setPos tree.pos setType glbType
 

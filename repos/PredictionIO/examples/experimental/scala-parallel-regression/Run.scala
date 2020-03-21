@@ -46,8 +46,7 @@ case class ParallelDataSource(val dsp: DataSourceParams)
       LabeledPoint(parts(0), Vectors.dense(parts.drop(1)))
     }
 
-    MLUtils
-      .kFold(points, dsp.k, dsp.seed)
+    MLUtils.kFold(points, dsp.k, dsp.seed)
       .zipWithIndex
       .map {
         case (dataSet, index) =>

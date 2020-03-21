@@ -21,11 +21,9 @@ private class ScalaModuleConversionProcessor(context: ConversionContext)
     ScalaFacetData.isPresentIn(module)
 
   def process(module: ModuleSettings) {
-    val scalaFacet = ScalaFacetData
-      .findIn(module)
-      .getOrElse(
-        throw new IllegalStateException(
-          "Cannot find Scala facet in module: " + module.getModuleName))
+    val scalaFacet = ScalaFacetData.findIn(module).getOrElse(
+      throw new IllegalStateException(
+        "Cannot find Scala facet in module: " + module.getModuleName))
 
     val scalaStandardLibraryReference =
       ScalaProjectConverter.findStandardScalaLibraryIn(module)
@@ -38,9 +36,8 @@ private class ScalaModuleConversionProcessor(context: ConversionContext)
       val existingScalaSdk = createdSdks.find(_.isEquivalentTo(compilerLibrary))
 
       val scalaSdk = existingScalaSdk.getOrElse {
-        val name = scalaStandardLibrary
-          .map(library => transform(library.name))
-          .getOrElse("scala-sdk")
+        val name = scalaStandardLibrary.map(library =>
+          transform(library.name)).getOrElse("scala-sdk")
         val standardLibrary = scalaStandardLibrary.getOrElse(LibraryData.empty)
         val compilerClasspath = compilerLibrary.classesAsFileUrls
         val languageLevel = ScalaSdkData.languageLevelFrom(compilerClasspath)

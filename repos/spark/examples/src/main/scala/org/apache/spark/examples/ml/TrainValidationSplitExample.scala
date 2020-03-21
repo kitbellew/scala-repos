@@ -70,8 +70,7 @@ object TrainValidationSplitExample {
 
     // Make predictions on test data. model is the model with combination of parameters
     // that performed best.
-    model
-      .transform(test)
+    model.transform(test)
       .select("features", "label", "prediction")
       .show()
 

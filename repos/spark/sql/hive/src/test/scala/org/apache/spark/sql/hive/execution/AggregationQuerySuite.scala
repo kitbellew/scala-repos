@@ -830,10 +830,8 @@ abstract class AggregationQuerySuite
         Row(6, Double.NaN) :: Nil
     )
 
-    val corr7 = sqlContext
-      .sql("SELECT corr(b, c) FROM covar_tab")
-      .collect()(0)
-      .getDouble(0)
+    val corr7 = sqlContext.sql("SELECT corr(b, c) FROM covar_tab").collect()(
+      0).getDouble(0)
     assert(math.abs(corr7 - 0.6633880657639323) < 1e-12)
   }
 
@@ -872,13 +870,9 @@ abstract class AggregationQuerySuite
   }
 
   test("no aggregation function (SPARK-11486)") {
-    val df = sqlContext
-      .range(20)
-      .selectExpr("id", "repeat(id, 1) as s")
-      .groupBy("s")
-      .count()
-      .groupBy()
-      .count()
+    val df = sqlContext.range(20).selectExpr("id", "repeat(id, 1) as s")
+      .groupBy("s").count()
+      .groupBy().count()
     checkAnswer(df, Row(20) :: Nil)
   }
 
@@ -967,8 +961,9 @@ abstract class AggregationQuerySuite
 
   test("udaf without specifying inputSchema") {
     withTempTable("noInputSchemaUDAF") {
-      sqlContext.udf
-        .register("noInputSchema", new ScalaAggregateFunctionWithoutInputSchema)
+      sqlContext.udf.register(
+        "noInputSchema",
+        new ScalaAggregateFunctionWithoutInputSchema)
 
       val data =
         Row(1, Seq(Row(1), Row(2), Row(3))) ::
@@ -981,8 +976,7 @@ abstract class AggregationQuerySuite
               "myArray",
               ArrayType(
                 StructType(StructField("v", IntegerType) :: Nil))) :: Nil)
-      sqlContext
-        .createDataFrame(sparkContext.parallelize(data, 2), schema)
+      sqlContext.createDataFrame(sparkContext.parallelize(data, 2), schema)
         .registerTempTable("noInputSchemaUDAF")
 
       checkAnswer(

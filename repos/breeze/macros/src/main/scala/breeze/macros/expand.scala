@@ -90,16 +90,14 @@ object expand {
 
         val configurations =
           makeTypeMaps(c)(typesToUnrollAs).filterNot(exclusions.toSet)
-        val valExpansions = valsToExpand2
-          .map { v => v.name -> solveSequence(c)(v, typesToUnrollAs) }
-          .asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]]
-          .toMap
+        val valExpansions = valsToExpand2.map { v =>
+          v.name -> solveSequence(c)(v, typesToUnrollAs)
+        }.asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]].toMap
 
         val newDefs = configurations.map { typeMap =>
           val grounded = substitute(c)(typeMap, valExpansions, rhs)
-          val newvargs = valsToLeave
-            .filterNot(_.isEmpty)
-            .map(_.map(
+          val newvargs = valsToLeave.filterNot(_.isEmpty).map(
+            _.map(
               substitute(c)(typeMap, valExpansions, _).asInstanceOf[ValDef]))
           val newtpt = substitute(c)(typeMap, valExpansions, tpt)
           val newName = newTermName(mkName(c)(name, typeMap))
@@ -107,19 +105,19 @@ object expand {
             if (typesLeftAbstract.nonEmpty)
               c.error(
                 tree.pos,
-                "Can't valify: Not all types were grounded: " + typesLeftAbstract
-                  .mkString(", "))
+                "Can't valify: Not all types were grounded: " + typesLeftAbstract.mkString(
+                  ", "))
             if (newvargs.exists(_.nonEmpty))
               c.error(
                 tree.pos,
-                "Can't valify: Not all arguments were grounded: " + newvargs
-                  .map(_.mkString(", "))
-                  .mkString("(", ")(", ")"))
+                "Can't valify: Not all arguments were grounded: " + newvargs.map(
+                  _.mkString(", ")).mkString("(", ")(", ")"))
             ValDef(mods, newName, newtpt, grounded)
           } else {
-            val newTargs = typesLeftAbstract
-              .map(substitute(c)(typeMap, valExpansions, _))
-              .asInstanceOf[List[TypeDef]]
+            val newTargs = typesLeftAbstract.map(substitute(c)(
+              typeMap,
+              valExpansions,
+              _)).asInstanceOf[List[TypeDef]]
             DefDef(mods, newName, newTargs, newvargs, newtpt, grounded)
           }
         }
@@ -131,11 +129,9 @@ object expand {
 
   private def mkName(
       c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String = {
-    name.toString + "_" + typeMap
-      .map {
-        case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse
-      }
-      .mkString("_")
+    name.toString + "_" + typeMap.map {
+      case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse
+    }.mkString("_")
   }
 
   // valExpansions is a [value identifier -> (
@@ -200,8 +196,8 @@ object expand {
         }
         val predef = context.mirror.staticModule("scala.Predef").asModule
         val missing = Select(Ident(predef), newTermName("???"))
-        nme2 -> (typeMappings(nme2) zip args.flatten).toMap
-          .withDefaultValue(missing)
+        nme2 -> (typeMappings(nme2) zip args.flatten).toMap.withDefaultValue(
+          missing)
     }
     x.get
   }
@@ -245,30 +241,24 @@ object expand {
       mods: c.Modifiers,
       targs: Seq[c.Name]): Seq[Map[c.Name, c.Type]] = {
     import c.mirror.universe._
-    mods.annotations
-      .collect {
-        case t @ q"new expand.exclude(...$args)" =>
-          for (aa <- args)
-            if (aa.length != targs.length)
-              c.error(
-                t.pos,
-                "arguments to @exclude does not have the same arity as the type symbols!")
-          args.map(aa =>
-            (targs zip aa
-              .map(c.typeCheck(_))
-              .map(_.symbol.asModule.companionSymbol.asType.toType)).toMap)
-      }
-      .flatten
-      .toSeq
+    mods.annotations.collect {
+      case t @ q"new expand.exclude(...$args)" =>
+        for (aa <- args)
+          if (aa.length != targs.length)
+            c.error(
+              t.pos,
+              "arguments to @exclude does not have the same arity as the type symbols!")
+        args.map(aa =>
+          (targs zip aa.map(c.typeCheck(_)).map(
+            _.symbol.asModule.companionSymbol.asType.toType)).toMap)
+    }.flatten.toSeq
   }
 
   private def checkValify(c: Context)(mods: c.Modifiers) = {
     import c.mirror.universe._
-    mods.annotations
-      .collectFirst {
-        case q"new expand.valify" => true
-      }
-      .getOrElse(false)
+    mods.annotations.collectFirst {
+      case q"new expand.valify" => true
+    }.getOrElse(false)
   }
 
   private def shouldExpand(c: Context)(

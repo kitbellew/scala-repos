@@ -196,8 +196,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       GenerateUnsafeProjection.generate(
         Alias(expression, s"Optimized($expression)")() :: Nil),
       expression)
-    actual = FromUnsafeProjection(expression.dataType :: Nil)(plan(inputRow))
-      .get(0, expression.dataType)
+    actual = FromUnsafeProjection(expression.dataType :: Nil)(
+      plan(inputRow)).get(0, expression.dataType)
     assert(checkResult(actual, expected))
   }
 

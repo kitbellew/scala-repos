@@ -130,17 +130,15 @@ class PromiseTests extends MinimalScalaTest {
 
   "An interrupted Promise" should {
     val message = "Boxed InterruptedException"
-    val future = Promise[String]()
-      .complete(Failure(new InterruptedException(message)))
-      .future
+    val future = Promise[String]().complete(
+      Failure(new InterruptedException(message))).future
     futureWithException[ExecutionException](_(future, message))
   }
 
   "A NonLocalReturnControl failed Promise" should {
     val result = "test value"
-    val future = Promise[String]()
-      .complete(Failure(new NonLocalReturnControl[String]("test", result)))
-      .future
+    val future = Promise[String]().complete(
+      Failure(new NonLocalReturnControl[String]("test", result))).future
     futureWithResult(_(future, result))
   }
 
@@ -244,9 +242,9 @@ class PromiseTests extends MinimalScalaTest {
       f {
         (future, result) =>
           Await.result(
-            future
-              .mapTo[Boolean]
-              .recover({ case _: ClassCastException ⇒ false }),
+            future.mapTo[Boolean].recover({
+              case _: ClassCastException ⇒ false
+            }),
             defaultTimeout) mustBe (false)
       }
     }

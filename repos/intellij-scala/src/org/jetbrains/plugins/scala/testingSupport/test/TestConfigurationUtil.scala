@@ -40,9 +40,8 @@ object TestConfigurationUtil {
       case pack: PsiPackage => pack
     }
     if (pack == null) return null
-    val settings = RunManager
-      .getInstance(location.getProject)
-      .createRunConfiguration(displayName, confFactory)
+    val settings = RunManager.getInstance(
+      location.getProject).createRunConfiguration(displayName, confFactory)
     val configuration =
       settings.getConfiguration.asInstanceOf[AbstractTestRunConfiguration]
     configuration.setTestPackagePath(pack.getQualifiedName)
@@ -50,8 +49,9 @@ object TestConfigurationUtil {
     configuration.setGeneratedName(displayName)
     configuration.setModule(location.getModule)
     configuration.initWorkingDir()
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(configuration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      configuration,
+      location)
     settings
   }
 
@@ -72,9 +72,9 @@ object TestConfigurationUtil {
   }
 
   def isInheritor(clazz: ScTemplateDefinition, fqn: String): Boolean = {
-    val suiteClazz = ScalaPsiManager
-      .instance(clazz.getProject)
-      .getCachedClass(clazz.getResolveScope, fqn)
+    val suiteClazz = ScalaPsiManager.instance(clazz.getProject).getCachedClass(
+      clazz.getResolveScope,
+      fqn)
     suiteClazz.fold(false)(ScalaPsiUtil.cachedDeepIsInheritor(clazz, _))
   }
 
@@ -95,24 +95,23 @@ object TestConfigurationUtil {
             case _                    => None
           })
       } else
-        refExpr.smartQualifier
-          .flatMap(getStaticTestNameRaw(_, allowSymbolLiterals))
-          .flatMap { expr =>
-            refExpr.refName match {
-              case "toLowerCase" => Some(expr.toLowerCase)
-              case "trim"        => Some(expr.trim)
-              case "toString"    => Some(expr)
-              case _             => None
-            }
+        refExpr.smartQualifier.flatMap(
+          getStaticTestNameRaw(_, allowSymbolLiterals)).flatMap { expr =>
+          refExpr.refName match {
+            case "toLowerCase" => Some(expr.toLowerCase)
+            case "trim"        => Some(expr.trim)
+            case "toString"    => Some(expr)
+            case _             => None
           }
+        }
 
     element match {
       case literal: ScLiteral
           if literal.isString && literal.getValue.isInstanceOf[String] =>
         Some(escapeTestName(literal.getValue.asInstanceOf[String]))
       case literal: ScLiteral
-          if allowSymbolLiterals && literal.isSymbol && literal.getValue
-            .isInstanceOf[Symbol] =>
+          if allowSymbolLiterals && literal.isSymbol && literal.getValue.isInstanceOf[
+            Symbol] =>
         Some(escapeTestName(literal.getValue.asInstanceOf[Symbol].name))
       case literal: ScLiteral if literal.getValue.isInstanceOf[Number] =>
         Some(literal.getValue)
@@ -121,10 +120,11 @@ object TestConfigurationUtil {
       case infixExpr: ScInfixExpr =>
         infixExpr.getInvokedExpr match {
           case refExpr: ScReferenceExpression if refExpr.refName == "+" =>
-            getStaticTestNameElement(infixExpr.lOp, allowSymbolLiterals)
-              .flatMap(left =>
-                getStaticTestNameElement(infixExpr.rOp, allowSymbolLiterals)
-                  .map(left + _.toString))
+            getStaticTestNameElement(
+              infixExpr.lOp,
+              allowSymbolLiterals).flatMap(left =>
+              getStaticTestNameElement(infixExpr.rOp, allowSymbolLiterals).map(
+                left + _.toString))
           case _ => None
         }
       case methodCall: ScMethodCall =>
@@ -146,12 +146,11 @@ object TestConfigurationUtil {
                   Some(expr.substring(integer))
                 case _ => None
               }
-            methodCall.argumentExpressions.headOption
-              .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
-              .flatMap(arg =>
-                refExpr.smartQualifier
-                  .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
-                  .flatMap(helper(_, arg)))
+            methodCall.argumentExpressions.headOption.flatMap(
+              getStaticTestNameElement(_, allowSymbolLiterals)).flatMap(arg =>
+              refExpr.smartQualifier.flatMap(
+                getStaticTestNameElement(_, allowSymbolLiterals)).flatMap(
+                helper(_, arg)))
           case refExpr: ScReferenceExpression
               if twoArgMethods.contains(refExpr.refName) &&
                 methodCall.argumentExpressions.size == 2 =>
@@ -171,9 +170,9 @@ object TestConfigurationUtil {
               allowSymbolLiterals)
             (arg1Opt, arg2Opt) match {
               case (Some(arg1), Some(arg2)) =>
-                refExpr.smartQualifier
-                  .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
-                  .flatMap(helper(_, arg1, arg2))
+                refExpr.smartQualifier.flatMap(
+                  getStaticTestNameElement(_, allowSymbolLiterals)).flatMap(
+                  helper(_, arg1, arg2))
               case _ => None
             }
           case _ => None
@@ -201,9 +200,8 @@ object TestConfigurationUtil {
   private def getStaticTestNameRaw(
       element: PsiElement,
       allowSymbolLiterals: Boolean): Option[String] =
-    getStaticTestNameElement(element, allowSymbolLiterals)
-      .filter(_.isInstanceOf[String])
-      .map(_.asInstanceOf[String])
+    getStaticTestNameElement(element, allowSymbolLiterals).filter(
+      _.isInstanceOf[String]).map(_.asInstanceOf[String])
 
   def getStaticTestName(
       element: PsiElement,

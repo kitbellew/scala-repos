@@ -39,18 +39,17 @@ final class AssessApi(
     Macros.handler[PlayerAssessment]
 
   def createPlayerAssessment(assessed: PlayerAssessment) =
-    collAssessments
-      .update(BSONDocument("_id" -> assessed._id), assessed, upsert = true)
-      .void
+    collAssessments.update(
+      BSONDocument("_id" -> assessed._id),
+      assessed,
+      upsert = true).void
 
   def getPlayerAssessmentById(id: String) =
-    collAssessments
-      .find(BSONDocument("_id" -> id))
+    collAssessments.find(BSONDocument("_id" -> id))
       .one[PlayerAssessment]
 
   def getPlayerAssessmentsByUserId(userId: String, nb: Int = 100) =
-    collAssessments
-      .find(BSONDocument("userId" -> userId))
+    collAssessments.find(BSONDocument("userId" -> userId))
       .sort(BSONDocument("date" -> -1))
       .cursor[PlayerAssessment]()
       .collect[List](nb)
@@ -130,8 +129,8 @@ final class AssessApi(
       createPlayerAssessment(assessible playerAssessment chess.White) >>
         createPlayerAssessment(assessible playerAssessment chess.Black)
     } >> ((shouldAssess && thenAssessUser) ?? {
-      game.whitePlayer.userId.??(assessUser) >> game.blackPlayer.userId
-        .??(assessUser)
+      game.whitePlayer.userId.??(assessUser) >> game.blackPlayer.userId.??(
+        assessUser)
     })
   }
 
@@ -142,8 +141,9 @@ final class AssessApi(
           case AccountAction.Engine | AccountAction.EngineAndBan =>
             modApi.autoAdjust(userId)
           case AccountAction.Report =>
-            reporter ! lila.hub.actorApi.report
-              .Cheater(userId, playerAggregateAssessment.reportText(3))
+            reporter ! lila.hub.actorApi.report.Cheater(
+              userId,
+              playerAggregateAssessment.reportText(3))
             funit
           case AccountAction.Nothing =>
             reporter ! lila.hub.actorApi.report.Clean(userId)
@@ -169,8 +169,9 @@ final class AssessApi(
     }
 
     def noFastCoefVariation(player: Player): Option[Double] =
-      Statistics.noFastMoves(Pov(game, player)) ?? Statistics
-        .moveTimeCoefVariation(Pov(game, player))
+      Statistics.noFastMoves(
+        Pov(game, player)) ?? Statistics.moveTimeCoefVariation(
+        Pov(game, player))
 
     def winnerUserOption = game.winnerColor.map(_.fold(white, black))
     def winnerNbGames =

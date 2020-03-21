@@ -44,8 +44,8 @@ class TextFieldControls(target: TextField)
       14, 15)
   }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
-  chbPrefColumnCount.delegate.selectionModelProperty
-    .addListener(new ChangeListener[Any] {
+  chbPrefColumnCount.delegate.selectionModelProperty.addListener(
+    new ChangeListener[Any] {
       def changed(
           observable: ObservableValue[_],
           oldValue: Any,

@@ -49,9 +49,8 @@ class TypedTutorial(args: Args) extends Job(args) {
     **/
     case "2" | "map" => {
       // Create a typed pipe from the TextLine (of type TypedPipe[String] still)
-      TypedPipe
-        .from(TextLine(args("input")))
-        // Transform each line, reversing it. Output is a new TypedPipe, still of String.
+      TypedPipe.from(TextLine(args("input")))
+      // Transform each line, reversing it. Output is a new TypedPipe, still of String.
         .map(_.reverse)
         // Note, the types for the TypedTsv *can* be inferred by Scala here.
         // However, it's best to specify them explicitly so that if the
@@ -66,12 +65,11 @@ class TypedTutorial(args: Args) extends Job(args) {
     Dump all the words.
     **/
     case "3" | "flatmap" => {
-      TypedPipe
-        .from(TextLine(args("input")))
-        // flatMap is like map, but instead of returning a single item
-        // from the function, we return a collection of items. Each of
-        // these items will create a new entry in the data stream; here,
-        // we'll end up with a new entry for each word.
+      TypedPipe.from(TextLine(args("input")))
+      // flatMap is like map, but instead of returning a single item
+      // from the function, we return a collection of items. Each of
+      // these items will create a new entry in the data stream; here,
+      // we'll end up with a new entry for each word.
         .flatMap(_.split("\\s"))
         // output of flatMap is still a collection of String
         .write(TypedTsv[String](args("output")))
@@ -85,8 +83,7 @@ class TypedTutorial(args: Args) extends Job(args) {
     **/
     case "4" | "wordcount" => {
       // Get the words (just like above in case "3")
-      val words = TypedPipe
-        .from(TextLine(args("input")))
+      val words = TypedPipe.from(TextLine(args("input")))
         .flatMap(_.split("\\s"))
 
       // To count the words, we use TypedPipe's `groupBy` method.
@@ -130,9 +127,8 @@ class TypedTutorial(args: Args) extends Job(args) {
       val scores: Grouped[String, Double] =
         // For TypedTsv, Scalding coerces the fields to the specified types,
         // throwing an exception if any line fails.
-        TypedPipe
-          .from(TypedTsv[(String, Double)](args("words")))
-          // group by word so we can join it
+        TypedPipe.from(TypedTsv[(String, Double)](args("words")))
+        // group by word so we can join it
           .group
 
       // get the lines, this time from an 'OffsetTextLine' which is a
@@ -143,16 +139,16 @@ class TypedTutorial(args: Args) extends Job(args) {
 
       // Split lines into words, but keep their original line offset with them.
       val wordsWithLine: Grouped[String, Long] =
-        lines.flatMap {
-          case (offset, line) =>
-            // split into words
-            line
-              .split("\\s")
+        lines
+          .flatMap {
+            case (offset, line) =>
+              // split into words
+              line.split("\\s")
               // keep the line offset with them
-              .map(word => (word.toLowerCase, offset))
-        }
-        // make the 'word' field the key
-        .group
+                .map(word => (word.toLowerCase, offset))
+          }
+          // make the 'word' field the key
+          .group
 
       // Associate scores with each word; merges the two value types into
       // a tuple: [String,Long] join [String,Double] -> [String,(Long,Double)]
@@ -175,8 +171,8 @@ class TypedTutorial(args: Args) extends Job(args) {
       val scoredLines: TypedPipe[(String, Double)] =
         lines
         // index lines by 'offset'
-        .group
-        // associate scores with lines (by offset)
+          .group
+          // associate scores with lines (by offset)
           .join(scoredLinesByNumber)
           // take just the value fields (discard the 'line offset')
           .values

@@ -62,15 +62,13 @@ object FilterContainsToIntersect extends SimplificationType {
       case qual `.filter` (other `.contains _` ())
           if isSet(qual) && isSet(other) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "intersect", other))
-            .highlightFrom(qual))
+          replace(expr).withText(
+            invocationText(qual, "intersect", other)).highlightFrom(qual))
       case qual `.filterNot` (other `!.contains _` ())
           if isSet(qual) && isSet(other) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "intersect", other))
-            .highlightFrom(qual))
+          replace(expr).withText(
+            invocationText(qual, "intersect", other)).highlightFrom(qual))
       case _ => None
     }
 }
@@ -84,15 +82,13 @@ object FilterNotContainsToDiff extends SimplificationType {
       case qual `.filter` (other `!.contains _` ())
           if isSet(qual) && isSet(other) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "diff", other))
-            .highlightFrom(qual))
+          replace(expr).withText(
+            invocationText(qual, "diff", other)).highlightFrom(qual))
       case qual `.filterNot` (other `.contains _` ())
           if isSet(qual) && isSet(other) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "diff", other))
-            .highlightFrom(qual))
+          replace(expr).withText(
+            invocationText(qual, "diff", other)).highlightFrom(qual))
       case _ => None
     }
 }

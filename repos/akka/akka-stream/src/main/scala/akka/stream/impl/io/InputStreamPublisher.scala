@@ -23,8 +23,11 @@ private[akka] object InputStreamPublisher {
       chunkSize: Int): Props = {
     require(chunkSize > 0, s"chunkSize must be > 0 (was $chunkSize)")
 
-    Props(classOf[InputStreamPublisher], is, completionPromise, chunkSize)
-      .withDeploy(Deploy.local)
+    Props(
+      classOf[InputStreamPublisher],
+      is,
+      completionPromise,
+      chunkSize).withDeploy(Deploy.local)
   }
 
   private final case object Continue extends DeadLetterSuppression

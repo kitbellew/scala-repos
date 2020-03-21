@@ -163,10 +163,8 @@ trait Implicits {
     if (result.isFailure && !silent) {
       val err = context.reporter.firstError
       val errPos = err.map(_.errPos).getOrElse(pos)
-      val errMsg = err
-        .map(_.errMsg)
-        .getOrElse(
-          "implicit search has failed. to find out the reason, turn on -Xlog-implicits")
+      val errMsg = err.map(_.errMsg).getOrElse(
+        "implicit search has failed. to find out the reason, turn on -Xlog-implicits")
       onError(errPos, errMsg)
     }
     result.tree
@@ -401,8 +399,8 @@ trait Implicits {
             case List(sym) =>
               sym.tpe match {
                 case MethodType(params, restpe)
-                    if (params forall (_.tpe
-                      .isInstanceOf[BoundedWildcardType])) =>
+                    if (params forall (_.tpe.isInstanceOf[
+                      BoundedWildcardType])) =>
                   Some((sym.name, params map (_.tpe.bounds.lo), restpe))
                 case _ => None
               }
@@ -531,11 +529,13 @@ trait Implicits {
             intersectionType(parents map core, tp.typeSymbol.owner)
           case AnnotatedType(annots, tp) => core(tp)
           case ExistentialType(tparams, result) =>
-            core(result)
-              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(
+              tparams,
+              tparams map (t => core(t.info.bounds.hi)))
           case PolyType(tparams, result) =>
-            core(result)
-              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(
+              tparams,
+              tparams map (t => core(t.info.bounds.hi)))
           case _ => tp
         }
       def stripped(tp: Type): Type = {
@@ -953,8 +953,9 @@ trait Implicits {
             }
           } else
             fail(
-              "incompatible: %s does not match expected type %s"
-                .format(itree3.tpe, ptInstantiated))
+              "incompatible: %s does not match expected type %s".format(
+                itree3.tpe,
+                ptInstantiated))
         }
       } catch {
         case ex: TypeError =>
@@ -1307,9 +1308,8 @@ trait Implicits {
                   val pre1 =
                     if (sym.isPackageClass) sym.packageObject.typeOfThis
                     else singleType(pre, companionSymbolOf(sym, context))
-                  val infos = pre1.implicitMembers.iterator
-                    .map(mem => new ImplicitInfo(mem.name, pre1, mem))
-                    .toList
+                  val infos = pre1.implicitMembers.iterator.map(mem =>
+                    new ImplicitInfo(mem.name, pre1, mem)).toList
                   if (infos.nonEmpty)
                     infoMap += (sym -> infos)
                 }
@@ -1494,8 +1494,11 @@ trait Implicits {
       if (settings.XlogImplicits)
         reporter.echo(
           pos,
-          "materializing requested %s.%s[%s] using %s"
-            .format(pre, tagClass.name, tp, materializer))
+          "materializing requested %s.%s[%s] using %s".format(
+            pre,
+            tagClass.name,
+            tp,
+            materializer))
       if (context.macrosEnabled) success(materializer)
       // don't call `failure` here. if macros are disabled, we just fail silently
       // otherwise -Xlog-implicits will spam the long with zillions of "macros are disabled"
@@ -1856,13 +1859,11 @@ trait Implicits {
     // check the message's syntax: should be a string literal that may contain occurrences of the string "${X}",
     // where `X` refers to a type parameter of `sym`
     def check(sym: Symbol): Option[String] =
-      sym
-        .getAnnotation(clazz)
-        .flatMap(_.stringArg(0) match {
-          case Some(m) => new Message(sym, m, annotationName).validate
-          case None =>
-            Some(s"Missing argument `msg` on $annotationName annotation.")
-        })
+      sym.getAnnotation(clazz).flatMap(_.stringArg(0) match {
+        case Some(m) => new Message(sym, m, annotationName).validate
+        case None =>
+          Some(s"Missing argument `msg` on $annotationName annotation.")
+      })
   }
 
   object ImplicitNotFoundMsg

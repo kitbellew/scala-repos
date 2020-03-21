@@ -218,9 +218,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
     val originalException = new NotSerializableException("someClass")
     // verify that original exception is returned on failure
     assert(
-      SerializationDebugger
-        .improveException(o, originalException)
-        .eq(originalException))
+      SerializationDebugger.improveException(o, originalException).eq(
+        originalException))
   }
 }
 

@@ -38,10 +38,9 @@ class FlowMapConcatSpec extends AkkaSpec with ScriptedTest {
     "map and concat grouping with slow downstream" in assertAllStagesStopped {
       val s = TestSubscriber.manualProbe[Int]
       val input = (1 to 20).grouped(5).toList
-      Source(input)
-        .mapConcat(identity)
-        .map(x ⇒ { Thread.sleep(10); x })
-        .runWith(Sink.fromSubscriber(s))
+      Source(input).mapConcat(identity).map(x ⇒ {
+        Thread.sleep(10); x
+      }).runWith(Sink.fromSubscriber(s))
       val sub = s.expectSubscription()
       sub.request(100)
       for (i ← 1 to 20) s.expectNext(i)
@@ -51,13 +50,11 @@ class FlowMapConcatSpec extends AkkaSpec with ScriptedTest {
     "be able to resume" in assertAllStagesStopped {
       val ex = new Exception("TEST") with NoStackTrace
 
-      Source(1 to 5)
-        .mapConcat(x ⇒ if (x == 3) throw ex else List(x))
+      Source(1 to 5).mapConcat(x ⇒ if (x == 3) throw ex else List(x))
         .withAttributes(
           ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
         .runWith(TestSink.probe[Int])
-        .request(4)
-        .expectNext(1, 2, 4, 5)
+        .request(4).expectNext(1, 2, 4, 5)
         .expectComplete()
     }
 

@@ -58,9 +58,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
 
   class QueryExecutorDef[R](tree: Node, param: Any) {
     def run(implicit session: Backend#Session): R =
-      createDistributedQueryInterpreter(param, session)
-        .run(tree)
-        .asInstanceOf[R]
+      createDistributedQueryInterpreter(param, session).run(tree).asInstanceOf[
+        R]
   }
 
   type ProfileAction[+R, +S <: NoStream, -E <: Effect] =
@@ -121,9 +120,9 @@ class DistributedProfile(val profiles: RelationalProfile*)
           val b =
             cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
           b ++= fromV.map(v =>
-            converter
-              .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]
-              .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
+            converter.asInstanceOf[
+              ResultConverter[MemoryResultConverterDomain, Any]].read(
+              v.asInstanceOf[QueryInterpreter.ProductValue]))
           b.result()
         case n => super.run(n)
       }
@@ -163,9 +162,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
               case t: TableNode =>
                 (
                   Set(
-                    t.profileTable
-                      .asInstanceOf[RelationalProfile#Table[_]]
-                      .tableProvider),
+                    t.profileTable.asInstanceOf[
+                      RelationalProfile#Table[_]].tableProvider),
                   Set.empty)
               case Ref(sym) =>
                 scope.get(sym) match {

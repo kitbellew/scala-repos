@@ -39,8 +39,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
       val warnings = inline(request)
       for (warning <- warnings) {
-        if ((callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed) || warning
-              .emitWarning(compilerSettings)) {
+        if ((callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed) || warning.emitWarning(
+              compilerSettings)) {
           val annotWarn =
             if (callee.annotatedInline) " is annotated @inline but" else ""
           val msg = s"${BackendReporting.methodSignature(
@@ -139,9 +139,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     def implClassMethodV(
         implMethodDescriptor: String): Either[OptimizerWarning, MethodNode] = {
-      byteCodeRepository
-        .methodNode(implClassInternalName, callee.name, implMethodDescriptor)
-        .map(_._1)
+      byteCodeRepository.methodNode(
+        implClassInternalName,
+        callee.name,
+        implMethodDescriptor).map(_._1)
     }
 
     // The rewrite reading the implementation class and the implementation method from the bytecode
@@ -169,9 +170,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           callsite.callsiteMethod,
           callsite.callsiteClass.internalName,
           new Analyzer(new SourceInterpreter))
-        val receiverValue = analyzer
-          .frameAt(callsite.callsiteInstruction)
-          .peekStack(traitMethodArgumentTypes.length)
+        val receiverValue =
+          analyzer.frameAt(callsite.callsiteInstruction).peekStack(
+            traitMethodArgumentTypes.length)
         for (i <- receiverValue.insns.asScala) {
           val cast = new TypeInsnNode(CHECKCAST, selfParamType.internalName)
           callsite.callsiteMethod.instructions.insert(i, cast)
@@ -184,8 +185,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         callee.name,
         implMethodDescriptor,
         false)
-      callsite.callsiteMethod.instructions
-        .insert(callsite.callsiteInstruction, newCallsiteInstruction)
+      callsite.callsiteMethod.instructions.insert(
+        callsite.callsiteInstruction,
+        newCallsiteInstruction)
       callsite.callsiteMethod.instructions.remove(callsite.callsiteInstruction)
 
       callGraph.removeCallsite(
@@ -543,8 +545,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // at some instruction, the first handler guarding that instruction and having a matching exception
     // type is executed. prepending the callee's handlers makes sure to test those handlers first if
     // an exception is thrown in the inlined code.
-    callsiteMethod.tryCatchBlocks
-      .addAll(0, cloneTryCatchBlockNodes(callee, labelsMap).asJava)
+    callsiteMethod.tryCatchBlocks.addAll(
+      0,
+      cloneTryCatchBlockNodes(callee, labelsMap).asJava)
 
     callsiteMethod.maxLocals += returnType.getSize + callee.maxLocals
     val maxStackOfInlinedCode = {
@@ -586,8 +589,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     // Add all invocation instructions and closure instantiations that were inlined to the call graph
     callGraph.callsites(callee).valuesIterator foreach { originalCallsite =>
-      val newCallsiteIns = instructionMap(originalCallsite.callsiteInstruction)
-        .asInstanceOf[MethodInsnNode]
+      val newCallsiteIns = instructionMap(
+        originalCallsite.callsiteInstruction).asInstanceOf[MethodInsnNode]
       val argInfos = originalCallsite.argInfos flatMap mapArgInfo
       val newCallsite = originalCallsite.copy(
         callsiteInstruction = newCallsiteIns,
@@ -603,9 +606,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     callGraph.closureInstantiations(callee).valuesIterator foreach {
       originalClosureInit =>
-        val newIndy =
-          instructionMap(originalClosureInit.lambdaMetaFactoryCall.indy)
-            .asInstanceOf[InvokeDynamicInsnNode]
+        val newIndy = instructionMap(
+          originalClosureInit.lambdaMetaFactoryCall.indy).asInstanceOf[
+          InvokeDynamicInsnNode]
         val capturedArgInfos =
           originalClosureInit.capturedArgInfos flatMap mapArgInfo
         val newClosureInit = ClosureInstantiation(
@@ -706,9 +709,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // that would be inefficient: we'd need to pop all parameters, save the values, and push the
     // parameters back for the (inlined) invocation. Similarly for the result after the call.
     def stackHasNonParameters: Boolean = {
-      val expectedArgs = asm.Type
-        .getArgumentTypes(callsiteInstruction.desc)
-        .length + (callsiteInstruction.getOpcode match {
+      val expectedArgs = asm.Type.getArgumentTypes(
+        callsiteInstruction.desc).length + (callsiteInstruction.getOpcode match {
         case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE => 1
         case INVOKESTATIC                                    => 0
         case INVOKEDYNAMIC =>
@@ -832,9 +834,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           val isStatic = (ACC_STATIC & memberFlags) != 0
           tryEither {
             val condB2 = from.isSubtypeOf(memberDeclClass).orThrow && {
-              isStatic || memberRefClass.isSubtypeOf(from).orThrow || from
-                .isSubtypeOf(memberRefClass)
-                .orThrow
+              isStatic || memberRefClass.isSubtypeOf(
+                from).orThrow || from.isSubtypeOf(memberRefClass).orThrow
             }
             Right(
               (condB2 || samePackageAsDestination /* B3 (protected) */ ) &&
@@ -942,11 +943,12 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
             val methodRefClass = classBTypeFromParsedClassfile(mi.owner)
             for {
-              (methodNode, methodDeclClassNode) <- byteCodeRepository
-                .methodNode(
-                  methodRefClass.internalName,
-                  mi.name,
-                  mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
+              (
+                methodNode,
+                methodDeclClassNode) <- byteCodeRepository.methodNode(
+                methodRefClass.internalName,
+                mi.name,
+                mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
               methodDeclClass = classBTypeFromParsedClassfile(
                 methodDeclClassNode)
               res <- canInlineCall(

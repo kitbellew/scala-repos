@@ -72,10 +72,8 @@ object Scaladoc extends AutoPlugin {
               !name.equals("index.html") && !name.equals("package.html")) {
             val source = scala.io.Source.fromFile(f)(scala.io.Codec.UTF8)
             val hd =
-              try source
-                .getLines()
-                .exists(_.contains(
-                  "<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">"))
+              try source.getLines().exists(_.contains(
+                "<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">"))
               catch {
                 case e: Exception =>
                   throw new IllegalStateException(
@@ -121,16 +119,15 @@ object UnidocRoot extends AutoPlugin {
 
   override def trigger = noTrigger
 
-  val akkaSettings = UnidocRoot.CliOptions.genjavadocEnabled
-    .ifTrue(Seq(
+  val akkaSettings = UnidocRoot.CliOptions.genjavadocEnabled.ifTrue(
+    Seq(
       javacOptions in (JavaUnidoc, unidoc) ++= Seq("-Xdoclint:none"),
       // genjavadoc needs to generate synthetic methods since the java code uses them
       scalacOptions += "-P:genjavadoc:suppressSynthetic=false",
       // FIXME: see #18056
       sources in (JavaUnidoc, unidoc) ~= (_.filterNot(
         _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
-    ))
-    .getOrElse(Nil)
+    )).getOrElse(Nil)
 
   def settings(ignoreAggregates: Seq[Project], ignoreProjects: Seq[Project]) = {
     val withoutAggregates = ignoreAggregates.foldLeft(inAnyProject) {
@@ -149,9 +146,8 @@ object UnidocRoot extends AutoPlugin {
   }
 
   override lazy val projectSettings =
-    CliOptions.genjavadocEnabled
-      .ifTrue(scalaJavaUnidocSettings)
-      .getOrElse(scalaUnidocSettings) ++
+    CliOptions.genjavadocEnabled.ifTrue(scalaJavaUnidocSettings).getOrElse(
+      scalaUnidocSettings) ++
       settings(
         Seq(AkkaBuild.samples),
         Seq(
@@ -172,8 +168,8 @@ object Unidoc extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = plugins.JvmPlugin
 
-  override lazy val projectSettings = UnidocRoot.CliOptions.genjavadocEnabled
-    .ifTrue(
+  override lazy val projectSettings =
+    UnidocRoot.CliOptions.genjavadocEnabled.ifTrue(
       genjavadocExtraSettings ++ Seq(
         scalacOptions in Compile += "-P:genjavadoc:fabricateParams=true",
         unidocGenjavadocVersion in Global := "0.9",
@@ -181,6 +177,5 @@ object Unidoc extends AutoPlugin {
         sources in (Genjavadoc, doc) ~= (_.filterNot(
           _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
       )
-    )
-    .getOrElse(Seq.empty)
+    ).getOrElse(Seq.empty)
 }

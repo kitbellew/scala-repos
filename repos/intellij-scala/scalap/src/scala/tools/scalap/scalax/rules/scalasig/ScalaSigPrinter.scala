@@ -572,8 +572,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           case _: Double  => "scala.Double"
           case _: String  => "java.lang.String"
           case c: Class[_] =>
-            "java.lang.Class[" + c.getComponentType.getCanonicalName
-              .replace("$", ".") + "]"
+            "java.lang.Class[" + c.getComponentType.getCanonicalName.replace(
+              "$",
+              ".") + "]"
           case ExternalSymbol(_, Some(parent), _) => parent.path //enum value
         })
       case TypeRefType(NoPrefixType, symbol: TypeSymbol, typeArgs)
@@ -614,11 +615,13 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                     case MethodType(resultType, _)         => false
                     case NullaryMethodType(resultType)     => false
                     case PolyType(typeRef, symbols) =>
-                      checkContainsSelf(Some(typeRef), parent) || symbols
-                        .contains(parent)
+                      checkContainsSelf(
+                        Some(typeRef),
+                        parent) || symbols.contains(parent)
                     case PolyTypeWithCons(typeRef, symbols, _) =>
-                      checkContainsSelf(Some(typeRef), parent) || symbols
-                        .contains(parent)
+                      checkContainsSelf(
+                        Some(typeRef),
+                        parent) || symbols.contains(parent)
                     case AnnotatedType(typeRef, _) =>
                       checkContainsSelf(Some(typeRef), parent)
                     case AnnotatedWithSelfType(typeRef, symbol, _) =>
@@ -626,8 +629,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                         Some(typeRef),
                         parent) || symbol == parent
                     case ExistentialType(typeRef, symbols) =>
-                      checkContainsSelf(Some(typeRef), parent) || symbols
-                        .contains(parent)
+                      checkContainsSelf(
+                        Some(typeRef),
+                        parent) || symbols.contains(parent)
                     case _ => false
                   }
                 case None => false
@@ -689,10 +693,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         lbs + ubs
       case RefinedType(classSym: ClassSymbol, typeRefs) =>
         val classStr = getClassString(0, classSym)
-        sep + typeRefs
-          .map(toString)
-          .mkString("", " with ", "") + (if (classStr == " {\n}") ""
-                                         else classStr)
+        sep + typeRefs.map(toString).mkString("", " with ", "") + (if (classStr == " {\n}")
+                                                                     ""
+                                                                   else
+                                                                     classStr)
       case RefinedType(classSym, typeRefs) =>
         sep + typeRefs.map(toString).mkString("", " with ", "")
       case ClassInfoType(symbol, typeRefs) =>
@@ -747,10 +751,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def typeArgString(typeArgs: Seq[Type]): String =
     if (typeArgs.isEmpty) ""
     else
-      typeArgs
-        .map(toString)
-        .map(StringUtil.trimStart(_, "=> "))
-        .mkString("[", ", ", "]")
+      typeArgs.map(toString).map(StringUtil.trimStart(_, "=> ")).mkString(
+        "[",
+        ", ",
+        "]")
 
   def typeParamString(params: Seq[TypeSymbol]): String =
     if (params.isEmpty) ""

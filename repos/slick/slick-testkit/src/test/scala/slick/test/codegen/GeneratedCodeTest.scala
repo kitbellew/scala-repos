@@ -18,8 +18,8 @@ object GeneratedCodeTest {
     DBIO.seq(
       schema.create,
       Suppliers += Supplier(1, "1", "2", "3", "4", "5"),
-      Suppliers.length.result
-        .map(assertEquals("Size of Suppliers after change", 1, _)),
+      Suppliers.length.result.map(
+        assertEquals("Size of Suppliers after change", 1, _)),
       Coffees.length.result.map(assertEquals("Size of Coffees", 0, _)),
       MTable.getTables(Some(""), Some(""), None, None).map { tables =>
         val a = tables.find(_.name.name equals "a").get
@@ -91,12 +91,8 @@ object GeneratedCodeTest {
           dIdxFieldsName sameElements List("f1", "f2"))
 
         def optionsOfColumn(c: slick.lifted.Rep[_]) =
-          c.toNode
-            .asInstanceOf[Select]
-            .field
-            .asInstanceOf[slick.ast.FieldSymbol]
-            .options
-            .toList
+          c.toNode.asInstanceOf[Select].field.asInstanceOf[
+            slick.ast.FieldSymbol].options.toList
         val k1Options = optionsOfColumn(E.baseTableRow.k1)
         val k2Options = optionsOfColumn(E.baseTableRow.k2)
         val sOptions = optionsOfColumn(E.baseTableRow.s)

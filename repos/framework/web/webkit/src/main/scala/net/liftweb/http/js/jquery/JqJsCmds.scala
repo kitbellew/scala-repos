@@ -221,12 +221,10 @@ object JqJE {
   case class JqKeypress(what: (Char, JsCmd)*) extends JsExp with JsMember {
     override def toJsCmd =
       "keypress(function(e) {" +
-        what
-          .map {
-            case (chr, cmd) =>
-              "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
-          }
-          .mkString(" else \n") +
+        what.map {
+          case (chr, cmd) =>
+            "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
+        }.mkString(" else \n") +
         "})"
   }
 

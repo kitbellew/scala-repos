@@ -32,8 +32,9 @@ object ReflectiveAccess {
     * @author <a href="http://jonasboner.com">Jonas Bon&#233;r</a>
     */
   object Remote {
-    val TRANSPORT = Config.config
-      .getString("akka.remote.layer", "akka.remote.netty.NettyRemoteSupport")
+    val TRANSPORT = Config.config.getString(
+      "akka.remote.layer",
+      "akka.remote.netty.NettyRemoteSupport")
 
     private[akka] val configDefaultAddress =
       new InetSocketAddress(
@@ -65,8 +66,8 @@ object ReflectiveAccess {
           case Right(value) => value
           case Left(exception) =>
             val e = new ModuleNotAvailableException(
-              "Can't instantiate [%s] - make sure that akka-remote.jar is on the classpath"
-                .format(remoteClass.getName),
+              "Can't instantiate [%s] - make sure that akka-remote.jar is on the classpath".format(
+                remoteClass.getName),
               exception)
             EventHandler.debug(this, e.toString)
             throw e
@@ -109,9 +110,8 @@ object ReflectiveAccess {
         future: Future[_]): Boolean = {
       ensureEnabled
       if (typedActorObjectInstance.get.isJoinPointAndOneWay(message)) {
-        future
-          .asInstanceOf[CompletableFuture[Option[_]]]
-          .completeWithResult(None)
+        future.asInstanceOf[CompletableFuture[Option[_]]].completeWithResult(
+          None)
       }
       typedActorObjectInstance.get.isJoinPoint(message)
     }
@@ -236,9 +236,8 @@ object ReflectiveAccess {
         val second =
           try {
             Right(
-              Thread.currentThread.getContextClassLoader
-                .loadClass(fqn)
-                .asInstanceOf[Class[T]])
+              Thread.currentThread.getContextClassLoader.loadClass(
+                fqn).asInstanceOf[Class[T]])
           } catch {
             case c: ClassNotFoundException => Left(c)
           }

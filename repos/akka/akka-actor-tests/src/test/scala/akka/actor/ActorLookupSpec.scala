@@ -338,10 +338,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       Await.result(f, timeout.duration) should ===(42)
       // clean-up is run as onComplete callback, i.e. dispatched on another thread
       awaitCond(
-        Await
-          .result(c2 ? LookupPath(a.path), timeout.duration)
-          .asInstanceOf[ActorRef]
-          .isTerminated,
+        Await.result(c2 ? LookupPath(a.path), timeout.duration).asInstanceOf[
+          ActorRef].isTerminated,
         1 second)
     }
 

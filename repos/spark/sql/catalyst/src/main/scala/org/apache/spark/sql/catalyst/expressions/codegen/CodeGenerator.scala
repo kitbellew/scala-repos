@@ -116,12 +116,10 @@ class CodegenContext {
   }
 
   def declareMutableStates(): String = {
-    mutableStates
-      .map {
-        case (javaType, variableName, _) =>
-          s"private $javaType $variableName;"
-      }
-      .mkString("\n")
+    mutableStates.map {
+      case (javaType, variableName, _) =>
+        s"private $javaType $variableName;"
+    }.mkString("\n")
   }
 
   def initMutableStates(): String = {
@@ -743,8 +741,7 @@ object CodeGenerator extends Logging {
     * automatically, in order to constrain its memory footprint.  Note that this cache does not use
     * weak keys/values and thus does not respond to memory pressure.
     */
-  private val cache = CacheBuilder
-    .newBuilder()
+  private val cache = CacheBuilder.newBuilder()
     .maximumSize(100)
     .build(new CacheLoader[String, GeneratedClass]() {
       override def load(code: String): GeneratedClass = {

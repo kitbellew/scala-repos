@@ -53,17 +53,15 @@ object JdbcUtils extends Logging {
     }
     () => {
       userSpecifiedDriverClass.foreach(DriverRegistry.register)
-      val driver: Driver = DriverManager.getDrivers.asScala
-        .collectFirst {
-          case d: DriverWrapper
-              if d.wrapped.getClass.getCanonicalName == driverClass =>
-            d
-          case d if d.getClass.getCanonicalName == driverClass => d
-        }
-        .getOrElse {
-          throw new IllegalStateException(
-            s"Did not find registered driver with class $driverClass")
-        }
+      val driver: Driver = DriverManager.getDrivers.asScala.collectFirst {
+        case d: DriverWrapper
+            if d.wrapped.getClass.getCanonicalName == driverClass =>
+          d
+        case d if d.getClass.getCanonicalName == driverClass => d
+      }.getOrElse {
+        throw new IllegalStateException(
+          s"Did not find registered driver with class $driverClass")
+      }
       driver.connect(url, properties)
     }
   }
@@ -142,10 +140,8 @@ object JdbcUtils extends Logging {
   }
 
   private def getJdbcType(dt: DataType, dialect: JdbcDialect): JdbcType = {
-    dialect
-      .getJDBCType(dt)
-      .orElse(getCommonJDBCType(dt))
-      .getOrElse(throw new IllegalArgumentException(
+    dialect.getJDBCType(dt).orElse(getCommonJDBCType(dt)).getOrElse(
+      throw new IllegalArgumentException(
         s"Can't get JDBC type for ${dt.simpleString}"))
   }
 
@@ -176,9 +172,7 @@ object JdbcUtils extends Logging {
     val supportsTransactions =
       try {
         conn.getMetaData().supportsDataManipulationTransactionsOnly() ||
-        conn
-          .getMetaData()
-          .supportsDataDefinitionAndDataManipulationTransactions()
+        conn.getMetaData().supportsDataDefinitionAndDataManipulationTransactions()
       } catch {
         case NonFatal(e) =>
           logWarning("Exception while detecting transaction support", e)
@@ -219,9 +213,8 @@ object JdbcUtils extends Logging {
                   stmt.setBigDecimal(i + 1, row.getDecimal(i))
                 case ArrayType(et, _) =>
                   // remove type length parameters from end of type name
-                  val typeName =
-                    getJdbcType(et, dialect).databaseTypeDefinition.toLowerCase
-                      .split("\\(")(0)
+                  val typeName = getJdbcType(et, dialect).databaseTypeDefinition
+                    .toLowerCase.split("\\(")(0)
                   val array =
                     conn.createArrayOf(typeName, row.getSeq[AnyRef](i).toArray)
                   stmt.setArray(i + 1, array)

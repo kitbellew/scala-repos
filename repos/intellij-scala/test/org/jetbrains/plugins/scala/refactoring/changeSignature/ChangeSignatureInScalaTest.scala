@@ -22,8 +22,9 @@ import org.junit.Assert._
 class ChangeSignatureInScalaTest extends ChangeSignatureTestBase {
 
   override def findTargetElement: PsiMember = {
-    val element = new ScalaChangeSignatureHandler()
-      .findTargetMember(getFileAdapter, getEditorAdapter)
+    val element = new ScalaChangeSignatureHandler().findTargetMember(
+      getFileAdapter,
+      getEditorAdapter)
     assertTrue(
       "<caret> is not on method name",
       element.isInstanceOf[ScMethodLike])

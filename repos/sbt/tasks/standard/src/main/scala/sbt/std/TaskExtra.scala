@@ -188,9 +188,9 @@ trait TaskExtra {
       private def pipe0(sid: Option[String], p: ProcessBuilder): Task[Int] =
         for (s <- streams) yield {
           val in = s.readBinary(key(t), sid)
-          val pio = TaskExtra
-            .processIO(s)
-            .withInput(out => { BasicIO.transferFully(in, out); out.close() })
+          val pio = TaskExtra.processIO(s).withInput(out => {
+            BasicIO.transferFully(in, out); out.close()
+          })
           (p run pio).exitValue
         }
     }

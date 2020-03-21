@@ -36,12 +36,8 @@ class ParquetEncodingSuite
     (1 :: 1000 :: Nil).foreach { n =>
       {
         withTempPath { dir =>
-          List
-            .fill(n)(ROW)
-            .toDF
-            .repartition(1)
-            .write
-            .parquet(dir.getCanonicalPath)
+          List.fill(n)(ROW).toDF.repartition(1).write.parquet(
+            dir.getCanonicalPath)
           val file =
             SpecificParquetRecordReaderBase.listDirectory(dir).toArray.head
 

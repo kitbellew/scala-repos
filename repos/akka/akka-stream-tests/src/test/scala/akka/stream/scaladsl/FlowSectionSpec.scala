@@ -25,9 +25,8 @@ class FlowSectionSpec extends AkkaSpec(FlowSectionSpec.config) {
   "A flow" can {
 
     "have an op with a different dispatcher" in {
-      val flow = Flow[Int]
-        .map(sendThreadNameTo(testActor))
-        .withAttributes(dispatcher("my-dispatcher1"))
+      val flow = Flow[Int].map(sendThreadNameTo(testActor)).withAttributes(
+        dispatcher("my-dispatcher1"))
 
       Source.single(1).via(flow).to(Sink.ignore).run()
 
@@ -35,14 +34,9 @@ class FlowSectionSpec extends AkkaSpec(FlowSectionSpec.config) {
     }
 
     "have a nested flow with a different dispatcher" in {
-      Source
-        .single(1)
-        .via(
-          Flow[Int]
-            .map(sendThreadNameTo(testActor))
-            .withAttributes(dispatcher("my-dispatcher1")))
-        .to(Sink.ignore)
-        .run()
+      Source.single(1).via(
+        Flow[Int].map(sendThreadNameTo(testActor)).withAttributes(
+          dispatcher("my-dispatcher1"))).to(Sink.ignore).run()
 
       expectMsgType[String] should include("my-dispatcher1")
     }
@@ -52,13 +46,12 @@ class FlowSectionSpec extends AkkaSpec(FlowSectionSpec.config) {
       val probe1 = TestProbe()
       val probe2 = TestProbe()
 
-      val flow1 = Flow[Int]
-        .map(sendThreadNameTo(probe1.ref))
-        .withAttributes(dispatcher("my-dispatcher1"))
+      val flow1 = Flow[Int].map(sendThreadNameTo(probe1.ref)).withAttributes(
+        dispatcher("my-dispatcher1"))
 
-      val flow2 = flow1
-        .via(Flow[Int].map(sendThreadNameTo(probe2.ref)))
-        .withAttributes(dispatcher("my-dispatcher2"))
+      val flow2 =
+        flow1.via(Flow[Int].map(sendThreadNameTo(probe2.ref))).withAttributes(
+          dispatcher("my-dispatcher2"))
 
       Source.single(1).via(flow2).to(Sink.ignore).run()
 
@@ -71,11 +64,8 @@ class FlowSectionSpec extends AkkaSpec(FlowSectionSpec.config) {
       pending //FIXME: Flow has no simple toString anymore
       val n = "Uppercase reverser"
       val f1 = Flow[String].map(_.toLowerCase)
-      val f2 = Flow[String]
-        .map(_.toUpperCase)
-        .map(_.reverse)
-        .named(n)
-        .map(_.toLowerCase)
+      val f2 = Flow[String].map(_.toUpperCase).map(_.reverse).named(n).map(
+        _.toLowerCase)
 
       f1.via(f2).toString should include(n)
     }
@@ -85,9 +75,7 @@ class FlowSectionSpec extends AkkaSpec(FlowSectionSpec.config) {
       val customDispatcher = TestProbe()
 
       val f1 = Flow[Int].map(sendThreadNameTo(defaultDispatcher.ref))
-      val f2 = Flow[Int]
-        .map(sendThreadNameTo(customDispatcher.ref))
-        .map(x ⇒ x)
+      val f2 = Flow[Int].map(sendThreadNameTo(customDispatcher.ref)).map(x ⇒ x)
         .withAttributes(
           dispatcher("my-dispatcher1") and name("separate-disptacher"))
 

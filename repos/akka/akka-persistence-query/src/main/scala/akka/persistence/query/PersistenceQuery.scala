@@ -97,8 +97,9 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
       system.dynamicAccess.getClassFor[AnyRef](pluginClassName).get
 
     def instantiate(args: collection.immutable.Seq[(Class[_], AnyRef)]) =
-      system.dynamicAccess
-        .createInstanceFor[ReadJournalProvider](pluginClass, args)
+      system.dynamicAccess.createInstanceFor[ReadJournalProvider](
+        pluginClass,
+        args)
 
     instantiate(
       (classOf[ExtendedActorSystem], system) :: (
@@ -114,8 +115,7 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
           Failure.apply(new IllegalArgumentException(
             s"Unable to create read journal plugin instance for path [$configPath], class [$pluginClassName]!",
             ex))
-      }
-      .get
+      }.get
   }
 
   /** Check for default or missing identity. */

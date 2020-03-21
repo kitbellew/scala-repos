@@ -79,8 +79,7 @@ private object PostgresDialect extends JdbcDialect {
             s"NUMERIC(${t.precision},${t.scale})",
             java.sql.Types.NUMERIC))
       case ArrayType(et, _) if et.isInstanceOf[AtomicType] =>
-        getJDBCType(et)
-          .map(_.databaseTypeDefinition)
+        getJDBCType(et).map(_.databaseTypeDefinition)
           .orElse(JdbcUtils.getCommonJDBCType(et).map(_.databaseTypeDefinition))
           .map(typeName => JdbcType(s"$typeName[]", java.sql.Types.ARRAY))
       case ByteType =>

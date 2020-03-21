@@ -447,8 +447,10 @@ private[akka] class PersistentShard(
           "Entity [{}] stopped without passivating, will restart after backoff",
           id)
         import context.dispatcher
-        context.system.scheduler
-          .scheduleOnce(entityRestartBackoff, self, RestartEntity(id))
+        context.system.scheduler.scheduleOnce(
+          entityRestartBackoff,
+          self,
+          RestartEntity(id))
       } else processChange(EntityStopped(id))(passivateCompleted)
     }
 

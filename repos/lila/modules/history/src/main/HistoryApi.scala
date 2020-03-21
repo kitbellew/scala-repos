@@ -36,15 +36,13 @@ final class HistoryApi(coll: Coll) {
       case (k, p) => k -> p.intRating
     }
     val days = daysBetween(user.createdAt, game.updatedAt | game.createdAt)
-    coll
-      .update(
-        BSONDocument("_id" -> user.id),
-        BSONDocument("$set" -> BSONDocument(changes.map {
-          case (perf, rating) => s"$perf.$days" -> BSONInteger(rating)
-        })),
-        upsert = true
-      )
-      .void
+    coll.update(
+      BSONDocument("_id" -> user.id),
+      BSONDocument("$set" -> BSONDocument(changes.map {
+        case (perf, rating) => s"$perf.$days" -> BSONInteger(rating)
+      })),
+      upsert = true
+    ).void
   }
 
   def daysBetween(from: DateTime, to: DateTime): Int =

@@ -95,11 +95,10 @@ class MessageSerializer(val system: ExtendedActorSystem)
     builder.setCurrentDeliveryId(snap.currentDeliveryId)
     snap.unconfirmedDeliveries.foreach { unconfirmed ⇒
       val unconfirmedBuilder =
-        mf.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.newBuilder
-          .setDeliveryId(unconfirmed.deliveryId)
-          .setDestination(unconfirmed.destination.toString)
-          .setPayload(
-            persistentPayloadBuilder(unconfirmed.message.asInstanceOf[AnyRef]))
+        mf.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.newBuilder.setDeliveryId(
+          unconfirmed.deliveryId).setDestination(
+          unconfirmed.destination.toString).setPayload(
+          persistentPayloadBuilder(unconfirmed.message.asInstanceOf[AnyRef]))
       builder.addUnconfirmedDeliveries(unconfirmedBuilder)
     }
     builder
@@ -107,8 +106,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   private[persistence] def stateChangeBuilder(
       stateChange: StateChangeEvent): mf.PersistentStateChangeEvent.Builder = {
-    val builder = mf.PersistentStateChangeEvent.newBuilder
-      .setStateIdentifier(stateChange.stateIdentifier)
+    val builder = mf.PersistentStateChangeEvent.newBuilder.setStateIdentifier(
+      stateChange.stateIdentifier)
     stateChange.timeout match {
       case None ⇒ builder
       case Some(timeout) ⇒ builder.setTimeout(timeout.toString())
@@ -120,14 +119,12 @@ class MessageSerializer(val system: ExtendedActorSystem)
       : AtLeastOnceDeliverySnapshot = {
     import scala.collection.JavaConverters._
     val unconfirmedDeliveries = new VectorBuilder[UnconfirmedDelivery]()
-    atLeastOnceDeliverySnapshot
-      .getUnconfirmedDeliveriesList()
-      .iterator()
-      .asScala foreach { next ⇒
-      unconfirmedDeliveries += UnconfirmedDelivery(
-        next.getDeliveryId,
-        ActorPath.fromString(next.getDestination),
-        payload(next.getPayload))
+    atLeastOnceDeliverySnapshot.getUnconfirmedDeliveriesList().iterator().asScala foreach {
+      next ⇒
+        unconfirmedDeliveries += UnconfirmedDelivery(
+          next.getDeliveryId,
+          ActorPath.fromString(next.getDestination),
+          payload(next.getPayload))
     }
 
     AtLeastOnceDeliverySnapshot(
@@ -141,8 +138,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
       persistentStateChange.getStateIdentifier,
       if (persistentStateChange.hasTimeout)
         Some(
-          Duration(persistentStateChange.getTimeout)
-            .asInstanceOf[duration.FiniteDuration])
+          Duration(persistentStateChange.getTimeout).asInstanceOf[
+            duration.FiniteDuration])
       else None
     )
   }
@@ -237,12 +234,10 @@ class MessageSerializer(val system: ExtendedActorSystem)
         persistentPayload.getPayloadManifest.toStringUtf8
       else ""
 
-    serialization
-      .deserialize(
-        persistentPayload.getPayload.toByteArray,
-        persistentPayload.getSerializerId,
-        manifest)
-      .get
+    serialization.deserialize(
+      persistentPayload.getPayload.toByteArray,
+      persistentPayload.getSerializerId,
+      manifest).get
   }
 
 }

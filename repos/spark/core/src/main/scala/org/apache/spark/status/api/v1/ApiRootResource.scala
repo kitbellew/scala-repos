@@ -195,8 +195,7 @@ private[spark] trait UIRoot {
       appId: String,
       attemptId: Option[String],
       zipStream: ZipOutputStream): Unit = {
-    Response
-      .serverError()
+    Response.serverError()
       .entity("Event logs are only available through the history server.")
       .status(Response.Status.SERVICE_UNAVAILABLE)
       .build()

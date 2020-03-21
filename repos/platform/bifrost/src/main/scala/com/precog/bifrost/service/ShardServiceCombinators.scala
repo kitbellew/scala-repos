@@ -97,10 +97,8 @@ object ShardServiceCombinators extends Logging {
       mimeType <- accept.mimeTypes.headOption
     } yield mimeType
 
-    val requested = (request.headers
-      .header[Accept]
-      .toSeq
-      .flatMap(_.mimeTypes) ++ requestParamType)
+    val requested = (request.headers.header[Accept].toSeq.flatMap(
+      _.mimeTypes) ++ requestParamType)
 
     val allowed = Set(JSON, CSV, anymaintype / anysubtype)
 
@@ -109,14 +107,10 @@ object ShardServiceCombinators extends Logging {
 
   private def getTimeout(
       request: HttpRequest[_]): Validation[String, Option[Long]] = {
-    request.parameters
-      .get('timeout)
-      .filter(_ != null)
-      .map {
-        case Millis(n) => Validation.success(n)
-        case _         => Validation.failure("Timeout must be a non-negative integer.")
-      }
-      .sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
+    request.parameters.get('timeout).filter(_ != null).map {
+      case Millis(n) => Validation.success(n)
+      case _         => Validation.failure("Timeout must be a non-negative integer.")
+    }.sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
   }
 
   private def getSortOn(
@@ -166,30 +160,22 @@ object ShardServiceCombinators extends Logging {
 
   private def getOffsetAndLimit(
       request: HttpRequest[_]): ValidationNel[String, Option[(Long, Long)]] = {
-    val limit = request.parameters
-      .get('limit)
-      .filter(_ != null)
-      .map {
-        case Limit(n) => Validation.success(n)
-        case _ =>
-          Validation.failure(
-            "The limit query parameter must be a positive integer.")
-      }
-      .sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
+    val limit = request.parameters.get('limit).filter(_ != null).map {
+      case Limit(n) => Validation.success(n)
+      case _ =>
+        Validation.failure(
+          "The limit query parameter must be a positive integer.")
+    }.sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
 
-    val offset = request.parameters
-      .get('skip)
-      .filter(_ != null)
-      .map {
-        case Offset(n) if limit.map(_.isDefined) | true => Validation.success(n)
-        case Offset(n) =>
-          Validation.failure(
-            "The offset query parameter cannot be used without a limit.")
-        case _ =>
-          Validation.failure(
-            "The offset query parameter must be a non-negative integer.")
-      }
-      .sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
+    val offset = request.parameters.get('skip).filter(_ != null).map {
+      case Offset(n) if limit.map(_.isDefined) | true => Validation.success(n)
+      case Offset(n) =>
+        Validation.failure(
+          "The offset query parameter cannot be used without a limit.")
+      case _ =>
+        Validation.failure(
+          "The offset query parameter must be a non-negative integer.")
+    }.sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
 
     (offset.toValidationNel |@| limit.toValidationNel) { (offset, limit) =>
       limit map ((offset getOrElse 0, _))
@@ -277,13 +263,10 @@ trait ShardServiceCombinators
                   Path) => Future[HttpResponse[B]] = {
                 case ((apiKey, account), path) =>
                   val query: Option[Future[String]] =
-                    request.parameters
-                      .get('q)
-                      .filter(_ != null)
-                      .map(Promise.successful)
-                      .orElse(quirrelContent(request).map(ByteChunk
-                        .forceByteArray(_: ByteChunk)
-                        .map(new String(_: Array[Byte], "UTF-8"))))
+                    request.parameters.get('q).filter(_ != null).map(
+                      Promise.successful).orElse(
+                      quirrelContent(request).map(ByteChunk.forceByteArray(
+                        _: ByteChunk).map(new String(_: Array[Byte], "UTF-8"))))
 
                   val result: Future[HttpResponse[B]] = query map { q =>
                     q flatMap { f(apiKey, account, path, _: String, opts) }
@@ -323,8 +306,8 @@ trait ShardServiceCombinators
         val path =
           request.parameters.get('prefixPath).filter(_ != null).getOrElse("")
         delegate.service(
-          request
-            .copy(parameters = request.parameters + ('sync -> "async"))) map {
+          request.copy(parameters =
+            request.parameters + ('sync -> "async"))) map {
           f => { (cred: (APIKey, AccountDetails)) => f(cred, Path(path)) }
         }
       }

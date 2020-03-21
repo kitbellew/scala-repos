@@ -266,9 +266,8 @@ case class ExplainCommand(
       outputString.split("\n").map(Row(_))
     } catch {
       case cause: TreeNodeException[_] =>
-        ("Error occurred during query planning: \n" + cause.getMessage)
-          .split("\n")
-          .map(Row(_))
+        ("Error occurred during query planning: \n" + cause.getMessage).split(
+          "\n").map(Row(_))
     }
 }
 
@@ -391,10 +390,8 @@ case class ShowFunctions(db: Option[String], pattern: Option[String])
       case Some(p) =>
         try {
           val regex = java.util.regex.Pattern.compile(p)
-          sqlContext.sessionState.functionRegistry
-            .listFunction()
-            .filter(regex.matcher(_).matches())
-            .map(Row(_))
+          sqlContext.sessionState.functionRegistry.listFunction()
+            .filter(regex.matcher(_).matches()).map(Row(_))
         } catch {
           // probably will failed in the regex that user provided, then returns empty row.
           case _: Throwable => Seq.empty[Row]
@@ -432,8 +429,8 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
   }
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
-    sqlContext.sessionState.functionRegistry
-      .lookupFunction(functionName) match {
+    sqlContext.sessionState.functionRegistry.lookupFunction(
+      functionName) match {
       case Some(info) =>
         val result =
           Row(s"Function: ${info.getName}") ::

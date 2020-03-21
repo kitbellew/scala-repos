@@ -32,9 +32,8 @@ trait ProjectStructureMatcher {
       assertEquals(
         "Project language level",
         it,
-        roots.LanguageLevelProjectExtension
-          .getInstance(actual)
-          .getLanguageLevel))
+        roots.LanguageLevelProjectExtension.getInstance(
+          actual).getLanguageLevel))
     expected.foreach(modules)(assertProjectModulesEqual(actual))
     expected.foreach(libraries)(assertProjectLibrariesEqual(actual))
   }
@@ -89,10 +88,8 @@ trait ProjectStructureMatcher {
   private def assertModuleContentRootsEqual(module: Module)(
       expected: Seq[String]): Unit = {
     val expectedRoots = expected.map(VfsUtilCore.pathToUrl)
-    val actualRoots = roots.ModuleRootManager
-      .getInstance(module)
-      .getContentEntries
-      .map(_.getUrl)
+    val actualRoots = roots.ModuleRootManager.getInstance(
+      module).getContentEntries.map(_.getUrl)
     assertMatch("Content root", expectedRoots, actualRoots)
   }
 
@@ -206,11 +203,8 @@ trait ProjectStructureMatcher {
 
   private def assertModuleLibrariesEqual(module: Module)(
       expectedLibraries: Seq[library]): Unit = {
-    val actualLibraries = roots.OrderEnumerator
-      .orderEntries(module)
-      .libraryEntries
-      .filter(_.isModuleLevel)
-      .map(_.getLibrary)
+    val actualLibraries = roots.OrderEnumerator.orderEntries(
+      module).libraryEntries.filter(_.isModuleLevel).map(_.getLibrary)
     assertNamesEqual("Module library", expectedLibraries, actualLibraries)
     pairByName(expectedLibraries, actualLibraries).foreach(
       (assertLibraryContentsEqual _).tupled)

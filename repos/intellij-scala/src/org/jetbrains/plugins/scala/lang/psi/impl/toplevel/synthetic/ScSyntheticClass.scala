@@ -165,12 +165,9 @@ class ScSyntheticClass(
       case None => PsiClassType.EMPTY_ARRAY
       case Some(ts) =>
         Array[PsiClassType](
-          JavaPsiFacade
-            .getInstance(project)
-            .getElementFactory
-            .createType(
-              ts.asClass(project).getOrElse(return PsiClassType.EMPTY_ARRAY),
-              PsiSubstitutor.EMPTY))
+          JavaPsiFacade.getInstance(project).getElementFactory.createType(
+            ts.asClass(project).getOrElse(return PsiClassType.EMPTY_ARRAY),
+            PsiSubstitutor.EMPTY))
     }
   }
 }
@@ -251,9 +248,8 @@ class SyntheticClasses(project: Project)
   def disposeComponent() {}
 
   def initComponent() {
-    StartupManager
-      .getInstance(project)
-      .registerPostStartupActivity(new Runnable {
+    StartupManager.getInstance(project).registerPostStartupActivity(
+      new Runnable {
         def run() {
           registerClasses()
         }
@@ -265,12 +261,10 @@ class SyntheticClasses(project: Project)
 
   def registerClasses() {
     all = new mutable.HashMap[String, ScSyntheticClass]
-    file = PsiFileFactory
-      .getInstance(project)
-      .createFileFromText(
-        "dummy." + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
-        ScalaFileType.SCALA_FILE_TYPE,
-        "")
+    file = PsiFileFactory.getInstance(project).createFileFromText(
+      "dummy." + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
+      ScalaFileType.SCALA_FILE_TYPE,
+      "")
 
     val any = registerClass(Any, "Any")
     val manager = any.manager
@@ -396,9 +390,9 @@ class SyntheticClasses(project: Project)
     //todo: remove all scope => method value
     //todo: handle process cancelled exception
     try {
-      val stringClass = ScalaPsiManager
-        .instance(project)
-        .getCachedClass(GlobalSearchScope.allScope(project), "java.lang.String")
+      val stringClass = ScalaPsiManager.instance(project).getCachedClass(
+        GlobalSearchScope.allScope(project),
+        "java.lang.String")
       stringClass.map { stringClass =>
         scriptSyntheticValues += new ScSyntheticValue(
           manager,
@@ -413,13 +407,11 @@ class SyntheticClasses(project: Project)
     //register synthetic objects
     syntheticObjects = new mutable.HashSet[ScObject]
     def registerObject(fileText: String) {
-      val dummyFile = PsiFileFactory
-        .getInstance(manager.getProject)
-        .createFileFromText(
+      val dummyFile =
+        PsiFileFactory.getInstance(manager.getProject).createFileFromText(
           "dummy." + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
           ScalaFileType.SCALA_FILE_TYPE,
-          fileText)
-        .asInstanceOf[ScalaFile]
+          fileText).asInstanceOf[ScalaFile]
       val obj = dummyFile.typeDefinitions(0).asInstanceOf[ScObject]
       syntheticObjects += obj
     }

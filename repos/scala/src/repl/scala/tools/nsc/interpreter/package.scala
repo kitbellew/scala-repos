@@ -62,9 +62,9 @@ package object interpreter extends ReplConfig with ReplStrings {
       ru.runtimeMirror(ourClassloader),
       new TypeCreator {
         def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
-          m.staticClass(classTag[T].runtimeClass.getName)
-            .toTypeConstructor
-            .asInstanceOf[U#Type]
+          m.staticClass(
+            classTag[T].runtimeClass.getName).toTypeConstructor.asInstanceOf[
+            U#Type]
       }
     )
 

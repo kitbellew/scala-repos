@@ -101,10 +101,9 @@ trait ExecutionContext {
       // which instantiates and runs them
       mode match {
         case _: HadoopMode =>
-          val reducerEstimatorStrategy: Seq[FlowStepStrategy[JobConf]] = config
-            .get(Config.ReducerEstimators)
-            .toList
-            .map(_ => ReducerEstimatorStepStrategy)
+          val reducerEstimatorStrategy: Seq[FlowStepStrategy[JobConf]] =
+            config.get(Config.ReducerEstimators).toList.map(_ =>
+              ReducerEstimatorStepStrategy)
 
           val otherStrategies: Seq[FlowStepStrategy[JobConf]] =
             config.getFlowStepStrategies.map {

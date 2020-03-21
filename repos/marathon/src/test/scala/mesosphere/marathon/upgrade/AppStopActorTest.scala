@@ -132,8 +132,8 @@ class AppStopActorTest
     val app = AppDefinition(id = PathId("app"), instances = 2)
     val promise = Promise[Unit]()
 
-    when(taskTracker.appTasksLaunchedSync(app.id))
-      .thenReturn(Iterable.empty[Task])
+    when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(
+      Iterable.empty[Task])
 
     val ref = TestActorRef[AppStopActor](
       Props(

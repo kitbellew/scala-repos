@@ -88,8 +88,7 @@ trait Helpers { self: Global =>
     } else {
       symbolIndexerName(sym.owner) + "." + sym.encodedName
     }
-    name
-      .replaceAll("\\.package\\$\\$", ".")
+    name.replaceAll("\\.package\\$\\$", ".")
       .replaceAll("\\.package\\$\\.", ".")
       .replaceAll("\\.package\\$(?!$)", ".")
       .replaceAll("\\.package\\.", ".")
@@ -122,9 +121,8 @@ trait Helpers { self: Global =>
     if (withTpeArgs) {
       withoutArgs + (if (tpe.typeArgs.size > 0) {
                        "[" +
-                         tpe.typeArgs
-                           .map(typeFullName(_, true))
-                           .mkString(", ") +
+                         tpe.typeArgs.map(typeFullName(_, true)).mkString(
+                           ", ") +
                          "]"
                      } else { "" })
     } else withoutArgs

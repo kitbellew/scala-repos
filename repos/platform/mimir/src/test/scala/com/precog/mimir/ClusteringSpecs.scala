@@ -87,13 +87,11 @@ trait ClusteringLibSpecs[M[+_]]
         case _ => sys.error("not supported")
       }
 
-    val clusters: Array[Array[Double]] = clusterMap.values
-      .map({ sval =>
-        val arr = getPoint(sval)
-        arr must haveSize(dimension)
-        arr.toArray
-      })
-      .toArray
+    val clusters: Array[Array[Double]] = clusterMap.values.map({ sval =>
+      val arr = getPoint(sval)
+      arr must haveSize(dimension)
+      arr.toArray
+    }).toArray
 
     val cost = kMediansCost(points, clusters)
 

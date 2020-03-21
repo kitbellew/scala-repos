@@ -49,13 +49,11 @@ private[spark] class ZippedWithIndexRDD[T: ClassTag](prev: RDD[T])
     } else if (n == 1) {
       Array(0L)
     } else {
-      prev.context
-        .runJob(
-          prev,
-          Utils.getIteratorSize _,
-          0 until n - 1 // do not need to count the last partition
-        )
-        .scanLeft(0L)(_ + _)
+      prev.context.runJob(
+        prev,
+        Utils.getIteratorSize _,
+        0 until n - 1 // do not need to count the last partition
+      ).scanLeft(0L)(_ + _)
     }
   }
 

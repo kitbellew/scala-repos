@@ -244,10 +244,8 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
     for ((k, v) <- self.iterator) {
       hashMap.setMerge(k, v, arbitraryMerge)
     }
-    this
-      .withIndex(hashMap.keySet)
-      .withValues(hashMap._values)
-      .withMask(hashMap.keySet.getBitSet)
+    this.withIndex(hashMap.keySet).withValues(hashMap._values).withMask(
+      hashMap.keySet.getBitSet)
   }
 
   /**

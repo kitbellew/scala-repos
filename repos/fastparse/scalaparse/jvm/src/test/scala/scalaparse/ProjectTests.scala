@@ -31,8 +31,8 @@ object ProjectTests extends TestSuite {
         } yield Future {
           if (filename.endsWith(".scala") && filter(filename)) {
             val code = new String(
-              java.nio.file.Files
-                .readAllBytes(java.nio.file.Paths.get(filename)))
+              java.nio.file.Files.readAllBytes(
+                java.nio.file.Paths.get(filename)))
             if (!ScalacParser.checkParseFails(code)) {
               print(".")
               TestUtil.check(code, tag = filename)
@@ -45,11 +45,9 @@ object ProjectTests extends TestSuite {
       }
 
       'test - {
-        val testSource = scala.io.Source
-          .fromInputStream(
-            getClass.getResourceAsStream("/scalaparse/Test.scala")
-          )
-          .mkString
+        val testSource = scala.io.Source.fromInputStream(
+          getClass.getResourceAsStream("/scalaparse/Test.scala")
+        ).mkString
         TestUtil.check(testSource)
       }
       def checkRepo(filter: String => Boolean = _ => true)(implicit

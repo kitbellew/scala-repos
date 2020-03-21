@@ -37,7 +37,8 @@ private[upgrade] object DeploymentPlanReverter {
 
       val ids = originalById.keys ++ targetById.keys
 
-      ids.iterator
+      ids
+        .iterator
         .map { id => originalById.get(id) -> targetById.get(id) }
         .to[Seq]
     }
@@ -54,8 +55,8 @@ private[upgrade] object DeploymentPlanReverter {
 
     // We need to revert app changes first so that apps have already been deleted when we check
     // a group is empty and can be removed.
-    (revertAppChanges(newVersion, appChanges) _)
-      .andThen(revertGroupChanges(newVersion, groupChanges))
+    (revertAppChanges(newVersion, appChanges) _).andThen(
+      revertGroupChanges(newVersion, groupChanges))
   }
 
   /**
@@ -141,10 +142,8 @@ private[upgrade] object DeploymentPlanReverter {
       case (change1, change2) =>
         // both groups are supposed to have the same path id (if there are any)
         def pathId(change: (Option[Group], Option[Group])): PathId = {
-          Seq(change._1, change._2).flatten
-            .map(_.id)
-            .headOption
-            .getOrElse(PathId.empty)
+          Seq(change._1, change._2).flatten.map(_.id).headOption.getOrElse(
+            PathId.empty)
         }
 
         pathId(change1) > pathId(change2)

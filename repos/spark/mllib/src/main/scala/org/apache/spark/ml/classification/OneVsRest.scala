@@ -128,9 +128,9 @@ final class OneVsRestModel private[ml] (
           val newColumns = origCols ++ List(col(tmpColName))
 
           // switch out the intermediate column with the accumulator column
-          updatedDataset
-            .select(newColumns: _*)
-            .withColumnRenamed(tmpColName, accColName)
+          updatedDataset.select(newColumns: _*).withColumnRenamed(
+            tmpColName,
+            accColName)
       }
 
     if (handlePersistence) {
@@ -211,9 +211,8 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
       // classes are assumed to be numbered from 0,...,maxLabelIndex
       maxLabelIndex.toInt + 1
     }
-    val numClasses = MetadataUtils
-      .getNumClasses(labelSchema)
-      .fold(computeNumClasses())(identity)
+    val numClasses = MetadataUtils.getNumClasses(labelSchema).fold(
+      computeNumClasses())(identity)
 
     val multiclassLabeled = dataset.select($(labelCol), $(featuresCol))
 
@@ -224,24 +223,22 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     }
 
     // create k columns, one for each binary classifier.
-    val models = Range(0, numClasses).par
-      .map { index =>
-        // generate new label metadata for the binary problem.
-        val newLabelMeta =
-          BinaryAttribute.defaultAttr.withName("label").toMetadata()
-        val labelColName = "mc2b$" + index
-        val trainingDataset = multiclassLabeled.withColumn(
-          labelColName,
-          when(col($(labelCol)) === index.toDouble, 1.0).otherwise(0.0),
-          newLabelMeta)
-        val classifier = getClassifier
-        val paramMap = new ParamMap()
-        paramMap.put(classifier.labelCol -> labelColName)
-        paramMap.put(classifier.featuresCol -> getFeaturesCol)
-        paramMap.put(classifier.predictionCol -> getPredictionCol)
-        classifier.fit(trainingDataset, paramMap)
-      }
-      .toArray[ClassificationModel[_, _]]
+    val models = Range(0, numClasses).par.map { index =>
+      // generate new label metadata for the binary problem.
+      val newLabelMeta =
+        BinaryAttribute.defaultAttr.withName("label").toMetadata()
+      val labelColName = "mc2b$" + index
+      val trainingDataset = multiclassLabeled.withColumn(
+        labelColName,
+        when(col($(labelCol)) === index.toDouble, 1.0).otherwise(0.0),
+        newLabelMeta)
+      val classifier = getClassifier
+      val paramMap = new ParamMap()
+      paramMap.put(classifier.labelCol -> labelColName)
+      paramMap.put(classifier.featuresCol -> getFeaturesCol)
+      paramMap.put(classifier.predictionCol -> getPredictionCol)
+      classifier.fit(trainingDataset, paramMap)
+    }.toArray[ClassificationModel[_, _]]
 
     if (handlePersistence) {
       multiclassLabeled.unpersist()
@@ -254,8 +251,10 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
         NominalAttribute.defaultAttr.withName("label").withNumValues(numClasses)
       case attr: Attribute => attr
     }
-    val model = new OneVsRestModel(uid, labelAttribute.toMetadata(), models)
-      .setParent(this)
+    val model = new OneVsRestModel(
+      uid,
+      labelAttribute.toMetadata(),
+      models).setParent(this)
     copyValues(model)
   }
 

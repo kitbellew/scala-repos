@@ -17,8 +17,8 @@ private[akka] object GroupByProcessorImpl {
       settings: ActorMaterializerSettings,
       maxSubstreams: Int,
       keyFor: Any ⇒ Any): Props =
-    Props(new GroupByProcessorImpl(settings, maxSubstreams, keyFor))
-      .withDeploy(Deploy.local)
+    Props(new GroupByProcessorImpl(settings, maxSubstreams, keyFor)).withDeploy(
+      Deploy.local)
 
   private case object Drop
 }

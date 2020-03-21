@@ -172,8 +172,10 @@ class WriteAheadLogBackedBlockRDDSuite
       StreamBlockId(Random.nextInt(), Random.nextInt()))
     data.zip(blockIds).take(numPartitionsInBM).foreach {
       case (block, blockId) =>
-        blockManager
-          .putIterator(blockId, block.iterator, StorageLevel.MEMORY_ONLY_SER)
+        blockManager.putIterator(
+          blockId,
+          block.iterator,
+          StorageLevel.MEMORY_ONLY_SER)
     }
 
     // Generate write ahead log record handles
@@ -189,23 +191,20 @@ class WriteAheadLogBackedBlockRDDSuite
       "Expected blocks not in BlockManager"
     )
     require(
-      blockIds
-        .takeRight(numPartitions - numPartitionsInBM)
-        .forall(blockManager.get(_).isEmpty),
+      blockIds.takeRight(numPartitions - numPartitionsInBM).forall(
+        blockManager.get(_).isEmpty),
       "Unexpected blocks in BlockManager"
     )
 
     // Make sure that the right `numPartitionsInWAL` blocks are in WALs, and other are not
     require(
-      recordHandles
-        .takeRight(numPartitionsInWAL)
-        .forall(s => new File(s.path.stripPrefix("file://")).exists()),
+      recordHandles.takeRight(numPartitionsInWAL).forall(s =>
+        new File(s.path.stripPrefix("file://")).exists()),
       "Expected blocks not in write ahead log"
     )
     require(
-      recordHandles
-        .take(numPartitions - numPartitionsInWAL)
-        .forall(s => !new File(s.path.stripPrefix("file://")).exists()),
+      recordHandles.take(numPartitions - numPartitionsInWAL).forall(s =>
+        !new File(s.path.stripPrefix("file://")).exists()),
       "Unexpected blocks in write ahead log"
     )
 

@@ -48,11 +48,10 @@ case class Cookie(name: String, value: String)(implicit
     sb append value
 
     if (cookieOptions.domain.nonBlank && cookieOptions.domain != "localhost")
-      sb.append("; Domain=")
-        .append({
-          if (!cookieOptions.domain.startsWith(".")) "." + cookieOptions.domain
-          else cookieOptions.domain
-        }.toLowerCase(Locale.ENGLISH))
+      sb.append("; Domain=").append({
+        if (!cookieOptions.domain.startsWith(".")) "." + cookieOptions.domain
+        else cookieOptions.domain
+      }.toLowerCase(Locale.ENGLISH))
 
     val pth = cookieOptions.path
     if (pth.nonBlank) {

@@ -57,8 +57,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         extractMaterializer { mat =>
           complete {
             // explicitly use the materializer:
-            Source
-              .single(s"Materialized by ${mat.##}!")
+            Source.single(s"Materialized by ${mat.##}!")
               .runWith(Sink.head)(mat)
           }
         }
@@ -87,8 +86,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         extractMaterializer { materializer =>
           complete {
             // explicitly use the `materializer`:
-            Source
-              .single(s"Materialized by ${materializer.##}!")
+            Source.single(s"Materialized by ${materializer.##}!")
               .runWith(Sink.head)(materializer)
           }
         }

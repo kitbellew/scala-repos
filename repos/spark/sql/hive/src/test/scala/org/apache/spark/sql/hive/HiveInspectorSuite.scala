@@ -52,11 +52,9 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
 
     val state = udaf.terminatePartial()
 
-    val soi = ObjectInspectorFactory
-      .getReflectionObjectInspector(
-        classOf[UDAFPercentile.State],
-        ObjectInspectorOptions.JAVA)
-      .asInstanceOf[StructObjectInspector]
+    val soi = ObjectInspectorFactory.getReflectionObjectInspector(
+      classOf[UDAFPercentile.State],
+      ObjectInspectorOptions.JAVA).asInstanceOf[StructObjectInspector]
 
     val a = unwrap(state, soi).asInstanceOf[InternalRow]
 
@@ -69,14 +67,12 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     val sfPercentiles = soi.getStructFieldRef("percentiles")
 
     assert(
-      2 === soi
-        .getStructFieldData(b, sfCounts)
+      2 === soi.getStructFieldData(b, sfCounts)
         .asInstanceOf[util.Map[LongWritable, LongWritable]]
         .get(new LongWritable(1L))
         .get())
     assert(
-      0.1 === soi
-        .getStructFieldData(b, sfPercentiles)
+      0.1 === soi.getStructFieldData(b, sfPercentiles)
         .asInstanceOf[util.ArrayList[DoubleWritable]]
         .get(0)
         .get())
@@ -271,8 +267,9 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     val inspector = toInspector(dt)
     checkValues(
       row,
-      unwrap(wrap(InternalRow.fromSeq(row), inspector, dt), inspector)
-        .asInstanceOf[InternalRow],
+      unwrap(
+        wrap(InternalRow.fromSeq(row), inspector, dt),
+        inspector).asInstanceOf[InternalRow],
       dt)
     checkValue(null, unwrap(wrap(null, toInspector(dt), dt), toInspector(dt)))
   }

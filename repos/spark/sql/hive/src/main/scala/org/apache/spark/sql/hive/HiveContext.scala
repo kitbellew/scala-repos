@@ -554,11 +554,9 @@ class HiveContext private[hive] (
   }
 
   private def functionOrMacroDDLPattern(command: String) =
-    Pattern
-      .compile(
-        ".*(create|drop)\\s+(temporary\\s+)?(function|macro).+",
-        Pattern.DOTALL)
-      .matcher(command)
+    Pattern.compile(
+      ".*(create|drop)\\s+(temporary\\s+)?(function|macro).+",
+      Pattern.DOTALL).matcher(command)
 
   protected[hive] def runSqlHive(sql: String): Seq[String] = {
     val command = sql.trim.toLowerCase
@@ -612,10 +610,8 @@ class HiveContext private[hive] (
           // We need the types so we can output struct field names
           val types = analyzed.output.map(_.dataType)
           // Reformat to match hive tab delimited output.
-          result
-            .map(_.zip(types).map(HiveContext.toHiveString))
-            .map(_.mkString("\t"))
-            .toSeq
+          result.map(_.zip(types).map(HiveContext.toHiveString)).map(
+            _.mkString("\t")).toSeq
       }
 
     override def simpleString: String =
@@ -631,9 +627,8 @@ class HiveContext private[hive] (
     // Add jar to Hive and classloader
     executionHive.addJar(path)
     metadataHive.addJar(path)
-    Thread
-      .currentThread()
-      .setContextClassLoader(executionHive.clientLoader.classLoader)
+    Thread.currentThread().setContextClassLoader(
+      executionHive.clientLoader.classLoader)
     super.addJar(path)
   }
 }
@@ -789,25 +784,17 @@ private[hive] object HiveContext {
   protected[sql] def toHiveString(a: (Any, DataType)): String =
     a match {
       case (struct: Row, StructType(fields)) =>
-        struct.toSeq
-          .zip(fields)
-          .map {
-            case (v, t) =>
-              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
-          }
-          .mkString("{", ",", "}")
+        struct.toSeq.zip(fields).map {
+          case (v, t) => s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+        }.mkString("{", ",", "}")
       case (seq: Seq[_], ArrayType(typ, _)) =>
         seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
       case (map: Map[_, _], MapType(kType, vType, _)) =>
-        map
-          .map {
-            case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
-          }
-          .toSeq
-          .sorted
-          .mkString("{", ",", "}")
+        map.map {
+          case (key, value) =>
+            toHiveStructString((key, kType)) + ":" + toHiveStructString(
+              (value, vType))
+        }.toSeq.sorted.mkString("{", ",", "}")
       case (null, _)                     => "NULL"
       case (d: Int, DateType)            => new DateWritable(d).toString
       case (t: Timestamp, TimestampType) => new TimestampWritable(t).toString
@@ -823,25 +810,17 @@ private[hive] object HiveContext {
   protected def toHiveStructString(a: (Any, DataType)): String =
     a match {
       case (struct: Row, StructType(fields)) =>
-        struct.toSeq
-          .zip(fields)
-          .map {
-            case (v, t) =>
-              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
-          }
-          .mkString("{", ",", "}")
+        struct.toSeq.zip(fields).map {
+          case (v, t) => s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+        }.mkString("{", ",", "}")
       case (seq: Seq[_], ArrayType(typ, _)) =>
         seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
       case (map: Map[_, _], MapType(kType, vType, _)) =>
-        map
-          .map {
-            case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
-          }
-          .toSeq
-          .sorted
-          .mkString("{", ",", "}")
+        map.map {
+          case (key, value) =>
+            toHiveStructString((key, kType)) + ":" + toHiveStructString(
+              (value, vType))
+        }.toSeq.sorted.mkString("{", ",", "}")
       case (null, _)                                   => "null"
       case (s: String, StringType)                     => "\"" + s + "\""
       case (decimal, DecimalType())                    => decimal.toString

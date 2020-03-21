@@ -48,10 +48,11 @@ private class OfferMatcherLaunchTokensActor(
     taskStatusUpdateSubscription = all.subscribe(self ! _)
 
     import context.dispatcher
-    periodicSetToken = context.system.scheduler
-      .schedule(0.seconds, conf.launchTokenRefreshInterval().millis)(
-        offerMatcherManager.setLaunchTokens(conf.launchTokens())
-      )
+    periodicSetToken = context.system.scheduler.schedule(
+      0.seconds,
+      conf.launchTokenRefreshInterval().millis)(
+      offerMatcherManager.setLaunchTokens(conf.launchTokens())
+    )
   }
 
   override def postStop(): Unit = {

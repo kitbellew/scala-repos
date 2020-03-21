@@ -15,11 +15,9 @@ import org.jetbrains.plugins.scala.ScalaFileType
 object ScalaKeywordLookupItem {
   def getLookupElement(keyword: String, position: PsiElement): LookupElement = {
     val keywordPsi: PsiElement = ScalaLightKeyword(position.getManager, keyword)
-    LookupElementBuilder
-      .create(keywordPsi, keyword)
-      .withBoldness(true)
-      .withIcon(new EmptyIcon(16, 16))
-      .withInsertHandler(new KeywordInsertHandler(keyword))
+    LookupElementBuilder.create(keywordPsi, keyword).withBoldness(
+      true).withIcon(new EmptyIcon(16, 16)).withInsertHandler(
+      new KeywordInsertHandler(keyword))
   }
 
   class KeywordInsertHandler(keyword: String)
@@ -42,8 +40,9 @@ object ScalaKeywordLookupItem {
               val offset = context.getStartOffset
               val docStart = Math.max(0, context.getStartOffset - 1)
 
-              val seq = context.getDocument.getCharsSequence
-                .subSequence(docStart, offset)
+              val seq = context.getDocument.getCharsSequence.subSequence(
+                docStart,
+                offset)
 
               if (seq.length() == 1 && seq.charAt(0) == '@') return
             }
@@ -54,10 +53,9 @@ object ScalaKeywordLookupItem {
               document.insertString(offset, " ")
             editor.getCaretModel.moveToOffset(offset + 1)
           }
-          val settings = CodeStyleSettingsManager
-            .getInstance(context.getProject)
-            .getCurrentSettings
-            .getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
+          val settings = CodeStyleSettingsManager.getInstance(
+            context.getProject).getCurrentSettings.getCommonSettings(
+            ScalaFileType.SCALA_LANGUAGE)
           context.getCompletionChar match {
             case '(' if parentheses.contains(keyword) =>
               val add = keyword match {
@@ -92,11 +90,9 @@ object ScalaKeywordLookupItem {
             manager.commitDocument(document)
             val file = manager.getPsiFile(document)
             if (file == null) return
-            CodeStyleManager
-              .getInstance(context.getProject)
-              .adjustLineIndent(
-                file,
-                new TextRange(context.getStartOffset, offset))
+            CodeStyleManager.getInstance(context.getProject).adjustLineIndent(
+              file,
+              new TextRange(context.getStartOffset, offset))
           }
       }
     }

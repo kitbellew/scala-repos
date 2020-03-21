@@ -111,9 +111,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             "rebindsuper " + bcs.head + " " + other + " " + other.tpe +
               " " + other.isDeferred)
         }
-        sym = member
-          .matchingSymbol(bcs.head, base.thisType)
-          .suchThat(sym => !sym.hasFlag(DEFERRED | BRIDGE))
+        sym = member.matchingSymbol(bcs.head, base.thisType).suchThat(sym =>
+          !sym.hasFlag(DEFERRED | BRIDGE))
         bcs = bcs.tail
       }
       sym
@@ -128,13 +127,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   def isOverriddenAccessor(member: Symbol, bcs: List[Symbol]): Boolean =
     beforeOwnPhase {
       def hasOverridingAccessor(clazz: Symbol) = {
-        clazz.info
-          .nonPrivateDecl(member.name)
-          .alternatives
-          .exists(sym =>
-            isConcreteAccessor(sym) &&
-              !sym.hasFlag(MIXEDIN) &&
-              matchesType(sym.tpe, member.tpe, alwaysMatchSimple = true))
+        clazz.info.nonPrivateDecl(member.name).alternatives.exists(sym =>
+          isConcreteAccessor(sym) &&
+            !sym.hasFlag(MIXEDIN) &&
+            matchesType(sym.tpe, member.tpe, alwaysMatchSimple = true))
       }
       (bcs.head != member.owner
       && (hasOverridingAccessor(bcs.head) || isOverriddenAccessor(
@@ -277,11 +273,13 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
            if isImplementedStatically(member)) {
         member overridingSymbol clazz match {
           case NoSymbol =>
-            if (clazz.info
-                  .findMember(member.name, 0, 0L, stableOnly = false)
-                  .alternatives contains member)
-              cloneAndAddMixinMember(mixinClass, member)
-                .asInstanceOf[TermSymbol] setAlias member
+            if (clazz.info.findMember(
+                  member.name,
+                  0,
+                  0L,
+                  stableOnly = false).alternatives contains member)
+              cloneAndAddMixinMember(mixinClass, member).asInstanceOf[
+                TermSymbol] setAlias member
           case _ =>
         }
       }
@@ -325,9 +323,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                   // carries over the current entry in the type history)
                   val sym = enteringErasure {
                     // so we have a type history entry before erasure
-                    clazz
-                      .newValue(mixinMember.localName, mixinMember.pos)
-                      .setInfo(mixinMember.tpe.resultType)
+                    clazz.newValue(
+                      mixinMember.localName,
+                      mixinMember.pos).setInfo(mixinMember.tpe.resultType)
                   }
                   sym updateInfo mixinMember.tpe.resultType // info at current phase
 
@@ -351,13 +349,14 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             case NoSymbol =>
               reporter.error(
                 clazz.pos,
-                "Member %s of mixin %s is missing a concrete super implementation."
-                  .format(mixinMember.alias, mixinClass))
+                "Member %s of mixin %s is missing a concrete super implementation.".format(
+                  mixinMember.alias,
+                  mixinClass))
             case alias1 =>
               superAccessor.asInstanceOf[TermSymbol] setAlias alias1
           }
-        } else if (mixinMember.isMethod && mixinMember.isModule && mixinMember
-                     .hasNoFlags(LIFTED | BRIDGE)) {
+        } else if (mixinMember.isMethod && mixinMember.isModule && mixinMember.hasNoFlags(
+                     LIFTED | BRIDGE)) {
           // mixin objects: todo what happens with abstract objects?
           addMember(
             clazz,
@@ -705,9 +704,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           PRIVATE)
         val params = defSym newSyntheticValueParams args.map(_.symbol.tpe)
         defSym setInfoAndEnter MethodType(params, lzyVal.tpe.resultType)
-        val rhs: Tree = gen
-          .mkSynchronizedCheck(attrThis, cond, syncBody, stats)
-          .changeOwner(currentOwner -> defSym)
+        val rhs: Tree =
+          gen.mkSynchronizedCheck(attrThis, cond, syncBody, stats).changeOwner(
+            currentOwner -> defSym)
         val strictSubst =
           new TreeSymSubstituterWithCopying(args.map(_.symbol), params)
         addDef(
@@ -845,10 +844,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         val mask = maskForOffset(offset, sym, kind)
         val msg = s"Uninitialized field: ${unit.source}: ${pos.line}"
         val result =
-          IF(mkTest(clazz, mask, bitmapSym, equalToZero = false, kind))
-            .THEN(retVal)
-            .ELSE(Throw(
-              NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
+          IF(mkTest(clazz, mask, bitmapSym, equalToZero = false, kind)).THEN(
+            retVal).ELSE(
+            Throw(NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
 
         typedPos(pos)(BLOCK(result, retVal))
       }

@@ -13,8 +13,13 @@ class CoproductTests extends CatsSuite {
 
   checkAll(
     "Coproduct[Option, Option, ?]",
-    TraverseTests[Coproduct[Option, Option, ?]]
-      .traverse[Int, Int, Int, Int, Option, Option])
+    TraverseTests[Coproduct[Option, Option, ?]].traverse[
+      Int,
+      Int,
+      Int,
+      Int,
+      Option,
+      Option])
   checkAll(
     "Traverse[Coproduct[Option, Option, ?]]",
     SerializableTests.serializable(Traverse[Coproduct[Option, Option, ?]]))

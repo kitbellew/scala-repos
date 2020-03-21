@@ -71,9 +71,8 @@ object CascadingBinaryComparator {
              * Scalding typed-API ALWAYS puts the key into field position 0.
              * If OrderedSerialization is enabled, this must be a CascadingBinaryComparator
              */
-            if (fields
-                  .getComparators()(0)
-                  .isInstanceOf[CascadingBinaryComparator[_]])
+            if (fields.getComparators()(0).isInstanceOf[
+                  CascadingBinaryComparator[_]])
               Success(())
             else
               error(

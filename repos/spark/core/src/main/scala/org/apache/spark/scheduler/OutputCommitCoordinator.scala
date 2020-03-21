@@ -216,8 +216,10 @@ private[spark] object OutputCommitCoordinator {
         context: RpcCallContext): PartialFunction[Any, Unit] = {
       case AskPermissionToCommitOutput(stage, partition, attemptNumber) =>
         context.reply(
-          outputCommitCoordinator
-            .handleAskPermissionToCommit(stage, partition, attemptNumber))
+          outputCommitCoordinator.handleAskPermissionToCommit(
+            stage,
+            partition,
+            attemptNumber))
     }
   }
 }

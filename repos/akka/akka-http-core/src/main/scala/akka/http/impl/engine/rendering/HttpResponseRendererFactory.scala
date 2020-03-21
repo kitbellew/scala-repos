@@ -322,8 +322,8 @@ private[http] class HttpResponseRendererFactory(
 
           def byteStrings(entityBytes: ⇒ Source[ByteString, Any])
               : Source[ResponseRenderingOutput, Any] =
-            renderByteStrings(r, entityBytes, skipEntity = noEntity)
-              .map(ResponseRenderingOutput.HttpData(_))
+            renderByteStrings(r, entityBytes, skipEntity = noEntity).map(
+              ResponseRenderingOutput.HttpData(_))
 
           def completeResponseRendering(
               entity: ResponseEntity): StrictOrStreamed =

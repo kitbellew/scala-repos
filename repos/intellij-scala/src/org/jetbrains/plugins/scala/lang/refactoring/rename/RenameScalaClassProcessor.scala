@@ -30,8 +30,8 @@ class RenameScalaClassProcessor
     extends RenameJavaClassProcessor
     with ScalaRenameProcessor {
   override def canProcessElement(element: PsiElement): Boolean = {
-    element.isInstanceOf[ScTypeDefinition] || element
-      .isInstanceOf[PsiClassWrapper] || element.isInstanceOf[ScTypeParam]
+    element.isInstanceOf[ScTypeDefinition] || element.isInstanceOf[
+      PsiClassWrapper] || element.isInstanceOf[ScTypeParam]
   }
 
   override def substituteElementToRename(
@@ -55,9 +55,7 @@ class RenameScalaClassProcessor
       case td: ScTypeDefinition =>
         ScalaPsiUtil.getCompanionModule(td) match {
           case Some(companion)
-              if ScalaApplicationSettings
-                .getInstance()
-                .RENAME_COMPANION_MODULE =>
+              if ScalaApplicationSettings.getInstance().RENAME_COMPANION_MODULE =>
             allRenames.put(companion, newName)
           case _ =>
         }
@@ -79,13 +77,12 @@ class RenameScalaClassProcessor
           case commentOwner: ScDocCommentOwner =>
             commentOwner.getDocComment match {
               case comment: ScDocComment =>
-                comment
-                  .findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG)
-                  .foreach {
-                    b =>
-                      if (b.getValueElement != null && b.getValueElement.getText == docTagParam.name)
-                        allRenames.put(b.getValueElement, newName)
-                  }
+                comment.findTagsByName(
+                  MyScaladocParsing.TYPE_PARAM_TAG).foreach {
+                  b =>
+                    if (b.getValueElement != null && b.getValueElement.getText == docTagParam.name)
+                      allRenames.put(b.getValueElement, newName)
+                }
               case _ =>
             }
           case _ =>
@@ -177,8 +174,8 @@ class ScalaClassRenameDialog(
       chbRenameCompanion.setText(
         ScalaBundle.message("rename.companion.module", companionType.get))
       chbRenameCompanion.setSelected(true)
-      val panel = Option(super.createCenterPanel())
-        .getOrElse(new JPanel(new BorderLayout()))
+      val panel = Option(super.createCenterPanel()).getOrElse(
+        new JPanel(new BorderLayout()))
       panel.add(chbRenameCompanion, BorderLayout.WEST)
       panel
     } else null

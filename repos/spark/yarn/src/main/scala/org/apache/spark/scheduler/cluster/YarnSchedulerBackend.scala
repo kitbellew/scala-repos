@@ -141,8 +141,7 @@ private[spark] abstract class YarnSchedulerBackend(
   }
 
   override def sufficientResourcesRegistered(): Boolean = {
-    totalRegisteredExecutors
-      .get() >= totalExpectedExecutors * minRegisteredRatio
+    totalRegisteredExecutors.get() >= totalExpectedExecutors * minRegisteredRatio
   }
 
   /**
@@ -210,8 +209,9 @@ private[spark] abstract class YarnSchedulerBackend(
     override def onDisconnected(rpcAddress: RpcAddress): Unit = {
       addressToExecutorId.get(rpcAddress).foreach { executorId =>
         if (disableExecutor(executorId)) {
-          yarnSchedulerEndpoint
-            .handleExecutorDisconnectedFromDriver(executorId, rpcAddress)
+          yarnSchedulerEndpoint.handleExecutorDisconnectedFromDriver(
+            executorId,
+            rpcAddress)
         }
       }
     }

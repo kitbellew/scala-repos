@@ -58,8 +58,9 @@ class LeaderProxyFilterTest extends MarathonSpec {
     filter.doFilter(request, response, chain)
 
     // we pass that request down the chain
-    verify(response, times(1))
-      .addHeader(LeaderProxyFilter.HEADER_MARATHON_LEADER, "http://host:10000")
+    verify(response, times(1)).addHeader(
+      LeaderProxyFilter.HEADER_MARATHON_LEADER,
+      "http://host:10000")
     verify(leaderInfo, times(1)).elected
     verify(chain, times(1)).doFilter(request, response)
   }
@@ -98,8 +99,10 @@ class LeaderProxyFilterTest extends MarathonSpec {
     verify(leaderInfo, times(1)).currentLeaderHostPort()
     verify(request, atLeastOnce()).getRequestURI
     verify(request, atLeastOnce()).getQueryString
-    verify(forwarder, times(1))
-      .forward(new URL("http://otherhost:9999/test"), request, response)
+    verify(forwarder, times(1)).forward(
+      new URL("http://otherhost:9999/test"),
+      request,
+      response)
   }
 
   test("forward to leader with query string") {
@@ -140,8 +143,10 @@ class LeaderProxyFilterTest extends MarathonSpec {
     verify(leaderInfo, times(1)).currentLeaderHostPort()
     verify(request, atLeastOnce()).getRequestURI
     verify(request, atLeastOnce()).getQueryString
-    verify(forwarder, times(1))
-      .forward(new URL("https://otherhost:9999/test"), request, response)
+    verify(forwarder, times(1)).forward(
+      new URL("https://otherhost:9999/test"),
+      request,
+      response)
   }
 
   test(
@@ -162,8 +167,10 @@ class LeaderProxyFilterTest extends MarathonSpec {
     // we pass that request down the chain
     verify(leaderInfo, times(4)).elected
     verify(leaderInfo, times(4)).currentLeaderHostPort()
-    verify(forwarder, times(1))
-      .forward(new URL("http://otherhost:9999/test"), request, response)
+    verify(forwarder, times(1)).forward(
+      new URL("http://otherhost:9999/test"),
+      request,
+      response)
     verify(request, atLeastOnce()).getRequestURI
     verify(request, atLeastOnce()).getQueryString
   }
@@ -182,8 +189,9 @@ class LeaderProxyFilterTest extends MarathonSpec {
     // we pass that request down the chain
     verify(leaderInfo, times(4)).elected
     verify(leaderInfo, times(3)).currentLeaderHostPort()
-    verify(response, times(1))
-      .addHeader(LeaderProxyFilter.HEADER_MARATHON_LEADER, "http://host:10000")
+    verify(response, times(1)).addHeader(
+      LeaderProxyFilter.HEADER_MARATHON_LEADER,
+      "http://host:10000")
     verify(chain, times(1)).doFilter(request, response)
   }
 

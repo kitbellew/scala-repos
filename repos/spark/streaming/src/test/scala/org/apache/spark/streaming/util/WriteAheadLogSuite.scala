@@ -302,8 +302,10 @@ class FileBasedWriteAheadLogSuite
       val t = new Thread() {
         override def run() {
           // run the calculation on a separate thread so that we can release the latch
-          val iterator = FileBasedWriteAheadLog
-            .seqToParIterator[Int, Int](executionContext, testSeq, handle)
+          val iterator = FileBasedWriteAheadLog.seqToParIterator[Int, Int](
+            executionContext,
+            testSeq,
+            handle)
           collected = iterator.toSeq
         }
       }
@@ -527,17 +529,15 @@ class BatchedWriteAheadLogSuite
     val buffers =
       events.map(e => Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
     val batched = BatchedWriteAheadLog.aggregate(buffers)
-    val deaggregate = BatchedWriteAheadLog
-      .deaggregate(batched)
-      .map(buffer =>
-        Utils.deserialize[ReceivedBlockTrackerLogEvent](buffer.array()))
+    val deaggregate = BatchedWriteAheadLog.deaggregate(batched).map(buffer =>
+      Utils.deserialize[ReceivedBlockTrackerLogEvent](buffer.array()))
 
     assert(deaggregate.toSeq === events)
   }
 
   test("BatchedWriteAheadLog - failures in wrappedLog get bubbled up") {
-    when(wal.write(any[ByteBuffer], anyLong))
-      .thenThrow(new RuntimeException("Hello!"))
+    when(wal.write(any[ByteBuffer], anyLong)).thenThrow(
+      new RuntimeException("Hello!"))
     // the BatchedWriteAheadLog should bubble up any exceptions that may have happened during writes
     val batchedWal = new BatchedWriteAheadLog(wal, sparkConf)
 
@@ -605,9 +605,8 @@ class BatchedWriteAheadLogSuite
       // in order of timestamp, and we need the last element.
       val bufferCaptor = ArgumentCaptor.forClass(classOf[ByteBuffer])
       verify(wal, times(1)).write(bufferCaptor.capture(), meq(12L))
-      val records = BatchedWriteAheadLog
-        .deaggregate(bufferCaptor.getValue)
-        .map(byteBufferToString)
+      val records = BatchedWriteAheadLog.deaggregate(bufferCaptor.getValue).map(
+        byteBufferToString)
       assert(records.toSet === queuedEvents)
     }
   }
@@ -793,15 +792,11 @@ object WriteAheadLogSuite {
 
     if (fileSystem.exists(logDirectoryPath) &&
         fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
-      fileSystem
-        .listStatus(logDirectoryPath)
-        .map { _.getPath() }
-        .sortBy {
-          _.getName().split("-")(1).toLong
-        }
-        .map {
-          _.toString.stripPrefix("file:")
-        }
+      fileSystem.listStatus(logDirectoryPath).map { _.getPath() }.sortBy {
+        _.getName().split("-")(1).toLong
+      }.map {
+        _.toString.stripPrefix("file:")
+      }
     } else {
       Seq.empty
     }

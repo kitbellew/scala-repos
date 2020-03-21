@@ -61,9 +61,8 @@ trait RequestBodyHandlingSpec
 
     "gracefully handle early body parser termination" in withServer(
       EssentialAction { rh =>
-        Accumulator(Sink.ignore)
-          .through(Flow[ByteString].take(10))
-          .map(_ => Results.Ok)
+        Accumulator(Sink.ignore).through(Flow[ByteString].take(10)).map(_ =>
+          Results.Ok)
       }) { port =>
       val body = new String(Random.alphanumeric.take(50 * 1024).toArray)
       // Trickle feed is important, otherwise it won't switch to ignoring the body.

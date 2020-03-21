@@ -24,9 +24,9 @@ class GoToImplementationTest
       """.stripMargin('|').replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
 
-    val targets = new GotoImplementationHandler()
-      .getSourceAndTargetElements(getEditorAdapter, getFileAdapter)
-      .targets
+    val targets = new GotoImplementationHandler().getSourceAndTargetElements(
+      getEditorAdapter,
+      getFileAdapter).targets
     assert(targets.length == 1, s"Wrong number of targets: ${targets.length}")
   }
 }

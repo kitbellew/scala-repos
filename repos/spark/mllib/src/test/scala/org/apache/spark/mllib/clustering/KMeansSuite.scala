@@ -272,26 +272,23 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     var model = KMeans.train(rdd, k = 5, maxIterations = 1)
 
     assert(
-      model.clusterCenters
-        .sortBy(VectorWithCompare(_))
-        .zip(points.sortBy(VectorWithCompare(_)))
-        .forall(x => x._1 ~== (x._2) absTol 1e-5))
+      model.clusterCenters.sortBy(VectorWithCompare(_))
+        .zip(points.sortBy(VectorWithCompare(_))).forall(x =>
+          x._1 ~== (x._2) absTol 1e-5))
 
     // Iterations of Lloyd's should not change the answer either
     model = KMeans.train(rdd, k = 5, maxIterations = 10)
     assert(
-      model.clusterCenters
-        .sortBy(VectorWithCompare(_))
-        .zip(points.sortBy(VectorWithCompare(_)))
-        .forall(x => x._1 ~== (x._2) absTol 1e-5))
+      model.clusterCenters.sortBy(VectorWithCompare(_))
+        .zip(points.sortBy(VectorWithCompare(_))).forall(x =>
+          x._1 ~== (x._2) absTol 1e-5))
 
     // Neither should more runs
     model = KMeans.train(rdd, k = 5, maxIterations = 10, runs = 5)
     assert(
-      model.clusterCenters
-        .sortBy(VectorWithCompare(_))
-        .zip(points.sortBy(VectorWithCompare(_)))
-        .forall(x => x._1 ~== (x._2) absTol 1e-5))
+      model.clusterCenters.sortBy(VectorWithCompare(_))
+        .zip(points.sortBy(VectorWithCompare(_))).forall(x =>
+          x._1 ~== (x._2) absTol 1e-5))
   }
 
   test("two clusters") {
@@ -391,13 +388,11 @@ class KMeansClusterSuite extends SparkFunSuite with LocalClusterSparkContext {
   test("task size should be small in both training and prediction") {
     val m = 4
     val n = 200000
-    val points = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val points = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i => Vectors.dense(Array.fill(n)(random.nextDouble)))
-      }
-      .cache()
+    }.cache()
     for (initMode <- Seq(KMeans.RANDOM, KMeans.K_MEANS_PARALLEL)) {
       // If we serialize data directly in the task closure, the size of the serialized task would be
       // greater than 1MB and hence Spark would throw an error.

@@ -113,13 +113,10 @@ object MailerSpec extends Specification {
     }
 
     "deliver emails with attachments as mixed multipart" in {
-      val attachmentBytes = Source
-        .fromInputStream(
-          getClass.getClassLoader.getResourceAsStream(
-            "net/liftweb/util/Html5ParserSpec.page1.html")
-        )
-        .map(_.toByte)
-        .toArray
+      val attachmentBytes = Source.fromInputStream(
+        getClass.getClassLoader.getResourceAsStream(
+          "net/liftweb/util/Html5ParserSpec.page1.html")
+      ).map(_.toByte).toArray
       val msg = doNewMessage {
         sendMail(
           From("sender@nowhere.com"),

@@ -55,8 +55,7 @@ class MarathonTaskTest extends MarathonSpec with GivenWhenThen with Matchers {
       host: String,
       port: Int,
       version: Option[String]) = {
-    val builder = MarathonTask
-      .newBuilder()
+    val builder = MarathonTask.newBuilder()
       .setHost(host)
       .addAllPorts(Lists.newArrayList(port))
       .setId(id)

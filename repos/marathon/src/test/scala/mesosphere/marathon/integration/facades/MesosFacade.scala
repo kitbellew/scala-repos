@@ -32,12 +32,9 @@ object MesosFacade {
       resources.isEmpty || resources.values.forall(_.isEmpty)
 
     override def toString: String = {
-      s"{" + resources.toSeq
-        .sortBy(_._1)
-        .map {
-          case (k, v) => s"$k: $v"
-        }
-        .mkString(", ") + " }"
+      s"{" + resources.toSeq.sortBy(_._1).map {
+        case (k, v) => s"$k: $v"
+      }.mkString(", ") + " }"
     }
   }
   object ITResources {

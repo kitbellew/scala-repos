@@ -151,15 +151,13 @@ private[spark] object TestUtils {
     } else {
       Seq()
     }
-    compiler
-      .getTask(
-        null,
-        null,
-        null,
-        options.asJava,
-        null,
-        Arrays.asList(sourceFile))
-      .call()
+    compiler.getTask(
+      null,
+      null,
+      null,
+      options.asJava,
+      null,
+      Arrays.asList(sourceFile)).call()
 
     val fileName = className + ".class"
     val result = new File(fileName)

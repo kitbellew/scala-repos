@@ -42,8 +42,7 @@ trait PasswordTypedField extends TypedField[String] {
   private var invalidMsg = ""
 
   def match_?(toTest: String): Boolean =
-    valueBox
-      .filter(_.length > 0)
+    valueBox.filter(_.length > 0)
       .flatMap(p => tryo(BCrypt.checkpw(toTest, p)))
       .openOr(false)
 

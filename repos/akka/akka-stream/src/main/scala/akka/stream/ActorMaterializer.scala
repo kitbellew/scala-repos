@@ -74,9 +74,9 @@ object ActorMaterializer {
       materializerSettings,
       system.dispatchers,
       context.actorOf(
-        StreamSupervisor
-          .props(materializerSettings, haveShutDown)
-          .withDispatcher(materializerSettings.dispatcher),
+        StreamSupervisor.props(
+          materializerSettings,
+          haveShutDown).withDispatcher(materializerSettings.dispatcher),
         StreamSupervisor.nextName()),
       haveShutDown,
       FlowNames(system).name.copy(namePrefix))

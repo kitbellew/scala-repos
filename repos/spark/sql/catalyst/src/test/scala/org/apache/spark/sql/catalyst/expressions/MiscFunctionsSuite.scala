@@ -152,9 +152,8 @@ class MiscFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     val seed = scala.util.Random.nextInt()
     test(s"murmur3 hash: ${inputSchema.simpleString}") {
       for (_ <- 1 to 10) {
-        val input = encoder
-          .toRow(inputGenerator.apply().asInstanceOf[Row])
-          .asInstanceOf[UnsafeRow]
+        val input = encoder.toRow(
+          inputGenerator.apply().asInstanceOf[Row]).asInstanceOf[UnsafeRow]
         val literals =
           input.toSeq(inputSchema).zip(inputSchema.map(_.dataType)).map {
             case (value, dt) => Literal.create(value, dt)

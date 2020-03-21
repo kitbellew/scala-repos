@@ -783,8 +783,9 @@ class GroupCoordinator(
 
     group.transitionTo(PreparingRebalance)
     info(
-      "Preparing to restabilize group %s with old generation %s"
-        .format(group.groupId, group.generationId))
+      "Preparing to restabilize group %s with old generation %s".format(
+        group.groupId,
+        group.generationId))
 
     val rebalanceTimeout = group.rebalanceTimeout
     val delayedRebalance = new DelayedJoin(this, group, rebalanceTimeout)
@@ -830,15 +831,17 @@ class GroupCoordinator(
           group.transitionTo(Dead)
           groupManager.removeGroup(group)
           info(
-            "Group %s generation %s is dead and removed"
-              .format(group.groupId, group.generationId))
+            "Group %s generation %s is dead and removed".format(
+              group.groupId,
+              group.generationId))
         }
       }
       if (!group.is(Dead)) {
         group.initNextGeneration()
         info(
-          "Stabilized group %s generation %s"
-            .format(group.groupId, group.generationId))
+          "Stabilized group %s generation %s".format(
+            group.groupId,
+            group.generationId))
 
         // trigger the awaiting join group response callback for all the members after rebalancing
         for (member <- group.allMemberMetadata) {

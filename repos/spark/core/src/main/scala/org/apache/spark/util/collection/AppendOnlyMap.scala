@@ -279,8 +279,11 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
     }
     assert(curSize == newIndex + (if (haveNullValue) 1 else 0))
 
-    new Sorter(new KVArraySortDataFormat[K, AnyRef])
-      .sort(data, 0, newIndex, keyComparator)
+    new Sorter(new KVArraySortDataFormat[K, AnyRef]).sort(
+      data,
+      0,
+      newIndex,
+      keyComparator)
 
     new Iterator[(K, V)] {
       var i = 0

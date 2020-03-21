@@ -326,9 +326,8 @@ private[niflheim] class NIHDBActor private (
   private[this] var actorState: Option[State] = None
   private def state = {
     import scalaz.syntax.effect.id._
-    actorState getOrElse open
-      .flatMap(_.tap(s => IO(actorState = Some(s))))
-      .unsafePerformIO
+    actorState getOrElse open.flatMap(
+      _.tap(s => IO(actorState = Some(s)))).unsafePerformIO
   }
 
   private def initDirs(f: File) =
@@ -460,8 +459,9 @@ private[niflheim] class NIHDBActor private (
       // ID
       //TODO: LENSES!!!!!!!~
       state.blockState = state.blockState.copy(
-        cooked = CookedReader.load(cookedDir, file) :: state.blockState.cooked
-          .filterNot(_.id == id),
+        cooked = CookedReader.load(
+          cookedDir,
+          file) :: state.blockState.cooked.filterNot(_.id == id),
         pending = state.blockState.pending - id
       )
 
@@ -487,8 +487,9 @@ private[niflheim] class NIHDBActor private (
           batch.partition(_.offset <= currentState.maxOffset)
         if (keepValues.isEmpty) {
           logger.warn(
-            "Skipping entirely seen batch of %d rows prior to offset %d"
-              .format(batch.flatMap(_.values).size, currentState.maxOffset))
+            "Skipping entirely seen batch of %d rows prior to offset %d".format(
+              batch.flatMap(_.values).size,
+              currentState.maxOffset))
           if (responseRequested) sender ! Skipped
         } else {
           val values = keepValues.flatMap(_.values)
@@ -526,8 +527,10 @@ private[niflheim] class NIHDBActor private (
           }
 
           logger.debug(
-            "Insert complete on %d rows at offset %d for %s"
-              .format(values.length, offset, baseDir.getCanonicalPath))
+            "Insert complete on %d rows at offset %d for %s".format(
+              values.length,
+              offset,
+              baseDir.getCanonicalPath))
           if (responseRequested) sender ! Inserted(offset, values.length)
         }
       }

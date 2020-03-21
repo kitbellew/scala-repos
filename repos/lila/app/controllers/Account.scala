@@ -46,8 +46,9 @@ object Account extends LilaController {
                 Env.pref.api.getPref(me) zip
                 lila.game.GameRepo.urgentGames(me) map {
                 case (((nbFollowers, nbFollowing), prefs), povs) =>
-                  Env.current.bus
-                    .publish(lila.user.User.Active(me), 'userActive)
+                  Env.current.bus.publish(
+                    lila.user.User.Active(me),
+                    'userActive)
                   Ok {
                     import play.api.libs.json._
                     import lila.pref.JsonView._
@@ -87,9 +88,8 @@ object Account extends LilaController {
 
   private def emailForm(user: UserModel) =
     UserRepo email user.id map { email =>
-      Env.security.forms
-        .changeEmail(user)
-        .fill(lila.security.DataForm.ChangeEmail(~email, ""))
+      Env.security.forms.changeEmail(user).fill(
+        lila.security.DataForm.ChangeEmail(~email, ""))
     }
 
   def email =
@@ -106,8 +106,8 @@ object Account extends LilaController {
           FormFuResult(Env.security.forms.changeEmail(me)) { err =>
             fuccess(html.account.email(me, err))
           } { data =>
-            val email = Env.security.emailAddress
-              .validate(data.email) err s"Invalid email ${data.email}"
+            val email = Env.security.emailAddress.validate(
+              data.email) err s"Invalid email ${data.email}"
             for {
               ok ← UserRepo.checkPasswordById(me.id, data.passwd)
               _ ← ok ?? UserRepo.email(me.id, email)
@@ -175,8 +175,9 @@ object Account extends LilaController {
   def signout(sessionId: String) =
     Auth { implicit ctx => me =>
       if (sessionId == "all")
-        lila.security.Store
-          .closeUserExceptSessionId(me.id, currentSessionId) inject
+        lila.security.Store.closeUserExceptSessionId(
+          me.id,
+          currentSessionId) inject
           Redirect(routes.Account.security)
       else
         lila.security.Store.closeUserAndSessionId(me.id, sessionId)

@@ -110,12 +110,9 @@ trait SQLiteProfile extends JdbcProfile {
         override def length = _size
         override def varying = dbType == Some("VARCHAR")
         override def default =
-          meta.columnDef
-            .map((_, tpe))
-            .collect {
-              case ("null", _) => Some(None) // 3.7.15-M1
-            }
-            .getOrElse { super.default }
+          meta.columnDef.map((_, tpe)).collect {
+            case ("null", _) => Some(None) // 3.7.15-M1
+          }.getOrElse { super.default }
         override def tpe =
           dbType match {
             case Some("DOUBLE")    => "Double"
@@ -143,8 +140,7 @@ trait SQLiteProfile extends JdbcProfile {
     new ModelBuilder(tables, ignoreInvalidDefaults)
 
   override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =
-    MTable
-      .getTables(Some(""), Some(""), None, Some(Seq("TABLE")))
+    MTable.getTables(Some(""), Some(""), None, Some(Seq("TABLE")))
       .map(_.filter(_.name.name.toLowerCase != "sqlite_sequence"))
 
   override val columnTypes = new JdbcTypes
@@ -195,12 +191,11 @@ trait SQLiteProfile extends JdbcProfile {
         case Library.UCase(ch) => b"upper(!$ch)"
         case Library.LCase(ch) => b"lower(!$ch)"
         case Library.Substring(n, start, end) =>
-          b"substr($n, ${QueryParameter
-            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${QueryParameter
-            .constOp[Int]("-")(_ - _)(end, start)})"
+          b"substr($n, ${QueryParameter.constOp[Int]("+")(_ + _)(
+            start,
+            LiteralNode(1).infer())}, ${QueryParameter.constOp[Int]("-")(_ - _)(end, start)})"
         case Library.Substring(n, start) =>
-          b"substr($n, ${QueryParameter
-            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())})\)"
+          b"substr($n, ${QueryParameter.constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())})\)"
         case Library.IndexOf(n, str) => b"\(charindex($str, $n) - 1\)"
         case Library.%(l, r)         => b"\($l%$r\)"
         case Library.Ceiling(ch)     => b"round($ch+0.5)"

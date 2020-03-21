@@ -74,12 +74,14 @@ class InputFormatInfo(
       "validate InputFormatInfo : " + inputFormatClazz + ", path  " + path)
 
     try {
-      if (classOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
-            .isAssignableFrom(inputFormatClazz)) {
+      if (classOf[
+            org.apache.hadoop.mapreduce.InputFormat[_, _]].isAssignableFrom(
+            inputFormatClazz)) {
         logDebug("inputformat is from mapreduce package")
         mapreduceInputFormat = true
-      } else if (classOf[org.apache.hadoop.mapred.InputFormat[_, _]]
-                   .isAssignableFrom(inputFormatClazz)) {
+      } else if (classOf[
+                   org.apache.hadoop.mapred.InputFormat[_, _]].isAssignableFrom(
+                   inputFormatClazz)) {
         logDebug("inputformat is from mapred package")
         mapredInputFormat = true
       } else {
@@ -105,9 +107,9 @@ class InputFormatInfo(
     FileInputFormat.setInputPaths(conf, path)
 
     val instance: org.apache.hadoop.mapreduce.InputFormat[_, _] =
-      ReflectionUtils
-        .newInstance(inputFormatClazz.asInstanceOf[Class[_]], conf)
-        .asInstanceOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
+      ReflectionUtils.newInstance(
+        inputFormatClazz.asInstanceOf[Class[_]],
+        conf).asInstanceOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
     val job = Job.getInstance(conf)
 
     val retval = new ArrayBuffer[SplitInfo]()
@@ -126,15 +128,13 @@ class InputFormatInfo(
     FileInputFormat.setInputPaths(jobConf, path)
 
     val instance: org.apache.hadoop.mapred.InputFormat[_, _] =
-      ReflectionUtils
-        .newInstance(inputFormatClazz.asInstanceOf[Class[_]], jobConf)
-        .asInstanceOf[org.apache.hadoop.mapred.InputFormat[_, _]]
+      ReflectionUtils.newInstance(
+        inputFormatClazz.asInstanceOf[Class[_]],
+        jobConf).asInstanceOf[org.apache.hadoop.mapred.InputFormat[_, _]]
 
     val retval = new ArrayBuffer[SplitInfo]()
-    instance
-      .getSplits(jobConf, jobConf.getNumMapTasks())
-      .foreach(elem =>
-        retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem))
+    instance.getSplits(jobConf, jobConf.getNumMapTasks()).foreach(elem =>
+      retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem))
 
     retval.toSet
   }

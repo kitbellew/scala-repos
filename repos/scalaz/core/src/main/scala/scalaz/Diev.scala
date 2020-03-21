@@ -154,13 +154,10 @@ trait DievImplementation {
             Vector(
               (
                 intervals(startPosition)._1.min(correctedInterval._1),
-                adjacentAfterResult
-                  .map(intervals(_)._2)
-                  .getOrElse(correctedInterval._2))),
-            adjacentAfterResult
-              .map(_ + 1)
-              .orElse(after)
-              .getOrElse(intervals.size)
+                adjacentAfterResult.map(intervals(_)._2).getOrElse(
+                  correctedInterval._2))),
+            adjacentAfterResult.map(_ + 1).orElse(after).getOrElse(
+              intervals.size)
           )
         }
         case (
@@ -172,9 +169,8 @@ trait DievImplementation {
             adjacentBeforeResult.orElse(before.map(_ + 1)).getOrElse(0),
             Vector(
               (
-                adjacentBeforeResult
-                  .map(intervals(_)._1)
-                  .getOrElse(correctedInterval._1),
+                adjacentBeforeResult.map(intervals(_)._1).getOrElse(
+                  correctedInterval._1),
                 intervals(endPosition)._2.max(correctedInterval._2))),
             endPosition + 1
           )
@@ -190,16 +186,12 @@ trait DievImplementation {
             adjacentBeforeResult.orElse(before.map(_ + 1)).getOrElse(0),
             Vector(
               (
-                adjacentBeforeResult
-                  .map(intervals(_)._1)
-                  .getOrElse(correctedInterval._1),
-                adjacentAfterResult
-                  .map(intervals(_)._2)
-                  .getOrElse(correctedInterval._2))),
-            adjacentAfterResult
-              .map(_ + 1)
-              .orElse(otherAfter)
-              .getOrElse(intervals.size)
+                adjacentBeforeResult.map(intervals(_)._1).getOrElse(
+                  correctedInterval._1),
+                adjacentAfterResult.map(intervals(_)._2).getOrElse(
+                  correctedInterval._2))),
+            adjacentAfterResult.map(_ + 1).orElse(otherAfter).getOrElse(
+              intervals.size)
           )
         }
       }
@@ -289,10 +281,8 @@ trait DievImplementation {
       foldLeft[ListBuffer[A]](new ListBuffer())(_ += _).toList
 
     override def toString(): String =
-      intervals
-        .foldLeft(new StringBuilder().append("("))(_.append(_))
-        .append(")")
-        .toString
+      intervals.foldLeft(new StringBuilder().append("("))(_.append(_)).append(
+        ")").toString
   }
 }
 

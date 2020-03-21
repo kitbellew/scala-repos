@@ -191,9 +191,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   get("/:owner/:repository/new/*")(collaboratorsOnly { repository =>
     val (branch, path) = splitPath(repository, multiParams("splat").head)
-    val protectedBranch =
-      getProtectedBranchInfo(repository.owner, repository.name, branch)
-        .needStatusCheck(context.loginAccount.get.userName)
+    val protectedBranch = getProtectedBranchInfo(
+      repository.owner,
+      repository.name,
+      branch).needStatusCheck(context.loginAccount.get.userName)
     html.editor(
       branch,
       repository,
@@ -205,9 +206,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   get("/:owner/:repository/edit/*")(collaboratorsOnly { repository =>
     val (branch, path) = splitPath(repository, multiParams("splat").head)
-    val protectedBranch =
-      getProtectedBranchInfo(repository.owner, repository.name, branch)
-        .needStatusCheck(context.loginAccount.get.userName)
+    val protectedBranch = getProtectedBranchInfo(
+      repository.owner,
+      repository.name,
+      branch).needStatusCheck(context.loginAccount.get.userName)
 
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>
@@ -328,43 +330,42 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   /**
     * Displays the file content of the specified branch or commit.
     */
-  val blobRoute =
-    get("/:owner/:repository/blob/*")(referrersOnly {
-      repository =>
-        val (id, path) = splitPath(repository, multiParams("splat").head)
-        val raw = params.get("raw").getOrElse("false").toBoolean
-        using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
-          git =>
-            val revCommit =
-              JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))
-            getPathObjectId(git, path, revCommit).map {
-              objectId =>
-                if (raw) {
-                  // Download (This route is left for backword compatibility)
-                  JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
-                    contentType = FileUtil.getMimeType(path)
-                    response.setContentLength(loader.getSize.toInt)
-                    loader.copyTo(response.outputStream)
-                    ()
-                  } getOrElse NotFound
-                } else {
-                  html.blob(
-                    id,
-                    repository,
-                    path.split("/").toList,
-                    JGitUtil.getContentInfo(git, path, objectId),
-                    new JGitUtil.CommitInfo(
-                      JGitUtil.getLastModifiedCommit(git, revCommit, path)),
-                    hasWritePermission(
-                      repository.owner,
-                      repository.name,
-                      context.loginAccount),
-                    request.paths(2) == "blame"
-                  )
-                }
-            } getOrElse NotFound
-        }
-    })
+  val blobRoute = get("/:owner/:repository/blob/*")(referrersOnly {
+    repository =>
+      val (id, path) = splitPath(repository, multiParams("splat").head)
+      val raw = params.get("raw").getOrElse("false").toBoolean
+      using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
+        git =>
+          val revCommit =
+            JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))
+          getPathObjectId(git, path, revCommit).map {
+            objectId =>
+              if (raw) {
+                // Download (This route is left for backword compatibility)
+                JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
+                  contentType = FileUtil.getMimeType(path)
+                  response.setContentLength(loader.getSize.toInt)
+                  loader.copyTo(response.outputStream)
+                  ()
+                } getOrElse NotFound
+              } else {
+                html.blob(
+                  id,
+                  repository,
+                  path.split("/").toList,
+                  JGitUtil.getContentInfo(git, path, objectId),
+                  new JGitUtil.CommitInfo(
+                    JGitUtil.getLastModifiedCommit(git, revCommit, path)),
+                  hasWritePermission(
+                    repository.owner,
+                    repository.name,
+                    context.loginAccount),
+                  request.paths(2) == "blame"
+                )
+              }
+          } getOrElse NotFound
+      }
+  })
 
   get("/:owner/:repository/blame/*") {
     blobRoute.action()
@@ -378,14 +379,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     contentType = formats("json")
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>
-        val last = git.log
-          .add(git.getRepository.resolve(id))
-          .addPath(path)
-          .setMaxCount(1)
-          .call
-          .iterator
-          .next
-          .name
+        val last = git.log.add(git.getRepository.resolve(id)).addPath(
+          path).setMaxCount(1).call.iterator.next.name
         Map(
           "root" -> s"${context.baseUrl}/${repository.owner}/${repository.name}",
           "id" -> id,
@@ -395,12 +390,13 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             blame =>
               Map(
                 "id" -> blame.id,
-                "author" -> view.helpers
-                  .user(blame.authorName, blame.authorEmailAddress)
-                  .toString,
-                "avatar" -> view.helpers
-                  .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
-                  .toString,
+                "author" -> view.helpers.user(
+                  blame.authorName,
+                  blame.authorEmailAddress).toString,
+                "avatar" -> view.helpers.avatarLink(
+                  blame.authorName,
+                  32,
+                  blame.authorEmailAddress).toString,
                 "authed" -> helper.html.datetimeago(blame.authorTime).toString,
                 "prev" -> blame.prev,
                 "prevPath" -> blame.prevPath,
@@ -621,13 +617,12 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   get("/:owner/:repository/branches")(referrersOnly { repository =>
     val protectedBranches =
       getProtectedBranchList(repository.owner, repository.name).toSet
-    val branches = JGitUtil
-      .getBranches(
-        owner = repository.owner,
-        name = repository.name,
-        defaultBranch = repository.repository.defaultBranch,
-        origin = repository.repository.originUserName.isEmpty
-      )
+    val branches = JGitUtil.getBranches(
+      owner = repository.owner,
+      name = repository.name,
+      defaultBranch = repository.repository.defaultBranch,
+      origin = repository.repository.originUserName.isEmpty
+    )
       .sortBy(br => (br.mergeInfo.isEmpty, br.commitTime))
       .map(br =>
         (
@@ -662,7 +657,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       case Right(message) =>
         flash += "info" -> message
         redirect(
-          s"/${repository.owner}/${repository.name}/tree/${StringUtil.urlEncode(newBranchName).replace("%2F", "/")}")
+          s"/${repository.owner}/${repository.name}/tree/${StringUtil.urlEncode(
+            newBranchName).replace("%2F", "/")}")
       case Left(message) =>
         flash += "error" -> message
         redirect(
@@ -804,23 +800,18 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                   val parentPath =
                     if (path == ".") Nil else path.split("/").toList
                   // process README.md or README.markdown
-                  val readme = files
-                    .find { file =>
-                      !file.isDirectory && readmeFiles.contains(
-                        file.name.toLowerCase)
-                    }
-                    .map { file =>
-                      val path = (file.name :: parentPath.reverse).reverse
-                      path -> StringUtil.convertFromByteArray(
-                        JGitUtil
-                          .getContentFromId(
-                            Git.open(getRepositoryDir(
-                              repository.owner,
-                              repository.name)),
-                            file.id,
-                            true)
-                          .get)
-                    }
+                  val readme = files.find { file =>
+                    !file.isDirectory && readmeFiles.contains(
+                      file.name.toLowerCase)
+                  }.map { file =>
+                    val path = (file.name :: parentPath.reverse).reverse
+                    path -> StringUtil.convertFromByteArray(
+                      JGitUtil.getContentFromId(
+                        Git.open(
+                          getRepositoryDir(repository.owner, repository.name)),
+                        file.id,
+                        true).get)
+                  }
 
                   html.files(
                     revision,
@@ -993,8 +984,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     workDir.mkdirs
 
     val filename = repository.name + "-" +
-      (if (revision.length == 40) revision.substring(0, 10) else revision)
-        .replace('/', '_') + suffix
+      (if (revision.length == 40) revision.substring(0, 10)
+       else revision).replace('/', '_') + suffix
 
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>

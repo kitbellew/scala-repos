@@ -354,8 +354,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
     val mem = new InMemoryStatsReceiver
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
-    val client = ClientBuilder
-      .stackClientOfCodec(StringCodec.client)
+    val client = ClientBuilder.stackClientOfCodec(StringCodec.client)
       .configured(
         DefaultPool.Param(
           /* low        */ 1,

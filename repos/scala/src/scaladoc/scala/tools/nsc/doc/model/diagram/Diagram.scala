@@ -156,13 +156,11 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
   private[this] var _nodeDepth = Map[Node, Int]()
   private[this] var seedNodes = Set[Node]()
   private[this] val invertedEdges: Map[Node, List[Node]] =
-    pack.edges
-      .flatMap({
-        case (node: Node, outgoing: List[Node]) => outgoing.map((_, node))
-      })
-      .groupBy(_._1)
-      .map({ case (k, values) => (k, values.map(_._2)) })
-      .withDefaultValue(Nil)
+    pack.edges.flatMap({
+      case (node: Node, outgoing: List[Node]) => outgoing.map((_, node))
+    }).groupBy(_._1).map({
+      case (k, values) => (k, values.map(_._2))
+    }).withDefaultValue(Nil)
   private[this] val directEdges: Map[Node, List[Node]] =
     pack.edges.toMap.withDefaultValue(Nil)
 

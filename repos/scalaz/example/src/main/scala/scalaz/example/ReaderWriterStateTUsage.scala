@@ -106,8 +106,11 @@ object CABRunLengthEncoder {
   // modify -- alter the current state
   // tell   -- append to the writer
   // ask    -- read from the reader
-  val rle = ReaderWriterStateT
-    .rwstMonad[Trampoline, RunLengthConfig, Cord, RunLengthState]
+  val rle = ReaderWriterStateT.rwstMonad[
+    Trampoline,
+    RunLengthConfig,
+    Cord,
+    RunLengthState]
   import rle._
 
   /**

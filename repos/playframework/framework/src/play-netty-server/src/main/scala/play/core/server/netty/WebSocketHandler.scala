@@ -32,11 +32,8 @@ private[server] object WebSocketHandler {
     // The reason we use a processor is that we *must* release the buffers synchronously, since Akka streams drops
     // messages, which will mean we can't release the ByteBufs in the messages.
     SynchronousMappedStreams.transform(
-      WebSocketFlowHandler
-        .webSocketProtocol(bufferLimit)
-        .join(flow)
-        .toProcessor
-        .run(),
+      WebSocketFlowHandler.webSocketProtocol(bufferLimit).join(
+        flow).toProcessor.run(),
       frameToMessage,
       messageToFrame)
   }
@@ -46,9 +43,9 @@ private[server] object WebSocketHandler {
     */
   private def frameToMessage(frame: WebSocketFrame): RawMessage = {
     val builder = ByteString.newBuilder
-    frame
-      .content()
-      .readBytes(builder.asOutputStream, frame.content().readableBytes())
+    frame.content().readBytes(
+      builder.asOutputStream,
+      frame.content().readableBytes())
     val bytes = builder.result()
     ReferenceCountUtil.release(frame)
 

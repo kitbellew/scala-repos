@@ -191,11 +191,8 @@ object Licensed {
     else sys.error("Referenced license '" + str + "' not found at " + path)
   }
   def seePaths(base: File, noticeString: String): Seq[File] =
-    seeRegex
-      .findAllIn(noticeString)
-      .matchData
-      .map(d => licensePath(base, d.group(1)))
-      .toList
+    seeRegex.findAllIn(noticeString).matchData.map(d =>
+      licensePath(base, d.group(1))).toList
 
   def settings: Seq[Setting[_]] =
     Seq(

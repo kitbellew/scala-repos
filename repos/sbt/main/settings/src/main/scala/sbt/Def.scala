@@ -71,10 +71,8 @@ object Def extends Init[Scope] with TaskMacroExtra {
       (if (s.key.scope != ThisScope)
          Some(s"Scope cannot be defined for ${definedSettingString(s)}")
        else None) orElse
-      s.dependencies
-        .find(k => k.scope != ThisScope)
-        .map(k =>
-          s"Scope cannot be defined for dependency ${k.key.label} of ${definedSettingString(s)}")
+      s.dependencies.find(k => k.scope != ThisScope).map(k =>
+        s"Scope cannot be defined for dependency ${k.key.label} of ${definedSettingString(s)}")
 
   override def intersect(s1: Scope, s2: Scope)(implicit
       delegates: Scope => Seq[Scope]): Option[Scope] =

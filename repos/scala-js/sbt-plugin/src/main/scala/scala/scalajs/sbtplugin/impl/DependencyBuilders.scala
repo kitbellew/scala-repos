@@ -6,6 +6,7 @@
 **                          |/____/                                     **
 \*                                                                      */
 
+
 package org.scalajs.sbtplugin
 package impl
 
@@ -23,34 +24,34 @@ trait DependencyBuilders {
   }
 
   /**
-    *  Dummy builder to allow declaractions like:
-    *
-    *  {{{
-    *  RuntimeDOM % "test"
-    *  }}}
-    */
+   *  Dummy builder to allow declaractions like:
+   *
+   *  {{{
+   *  RuntimeDOM % "test"
+   *  }}}
+   */
   val RuntimeDOM = org.scalajs.sbtplugin.RuntimeDOMDep(None)
 
   /**
-    *  Builder to allow declarations like:
-    *
-    *  {{{
-    *  ProvidedJS / "foo.js"
-    *  ProvidedJS / "foo.js" % "test"
-    *  }}}
-    */
+   *  Builder to allow declarations like:
+   *
+   *  {{{
+   *  ProvidedJS / "foo.js"
+   *  ProvidedJS / "foo.js" % "test"
+   *  }}}
+   */
   object ProvidedJS {
     def /(name: String): ProvidedJSModuleID = ProvidedJSModuleID(name, None)
   }
 
   /**
-    *  Builder to allow declarations like:
-    *
-    *  {{{
-    *  "org.webjars" % "jquery" % "1.10.2" / "jquery.js"
-    *  "org.webjars" % "jquery" % "1.10.2" / "jquery.js" % "test"
-    *  }}}
-    */
+   *  Builder to allow declarations like:
+   *
+   *  {{{
+   *  "org.webjars" % "jquery" % "1.10.2" / "jquery.js"
+   *  "org.webjars" % "jquery" % "1.10.2" / "jquery.js" % "test"
+   *  }}}
+   */
   implicit class JSModuleIDBuilder(module: ModuleID) {
     def /(name: String): JarJSModuleID = JarJSModuleID(module, name)
   }
@@ -68,14 +69,12 @@ object ScalaJSGroupID {
   import scala.reflect.macros.Context
 
   /** Internal. Used by the macro implementing [[ScalaJSGroupID.%%%]]. Use:
-    *  {{{
-    *  ("a" % artifactID % revision).cross(cross)
-    *  }}}
-    *  instead.
-    */
-  def withCross(
-      groupID: ScalaJSGroupID,
-      artifactID: String,
+   *  {{{
+   *  ("a" % artifactID % revision).cross(cross)
+   *  }}}
+   *  instead.
+   */
+  def withCross(groupID: ScalaJSGroupID, artifactID: String,
       cross: CrossVersion): CrossGroupArtifactID = {
     nonEmpty(artifactID, "Artifact ID")
     new CrossGroupArtifactID(groupID.groupID, artifactID, cross)
@@ -88,7 +87,7 @@ object ScalaJSGroupID {
     // Hack to work around bug in sbt macros (wrong way of collecting local
     // definitions)
     val keysSym = rootMirror.staticModule(
-      "_root_.org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport")
+        "_root_.org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport")
     val keys = c.Expr[ScalaJSPlugin.AutoImport.type](Ident(keysSym))
 
     reify {
@@ -104,10 +103,8 @@ object ScalaJSGroupID {
 
 }
 
-final class CrossGroupArtifactID(
-    groupID: String,
-    artifactID: String,
-    crossVersion: CrossVersion) {
+final class CrossGroupArtifactID(groupID: String,
+    artifactID: String, crossVersion: CrossVersion) {
   def %(revision: String): ModuleID = {
     nonEmpty(revision, "Revision")
     ModuleID(groupID, artifactID, revision).cross(crossVersion)

@@ -262,7 +262,8 @@ class ContinuousQueryManagerSuite
           @volatile var query: StreamExecution = null
           try {
             val df = ds.toDF
-            query = sqlContext.streams
+            query = sqlContext
+              .streams
               .startQuery(
                 StreamExecution.nextName,
                 df,

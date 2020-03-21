@@ -340,7 +340,7 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
 
     override def compress(from: ByteBuffer, to: ByteBuffer): ByteBuffer = {
       to.putInt(BooleanBitSet.typeId)
-        // Total element count (1 byte per Boolean value)
+      // Total element count (1 byte per Boolean value)
         .putInt(from.remaining)
 
       while (from.remaining >= BITS_PER_LONG) {

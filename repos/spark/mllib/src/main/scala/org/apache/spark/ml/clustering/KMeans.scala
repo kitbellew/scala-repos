@@ -196,11 +196,8 @@ object KMeansModel extends MLReadable[KMeansModel] {
       // Save model data: cluster centers
       val data = Data(instance.clusterCenters)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -334,12 +331,7 @@ class KMeansSummary private[clustering] (
     * Size of each cluster.
     */
   @Since("2.0.0")
-  lazy val size: Array[Int] = cluster.rdd
-    .map {
-      case Row(clusterIdx: Int) => (clusterIdx, 1)
-    }
-    .reduceByKey(_ + _)
-    .collect()
-    .sortBy(_._1)
-    .map(_._2)
+  lazy val size: Array[Int] = cluster.rdd.map {
+    case Row(clusterIdx: Int) => (clusterIdx, 1)
+  }.reduceByKey(_ + _).collect().sortBy(_._1).map(_._2)
 }

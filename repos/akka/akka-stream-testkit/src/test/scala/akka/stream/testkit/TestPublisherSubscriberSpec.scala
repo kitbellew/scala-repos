@@ -23,10 +23,8 @@ class TestPublisherSubscriberSpec extends AkkaSpec {
     "have all events accessible from manual probes" in assertAllStagesStopped {
       val upstream = TestPublisher.manualProbe[Int]()
       val downstream = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromPublisher(upstream)
-        .runWith(Sink.asPublisher(false))(materializer)
-        .subscribe(downstream)
+      Source.fromPublisher(upstream).runWith(Sink.asPublisher(false))(
+        materializer).subscribe(downstream)
 
       val upstreamSubscription = upstream.expectSubscription()
       val downstreamSubscription: Subscription = downstream.expectEventPF {
@@ -52,10 +50,8 @@ class TestPublisherSubscriberSpec extends AkkaSpec {
     "handle gracefully partial function that is not suitable" in assertAllStagesStopped {
       val upstream = TestPublisher.manualProbe[Int]()
       val downstream = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromPublisher(upstream)
-        .runWith(Sink.asPublisher(false))(materializer)
-        .subscribe(downstream)
+      Source.fromPublisher(upstream).runWith(Sink.asPublisher(false))(
+        materializer).subscribe(downstream)
       val upstreamSubscription = upstream.expectSubscription()
       val downstreamSubscription: Subscription = downstream.expectEventPF {
         case OnSubscribe(sub) ⇒ sub

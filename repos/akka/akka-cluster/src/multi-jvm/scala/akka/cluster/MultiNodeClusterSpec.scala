@@ -27,10 +27,9 @@ import akka.actor.RootActorPath
 object MultiNodeClusterSpec {
 
   def clusterConfigWithFailureDetectorPuppet: Config =
-    ConfigFactory
-      .parseString(
-        "akka.cluster.failure-detector.implementation-class = akka.cluster.FailureDetectorPuppet")
-      .withFallback(clusterConfig)
+    ConfigFactory.parseString(
+      "akka.cluster.failure-detector.implementation-class = akka.cluster.FailureDetectorPuppet").withFallback(
+      clusterConfig)
 
   def clusterConfig(failureDetectorPuppet: Boolean): Config =
     if (failureDetectorPuppet) clusterConfigWithFailureDetectorPuppet
@@ -303,8 +302,10 @@ trait MultiNodeClusterSpec
       val isLeader = leader == Some(clusterView.selfAddress)
       assert(
         isLeader == isNode(expectedLeader),
-        "expectedLeader [%s], got leader [%s], members [%s]"
-          .format(expectedLeader, leader, clusterView.members))
+        "expectedLeader [%s], got leader [%s], members [%s]".format(
+          expectedLeader,
+          leader,
+          clusterView.members))
       clusterView.status should (be(MemberStatus.Up) or be(
         MemberStatus.Leaving))
     }

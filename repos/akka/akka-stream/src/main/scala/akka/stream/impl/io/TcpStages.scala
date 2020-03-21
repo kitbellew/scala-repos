@@ -111,12 +111,11 @@ private[stream] class ConnectionSourceStage(
         connectionFlowsAwaitingInitialization.incrementAndGet()
 
         val tcpFlow =
-          Flow
-            .fromGraph(
-              new IncomingConnectionStage(
-                connection,
-                connected.remoteAddress,
-                halfClose))
+          Flow.fromGraph(
+            new IncomingConnectionStage(
+              connection,
+              connected.remoteAddress,
+              halfClose))
             .via(detacher[ByteString]) // must read ahead for proper completions
             .mapMaterializedValue { m ⇒
               connectionFlowsAwaitingInitialization.decrementAndGet()
@@ -239,10 +238,8 @@ private[stream] object TcpConnectionStage {
         case CommandFailed(cmd) ⇒
           failStage(new StreamTcpException(s"Tcp command [$cmd] failed"))
         case c: Connected ⇒
-          role
-            .asInstanceOf[Outbound]
-            .localAddressPromise
-            .success(c.localAddress)
+          role.asInstanceOf[Outbound].localAddressPromise.success(
+            c.localAddress)
           connection = sender
           setHandler(bytesOut, readHandler)
           stageActor.unwatch(ob.manager)

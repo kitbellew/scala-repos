@@ -86,13 +86,12 @@ private[prediction] object Webhooks {
   )(implicit
       ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     Future {
-      WebhooksConnectors.json
-        .get(web)
-        .map { connector => (StatusCodes.OK, Map("message" -> "Ok")) }
-        .getOrElse {
-          val message = s"webhooks connection for ${web} is not supported."
-          (StatusCodes.NotFound, Map("message" -> message))
-        }
+      WebhooksConnectors.json.get(web).map { connector =>
+        (StatusCodes.OK, Map("message" -> "Ok"))
+      }.getOrElse {
+        val message = s"webhooks connection for ${web} is not supported."
+        (StatusCodes.NotFound, Map("message" -> message))
+      }
     }
   }
 
@@ -142,13 +141,12 @@ private[prediction] object Webhooks {
   )(implicit
       ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     Future {
-      WebhooksConnectors.form
-        .get(web)
-        .map { connector => (StatusCodes.OK, Map("message" -> "Ok")) }
-        .getOrElse {
-          val message = s"webhooks connection for ${web} is not supported."
-          (StatusCodes.NotFound, Map("message" -> message))
-        }
+      WebhooksConnectors.form.get(web).map { connector =>
+        (StatusCodes.OK, Map("message" -> "Ok"))
+      }.getOrElse {
+        val message = s"webhooks connection for ${web} is not supported."
+        (StatusCodes.NotFound, Map("message" -> message))
+      }
     }
   }
 

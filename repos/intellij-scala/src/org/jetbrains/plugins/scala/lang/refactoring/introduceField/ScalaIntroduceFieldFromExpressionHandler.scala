@@ -197,13 +197,13 @@ class ScalaIntroduceFieldFromExpressionHandler
     settings.visibilityLevel match {
       case VisibilityLevel.DEFAULT =>
       case VisibilityLevel.PRIVATE =>
-        createdDeclaration
-          .asInstanceOf[ScMember]
-          .setModifierProperty("private", value = true)
+        createdDeclaration.asInstanceOf[ScMember].setModifierProperty(
+          "private",
+          value = true)
       case VisibilityLevel.PROTECTED =>
-        createdDeclaration
-          .asInstanceOf[ScMember]
-          .setModifierProperty("protected", value = true)
+        createdDeclaration.asInstanceOf[ScMember].setModifierProperty(
+          "protected",
+          value = true)
     }
 
     lazy val document: Document = ifc.editor.getDocument
@@ -216,8 +216,8 @@ class ScalaIntroduceFieldFromExpressionHandler
       case _ childOf (ed: ScEarlyDefinitions)
           if onOneLine(document, ed.getTextRange) =>
         def isBlockStmtOrMember(elem: PsiElement) =
-          elem != null && (elem.isInstanceOf[ScBlockStatement] || elem
-            .isInstanceOf[ScMember])
+          elem != null && (elem.isInstanceOf[
+            ScBlockStatement] || elem.isInstanceOf[ScMember])
         var declaration = createdDeclaration.getText
         if (isBlockStmtOrMember(anchor)) declaration += "; "
         if (isBlockStmtOrMember(anchor.getPrevSibling))

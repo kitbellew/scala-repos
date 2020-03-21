@@ -33,11 +33,11 @@ class RateTransformationDocSpec extends AkkaSpec {
       }
     //#conflate-summarize
 
-    val fut = Source
-      .fromIterator(() => Iterator.continually(Random.nextGaussian))
-      .via(statsFlow)
-      .grouped(10)
-      .runWith(Sink.head)
+    val fut =
+      Source.fromIterator(() => Iterator.continually(Random.nextGaussian))
+        .via(statsFlow)
+        .grouped(10)
+        .runWith(Sink.head)
 
     Await.result(fut, 100.millis)
   }
@@ -67,8 +67,7 @@ class RateTransformationDocSpec extends AkkaSpec {
       .expand(Iterator.continually(_))
     //#expand-last
 
-    val (probe, fut) = TestSource
-      .probe[Double]
+    val (probe, fut) = TestSource.probe[Double]
       .via(lastFlow)
       .grouped(10)
       .toMat(Sink.head)(Keep.both)
@@ -89,8 +88,7 @@ class RateTransformationDocSpec extends AkkaSpec {
     val realDriftFlow = Flow[Double]
       .expand(d => { latch.countDown(); Iterator.from(0).map(d -> _) })
 
-    val (pub, sub) = TestSource
-      .probe[Double]
+    val (pub, sub) = TestSource.probe[Double]
       .via(realDriftFlow)
       .toMat(TestSink.probe[(Double, Int)])(Keep.both)
       .run()

@@ -33,8 +33,9 @@ class HiveTypeCoercionSuite extends PlanTest {
         from: DataType,
         to: AbstractDataType,
         expected: DataType): Unit = {
-      val got = HiveTypeCoercion.ImplicitTypeCasts
-        .implicitCast(Literal.create(null, from), to)
+      val got = HiveTypeCoercion.ImplicitTypeCasts.implicitCast(
+        Literal.create(null, from),
+        to)
       assert(
         got.map(_.dataType) == Option(expected),
         s"Failed to cast $from to $to")
@@ -128,8 +129,9 @@ class HiveTypeCoercionSuite extends PlanTest {
 
   test("ineligible implicit type cast") {
     def shouldNotCast(from: DataType, to: AbstractDataType): Unit = {
-      val got = HiveTypeCoercion.ImplicitTypeCasts
-        .implicitCast(Literal.create(null, from), to)
+      val got = HiveTypeCoercion.ImplicitTypeCasts.implicitCast(
+        Literal.create(null, from),
+        to)
       assert(
         got.isEmpty,
         s"Should not be able to cast $from to $to, but got $got")
@@ -553,9 +555,10 @@ class HiveTypeCoercionSuite extends PlanTest {
     val expectedTypes =
       Seq(StringType, DecimalType.SYSTEM_DEFAULT, FloatType, DoubleType)
 
-    val unionRelation =
-      wt(Union(firstTable :: secondTable :: thirdTable :: forthTable :: Nil))
-        .asInstanceOf[Union]
+    val unionRelation = wt(
+      Union(
+        firstTable :: secondTable :: thirdTable :: forthTable :: Nil)).asInstanceOf[
+      Union]
     assert(unionRelation.children.length == 4)
     checkOutput(unionRelation.children.head, expectedTypes)
     checkOutput(unionRelation.children(1), expectedTypes)

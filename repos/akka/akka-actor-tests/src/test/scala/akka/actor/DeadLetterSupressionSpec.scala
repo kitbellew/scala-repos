@@ -27,14 +27,14 @@ class DeadLetterSupressionSpec extends AkkaSpec with ImplicitSender {
   deadActor ! PoisonPill
   expectTerminated(deadActor)
 
-  s"must suppress message from default dead-letters logging (sent to dead: ${Logging
-    .simpleName(deadActor)})" in {
+  s"must suppress message from default dead-letters logging (sent to dead: ${Logging.simpleName(deadActor)})" in {
     val deadListener = TestProbe()
     system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
     val suppressedListener = TestProbe()
-    system.eventStream
-      .subscribe(suppressedListener.ref, classOf[SuppressedDeadLetter])
+    system.eventStream.subscribe(
+      suppressedListener.ref,
+      classOf[SuppressedDeadLetter])
 
     val allListener = TestProbe()
     system.eventStream.subscribe(allListener.ref, classOf[AllDeadLetters])
@@ -55,14 +55,15 @@ class DeadLetterSupressionSpec extends AkkaSpec with ImplicitSender {
     allListener.expectNoMsg(200.millis)
   }
 
-  s"must suppress message from default dead-letters logging (sent to dead: ${Logging
-    .simpleName(system.deadLetters)})" in {
+  s"must suppress message from default dead-letters logging (sent to dead: ${Logging.simpleName(
+    system.deadLetters)})" in {
     val deadListener = TestProbe()
     system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
     val suppressedListener = TestProbe()
-    system.eventStream
-      .subscribe(suppressedListener.ref, classOf[SuppressedDeadLetter])
+    system.eventStream.subscribe(
+      suppressedListener.ref,
+      classOf[SuppressedDeadLetter])
 
     val allListener = TestProbe()
     system.eventStream.subscribe(allListener.ref, classOf[AllDeadLetters])

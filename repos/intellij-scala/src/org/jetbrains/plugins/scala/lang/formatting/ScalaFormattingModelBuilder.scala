@@ -23,8 +23,9 @@ sealed class ScalaFormattingModelBuilder extends FormattingModelBuilder {
       settings: CodeStyleSettings): FormattingModel = {
     val node: ASTNode = element.getNode
     assert(node != null)
-    val containingFile: PsiFile = element.getContainingFile.getViewProvider
-      .getPsi(ScalaFileType.SCALA_LANGUAGE)
+    val containingFile: PsiFile =
+      element.getContainingFile.getViewProvider.getPsi(
+        ScalaFileType.SCALA_LANGUAGE)
     assert(containingFile != null, element.getContainingFile)
     val astNode: ASTNode = containingFile.getNode
     assert(astNode != null)
@@ -66,12 +67,15 @@ object ScalaFormattingModelBuilder {
       }
       var elementTypeToUse: IElementType = TokenType.WHITE_SPACE
       val prevNode: ASTNode = TreeUtil.prevLeaf(leafElement)
-      if (prevNode != null && ScalaTokenTypes.WHITES_SPACES_FOR_FORMATTER_TOKEN_SET
-            .contains(prevNode.getElementType)) {
+      if (prevNode != null && ScalaTokenTypes.WHITES_SPACES_FOR_FORMATTER_TOKEN_SET.contains(
+            prevNode.getElementType)) {
         elementTypeToUse = prevNode.getElementType
       }
-      com.intellij.psi.formatter.FormatterUtil
-        .replaceWhiteSpace(whiteSpace, leafElement, elementTypeToUse, textRange)
+      com.intellij.psi.formatter.FormatterUtil.replaceWhiteSpace(
+        whiteSpace,
+        leafElement,
+        elementTypeToUse,
+        textRange)
       whiteSpace
     }
   }

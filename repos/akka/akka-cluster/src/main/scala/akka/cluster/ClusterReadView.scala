@@ -92,9 +92,8 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
               }
             case s: CurrentClusterState ⇒ _state = s
           }
-        })
-        .withDispatcher(cluster.settings.UseDispatcher)
-        .withDeploy(Deploy.local),
+        }).withDispatcher(cluster.settings.UseDispatcher).withDeploy(
+        Deploy.local),
       name = "clusterEventBusListener"
     )
   }
@@ -103,9 +102,8 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
 
   def self: Member = {
     import cluster.selfUniqueAddress
-    state.members
-      .find(_.uniqueAddress == selfUniqueAddress)
-      .getOrElse(Member(selfUniqueAddress, cluster.selfRoles).copy(status =
+    state.members.find(_.uniqueAddress == selfUniqueAddress).getOrElse(
+      Member(selfUniqueAddress, cluster.selfRoles).copy(status =
         MemberStatus.Removed))
   }
 

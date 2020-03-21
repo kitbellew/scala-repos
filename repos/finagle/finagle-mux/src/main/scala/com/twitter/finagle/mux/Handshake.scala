@@ -186,8 +186,7 @@ private[finagle] object Handshake {
         // a failed future.
         case Return(Message.Tinit(tag, ver, _)) =>
           val msg = s"unsupported version $ver, expected $version"
-          msgTrans
-            .write(Message.Rerr(tag, msg))
+          msgTrans.write(Message.Rerr(tag, msg))
             .before { Future.exception(Failure(msg)) }
 
         // A marker Rerr that queries whether or not we can do handshaking.

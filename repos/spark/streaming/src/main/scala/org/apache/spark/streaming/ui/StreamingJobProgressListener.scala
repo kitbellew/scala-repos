@@ -130,8 +130,9 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
       outputOperationStarted: StreamingListenerOutputOperationStarted): Unit =
     synchronized {
       // This method is called after onBatchStarted
-      runningBatchUIData(outputOperationStarted.outputOperationInfo.batchTime)
-        .updateOutputOperationInfo(outputOperationStarted.outputOperationInfo)
+      runningBatchUIData(
+        outputOperationStarted.outputOperationInfo.batchTime).updateOutputOperationInfo(
+        outputOperationStarted.outputOperationInfo)
     }
 
   override def onOutputOperationCompleted(
@@ -139,8 +140,9 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
       : Unit =
     synchronized {
       // This method is called before onBatchCompleted
-      runningBatchUIData(outputOperationCompleted.outputOperationInfo.batchTime)
-        .updateOutputOperationInfo(outputOperationCompleted.outputOperationInfo)
+      runningBatchUIData(
+        outputOperationCompleted.outputOperationInfo.batchTime).updateOutputOperationInfo(
+        outputOperationCompleted.outputOperationInfo)
     }
 
   override def onJobStart(jobStart: SparkListenerJobStart): Unit =
@@ -259,15 +261,13 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     synchronized {
       val lastReceivedBlockInfoOption =
         lastReceivedBatch.map(_.streamIdToInputInfo.mapValues(_.numRecords))
-      lastReceivedBlockInfoOption
-        .map { lastReceivedBlockInfo =>
-          streamIds.map { streamId =>
-            (streamId, lastReceivedBlockInfo.getOrElse(streamId, 0L))
-          }.toMap
-        }
-        .getOrElse {
-          streamIds.map(streamId => (streamId, 0L)).toMap
-        }
+      lastReceivedBlockInfoOption.map { lastReceivedBlockInfo =>
+        streamIds.map { streamId =>
+          (streamId, lastReceivedBlockInfo.getOrElse(streamId, 0L))
+        }.toMap
+      }.getOrElse {
+        streamIds.map(streamId => (streamId, 0L)).toMap
+      }
     }
 
   def receiverInfo(receiverId: Int): Option[ReceiverInfo] =
@@ -288,8 +288,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
   def retainedBatches: Seq[BatchUIData] =
     synchronized {
       (waitingBatchUIData.values.toSeq ++
-        runningBatchUIData.values.toSeq ++ completedBatchUIData)
-        .sortBy(_.batchTime)(Time.ordering)
+        runningBatchUIData.values.toSeq ++ completedBatchUIData).sortBy(
+        _.batchTime)(Time.ordering)
     }
 
   def getBatchUIData(batchTime: Time): Option[BatchUIData] =

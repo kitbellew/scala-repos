@@ -621,23 +621,23 @@ class SessionCatalogSuite extends SparkFunSuite {
   test("get partition") {
     val catalog = new SessionCatalog(newBasicCatalog())
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2", Some("db2")), part1.spec)
-        .spec == part1.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2", Some("db2")),
+        part1.spec).spec == part1.spec)
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2", Some("db2")), part2.spec)
-        .spec == part2.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2", Some("db2")),
+        part2.spec).spec == part2.spec)
     // Get partition without explicitly specifying database
     catalog.setCurrentDatabase("db2")
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2"), part1.spec)
-        .spec == part1.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2"),
+        part1.spec).spec == part1.spec)
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2"), part2.spec)
-        .spec == part2.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2"),
+        part2.spec).spec == part2.spec)
     // Get non-existent partition
     intercept[AnalysisException] {
       catalog.getPartition(TableIdentifier("tbl2"), part3.spec)
@@ -668,13 +668,13 @@ class SessionCatalogSuite extends SparkFunSuite {
       Seq(part1.spec, part2.spec),
       newSpecs)
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2", Some("db2")), newPart1.spec)
-        .spec === newPart1.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2", Some("db2")),
+        newPart1.spec).spec === newPart1.spec)
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2", Some("db2")), newPart2.spec)
-        .spec === newPart2.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2", Some("db2")),
+        newPart2.spec).spec === newPart2.spec)
     intercept[AnalysisException] {
       catalog.getPartition(TableIdentifier("tbl2", Some("db2")), part1.spec)
     }
@@ -688,13 +688,13 @@ class SessionCatalogSuite extends SparkFunSuite {
       newSpecs,
       Seq(part1.spec, part2.spec))
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2"), part1.spec)
-        .spec === part1.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2"),
+        part1.spec).spec === part1.spec)
     assert(
-      catalog
-        .getPartition(TableIdentifier("tbl2"), part2.spec)
-        .spec === part2.spec)
+      catalog.getPartition(
+        TableIdentifier("tbl2"),
+        part2.spec).spec === part2.spec)
     intercept[AnalysisException] {
       catalog.getPartition(TableIdentifier("tbl2"), newPart1.spec)
     }
@@ -776,10 +776,8 @@ class SessionCatalogSuite extends SparkFunSuite {
 
   test("list partitions") {
     val catalog = new SessionCatalog(newBasicCatalog())
-    assert(
-      catalog.listPartitions(TableIdentifier("tbl2", Some("db2"))).toSet == Set(
-        part1,
-        part2))
+    assert(catalog.listPartitions(
+      TableIdentifier("tbl2", Some("db2"))).toSet == Set(part1, part2))
     // List partitions without explicitly specifying database
     catalog.setCurrentDatabase("db2")
     assert(
@@ -1005,15 +1003,13 @@ class SessionCatalogSuite extends SparkFunSuite {
   test("alter function") {
     val catalog = new SessionCatalog(newBasicCatalog())
     assert(
-      catalog
-        .getFunction(FunctionIdentifier("func1", Some("db2")))
-        .className == funcClass)
+      catalog.getFunction(
+        FunctionIdentifier("func1", Some("db2"))).className == funcClass)
     catalog.alterFunction(
       newFunc("func1", Some("db2")).copy(className = "muhaha"))
     assert(
-      catalog
-        .getFunction(FunctionIdentifier("func1", Some("db2")))
-        .className == "muhaha")
+      catalog.getFunction(
+        FunctionIdentifier("func1", Some("db2"))).className == "muhaha")
     // Alter function without explicitly specifying database
     catalog.setCurrentDatabase("db2")
     catalog.alterFunction(newFunc("func1").copy(className = "derpy"))

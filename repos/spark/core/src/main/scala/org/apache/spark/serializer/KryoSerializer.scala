@@ -90,12 +90,10 @@ class KryoSerializer(conf: SparkConf)
     conf.getBoolean("spark.kryo.referenceTracking", true)
   private val registrationRequired =
     conf.getBoolean("spark.kryo.registrationRequired", false)
-  private val userRegistrators = conf
-    .get("spark.kryo.registrator", "")
+  private val userRegistrators = conf.get("spark.kryo.registrator", "")
     .split(',')
     .filter(!_.isEmpty)
-  private val classesToRegister = conf
-    .get("spark.kryo.classesToRegister", "")
+  private val classesToRegister = conf.get("spark.kryo.classesToRegister", "")
     .split(',')
     .filter(!_.isEmpty)
 
@@ -154,10 +152,8 @@ class KryoSerializer(conf: SparkConf)
       // Allow the user to register their own classes by setting spark.kryo.registrator.
       userRegistrators
         .map(
-          Class
-            .forName(_, true, classLoader)
-            .newInstance()
-            .asInstanceOf[KryoRegistrator])
+          Class.forName(_, true, classLoader).newInstance().asInstanceOf[
+            KryoRegistrator])
         .foreach { reg => reg.registerClasses(kryo) }
       // scalastyle:on classforname
     } catch {

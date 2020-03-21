@@ -371,9 +371,7 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         ssc.graph.getInputStreams().length ==
           receiverInputStreams.length + inputStreams.length)
       assert(
-        ssc.graph
-          .getReceiverInputStreams()
-          .length == receiverInputStreams.length)
+        ssc.graph.getReceiverInputStreams().length == receiverInputStreams.length)
       assert(ssc.graph.getReceiverInputStreams() === receiverInputStreams)
       assert(
         ssc.graph.getInputStreams().map(_.id) === Array.tabulate(5)(i => i))
@@ -399,12 +397,10 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         // This `setTime` call ensures that the clock is past the creation time of `existingFile`
         clock.setTime(existingFile.lastModified + batchDuration.milliseconds)
         val batchCounter = new BatchCounter(ssc)
-        val fileStream = ssc
-          .fileStream[LongWritable, Text, TextInputFormat](
-            testDir.toString,
-            (x: Path) => true,
-            newFilesOnly = newFilesOnly)
-          .map(_._2.toString)
+        val fileStream = ssc.fileStream[LongWritable, Text, TextInputFormat](
+          testDir.toString,
+          (x: Path) => true,
+          newFilesOnly = newFilesOnly).map(_._2.toString)
         val outputQueue = new ConcurrentLinkedQueue[Seq[String]]
         val outputStream = new TestOutputStream(fileStream, outputQueue)
         outputStream.register()

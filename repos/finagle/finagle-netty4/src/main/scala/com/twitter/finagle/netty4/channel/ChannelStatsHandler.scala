@@ -63,13 +63,12 @@ private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
   }
 
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
-    ctx
-      .attr(ChannelWasWritableKey)
-      .set(true) //netty channels start in writable state
+    ctx.attr(ChannelWasWritableKey).set(
+      true
+    ) //netty channels start in writable state
     ctx.attr(ChannelWritableDurationKey).set(Stopwatch.start())
-    ctx
-      .attr(ConnectionStatsKey)
-      .set(ChannelStats(new AtomicLong(0), new AtomicLong(0)))
+    ctx.attr(ConnectionStatsKey).set(
+      ChannelStats(new AtomicLong(0), new AtomicLong(0)))
     connects.incr()
     connectionCount.incrementAndGet()
 

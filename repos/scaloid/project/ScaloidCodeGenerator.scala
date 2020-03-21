@@ -118,11 +118,9 @@ class ScaloidCodeGenerator(
   private def predefinedMapping(
       mappings: PredefinedCodeMappings,
       separator: String = ", ") =
-    mappings
-      .collect {
-        case (kind, fn) if cls.isA(kind) => fn(cls)
-      }
-      .mkString(separator)
+    mappings.collect {
+      case (kind, fn) if cls.isA(kind) => fn(cls)
+    }.mkString(separator)
 
   class ConstructorGenerator(con: ScalaConstructor) {
 
@@ -173,16 +171,14 @@ class ScaloidCodeGenerator(
   }
 
   def baseClassInstance = {
-    val args = BaseClassArgs.toMap
-      .get(cls.name)
+    val args = BaseClassArgs.toMap.get(cls.name)
       .fold(cls.constructors.head.args.map(_.name).mkString(", "))(_(cls))
     s"${cls.tpe.name}${typeVar(cls.tpe)}($args)"
   }
 
   def constructors =
-    cls.constructors
-      .map(new ConstructorGenerator(_).constructor)
-      .mkString("\n\n")
+    cls.constructors.map(new ConstructorGenerator(_).constructor).mkString(
+      "\n\n")
 
   // Methods
 
@@ -196,22 +192,18 @@ class ScaloidCodeGenerator(
     types match {
       case t :: Nil => "p: " + genType(t)
       case ts =>
-        ts.zipWithIndex
-          .map {
-            case (t, i) => s"p${i + 1}: ${genType(t)}"
-          }
-          .mkString(", ")
+        ts.zipWithIndex.map {
+          case (t, i) => s"p${i + 1}: ${genType(t)}"
+        }.mkString(", ")
     }
 
   def callArgs(types: List[ScalaType]) =
     types match {
       case t :: Nil => "p"
       case ts =>
-        ts.zipWithIndex
-          .map {
-            case (_, i) => "p" + (i + 1)
-          }
-          .mkString(", ")
+        ts.zipWithIndex.map {
+          case (_, i) => "p" + (i + 1)
+        }.mkString(", ")
     }
 
   // listener
@@ -243,9 +235,8 @@ class ScaloidCodeGenerator(
 
   def unitListener(l: AndroidListener) =
     s"""${commonListener(l)}
-       |    ${l.callbackMethods
-         .map(callbackMethod(_, isUnit = true))
-         .mkString("\n")}
+       |    ${l.callbackMethods.map(callbackMethod(_, isUnit = true)).mkString(
+         "\n")}
        |  })
        |  basis
        |}""".stripMargin

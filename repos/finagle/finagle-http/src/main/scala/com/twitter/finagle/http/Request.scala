@@ -173,8 +173,8 @@ abstract class Request extends Message with HttpRequestProxy {
     (params.toList.map {
       case (k, v) =>
         // cast to appease asJava
-        (new AbstractMap.SimpleImmutableEntry(k, v))
-          .asInstanceOf[JMap.Entry[String, String]]
+        (new AbstractMap.SimpleImmutableEntry(k, v)).asInstanceOf[
+          JMap.Entry[String, String]]
     }).asJava
 
   /** Check if parameter exists. */

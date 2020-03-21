@@ -138,9 +138,9 @@ object MongoPlatformSpecEngine extends Logging {
             JParser.parseManyFromFile(file) match {
               case Success(data) =>
                 val objs = data.map { jv =>
-                  JsonToMongo
-                    .apply(jv.asInstanceOf[JObject])
-                    .fold(e => throw new Exception(e.toString), s => s)
+                  JsonToMongo.apply(jv.asInstanceOf[JObject]).fold(
+                    e => throw new Exception(e.toString),
+                    s => s)
                 }.toArray
                 collection.insert(objs, WriteConcern.FSYNC_SAFE)
 

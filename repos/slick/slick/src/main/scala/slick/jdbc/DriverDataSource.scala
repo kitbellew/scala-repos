@@ -60,34 +60,32 @@ class DriverDataSource(
             "Required parameter \"url\" missing in DriverDataSource")
         driver = if (driverObject eq null) {
           if (driverClassName ne null) {
-            DriverManager.getDrivers.asScala
-              .find(_.getClass.getName == driverClassName)
-              .getOrElse {
+            DriverManager.getDrivers.asScala.find(
+              _.getClass.getName == driverClassName).getOrElse {
+              logger.debug(
+                s"Driver $driverClassName not already registered; trying to load it")
+              val cl = classLoader.loadClass(driverClassName)
+              registered = true
+              DriverManager.getDrivers.asScala.find(
+                _.getClass.getName == driverClassName).getOrElse {
                 logger.debug(
-                  s"Driver $driverClassName not already registered; trying to load it")
-                val cl = classLoader.loadClass(driverClassName)
-                registered = true
-                DriverManager.getDrivers.asScala
-                  .find(_.getClass.getName == driverClassName)
-                  .getOrElse {
+                  s"Loaded driver $driverClassName but it did not register with DriverManager; trying to instantiate directly")
+                try cl.newInstance.asInstanceOf[Driver]
+                catch {
+                  case ex: Exception =>
                     logger.debug(
-                      s"Loaded driver $driverClassName but it did not register with DriverManager; trying to instantiate directly")
-                    try cl.newInstance.asInstanceOf[Driver]
+                      s"Instantiating driver class $driverClassName failed; asking DriverManager to handle URL $url",
+                      ex)
+                    try DriverManager.getDriver(url)
                     catch {
                       case ex: Exception =>
-                        logger.debug(
-                          s"Instantiating driver class $driverClassName failed; asking DriverManager to handle URL $url",
+                        throw new SlickException(
+                          s"Driver $driverClassName does not know how to handle URL $url",
                           ex)
-                        try DriverManager.getDriver(url)
-                        catch {
-                          case ex: Exception =>
-                            throw new SlickException(
-                              s"Driver $driverClassName does not know how to handle URL $url",
-                              ex)
-                        }
                     }
-                  }
+                }
               }
+            }
           } else
             try DriverManager.getDriver(url)
             catch {

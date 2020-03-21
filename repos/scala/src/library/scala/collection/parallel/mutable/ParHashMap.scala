@@ -153,8 +153,9 @@ class ParHashMap[K, V] private[collection] (
     def count(e: HashEntry[K, DefaultEntry[K, V]]): Int =
       if (e eq null) 0 else 1 + count(e.next)
     val expected = sizemap(i)
-    val found = ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
-      .foldLeft(0) {
+    val found =
+      ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize)).foldLeft(
+        0) {
         (acc, c) => acc + count(table(c))
       }
     if (found != expected)

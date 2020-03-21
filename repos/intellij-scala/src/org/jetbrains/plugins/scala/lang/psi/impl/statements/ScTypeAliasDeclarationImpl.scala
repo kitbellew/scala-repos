@@ -50,11 +50,9 @@ class ScTypeAliasDeclarationImpl private (
   def nameId =
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
       case null =>
-        ScalaPsiElementFactory
-          .createIdentifier(
-            getStub.asInstanceOf[ScTypeAliasStub].getName,
-            getManager)
-          .getPsi
+        ScalaPsiElementFactory.createIdentifier(
+          getStub.asInstanceOf[ScTypeAliasStub].getName,
+          getManager).getPsi
       case n => n
     }
 
@@ -76,10 +74,8 @@ class ScTypeAliasDeclarationImpl private (
     import org.jetbrains.plugins.scala.extensions._
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScTypeAliasStub]
-        .getUpperBoundTypeElement
-        .toOption
+      return stub.asInstanceOf[
+        ScTypeAliasStub].getUpperBoundTypeElement.toOption
     }
     val tUpper = findLastChildByType[PsiElement](ScalaTokenTypes.tUPPER_BOUND)
     if (tUpper != null) {
@@ -94,10 +90,8 @@ class ScTypeAliasDeclarationImpl private (
     import org.jetbrains.plugins.scala.extensions._
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScTypeAliasStub]
-        .getLowerBoundTypeElement
-        .toOption
+      return stub.asInstanceOf[
+        ScTypeAliasStub].getLowerBoundTypeElement.toOption
     }
     val tLower = findLastChildByType[PsiElement](ScalaTokenTypes.tLOWER_BOUND)
     if (tLower != null) {

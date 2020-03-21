@@ -130,8 +130,7 @@ class ClosureCleanerSuite2
       findTransitively: Boolean): Map[Class[_], Set[String]] = {
     val fields = new mutable.HashMap[Class[_], mutable.Set[String]]
     outerClasses.foreach { c => fields(c) = new mutable.HashSet[String] }
-    ClosureCleaner
-      .getClassReader(closure.getClass)
+    ClosureCleaner.getClassReader(closure.getClass)
       .accept(new FieldAccessFinder(fields, findTransitively), 0)
     fields.mapValues(_.toSet).toMap
   }

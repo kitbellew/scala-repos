@@ -81,9 +81,8 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    val conf = new SparkConf()
-      .setMaster("local[4]")
-      .setAppName("KinesisBackedBlockRDDSuite")
+    val conf = new SparkConf().setMaster("local[4]").setAppName(
+      "KinesisBackedBlockRDDSuite")
     sc = new SparkContext(conf)
     blockManager = sc.env.blockManager
   }
@@ -105,9 +104,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.regionName,
       testUtils.endpointUrl,
       fakeBlockIds(1),
-      Array(SequenceNumberRanges(allRanges.toArray)))
-      .map { bytes => new String(bytes).toInt }
-      .collect()
+      Array(SequenceNumberRanges(allRanges.toArray))).map { bytes =>
+      new String(bytes).toInt
+    }.collect()
     assert(receivedData1.toSet === testData.toSet)
 
     // Verify all data using one range in each of the multiple RDD partitions
@@ -116,9 +115,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.regionName,
       testUtils.endpointUrl,
       fakeBlockIds(allRanges.size),
-      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
-      .map { bytes => new String(bytes).toInt }
-      .collect()
+      allRanges.map { range =>
+        SequenceNumberRanges(Array(range))
+      }.toArray).map { bytes => new String(bytes).toInt }.collect()
     assert(receivedData2.toSet === testData.toSet)
 
     // Verify ordering within each partition
@@ -127,9 +126,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.regionName,
       testUtils.endpointUrl,
       fakeBlockIds(allRanges.size),
-      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
-      .map { bytes => new String(bytes).toInt }
-      .collectPartitions()
+      allRanges.map { range =>
+        SequenceNumberRanges(Array(range))
+      }.toArray).map { bytes => new String(bytes).toInt }.collectPartitions()
     assert(receivedData3.length === allRanges.size)
     for (i <- 0 until allRanges.size) {
       assert(receivedData3(i).toSeq === shardIdToData(allRanges(i).shardId))
@@ -317,11 +316,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         numPartitionsInBM > 0,
         "Some partitions must be in BlockManager for this test")
       rdd.removeBlocks()
-      assert(
-        rdd
-          .map { bytes => new String(bytes).toInt }
-          .collect()
-          .toSet === testData.toSet)
+      assert(rdd.map { bytes =>
+        new String(bytes).toInt
+      }.collect().toSet === testData.toSet)
     }
   }
 

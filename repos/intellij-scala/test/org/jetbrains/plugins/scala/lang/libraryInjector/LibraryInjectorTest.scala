@@ -79,8 +79,8 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
 
     scalaLibraryLoader.loadScala(scalaSdkVersion)
     addLibrary(
-      testData(getTestName(false))
-        .zip(ScalaUtil.createTmpDir("injectorTestLib", "")))
+      testData(getTestName(false)).zip(
+        ScalaUtil.createTmpDir("injectorTestLib", "")))
   }
 
   protected override def tearDown() {
@@ -93,10 +93,8 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
   protected def addLibrary(library: File) {
     VfsRootAccess.allowRootAccess(library.getAbsolutePath)
     PsiTestUtil.addLibrary(myModule, library.getAbsolutePath)
-    VirtualFilePointerManager
-      .getInstance()
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance().asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
   }
 
   override protected def getTestProjectJdk: Sdk = {
@@ -145,15 +143,11 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
   val testData = Map("Simple" -> simpleInjector)
 
   def testSimple() {
-    VirtualFilePointerManager
-      .getInstance()
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance().asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
     assert(
-      LibraryInjectorLoader
-        .getInstance(myProject)
-        .getInjectorClasses(classOf[SyntheticMembersInjector])
-        .nonEmpty)
+      LibraryInjectorLoader.getInstance(myProject).getInjectorClasses(
+        classOf[SyntheticMembersInjector]).nonEmpty)
   }
 
   override protected def scalaSdkVersion: ScalaSdkVersion =

@@ -237,19 +237,15 @@ private[spark] object JettyUtils extends Logging {
           val holder: FilterHolder = new FilterHolder()
           holder.setClassName(filter)
           // Get any parameters for each filter
-          conf
-            .get("spark." + filter + ".params", "")
-            .split(',')
-            .map(_.trim())
-            .toSet
-            .foreach {
-              param: String =>
-                if (!param.isEmpty) {
-                  val parts = param.split("=")
-                  if (parts.length == 2)
-                    holder.setInitParameter(parts(0), parts(1))
-                }
-            }
+          conf.get("spark." + filter + ".params", "").split(',').map(
+            _.trim()).toSet.foreach {
+            param: String =>
+              if (!param.isEmpty) {
+                val parts = param.split("=")
+                if (parts.length == 2)
+                  holder.setInitParameter(parts(0), parts(1))
+              }
+          }
 
           val prefix = s"spark.$filter.param."
           conf.getAll

@@ -573,15 +573,13 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         else jMethodName
 
       val mdesc = methodBTypeFromSymbol(methSymbol).descriptor
-      mnode = cnode
-        .visitMethod(
-          flags,
-          bytecodeName,
-          mdesc,
-          jgensig,
-          mkArray(thrownExceptions)
-        )
-        .asInstanceOf[asm.tree.MethodNode]
+      mnode = cnode.visitMethod(
+        flags,
+        bytecodeName,
+        mdesc,
+        jgensig,
+        mkArray(thrownExceptions)
+      ).asInstanceOf[asm.tree.MethodNode]
 
       emitParamNames(mnode, params)
       emitAnnotations(mnode, others)
@@ -661,8 +659,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
               globalError(
                 "Concrete method has no definition: " + dd + (
                   if (settings.debug)
-                    "(found: " + methSymbol.owner.info.decls.toList
-                      .mkString(", ") + ")"
+                    "(found: " + methSymbol.owner.info.decls.toList.mkString(
+                      ", ") + ")"
                   else ""))
             case _ =>
               bc emitRETURN returnType

@@ -48,9 +48,9 @@ case class TreePrinter(
         val lines = di.mainInfo.replace("\r", "").split('\n')
         out.println(
           if (di.attrInfo.isEmpty) "" else cBlue + di.attrInfo + cNormal)
-        val p = prefix2 + Iterator
-          .fill(name.length + (if (name.length == 0) 0 else 2))(' ')
-          .mkString + cYellow + multi2 + cNormal
+        val p = prefix2 + Iterator.fill(
+          name.length + (if (name.length == 0) 0 else 2))(
+          ' ').mkString + cYellow + multi2 + cNormal
         lines.foreach { l => out.println(p + l) }
       } else {
         out.println(

@@ -154,8 +154,7 @@ private[spark] class MultiStopwatch(@transient private val sc: SparkContext)
   def apply(name: String): Stopwatch = stopwatches(name)
 
   override def toString: String = {
-    stopwatches.values.toArray
-      .sortBy(_.name)
+    stopwatches.values.toArray.sortBy(_.name)
       .map(c => s"  $c")
       .mkString("{\n", ",\n", "\n}")
   }

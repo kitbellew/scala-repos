@@ -64,20 +64,16 @@ class ScPatternDefinitionImpl private (
     typeElement match {
       case Some(te) => te.getType(ctx)
       case None =>
-        expr
-          .map(_.getType(ctx))
-          .getOrElse(
-            Failure("Cannot infer type without an expression", Some(this)))
+        expr.map(_.getType(ctx)).getOrElse(
+          Failure("Cannot infer type without an expression", Some(this)))
     }
   }
 
   def expr: Option[ScExpression] = {
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScValueStub]
-        .getBodyExpr
-        .orElse(Option(findChildByClassScala(classOf[ScExpression])))
+      return stub.asInstanceOf[ScValueStub].getBodyExpr.orElse(
+        Option(findChildByClassScala(classOf[ScExpression])))
     }
     Option(findChildByClassScala(classOf[ScExpression]))
   }
@@ -92,11 +88,9 @@ class ScPatternDefinitionImpl private (
   def pList: ScPatternList = {
     val stub = getStub
     if (stub != null) {
-      stub
-        .getChildrenByType(
-          ScalaElementTypes.PATTERN_LIST,
-          JavaArrayFactoryUtil.ScPatternListFactory)
-        .apply(0)
+      stub.getChildrenByType(
+        ScalaElementTypes.PATTERN_LIST,
+        JavaArrayFactoryUtil.ScPatternListFactory).apply(0)
     } else findChildByClass(classOf[ScPatternList])
   }
 }

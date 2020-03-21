@@ -156,8 +156,11 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
       dataType: Class[DT],
       predicate: TypedPredicate2[ET, DT],
       apply: Apply2[ET, DT, State]): FSMStateFunctionBuilder[S, D] =
-    new FSMStateFunctionBuilder[S, D]()
-      .event(eventType, dataType, predicate, apply)
+    new FSMStateFunctionBuilder[S, D]().event(
+      eventType,
+      dataType,
+      predicate,
+      apply)
 
   /**
     * Create an [[akka.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.

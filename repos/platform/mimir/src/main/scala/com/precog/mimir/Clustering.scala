@@ -737,11 +737,8 @@ trait ClusteringLibModule[M[+_]]
               val sliceSize = 4000
               val features: StreamT[M, Table] = tables flatMap {
                 case (tbl, jtype) =>
-                  val coreSetTree = tbl
-                    .canonicalize(sliceSize)
-                    .toArray[Double]
-                    .normalize
-                    .reduce(reducerFeatures(k))
+                  val coreSetTree = tbl.canonicalize(sliceSize).toArray[
+                    Double].normalize.reduce(reducerFeatures(k))
 
                   StreamT(coreSetTree map { tree =>
                     StreamT.Yield(

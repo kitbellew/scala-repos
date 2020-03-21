@@ -36,8 +36,9 @@ import org.apache.spark.util.ManualClock
 class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
 
   private val blockIntervalMs = 10
-  private val conf = new SparkConf()
-    .set("spark.streaming.blockInterval", s"${blockIntervalMs}ms")
+  private val conf = new SparkConf().set(
+    "spark.streaming.blockInterval",
+    s"${blockIntervalMs}ms")
   @volatile private var blockGenerator: BlockGenerator = null
 
   after {

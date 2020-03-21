@@ -112,8 +112,8 @@ class ScParameterImpl protected (
         stub.asInstanceOf[ScParameterStub].getTypeText match {
           case ""
               if stub.getParentStub != null && stub.getParentStub.getParentStub != null &&
-                stub.getParentStub.getParentStub.getParentStub
-                  .isInstanceOf[ScFunctionStub] =>
+                stub.getParentStub.getParentStub.getParentStub.isInstanceOf[
+                  ScFunctionStub] =>
             return Failure("Cannot infer type", Some(this))
           case "" =>
             return Failure("Wrong Stub problem", Some(this)) //shouldn't be

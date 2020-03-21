@@ -24,15 +24,12 @@ object ReflectionsCache {
 
   def getReflections(classLoader: ClassLoader, pkg: String) = {
     // Detect if the classloader is different from last time, if it is, create a new cache and replace the old
-    val reflectionsMap = reflectionsMapRef
-      .flatMap(_.get)
-      .filter(_._1 == classLoader)
-      .map(_._2)
-      .getOrElse {
-        val map = TrieMap.empty[String, Reflections]
-        reflectionsMapRef = Some(new SoftReference((classLoader, map), null))
-        map
-      }
+    val reflectionsMap = reflectionsMapRef.flatMap(_.get).filter(
+      _._1 == classLoader).map(_._2).getOrElse {
+      val map = TrieMap.empty[String, Reflections]
+      reflectionsMapRef = Some(new SoftReference((classLoader, map), null))
+      map
+    }
     reflectionsMap.get(pkg).getOrElse {
 
       val reflections =

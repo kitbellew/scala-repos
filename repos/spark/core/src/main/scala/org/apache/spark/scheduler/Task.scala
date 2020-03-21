@@ -250,8 +250,7 @@ private[spark] object Task {
 
     // Create a sub-buffer for the rest of the data, which is the serialized Task object
     val subBuffer =
-      serializedTask
-        .slice() // ByteBufferInputStream will have read just up to task
+      serializedTask.slice() // ByteBufferInputStream will have read just up to task
     (taskFiles, taskJars, subBuffer)
   }
 }

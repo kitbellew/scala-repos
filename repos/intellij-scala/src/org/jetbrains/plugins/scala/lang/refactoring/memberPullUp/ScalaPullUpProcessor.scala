@@ -119,9 +119,10 @@ class ScalaPullUpProcessor(
         Seq(member)
       case ScalaExtractMemberInfo(m, true) =>
         declarationsText(m).map(
-          ScalaPsiElementFactory
-            .createDeclarationFromText(_, m.getParent, m)
-            .asInstanceOf[ScMember])
+          ScalaPsiElementFactory.createDeclarationFromText(
+            _,
+            m.getParent,
+            m).asInstanceOf[ScMember])
       case ScalaExtractMemberInfo(m, false)
           if m.hasModifierProperty("override") =>
         val copy = m.copy().asInstanceOf[ScMember]
@@ -160,8 +161,9 @@ class ScalaPullUpProcessor(
           override def visitSimpleTypeElement(te: ScSimpleTypeElement) = {
             val tpe = te.calcType
             te.replace(
-              ScalaPsiElementFactory
-                .createTypeElementFromText(tpe.canonicalText, te.getManager))
+              ScalaPsiElementFactory.createTypeElementFromText(
+                tpe.canonicalText,
+                te.getManager))
           }
         })
         Seq(copy.getText)

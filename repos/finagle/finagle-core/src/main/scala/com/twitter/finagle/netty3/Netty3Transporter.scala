@@ -248,8 +248,8 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
             override def run(): Unit =
               Channels.fireChannelClosed(nioChannel)
           })
-        nioChannel.getWorker
-          .executeInIoThread(channelClosed, /* alwaysAsync */ true)
+        nioChannel.getWorker.executeInIoThread(
+          channelClosed, /* alwaysAsync */ true)
 
       case channel =>
         Channels.fireChannelClosedLater(channel)

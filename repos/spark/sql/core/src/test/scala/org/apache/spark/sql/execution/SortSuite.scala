@@ -72,9 +72,8 @@ class SortSuite extends SparkPlanTest with SharedSQLContext {
     val sortOrder = 'a.asc :: Nil
     val stringLength = 1024 * 1024 * 2
     checkThatPlansAgree(
-      Seq(Tuple1("a" * stringLength), Tuple1("b" * stringLength))
-        .toDF("a")
-        .repartition(1),
+      Seq(Tuple1("a" * stringLength), Tuple1("b" * stringLength)).toDF(
+        "a").repartition(1),
       Sort(sortOrder, global = true, _: SparkPlan, testSpillFrequency = 1),
       ReferenceSort(sortOrder, global = true, _: SparkPlan),
       sortAnswers = false

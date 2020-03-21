@@ -304,8 +304,9 @@ private[cluster] final case class HeartbeatNodeRing(
       Ordering.fromLessThan[UniqueAddress] { (a, b) ⇒
         val ha = a.##
         val hb = b.##
-        ha < hb || (ha == hb && Member.addressOrdering
-          .compare(a.address, b.address) < 0)
+        ha < hb || (ha == hb && Member.addressOrdering.compare(
+          a.address,
+          b.address) < 0)
       }
 
     immutable.SortedSet() union nodes

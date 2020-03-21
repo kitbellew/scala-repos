@@ -134,12 +134,10 @@ object QuantileDiscretizer
       "QuantileDiscretizer requires non-empty input dataset but was given an empty input.")
     val requiredSamples = math.max(numBins * numBins, minSamplesRequired)
     val fraction = math.min(requiredSamples.toDouble / totalSamples, 1.0)
-    dataset
-      .sample(
-        withReplacement = false,
-        fraction,
-        new XORShiftRandom(seed).nextInt())
-      .collect()
+    dataset.sample(
+      withReplacement = false,
+      fraction,
+      new XORShiftRandom(seed).nextInt()).collect()
   }
 
   /**

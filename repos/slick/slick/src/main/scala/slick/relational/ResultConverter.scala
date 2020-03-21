@@ -66,18 +66,18 @@ T <: Product](elementConverters: ResultConverter[M, _]*)
   def update(value: T, pr: Updater) = {
     var i = 0
     while (i < len) {
-      cha(i)
-        .asInstanceOf[ResultConverter[M, Any]]
-        .update(value.productElement(i), pr)
+      cha(i).asInstanceOf[ResultConverter[M, Any]].update(
+        value.productElement(i),
+        pr)
       i += 1
     }
   }
   def set(value: T, pp: Writer) = {
     var i = 0
     while (i < len) {
-      cha(i)
-        .asInstanceOf[ResultConverter[M, Any]]
-        .set(value.productElement(i), pp)
+      cha(i).asInstanceOf[ResultConverter[M, Any]].set(
+        value.productElement(i),
+        pp)
       i += 1
     }
   }
@@ -186,8 +186,8 @@ final case class OptionRebuildingResultConverter[M <: ResultConverterDomain, T](
     throw new SlickException("Cannot insert/update non-primitive Option value")
   def width = discriminator.width + data.width
   override def getDumpInfo =
-    super.getDumpInfo
-      .copy(children = Vector(("discriminator", discriminator), ("data", data)))
+    super.getDumpInfo.copy(children =
+      Vector(("discriminator", discriminator), ("data", data)))
 }
 
 /** A `ResultConverter` that simplifies the implementation of fast path

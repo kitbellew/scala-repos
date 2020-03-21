@@ -210,8 +210,7 @@ class TaskReplaceActor(
   }
 
   def buildTaskId(id: String): TaskID =
-    TaskID
-      .newBuilder()
+    TaskID.newBuilder()
       .setValue(id)
       .build()
 }

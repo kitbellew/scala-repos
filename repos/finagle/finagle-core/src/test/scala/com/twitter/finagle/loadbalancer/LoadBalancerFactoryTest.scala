@@ -38,15 +38,13 @@ class LoadBalancerFactoryTest
       val sr1 = new InMemoryStatsReceiver
 
       perHostStats.let(true) {
-        client
-          .configured(LoadBalancerFactory.HostStats(sr))
+        client.configured(LoadBalancerFactory.HostStats(sr))
           .newService(port)
         eventually {
           assert(sr.self.gauges(perHostStatKey).apply == 1.0)
         }
 
-        client
-          .configured(LoadBalancerFactory.HostStats(sr1))
+        client.configured(LoadBalancerFactory.HostStats(sr1))
           .newService(port)
         eventually {
           assert(sr1.gauges(perHostStatKey).apply == 1.0)
@@ -61,13 +59,11 @@ class LoadBalancerFactoryTest
       val sr1 = new InMemoryStatsReceiver
 
       perHostStats.let(false) {
-        client
-          .configured(LoadBalancerFactory.HostStats(sr))
+        client.configured(LoadBalancerFactory.HostStats(sr))
           .newService(port)
         assert(sr.self.gauges.contains(perHostStatKey) == false)
 
-        client
-          .configured(LoadBalancerFactory.HostStats(sr1))
+        client.configured(LoadBalancerFactory.HostStats(sr1))
           .newService(port)
         assert(sr1.gauges.contains(perHostStatKey) == false)
       }
@@ -130,8 +126,7 @@ class ConcurrentLoadBalancerFactoryTest
       StackClient.newStack.replace(
         LoadBalancerFactory.role,
         ConcurrentLoadBalancerFactory.module[String, String])
-    val client = stringClient
-      .withStack(clientStack)
+    val client = stringClient.withStack(clientStack)
       .configured(Stats(sr))
       .newService(
         Name.bound(
@@ -154,8 +149,7 @@ class ConcurrentLoadBalancerFactoryTest
       StackClient.newStack.replace(
         LoadBalancerFactory.role,
         ConcurrentLoadBalancerFactory.module[String, String])
-    val client = stringClient
-      .withStack(clientStack)
+    val client = stringClient.withStack(clientStack)
       .configured(Stats(sr))
       .configured(ConcurrentLoadBalancerFactory.Param(3))
       .newService(

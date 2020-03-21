@@ -84,14 +84,12 @@ final class TestRunner(
 
   final def tasks(testDefs: Set[TestDefinition]): Array[TestTask] =
     delegate.tasks(
-      testDefs
-        .map(df =>
-          new TaskDef(
-            df.name,
-            df.fingerprint,
-            df.explicitlySpecified,
-            df.selectors))
-        .toArray)
+      testDefs.map(df =>
+        new TaskDef(
+          df.name,
+          df.fingerprint,
+          df.explicitlySpecified,
+          df.selectors)).toArray)
 
   final def run(
       taskDef: TaskDef,

@@ -28,8 +28,8 @@ class ScExtendsBlockStubImpl[ParentPsi <: PsiElement](
       base: Array[StringRef]) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     baseClasses = base
   }
 
@@ -41,8 +41,8 @@ class ScExtendsBlockStubImpl[ParentPsi <: PsiElement](
       base: Array[String]) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     baseClasses = base.map(StringRef.fromString)
   }
 

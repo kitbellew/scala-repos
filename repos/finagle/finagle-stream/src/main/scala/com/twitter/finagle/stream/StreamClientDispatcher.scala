@@ -43,45 +43,43 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
     }
 
   protected def dispatch(req: Req, p: Promise[StreamResponse]) =
-    trans
-      .write(from(RT.canonize(req)): HttpRequest)
-      .rescue(wrapWriteException)
-      .before {
-        trans.read() flatMap {
-          case httpRes: HttpResponse =>
-            val out = new Broker[Buf]
-            val err = new Broker[Throwable]
-            val done = new Promise[Unit]
+    trans.write(from(RT.canonize(req)): HttpRequest).rescue(
+      wrapWriteException).before {
+      trans.read() flatMap {
+        case httpRes: HttpResponse =>
+          val out = new Broker[Buf]
+          val err = new Broker[Throwable]
+          val done = new Promise[Unit]
 
-            if (!httpRes.isChunked) {
-              val content = httpRes.getContent
-              if (content.readable) out ! ChannelBufferBuf.Owned(content)
-              done.setDone()
-            } else {
-              readChunks(out) respond {
-                case Return(_) | Throw(_: ChannelClosedException) =>
-                  err ! EOF
-                case Throw(exc) =>
-                  err ! exc
-              } ensure done.setDone()
-            }
+          if (!httpRes.isChunked) {
+            val content = httpRes.getContent
+            if (content.readable) out ! ChannelBufferBuf.Owned(content)
+            done.setDone()
+          } else {
+            readChunks(out) respond {
+              case Return(_) | Throw(_: ChannelClosedException) =>
+                err ! EOF
+              case Throw(exc) =>
+                err ! exc
+            } ensure done.setDone()
+          }
 
-            val res = new StreamResponse {
-              val info = from(httpRes)
-              def messages = out.recv
-              def error = err.recv
-              def release() = done.setDone()
-            }
-            p.updateIfEmpty(Return(res))
+          val res = new StreamResponse {
+            val info = from(httpRes)
+            def messages = out.recv
+            def error = err.recv
+            def release() = done.setDone()
+          }
+          p.updateIfEmpty(Return(res))
 
-            done ensure {
-              trans.close()
-            }
+          done ensure {
+            trans.close()
+          }
 
-          case invalid =>
-            Future.exception(
-              new IllegalArgumentException(
-                "invalid message \"%s\"".format(invalid)))
-        }
+        case invalid =>
+          Future.exception(
+            new IllegalArgumentException(
+              "invalid message \"%s\"".format(invalid)))
       }
+    }
 }

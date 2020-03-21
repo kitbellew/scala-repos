@@ -88,11 +88,8 @@ object UpdateOffsetsInZK {
           val request = OffsetRequest(
             Map(
               topicAndPartition -> PartitionOffsetRequestInfo(offsetOption, 1)))
-          val offset = consumer
-            .getOffsetsBefore(request)
-            .partitionErrorAndOffsets(topicAndPartition)
-            .offsets
-            .head
+          val offset = consumer.getOffsetsBefore(
+            request).partitionErrorAndOffsets(topicAndPartition).offsets.head
           val topicDirs = new ZKGroupTopicDirs(config.groupId, topic)
 
           println(

@@ -48,8 +48,9 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
               case s: ScSimpleTypeElement =>
                 s.reference match {
                   case Some(ref) =>
-                    if (ref.refName.startsWith("Tuple") || ref.refName
-                          .startsWith("Function") && ref.isValid) {
+                    if (ref.refName.startsWith(
+                          "Tuple") || ref.refName.startsWith(
+                          "Function") && ref.isValid) {
                       val referredElement = ref.bind().map(_.getElement)
                       referredElement match {
                         case Some(QualifiedName(FunctionN(n)))
@@ -104,8 +105,8 @@ object FunctionTupleSyntacticSugarInspection {
             true // (Tuple2[A, B]) => B  ==>> ((A, B)) => C
           case _ => false
         }
-        ("(" + typeElement.typeArgList.getText.drop(1).dropRight(1) + ")")
-          .parenthesisedIf(needParens)
+        ("(" + typeElement.typeArgList.getText.drop(1).dropRight(
+          1) + ")").parenthesisedIf(needParens)
       }
       typeElement.replace(
         createTypeElementFromText(typeTextWithParens, typeElement.getManager))
@@ -140,8 +141,8 @@ object FunctionTupleSyntacticSugarInspection {
           case _                                                        => false
         }
         val arrow = ScalaPsiUtil.functionArrow(project)
-        s"(${elemsInParamTypes.map(_.getText).mkString}) $arrow $returnTypeTextWithParens"
-          .parenthesisedIf(needParens)
+        s"(${elemsInParamTypes.map(_.getText).mkString}) $arrow $returnTypeTextWithParens".parenthesisedIf(
+          needParens)
       }
       typeElement.replace(
         createTypeElementFromText(typeTextWithParens, typeElement.getManager))

@@ -182,24 +182,23 @@ trait LowPriorityDefaultReads {
             def locate(e: Errors, idx: Int) =
               e.map { case (p, valerr) => (JsPath(idx)) ++ p -> valerr }
 
-            ts.iterator.zipWithIndex
-              .foldLeft(Right(Vector.empty): Either[Errors, Vector[A]]) {
-                case (acc, (elt, idx)) =>
-                  (acc, fromJson[A](elt)(ra)) match {
-                    case (Right(vs), JsSuccess(v, _)) => Right(vs :+ v)
-                    case (Right(_), JsError(e))       => Left(locate(e, idx))
-                    case (Left(e), _: JsSuccess[_])   => Left(e)
-                    case (Left(e1), JsError(e2))      => Left(e1 ++ locate(e2, idx))
-                  }
-              }
-              .fold(
-                JsError.apply,
-                { res =>
-                  val builder = bf()
-                  builder.sizeHint(res)
-                  builder ++= res
-                  JsSuccess(builder.result())
-                })
+            ts.iterator.zipWithIndex.foldLeft(
+              Right(Vector.empty): Either[Errors, Vector[A]]) {
+              case (acc, (elt, idx)) =>
+                (acc, fromJson[A](elt)(ra)) match {
+                  case (Right(vs), JsSuccess(v, _)) => Right(vs :+ v)
+                  case (Right(_), JsError(e))       => Left(locate(e, idx))
+                  case (Left(e), _: JsSuccess[_])   => Left(e)
+                  case (Left(e1), JsError(e2))      => Left(e1 ++ locate(e2, idx))
+                }
+            }.fold(
+              JsError.apply,
+              { res =>
+                val builder = bf()
+                builder.sizeHint(res)
+                builder ++= res
+                JsSuccess(builder.result())
+              })
           case _ =>
             JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.jsarray"))))
@@ -306,8 +305,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
   implicit val bigDecReads = Reads[BigDecimal](js =>
     js match {
       case JsString(s) =>
-        scala.util.control.Exception
-          .catching(classOf[NumberFormatException])
+        scala.util.control.Exception.catching(classOf[NumberFormatException])
           .opt(JsSuccess(BigDecimal(new java.math.BigDecimal(s))))
           .getOrElse(
             JsError(ValidationError("error.expected.numberformatexception")))
@@ -321,8 +319,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
   implicit val javaBigDecReads = Reads[java.math.BigDecimal](js =>
     js match {
       case JsString(s) =>
-        scala.util.control.Exception
-          .catching(classOf[NumberFormatException])
+        scala.util.control.Exception.catching(classOf[NumberFormatException])
           .opt(JsSuccess(new java.math.BigDecimal(s)))
           .getOrElse(
             JsError(ValidationError("error.expected.numberformatexception")))
@@ -793,8 +790,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseDate(input: String): Option[DateTime] =
-        scala.util.control.Exception
-          .allCatch[DateTime] opt (DateTime.parse(input, df))
+        scala.util.control.Exception.allCatch[DateTime] opt (DateTime.parse(
+          input,
+          df))
 
     }
 
@@ -836,8 +834,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseDate(input: String): Option[LocalDate] =
-        scala.util.control.Exception
-          .allCatch[LocalDate] opt (LocalDate.parse(input, df))
+        scala.util.control.Exception.allCatch[LocalDate] opt (LocalDate.parse(
+          input,
+          df))
     }
 
   /**
@@ -879,8 +878,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseTime(input: String): Option[LocalTime] =
-        scala.util.control.Exception
-          .allCatch[LocalTime] opt (LocalTime.parse(input, df))
+        scala.util.control.Exception.allCatch[LocalTime] opt (LocalTime.parse(
+          input,
+          df))
     }
 
   /**
@@ -1067,15 +1067,14 @@ trait DefaultReads extends LowPriorityDefaultReads {
               e.map { case (p, valerr) => (JsPath \ key) ++ p -> valerr }
 
             m.foldLeft(Right(Map.empty): Either[Errors, Map[String, V]]) {
-                case (acc, (key, value)) =>
-                  (acc, fromJson[V](value)(fmtv)) match {
-                    case (Right(vs), JsSuccess(v, _)) => Right(vs + (key -> v))
-                    case (Right(_), JsError(e))       => Left(locate(e, key))
-                    case (Left(e), _: JsSuccess[_])   => Left(e)
-                    case (Left(e1), JsError(e2))      => Left(e1 ++ locate(e2, key))
-                  }
-              }
-              .fold(JsError.apply, res => JsSuccess(res.toMap))
+              case (acc, (key, value)) =>
+                (acc, fromJson[V](value)(fmtv)) match {
+                  case (Right(vs), JsSuccess(v, _)) => Right(vs + (key -> v))
+                  case (Right(_), JsError(e))       => Left(locate(e, key))
+                  case (Left(e), _: JsSuccess[_])   => Left(e)
+                  case (Left(e1), JsError(e2))      => Left(e1 ++ locate(e2, key))
+                }
+            }.fold(JsError.apply, res => JsSuccess(res.toMap))
           }
           case _ =>
             JsError(
@@ -1112,9 +1111,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case JsString(s) => {
-          parseUuid(s)
-            .map(JsSuccess(_))
-            .getOrElse(JsError(
+          parseUuid(s).map(JsSuccess(_)).getOrElse(
+            JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.uuid")))))
         }
         case _ =>

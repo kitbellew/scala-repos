@@ -423,9 +423,9 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
       """.stripMargin('|').replaceAll("\r", "").trim()
 
     inWriteAction {
-      val myVFile = getSourceRootAdapter
-        .createChildDirectory(null, "a")
-        .createChildData(null, "Java.java")
+      val myVFile = getSourceRootAdapter.createChildDirectory(
+        null,
+        "a").createChildData(null, "Java.java")
       VfsUtil.saveText(myVFile, javaFileText)
     }
 

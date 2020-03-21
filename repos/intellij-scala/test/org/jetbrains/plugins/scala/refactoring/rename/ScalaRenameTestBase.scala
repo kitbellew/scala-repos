@@ -41,8 +41,9 @@ abstract class ScalaRenameTestBase
       "Not specified caret marker in test case. Use /*caret*/ in scala file for this.")
     getEditorAdapter.getCaretModel.moveToOffset(offset)
     val element = TargetElementUtil.findTargetElement(
-      InjectedLanguageUtil
-        .getEditorForInjectedLanguageNoCommit(getEditorAdapter, scalaFile),
+      InjectedLanguageUtil.getEditorForInjectedLanguageNoCommit(
+        getEditorAdapter,
+        scalaFile),
       TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil.ELEMENT_NAME_ACCEPTED
     )
     assert(element != null, "Reference is not specified.")
@@ -55,9 +56,8 @@ abstract class ScalaRenameTestBase
     ScalaUtils.runWriteAction(
       new Runnable {
         def run() {
-          val subst = RenamePsiElementProcessor
-            .forElement(element)
-            .substituteElementToRename(element, getEditorAdapter)
+          val subst = RenamePsiElementProcessor.forElement(
+            element).substituteElementToRename(element, getEditorAdapter)
           if (subst == null) return
           new RenameProcessor(
             getProjectAdapter,

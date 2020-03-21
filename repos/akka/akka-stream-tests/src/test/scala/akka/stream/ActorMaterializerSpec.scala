@@ -56,9 +56,9 @@ class ActorMaterializerSpec extends AkkaSpec with ImplicitSender {
       val m = ActorMaterializer.create(system)
       an[IllegalArgumentException] should be thrownBy
         Await.result(
-          Source
-            .actorPublisher(Props(classOf[TestActor], "wrong", "arguments"))
-            .runWith(Sink.head)(m),
+          Source.actorPublisher(
+            Props(classOf[TestActor], "wrong", "arguments")).runWith(Sink.head)(
+            m),
           3.seconds)
     }
 

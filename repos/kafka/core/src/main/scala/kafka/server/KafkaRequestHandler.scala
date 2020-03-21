@@ -55,14 +55,17 @@ class KafkaRequestHandler(
 
         if (req eq RequestChannel.AllDone) {
           debug(
-            "Kafka request handler %d on broker %d received shut down command"
-              .format(id, brokerId))
+            "Kafka request handler %d on broker %d received shut down command".format(
+              id,
+              brokerId))
           return
         }
         req.requestDequeueTimeMs = SystemTime.milliseconds
         trace(
-          "Kafka request handler %d on broker %d handling request %s"
-            .format(id, brokerId, req))
+          "Kafka request handler %d on broker %d handling request %s".format(
+            id,
+            brokerId,
+            req))
         apis.handle(req)
       } catch {
         case e: Throwable => error("Exception when handling request", e)

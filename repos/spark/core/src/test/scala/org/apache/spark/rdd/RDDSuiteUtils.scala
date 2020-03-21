@@ -26,7 +26,8 @@ object RDDSuiteUtils {
 
   object NameOrdering extends Ordering[Person] {
     def compare(a: Person, b: Person): Int =
-      implicitly[Ordering[Tuple2[String, String]]]
-        .compare((a.last, a.first), (b.last, b.first))
+      implicitly[Ordering[Tuple2[String, String]]].compare(
+        (a.last, a.first),
+        (b.last, b.first))
   }
 }

@@ -14,9 +14,8 @@ object ReverseIterator extends SimplificationType {
     expr match {
       case qual `.reverse` () `.iterator` () =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "reverseIterator"))
-            .highlightFrom(qual))
+          replace(expr).withText(
+            invocationText(qual, "reverseIterator")).highlightFrom(qual))
       case _ => None
     }
   }

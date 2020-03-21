@@ -117,10 +117,9 @@ class ClusterSingletonManagerChaosSpec
         node(nodes.head).address)
     }
     runOn(nodes.head) {
-      memberProbe
-        .receiveN(nodes.size, 15.seconds)
-        .collect { case MemberUp(m) ⇒ m.address }
-        .toSet should ===(nodes.map(node(_).address).toSet)
+      memberProbe.receiveN(nodes.size, 15.seconds).collect {
+        case MemberUp(m) ⇒ m.address
+      }.toSet should ===(nodes.map(node(_).address).toSet)
     }
     enterBarrier(nodes.head.name + "-up")
   }

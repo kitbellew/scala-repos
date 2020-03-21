@@ -80,8 +80,9 @@ trait TypedActorFactory {
     val proxyVar = new AtomVar[R] //Chicken'n'egg-resolver
     val c = props.creator //Cache this to avoid closing over the Props
     val i = props.interfaces //Cache this to avoid closing over the Props
-    val ap = Props(new TypedActor.TypedActor[R, T](proxyVar, c(), i))
-      .withDeploy(props.actorProps.deploy)
+    val ap =
+      Props(new TypedActor.TypedActor[R, T](proxyVar, c(), i)).withDeploy(
+        props.actorProps.deploy)
     typedActor.createActorRefProxy(props, proxyVar, actorFactory.actorOf(ap))
   }
 
@@ -94,8 +95,9 @@ trait TypedActorFactory {
     val proxyVar = new AtomVar[R] //Chicken'n'egg-resolver
     val c = props.creator //Cache this to avoid closing over the Props
     val i = props.interfaces //Cache this to avoid closing over the Props
-    val ap = Props(new akka.actor.TypedActor.TypedActor[R, T](proxyVar, c(), i))
-      .withDeploy(props.actorProps.deploy)
+    val ap = Props(
+      new akka.actor.TypedActor.TypedActor[R, T](proxyVar, c(), i)).withDeploy(
+      props.actorProps.deploy)
     typedActor.createActorRefProxy(
       props,
       proxyVar,
@@ -239,9 +241,9 @@ object TypedActor
             for (i ← 0 until a.length) {
               val (sId, manifest, bytes) = a(i)
               deserializedParameters(i) =
-                serialization
-                  .serializerByIdentity(sId)
-                  .fromBinary(bytes, Option(manifest))
+                serialization.serializerByIdentity(sId).fromBinary(
+                  bytes,
+                  Option(manifest))
             }
 
             deserializedParameters
@@ -311,12 +313,10 @@ object TypedActor
       extends Actor {
     // if we were remote deployed we need to create a local proxy
     if (!context.parent.asInstanceOf[InternalActorRef].isLocal)
-      TypedActor
-        .get(context.system)
-        .createActorRefProxy(
-          TypedProps(interfaces, createInstance),
-          proxyVar,
-          context.self)
+      TypedActor.get(context.system).createActorRefProxy(
+        TypedProps(interfaces, createInstance),
+        proxyVar,
+        context.self)
 
     private val me = withContext[T](createInstance)
 
@@ -500,9 +500,10 @@ object TypedActor
       method.getName match {
         case "toString" ⇒ actor.toString
         case "equals" ⇒
-          (args.length == 1 && (proxy eq args(0)) || actor == extension
-            .getActorRefFor(args(0)))
-            .asInstanceOf[AnyRef] //Force boxing of the boolean
+          (args.length == 1 && (proxy eq args(
+            0)) || actor == extension.getActorRefFor(args(0))).asInstanceOf[
+            AnyRef
+          ] //Force boxing of the boolean
         case "hashCode" ⇒ actor.hashCode.asInstanceOf[AnyRef]
         case _ ⇒
           implicit val dispatcher = extension.system.dispatcher
@@ -727,8 +728,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
     * appended in the sequence of interfaces.
     */
   def withInterface(interface: Class[_ >: T]): TypedProps[T] =
-    this
-      .copy(interfaces = interfaces ++ TypedProps.extractInterfaces(interface))
+    this.copy(interfaces =
+      interfaces ++ TypedProps.extractInterfaces(interface))
 
   /**
     * Returns a new TypedProps without the specified interface,
@@ -802,18 +803,16 @@ class TypedActorExtension(val system: ExtendedActorSystem)
       actorRef: ⇒ ActorRef): R = {
     //Warning, do not change order of the following statements, it's some elaborate chicken-n-egg handling
     val actorVar = new AtomVar[ActorRef](null)
-    val proxy = Proxy
-      .newProxyInstance(
-        (props.loader orElse props.interfaces.collectFirst {
-          case any ⇒ any.getClassLoader
-        }).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
-        props.interfaces.toArray,
-        new TypedActorInvocationHandler(
-          this,
-          actorVar,
-          props.timeout getOrElse DefaultReturnTimeout)
-      )
-      .asInstanceOf[R]
+    val proxy = Proxy.newProxyInstance(
+      (props.loader orElse props.interfaces.collectFirst {
+        case any ⇒ any.getClassLoader
+      }).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
+      props.interfaces.toArray,
+      new TypedActorInvocationHandler(
+        this,
+        actorVar,
+        props.timeout getOrElse DefaultReturnTimeout)
+    ).asInstanceOf[R]
 
     if (proxyVar eq null) {
       actorVar set actorRef

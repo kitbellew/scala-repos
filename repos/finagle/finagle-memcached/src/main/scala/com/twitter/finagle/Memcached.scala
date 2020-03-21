@@ -285,8 +285,8 @@ object Memcached
         transport: Transport[In, Out]): Service[Command, Response] =
       new PipeliningDispatcher(
         transport,
-        params[finagle.param.Stats].statsReceiver
-          .scope(GenSerialClientDispatcher.StatsScope)
+        params[finagle.param.Stats].statsReceiver.scope(
+          GenSerialClientDispatcher.StatsScope)
       )
 
     def newTwemcacheClient(dest: Name, label: String): TwemcacheClient = {
@@ -315,8 +315,9 @@ object Memcached
         val key = KetamaClientKey.fromCacheNode(node)
         val stk = stack.replace(
           FailureAccrualFactory.role,
-          KetamaFailureAccrualFactory
-            .module[Command, Response](key, healthBroker))
+          KetamaFailureAccrualFactory.module[Command, Response](
+            key,
+            healthBroker))
         withStack(stk).newService(mkDestination(node.host, node.port), label)
       }
 

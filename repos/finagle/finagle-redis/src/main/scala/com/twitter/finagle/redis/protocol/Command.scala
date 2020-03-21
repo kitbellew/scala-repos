@@ -260,12 +260,9 @@ object Commands {
   )
 
   def doMatch(cmd: String, args: List[Array[Byte]]) =
-    commandMap
-      .get(cmd.toUpperCase)
-      .map {
-        _(args)
-      }
-      .getOrElse(throw ClientError("Unsupported command: " + cmd))
+    commandMap.get(cmd.toUpperCase).map {
+      _(args)
+    }.getOrElse(throw ClientError("Unsupported command: " + cmd))
 
   def trimList(list: Seq[Array[Byte]], count: Int, from: String = "") = {
     RequireClientProtocol(list != null, "%s Empty list found".format(from))
@@ -457,8 +454,9 @@ class CommandCodec extends UnifiedProtocolCodec {
       case t: Throwable =>
         log.warning(
           t,
-          "Unhandled exception %s(%s)"
-            .format(t.getClass.toString, t.getMessage))
+          "Unhandled exception %s(%s)".format(
+            t.getClass.toString,
+            t.getMessage))
         throw new ClientError(t.getMessage)
     }
   }

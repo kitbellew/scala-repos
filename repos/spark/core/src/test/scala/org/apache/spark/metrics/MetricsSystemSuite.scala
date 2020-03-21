@@ -35,9 +35,8 @@ class MetricsSystemSuite
   var securityMgr: SecurityManager = null
 
   before {
-    filePath = getClass.getClassLoader
-      .getResource("test_metrics_system.properties")
-      .getFile
+    filePath = getClass.getClassLoader.getResource(
+      "test_metrics_system.properties").getFile
     conf = new SparkConf(false).set("spark.metrics.conf", filePath)
     securityMgr = new SecurityManager(conf)
   }

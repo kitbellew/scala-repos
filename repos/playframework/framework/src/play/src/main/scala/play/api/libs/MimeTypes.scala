@@ -34,19 +34,14 @@ object MimeTypes {
     * Mimetypes defined in the current application, as declared in application.conf
     */
   def applicationTypes: Map[String, String] =
-    play.api.Play.privateMaybeApplication
-      .flatMap { application =>
-        application.configuration.getConfig("mimetype").map { config =>
-          config.subKeys
-            .map { key => (key, config.getString(key)) }
-            .collect {
-              case ((key, Some(value))) =>
-                (key, value)
-            }
-            .toMap
-        }
+    play.api.Play.privateMaybeApplication.flatMap { application =>
+      application.configuration.getConfig("mimetype").map { config =>
+        config.subKeys.map { key => (key, config.getString(key)) }.collect {
+          case ((key, Some(value))) =>
+            (key, value)
+        }.toMap
       }
-      .getOrElse(Map.empty)
+    }.getOrElse(Map.empty)
 
   /**
     * tells you if mimeType is text or not.
@@ -618,14 +613,8 @@ object MimeTypes {
         # Extensions for Mozilla apps (Firefox and friends)
         xpi=application/x-xpinstall
 
-    """
-      .split('\n')
-      .map(_.trim)
-      .filter(_.size > 0)
-      .filter(_(0) != '#')
-      .map(_.split('='))
-      .map(parts => parts(0) -> parts.drop(1).mkString)
-      .toMap
+    """.split('\n').map(_.trim).filter(_.size > 0).filter(_(0) != '#').map(
+      _.split('=')).map(parts => parts(0) -> parts.drop(1).mkString).toMap
 
   lazy val additionalText =
     """

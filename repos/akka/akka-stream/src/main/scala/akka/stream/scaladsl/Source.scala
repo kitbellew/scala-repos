@@ -253,9 +253,9 @@ object Source {
     * beginning) regardless of when they subscribed.
     */
   def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
-    single(iterable)
-      .mapConcat(ConstantFun.scalaIdentityFunction)
-      .withAttributes(DefaultAttributes.iterableSource)
+    single(iterable).mapConcat(
+      ConstantFun.scalaIdentityFunction).withAttributes(
+      DefaultAttributes.iterableSource)
 
   /**
     * Start a new `Source` from the given `Future`. The stream will consist of
@@ -502,7 +502,7 @@ object Source {
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
       : Source[T, SourceQueueWithComplete[T]] =
     Source.fromGraph(
-      new QueueSource(bufferSize, overflowStrategy)
-        .withAttributes(DefaultAttributes.queueSource))
+      new QueueSource(bufferSize, overflowStrategy).withAttributes(
+        DefaultAttributes.queueSource))
 
 }

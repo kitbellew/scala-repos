@@ -29,9 +29,9 @@ object TagsTest extends Properties("Tags") {
     "exclusive only allows a group with an excusive tag when the size is one") =
     forAll { (tm: TagMap, size: Size, etag: Tag) =>
       val absSize = size.value
-      val tm2: TagMap = tm
-        .updated(etag, absSize)
-        .updated(Tags.All, tm.getOrElse(Tags.All, 0) + absSize)
+      val tm2: TagMap = tm.updated(etag, absSize).updated(
+        Tags.All,
+        tm.getOrElse(Tags.All, 0) + absSize)
       (s"TagMap: $tm2") |:
         (excl(etag)(tm2) == (absSize <= 1))
     }

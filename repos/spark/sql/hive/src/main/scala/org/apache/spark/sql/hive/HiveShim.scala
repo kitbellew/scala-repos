@@ -103,8 +103,7 @@ private[hive] object HiveShim {
         if (w.getFileSchema() == null) {
           serDeProps
             .find(
-              _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL
-                .getPropName())
+              _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL.getPropName())
             .foreach { kv => w.setFileSchema(new Schema.Parser().parse(kv._2)) }
         }
       case _ =>
@@ -246,9 +245,7 @@ private[hive] object HiveShim {
         instance.asInstanceOf[UDFType]
       } else {
         val func = Utils.getContextOrSparkClassLoader
-          .loadClass(functionClassName)
-          .newInstance
-          .asInstanceOf[UDFType]
+          .loadClass(functionClassName).newInstance.asInstanceOf[UDFType]
         if (!func.isInstanceOf[UDF]) {
           // We cache the function if it's no the Simple UDF,
           // as we always have to create new instance for Simple UDF

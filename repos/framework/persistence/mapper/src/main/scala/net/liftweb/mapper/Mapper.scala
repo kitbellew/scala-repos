@@ -144,8 +144,9 @@ trait Mapper[A <: Mapper[A]]
     for {
       mf <- getSingleton.fieldNamesAsMap.get(name.toLowerCase)
       f <- fieldByName[mf.ST](name)
-    } yield SourceFieldInfoRep[mf.ST](f.get.asInstanceOf[mf.ST], mf)
-      .asInstanceOf[SourceFieldInfo]
+    } yield SourceFieldInfoRep[mf.ST](
+      f.get.asInstanceOf[mf.ST],
+      mf).asInstanceOf[SourceFieldInfo]
 
   /**
     * Get a list of all the fields

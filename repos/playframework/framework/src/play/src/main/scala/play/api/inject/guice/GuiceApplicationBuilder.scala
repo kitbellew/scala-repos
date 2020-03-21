@@ -127,8 +127,7 @@ final case class GuiceApplicationBuilder(
         bind[GlobalSettings.Deprecated] to globalSettings,
         bind[OptionalSourceMapper] to new OptionalSourceMapper(None),
         bind[WebCommands] to new DefaultWebCommands
-      )
-      .createModule()
+      ).createModule()
   }
 
   /**

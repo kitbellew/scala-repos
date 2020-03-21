@@ -863,8 +863,8 @@ object JsonAST {
         case '\r' => "\\r"
         case '\t' => "\\t"
         case c
-            if ((c >= '\u0000' && c < '\u0020')) || settings.escapeChars
-              .contains(c) =>
+            if ((c >= '\u0000' && c < '\u0020')) || settings.escapeChars.contains(
+              c) =>
           "\\u%04x".format(c: Int)
 
         case _ => ""
@@ -906,10 +906,11 @@ object JsonAST {
         ('\u2060', '\u206f'),
         ('\ufeff', '\ufeff'),
         ('\ufff0', '\uffff')
-      ).foldLeft(Set[Char]()) {
-        case (set, (start, end)) =>
-          set ++ (start to end).toSet
-      }
+      )
+        .foldLeft(Set[Char]()) {
+          case (set, (start, end)) =>
+            set ++ (start to end).toSet
+        }
 
     /**
       * Pretty-print JSON with 2-space indentation and escape all JS-sensitive

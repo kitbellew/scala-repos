@@ -112,13 +112,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
 
   val RequestKeyToErrorCode = Map[Short, (Nothing) => Short](
     ApiKeys.METADATA.id -> ((resp: requests.MetadataResponse) =>
-      resp
-        .errors()
-        .asScala
-        .find(_._1 == topic)
-        .getOrElse(("test", Errors.NONE))
-        ._2
-        .code()),
+      resp.errors().asScala.find(_._1 == topic).getOrElse(
+        ("test", Errors.NONE))._2.code()),
     ApiKeys.PRODUCE.id -> ((resp: requests.ProduceResponse) =>
       resp.responses().asScala.find(_._1 == tp).get._2.errorCode),
     ApiKeys.FETCH.id -> ((resp: requests.FetchResponse) =>
@@ -165,9 +160,11 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
 
   // configure the servers and clients
   override def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(1, zkConnect, enableControlledShutdown = false)
-      .map(KafkaConfig.fromProps(_, overridingProps))
+    TestUtils.createBrokerConfigs(
+      1,
+      zkConnect,
+      enableControlledShutdown = false).map(
+      KafkaConfig.fromProps(_, overridingProps))
 
   @Before
   override def setUp() {
@@ -737,12 +734,12 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     val resp = receiveResponse(socket)
     ResponseHeader.parse(resp)
 
-    val response = RequestKeyToResponseDeserializer(key)
-      .getMethod("parse", classOf[ByteBuffer])
-      .invoke(null, resp)
-      .asInstanceOf[AbstractRequestResponse]
-    val errorCode = RequestKeyToErrorCode(key)
-      .asInstanceOf[(AbstractRequestResponse) => Short](response)
+    val response = RequestKeyToResponseDeserializer(key).getMethod(
+      "parse",
+      classOf[ByteBuffer]).invoke(null, resp).asInstanceOf[
+      AbstractRequestResponse]
+    val errorCode = RequestKeyToErrorCode(key).asInstanceOf[(
+        AbstractRequestResponse) => Short](response)
 
     val possibleErrorCodes = resources.map(_.errorCode)
     if (isAuthorized)

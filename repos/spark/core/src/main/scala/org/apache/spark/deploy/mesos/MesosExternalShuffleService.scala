@@ -45,8 +45,7 @@ private[mesos] class MesosExternalShuffleBlockHandler(
     extends ExternalShuffleBlockHandler(transportConf, null)
     with Logging {
 
-  ThreadUtils
-    .newDaemonSingleThreadScheduledExecutor("shuffle-cleaner-watcher")
+  ThreadUtils.newDaemonSingleThreadScheduledExecutor("shuffle-cleaner-watcher")
     .scheduleAtFixedRate(
       new CleanerThread(),
       0,

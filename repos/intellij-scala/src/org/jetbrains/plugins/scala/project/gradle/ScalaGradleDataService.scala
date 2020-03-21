@@ -154,9 +154,9 @@ private object ScalaGradleDataService {
         message,
         NotificationCategory.WARNING,
         NotificationSource.PROJECT_SYNC);
-      ExternalSystemNotificationManager
-        .getInstance(project)
-        .showNotification(GradleConstants.SYSTEM_ID, notification);
+      ExternalSystemNotificationManager.getInstance(project).showNotification(
+        GradleConstants.SYSTEM_ID,
+        notification);
     }
   }
 }

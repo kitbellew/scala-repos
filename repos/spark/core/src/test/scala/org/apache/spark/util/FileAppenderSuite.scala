@@ -129,11 +129,9 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     for (i <- 0 until items.size) {
       testOutputStream.write(items(i).getBytes(StandardCharsets.UTF_8))
       testOutputStream.flush()
-      allGeneratedFiles ++= RollingFileAppender
-        .getSortedRolledOverFiles(
-          testFile.getParentFile.toString,
-          testFile.getName)
-        .map(_.toString)
+      allGeneratedFiles ++= RollingFileAppender.getSortedRolledOverFiles(
+        testFile.getParentFile.toString,
+        testFile.getName).map(_.toString)
 
       Thread.sleep(10)
     }
@@ -142,18 +140,17 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     logInfo("Appender closed")
 
     // verify whether the earliest file has been deleted
-    val rolledOverFiles =
-      allGeneratedFiles.filter { _ != testFile.toString }.toArray.sorted
+    val rolledOverFiles = allGeneratedFiles.filter {
+      _ != testFile.toString
+    }.toArray.sorted
     logInfo(
       s"All rolled over files generated:${rolledOverFiles.size}\n" +
         rolledOverFiles.mkString("\n"))
     assert(rolledOverFiles.size > 2)
     val earliestRolledOverFile = rolledOverFiles.head
-    val existingRolledOverFiles = RollingFileAppender
-      .getSortedRolledOverFiles(
-        testFile.getParentFile.toString,
-        testFile.getName)
-      .map(_.toString)
+    val existingRolledOverFiles = RollingFileAppender.getSortedRolledOverFiles(
+      testFile.getParentFile.toString,
+      testFile.getName).map(_.toString)
     logInfo(
       "Existing rolled over files:\n" + existingRolledOverFiles.mkString("\n"))
     assert(!existingRolledOverFiles.toSet.contains(earliestRolledOverFile))
@@ -186,9 +183,8 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
           appender.asInstanceOf[RollingFileAppender].rollingPolicy
         val policyParam =
           if (rollingPolicy.isInstanceOf[TimeBasedRollingPolicy]) {
-            rollingPolicy
-              .asInstanceOf[TimeBasedRollingPolicy]
-              .rolloverIntervalMillis
+            rollingPolicy.asInstanceOf[
+              TimeBasedRollingPolicy].rolloverIntervalMillis
           } else {
             rollingPolicy.asInstanceOf[SizeBasedRollingPolicy].rolloverSizeBytes
           }
@@ -268,8 +264,8 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     val loggingEvent = loggingEventCaptor.getValue
     assert(loggingEvent.getThrowableInformation !== null)
     assert(
-      loggingEvent.getThrowableInformation.getThrowable
-        .isInstanceOf[IOException])
+      loggingEvent.getThrowableInformation.getThrowable.isInstanceOf[
+        IOException])
   }
 
   test("file appender async close stream gracefully") {
@@ -304,8 +300,8 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     loggingEventCaptor.getAllValues.asScala.foreach { loggingEvent =>
       assert(
         loggingEvent.getThrowableInformation === null
-          || !loggingEvent.getThrowableInformation.getThrowable
-            .isInstanceOf[IOException])
+          || !loggingEvent.getThrowableInformation.getThrowable.isInstanceOf[
+            IOException])
     }
   }
 
@@ -337,18 +333,18 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
       testFile.getName)
     logInfo("Filtered files: \n" + generatedFiles.mkString("\n"))
     assert(generatedFiles.size > 1)
-    val allText = generatedFiles
-      .map { file => Files.toString(file, StandardCharsets.UTF_8) }
-      .mkString("")
+    val allText = generatedFiles.map { file =>
+      Files.toString(file, StandardCharsets.UTF_8)
+    }.mkString("")
     assert(allText === expectedText)
     generatedFiles
   }
 
   /** Delete all the generated rolledover files */
   def cleanup() {
-    testFile.getParentFile.listFiles
-      .filter { file => file.getName.startsWith(testFile.getName) }
-      .foreach { _.delete() }
+    testFile.getParentFile.listFiles.filter { file =>
+      file.getName.startsWith(testFile.getName)
+    }.foreach { _.delete() }
   }
 
   /** Used to synchronize when read is called on a stream */

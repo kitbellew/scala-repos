@@ -11,9 +11,8 @@ import org.jetbrains.plugins.scala.util.TestUtils
   */
 class HighlightingPerformanceTest extends ScalaFixtureTestCase {
   def doTest(text: String, TIMEOUT: Int) {
-    val file = PsiFileFactory
-      .getInstance(myFixture.getProject)
-      .createFileFromText(
+    val file =
+      PsiFileFactory.getInstance(myFixture.getProject).createFileFromText(
         "dummy." + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
         ScalaFileType.SCALA_LANGUAGE,
         text,

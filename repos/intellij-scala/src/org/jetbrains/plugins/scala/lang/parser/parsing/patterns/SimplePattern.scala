@@ -142,8 +142,8 @@ object SimplePattern extends ParserNode {
               if (withComma) builder.advanceLexer()
               builder.getTokenType
               builder.advanceLexer()
-              if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && "*"
-                    .equals(builder.getTokenText)) {
+              if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && "*".equals(
+                    builder.getTokenText)) {
                 builder.advanceLexer()
                 wild.done(ScalaElementTypes.SEQ_WILDCARD)
                 true

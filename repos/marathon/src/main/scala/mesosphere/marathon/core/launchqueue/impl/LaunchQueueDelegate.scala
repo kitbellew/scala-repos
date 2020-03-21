@@ -25,13 +25,13 @@ private[launchqueue] class LaunchQueueDelegate(
   }
 
   override def get(appId: PathId): Option[QueuedTaskInfo] =
-    askQueueActor("get")(LaunchQueueDelegate.Count(appId))
-      .asInstanceOf[Option[QueuedTaskInfo]]
+    askQueueActor("get")(LaunchQueueDelegate.Count(appId)).asInstanceOf[Option[
+      QueuedTaskInfo]]
 
   override def notifyOfTaskUpdate(
       update: TaskStatusUpdate): Future[Option[QueuedTaskInfo]] =
-    askQueueActorFuture("notifyOfTaskUpdate")(update)
-      .mapTo[Option[QueuedTaskInfo]]
+    askQueueActorFuture("notifyOfTaskUpdate")(update).mapTo[Option[
+      QueuedTaskInfo]]
 
   override def count(appId: PathId): Int =
     get(appId).map(_.tasksLeftToLaunch).getOrElse(0)

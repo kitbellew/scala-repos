@@ -69,8 +69,8 @@ package object extensions {
 
     def hasQueryLikeName = {
       def startsWith(name: String, prefix: String) =
-        name.length > prefix.length && name
-          .startsWith(prefix) && name.charAt(prefix.length).isUpper
+        name.length > prefix.length && name.startsWith(prefix) && name.charAt(
+          prefix.length).isUpper
 
       repr.getName match {
         case "getInstance" => false // TODO others?
@@ -105,9 +105,8 @@ package object extensions {
     private type CanBuildTo[Elem, C[X]] = CanBuildFrom[Nothing, Elem, C[Elem]]
 
     def filterBy[T](aClass: Class[T])(implicit cbf: CanBuildTo[T, CC]): CC[T] =
-      value
-        .filter(aClass.isInstance(_))
-        .map[T, CC[T]](_.asInstanceOf[T])(collection.breakOut)
+      value.filter(aClass.isInstance(_)).map[T, CC[T]](_.asInstanceOf[T])(
+        collection.breakOut)
 
     def findBy[T](aClass: Class[T]): Option[T] =
       value.find(aClass.isInstance(_)).map(_.asInstanceOf[T])
@@ -271,9 +270,8 @@ package object extensions {
           case m: ScMember =>
             m.containingClass match {
               case t: ScTrait =>
-                val linearization = MixinNodes
-                  .linearization(clazz)
-                  .flatMap(tp =>
+                val linearization =
+                  MixinNodes.linearization(clazz).flatMap(tp =>
                     ScType.extractClass(tp, Some(clazz.getProject)))
                 var index = linearization.indexWhere(_ == t)
                 while (index >= 0) {
@@ -308,9 +306,8 @@ package object extensions {
           }
         case t: ScTypedDefinition
             if t.isVal || t.isVar ||
-              (t.isInstanceOf[ScClassParameter] && t
-                .asInstanceOf[ScClassParameter]
-                .isCaseClassVal) =>
+              (t.isInstanceOf[ScClassParameter] && t.asInstanceOf[
+                ScClassParameter].isCaseClassVal) =>
           PsiTypedDefinitionWrapper.processWrappersFor(
             t,
             concreteClassFor(t),
@@ -502,21 +499,19 @@ package object extensions {
   }
 
   def postponeFormattingWithin[T](project: Project)(body: => T): T = {
-    PostprocessReformattingAspect
-      .getInstance(project)
-      .postponeFormattingInside(new Computable[T] {
+    PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(
+      new Computable[T] {
         def compute(): T = body
       })
   }
 
   def withDisabledPostprocessFormatting[T](project: Project)(body: => T): T = {
-    PostprocessReformattingAspect
-      .getInstance(project)
-      .disablePostprocessFormattingInside {
-        new Computable[T] {
-          override def compute(): T = body
-        }
+    PostprocessReformattingAspect.getInstance(
+      project).disablePostprocessFormattingInside {
+      new Computable[T] {
+        override def compute(): T = body
       }
+    }
   }
 
   def invokeLater[T](body: => T) {

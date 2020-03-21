@@ -72,8 +72,11 @@ private[spark] class HttpServer(
     } else {
       logInfo("Starting HTTP Server")
       val (actualServer, actualPort) =
-        Utils
-          .startServiceOnPort[Server](requestedPort, doStart, conf, serverName)
+        Utils.startServiceOnPort[Server](
+          requestedPort,
+          doStart,
+          conf,
+          serverName)
       server = actualServer
       port = actualPort
     }
@@ -96,10 +99,9 @@ private[spark] class HttpServer(
   private def doStart(startPort: Int): (Server, Int) = {
     val server = new Server()
 
-    val connector = securityManager.fileServerSSLOptions
-      .createJettySslContextFactory()
-      .map(new SslSocketConnector(_))
-      .getOrElse(new SocketConnector)
+    val connector =
+      securityManager.fileServerSSLOptions.createJettySslContextFactory()
+        .map(new SslSocketConnector(_)).getOrElse(new SocketConnector)
 
     connector.setMaxIdleTime(60 * 1000)
     connector.setSoLingerTime(-1)

@@ -29,8 +29,12 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
   override def getText = getFamilyName
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) =
-    check(project, editor, element).isDefined && IntentionAvailabilityChecker
-      .checkIntention(this, element)
+    check(
+      project,
+      editor,
+      element).isDefined && IntentionAvailabilityChecker.checkIntention(
+      this,
+      element)
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     if (element == null || !element.isValid) return
@@ -64,9 +68,8 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
       case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
         Some(e)
       case ifStmt: ScIfStmt =>
-        ifStmt.thenBranch
-          .filter(isAncestorOfElement)
-          .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
+        ifStmt.thenBranch.filter(isAncestorOfElement).orElse(
+          ifStmt.elseBranch.filter(isAncestorOfElement))
       case funDef: ScFunctionDefinition if !funDef.hasUnitResultType =>
         funDef.body.filter(isAncestorOfElement)
       case tryBlock: ScTryBlock if tryBlock.hasRBrace =>
@@ -100,8 +103,8 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
               val Regex = """(?ms)\{(.+)\}""".r
               x.getText match {
                 case Regex(code) =>
-                  val replacement = ScalaPsiElementFactory
-                    .createBlockExpressionWithoutBracesFromText(
+                  val replacement =
+                    ScalaPsiElementFactory.createBlockExpressionWithoutBracesFromText(
                       code,
                       element.getManager)
                   CodeEditUtil.replaceChild(

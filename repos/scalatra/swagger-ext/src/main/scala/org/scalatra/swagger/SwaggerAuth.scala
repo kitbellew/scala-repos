@@ -126,9 +126,8 @@ object SwaggerAuthSerializers {
             case value =>
               AuthEndpoint[T](
                 (value \ "path").extract[String],
-                (value \ "description")
-                  .extractOpt[String]
-                  .flatMap(_.blankOption),
+                (value \ "description").extractOpt[String].flatMap(
+                  _.blankOption),
                 (value \ "operations").extract[List[AuthOperation[T]]])
           },
           {
@@ -146,16 +145,14 @@ object SwaggerAuthSerializers {
                 (json \ "apiVersion").extractOrElse(""),
                 (json \ "swaggerVersion").extractOrElse(""),
                 (json \ "resourcePath").extractOrElse(""),
-                (json \ "description")
-                  .extractOpt[String]
-                  .flatMap(_.blankOption),
+                (json \ "description").extractOpt[String].flatMap(
+                  _.blankOption),
                 (json \ "produces").extractOrElse(List.empty[String]),
                 (json \ "consumes").extractOrElse(List.empty[String]),
                 (json \ "protocols").extractOrElse(List.empty[String]),
                 (json \ "apis").extractOrElse(List.empty[AuthEndpoint[T]]),
-                (json \ "models")
-                  .extractOpt[Map[String, Model]]
-                  .getOrElse(Map.empty),
+                (json \ "models").extractOpt[Map[String, Model]].getOrElse(
+                  Map.empty),
                 (json \ "authorizations").extractOrElse(List.empty[String]),
                 (json \ "position").extractOrElse(0)
               )
@@ -218,9 +215,8 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
     }
 
     get("/" + indexRoute + "(.:format)") {
-      val docs = swagger.docs
-        .filter(_.apis.exists(_.operations.exists(_.allows(userOption))))
-        .toList
+      val docs = swagger.docs.filter(
+        _.apis.exists(_.operations.exists(_.allows(userOption)))).toList
       if (docs.isEmpty) halt(NotFound())
       renderIndex(docs.asInstanceOf[List[ApiType]])
     }
@@ -230,11 +226,9 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
     ("apiVersion" -> swagger.apiVersion) ~
       ("swaggerVersion" -> swagger.swaggerVersion) ~
       ("apis" ->
-        (docs
-          .filter(s =>
-            s.apis.nonEmpty && s.apis.exists(
-              _.operations.exists(_.allows(userOption))))
-          .toList map {
+        (docs.filter(s =>
+          s.apis.nonEmpty && s.apis.exists(
+            _.operations.exists(_.allows(userOption)))).toList map {
           doc =>
             ("path" -> (url(
               doc.resourcePath,
@@ -352,18 +346,16 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
   protected def apiOperation[T: Manifest: NotNothing](
       nickname: String): AuthOperationBuilder[TypeForUser] = {
     registerModel[T]()
-    new AuthOperationBuilder[TypeForUser](DataType[T])
-      .nickname(nickname)
-      .errors(swaggerDefaultErrors: _*)
+    new AuthOperationBuilder[TypeForUser](DataType[T]).nickname(
+      nickname).errors(swaggerDefaultErrors: _*)
   }
 
   protected def apiOperation(
       nickname: String,
       model: Model): AuthOperationBuilder[TypeForUser] = {
     registerModel(model)
-    new AuthOperationBuilder[TypeForUser](ValueDataType(model.id))
-      .nickname(nickname)
-      .errors(swaggerDefaultErrors: _*)
+    new AuthOperationBuilder[TypeForUser](ValueDataType(model.id)).nickname(
+      nickname).errors(swaggerDefaultErrors: _*)
   }
 
   /**
@@ -389,8 +381,9 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
   protected def extractOperation(
       route: Route,
       method: HttpMethod): AuthOperation[TypeForUser] = {
-    val op = route.metadata
-      .get(Symbols.Operation) map (_.asInstanceOf[AuthOperation[TypeForUser]])
+    val op =
+      route.metadata.get(Symbols.Operation) map (_.asInstanceOf[AuthOperation[
+        TypeForUser]])
     op map (_.copy(method = method)) getOrElse {
       val theParams = route.metadata.get(
         Symbols.Parameters) map (_.asInstanceOf[List[Parameter]]) getOrElse Nil
@@ -399,18 +392,18 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
       val responseClass =
         route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
           DataType]) getOrElse DataType.Void
-      val summary = (route.metadata
-        .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
+      val summary = (route.metadata.get(Symbols.Summary) map (_.asInstanceOf[
+        String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
       val nick =
         route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])
-      val produces = route.metadata
-        .get(Symbols.Produces) map (_.asInstanceOf[List[String]]) getOrElse Nil
+      val produces = route.metadata.get(Symbols.Produces) map (_.asInstanceOf[
+        List[String]]) getOrElse Nil
       val allows =
         route.metadata.get(Symbols.Allows) map (_.asInstanceOf[Option[
           TypeForUser] => Boolean]) getOrElse allowAll
-      val consumes = route.metadata
-        .get(Symbols.Consumes) map (_.asInstanceOf[List[String]]) getOrElse Nil
+      val consumes = route.metadata.get(Symbols.Consumes) map (_.asInstanceOf[
+        List[String]]) getOrElse Nil
       AuthOperation[TypeForUser](
         method = method,
         responseClass = responseClass,

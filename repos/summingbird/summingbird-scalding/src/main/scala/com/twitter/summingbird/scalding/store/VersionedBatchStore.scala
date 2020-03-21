@@ -77,15 +77,17 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
         lastBatch(exclusiveUB, hdfs)
           .map { Right(_) }
           .getOrElse {
-            Left(
-              List("No last batch available < %s for VersionedBatchStore(%s)"
-                .format(exclusiveUB, rootPath)))
+            Left(List(
+              "No last batch available < %s for VersionedBatchStore(%s)".format(
+                exclusiveUB,
+                rootPath)))
           }
       case _ =>
         Left(
           List(
-            "Mode: %s not supported for VersionedBatchStore(%s)"
-              .format(mode, rootPath)))
+            "Mode: %s not supported for VersionedBatchStore(%s)".format(
+              mode,
+              rootPath)))
     }
   }
 
@@ -107,8 +109,8 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
       exclusiveUB: BatchID,
       mode: HdfsMode): Option[(BatchID, FlowProducer[TypedPipe[(K, V)]])] = {
     val meta = HDFSMetadata(mode.conf, rootPath)
-    meta.versions
-      .map { ver => (versionToBatchID(ver), readVersion(ver)) }
+    meta
+      .versions.map { ver => (versionToBatchID(ver), readVersion(ver)) }
       .filter { _._1 < exclusiveUB }
       .reduceOption { (a, b) => if (a._1 > b._1) a else b }
   }
@@ -169,8 +171,7 @@ class VersionedBatchStore[K, V, K2, V2](
     if (!target.sinkExists(mode)) {
       logger.info(
         s"Versioned batched store version for $this @ $newVersion doesn't exist. Will write out.")
-      lastVals
-        .map(pack(batchID, _))
+      lastVals.map(pack(batchID, _))
         .write(target)
     } else {
       logger.warn(
@@ -186,8 +187,7 @@ class VersionedBatchStore[K, V, K2, V2](
     Reader { (flowMode: (FlowDef, Mode)) =>
       val mappable =
         VersionedKeyValSource[K2, V2](rootPath, sourceVersion = Some(v))
-      TypedPipe
-        .from(mappable)
+      TypedPipe.from(mappable)
         .map(unpack)
     }
 }

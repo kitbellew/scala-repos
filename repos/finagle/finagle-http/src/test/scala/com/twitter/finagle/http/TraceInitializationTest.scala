@@ -61,12 +61,12 @@ class TraceInitializationTest extends FunSuite {
       import com.twitter.finagle
       val server = finagle.Http.server
         .configured(param.Tracer(serverTracer))
-        .configured(param.Label("theServer"))
-        .serve(":*", Svc)
+        .configured(param.Label("theServer")).serve(":*", Svc)
       val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
       val client = finagle.Http.client
-        .configured(param.Tracer(clientTracer))
-        .newService(":" + port, "theClient")
+        .configured(param.Tracer(clientTracer)).newService(
+          ":" + port,
+          "theClient")
       (client, server)
     }
   }
@@ -98,8 +98,7 @@ class TraceInitializationTest extends FunSuite {
 
     val server = finagle.Http.server
       .configured(param.Tracer(tracer))
-      .configured(param.Label("theServer"))
-      .serve(":*", Svc)
+      .configured(param.Label("theServer")).serve(":*", Svc)
     try {
       val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
       val client = ClientBuilder()

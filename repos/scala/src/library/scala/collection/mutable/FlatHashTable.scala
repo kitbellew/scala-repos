@@ -465,8 +465,8 @@ private[collection] object FlatHashTable {
       * Does the inverse translation of elemToEntry
       */
     protected final def entryToElem(entry: AnyRef): A =
-      (if (entry.isInstanceOf[NullSentinel.type]) null else entry)
-        .asInstanceOf[A]
+      (if (entry.isInstanceOf[NullSentinel.type]) null else entry).asInstanceOf[
+        A]
   }
 
 }

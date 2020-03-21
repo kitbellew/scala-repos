@@ -136,14 +136,13 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       idleTimeout: Duration)
       : Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
-      delegate
-        .bind(
-          interface,
-          port,
-          backlog,
-          immutableSeq(options),
-          halfClose,
-          idleTimeout)
+      delegate.bind(
+        interface,
+        port,
+        backlog,
+        immutableSeq(options),
+        halfClose,
+        idleTimeout)
         .map(new IncomingConnection(_))
         .mapMaterializedValue(_.map(new ServerBinding(_))(ec).toJava))
 
@@ -159,8 +158,7 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       interface: String,
       port: Int): Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
-      delegate
-        .bind(interface, port)
+      delegate.bind(interface, port)
         .map(new IncomingConnection(_))
         .mapMaterializedValue(_.map(new ServerBinding(_))(ec).toJava))
 
@@ -189,14 +187,13 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       idleTimeout: Duration)
       : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
-      delegate
-        .outgoingConnection(
-          remoteAddress,
-          localAddress.asScala,
-          immutableSeq(options),
-          halfClose,
-          connectTimeout,
-          idleTimeout)
+      delegate.outgoingConnection(
+        remoteAddress,
+        localAddress.asScala,
+        immutableSeq(options),
+        halfClose,
+        connectTimeout,
+        idleTimeout)
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(ec).toJava))
 
   /**
@@ -206,8 +203,7 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
   def outgoingConnection(host: String, port: Int)
       : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
-      delegate
-        .outgoingConnection(new InetSocketAddress(host, port))
+      delegate.outgoingConnection(new InetSocketAddress(host, port))
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(ec).toJava))
 
 }

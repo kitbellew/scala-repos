@@ -1507,9 +1507,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val zkConnect: String = getString(KafkaConfig.ZkConnectProp)
   val zkSessionTimeoutMs: Int = getInt(KafkaConfig.ZkSessionTimeoutMsProp)
   val zkConnectionTimeoutMs: Int =
-    Option(getInt(KafkaConfig.ZkConnectionTimeoutMsProp))
-      .map(_.toInt)
-      .getOrElse(getInt(KafkaConfig.ZkSessionTimeoutMsProp))
+    Option(getInt(KafkaConfig.ZkConnectionTimeoutMsProp)).map(
+      _.toInt).getOrElse(getInt(KafkaConfig.ZkSessionTimeoutMsProp))
   val zkSyncTimeMs: Int = getInt(KafkaConfig.ZkSyncTimeMsProp)
   val zkEnableSecureAcls: Boolean = getBoolean(
     KafkaConfig.ZkEnableSecureAclsProp)
@@ -1559,8 +1558,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     KafkaConfig.AutoCreateTopicsEnableProp)
   val numPartitions = getInt(KafkaConfig.NumPartitionsProp)
   val logDirs = CoreUtils.parseCsvList(
-    Option(getString(KafkaConfig.LogDirsProp))
-      .getOrElse(getString(KafkaConfig.LogDirProp)))
+    Option(getString(KafkaConfig.LogDirsProp)).getOrElse(
+      getString(KafkaConfig.LogDirProp)))
   val logSegmentBytes = getInt(KafkaConfig.LogSegmentBytesProp)
   val logFlushIntervalMessages = getLong(
     KafkaConfig.LogFlushIntervalMessagesProp)
@@ -1594,14 +1593,14 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val logIndexIntervalBytes = getInt(KafkaConfig.LogIndexIntervalBytesProp)
   val logDeleteDelayMs = getLong(KafkaConfig.LogDeleteDelayMsProp)
   val logRollTimeMillis: java.lang.Long =
-    Option(getLong(KafkaConfig.LogRollTimeMillisProp))
-      .getOrElse(60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeHoursProp))
-  val logRollTimeJitterMillis: java.lang.Long = Option(
-    getLong(KafkaConfig.LogRollTimeJitterMillisProp))
-    .getOrElse(60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeJitterHoursProp))
+    Option(getLong(KafkaConfig.LogRollTimeMillisProp)).getOrElse(
+      60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeHoursProp))
+  val logRollTimeJitterMillis: java.lang.Long =
+    Option(getLong(KafkaConfig.LogRollTimeJitterMillisProp)).getOrElse(
+      60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeJitterHoursProp))
   val logFlushIntervalMs: java.lang.Long =
-    Option(getLong(KafkaConfig.LogFlushIntervalMsProp))
-      .getOrElse(getLong(KafkaConfig.LogFlushSchedulerIntervalMsProp))
+    Option(getLong(KafkaConfig.LogFlushIntervalMsProp)).getOrElse(
+      getLong(KafkaConfig.LogFlushSchedulerIntervalMsProp))
   val logRetentionTimeMillis = getLogRetentionTimeMillis
   val minInSyncReplicas = getInt(KafkaConfig.MinInSyncReplicasProp)
   val logPreAllocateEnable: java.lang.Boolean = getBoolean(
@@ -1678,9 +1677,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val offsetsTopicSegmentBytes = getInt(
     KafkaConfig.OffsetsTopicSegmentBytesProp)
   val offsetsTopicCompressionCodec =
-    Option(getInt(KafkaConfig.OffsetsTopicCompressionCodecProp))
-      .map(value => CompressionCodec.getCompressionCodec(value))
-      .orNull
+    Option(getInt(KafkaConfig.OffsetsTopicCompressionCodecProp)).map(value =>
+      CompressionCodec.getCompressionCodec(value)).orNull
 
   /** ********* Metric Configuration **************/
   val metricNumSamples = getInt(KafkaConfig.MetricNumSamplesProp)
@@ -1759,8 +1757,9 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     } catch {
       case e: Exception =>
         throw new IllegalArgumentException(
-          "Error parsing configuration property '%s': %s"
-            .format(propName, e.getMessage))
+          "Error parsing configuration property '%s': %s".format(
+            propName,
+            e.getMessage))
     }
   }
 
@@ -1773,8 +1772,9 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
       } catch {
         case e: Exception =>
           throw new IllegalArgumentException(
-            "Error creating broker listeners from '%s': %s"
-              .format(listeners, e.getMessage))
+            "Error creating broker listeners from '%s': %s".format(
+              listeners,
+              e.getMessage))
       }
     // filter port 0 for unit tests
     val endpointsWithoutZeroPort = endpoints.map(ep => ep.port).filter(_ != 0)
@@ -1862,8 +1862,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     require(
       BrokerCompressionCodec.isValid(compressionType),
       "compression.type : " + compressionType + " is not valid." +
-        " Valid options are " + BrokerCompressionCodec.brokerCompressionOptions
-        .mkString(",")
+        " Valid options are " + BrokerCompressionCodec.brokerCompressionOptions.mkString(
+        ",")
     )
     require(
       advertisedListeners.keySet.contains(interBrokerSecurityProtocol),

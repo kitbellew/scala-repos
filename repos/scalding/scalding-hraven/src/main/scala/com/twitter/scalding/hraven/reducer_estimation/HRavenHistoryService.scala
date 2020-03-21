@@ -24,8 +24,7 @@ object HRavenClient {
   private final val clientReadTimeoutDefault = 30000
 
   def apply(conf: JobConf): Try[HRavenRestClient] =
-    conf
-      .getFirstKey(apiHostnameKey)
+    conf.getFirstKey(apiHostnameKey)
       .map(
         new HRavenRestClient(
           _,
@@ -66,14 +65,12 @@ object HRavenHistoryService extends HistoryService {
       * Logs a warning if nothing was found.
       */
     def getFirstKey(fields: String*): Try[String] =
-      fields
-        .collectFirst {
-          case f if conf.get(f) != null => Success(conf.get(f))
-        }
-        .getOrElse {
-          LOG.warn("Missing required config param: " + fields.mkString(" or "))
-          Failure(MissingFieldsException(fields))
-        }
+      fields.collectFirst {
+        case f if conf.get(f) != null => Success(conf.get(f))
+      }.getOrElse {
+        LOG.warn("Missing required config param: " + fields.mkString(" or "))
+        Failure(MissingFieldsException(fields))
+      }
 
   }
   implicit def jobConfToRichConfig(conf: JobConf): RichConfig = RichConfig(conf)
@@ -124,8 +121,7 @@ object HRavenHistoryService extends HistoryService {
           }
           successfulFlows
         }
-      }
-      .recoverWith {
+      }.recoverWith {
         case e: IOException =>
           LOG.error(
             "Error making API request to hRaven. HRavenHistoryService will be disabled.")

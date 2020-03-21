@@ -48,22 +48,19 @@ class MulticlassMetrics @Since("1.1.0") (
     .map {
       case (prediction, label) =>
         (label, if (label == prediction) 1 else 0)
-    }
-    .reduceByKey(_ + _)
+    }.reduceByKey(_ + _)
     .collectAsMap()
   private lazy val fpByClass: Map[Double, Int] = predictionAndLabels
     .map {
       case (prediction, label) =>
         (prediction, if (prediction != label) 1 else 0)
-    }
-    .reduceByKey(_ + _)
+    }.reduceByKey(_ + _)
     .collectAsMap()
   private lazy val confusions = predictionAndLabels
     .map {
       case (prediction, label) =>
         ((label, prediction), 1)
-    }
-    .reduceByKey(_ + _)
+    }.reduceByKey(_ + _)
     .collectAsMap()
 
   /**

@@ -32,10 +32,8 @@ object IfElseToOption extends SimplificationType {
     }
     inner.map { x =>
       val text = x.getText
-      replace(expr)
-        .withText(s"Option($text)")
-        .withHint(s"Replace with Option($text)")
-        .highlightAll
+      replace(expr).withText(s"Option($text)").withHint(
+        s"Replace with Option($text)").highlightAll
     }
   }
 }

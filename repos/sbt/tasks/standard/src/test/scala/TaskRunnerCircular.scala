@@ -39,7 +39,6 @@ object TaskRunnerCircularTest extends Properties("TaskRunner Circular") {
     catch { case i: Incomplete => cyclic(i) }
   }
   def cyclic(i: Incomplete) =
-    Incomplete
-      .allExceptions(i)
-      .exists(_.isInstanceOf[Execute[Task]#CyclicException[_]])
+    Incomplete.allExceptions(i).exists(
+      _.isInstanceOf[Execute[Task]#CyclicException[_]])
 }

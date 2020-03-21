@@ -26,15 +26,13 @@ object VerifyConsumerRebalance extends Logging {
   def main(args: Array[String]) {
     val parser = new OptionParser()
 
-    val zkConnectOpt = parser
-      .accepts("zookeeper.connect", "ZooKeeper connect string.")
-      .withRequiredArg()
-      .defaultsTo("localhost:2181")
-      .ofType(classOf[String])
-    val groupOpt = parser
-      .accepts("group", "Consumer group.")
-      .withRequiredArg()
-      .ofType(classOf[String])
+    val zkConnectOpt = parser.accepts(
+      "zookeeper.connect",
+      "ZooKeeper connect string.").withRequiredArg().defaultsTo(
+      "localhost:2181").ofType(classOf[String])
+    val groupOpt =
+      parser.accepts("group", "Consumer group.").withRequiredArg().ofType(
+        classOf[String])
     parser.accepts("help", "Print this message.")
 
     if (args.length == 0)
@@ -97,11 +95,13 @@ object VerifyConsumerRebalance extends Logging {
       case (topic, partitions) =>
         val topicDirs = new ZKGroupTopicDirs(group, topic)
         info(
-          "Alive partitions for topic %s are %s "
-            .format(topic, partitions.toString))
+          "Alive partitions for topic %s are %s ".format(
+            topic,
+            partitions.toString))
         info(
-          "Alive consumers for topic %s => %s "
-            .format(topic, consumersPerTopicMap.get(topic)))
+          "Alive consumers for topic %s => %s ".format(
+            topic,
+            consumersPerTopicMap.get(topic)))
         val partitionsWithOwners =
           zkUtils.getChildrenParentMayNotExist(topicDirs.consumerOwnerDir)
         if (partitionsWithOwners.size == 0) {
@@ -139,8 +139,10 @@ object VerifyConsumerRebalance extends Logging {
                   rebalanceSucceeded = false
                 } else
                   info(
-                    "Owner of partition [%s,%d] is %s"
-                      .format(topic, partition, partitionOwner))
+                    "Owner of partition [%s,%d] is %s".format(
+                      topic,
+                      partition,
+                      partitionOwner))
               case None => {
                 error("No consumer ids registered for topic " + topic)
                 rebalanceSucceeded = false

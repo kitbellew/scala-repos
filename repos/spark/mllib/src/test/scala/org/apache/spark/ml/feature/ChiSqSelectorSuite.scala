@@ -49,8 +49,7 @@ class ChiSqSelectorSuite
       Vectors.dense(5.0)
     )
 
-    val df = sc
-      .parallelize(data.zip(preFilteredData))
+    val df = sc.parallelize(data.zip(preFilteredData))
       .map(x => (x._1.label, x._1.features, x._2))
       .toDF("label", "data", "preFilteredData")
 
@@ -60,15 +59,12 @@ class ChiSqSelectorSuite
       .setLabelCol("label")
       .setOutputCol("filtered")
 
-    model
-      .fit(df)
-      .transform(df)
-      .select("filtered", "preFilteredData")
-      .collect()
-      .foreach {
-        case Row(vec1: Vector, vec2: Vector) =>
-          assert(vec1 ~== vec2 absTol 1e-1)
-      }
+    model.fit(df).transform(df).select(
+      "filtered",
+      "preFilteredData").collect().foreach {
+      case Row(vec1: Vector, vec2: Vector) =>
+        assert(vec1 ~== vec2 absTol 1e-1)
+    }
   }
 
   test("ChiSqSelector read/write") {

@@ -24,15 +24,12 @@ object DiffUtil {
         revisedFile)
     if (diff.getDeltas.isEmpty) ""
     else
-      difflib.DiffUtils
-        .generateUnifiedDiff(
-          originalInfo,
-          revisedInfo,
-          original.asJava,
-          diff,
-          1)
-        .asScala
-        .mkString("", "\n", "\n")
+      difflib.DiffUtils.generateUnifiedDiff(
+        originalInfo,
+        revisedInfo,
+        original.asJava,
+        diff,
+        1).asScala.mkString("", "\n", "\n")
   }
 
   def fileModificationTimeOrEpoch(file: File): String = {

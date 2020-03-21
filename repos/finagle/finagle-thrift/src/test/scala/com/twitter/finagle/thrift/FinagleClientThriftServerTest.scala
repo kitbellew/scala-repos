@@ -74,8 +74,8 @@ class FinagleClientThriftServerTest extends FunSuite {
       named: String
   ) {
     test(
-      "%s:finagle client vs. synchronous thrift server should talk to each other"
-        .format(named)) {
+      "%s:finagle client vs. synchronous thrift server should talk to each other".format(
+        named)) {
       val somewayPromise = new Promise[Unit]
 
       // TODO: interleave requests (to test seqids, etc.)
@@ -99,8 +99,8 @@ class FinagleClientThriftServerTest extends FunSuite {
     }
 
     test(
-      "%s:finagle client vs. synchronous thrift server should handle exceptions"
-        .format(named)) {
+      "%s:finagle client vs. synchronous thrift server should handle exceptions".format(
+        named)) {
       val somewayPromise = new Promise[Unit]
 
       val testServer = makeServer(transportFactory, somewayPromise) { (a, b) =>
@@ -123,8 +123,8 @@ class FinagleClientThriftServerTest extends FunSuite {
     }
 
     test(
-      "%s:finagle client vs. synchronous thrift server should handle void returns"
-        .format(named)) {
+      "%s:finagle client vs. synchronous thrift server should handle void returns".format(
+        named)) {
       val somewayPromise = new Promise[Unit]
       val testServer = makeServer(transportFactory, somewayPromise) { (a, b) =>
         a + b
@@ -146,8 +146,8 @@ class FinagleClientThriftServerTest extends FunSuite {
 
     // race condition..
     test(
-      "%s:finagle client vs. synchronous thrift server should handle one-way calls"
-        .format(named)) {
+      "%s:finagle client vs. synchronous thrift server should handle one-way calls".format(
+        named)) {
       val somewayPromise = new Promise[Unit]
       val testServer = makeServer(transportFactory, somewayPromise) { (a, b) =>
         a + b

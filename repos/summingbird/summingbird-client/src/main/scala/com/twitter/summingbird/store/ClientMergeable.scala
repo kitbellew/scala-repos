@@ -94,8 +94,7 @@ class ClientMergeable[K, V: Semigroup](
      * mergeing two different batches for the same key is presumably rare,
      * it is probably not worth it.
      */
-    val batchForKey: Map[K1, V] = ks
-      .groupBy { case ((k, batchId), v) => k }
+    val batchForKey: Map[K1, V] = ks.groupBy { case ((k, batchId), v) => k }
       .iterator
       .map { case (k, kvs) => kvs.minBy { case ((_, batchId), _) => batchId } }
       .toMap
@@ -116,8 +115,7 @@ class ClientMergeable[K, V: Semigroup](
   private def multiMergeUnique[K1 <: (K, BatchID)](
       ks: Map[K1, V]): Map[K1, FOpt[V]] = {
     // Here we assume each K appears only once, because the previous call ensures it
-    val result = ks
-      .groupBy { case ((_, batchId), _) => batchId }
+    val result = ks.groupBy { case ((_, batchId), _) => batchId }
       .iterator
       .map {
         case (batch, kvs) =>
@@ -125,8 +123,7 @@ class ClientMergeable[K, V: Semigroup](
           val existing: Map[K, FOpt[V]] =
             readable.multiGetBatch[K](batch.prev, batchKeys)
           // Now we merge into the current store:
-          val preMerge: Map[K, FOpt[V]] = onlineStore
-            .multiMerge(kvs)
+          val preMerge: Map[K, FOpt[V]] = onlineStore.multiMerge(kvs)
             .map { case ((k, _), v) => (k, v) }(breakOut)
 
           (batch, mm.plus(existing, preMerge))

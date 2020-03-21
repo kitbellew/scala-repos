@@ -92,8 +92,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
   private val CLEAN_INTERVAL_S =
     conf.getTimeAsSeconds("spark.history.fs.cleaner.interval", "1d")
 
-  private val logDir = conf
-    .getOption("spark.history.fs.logDirectory")
+  private val logDir = conf.getOption("spark.history.fs.logDirectory")
     .map { d => Utils.resolveURI(d).toString }
     .getOrElse(DEFAULT_LOG_DIR)
 
@@ -106,9 +105,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
   private val pool = Executors.newScheduledThreadPool(
     1,
     new ThreadFactoryBuilder()
-      .setNameFormat("spark-history-task-%d")
-      .setDaemon(true)
-      .build())
+      .setNameFormat("spark-history-task-%d").setDaemon(true).build())
 
   // The modification time of the newest log detected during the last scan.   Currently only
   // used for logging msgs (logs are re-scanned based on file size, rather than modtime)
@@ -303,17 +300,15 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     try {
       val newLastScanTime = getNewLastScanTime()
       logDebug(s"Scanning $logDir with lastScanTime==$lastScanTime")
-      val statusList = Option(fs.listStatus(new Path(logDir)))
-        .map(_.toSeq)
+      val statusList = Option(fs.listStatus(new Path(logDir))).map(_.toSeq)
         .getOrElse(Seq[FileStatus]())
       // scan for modified applications, replay and merge them
       val logInfos: Seq[FileStatus] = statusList
         .filter { entry =>
           try {
-            val prevFileSize = fileToAppInfo
-              .get(entry.getPath())
-              .map { _.fileSize }
-              .getOrElse(0L)
+            val prevFileSize = fileToAppInfo.get(entry.getPath()).map {
+              _.fileSize
+            }.getOrElse(0L)
             !entry.isDirectory() && prevFileSize < entry.getLen()
           } catch {
             case e: AccessControlException =>
@@ -333,8 +328,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         logDebug(
           s"New/updated attempts found: ${logInfos.size} ${logInfos.map(_.getPath)}")
       }
-      logInfos
-        .grouped(20)
+      logInfos.grouped(20)
         .map { batch =>
           replayExecutor.submit(new Runnable {
             override def run(): Unit = mergeApplicationListing(batch)
@@ -411,17 +405,15 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
       case Some(appInfo) =>
         try {
           // If no attempt is specified, or there is no attemptId for attempts, return all attempts
-          appInfo.attempts
-            .filter { attempt =>
-              attempt.attemptId.isEmpty || attemptId.isEmpty || attempt.attemptId.get == attemptId.get
-            }
-            .foreach { attempt =>
-              val logPath = new Path(logDir, attempt.logPath)
-              zipFileToStream(
-                new Path(logDir, attempt.logPath),
-                attempt.logPath,
-                zipStream)
-            }
+          appInfo.attempts.filter { attempt =>
+            attempt.attemptId.isEmpty || attemptId.isEmpty || attempt.attemptId.get == attemptId.get
+          }.foreach { attempt =>
+            val logPath = new Path(logDir, attempt.logPath)
+            zipFileToStream(
+              new Path(logDir, attempt.logPath),
+              attempt.logPath,
+              zipStream)
+          }
         } finally {
           zipStream.close()
         }
@@ -464,14 +456,12 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     // map. If an attempt has been updated, it replaces the old attempt in the list.
     val newAppMap = new mutable.HashMap[String, FsApplicationHistoryInfo]()
     newAttempts.foreach { attempt =>
-      val appInfo = newAppMap
-        .get(attempt.appId)
+      val appInfo = newAppMap.get(attempt.appId)
         .orElse(applications.get(attempt.appId))
         .map { app =>
           val attempts =
-            app.attempts
-              .filter(_.attemptId != attempt.attemptId)
-              .toList ++ List(attempt)
+            app.attempts.filter(
+              _.attemptId != attempt.attemptId).toList ++ List(attempt)
           new FsApplicationHistoryInfo(
             attempt.appId,
             attempt.name,

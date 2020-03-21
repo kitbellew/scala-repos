@@ -119,8 +119,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "scalar subquery with 2 columns",
     testRelation.select(
-      (ScalarSubquery(testRelation.select('a, dateLit.as('b))) + Literal(1))
-        .as('a)),
+      (ScalarSubquery(testRelation.select('a, dateLit.as('b))) + Literal(1)).as(
+        'a)),
     "Scalar subquery must return only one column, but got 2" :: Nil
   )
 
@@ -141,8 +141,9 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "single invalid type, second arg",
     testRelation.select(
-      TestFunction(dateLit :: dateLit :: Nil, DateType :: IntegerType :: Nil)
-        .as('a)),
+      TestFunction(
+        dateLit :: dateLit :: Nil,
+        DateType :: IntegerType :: Nil).as('a)),
     "cannot resolve" :: "testfunction(CAST(NULL AS DATE), CAST(NULL AS DATE))" ::
       "argument 2" :: "requires int type" ::
       "'CAST(NULL AS DATE)' is of date type" :: Nil
@@ -151,8 +152,9 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "multiple invalid type",
     testRelation.select(
-      TestFunction(dateLit :: dateLit :: Nil, IntegerType :: IntegerType :: Nil)
-        .as('a)),
+      TestFunction(
+        dateLit :: dateLit :: Nil,
+        IntegerType :: IntegerType :: Nil).as('a)),
     "cannot resolve" :: "testfunction(CAST(NULL AS DATE), CAST(NULL AS DATE))" ::
       "argument 1" :: "argument 2" :: "requires int type" ::
       "'CAST(NULL AS DATE)' is of date type" :: Nil
@@ -214,8 +216,7 @@ class AnalysisErrorSuite extends AnalysisTest {
 
   errorTest(
     "unresolved attributes with a generated name",
-    testRelation2
-      .groupBy('a)(max('b))
+    testRelation2.groupBy('a)(max('b))
       .where(sum('b) > 0)
       .orderBy('havingCondition.asc),
     "cannot resolve" :: "havingCondition" :: Nil

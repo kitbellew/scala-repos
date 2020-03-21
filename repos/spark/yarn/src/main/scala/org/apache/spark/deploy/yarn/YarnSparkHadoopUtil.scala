@@ -105,8 +105,7 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     * Get the list of namenodes the user may access.
     */
   def getNameNodesToAccess(sparkConf: SparkConf): Set[Path] = {
-    sparkConf
-      .get(NAMENODES_TO_ACCESS)
+    sparkConf.get(NAMENODES_TO_ACCESS)
       .map(new Path(_))
       .toSet
   }
@@ -264,8 +263,10 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
 
         doAsRealUser {
           val hive = getHive.invoke(null, hiveConf)
-          val tokenStr = getDelegationToken
-            .invoke(hive, currentUser.getUserName(), principal)
+          val tokenStr = getDelegationToken.invoke(
+            hive,
+            currentUser.getUserName(),
+            principal)
             .asInstanceOf[String]
           val hive2Token = new Token[DelegationTokenIdentifier]()
           hive2Token.decodeFromUrlString(tokenStr)
@@ -317,19 +318,19 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
   def obtainTokenForHBaseInner(
       conf: Configuration): Option[Token[TokenIdentifier]] = {
     val mirror = universe.runtimeMirror(getClass.getClassLoader)
-    val confCreate = mirror.classLoader
-      .loadClass("org.apache.hadoop.hbase.HBaseConfiguration")
-      .getMethod("create", classOf[Configuration])
-    val obtainToken = mirror.classLoader
-      .loadClass("org.apache.hadoop.hbase.security.token.TokenUtil")
-      .getMethod("obtainToken", classOf[Configuration])
+    val confCreate = mirror.classLoader.loadClass(
+      "org.apache.hadoop.hbase.HBaseConfiguration").getMethod(
+      "create",
+      classOf[Configuration])
+    val obtainToken = mirror.classLoader.loadClass(
+      "org.apache.hadoop.hbase.security.token.TokenUtil").getMethod(
+      "obtainToken",
+      classOf[Configuration])
     val hbaseConf = confCreate.invoke(null, conf).asInstanceOf[Configuration]
     if ("kerberos" == hbaseConf.get("hbase.security.authentication")) {
       logDebug("Attempting to fetch HBase security token.")
-      Some(
-        obtainToken
-          .invoke(null, hbaseConf)
-          .asInstanceOf[Token[TokenIdentifier]])
+      Some(obtainToken.invoke(null, hbaseConf).asInstanceOf[Token[
+        TokenIdentifier]])
     } else {
       None
     }
@@ -558,10 +559,8 @@ object YarnSparkHadoopUtil {
       initialNumExecutors
     } else {
       val targetNumExecutors =
-        sys.env
-          .get("SPARK_EXECUTOR_INSTANCES")
-          .map(_.toInt)
-          .getOrElse(numExecutors)
+        sys.env.get("SPARK_EXECUTOR_INSTANCES").map(_.toInt).getOrElse(
+          numExecutors)
       // System property can override environment variable.
       conf.get(EXECUTOR_INSTANCES).getOrElse(targetNumExecutors)
     }

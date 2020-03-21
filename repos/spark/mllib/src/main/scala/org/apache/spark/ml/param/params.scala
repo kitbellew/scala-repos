@@ -609,13 +609,11 @@ trait Params extends Identifiable with Serializable {
     */
   lazy val params: Array[Param[_]] = {
     val methods = this.getClass.getMethods
-    methods
-      .filter { m =>
-        Modifier.isPublic(m.getModifiers) &&
-        classOf[Param[_]].isAssignableFrom(m.getReturnType) &&
-        m.getParameterTypes.isEmpty
-      }
-      .sortBy(_.getName)
+    methods.filter { m =>
+      Modifier.isPublic(m.getModifiers) &&
+      classOf[Param[_]].isAssignableFrom(m.getReturnType) &&
+      m.getParameterTypes.isEmpty
+    }.sortBy(_.getName)
       .map(m => m.invoke(this).asInstanceOf[Param[_]])
   }
 
@@ -681,12 +679,9 @@ trait Params extends Identifiable with Serializable {
 
   /** Gets a param by its name. */
   def getParam(paramName: String): Param[Any] = {
-    params
-      .find(_.name == paramName)
-      .getOrElse {
-        throw new NoSuchElementException(s"Param $paramName does not exist.")
-      }
-      .asInstanceOf[Param[Any]]
+    params.find(_.name == paramName).getOrElse {
+      throw new NoSuchElementException(s"Param $paramName does not exist.")
+    }.asInstanceOf[Param[Any]]
   }
 
   /**
@@ -735,9 +730,8 @@ trait Params extends Identifiable with Serializable {
     */
   final def getOrDefault[T](param: Param[T]): T = {
     shouldOwn(param)
-    get(param)
-      .orElse(getDefault(param))
-      .getOrElse(throw new NoSuchElementException(
+    get(param).orElse(getDefault(param)).getOrElse(
+      throw new NoSuchElementException(
         s"Failed to find a default value for ${param.name}"))
   }
 
@@ -979,13 +973,10 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
 
   @Since("1.2.0")
   override def toString: String = {
-    map.toSeq
-      .sortBy(_._1.name)
-      .map {
-        case (param, value) =>
-          s"\t${param.parent}-${param.name}: $value"
-      }
-      .mkString("{\n", ",\n", "\n}")
+    map.toSeq.sortBy(_._1.name).map {
+      case (param, value) =>
+        s"\t${param.parent}-${param.name}: $value"
+    }.mkString("{\n", ",\n", "\n}")
   }
 
   /**

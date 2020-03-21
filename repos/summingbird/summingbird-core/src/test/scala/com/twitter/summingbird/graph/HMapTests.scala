@@ -95,8 +95,9 @@ object HMapTests extends Properties("HMap") {
       def apply[T] = { case (Key(k), Value(v)) if k > v => Value(k * v) }
     }
     val collected = hm.collect(partial).map { case Value(v) => v }.toSet
-    val mapCollected =
-      map.collect(partial.apply[Int]).map { case Value(v) => v }.toSet
+    val mapCollected = map.collect(partial.apply[Int]).map {
+      case Value(v) => v
+    }.toSet
     collected == mapCollected
   }
 
@@ -106,8 +107,9 @@ object HMapTests extends Properties("HMap") {
       def apply[T] = { case Value(v) if v < 0 => Value(v * v) }
     }
     val collected = hm.collectValues(partial).map { case Value(v) => v }.toSet
-    val mapCollected =
-      map.values.collect(partial.apply[Int]).map { case Value(v) => v }.toSet
+    val mapCollected = map.values.collect(partial.apply[Int]).map {
+      case Value(v) => v
+    }.toSet
     collected == mapCollected
   }
 }

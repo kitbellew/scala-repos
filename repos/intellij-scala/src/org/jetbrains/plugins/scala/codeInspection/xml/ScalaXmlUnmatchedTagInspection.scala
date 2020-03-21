@@ -112,9 +112,8 @@ class RenameOpeningTagQuickFix(s: ScXmlEndTag)
     val elem = getElement
     if (!elem.isValid) return
     val openingTag = elem.getOpeningTag
-    val attributes = openingTag
-      .findChildrenByType(ScalaElementTypes.XML_ATTRIBUTE)
-      .map(_.getText)
+    val attributes = openingTag.findChildrenByType(
+      ScalaElementTypes.XML_ATTRIBUTE).map(_.getText)
 
     elem.getOpeningTag.replace(
       ScalaPsiElementFactory.createXmlStartTag(

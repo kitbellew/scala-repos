@@ -223,8 +223,7 @@ final class EMLDAOptimizer extends LDAOptimizer {
       }
     // M-STEP: Aggregation computes new N_{kj}, N_{wk} counts.
     val docTopicDistributions: VertexRDD[TopicCounts] =
-      graph
-        .aggregateMessages[(Boolean, TopicCounts)](sendMsg, mergeMsg)
+      graph.aggregateMessages[(Boolean, TopicCounts)](sendMsg, mergeMsg)
         .mapValues(_._2)
     // Update the vertex descriptors with the new counts.
     val newGraph = Graph(docTopicDistributions, graph.edges)
@@ -243,10 +242,8 @@ final class EMLDAOptimizer extends LDAOptimizer {
 
   private def computeGlobalTopicTotals(): TopicCounts = {
     val numTopics = k
-    graph.vertices
-      .filter(isTermVertex)
-      .values
-      .fold(BDV.zeros[Double](numTopics))(_ += _)
+    graph.vertices.filter(isTermVertex).values.fold(
+      BDV.zeros[Double](numTopics))(_ += _)
   }
 
   override private[clustering] def getLDAModel(
@@ -521,8 +518,8 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
     }
     val statsSum: BDM[Double] = stats.map(_._1).reduce(_ += _)
     expElogbetaBc.unpersist()
-    val gammat: BDM[Double] = breeze.linalg.DenseMatrix
-      .vertcat(stats.map(_._2).reduce(_ ++ _).map(_.toDenseMatrix): _*)
+    val gammat: BDM[Double] = breeze.linalg.DenseMatrix.vertcat(
+      stats.map(_._2).reduce(_ ++ _).map(_.toDenseMatrix): _*)
     val batchResult = statsSum :* expElogbeta.t
 
     // Note that this is an optimization to avoid batch.count

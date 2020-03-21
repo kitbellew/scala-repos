@@ -150,10 +150,9 @@ private[orc] object OrcFilters extends Logging {
 
       case In(attribute, values) if values.forall(isSearchableLiteral) =>
         Some(
-          builder
-            .startAnd()
-            .in(attribute, values.map(_.asInstanceOf[AnyRef]): _*)
-            .end())
+          builder.startAnd().in(
+            attribute,
+            values.map(_.asInstanceOf[AnyRef]): _*).end())
 
       case _ => None
     }

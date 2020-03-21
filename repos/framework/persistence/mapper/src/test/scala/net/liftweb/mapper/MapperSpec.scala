@@ -67,18 +67,14 @@ class MapperSpec extends Specification with BeforeExample {
       ("Mapper for " + provider.name) should {
 
         "schemify" in {
-          val elwood = SampleModel
-            .find(By(SampleModel.firstName, "Elwood"))
-            .openOrThrowException("Test")
-          val madeline = SampleModel
-            .find(By(SampleModel.firstName, "Madeline"))
-            .openOrThrowException("Test")
-          val archer = SampleModel
-            .find(By(SampleModel.firstName, "Archer"))
-            .openOrThrowException("Test")
-          val notNull = SampleModel
-            .find(By(SampleModel.firstName, "NotNull"))
-            .openOrThrowException("Test")
+          val elwood = SampleModel.find(
+            By(SampleModel.firstName, "Elwood")).openOrThrowException("Test")
+          val madeline = SampleModel.find(
+            By(SampleModel.firstName, "Madeline")).openOrThrowException("Test")
+          val archer = SampleModel.find(
+            By(SampleModel.firstName, "Archer")).openOrThrowException("Test")
+          val notNull = SampleModel.find(
+            By(SampleModel.firstName, "NotNull")).openOrThrowException("Test")
 
           elwood.firstName.get must_== "Elwood"
           madeline.firstName.get must_== "Madeline"
@@ -90,9 +86,8 @@ class MapperSpec extends Specification with BeforeExample {
           val disabled =
             SampleModel.find(By(SampleModel.status, SampleStatus.Disabled))
 
-          val meow = SampleTag
-            .find(By(SampleTag.tag, "Meow"))
-            .openOrThrowException("Test")
+          val meow = SampleTag.find(
+            By(SampleTag.tag, "Meow")).openOrThrowException("Test")
 
           meow.tag.get must_== "Meow"
 
@@ -110,8 +105,7 @@ class MapperSpec extends Specification with BeforeExample {
           SampleModel.firstName.displayName must_== "DEFAULT:SampleModel.firstName"
 
           LiftRules.localeCalculator = (request: Box[HTTPRequest]) =>
-            request
-              .flatMap(_.locale)
+            request.flatMap(_.locale)
               .openOr(new Locale("xx", "YY"))
           SampleModel.firstName.displayName must_== "xx_YY:SampleModel.firstName"
 
@@ -204,10 +198,8 @@ class MapperSpec extends Specification with BeforeExample {
 
         "enforce NOT NULL" in {
           val nullString: String = null
-          SampleModel.create
-            .firstName("Not Null")
-            .notNull(nullString)
-            .save must throwA[java.sql.SQLException]
+          SampleModel.create.firstName("Not Null").notNull(
+            nullString).save must throwA[java.sql.SQLException]
         }
 
         "enforce FK constraint on DefaultConnection" in {
@@ -226,8 +218,9 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Precache works" in {
-          val oo = SampleTag
-            .findAll(By(SampleTag.tag, "Meow"), PreCache(SampleTag.model))
+          val oo = SampleTag.findAll(
+            By(SampleTag.tag, "Meow"),
+            PreCache(SampleTag.model))
 
           for (t <- oo) yield t.model.cached_? must beTrue
 
@@ -345,16 +338,10 @@ class MapperSpec extends Specification with BeforeExample {
           val i1 = Thing.create.name("frog").saveMe
           val i2 = Thing.create.name("dog").saveMe
 
-          Thing
-            .find(By(Thing.thing_id, i1.thing_id.get))
-            .openOrThrowException("Test")
-            .name
-            .get must_== "frog"
-          Thing
-            .find(By(Thing.thing_id, i2.thing_id.get))
-            .openOrThrowException("Test")
-            .name
-            .get must_== "dog"
+          Thing.find(By(Thing.thing_id, i1.thing_id.get)).openOrThrowException(
+            "Test").name.get must_== "frog"
+          Thing.find(By(Thing.thing_id, i2.thing_id.get)).openOrThrowException(
+            "Test").name.get must_== "dog"
         }
 
         "Precache works with OrderBy with Mixed Case" in {
@@ -427,21 +414,18 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Save flag results in update rather than insert" in {
-          val elwood = SampleModel
-            .find(By(SampleModel.firstName, "Elwood"))
-            .openOrThrowException("Test")
+          val elwood = SampleModel.find(
+            By(SampleModel.firstName, "Elwood")).openOrThrowException("Test")
           elwood.firstName.get must_== "Elwood"
           elwood.firstName("Frog").save
 
-          val frog = SampleModel
-            .find(By(SampleModel.firstName, "Frog"))
-            .openOrThrowException("Test")
+          val frog = SampleModel.find(
+            By(SampleModel.firstName, "Frog")).openOrThrowException("Test")
           frog.firstName.get must_== "Frog"
 
           SampleModel.findAll().length must_== 4
-          SampleModel
-            .find(By(SampleModel.firstName, "Elwood"))
-            .isEmpty must_== true
+          SampleModel.find(
+            By(SampleModel.firstName, "Elwood")).isEmpty must_== true
         }
 
         "accept a Seq[T] as argument to ByList query parameter" in {

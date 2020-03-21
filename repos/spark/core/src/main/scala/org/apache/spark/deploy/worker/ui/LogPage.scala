@@ -42,9 +42,8 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val driverId = Option(request.getParameter("driverId"))
     val logType = request.getParameter("logType")
     val offset = Option(request.getParameter("offset")).map(_.toLong)
-    val byteLength = Option(request.getParameter("byteLength"))
-      .map(_.toInt)
-      .getOrElse(defaultBytes)
+    val byteLength = Option(request.getParameter("byteLength")).map(
+      _.toInt).getOrElse(defaultBytes)
 
     val logDir = (appId, executorId, driverId) match {
       case (Some(a), Some(e), None) =>
@@ -70,9 +69,8 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val driverId = Option(request.getParameter("driverId"))
     val logType = request.getParameter("logType")
     val offset = Option(request.getParameter("offset")).map(_.toLong)
-    val byteLength = Option(request.getParameter("byteLength"))
-      .map(_.toInt)
-      .getOrElse(defaultBytes)
+    val byteLength = Option(request.getParameter("byteLength")).map(
+      _.toInt).getOrElse(defaultBytes)
 
     val (logDir, params, pageName) = (appId, executorId, driverId) match {
       case (Some(a), Some(e), None) =>

@@ -86,8 +86,7 @@ abstract class TestResponse(
     * Returns the first header of the response which is of the given class.
     */
   def header[T <: HttpHeader](clazz: Class[T]): T =
-    response
-      .header(ClassTag(clazz))
+    response.header(ClassTag(clazz))
       .getOrElse(
         doFail(
           s"Expected header of type ${clazz.getSimpleName} but wasn't found."))
@@ -167,8 +166,7 @@ abstract class TestResponse(
     else
       assertTrue(
         headers.exists(_.value == value),
-        s"`$name` header was found but had the wrong value. Found headers: ${headers
-          .mkString(", ")}")
+        s"`$name` header was found but had the wrong value. Found headers: ${headers.mkString(", ")}")
 
     this
   }

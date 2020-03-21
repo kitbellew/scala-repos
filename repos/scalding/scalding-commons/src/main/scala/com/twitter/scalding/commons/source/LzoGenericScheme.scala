@@ -115,9 +115,8 @@ object LzoGenericScheme {
     if ((conf.get(confKey) == null) || overrideConf) {
       val extern = Externalizer(conv)
       try {
-        ExternalizerSerializer.inj
-          .invert(ExternalizerSerializer.inj(extern))
-          .get
+        ExternalizerSerializer.inj.invert(
+          ExternalizerSerializer.inj(extern)).get
       } catch {
         case e: Exception =>
           throw new RuntimeException(

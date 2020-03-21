@@ -139,8 +139,9 @@ object ScalaRenameUtil {
           else {
             val needEncodedName: UsageInfo => Boolean = { u =>
               val ref = u.getReference.getElement
-              !ref.getLanguage
-                .isInstanceOf[ScalaLanguage] //todo more concise condition?
+              !ref.getLanguage.isInstanceOf[
+                ScalaLanguage
+              ] //todo more concise condition?
             }
             val (usagesEncoded, usagesPlain) = usagez.partition(needEncodedName)
             Seq(
@@ -170,10 +171,8 @@ object ScalaRenameUtil {
         else {
           val newNameWithoutSuffix = name.stripSuffix(setterSuffix(name))
           val grouped = usagez.groupBy(u => setterSuffix(u.getElement.getText))
-          grouped
-            .map(entry =>
-              UsagesWithName(newNameWithoutSuffix + entry._1, entry._2))
-            .toSeq
+          grouped.map(entry =>
+            UsagesWithName(newNameWithoutSuffix + entry._1, entry._2)).toSeq
         }
     }
 

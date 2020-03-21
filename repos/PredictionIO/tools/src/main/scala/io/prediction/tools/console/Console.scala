@@ -178,9 +178,10 @@ object Console extends Logging {
         c.copy(common = c.common.copy(scratchUri = Some(new URI(x))))
       }
       note("")
-      cmd("version")
-        .text("Displays the version of this command line console.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "version") }
+      cmd("version").text(
+        "Displays the version of this command line console.").action { (_, c) =>
+        c.copy(commands = c.commands :+ "version")
+      }
       note("")
       cmd("help").action { (_, c) =>
         c.copy(commands = c.commands :+ "help")
@@ -209,18 +210,17 @@ object Console extends Logging {
         }
       )
       note("")
-      cmd("unregister")
-        .text("Unregister an engine at the current directory.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "unregister") }
+      cmd("unregister").text(
+        "Unregister an engine at the current directory.").action { (_, c) =>
+        c.copy(commands = c.commands :+ "unregister")
+      }
       note("")
-      cmd("train")
-        .text(
-          "Kick off a training using an engine. This will produce an\n" +
-            "engine instance. This command will pass all pass-through\n" +
-            "arguments to its underlying spark-submit command.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "train")
-        } children (
+      cmd("train").text(
+        "Kick off a training using an engine. This will produce an\n" +
+          "engine instance. This command will pass all pass-through\n" +
+          "arguments to its underlying spark-submit command.").action {
+        (_, c) => c.copy(commands = c.commands :+ "train")
+      } children (
         opt[String]("batch") action { (x, c) =>
           c.copy(common = c.common.copy(batch = x))
         } text ("Batch label of the run."),
@@ -265,12 +265,12 @@ object Console extends Logging {
         }
       )
       note("")
-      cmd("eval")
-        .text(
-          "Kick off an evaluation using an engine. This will produce an\n" +
-            "engine instance. This command will pass all pass-through\n" +
-            "arguments to its underlying spark-submit command.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "eval") } children (
+      cmd("eval").text(
+        "Kick off an evaluation using an engine. This will produce an\n" +
+          "engine instance. This command will pass all pass-through\n" +
+          "arguments to its underlying spark-submit command.").action {
+        (_, c) => c.copy(commands = c.commands :+ "eval")
+      } children (
         arg[String]("<evaluation-class>") action { (x, c) =>
           c.copy(common = c.common.copy(evaluation = Some(x)))
         },
@@ -295,14 +295,12 @@ object Console extends Logging {
         }
       )
       note("")
-      cmd("deploy")
-        .text(
-          "Deploy an engine instance as a prediction server. This\n" +
-            "command will pass all pass-through arguments to its underlying\n" +
-            "spark-submit command.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "deploy")
-        } children (
+      cmd("deploy").text(
+        "Deploy an engine instance as a prediction server. This\n" +
+          "command will pass all pass-through arguments to its underlying\n" +
+          "spark-submit command.").action { (_, c) =>
+        c.copy(commands = c.commands :+ "deploy")
+      } children (
         opt[String]("batch") action { (x, c) =>
           c.copy(common = c.common.copy(batch = x))
         } text ("Batch label of the deployment."),
@@ -355,11 +353,10 @@ object Console extends Logging {
         }
       )
       note("")
-      cmd("undeploy")
-        .text("Undeploy an engine instance as a prediction server.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "undeploy")
-        } children (
+      cmd("undeploy").text(
+        "Undeploy an engine instance as a prediction server.").action {
+        (_, c) => c.copy(commands = c.commands :+ "undeploy")
+      } children (
         opt[String]("ip") action { (x, c) =>
           c.copy(deploy = c.deploy.copy(ip = x))
         },
@@ -368,11 +365,10 @@ object Console extends Logging {
         } text ("Port to unbind from. Default: 8000")
       )
       note("")
-      cmd("dashboard")
-        .text("Launch a dashboard at the specific IP and port.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "dashboard")
-        } children (
+      cmd("dashboard").text(
+        "Launch a dashboard at the specific IP and port.").action { (_, c) =>
+        c.copy(commands = c.commands :+ "dashboard")
+      } children (
         opt[String]("ip") action { (x, c) =>
           c.copy(dashboard = c.dashboard.copy(ip = x))
         },
@@ -381,11 +377,10 @@ object Console extends Logging {
         } text ("Port to bind to. Default: 9000")
       )
       note("")
-      cmd("eventserver")
-        .text("Launch an Event Server at the specific IP and port.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "eventserver")
-        } children (
+      cmd("eventserver").text(
+        "Launch an Event Server at the specific IP and port.").action {
+        (_, c) => c.copy(commands = c.commands :+ "eventserver")
+      } children (
         opt[String]("ip") action { (x, c) =>
           c.copy(eventServer = c.eventServer.copy(ip = x))
         },
@@ -396,11 +391,10 @@ object Console extends Logging {
           c.copy(eventServer = c.eventServer.copy(stats = true))
         }
       )
-      cmd("adminserver")
-        .text("Launch an Admin Server at the specific IP and port.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "adminserver")
-        } children (
+      cmd("adminserver").text(
+        "Launch an Admin Server at the specific IP and port.").action {
+        (_, c) => c.copy(commands = c.commands :+ "adminserver")
+      } children (
         opt[String]("ip") action { (x, c) =>
           c.copy(adminServer = c.adminServer.copy(ip = x))
         } text ("IP to bind to. Default: localhost"),
@@ -409,14 +403,13 @@ object Console extends Logging {
         } text ("Port to bind to. Default: 7071")
       )
       note("")
-      cmd("run")
-        .text(
-          "Launch a driver program. This command will pass all\n" +
-            "pass-through arguments to its underlying spark-submit command.\n" +
-            "In addition, it also supports a second level of pass-through\n" +
-            "arguments to the driver program, e.g.\n" +
-            "pio run -- --master spark://localhost:7077 -- --driver-arg foo")
-        .action { (_, c) => c.copy(commands = c.commands :+ "run") } children (
+      cmd("run").text("Launch a driver program. This command will pass all\n" +
+        "pass-through arguments to its underlying spark-submit command.\n" +
+        "In addition, it also supports a second level of pass-through\n" +
+        "arguments to the driver program, e.g.\n" +
+        "pio run -- --master spark://localhost:7077 -- --driver-arg foo").action {
+        (_, c) => c.copy(commands = c.commands :+ "run")
+      } children (
         arg[String]("<main class>") action { (x, c) =>
           c.copy(mainClass = Some(x))
         } text ("Main class name of the driver program."),
@@ -431,9 +424,10 @@ object Console extends Logging {
         } text ("Skip building external dependencies assembly.")
       )
       note("")
-      cmd("status")
-        .text("Displays status information about the PredictionIO system.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "status") }
+      cmd("status").text(
+        "Displays status information about the PredictionIO system.").action {
+        (_, c) => c.copy(commands = c.commands :+ "status")
+      }
       note("")
       cmd("upgrade").text("Upgrade tool").action { (_, c) =>
         c.copy(commands = c.commands :+ "upgrade")
@@ -737,8 +731,8 @@ object Console extends Logging {
       mainHelp
     } else {
       val stripped =
-        (if (commands.head == "help") commands.drop(1) else commands)
-          .mkString("-")
+        (if (commands.head == "help") commands.drop(1) else commands).mkString(
+          "-")
       helpText.getOrElse(stripped, s"Help is unavailable for ${stripped}.")
     }
   }
@@ -902,8 +896,9 @@ object Console extends Logging {
     implicit val formats = Utils.json4sDefaultFormats
     try {
       val engineFactory =
-        (parse(Source.fromFile("engine.json").mkString) \ "engineFactory")
-          .extract[String]
+        (parse(
+          Source.fromFile("engine.json").mkString) \ "engineFactory").extract[
+          String]
       WorkflowUtils.checkUpgrade("build", engineFactory)
     } catch {
       case e: Throwable => WorkflowUtils.checkUpgrade("build")
@@ -987,10 +982,8 @@ object Console extends Logging {
     val proc = Process(
       cmd,
       None,
-      "SPARK_YARN_USER_ENV" -> sys.env
-        .filter(kv => kv._1.startsWith("PIO_"))
-        .map(kv => s"${kv._1}=${kv._2}")
-        .mkString(","))
+      "SPARK_YARN_USER_ENV" -> sys.env.filter(kv =>
+        kv._1.startsWith("PIO_")).map(kv => s"${kv._1}=${kv._2}").mkString(","))
     info(s"Submission command: ${cmd}")
     val r = proc.!
     if (r != 0) {
@@ -1115,11 +1108,8 @@ object Console extends Logging {
 
   def regenerateManifestJson(json: File): Unit = {
     val cwd = sys.props("user.dir")
-    val ha = java.security.MessageDigest
-      .getInstance("SHA-1")
-      .digest(cwd.getBytes)
-      .map("%02x".format(_))
-      .mkString
+    val ha = java.security.MessageDigest.getInstance("SHA-1").digest(
+      cwd.getBytes).map("%02x".format(_)).mkString
     if (json.exists) {
       val em = readManifestJson(json)
       if (em.description == Some(manifestAutogenTag) && ha != em.version) {
@@ -1143,11 +1133,8 @@ object Console extends Logging {
     implicit val formats = Utils.json4sDefaultFormats +
       new EngineManifestSerializer
     val rand = Random.alphanumeric.take(32).mkString
-    val ha = java.security.MessageDigest
-      .getInstance("SHA-1")
-      .digest(cwd.getBytes)
-      .map("%02x".format(_))
-      .mkString
+    val ha = java.security.MessageDigest.getInstance("SHA-1").digest(
+      cwd.getBytes).map("%02x".format(_)).mkString
     val em = EngineManifest(
       id = rand,
       version = ha,

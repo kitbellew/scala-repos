@@ -45,10 +45,8 @@ object ListTTest extends SpecLite {
 
   "flatMap" ! forAll {
     (ass: List[List[Int]]) =>
-      (ListT
-        .fromList(ass)
-        .flatMap(number => ListT.fromList(List(List(number.toFloat))))
-        .toList
+      (ListT.fromList(ass).flatMap(number =>
+        ListT.fromList(List(List(number.toFloat)))).toList
         must_=== (ass.map(_.flatMap(number => List(number.toFloat)))))
   }
 

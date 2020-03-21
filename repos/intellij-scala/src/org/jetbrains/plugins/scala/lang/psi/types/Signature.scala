@@ -164,8 +164,9 @@ class Signature(
           ps2.method.getResolveScope)
         val psiSig1 = ps1.method.getSignature(psiSub1)
         val psiSig2 = ps2.method.getSignature(psiSub2)
-        MethodSignatureUtil.METHOD_PARAMETERS_ERASURE_EQUALITY
-          .equals(psiSig1, psiSig2)
+        MethodSignatureUtil.METHOD_PARAMETERS_ERASURE_EQUALITY.equals(
+          psiSig1,
+          psiSig2)
       case _ => false
     }
   }
@@ -273,8 +274,8 @@ object Signature {
 
       res = res bindT ((
         tp2.name,
-        ScalaPsiUtil.getPsiElementId(tp2.ptp)), ScTypeParameterType
-        .toTypeParameterType(tp1))
+        ScalaPsiUtil.getPsiElementId(
+          tp2.ptp)), ScTypeParameterType.toTypeParameterType(tp1))
     }
     res
   }
@@ -285,10 +286,8 @@ object PhysicalSignature {
   def typesEval(method: PsiMethod): List[Seq[() => ScType]] =
     method match {
       case fun: ScFunction =>
-        fun.effectiveParameterClauses
-          .map(clause =>
-            ScalaPsiUtil.mapToLazyTypesSeq(clause.effectiveParameters))
-          .toList
+        fun.effectiveParameterClauses.map(clause =>
+          ScalaPsiUtil.mapToLazyTypesSeq(clause.effectiveParameters)).toList
       case _ =>
         List(ScalaPsiUtil.mapToLazyTypesSeq(method.getParameterList match {
           case p: ScParameters => p.params

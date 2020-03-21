@@ -155,8 +155,9 @@ final class Emitter private (
       val memberMethods = for (m <- linkedClass.memberMethods) yield {
         val methodCache = classCache.getMethodCache(m.info.encodedName)
 
-        methodCache
-          .getOrElseUpdate(m.version, classEmitter.genMethod(className, m.tree))
+        methodCache.getOrElseUpdate(
+          m.version,
+          classEmitter.genMethod(className, m.tree))
       }
 
       // Exported Members

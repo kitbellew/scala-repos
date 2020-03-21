@@ -204,11 +204,8 @@ class DStreamScopeSuite
     assert(generatedRDDs.size === 3)
 
     val foreachBaseScope =
-      ssc.graph
-        .getOutputStreams()
-        .head
-        .baseScope
-        .map(RDDOperationScope.fromJson)
+      ssc.graph.getOutputStreams().head.baseScope.map(
+        RDDOperationScope.fromJson)
     assertDefined(foreachBaseScope)
     assert(foreachBaseScope.get.name === "foreachRDD")
 
@@ -245,8 +242,9 @@ class DStreamScopeSuite
       showYYYYMMSS = false)
     assert(rddScope.id === s"${baseScopeId}_$batchTime")
     assert(
-      rddScope.name
-        .replaceAll("\\n", " ") === s"$baseScopeName @ $formattedBatchTime")
+      rddScope.name.replaceAll(
+        "\\n",
+        " ") === s"$baseScopeName @ $formattedBatchTime")
     assert(rddScope.parent.isEmpty) // There should not be any higher scope
   }
 

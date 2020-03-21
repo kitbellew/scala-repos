@@ -15,11 +15,8 @@ import scala.collection.JavaConverters._
 class DaemonicSpec extends AkkaSpec {
 
   def addr(sys: ActorSystem, proto: String) =
-    sys
-      .asInstanceOf[ExtendedActorSystem]
-      .provider
-      .getExternalAddressFor(Address(s"akka.$proto", "", "", 0))
-      .get
+    sys.asInstanceOf[ExtendedActorSystem].provider.getExternalAddressFor(
+      Address(s"akka.$proto", "", "", 0)).get
 
   def unusedPort = {
     val ss = ServerSocketChannel.open().socket()
@@ -56,13 +53,9 @@ class DaemonicSpec extends AkkaSpec {
       Thread.sleep(2.seconds.dilated.toMillis)
 
       // get new non daemonic threads running
-      val newNonDaemons: Set[Thread] = Thread
-        .getAllStackTraces()
-        .keySet()
-        .asScala
-        .seq
-        .filter(t ⇒ !origThreads(t) && t.isDaemon == false)
-        .to[Set]
+      val newNonDaemons: Set[Thread] =
+        Thread.getAllStackTraces().keySet().asScala.seq.filter(t ⇒
+          !origThreads(t) && t.isDaemon == false).to[Set]
 
       newNonDaemons should ===(Set.empty[Thread])
       shutdown(daemonicSystem)

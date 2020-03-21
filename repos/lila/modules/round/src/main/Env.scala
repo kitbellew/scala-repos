@@ -80,8 +80,9 @@ final class Env(
         ({
           case actorApi.GetNbRounds =>
             nbRounds = size
-            system.lilaBus
-              .publish(lila.hub.actorApi.round.NbRounds(nbRounds), 'nbRounds)
+            system.lilaBus.publish(
+              lila.hub.actorApi.round.NbRounds(nbRounds),
+              'nbRounds)
         }: Receive) orElse actorMapReceive
     }),
     name = ActorMapName

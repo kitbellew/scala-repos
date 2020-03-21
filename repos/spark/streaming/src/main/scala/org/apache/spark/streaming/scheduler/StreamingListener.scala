@@ -122,8 +122,9 @@ class StatsReportListener(numBatchInfos: Int = 10) extends StreamingListener {
   def showMillisDistribution(
       heading: String,
       getMetric: BatchInfo => Option[Long]) {
-    org.apache.spark.scheduler.StatsReportListener
-      .showMillisDistribution(heading, extractDistribution(getMetric))
+    org.apache.spark.scheduler.StatsReportListener.showMillisDistribution(
+      heading,
+      extractDistribution(getMetric))
   }
 
   def extractDistribution(

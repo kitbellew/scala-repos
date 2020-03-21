@@ -94,16 +94,14 @@ private[remote] object Remoting {
 
           case _ ⇒
             throw new RemoteTransportException(
-              s"Multiple transports are available for [$remote]: [${responsibleTransports
-                .mkString(",")}]. " +
+              s"Multiple transports are available for [$remote]: [${responsibleTransports.mkString(",")}]. " +
                 "Remoting cannot decide which transport to use to reach the remote system. Change your configuration " +
                 "so that only one transport is responsible for the address.",
               null)
         }
       case None ⇒
         throw new RemoteTransportException(
-          s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping.keys
-            .mkString(", ")}]",
+          s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping.keys.mkString(", ")}]",
           null)
     }
   }
@@ -122,8 +120,8 @@ private[remote] object Remoting {
     def receive = {
       case RegisterTransportActor(props, name) ⇒
         sender() ! context.actorOf(
-          RARP(context.system)
-            .configureDispatcher(props.withDeploy(Deploy.local)),
+          RARP(context.system).configureDispatcher(
+            props.withDeploy(Deploy.local)),
           name)
     }
   }
@@ -228,8 +226,10 @@ private[remote] class Remoting(
           addresses = transports.map { _._2 }.toSet
 
           log.info(
-            "Remoting started; listening on addresses :" + addresses
-              .mkString("[", ", ", "]"))
+            "Remoting started; listening on addresses :" + addresses.mkString(
+              "[",
+              ", ",
+              "]"))
 
           manager ! StartupFinished
           eventPublisher.notifyListeners(RemotingListenEvent(addresses))
@@ -950,8 +950,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         // The chain at this point:
         //   Driver
         val driver = extendedSystem.dynamicAccess
-          .createInstanceFor[Transport](fqn, args)
-          .recover({
+          .createInstanceFor[Transport](fqn, args).recover({
 
             case exception ⇒
               throw new IllegalArgumentException(
@@ -960,23 +959,21 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                   "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
                 exception)
 
-          })
-          .get
+          }).get
 
         // Iteratively decorates the bottom level driver with a list of adapters.
         // The chain at this point:
         //   Adapter <- ... <- Adapter <- Driver
         val wrappedTransport =
-          adapters
-            .map {
-              TransportAdaptersExtension.get(context.system).getAdapterProvider
-            }
-            .foldLeft(driver) {
-              (t: Transport, provider: TransportAdapterProvider) ⇒
-                // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
-                provider
-                  .create(t, context.system.asInstanceOf[ExtendedActorSystem])
-            }
+          adapters.map {
+            TransportAdaptersExtension.get(context.system).getAdapterProvider
+          }.foldLeft(driver) {
+            (t: Transport, provider: TransportAdapterProvider) ⇒
+              // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
+              provider.create(
+                t,
+                context.system.asInstanceOf[ExtendedActorSystem])
+          }
 
         // Apply AkkaProtocolTransport wrapper to the end of the chain
         // The chain at this point:
@@ -1023,9 +1020,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   private def removePendingReader(
       takingOverFrom: ActorRef,
       withHandle: AkkaProtocolHandle): Unit = {
-    if (pendingReadHandoffs
-          .get(takingOverFrom)
-          .exists(handle ⇒ handle == withHandle))
+    if (pendingReadHandoffs.get(takingOverFrom).exists(handle ⇒
+          handle == withHandle))
       pendingReadHandoffs -= takingOverFrom
   }
 
@@ -1046,37 +1042,33 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     if (writing)
       context.watch(
         context.actorOf(
-          RARP(extendedSystem)
-            .configureDispatcher(
-              ReliableDeliverySupervisor.props(
-                handleOption,
-                localAddress,
-                remoteAddress,
-                refuseUid,
-                transport,
-                endpointSettings,
-                AkkaPduProtobufCodec,
-                receiveBuffers))
-            .withDeploy(Deploy.local),
+          RARP(extendedSystem).configureDispatcher(
+            ReliableDeliverySupervisor.props(
+              handleOption,
+              localAddress,
+              remoteAddress,
+              refuseUid,
+              transport,
+              endpointSettings,
+              AkkaPduProtobufCodec,
+              receiveBuffers)).withDeploy(Deploy.local),
           "reliableEndpointWriter-" + AddressUrlEncoder(
             remoteAddress) + "-" + endpointId.next()
         ))
     else
       context.watch(
         context.actorOf(
-          RARP(extendedSystem)
-            .configureDispatcher(
-              EndpointWriter.props(
-                handleOption,
-                localAddress,
-                remoteAddress,
-                refuseUid,
-                transport,
-                endpointSettings,
-                AkkaPduProtobufCodec,
-                receiveBuffers,
-                reliableDeliverySupervisor = None))
-            .withDeploy(Deploy.local),
+          RARP(extendedSystem).configureDispatcher(
+            EndpointWriter.props(
+              handleOption,
+              localAddress,
+              remoteAddress,
+              refuseUid,
+              transport,
+              endpointSettings,
+              AkkaPduProtobufCodec,
+              receiveBuffers,
+              reliableDeliverySupervisor = None)).withDeploy(Deploy.local),
           "endpointWriter-" + AddressUrlEncoder(
             remoteAddress) + "-" + endpointId.next()
         ))

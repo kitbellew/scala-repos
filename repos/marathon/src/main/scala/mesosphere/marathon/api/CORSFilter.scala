@@ -34,8 +34,7 @@ class CORSFilter @Inject() (config: MarathonConf) extends Filter {
 
         // Add all headers from request as accepted headers
         val accessControlRequestHeaders =
-          httpRequest
-            .getHeaders("Access-Control-Request-Headers")
+          httpRequest.getHeaders("Access-Control-Request-Headers")
             .asScala
             .flatMap(_.split(","))
 

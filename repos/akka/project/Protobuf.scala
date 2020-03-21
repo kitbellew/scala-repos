@@ -56,11 +56,9 @@ object Protobuf {
 
         (sourceDirs zip targetDirs) map {
           case (src, dst) =>
-            val relative = src
-              .relativeTo(sources)
-              .getOrElse(throw new Exception(
-                s"path $src is not a in source tree $sources"))
-              .toString
+            val relative = src.relativeTo(sources).getOrElse(
+              throw new Exception(
+                s"path $src is not a in source tree $sources")).toString
             val tmp = targets / "protoc" / relative
             IO.delete(tmp)
             generate(cmd, src, tmp, log)
@@ -87,8 +85,8 @@ object Protobuf {
     } catch {
       case e: Exception =>
         throw new RuntimeException(
-          "error while executing '%s' with args: %s" format (protoc, args
-            .mkString(" ")),
+          "error while executing '%s' with args: %s" format (protoc, args.mkString(
+            " ")),
           e)
     }
 
@@ -117,8 +115,10 @@ object Protobuf {
         targetDir.mkdirs()
 
         log.info(
-          "Generating %d protobuf files from %s to %s"
-            .format(protoFiles.size, srcDir, targetDir))
+          "Generating %d protobuf files from %s to %s".format(
+            protoFiles.size,
+            srcDir,
+            targetDir))
         protoFiles.foreach { proto => log.info("Compiling %s" format proto) }
 
         val exitCode = callProtoc(

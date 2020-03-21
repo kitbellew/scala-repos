@@ -91,12 +91,10 @@ class OfferMatcherManagerActorTest
 
     def reservedOffer(appId: PathId, path: String = "test"): Offer = {
       import MarathonTestHelper._
-      makeBasicOffer()
-        .addResources(
-          reservedDisk(
-            LocalVolumeId(appId, path, "uuid").idString,
-            containerPath = path))
-        .build()
+      makeBasicOffer().addResources(
+        reservedDisk(
+          LocalVolumeId(appId, path, "uuid").idString,
+          containerPath = path)).build()
     }
   }
 }

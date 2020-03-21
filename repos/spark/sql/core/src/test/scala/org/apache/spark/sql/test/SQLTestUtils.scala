@@ -213,8 +213,9 @@ private[sql] trait SQLTestUtils
     */
   protected def stripSparkFilter(df: DataFrame): DataFrame = {
     val schema = df.schema
-    val childRDD = df.queryExecution.sparkPlan
-      .asInstanceOf[org.apache.spark.sql.execution.Filter]
+    val childRDD = df
+      .queryExecution
+      .sparkPlan.asInstanceOf[org.apache.spark.sql.execution.Filter]
       .child
       .execute()
       .map(row => Row.fromSeq(row.copy().toSeq(schema)))

@@ -135,9 +135,9 @@ trait RedisClientServerIntegrationTest
               assert(doesMBulkReplyContainMessage == true)
             })
           case false =>
-            val actualMessages = ReplyFormat
-              .toChannelBuffers(msgs)
-              .map({ msg => chanBuf2String(msg) })
+            val actualMessages = ReplyFormat.toChannelBuffers(msgs).map({ msg =>
+              chanBuf2String(msg)
+            })
             assert(actualMessages == expects)
         }
       case EmptyMBulkReply() => {

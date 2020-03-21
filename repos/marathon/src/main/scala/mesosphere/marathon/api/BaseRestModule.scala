@@ -38,9 +38,8 @@ class BaseRestModule extends ServletModule {
     bind(classOf[ServiceStatus]).asEagerSingleton()
     bind(classOf[ServiceStatusServlet]).in(Scopes.SINGLETON)
 
-    bind(classOf[String])
-      .annotatedWith(Names.named("helpPathPrefix"))
-      .toInstance(helpUrl)
+    bind(classOf[String]).annotatedWith(
+      Names.named("helpPathPrefix")).toInstance(helpUrl)
 
     serve(statusUrl).`with`(classOf[ServiceStatusServlet])
     serve(statusCatchAllUrl).`with`(classOf[ServiceStatusServlet])

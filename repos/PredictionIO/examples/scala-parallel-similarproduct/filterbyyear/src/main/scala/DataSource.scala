@@ -28,64 +28,57 @@ class DataSource(val dsp: DataSourceParams)
     val eventsDb = Storage.getPEvents()
 
     // create a RDD of (entityID, User)
-    val usersRDD: RDD[(String, User)] = eventsDb
-      .aggregateProperties(
-        appId = dsp.appId,
-        entityType = "user"
-      )(sc)
-      .map {
-        case (entityId, properties) =>
-          val user =
-            try {
-              User()
-            } catch {
-              case e: Exception => {
-                logger.error(
-                  s"Failed to get properties ${properties} of" +
-                    s" user ${entityId}. Exception: ${e}.")
-                throw e
-              }
+    val usersRDD: RDD[(String, User)] = eventsDb.aggregateProperties(
+      appId = dsp.appId,
+      entityType = "user"
+    )(sc).map {
+      case (entityId, properties) =>
+        val user =
+          try {
+            User()
+          } catch {
+            case e: Exception => {
+              logger.error(
+                s"Failed to get properties ${properties} of" +
+                  s" user ${entityId}. Exception: ${e}.")
+              throw e
             }
-          (entityId, user)
-      }
-      .cache()
+          }
+        (entityId, user)
+    }.cache()
 
     // create a RDD of (entityID, Item)
-    val itemsRDD: RDD[(String, Item)] = eventsDb
-      .aggregateProperties(
-        appId = dsp.appId,
-        entityType = "item"
-      )(sc)
-      .map {
-        case (entityId, properties) =>
-          val item =
-            try {
-              // Assume categories is optional property of item.
-              Item(
-                categories = properties.getOpt[List[String]]("categories"),
-                year = properties.get[Int]("year"))
-            } catch {
-              case e: Exception => {
-                logger.error(
-                  s"Failed to get properties ${properties} of" +
-                    s" item ${entityId}. Exception: ${e}.")
-                throw e
-              }
+    val itemsRDD: RDD[(String, Item)] = eventsDb.aggregateProperties(
+      appId = dsp.appId,
+      entityType = "item"
+    )(sc).map {
+      case (entityId, properties) =>
+        val item =
+          try {
+            // Assume categories is optional property of item.
+            Item(
+              categories = properties.getOpt[List[String]]("categories"),
+              year = properties.get[Int]("year"))
+          } catch {
+            case e: Exception => {
+              logger.error(
+                s"Failed to get properties ${properties} of" +
+                  s" item ${entityId}. Exception: ${e}.")
+              throw e
             }
-          (entityId, item)
-      }
-      .cache()
+          }
+        (entityId, item)
+    }.cache()
 
     // get all "user" "view" "item" events
-    val viewEventsRDD: RDD[ViewEvent] = eventsDb
-      .find(
-        appId = dsp.appId,
-        entityType = Some("user"),
-        eventNames = Some(List("view")),
-        // targetEntityType is optional field of an event.
-        targetEntityType = Some(Some("item"))
-      )(sc)
-      // eventsDb.find() returns RDD[Event]
+    val viewEventsRDD: RDD[ViewEvent] = eventsDb.find(
+      appId = dsp.appId,
+      entityType = Some("user"),
+      eventNames = Some(List("view")),
+      // targetEntityType is optional field of an event.
+      targetEntityType = Some(Some("item"))
+    )(sc)
+    // eventsDb.find() returns RDD[Event]
       .map { event =>
         val viewEvent =
           try {
@@ -107,8 +100,7 @@ class DataSource(val dsp: DataSourceParams)
             }
           }
         viewEvent
-      }
-      .cache()
+      }.cache()
 
     new TrainingData(
       users = usersRDD,

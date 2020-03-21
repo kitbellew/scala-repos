@@ -98,13 +98,10 @@ class LogSegmentTest {
     def validate(offset: Long) =
       assertEquals(
         ms.filter(_.offset == offset).toList,
-        seg
-          .read(
-            startOffset = offset,
-            maxSize = 1024,
-            maxOffset = Some(offset + 1))
-          .messageSet
-          .toList)
+        seg.read(
+          startOffset = offset,
+          maxSize = 1024,
+          maxOffset = Some(offset + 1)).messageSet.toList)
     validate(50)
     validate(51)
     validate(52)
@@ -235,9 +232,9 @@ class LogSegmentTest {
         seg.append(i, messages(i, i.toString))
       val offsetToBeginCorruption = TestUtils.random.nextInt(messagesAppended)
       // start corrupting somewhere in the middle of the chosen record all the way to the end
-      val position = seg.log
-        .searchFor(offsetToBeginCorruption, 0)
-        .position + TestUtils.random.nextInt(15)
+      val position = seg.log.searchFor(
+        offsetToBeginCorruption,
+        0).position + TestUtils.random.nextInt(15)
       TestUtils.writeNonsenseToFile(
         seg.log.file,
         position,

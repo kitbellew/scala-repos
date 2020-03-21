@@ -112,8 +112,7 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
               myMethodName)) {
           try {
             val values = frameProxy.getArgumentValues
-            if (values != null && !values.isEmpty && myParameterIndex >= 0 && myParameterIndex < values
-                  .size()) {
+            if (values != null && !values.isEmpty && myParameterIndex >= 0 && myParameterIndex < values.size()) {
               Some(values.get(myParameterIndex))
             } else {
               None
@@ -138,8 +137,9 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
         myEvaluatedVariable = null
         myContext = null
         throw EvaluationException(
-          DebuggerBundle
-            .message("evaluation.error.local.variable.missing", myName))
+          DebuggerBundle.message(
+            "evaluation.error.local.variable.missing",
+            myName))
     }
   }
 

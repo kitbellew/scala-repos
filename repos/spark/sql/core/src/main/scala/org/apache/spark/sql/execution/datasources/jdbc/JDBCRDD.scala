@@ -158,10 +158,12 @@ private[sql] object JDBCRDD extends Logging {
               .putString("name", columnName)
               .putLong("scale", fieldScale)
             val columnType =
-              dialect
-                .getCatalystType(dataType, typeName, fieldSize, metadata)
-                .getOrElse(
-                  getCatalystType(dataType, fieldSize, fieldScale, isSigned))
+              dialect.getCatalystType(
+                dataType,
+                typeName,
+                fieldSize,
+                metadata).getOrElse(
+                getCatalystType(dataType, fieldSize, fieldScale, isSigned))
             fields(i) =
               StructField(columnName, columnType, nullable, metadata.build())
             i = i + 1
@@ -498,8 +500,7 @@ private[sql] class JDBCRDD(
                             DateTimeUtils.fromJavaTimestamp)
                       }
                     case StringConversion =>
-                      array
-                        .asInstanceOf[Array[java.lang.String]]
+                      array.asInstanceOf[Array[java.lang.String]]
                         .map(UTF8String.fromString)
                     case DateConversion =>
                       array.asInstanceOf[Array[java.sql.Date]].map { date =>

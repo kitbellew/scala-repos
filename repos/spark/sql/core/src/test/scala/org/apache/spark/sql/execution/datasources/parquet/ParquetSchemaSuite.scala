@@ -482,11 +482,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       sqlContext.range(3).write.parquet(s"$path/p=1")
-      sqlContext
-        .range(3)
-        .selectExpr("CAST(id AS INT) AS id")
-        .write
-        .parquet(s"$path/p=2")
+      sqlContext.range(3).selectExpr("CAST(id AS INT) AS id").write.parquet(
+        s"$path/p=2")
 
       val message = intercept[SparkException] {
         sqlContext.read.option("mergeSchema", "true").parquet(path).schema
@@ -499,11 +496,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       sqlContext.range(3).write.parquet(s"$path/p=1")
-      sqlContext
-        .range(3)
-        .selectExpr("CAST(id AS INT) AS id")
-        .write
-        .parquet(s"$path/p=2")
+      sqlContext.range(3).selectExpr("CAST(id AS INT) AS id").write.parquet(
+        s"$path/p=2")
 
       sqlContext.sparkContext.conf.set("spark.default.parallelism", "20")
 

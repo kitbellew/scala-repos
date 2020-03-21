@@ -132,9 +132,8 @@ case class ScAbstractType(
       case _ =>
         try {
           ScAbstractType(
-            tpt
-              .recursiveUpdate(update, newVisited)
-              .asInstanceOf[ScTypeParameterType],
+            tpt.recursiveUpdate(update, newVisited).asInstanceOf[
+              ScTypeParameterType],
             lower.recursiveUpdate(update, newVisited),
             upper.recursiveUpdate(update, newVisited)
           )
@@ -153,9 +152,10 @@ case class ScAbstractType(
       case (_, _, newData) =>
         try {
           ScAbstractType(
-            tpt
-              .recursiveVarianceUpdateModifiable(newData, update, variance)
-              .asInstanceOf[ScTypeParameterType],
+            tpt.recursiveVarianceUpdateModifiable(
+              newData,
+              update,
+              variance).asInstanceOf[ScTypeParameterType],
             lower.recursiveVarianceUpdateModifiable(newData, update, -variance),
             upper.recursiveVarianceUpdateModifiable(newData, update, variance)
           )

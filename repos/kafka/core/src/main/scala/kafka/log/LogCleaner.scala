@@ -98,8 +98,9 @@ class LogCleaner(
     new Gauge[Int] {
       def value: Int = {
         val stats = cleaners.map(_.lastStats)
-        val recopyRate = stats.map(_.bytesWritten).sum.toDouble / math
-          .max(stats.map(_.bytesRead).sum, 1)
+        val recopyRate = stats.map(_.bytesWritten).sum.toDouble / math.max(
+          stats.map(_.bytesRead).sum,
+          1)
         (100 * recopyRate).toInt
       }
     }
@@ -184,9 +185,8 @@ class LogCleaner(
       offset: Long,
       maxWaitMs: Long = 60000L): Boolean = {
     def isCleaned =
-      cleanerManager.allCleanerCheckpoints
-        .get(TopicAndPartition(topic, part))
-        .fold(false)(_ >= offset)
+      cleanerManager.allCleanerCheckpoints.get(
+        TopicAndPartition(topic, part)).fold(false)(_ >= offset)
     var remainingWaitMs = maxWaitMs
     while (!isCleaned && remainingWaitMs > 0) {
       val sleepTime = math.min(100, remainingWaitMs)
@@ -214,9 +214,9 @@ class LogCleaner(
     val cleaner = new Cleaner(
       id = threadId,
       offsetMap = new SkimpyOffsetMap(
-        memory = math
-          .min(config.dedupeBufferSize / config.numThreads, Int.MaxValue)
-          .toInt,
+        memory = math.min(
+          config.dedupeBufferSize / config.numThreads,
+          Int.MaxValue).toInt,
         hashAlgorithm = config.hashAlgorithm),
       ioBufferSize = config.ioBufferSize / config.numThreads / 2,
       maxIoBufferSize = config.maxMessageSize,
@@ -290,29 +290,28 @@ class LogCleaner(
       cleaner.statsUnderlying.swap
       def mb(bytes: Double) = bytes / (1024 * 1024)
       val message =
-        "%n\tLog cleaner thread %d cleaned log %s (dirty section = [%d, %d])%n"
-          .format(id, name, from, to) +
-          "\t%,.1f MB of log processed in %,.1f seconds (%,.1f MB/sec).%n"
-            .format(
-              mb(stats.bytesRead),
-              stats.elapsedSecs,
-              mb(stats.bytesRead / stats.elapsedSecs)) +
-          "\tIndexed %,.1f MB in %.1f seconds (%,.1f Mb/sec, %.1f%% of total time)%n"
-            .format(
-              mb(stats.mapBytesRead),
-              stats.elapsedIndexSecs,
-              mb(stats.mapBytesRead) / stats.elapsedIndexSecs,
-              100 * stats.elapsedIndexSecs / stats.elapsedSecs) +
+        "%n\tLog cleaner thread %d cleaned log %s (dirty section = [%d, %d])%n".format(
+          id,
+          name,
+          from,
+          to) +
+          "\t%,.1f MB of log processed in %,.1f seconds (%,.1f MB/sec).%n".format(
+            mb(stats.bytesRead),
+            stats.elapsedSecs,
+            mb(stats.bytesRead / stats.elapsedSecs)) +
+          "\tIndexed %,.1f MB in %.1f seconds (%,.1f Mb/sec, %.1f%% of total time)%n".format(
+            mb(stats.mapBytesRead),
+            stats.elapsedIndexSecs,
+            mb(stats.mapBytesRead) / stats.elapsedIndexSecs,
+            100 * stats.elapsedIndexSecs / stats.elapsedSecs) +
           "\tBuffer utilization: %.1f%%%n".format(
             100 * stats.bufferUtilization) +
-          "\tCleaned %,.1f MB in %.1f seconds (%,.1f Mb/sec, %.1f%% of total time)%n"
-            .format(
-              mb(stats.bytesRead),
-              stats.elapsedSecs - stats.elapsedIndexSecs,
-              mb(
-                stats.bytesRead) / (stats.elapsedSecs - stats.elapsedIndexSecs),
-              100 * (stats.elapsedSecs - stats.elapsedIndexSecs).toDouble / stats.elapsedSecs
-            ) +
+          "\tCleaned %,.1f MB in %.1f seconds (%,.1f Mb/sec, %.1f%% of total time)%n".format(
+            mb(stats.bytesRead),
+            stats.elapsedSecs - stats.elapsedIndexSecs,
+            mb(stats.bytesRead) / (stats.elapsedSecs - stats.elapsedIndexSecs),
+            100 * (stats.elapsedSecs - stats.elapsedIndexSecs).toDouble / stats.elapsedSecs
+          ) +
           "\tStart size: %,.1f MB (%,d messages)%n".format(
             mb(stats.bytesRead),
             stats.messagesRead) +
@@ -401,8 +400,9 @@ private[log] class Cleaner(
 
     // group the segments and clean the groups
     info(
-      "Cleaning log %s (discarding tombstones prior to %s)..."
-        .format(log.name, new Date(deleteHorizonMs)))
+      "Cleaning log %s (discarding tombstones prior to %s)...".format(
+        log.name,
+        new Date(deleteHorizonMs)))
     for (group <- groupSegmentsBySize(
            log.logSegments(0, endOffset),
            log.config.segmentSize,
@@ -681,8 +681,8 @@ private[log] class Cleaner(
   def growBuffers() {
     if (readBuffer.capacity >= maxIoBufferSize || writeBuffer.capacity >= maxIoBufferSize)
       throw new IllegalStateException(
-        "This log contains a message larger than maximum allowable size of %s."
-          .format(maxIoBufferSize))
+        "This log contains a message larger than maximum allowable size of %s.".format(
+          maxIoBufferSize))
     val newSize = math.min(this.readBuffer.capacity * 2, maxIoBufferSize)
     info(
       "Growing cleaner I/O buffers from " + readBuffer.capacity + "bytes to " + newSize + " bytes.")
@@ -753,16 +753,21 @@ private[log] class Cleaner(
     map.clear()
     val dirty = log.logSegments(start, end).toSeq
     info(
-      "Building offset map for log %s for %d segments in offset range [%d, %d)."
-        .format(log.name, dirty.size, start, end))
+      "Building offset map for log %s for %d segments in offset range [%d, %d).".format(
+        log.name,
+        dirty.size,
+        start,
+        end))
 
     // Add all the dirty segments. We must take at least map.slots * load_factor,
     // but we may be able to fit more (if there is lots of duplication in the dirty section of the log)
     var offset = dirty.head.baseOffset
     require(
       offset == start,
-      "Last clean offset is %d but segment base offset is %d for log %s."
-        .format(start, offset, log.name))
+      "Last clean offset is %d but segment base offset is %d for log %s.".format(
+        start,
+        offset,
+        log.name))
     val maxDesiredMapSize = (map.slots * this.dupBufferLoadFactor).toInt
     var full = false
     for (segment <- dirty if !full) {
@@ -771,12 +776,11 @@ private[log] class Cleaner(
 
       require(
         segmentSize <= maxDesiredMapSize,
-        "%d messages in segment %s/%s but offset map can fit only %d. You can increase log.cleaner.dedupe.buffer.size or decrease log.cleaner.threads"
-          .format(
-            segmentSize,
-            log.name,
-            segment.log.file.getName,
-            maxDesiredMapSize)
+        "%d messages in segment %s/%s but offset map can fit only %d. You can increase log.cleaner.dedupe.buffer.size or decrease log.cleaner.threads".format(
+          segmentSize,
+          log.name,
+          segment.log.file.getName,
+          maxDesiredMapSize)
       )
       if (map.size + segmentSize <= maxDesiredMapSize)
         offset = buildOffsetMapForSegment(log.topicAndPartition, segment, map)
@@ -895,12 +899,9 @@ private case class LogToClean(
     firstDirtyOffset: Long)
     extends Ordered[LogToClean] {
   val cleanBytes = log.logSegments(-1, firstDirtyOffset).map(_.size).sum
-  val dirtyBytes = log
-    .logSegments(
-      firstDirtyOffset,
-      math.max(firstDirtyOffset, log.activeSegment.baseOffset))
-    .map(_.size)
-    .sum
+  val dirtyBytes = log.logSegments(
+    firstDirtyOffset,
+    math.max(firstDirtyOffset, log.activeSegment.baseOffset)).map(_.size).sum
   val cleanableRatio = dirtyBytes / totalBytes.toDouble
   def totalBytes = cleanBytes + dirtyBytes
   override def compare(that: LogToClean): Int =

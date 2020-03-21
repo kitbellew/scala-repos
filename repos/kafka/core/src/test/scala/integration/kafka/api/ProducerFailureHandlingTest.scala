@@ -51,9 +51,8 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
   overridingProps.put(KafkaConfig.OffsetsTopicPartitionsProp, 1.toString)
 
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numServers, zkConnect, false)
-      .map(KafkaConfig.fromProps(_, overridingProps))
+    TestUtils.createBrokerConfigs(numServers, zkConnect, false).map(
+      KafkaConfig.fromProps(_, overridingProps))
 
   private var consumer1: SimpleConsumer = null
   private var consumer2: SimpleConsumer = null
@@ -251,13 +250,11 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
   @Test
   def testCannotSendToInternalTopic() {
     val thrown = intercept[ExecutionException] {
-      producer2
-        .send(
-          new ProducerRecord[Array[Byte], Array[Byte]](
-            TopicConstants.INTERNAL_TOPICS.iterator.next,
-            "test".getBytes,
-            "test".getBytes))
-        .get
+      producer2.send(
+        new ProducerRecord[Array[Byte], Array[Byte]](
+          TopicConstants.INTERNAL_TOPICS.iterator.next,
+          "test".getBytes,
+          "test".getBytes)).get
     }
     assertTrue(
       "Unexpected exception while sending to an invalid topic " + thrown.getCause,

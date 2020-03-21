@@ -110,8 +110,7 @@ object MarathonTestHelper {
         case Some(reservationLabels) =>
           val labels = reservationLabels.mesosLabels
           val reservation =
-            Mesos.Resource.ReservationInfo
-              .newBuilder()
+            Mesos.Resource.ReservationInfo.newBuilder()
               .setPrincipal("marathon")
               .setLabels(labels)
           resource.toBuilder.setReservation(reservation).build()
@@ -177,8 +176,7 @@ object MarathonTestHelper {
       role: String = "*",
       reservation: Option[ReservationInfo] = None): Mesos.Resource = {
 
-    val ranges = Mesos.Value.Ranges
-      .newBuilder()
+    val ranges = Mesos.Value.Ranges.newBuilder()
       .addRange(Mesos.Value.Range.newBuilder().setBegin(begin).setEnd(end))
 
     val builder = Mesos.Resource
@@ -201,8 +199,7 @@ object MarathonTestHelper {
         labelsBuilder.addLabels(Mesos.Label.newBuilder().setKey(k).setValue(v))
     }
 
-    Mesos.Resource.ReservationInfo
-      .newBuilder()
+    Mesos.Resource.ReservationInfo.newBuilder()
       .setPrincipal(principal)
       .setLabels(labelsBuilder)
       .build()
@@ -215,22 +212,18 @@ object MarathonTestHelper {
       principal: String = "test",
       containerPath: String = "/container"): Mesos.Resource.Builder = {
     import Mesos.Resource.{DiskInfo, ReservationInfo}
-    Mesos.Resource
-      .newBuilder()
+    Mesos.Resource.newBuilder()
       .setType(Mesos.Value.Type.SCALAR)
       .setName(Resource.DISK)
       .setScalar(Mesos.Value.Scalar.newBuilder.setValue(size))
       .setRole(role)
       .setReservation(ReservationInfo.newBuilder().setPrincipal(principal))
       .setDisk(
-        DiskInfo
-          .newBuilder()
+        DiskInfo.newBuilder()
           .setPersistence(DiskInfo.Persistence.newBuilder().setId(id))
-          .setVolume(
-            Mesos.Volume
-              .newBuilder()
-              .setMode(Mesos.Volume.Mode.RW)
-              .setContainerPath(containerPath)))
+          .setVolume(Mesos.Volume.newBuilder()
+            .setMode(Mesos.Volume.Mode.RW)
+            .setContainerPath(containerPath)))
   }
 
   /**
@@ -244,9 +237,8 @@ object MarathonTestHelper {
     val diskResource = ScalarResource(Resource.DISK, 1.0, role = role)
     val portsResource = RangesResource(
       Resource.PORTS,
-      List
-        .tabulate(ranges)(_ * 2 + 1)
-        .map(p => Range(p.toLong, (p + 1).toLong)),
+      List.tabulate(ranges)(_ * 2 + 1).map(p =>
+        Range(p.toLong, (p + 1).toLong)),
       role
     )
 
@@ -290,8 +282,7 @@ object MarathonTestHelper {
   }
 
   def makeOneCPUTask(taskId: String): TaskInfo.Builder = {
-    TaskInfo
-      .newBuilder()
+    TaskInfo.newBuilder()
       .setName("true")
       .setTaskId(TaskID.newBuilder().setValue(taskId).build())
       .setSlaveId(SlaveID("slave1"))
@@ -368,10 +359,8 @@ object MarathonTestHelper {
         metrics = metrics,
         newState = () =>
           MarathonTaskState(
-            MarathonTask
-              .newBuilder()
-              .setId(UUID.randomUUID().toString)
-              .build()),
+            MarathonTask.newBuilder().setId(
+              UUID.randomUUID().toString).build()),
         prefix = TaskRepository.storePrefix),
       metrics
     )
@@ -401,16 +390,14 @@ object MarathonTestHelper {
   }
 
   def dummyTaskBuilder(appId: PathId) =
-    MarathonTask
-      .newBuilder()
+    MarathonTask.newBuilder()
       .setId(Task.Id.forApp(appId).idString)
       .setStagedAt(0)
       .setHost("host.some")
 
   def dummyTaskProto(appId: PathId) = dummyTaskBuilder(appId).build()
   def dummyTaskProto(taskId: String) =
-    MarathonTask
-      .newBuilder()
+    MarathonTask.newBuilder()
       .setId(taskId)
       .setHost("host.some")
       .build()
@@ -618,8 +605,7 @@ object MarathonTestHelper {
       taskId: Task.Id,
       localVolumeIds: Task.LocalVolumeId*) =
     localVolumeIds.map { id =>
-      Mesos.Resource
-        .newBuilder()
+      Mesos.Resource.newBuilder()
         .setName("disk")
         .setType(Mesos.Value.Type.SCALAR)
         .setScalar(Mesos.Value.Scalar.newBuilder().setValue(10))
@@ -631,12 +617,10 @@ object MarathonTestHelper {
             .setLabels(
               TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
         )
-        .setDisk(Mesos.Resource.DiskInfo
-          .newBuilder()
+        .setDisk(Mesos.Resource.DiskInfo.newBuilder()
           .setPersistence(
             Mesos.Resource.DiskInfo.Persistence.newBuilder().setId(id.idString))
-          .setVolume(Mesos.Volume
-            .newBuilder()
+          .setVolume(Mesos.Volume.newBuilder()
             .setContainerPath(id.containerPath)
             .setMode(Mesos.Volume.Mode.RW)))
         .build()
@@ -644,23 +628,21 @@ object MarathonTestHelper {
 
   def offerWithVolumes(taskId: String, localVolumeIds: Task.LocalVolumeId*) = {
     import scala.collection.JavaConverters._
-    MarathonTestHelper
-      .makeBasicOffer(
-        reservation =
-          Some(TaskLabels.labelsForTask(frameworkId, Task.Id(taskId))),
-        role = "test"
-      )
-      .addAllResources(
-        persistentVolumeResources(Task.Id(taskId), localVolumeIds: _*).asJava)
-      .build()
+    MarathonTestHelper.makeBasicOffer(
+      reservation =
+        Some(TaskLabels.labelsForTask(frameworkId, Task.Id(taskId))),
+      role = "test"
+    ).addAllResources(
+      persistentVolumeResources(
+        Task.Id(taskId),
+        localVolumeIds: _*).asJava).build()
   }
 
   def offerWithVolumesOnly(
       taskId: Task.Id,
       localVolumeIds: Task.LocalVolumeId*) = {
     import scala.collection.JavaConverters._
-    MarathonTestHelper
-      .makeBasicOffer()
+    MarathonTestHelper.makeBasicOffer()
       .clearResources()
       .addAllResources(
         persistentVolumeResources(taskId, localVolumeIds: _*).asJava)
@@ -668,15 +650,13 @@ object MarathonTestHelper {
   }
 
   def appWithPersistentVolume(): AppDefinition = {
-    MarathonTestHelper
-      .makeBasicApp()
-      .copy(
-        container = Some(mesosContainerWithPersistentVolume),
-        residency = Some(
-          Residency(
-            Residency.defaultRelaunchEscalationTimeoutSeconds,
-            Residency.defaultTaskLostBehaviour))
-      )
+    MarathonTestHelper.makeBasicApp().copy(
+      container = Some(mesosContainerWithPersistentVolume),
+      residency = Some(
+        Residency(
+          Residency.defaultRelaunchEscalationTimeoutSeconds,
+          Residency.defaultTaskLostBehaviour))
+    )
   }
 
   def residentReservedTask(appId: PathId, localVolumeIds: Task.LocalVolumeId*) =

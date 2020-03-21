@@ -115,8 +115,12 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       val TenPow9Lo = 1000000000L.toInt
       val TenPow9Hi = (1000000000L >>> 32).toInt
 
-      val quotRem = unsignedDivModHelper(lo, hi, TenPow9Lo, TenPow9Hi, AskBoth)
-        .asInstanceOf[js.Tuple4[Int, Int, Int, Int]]
+      val quotRem = unsignedDivModHelper(
+        lo,
+        hi,
+        TenPow9Lo,
+        TenPow9Hi,
+        AskBoth).asInstanceOf[js.Tuple4[Int, Int, Int, Int]]
       val quotLo = quotRem._1
       val quotHi = quotRem._2
       val rem = quotRem._3 // remHi must be 0 by construction
@@ -433,8 +437,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
         val pow = log2OfPowerOfTwo(bhi)
         new RuntimeLong(ahi >>> pow, 0)
       } else {
-        unsignedDivModHelper(alo, ahi, blo, bhi, AskQuotient)
-          .asInstanceOf[RuntimeLong]
+        unsignedDivModHelper(alo, ahi, blo, bhi, AskQuotient).asInstanceOf[
+          RuntimeLong]
       }
     }
   }
@@ -510,8 +514,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       } else if (blo == 0 && isPowerOfTwo_IKnowItsNot0(bhi)) {
         new RuntimeLong(alo, ahi & (bhi - 1))
       } else {
-        unsignedDivModHelper(alo, ahi, blo, bhi, AskRemainder)
-          .asInstanceOf[RuntimeLong]
+        unsignedDivModHelper(alo, ahi, blo, bhi, AskRemainder).asInstanceOf[
+          RuntimeLong]
       }
     }
   }
@@ -765,8 +769,8 @@ object RuntimeLong {
 
     /** Performs the JavaScript operation `(x | 0)`. */
     @inline def rawToInt(x: Double): Int =
-      (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic])
-        .asInstanceOf[Int]
+      (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic]).asInstanceOf[
+        Int]
 
     /** Tests whether the given non-zero unsigned Int is an exact power of 2. */
     @inline def isPowerOfTwo_IKnowItsNot0(i: Int): Boolean =

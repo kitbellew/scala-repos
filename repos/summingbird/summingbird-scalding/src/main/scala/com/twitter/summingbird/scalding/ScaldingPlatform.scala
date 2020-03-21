@@ -107,8 +107,9 @@ object Scalding {
       s, {
         val default = MonoidIsCommutative.default
         logger.warn(
-          "Store: %s has no commutativity setting. Assuming %s"
-            .format(names, default))
+          "Store: %s has no commutativity setting. Assuming %s".format(
+            names,
+            default))
         default
       }
     ).commutativity
@@ -126,8 +127,8 @@ object Scalding {
   }
 
   def intersect(dr1: DateRange, dr2: DateRange): Option[DateRange] =
-    (dr1.as[Interval[Timestamp]] && (dr2.as[Interval[Timestamp]]))
-      .as[Option[DateRange]]
+    (dr1.as[Interval[Timestamp]] && (dr2.as[Interval[Timestamp]])).as[Option[
+      DateRange]]
 
   /**
     * Given a constructor function, computes the maximum available range
@@ -151,8 +152,7 @@ object Scalding {
           Some(desired)
         case _ => bisectingMinify(mode, desired)(factory)
       }
-      available
-        .flatMap { intersect(desired, _) }
+      available.flatMap { intersect(desired, _) }
         .map(Right(_))
         .getOrElse(
           Left(List("available: " + available + ", desired: " + desired)))
@@ -162,8 +162,8 @@ object Scalding {
       factory: (DateRange) => SSource): Option[DateRange] = {
     def isGood(end: Long): Boolean =
       STry(
-        factory(DateRange(desired.start, RichDate(end)))
-          .validateTaps(mode)).isSuccess
+        factory(DateRange(desired.start, RichDate(end))).validateTaps(
+          mode)).isSuccess
     val DateRange(start, end) = desired
     if (isGood(start.timestamp)) {
       // The invariant is that low isGood, low < upper, and upper isGood == false
@@ -228,22 +228,22 @@ object Scalding {
           val (timeSpan, mode) = timeMode
 
           toDateRange(timeSpan).right.flatMap { dr =>
-            minify(mode, dr)(factory).right.map { newDr =>
-              val newIntr = newDr.as[Interval[Timestamp]]
-              val mappable = factory(newDr)
-              (
-                (newIntr, mode),
-                Reader { (fdM: (FlowDef, Mode)) =>
-                  TypedPipe
-                    .from(mappable)
-                    .flatMap { t =>
-                      fn(t).flatMap { mapped =>
-                        val time = Timestamp(timeOf(mapped))
-                        if (newIntr(time)) Some((time, mapped)) else None
+            minify(mode, dr)(factory)
+              .right.map { newDr =>
+                val newIntr = newDr.as[Interval[Timestamp]]
+                val mappable = factory(newDr)
+                (
+                  (newIntr, mode),
+                  Reader { (fdM: (FlowDef, Mode)) =>
+                    TypedPipe.from(mappable)
+                      .flatMap { t =>
+                        fn(t).flatMap { mapped =>
+                          val time = Timestamp(timeOf(mapped))
+                          if (newIntr(time)) Some((time, mapped)) else None
+                        }
                       }
-                    }
-                })
-            }
+                  })
+              }
           }
         }
     }
@@ -266,8 +266,7 @@ object Scalding {
                 mappable.validateTaps(
                   fdM._2
                 ) //This can throw, but that is what this caller wants
-                TypedPipe
-                  .from(mappable)
+                TypedPipe.from(mappable)
                   .flatMap { t =>
                     val time = Timestamp(timeOf(t))
                     if (timeSpan(time)) Some((time, t)) else None
@@ -282,8 +281,7 @@ object Scalding {
     Producer.source[Scalding, T](pipeFactory(factory))
 
   def toDateRange(timeSpan: Interval[Timestamp]): Try[DateRange] =
-    timeSpan
-      .as[Option[DateRange]]
+    timeSpan.as[Option[DateRange]]
       .map { Right(_) }
       .getOrElse(Left(List(
         "only finite time ranges are supported by scalding: " + timeSpan.toString)))
@@ -452,12 +450,12 @@ object Scalding {
                 left: Producer[Scalding, (K, U)],
                 bstore: BatchedStore[K, V]) = {
               implicit val keyOrdering = bstore.ordering
-              val Summer(storeLog, _, sg) = InternalService
-                .getSummer[K, V](dependants, bstore)
-                .getOrElse(
-                  sys.error(
-                    "join %s is against store not in the entire job's Dag"
-                      .format(ljp)))
+              val Summer(storeLog, _, sg) = InternalService.getSummer[K, V](
+                dependants,
+                bstore)
+                .getOrElse(sys.error(
+                  "join %s is against store not in the entire job's Dag".format(
+                    ljp)))
               val (leftPf, m1) = recurse(left)
               // We have to force the fanOut on the storeLog because this kind of fanout
               // due to joining is not visible in the Dependants dag
@@ -500,12 +498,12 @@ object Scalding {
               val reducers =
                 getOrElse(options, names, ljp, Reducers.default).count
               implicit val keyOrdering = bs.ordering
-              val Summer(storeLog, _, sg) = InternalService
-                .getSummer[K, U](dependants, bs)
-                .getOrElse(
-                  sys.error(
-                    "join %s is against store not in the entire job's Dag"
-                      .format(ljp)))
+              val Summer(storeLog, _, sg) = InternalService.getSummer[K, U](
+                dependants,
+                bs)
+                .getOrElse(sys.error(
+                  "join %s is against store not in the entire job's Dag".format(
+                    ljp)))
               implicit val semigroup: Semigroup[U] = sg
               logger.info(
                 "Service {} using {} reducers (-1 means unset)",
@@ -515,19 +513,17 @@ object Scalding {
               val res: PipeFactory[(K, (V, Option[U]))] = for {
                 // Handle the Option[Producer] return value from getLoopInputs properly.
                 // If there was no producer returned, pass an empty TypedPipe to the join for that part.
-                flowToPipe <- deltaLogOpt
-                  .map { del =>
-                    leftPf.join(del).map {
-                      case (ftpA, ftpB) =>
-                        Scalding.joinFP(
-                          ftpA,
-                          ftpB
-                        ) // extra producer for store, join the two FlowToPipes
-                    }
+                flowToPipe <- deltaLogOpt.map { del =>
+                  leftPf.join(del).map {
+                    case (ftpA, ftpB) =>
+                      Scalding.joinFP(
+                        ftpA,
+                        ftpB
+                      ) // extra producer for store, join the two FlowToPipes
                   }
-                  .getOrElse(leftPf.map { p =>
-                    p.map((_, TypedPipe.empty))
-                  }) // no extra producer for store
+                }.getOrElse(leftPf.map { p =>
+                  p.map((_, TypedPipe.empty))
+                }) // no extra producer for store
                 servOut = flowToPipe.map {
                   case (lpipe, dpipe) =>
                     InternalService.loopJoin[Timestamp, K, V, U](
@@ -676,8 +672,7 @@ object Scalding {
     val dep = Dependants(prod)
     val fanOutSet =
       dep.nodes
-        .filter(dep.fanOut(_).exists(_ > 1))
-        .toSet
+        .filter(dep.fanOut(_).exists(_ > 1)).toSet
     buildFlow(options, prod, fanOutSet, dep, Map.empty)._1
   }
 
@@ -727,7 +722,8 @@ object Scalding {
       mode: Mode,
       pf: PipeFactory[T]): Try[(Interval[Timestamp], TimedPipe[T])] = {
     logger.info("topipe Planning on interval: {}", timeSpan)
-    pf((timeSpan, mode)).right
+    pf((timeSpan, mode))
+      .right
       .map {
         case (((ts, m), flowDefMutator)) => (ts, flowDefMutator((flowDef, m)))
       }
@@ -739,7 +735,8 @@ object Scalding {
       mode: Mode,
       pf: PipeFactory[T]): Try[TimedPipe[T]] = {
     logger.info("Planning on interval: {}", timeSpan.as[Option[DateRange]])
-    pf((timeSpan, mode)).right
+    pf((timeSpan, mode))
+      .right
       .flatMap {
         case (((ts, m), flowDefMutator)) =>
           if (ts != timeSpan)
@@ -829,8 +826,7 @@ class Scalding(
     val config = transformConfig(configProvider(hConf))
 
     // Store the options used:
-    val postConfig = config
-      .+("summingbird.options" -> options.toString)
+    val postConfig = config.+("summingbird.options" -> options.toString)
       .+("summingbird.jobname" -> jobName)
       .+("summingbird.submitted.timestamp" -> System.currentTimeMillis.toString)
 
@@ -846,8 +842,7 @@ class Scalding(
       pf: PipeFactory[_]): Try[(Interval[Timestamp], Option[Flow[_]])] = {
     val flowDef = new FlowDef
     flowDef.setName(jobName)
-    Scalding
-      .toPipe(timeSpan, flowDef, mode, pf)
+    Scalding.toPipe(timeSpan, flowDef, mode, pf)
       .right
       .flatMap {
         case (ts, pipe) =>

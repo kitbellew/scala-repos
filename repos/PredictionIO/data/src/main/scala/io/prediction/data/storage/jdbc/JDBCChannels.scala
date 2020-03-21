@@ -47,18 +47,14 @@ class JDBCChannels(client: String, config: StorageClientConfig, prefix: String)
 
   def get(id: Int): Option[Channel] =
     DB localTx { implicit session =>
-      sql"SELECT id, name, appid FROM $tableName WHERE id = $id"
-        .map(resultToChannel)
-        .single()
-        .apply()
+      sql"SELECT id, name, appid FROM $tableName WHERE id = $id".map(
+        resultToChannel).single().apply()
     }
 
   def getByAppid(appid: Int): Seq[Channel] =
     DB localTx { implicit session =>
-      sql"SELECT id, name, appid FROM $tableName WHERE appid = $appid"
-        .map(resultToChannel)
-        .list()
-        .apply()
+      sql"SELECT id, name, appid FROM $tableName WHERE appid = $appid".map(
+        resultToChannel).list().apply()
     }
 
   def delete(id: Int): Unit =

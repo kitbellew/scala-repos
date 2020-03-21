@@ -59,8 +59,12 @@ sealed trait ValueSegment[@spec(Boolean, Long, Double) A] extends Segment {
         val values0 = seg.values.asInstanceOf[Array[Boolean]]
         val values = BitSetUtil.create()
         defined.foreach { row => values(row) = values0(row) }
-        BooleanSegment(blockid, cpath, defined, values, values.length)
-          .asInstanceOf[ValueSegment[A]]
+        BooleanSegment(
+          blockid,
+          cpath,
+          defined,
+          values,
+          values.length).asInstanceOf[ValueSegment[A]]
 
       case _ =>
         this

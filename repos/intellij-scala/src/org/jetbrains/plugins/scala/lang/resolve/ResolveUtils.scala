@@ -101,8 +101,8 @@ object ResolveUtils {
             case _             => kinds contains VAL
           }
         case patt: ScFieldId =>
-          if (patt.getParent /*list of ids*/ .getParent
-                .isInstanceOf[ScVariable])
+          if (patt.getParent /*list of ids*/ .getParent.isInstanceOf[
+                ScVariable])
             kinds contains VAR
           else kinds contains VAL
         case classParam: ScClassParameter =>
@@ -123,15 +123,13 @@ object ResolveUtils {
   def methodType(m: PsiMethod, s: ScSubstitutor, scope: GlobalSearchScope) =
     ScFunctionType(
       s.subst(ScType.create(m.getReturnType, m.getProject, scope)),
-      m.getParameterList.getParameters
-        .map({
-          p =>
-            val pt = p.getType
-            //scala hack: Objects in java are modelled as Any in scala
-            if (pt.equalsToText("java.lang.Object")) types.Any
-            else s.subst(ScType.create(pt, m.getProject, scope))
-        })
-        .toSeq
+      m.getParameterList.getParameters.map({
+        p =>
+          val pt = p.getType
+          //scala hack: Objects in java are modelled as Any in scala
+          if (pt.equalsToText("java.lang.Object")) types.Any
+          else s.subst(ScType.create(pt, m.getProject, scope))
+      }).toSeq
     )(m.getProject, scope)
 
   def javaMethodType(
@@ -251,9 +249,8 @@ object ResolveUtils {
         }
         while (placeTd != null) {
           if (td == placeTd) return true
-          val companion: ScTemplateDefinition = ScalaPsiUtil
-            .getCompanionModule(placeTd)
-            .getOrElse(null: ScTemplateDefinition)
+          val companion: ScTemplateDefinition = ScalaPsiUtil.getCompanionModule(
+            placeTd).getOrElse(null: ScTemplateDefinition)
           if (companion != null && companion == td) return true
           placeTd = getPlaceTd(placeTd)
         }
@@ -261,9 +258,8 @@ object ResolveUtils {
       }
       while (placeTd != null) {
         if (td != null && isInheritorOrSelfOrSame(placeTd, td)) return true
-        val companion: ScTemplateDefinition = ScalaPsiUtil
-          .getCompanionModule(placeTd)
-          .getOrElse(null: ScTemplateDefinition)
+        val companion: ScTemplateDefinition = ScalaPsiUtil.getCompanionModule(
+          placeTd).getOrElse(null: ScTemplateDefinition)
         if (withCompanion && companion != null && td != null &&
             ScalaPsiUtil.cachedDeepIsInheritor(companion, td)) return true
         placeTd = getPlaceTd(placeTd)
@@ -347,8 +343,8 @@ object ResolveUtils {
                       classOf[ScObject],
                       classOf[ScalaFile])
                   var placeEnclosing: PsiElement = context(place)
-                  while (placeEnclosing != null && placeEnclosing
-                           .isInstanceOf[ScObject] &&
+                  while (placeEnclosing != null && placeEnclosing.isInstanceOf[
+                           ScObject] &&
                          !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
                     placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null) return false //not Scala
@@ -363,13 +359,13 @@ object ResolveUtils {
                   case td: ScTemplateDefinition =>
                     PsiTreeUtil.isContextAncestor(td, place, false) ||
                       PsiTreeUtil.isContextAncestor(
-                        ScalaPsiUtil
-                          .getCompanionModule(td)
-                          .getOrElse(null: PsiElement),
+                        ScalaPsiUtil.getCompanionModule(td).getOrElse(
+                          null: PsiElement),
                         place,
                         false) || (td.isInstanceOf[ScObject] &&
-                      td.asInstanceOf[ScObject]
-                        .isPackageObject && processPackage(td.qualifiedName))
+                      td.asInstanceOf[
+                        ScObject].isPackageObject && processPackage(
+                      td.qualifiedName))
                   case pack: PsiPackage =>
                     val packageName = pack.getQualifiedName
                     processPackage(packageName)
@@ -393,9 +389,8 @@ object ResolveUtils {
                       td,
                       place,
                       false) || PsiTreeUtil.isContextAncestor(
-                      ScalaPsiUtil
-                        .getCompanionModule(td)
-                        .getOrElse(null: PsiElement),
+                      ScalaPsiUtil.getCompanionModule(td).getOrElse(
+                        null: PsiElement),
                       place,
                       false)
                   case file: ScalaFile if file.isScriptFile() =>
@@ -436,8 +431,8 @@ object ResolveUtils {
                       classOf[ScObject],
                       classOf[ScalaFile])
                   var placeEnclosing: PsiElement = context(place)
-                  while (placeEnclosing != null && placeEnclosing
-                           .isInstanceOf[ScObject] &&
+                  while (placeEnclosing != null && placeEnclosing.isInstanceOf[
+                           ScObject] &&
                          !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
                     placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null) return Some(false) //not Scala
@@ -456,9 +451,8 @@ object ResolveUtils {
                           td,
                           place,
                           false) || PsiTreeUtil.isContextAncestor(
-                          ScalaPsiUtil
-                            .getCompanionModule(td)
-                            .getOrElse(null: PsiElement),
+                          ScalaPsiUtil.getCompanionModule(td).getOrElse(
+                            null: PsiElement),
                           place,
                           false)) return true
                     td match {
@@ -512,9 +506,8 @@ object ResolveUtils {
                 case td: ScTypeDefinition =>
                   if (PsiTreeUtil.isContextAncestor(td, place, false) ||
                       (withCompanion && PsiTreeUtil.isContextAncestor(
-                        ScalaPsiUtil
-                          .getCompanionModule(td)
-                          .getOrElse(null: PsiElement),
+                        ScalaPsiUtil.getCompanionModule(td).getOrElse(
+                          null: PsiElement),
                         place,
                         false))) return true
                   checkProtected(td, withCompanion)
@@ -587,8 +580,9 @@ object ResolveUtils {
               TypeDefinitionMembers.processSuperDeclarations(
                 c,
                 processor,
-                ResolveState.initial
-                  .put(ScSubstitutor.key, ScSubstitutor.empty),
+                ResolveState.initial.put(
+                  ScSubstitutor.key,
+                  ScSubstitutor.empty),
                 null,
                 place)
             case None =>
@@ -653,12 +647,10 @@ object ResolveUtils {
       place: PsiElement): Boolean = {
     processor match {
       case b: BaseProcessor if b.isImplicitProcessor =>
-        val objectsIterator = ScalaPsiManager
-          .instance(pack.getProject)
-          .getPackageImplicitObjects(
+        val objectsIterator =
+          ScalaPsiManager.instance(pack.getProject).getPackageImplicitObjects(
             pack.getQualifiedName,
-            place.getResolveScope)
-          .iterator
+            place.getResolveScope).iterator
         while (objectsIterator.hasNext) {
           val obj = objectsIterator.next()
           if (!processor.execute(obj, state)) return false
@@ -684,12 +676,9 @@ object ResolveUtils {
                   manager.getCachedClasses(scope, fqn)
                 if (classes.isEmpty) {
                   //todo: fast fix for the problem with classes, should be fixed in indexes
-                  val improvedFqn = fqn
-                    .split('.')
-                    .map { s =>
-                      if (ScalaNamesUtil.isKeyword(s)) s"`$s`" else s
-                    }
-                    .mkString(".")
+                  val improvedFqn = fqn.split('.').map { s =>
+                    if (ScalaNamesUtil.isKeyword(s)) s"`$s`" else s
+                  }.mkString(".")
                   if (improvedFqn != fqn) {
                     classes = manager.getCachedClasses(scope, improvedFqn)
                   }
@@ -720,10 +709,8 @@ object ResolveUtils {
               val qName: String = psiPack.getQualifiedName
               val subpackageQName: String =
                 if (qName.isEmpty) name else qName + "." + name
-              val subPackage = ScalaPsiManager
-                .instance(psiPack.getProject)
-                .getCachedPackage(subpackageQName)
-                .orNull
+              val subPackage = ScalaPsiManager.instance(
+                psiPack.getProject).getCachedPackage(subpackageQName).orNull
               if (subPackage != null) {
                 if (!processor.execute(subPackage, state)) return false
               }

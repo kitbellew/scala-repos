@@ -133,12 +133,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // if the shared prefix contains interesting conditions (!= True)
             // and the last of such interesting shared conditions reuses another treemaker's test
             // replace the whole sharedPrefix by a ReusingCondTreeMaker
-            for (lastShared <- sharedPrefix.reverse
-                   .dropWhile(_.prop == True)
-                   .headOption;
+            for (lastShared <- sharedPrefix.reverse.dropWhile(
+                   _.prop == True).headOption;
                  lastReused <- lastShared.reuses)
-              yield ReusingCondTreeMaker(sharedPrefix, reusedOrOrig) :: suffix
-                .map(_.treeMaker)
+              yield ReusingCondTreeMaker(
+                sharedPrefix,
+                reusedOrOrig) :: suffix.map(_.treeMaker)
           }
 
         collapsedTreeMakers getOrElse tests.map(
@@ -185,14 +185,13 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           next: Tree)(
           casegen: Casegen): Tree = // assert(codegen eq optimizedCodegen)
         atPos(pos)(
-          casegen
-            .asInstanceOf[optimizedCodegen.OptimizedCasegen]
-            .flatMapCondStored(
-              cond,
-              storedCond,
-              res,
-              nextBinder,
-              substitution(next).duplicate))
+          casegen.asInstanceOf[
+            optimizedCodegen.OptimizedCasegen].flatMapCondStored(
+            cond,
+            storedCond,
+            res,
+            nextBinder,
+            substitution(next).duplicate))
 
       override def toString =
         "Memo" + ((nextBinder.name, storedCond.name, cond, res, substitution))
@@ -234,10 +233,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         collapsedDroppedSubst.foldLeft(rerouteToReusedBinders)(_ >> _)
       }
 
-      lazy val lastReusedTreeMaker = sharedPrefix.reverse
-        .flatMap(tm => tm.reuses map (test => toReused(test.treeMaker)))
-        .collectFirst { case x: ReusedCondTreeMaker => x }
-        .head
+      lazy val lastReusedTreeMaker = sharedPrefix.reverse.flatMap(tm =>
+        tm.reuses map (test => toReused(test.treeMaker))).collectFirst {
+        case x: ReusedCondTreeMaker => x
+      }.head
 
       def chainBefore(next: Tree)(casegen: Casegen): Tree = {
         // TODO: finer-grained duplication -- MUST duplicate though, or we'll get VerifyErrors since sharing trees confuses lambdalift,
@@ -542,9 +541,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                     // SI-7290 Discard duplicate alternatives that would crash the backend
                     val distinctAlts = distinctBy(switchableAlts)(extractConst)
                     if (distinctAlts.size < switchableAlts.size) {
-                      val duplicated = switchableAlts
-                        .groupBy(extractConst)
-                        .flatMap(
+                      val duplicated =
+                        switchableAlts.groupBy(extractConst).flatMap(
                           _._2.drop(1).take(1)
                         ) // report the first duplicated
                       reporter.warning(

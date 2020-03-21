@@ -132,9 +132,9 @@ trait EvaluatorTestSupport[M[+_]]
                   }
 
                   val prefix = "filesystem"
-                  val target = path.path
-                    .replaceAll("/$", ".json")
-                    .replaceAll("^/" + prefix, prefix)
+                  val target = path.path.replaceAll("/$", ".json").replaceAll(
+                    "^/" + prefix,
+                    prefix)
 
                   val src =
                     if (target startsWith prefix)
@@ -172,8 +172,10 @@ trait EvaluatorTestSupport[M[+_]]
   object Table extends TableCompanion
 
   private var initialIndices =
-    collection.mutable
-      .Map[Path, Int]() // if we were doing this for real: j.u.c.HashMap
+    collection.mutable.Map[
+      Path,
+      Int
+    ]() // if we were doing this for real: j.u.c.HashMap
   private var currentIndex =
     0 // if we were doing this for real: j.u.c.a.AtomicInteger
   private val indexLock =
@@ -3300,8 +3302,9 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input0) { result0 =>
         {
           testEval(input1) { result1 =>
-            result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
-              .map({ case (ids, v)      => (ids.toSeq, v) })
+            result0.map({
+              case (ids, v)                        => (ids.toSeq, v)
+            }) must_== result1.map({ case (ids, v) => (ids.toSeq, v) })
           }
         }
       }
@@ -3327,8 +3330,9 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input0) { result0 =>
         {
           testEval(input1) { result1 =>
-            result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
-              .map({ case (ids, v)      => (ids.toSeq, v) })
+            result0.map({
+              case (ids, v)                        => (ids.toSeq, v)
+            }) must_== result1.map({ case (ids, v) => (ids.toSeq, v) })
           }
         }
       }
@@ -3933,9 +3937,11 @@ trait EvaluatorSpecs[M[+_]]
         AddSortKey(clicks2, "time", "time", 0))(line)
 
       testEval(
-        dag
-          .Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
-            line)) { expected =>
+        dag.Join(
+          DerefObject,
+          Cross(None),
+          clicks,
+          Const(CString("time"))(line))(line)) { expected =>
         val decimalValues = expected.toList collect {
           case (_, SDecimal(d)) => d
         }
@@ -4020,9 +4026,11 @@ trait EvaluatorSpecs[M[+_]]
           Const(CLong(500))(line))(line))(line)
 
       testEval(
-        dag
-          .Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
-            line)) { expected =>
+        dag.Join(
+          DerefObject,
+          Cross(None),
+          clicks,
+          Const(CString("time"))(line))(line)) { expected =>
         val decimalValues = expected.toList collect {
           case (_, SDecimal(d)) => d
         }

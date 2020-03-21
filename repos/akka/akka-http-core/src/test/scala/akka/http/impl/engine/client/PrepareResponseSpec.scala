@@ -58,8 +58,7 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -104,8 +103,7 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -141,8 +139,7 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -183,8 +180,7 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -212,8 +208,7 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))

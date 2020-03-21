@@ -89,8 +89,9 @@ class StoreStatReporter[K, V](context: TopologyContext, val self: Store[K, V])
 
     request.map {
       case (k, v) =>
-        val failureWrapV =
-          v.onFailure { _ => multiGetTupleFailedMetric.incr() }.unit
+        val failureWrapV = v.onFailure { _ =>
+          multiGetTupleFailedMetric.incr()
+        }.unit
         (k, failureWrapV)
     }
   }
@@ -113,8 +114,9 @@ class StoreStatReporter[K, V](context: TopologyContext, val self: Store[K, V])
 
     request.map {
       case (k, v) =>
-        val failureWrapV =
-          v.onFailure { _ => multiPutTupleFailedMetric.incr() }.unit
+        val failureWrapV = v.onFailure { _ =>
+          multiPutTupleFailedMetric.incr()
+        }.unit
         (k, failureWrapV)
     }
   }

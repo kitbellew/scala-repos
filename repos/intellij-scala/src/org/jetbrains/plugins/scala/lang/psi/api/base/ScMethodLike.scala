@@ -46,11 +46,10 @@ trait ScMethodLike extends ScMember with PsiMethod {
           case c: ScTypeDefinition =>
             c.typeParametersClause.map((typeParamClause: ScTypeParamClause) => {
               val paramClauseText = typeParamClause.getTextByStub
-              ScalaPsiElementFactory
-                .createTypeParameterClauseFromTextWithContext(
-                  paramClauseText,
-                  typeParamClause.getContext,
-                  typeParamClause)
+              ScalaPsiElementFactory.createTypeParameterClauseFromTextWithContext(
+                paramClauseText,
+                typeParamClause.getContext,
+                typeParamClause)
             })
           case _ => None
         }

@@ -35,8 +35,7 @@ class HealthCheckWorkerActorTest
     }
 
     val task =
-      MarathonTestHelper
-        .runningTask("test_id")
+      MarathonTestHelper.runningTask("test_id")
         .withAgentInfo(
           _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
         .withNetworking(Task.HostPorts(socketPort))
@@ -67,8 +66,7 @@ class HealthCheckWorkerActorTest
     }
 
     val task =
-      MarathonTestHelper
-        .runningTask("test_id")
+      MarathonTestHelper.runningTask("test_id")
         .withAgentInfo(
           _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
         .withNetworking(Task.HostPorts(socketPort))

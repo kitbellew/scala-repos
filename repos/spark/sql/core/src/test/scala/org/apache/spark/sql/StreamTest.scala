@@ -208,22 +208,19 @@ trait StreamTest extends QueryTest with Timeouts {
 
     // If the test doesn't manually start the stream, we do it automatically at the beginning.
     val startedManually =
-      actions
-        .takeWhile(!_.isInstanceOf[StreamMustBeRunning])
-        .contains(StartStream)
+      actions.takeWhile(!_.isInstanceOf[StreamMustBeRunning]).contains(
+        StartStream)
     val startedTest = if (startedManually) actions else StartStream +: actions
 
     def testActions =
-      actions.zipWithIndex
-        .map {
-          case (a, i) =>
-            if ((pos == i && startedManually) || (pos == (i + 1) && !startedManually)) {
-              "=> " + a.toString
-            } else {
-              "   " + a.toString
-            }
-        }
-        .mkString("\n")
+      actions.zipWithIndex.map {
+        case (a, i) =>
+          if ((pos == i && startedManually) || (pos == (i + 1) && !startedManually)) {
+            "=> " + a.toString
+          } else {
+            "   " + a.toString
+          }
+      }.mkString("\n")
 
     def currentOffsets =
       if (currentStream != null) currentStream.streamProgress.toString
@@ -303,7 +300,8 @@ trait StreamTest extends QueryTest with Timeouts {
             verify(currentStream == null, "stream already running")
             lastStream = currentStream
             currentStream =
-              sqlContext.streams
+              sqlContext
+                .streams
                 .startQuery(StreamExecution.nextName, stream, sink)
                 .asInstanceOf[StreamExecution]
             currentStream.microBatchThread.setUncaughtExceptionHandler(

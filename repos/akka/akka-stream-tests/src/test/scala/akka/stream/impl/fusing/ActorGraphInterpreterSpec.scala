@@ -84,8 +84,9 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
         override def toString = "IdentityBidi"
       }
 
-      val identity =
-        BidiFlow.fromGraph(identityBidi).join(Flow[Int].map { x ⇒ x })
+      val identity = BidiFlow.fromGraph(identityBidi).join(Flow[Int].map { x ⇒
+        x
+      })
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),
@@ -141,8 +142,8 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
       }
 
       val identityBidiF = BidiFlow.fromGraph(identityBidi)
-      val identity = (identityBidiF atop identityBidiF atop identityBidiF)
-        .join(Flow[Int].map { x ⇒ x })
+      val identity = (identityBidiF atop identityBidiF atop identityBidiF).join(
+        Flow[Int].map { x ⇒ x })
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),
@@ -198,8 +199,8 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
       }
 
       val identityBidiF = BidiFlow.fromGraph(identityBidi)
-      val identity = (identityBidiF atop identityBidiF atop identityBidiF)
-        .join(Flow[Int].map { x ⇒ x })
+      val identity = (identityBidiF atop identityBidiF atop identityBidiF).join(
+        Flow[Int].map { x ⇒ x })
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),
@@ -259,8 +260,8 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
 
       val takeAll = Flow[Int].grouped(200).toMat(Sink.head)(Keep.right)
 
-      val (f1, f2) = RunnableGraph
-        .fromGraph(GraphDSL.create(takeAll, takeAll)(Keep.both) {
+      val (f1, f2) =
+        RunnableGraph.fromGraph(GraphDSL.create(takeAll, takeAll)(Keep.both) {
           implicit b ⇒ (out1, out2) ⇒
             import GraphDSL.Implicits._
             val bidi = b.add(rotatedBidi)
@@ -271,8 +272,7 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
             bidi.in2 <~ Source(1 to 100)
             bidi.out1 ~> out1
             ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(f1, 3.seconds) should ===(1 to 100)
       Await.result(f2, 3.seconds) should ===(1 to 10)
@@ -370,18 +370,16 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
 
       val upstream = TestPublisher.probe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          import GraphDSL.Implicits._
-          val faily = b.add(failyStage)
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
+        val faily = b.add(failyStage)
 
-          Source.fromPublisher(upstream) ~> faily.in
-          faily.out0 ~> Sink.fromSubscriber(downstream0)
-          faily.out1 ~> Sink.fromSubscriber(downstream1)
+        Source.fromPublisher(upstream) ~> faily.in
+        faily.out0 ~> Sink.fromSubscriber(downstream0)
+        faily.out1 ~> Sink.fromSubscriber(downstream1)
 
-          ClosedShape
-        })
-        .run()(noFuzzMat)
+        ClosedShape
+      }).run()(noFuzzMat)
 
       evilLatch.countDown()
       downstream0.expectSubscriptionAndError(te)

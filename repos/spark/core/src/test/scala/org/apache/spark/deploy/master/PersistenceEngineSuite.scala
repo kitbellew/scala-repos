@@ -71,9 +71,8 @@ class PersistenceEngineSuite extends SparkFunSuite {
       assert(Seq("test_1_value") === persistenceEngine.read[String]("test_"))
       persistenceEngine.persist("test_2", "test_2_value")
       assert(
-        Set("test_1_value", "test_2_value") === persistenceEngine
-          .read[String]("test_")
-          .toSet)
+        Set("test_1_value", "test_2_value") === persistenceEngine.read[String](
+          "test_").toSet)
       persistenceEngine.unpersist("test_1")
       assert(Seq("test_2_value") === persistenceEngine.read[String]("test_"))
       persistenceEngine.unpersist("test_2")
@@ -132,15 +131,13 @@ class PersistenceEngineSuite extends SparkFunSuite {
 
   private def findFreePort(conf: SparkConf): Int = {
     val candidatePort = RandomUtils.nextInt(1024, 65536)
-    Utils
-      .startServiceOnPort(
-        candidatePort,
-        (trialPort: Int) => {
-          val socket = new ServerSocket(trialPort)
-          socket.close()
-          (null, trialPort)
-        },
-        conf)
-      ._2
+    Utils.startServiceOnPort(
+      candidatePort,
+      (trialPort: Int) => {
+        val socket = new ServerSocket(trialPort)
+        socket.close()
+        (null, trialPort)
+      },
+      conf)._2
   }
 }

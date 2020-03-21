@@ -149,8 +149,7 @@ private[spark] object UIUtils extends Logging {
   // Yarn has to go through a proxy so the base uri is provided and has to be on all links
   def uiRoot: String = {
     // SPARK-11484 - Use the proxyBase set by the AM, if not found then use env.
-    sys.props
-      .get("spark.ui.proxyBase")
+    sys.props.get("spark.ui.proxyBase")
       .orElse(sys.env.get("APPLICATION_WEB_PROXY_BASE"))
       .getOrElse("")
   }
@@ -409,8 +408,9 @@ private[spark] object UIUtils extends Logging {
       <div id="dag-viz-metadata" style="display:none">
         {
       graphs.map { g =>
-        val stageId = g.rootCluster.id
-          .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
+        val stageId = g.rootCluster.id.replaceAll(
+          RDDOperationGraph.STAGE_CLUSTER_PREFIX,
+          "")
         val skipped = g.rootCluster.name.contains("skipped").toString
         <div class="stage-metadata" stage-id={stageId} skipped={skipped}>
               <div class="dot-file">{RDDOperationGraph.makeDotFile(g)}</div>
@@ -480,8 +480,8 @@ private[spark] object UIUtils extends Logging {
         }
       if (allLinks.exists { !_.startsWith("/") }) {
         throw new IllegalArgumentException(
-          "Links in job descriptions must be root-relative:\n" + allLinks
-            .mkString("\n\t"))
+          "Links in job descriptions must be root-relative:\n" + allLinks.mkString(
+            "\n\t"))
       }
 
       // Prepend the relative links with basePathUri

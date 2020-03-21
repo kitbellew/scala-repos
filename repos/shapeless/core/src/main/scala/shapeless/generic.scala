@@ -388,12 +388,10 @@ trait CaseClassMacros extends ReprTypes {
 
   def distinctCtorsOfAux(tpe: Type, hk: Boolean): List[Type] = {
     def distinct[A](list: List[A])(eq: (A, A) => Boolean): List[A] =
-      list
-        .foldLeft(List.empty[A]) { (acc, x) =>
-          if (!acc.exists(eq(x, _))) x :: acc
-          else acc
-        }
-        .reverse
+      list.foldLeft(List.empty[A]) { (acc, x) =>
+        if (!acc.exists(eq(x, _))) x :: acc
+        else acc
+      }.reverse
     distinct(ctorsOfAux(tpe, hk))(_ =:= _)
   }
 
@@ -456,8 +454,8 @@ trait CaseClassMacros extends ReprTypes {
                 val (valPre, valSym) = mkDependentRef(basePre, path)
                 c.internal.singleType(valPre, valSym)
               } else {
-                val path = suffix.tail.init
-                  .map(_.name.toTermName) :+ suffix.last.name.toTypeName
+                val path = suffix.tail.init.map(
+                  _.name.toTermName) :+ suffix.last.name.toTypeName
                 val (subTpePre, subTpeSym) = mkDependentRef(basePre, path)
                 c.internal.typeRef(subTpePre, subTpeSym, substituteArgs)
               }
@@ -712,10 +710,9 @@ trait CaseClassMacros extends ReprTypes {
 
   def isAccessible(pre: Type, sym: Symbol): Boolean = {
     val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
-    val typer = c
-      .asInstanceOf[scala.reflect.macros.runtime.Context]
-      .callsiteTyper
-      .asInstanceOf[global.analyzer.Typer]
+    val typer = c.asInstanceOf[
+      scala.reflect.macros.runtime.Context].callsiteTyper.asInstanceOf[
+      global.analyzer.Typer]
     val typerContext = typer.context
     typerContext.isAccessible(
       sym.asInstanceOf[global.Symbol],
@@ -732,10 +729,9 @@ trait CaseClassMacros extends ReprTypes {
     // also see https://github.com/scalamacros/paradise/issues/64
 
     val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
-    val typer = c
-      .asInstanceOf[scala.reflect.macros.runtime.Context]
-      .callsiteTyper
-      .asInstanceOf[global.analyzer.Typer]
+    val typer = c.asInstanceOf[
+      scala.reflect.macros.runtime.Context].callsiteTyper.asInstanceOf[
+      global.analyzer.Typer]
     val ctx = typer.context
     val owner = original.owner
 
@@ -776,14 +772,12 @@ trait CaseClassMacros extends ReprTypes {
             }
           }
       }
-      ctx
-        .patchedLookup(
-          original.asInstanceOf[global.Symbol].name.companionName,
-          owner.asInstanceOf[global.Symbol])
-        .suchThat(sym =>
-          (original.isTerm || sym.hasModuleFlag) &&
-            (sym isCoDefinedWith original.asInstanceOf[global.Symbol]))
-        .asInstanceOf[c.universe.Symbol]
+      ctx.patchedLookup(
+        original.asInstanceOf[global.Symbol].name.companionName,
+        owner.asInstanceOf[global.Symbol]).suchThat(sym =>
+        (original.isTerm || sym.hasModuleFlag) &&
+          (sym isCoDefinedWith original.asInstanceOf[
+            global.Symbol])).asInstanceOf[c.universe.Symbol]
     }
   }
 
@@ -895,10 +889,8 @@ trait CaseClassMacros extends ReprTypes {
       val unapplySym = companionTpe.member(TermName("unapply"))
       if (unapplySym.isTerm && !unapplySym.asTerm.isOverloaded && unapplySym.isMethod && !isNonGeneric(
             unapplySym) && isAccessible(companionTpe, unapplySym))
-        unapplySym.asMethod
-          .infoIn(companionTpe)
-          .finalResultType
-          .baseType(symbolOf[Option[_]]) match {
+        unapplySym.asMethod.infoIn(companionTpe).finalResultType.baseType(
+          symbolOf[Option[_]]) match {
           case TypeRef(_, _, List(o @ TypeRef(_, _, args)))
               if o <:< typeOf[Product] =>
             Some(args)

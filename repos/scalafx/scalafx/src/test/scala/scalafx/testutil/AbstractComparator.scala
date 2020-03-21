@@ -184,9 +184,10 @@ private[testutil] trait AbstractComparator extends Assertions {
       case (0, _)    => ""
       case (1, true) => classParameterToString(m.getParameterTypes.last, true)
       case (_, true) =>
-        m.getParameterTypes.init
-          .map(classParameterToString(_))
-          .mkString("", ", ", ", ") +
+        m.getParameterTypes.init.map(classParameterToString(_)).mkString(
+          "",
+          ", ",
+          ", ") +
           classParameterToString(m.getParameterTypes.last, true)
       case (_, false) =>
         m.getParameterTypes.map(classParameterToString(_)).mkString(", ")
@@ -238,9 +239,8 @@ private[testutil] trait AbstractComparator extends Assertions {
       case javaMethod :: otherMethods => {
         val finderMethod = MethodsComparators.getFinderMethod(javaMethod)
         val desirableName = getDesirableMethodName(javaMethod)
-        val scalaHasMethod = scalaMethods
-          .filter(MethodsComparators.sameName(desirableName, _))
-          .exists(finderMethod)
+        val scalaHasMethod = scalaMethods.filter(
+          MethodsComparators.sameName(desirableName, _)).exists(finderMethod)
         val javaMethods =
           if (scalaHasMethod) javaMethodsNotMirrored
           else javaMethod :: javaMethodsNotMirrored
@@ -270,9 +270,8 @@ private[testutil] trait AbstractComparator extends Assertions {
     assert(
       methodsNotFound.isEmpty,
       "Missing %s Methods: ".format(
-        if (useStatic) "Static" else "Declared") + methodsNotFound
-        .map(methodToString)
-        .mkString(", "))
+        if (useStatic) "Static" else "Declared") + methodsNotFound.map(
+        methodToString).mkString(", "))
   }
 
   //////////////////

@@ -578,12 +578,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         typecheckExpect(body, env.withLabeledReturnType(label.name, tpe), tpe)
 
       case Return(expr, label) =>
-        env.returnTypes
-          .get(label.map(_.name))
-          .fold[Unit] {
-            reportError(s"Cannot return to label $label.")
-            typecheckExpr(expr, env)
-          } { returnType => typecheckExpect(expr, env, returnType) }
+        env.returnTypes.get(label.map(_.name)).fold[Unit] {
+          reportError(s"Cannot return to label $label.")
+          typecheckExpr(expr, env)
+        } { returnType => typecheckExpect(expr, env, returnType) }
 
       case If(cond, thenp, elsep) =>
         val tpe = tree.tpe
@@ -858,16 +856,14 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       // Atomic expressions
 
       case VarRef(Ident(name, _)) =>
-        env.locals
-          .get(name)
-          .fold[Unit] {
-            reportError(s"Cannot find variable $name in scope")
-          } { localDef =>
-            if (tree.tpe != localDef.tpe)
-              reportError(
-                s"Variable $name of type ${localDef.tpe} " +
-                  s"typed as ${tree.tpe}")
-          }
+        env.locals.get(name).fold[Unit] {
+          reportError(s"Cannot find variable $name in scope")
+        } { localDef =>
+          if (tree.tpe != localDef.tpe)
+            reportError(
+              s"Variable $name of type ${localDef.tpe} " +
+                s"typed as ${tree.tpe}")
+        }
 
       case This() =>
         if (!isSubtype(env.thisTpe, tree.tpe))
@@ -981,10 +977,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
   private def tryLookupClass(className: String)(implicit
       ctx: ErrorContext): Either[Infos.ClassInfo, CheckedClass] = {
-    classes
-      .get(className)
-      .fold[Either[Infos.ClassInfo, CheckedClass]](Left(lookupInfo(className)))(
-        Right(_))
+    classes.get(className).fold[Either[Infos.ClassInfo, CheckedClass]](
+      Left(lookupInfo(className)))(Right(_))
   }
 
   private def lookupClass(className: String)(implicit

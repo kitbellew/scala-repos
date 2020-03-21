@@ -203,10 +203,10 @@ private[deploy] class Master(
       case "CUSTOM" =>
         val clazz =
           Utils.classForName(conf.get("spark.deploy.recoveryMode.factory"))
-        val factory = clazz
-          .getConstructor(classOf[SparkConf], classOf[Serializer])
-          .newInstance(conf, serializer)
-          .asInstanceOf[StandaloneRecoveryModeFactory]
+        val factory =
+          clazz.getConstructor(classOf[SparkConf], classOf[Serializer])
+            .newInstance(conf, serializer)
+            .asInstanceOf[StandaloneRecoveryModeFactory]
         (
           factory.createPersistenceEngine(),
           factory.createLeaderElectionAgent(this))
@@ -308,8 +308,8 @@ private[deploy] class Master(
             appInfo.resetRetryCount()
           }
 
-          exec.application.driver
-            .send(ExecutorUpdated(execId, state, message, exitStatus))
+          exec.application.driver.send(
+            ExecutorUpdated(execId, state, message, exitStatus))
 
           if (ExecutorState.isFinished(state)) {
             // Remove this executor from the worker and app
@@ -324,8 +324,7 @@ private[deploy] class Master(
             val normalExit = exitStatus == Some(0)
             // Only retry certain number of times so we don't go into an infinite loop.
             if (!normalExit) {
-              if (appInfo
-                    .incrementRetryCount() < ApplicationState.MAX_NUM_RETRY) {
+              if (appInfo.incrementRetryCount() < ApplicationState.MAX_NUM_RETRY) {
                 schedule()
               } else {
                 val execs = appInfo.executors.values
@@ -466,8 +465,12 @@ private[deploy] class Master(
           cores,
           memory,
           workerWebUiUrl) => {
-      logInfo("Registering worker %s:%d with %d cores, %s RAM"
-        .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
+      logInfo(
+        "Registering worker %s:%d with %d cores, %s RAM".format(
+          workerHost,
+          workerPort,
+          cores,
+          Utils.megabytesToString(memory)))
       if (state == RecoveryState.STANDBY) {
         context.reply(MasterInStandby)
       } else if (idToWorker.contains(id)) {
@@ -787,13 +790,11 @@ private[deploy] class Master(
     for (app <- waitingApps if app.coresLeft > 0) {
       val coresPerExecutor: Option[Int] = app.desc.coresPerExecutor
       // Filter out workers that don't have enough resources to launch an executor
-      val usableWorkers = workers.toArray
-        .filter(_.state == WorkerState.ALIVE)
+      val usableWorkers = workers.toArray.filter(_.state == WorkerState.ALIVE)
         .filter(worker =>
           worker.memoryFree >= app.desc.memoryPerExecutorMB &&
             worker.coresFree >= coresPerExecutor.getOrElse(1))
-        .sortBy(_.coresFree)
-        .reverse
+        .sortBy(_.coresFree).reverse
       val assignedCores =
         scheduleExecutorsOnWorkers(app, usableWorkers, spreadOutApps)
 
@@ -888,11 +889,9 @@ private[deploy] class Master(
   private def registerWorker(worker: WorkerInfo): Boolean = {
     // There may be one or more refs to dead workers on this same node (w/ different ID's),
     // remove them.
-    workers
-      .filter { w =>
-        (w.host == worker.host && w.port == worker.port) && (w.state == WorkerState.DEAD)
-      }
-      .foreach { w => workers -= w }
+    workers.filter { w =>
+      (w.host == worker.host && w.port == worker.port) && (w.state == WorkerState.DEAD)
+    }.foreach { w => workers -= w }
 
     val workerAddress = worker.endpoint.address
     if (addressToWorker.contains(workerAddress)) {
@@ -984,14 +983,12 @@ private[deploy] class Master(
       addressToApp -= app.driver.address
       if (completedApps.size >= RETAINED_APPLICATIONS) {
         val toRemove = math.max(RETAINED_APPLICATIONS / 10, 1)
-        completedApps
-          .take(toRemove)
-          .foreach(a => {
-            Option(appIdToUI.remove(a.id)).foreach { ui =>
-              webUi.detachSparkUI(ui)
-            }
-            applicationMetricsSystem.removeSource(a.appSource)
-          })
+        completedApps.take(toRemove).foreach(a => {
+          Option(appIdToUI.remove(a.id)).foreach { ui =>
+            webUi.detachSparkUI(ui)
+          }
+          applicationMetricsSystem.removeSource(a.appSource)
+        })
         completedApps.trimStart(toRemove)
       }
       completedApps += app // Remember it in our history
@@ -1056,8 +1053,8 @@ private[deploy] class Master(
     idToApp.get(appId) match {
       case Some(appInfo) =>
         logInfo(
-          s"Application $appId requests to kill executors: " + executorIds
-            .mkString(", "))
+          s"Application $appId requests to kill executors: " + executorIds.mkString(
+            ", "))
         val (known, unknown) = executorIds.partition(appInfo.executors.contains)
         known.foreach { executorId =>
           val desc = appInfo.executors(executorId)
@@ -1103,8 +1100,8 @@ private[deploy] class Master(
     */
   private def killExecutor(exec: ExecutorDesc): Unit = {
     exec.worker.removeExecutor(exec)
-    exec.worker.endpoint
-      .send(KillExecutor(masterUrl, exec.application.id, exec.id))
+    exec.worker.endpoint.send(
+      KillExecutor(masterUrl, exec.application.id, exec.id))
     exec.state = ExecutorState.KILLED
   }
 
@@ -1224,8 +1221,9 @@ private[deploy] class Master(
     for (worker <- toRemove) {
       if (worker.state != WorkerState.DEAD) {
         logWarning(
-          "Removing %s because we got no heartbeat in %d seconds"
-            .format(worker.id, WORKER_TIMEOUT_MS / 1000))
+          "Removing %s because we got no heartbeat in %d seconds".format(
+            worker.id,
+            WORKER_TIMEOUT_MS / 1000))
         removeWorker(worker)
       } else {
         if (worker.lastHeartbeat < currentTime - ((REAPER_ITERATIONS + 1) * WORKER_TIMEOUT_MS)) {

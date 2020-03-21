@@ -92,16 +92,15 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
                           def simplified(): String = {
                             val aliased =
                               typeAliasDefinition.aliasedType.getOrAny
-                            val subst = params
-                              .zip(typeArgs)
-                              .foldLeft(ScSubstitutor.empty) {
-                                case (res, (param, arg)) =>
-                                  val typeVar =
-                                    ScalaPsiManager.typeVariable(param)
-                                  res.bindT(
-                                    (typeVar.name, typeVar.getId),
-                                    arg.calcType)
-                              }
+                            val subst = params.zip(typeArgs).foldLeft(
+                              ScSubstitutor.empty) {
+                              case (res, (param, arg)) =>
+                                val typeVar =
+                                  ScalaPsiManager.typeVariable(param)
+                                res.bindT(
+                                  (typeVar.name, typeVar.getId),
+                                  arg.calcType)
+                            }
                             val substituted = subst.subst(aliased)
                             ScType.presentableText(substituted)
                           }
@@ -154,7 +153,8 @@ class SimplifyAppliedTypeLambdaQuickFix(
     val pType = getElement
     val parent = pType.getContext
     pType.replace(
-      ScalaPsiElementFactory
-        .createTypeElementFromText(replacement, pType.getManager))
+      ScalaPsiElementFactory.createTypeElementFromText(
+        replacement,
+        pType.getManager))
   }
 }

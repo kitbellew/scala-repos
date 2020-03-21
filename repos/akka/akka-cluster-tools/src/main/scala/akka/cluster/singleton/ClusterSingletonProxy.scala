@@ -35,9 +35,9 @@ object ClusterSingletonProxySettings {
     new ClusterSingletonProxySettings(
       singletonName = config.getString("singleton-name"),
       role = roleOption(config.getString("role")),
-      singletonIdentificationInterval = config
-        .getDuration("singleton-identification-interval", MILLISECONDS)
-        .millis,
+      singletonIdentificationInterval = config.getDuration(
+        "singleton-identification-interval",
+        MILLISECONDS).millis,
       bufferSize = config.getInt("buffer-size"))
 
   /**
@@ -122,8 +122,8 @@ object ClusterSingletonProxy {
   def props(
       singletonManagerPath: String,
       settings: ClusterSingletonProxySettings): Props =
-    Props(new ClusterSingletonProxy(singletonManagerPath, settings))
-      .withDeploy(Deploy.local)
+    Props(new ClusterSingletonProxy(singletonManagerPath, settings)).withDeploy(
+      Deploy.local)
 
   private case object TryToIdentifySingleton
 
@@ -256,8 +256,8 @@ final class ClusterSingletonProxy(
     case state: CurrentClusterState ⇒ handleInitial(state)
     case MemberUp(m) ⇒ add(m)
     case mEvent: MemberEvent
-        if mEvent.isInstanceOf[MemberExited] || mEvent
-          .isInstanceOf[MemberRemoved] ⇒
+        if mEvent.isInstanceOf[MemberExited] || mEvent.isInstanceOf[
+          MemberRemoved] ⇒
       remove(mEvent.member)
     case _: MemberEvent ⇒ // do nothing
 

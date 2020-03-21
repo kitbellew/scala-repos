@@ -100,63 +100,57 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
     }
 
   protected def arrayClass[T](tp: jClass[_]): jClass[Array[T]] =
-    java.lang.reflect.Array
-      .newInstance(tp, 0)
-      .getClass
-      .asInstanceOf[jClass[Array[T]]]
+    java.lang.reflect.Array.newInstance(tp, 0).getClass.asInstanceOf[jClass[
+      Array[T]]]
 
   @deprecated("Use wrap instead", "2.10.0")
   def arrayManifest: ClassManifest[Array[T]] =
     ClassManifest.classType[Array[T]](arrayClass[T](runtimeClass), this)
 
   override def newArray(len: Int): Array[T] =
-    java.lang.reflect.Array
-      .newInstance(runtimeClass, len)
-      .asInstanceOf[Array[T]]
+    java.lang.reflect.Array.newInstance(runtimeClass, len).asInstanceOf[Array[
+      T]]
 
   @deprecated("Use wrap.newArray instead", "2.10.0")
   def newArray2(len: Int): Array[Array[T]] =
-    java.lang.reflect.Array
-      .newInstance(arrayClass[T](runtimeClass), len)
+    java.lang.reflect.Array.newInstance(arrayClass[T](runtimeClass), len)
       .asInstanceOf[Array[Array[T]]]
 
   @deprecated("Use wrap.wrap.newArray instead", "2.10.0")
   def newArray3(len: Int): Array[Array[Array[T]]] =
-    java.lang.reflect.Array
-      .newInstance(arrayClass[Array[T]](arrayClass[T](runtimeClass)), len)
+    java.lang.reflect.Array.newInstance(
+      arrayClass[Array[T]](arrayClass[T](runtimeClass)),
+      len)
       .asInstanceOf[Array[Array[Array[T]]]]
 
   @deprecated("Use wrap.wrap.wrap.newArray instead", "2.10.0")
   def newArray4(len: Int): Array[Array[Array[Array[T]]]] =
-    java.lang.reflect.Array
-      .newInstance(
-        arrayClass[Array[Array[T]]](
-          arrayClass[Array[T]](arrayClass[T](runtimeClass))),
-        len)
+    java.lang.reflect.Array.newInstance(
+      arrayClass[Array[Array[T]]](
+        arrayClass[Array[T]](arrayClass[T](runtimeClass))),
+      len)
       .asInstanceOf[Array[Array[Array[Array[T]]]]]
 
   @deprecated("Use wrap.wrap.wrap.wrap.newArray instead", "2.10.0")
   def newArray5(len: Int): Array[Array[Array[Array[Array[T]]]]] =
-    java.lang.reflect.Array
-      .newInstance(
-        arrayClass[Array[Array[Array[T]]]](arrayClass[Array[Array[T]]](
+    java.lang.reflect.Array.newInstance(
+      arrayClass[Array[Array[Array[T]]]](
+        arrayClass[Array[Array[T]]](
           arrayClass[Array[T]](arrayClass[T](runtimeClass)))),
-        len)
+      len)
       .asInstanceOf[Array[Array[Array[Array[Array[T]]]]]]
 
   @deprecated("Create WrappedArray directly instead", "2.10.0")
   def newWrappedArray(len: Int): WrappedArray[T] =
     // it's safe to assume T <: AnyRef here because the method is overridden for all value type manifests
-    new WrappedArray.ofRef[T with AnyRef](
-      newArray(len).asInstanceOf[Array[T with AnyRef]])
-      .asInstanceOf[WrappedArray[T]]
+    new WrappedArray.ofRef[T with AnyRef](newArray(len).asInstanceOf[Array[
+      T with AnyRef]]).asInstanceOf[WrappedArray[T]]
 
   @deprecated("Use ArrayBuilder.make(this) instead", "2.10.0")
   def newArrayBuilder(): ArrayBuilder[T] =
     // it's safe to assume T <: AnyRef here because the method is overridden for all value type manifests
-    new ArrayBuilder.ofRef[T with AnyRef]()(
-      this.asInstanceOf[ClassManifest[T with AnyRef]])
-      .asInstanceOf[ArrayBuilder[T]]
+    new ArrayBuilder.ofRef[T with AnyRef]()(this.asInstanceOf[ClassManifest[
+      T with AnyRef]]).asInstanceOf[ArrayBuilder[T]]
 
   @deprecated(
     "Use scala.reflect.runtime.universe.TypeTag to capture type structure instead",

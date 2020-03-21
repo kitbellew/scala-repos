@@ -152,12 +152,9 @@ trait LogisticRegressionLibModule[M[+_]]
 
               assert(xs.length == theta.length)
 
-              val result = (0 until xs.length)
-                .map { i =>
-                  theta(i) - alpha * (y - sigmoid(dotProduct(theta, xs))) * xs(
-                    i)
-                }
-                .map(checkValue)
+              val result = (0 until xs.length).map { i =>
+                theta(i) - alpha * (y - sigmoid(dotProduct(theta, xs))) * xs(i)
+              }.map(checkValue)
 
               result.toArray
             }
@@ -220,9 +217,9 @@ trait LogisticRegressionLibModule[M[+_]]
         res map {
           case seq => {
             val initialTheta: Theta = {
-              val thetaLength =
-                seq.headOption map { _.length } getOrElse sys.error(
-                  "unreachable: `res` would have been None")
+              val thetaLength = seq.headOption map {
+                _.length
+              } getOrElse sys.error("unreachable: `res` would have been None")
               val thetas = Seq.fill(100)(
                 Array.fill(thetaLength - 1)(Random.nextGaussian * 10))
 
@@ -309,10 +306,8 @@ trait LogisticRegressionLibModule[M[+_]]
 
           val tableReducer: (Table, JType) => M[Table] =
             (table, jtype) =>
-              table
-                .toArray[Double]
-                .reduce(reducer)
-                .map(res => extract(res, jtype))
+              table.toArray[Double].reduce(reducer).map(res =>
+                extract(res, jtype))
 
           val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
             _.map {

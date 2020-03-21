@@ -83,12 +83,10 @@ case class SiteMap(
     * This method returns a linear sequence of menu items
     */
   def locForGroup(group: String): Seq[Loc[_]] =
-    kids
-      .flatMap(_.locForGroup(group))
-      .filter(_.testAccess match {
-        case Left(true) => true
-        case _          => false
-      })
+    kids.flatMap(_.locForGroup(group)).filter(_.testAccess match {
+      case Left(true) => true
+      case _          => false
+    })
 
   /**
     * Find all the menu items for a given group.

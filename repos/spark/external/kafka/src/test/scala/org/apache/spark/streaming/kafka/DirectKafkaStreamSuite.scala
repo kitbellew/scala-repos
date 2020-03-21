@@ -99,11 +99,11 @@ class DirectKafkaStreamSuite
 
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils
-        .createDirectStream[String, String, StringDecoder, StringDecoder](
-          ssc,
-          kafkaParams,
-          topics)
+      KafkaUtils.createDirectStream[
+        String,
+        String,
+        StringDecoder,
+        StringDecoder](ssc, kafkaParams, topics)
     }
 
     val allReceived = new ConcurrentLinkedQueue[(String, String)]()
@@ -111,33 +111,31 @@ class DirectKafkaStreamSuite
     // hold a reference to the current offset ranges, so it can be used downstream
     var offsetRanges = Array[OffsetRange]()
 
-    stream
-      .transform { rdd =>
-        // Get the offset ranges in the RDD
-        offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
-        rdd
+    stream.transform { rdd =>
+      // Get the offset ranges in the RDD
+      offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+      rdd
+    }.foreachRDD { rdd =>
+      for (o <- offsetRanges) {
+        logInfo(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
       }
-      .foreachRDD { rdd =>
-        for (o <- offsetRanges) {
-          logInfo(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
-        }
-        val collected = rdd.mapPartitionsWithIndex { (i, iter) =>
-          // For each partition, get size of the range in the partition,
-          // and the number of items in the partition
-          val off = offsetRanges(i)
-          val all = iter.toSeq
-          val partSize = all.size
-          val rangeSize = off.untilOffset - off.fromOffset
-          Iterator((partSize, rangeSize))
-        }.collect
+      val collected = rdd.mapPartitionsWithIndex { (i, iter) =>
+        // For each partition, get size of the range in the partition,
+        // and the number of items in the partition
+        val off = offsetRanges(i)
+        val all = iter.toSeq
+        val partSize = all.size
+        val rangeSize = off.untilOffset - off.fromOffset
+        Iterator((partSize, rangeSize))
+      }.collect
 
-        // Verify whether number of elements in each partition
-        // matches with the corresponding offset range
-        collected.foreach {
-          case (partSize, rangeSize) =>
-            assert(partSize === rangeSize, "offset ranges are wrong")
-        }
+      // Verify whether number of elements in each partition
+      // matches with the corresponding offset range
+      collected.foreach {
+        case (partSize, rangeSize) =>
+          assert(partSize === rangeSize, "offset ranges are wrong")
       }
+    }
     stream.foreachRDD { rdd =>
       allReceived.addAll(Arrays.asList(rdd.collect(): _*))
     }
@@ -162,10 +160,8 @@ class DirectKafkaStreamSuite
     )
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc.getLatestLeaderOffsets(Set(topicPartition))
-        .right
-        .get(topicPartition)
-        .offset
+      kc.getLatestLeaderOffsets(Set(topicPartition)).right.get(
+        topicPartition).offset
     }
 
     // Send some initial messages before starting context
@@ -178,15 +174,14 @@ class DirectKafkaStreamSuite
     // Setup context and kafka stream with largest offset
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils
-        .createDirectStream[String, String, StringDecoder, StringDecoder](
-          ssc,
-          kafkaParams,
-          Set(topic))
+      KafkaUtils.createDirectStream[
+        String,
+        String,
+        StringDecoder,
+        StringDecoder](ssc, kafkaParams, Set(topic))
     }
     assert(
-      stream
-        .asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
+      stream.asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
         .fromOffsets(topicPartition) >= offsetBeforeStart,
       "Start offset not from latest"
     )
@@ -215,10 +210,8 @@ class DirectKafkaStreamSuite
     )
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc.getLatestLeaderOffsets(Set(topicPartition))
-        .right
-        .get(topicPartition)
-        .offset
+      kc.getLatestLeaderOffsets(Set(topicPartition)).right.get(
+        topicPartition).offset
     }
 
     // Send some initial messages before starting context
@@ -243,8 +236,7 @@ class DirectKafkaStreamSuite
         (m: MessageAndMetadata[String, String]) => m.message())
     }
     assert(
-      stream
-        .asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
+      stream.asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
         .fromOffsets(topicPartition) >= offsetBeforeStart,
       "Start offset not from latest"
     )
@@ -285,11 +277,11 @@ class DirectKafkaStreamSuite
     // Setup the streaming context
     ssc = new StreamingContext(sparkConf, Milliseconds(100))
     val kafkaStream = withClue("Error creating direct stream") {
-      KafkaUtils
-        .createDirectStream[String, String, StringDecoder, StringDecoder](
-          ssc,
-          kafkaParams,
-          Set(topic))
+      KafkaUtils.createDirectStream[
+        String,
+        String,
+        StringDecoder,
+        StringDecoder](ssc, kafkaParams, Set(topic))
     }
     val keyedStream = kafkaStream.map { v => "key" -> v._2.toInt }
     val stateStream = keyedStream.updateStateByKey {
@@ -372,11 +364,11 @@ class DirectKafkaStreamSuite
     ssc.addStreamingListener(collector)
 
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils
-        .createDirectStream[String, String, StringDecoder, StringDecoder](
-          ssc,
-          kafkaParams,
-          Set(topic))
+      KafkaUtils.createDirectStream[
+        String,
+        String,
+        StringDecoder,
+        StringDecoder](ssc, kafkaParams, Set(topic))
     }
 
     val allReceived = new ConcurrentLinkedQueue[(String, String)]
@@ -470,8 +462,7 @@ class DirectKafkaStreamSuite
       val kc = new KafkaCluster(kafkaParams)
       val messageHandler =
         (mmd: MessageAndMetadata[String, String]) => (mmd.key, mmd.message)
-      val m = kc
-        .getEarliestLeaderOffsets(topicPartitions)
+      val m = kc.getEarliestLeaderOffsets(topicPartitions)
         .fold(
           e => Map.empty[TopicAndPartition, Long],
           m => m.mapValues(lo => lo.offset))
@@ -491,9 +482,10 @@ class DirectKafkaStreamSuite
 
     // Used for assertion failure messages.
     def dataToString: String =
-      collectedData.asScala
-        .map(_.mkString("[", ",", "]"))
-        .mkString("{", ", ", "}")
+      collectedData.asScala.map(_.mkString("[", ",", "]")).mkString(
+        "{",
+        ", ",
+        "}")
 
     // This is to collect the raw data received from Kafka
     kafkaStream.foreachRDD { (rdd: RDD[(String, String)], time: Time) =>
@@ -527,12 +519,9 @@ class DirectKafkaStreamSuite
   /** Get the generated offset ranges from the DirectKafkaStream */
   private def getOffsetRanges[K, V](
       kafkaStream: DStream[(K, V)]): Seq[(Time, Array[OffsetRange])] = {
-    kafkaStream.generatedRDDs
-      .mapValues { rdd =>
-        rdd.asInstanceOf[KafkaRDD[K, V, _, _, (K, V)]].offsetRanges
-      }
-      .toSeq
-      .sortBy { _._1 }
+    kafkaStream.generatedRDDs.mapValues { rdd =>
+      rdd.asInstanceOf[KafkaRDD[K, V, _, _, (K, V)]].offsetRanges
+    }.toSeq.sortBy { _._1 }
   }
 
   private def getDirectKafkaStream(

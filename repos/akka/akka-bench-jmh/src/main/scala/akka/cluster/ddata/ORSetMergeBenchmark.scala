@@ -53,11 +53,9 @@ class ORSetMergeBenchmark {
       s.add(nextNode(), "elem" + n))
     addFromSameNode = set1.add(nodeA, "elem" + set1Size + 1).merge(set1)
     addFromOtherNode = set1.add(nodeB, "elem" + set1Size + 1).merge(set1)
-    complex1 = set1
-      .add(nodeB, "a")
-      .add(nodeC, "b")
-      .remove(nodeD, "elem" + set1Size)
-      .merge(set1)
+    complex1 = set1.add(nodeB, "a").add(nodeC, "b").remove(
+      nodeD,
+      "elem" + set1Size).merge(set1)
     complex2 = set1.add(nodeA, "a").add(nodeA, "c").add(nodeB, "d").merge(set1)
     elem1 = "elem" + (set1Size + 1)
     elem2 = "elem" + (set1Size + 2)

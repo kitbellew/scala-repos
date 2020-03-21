@@ -218,14 +218,12 @@ class ScalaGlobalMembersCompletionContributor
         for (elem <- c.candidates) {
           val shouldImport = !elemsSetContains(elem.getElement)
           //todo: overloads?
-          val lookup: ScalaLookupItem = LookupElementManager
-            .getLookupElement(
-              elem,
-              isClassName = true,
-              isOverloadedForClassName = false,
-              shouldImport = shouldImport,
-              isInStableCodeReference = false)
-            .head
+          val lookup: ScalaLookupItem = LookupElementManager.getLookupElement(
+            elem,
+            isClassName = true,
+            isOverloadedForClassName = false,
+            shouldImport = shouldImport,
+            isInStableCodeReference = false).head
           lookup.usedImportStaticQuickfix = true
           lookup.elementToImport = next.resolveResult.getElement
           result.addElement(lookup)
@@ -326,9 +324,8 @@ class ScalaGlobalMembersCompletionContributor
           if (cClass != null) {
             val inheritors: Array[PsiClass] = {
               if (method.isInstanceOf[ScFunction])
-                ClassInheritorsSearch
-                  .search(cClass, scope, true)
-                  .toArray(PsiClass.EMPTY_ARRAY)
+                ClassInheritorsSearch.search(cClass, scope, true).toArray(
+                  PsiClass.EMPTY_ARRAY)
               else Array.empty
             }
             val currentAndInheritors = Iterator(cClass) ++ inheritors.iterator
@@ -393,18 +390,14 @@ class ScalaGlobalMembersCompletionContributor
       }
     }
 
-    val scalaFieldsIterator = ScalaShortNamesCacheManager
-      .getInstance(ref.getProject)
-      .getAllScalaFieldNames
-      .iterator
+    val scalaFieldsIterator = ScalaShortNamesCacheManager.getInstance(
+      ref.getProject).getAllScalaFieldNames.iterator
 
     while (scalaFieldsIterator.hasNext) {
       val fieldName = scalaFieldsIterator.next()
       if (matcher.prefixMatches(fieldName)) {
-        val fieldsIterator = ScalaShortNamesCacheManager
-          .getInstance(ref.getProject)
-          .getScalaFieldsByName(fieldName, scope)
-          .iterator
+        val fieldsIterator = ScalaShortNamesCacheManager.getInstance(
+          ref.getProject).getScalaFieldsByName(fieldName, scope).iterator
         while (fieldsIterator.hasNext) {
           val field = fieldsIterator.next()
           val namedElement = field match {
@@ -414,9 +407,10 @@ class ScalaGlobalMembersCompletionContributor
               v.declaredElements.find(_.name == fieldName).orNull
           }
           if (field.containingClass != null) {
-            val inheritors = ClassInheritorsSearch
-              .search(field.containingClass, scope, true)
-              .toArray(PsiClass.EMPTY_ARRAY)
+            val inheritors = ClassInheritorsSearch.search(
+              field.containingClass,
+              scope,
+              true).toArray(PsiClass.EMPTY_ARRAY)
             val currentAndInheritors =
               Iterator(field.containingClass) ++ inheritors.iterator
             for {
@@ -446,15 +440,13 @@ class ScalaGlobalMembersCompletionContributor
       clazz: PsiClass,
       shouldImport: Boolean,
       overloaded: Boolean = false): LookupElement = {
-    LookupElementManager
-      .getLookupElement(
-        new ScalaResolveResult(member),
-        isClassName = true,
-        isOverloadedForClassName = overloaded,
-        shouldImport = shouldImport,
-        isInStableCodeReference = false,
-        containingClass = Some(clazz)
-      )
-      .head
+    LookupElementManager.getLookupElement(
+      new ScalaResolveResult(member),
+      isClassName = true,
+      isOverloadedForClassName = overloaded,
+      shouldImport = shouldImport,
+      isInStableCodeReference = false,
+      containingClass = Some(clazz)
+    ).head
   }
 }

@@ -104,9 +104,9 @@ class FutureTests extends MinimalScalaTest {
       p.toString mustBe expectNotCompleteString
       Promise[Int]().success(s).toString mustBe expectSuccessString
       Promise[Int]().failure(f).toString mustBe expectFailureString
-      Await
-        .ready(Future { throw f }, 2000 millis)
-        .toString mustBe expectFailureString
+      Await.ready(
+        Future { throw f },
+        2000 millis).toString mustBe expectFailureString
       Await.ready(Future { s }, 2000 millis).toString mustBe expectSuccessString
 
       Future.never.toString mustBe "Future(<never>)"

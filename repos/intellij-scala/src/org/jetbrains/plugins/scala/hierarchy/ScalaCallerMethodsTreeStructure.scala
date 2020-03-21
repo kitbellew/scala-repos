@@ -36,10 +36,8 @@ final class ScalaCallerMethodsTreeStructure(
       return ArrayUtil.EMPTY_OBJECT_ARRAY
     }
     val method: PsiMethod = enclosingElement.asInstanceOf[PsiMethod]
-    val baseMethod: PsiMethod = getBaseDescriptor
-      .asInstanceOf[CallHierarchyNodeDescriptor]
-      .getTargetElement
-      .asInstanceOf[PsiMethod]
+    val baseMethod: PsiMethod = getBaseDescriptor.asInstanceOf[
+      CallHierarchyNodeDescriptor].getTargetElement.asInstanceOf[PsiMethod]
     val containing = baseMethod match {
       case mem: ScMember => mem.getContainingClassLoose
       case x             => x.containingClass
@@ -58,9 +56,8 @@ final class ScalaCallerMethodsTreeStructure(
     val methodToDescriptorMap =
       new mutable.HashMap[PsiMember, CallHierarchyNodeDescriptor]
     for (methodToFind <- methodsToFind) {
-      MethodReferencesSearch
-        .search(methodToFind, searchScope, true)
-        .forEach(new Processor[PsiReference] {
+      MethodReferencesSearch.search(methodToFind, searchScope, true).forEach(
+        new Processor[PsiReference] {
           def process(reference: PsiReference): Boolean = {
             val element: PsiElement = reference.getElement
             val key: PsiMember = PsiTreeUtil.getNonStrictParentOfType(

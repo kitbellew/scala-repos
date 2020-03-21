@@ -417,8 +417,7 @@ object Execution {
         res: => Future[(T, ExecutionCounters)])
         : (Boolean, Future[(T, ExecutionCounters)]) =
       // This cast is safe because we always insert with match T types
-      cache
-        .getOrElseUpdateIsNew((cfg, ex), res)
+      cache.getOrElseUpdateIsNew((cfg, ex), res)
         .asInstanceOf[(Boolean, Future[(T, ExecutionCounters)])]
 
     def getOrElseInsert[T](
@@ -466,8 +465,7 @@ object Execution {
       cache.getOrElseInsert(
         conf,
         this,
-        prev
-          .runStats(conf, mode, cache)
+        prev.runStats(conf, mode, cache)
           .map { case (s, stats) => (fn(s), stats) })
   }
   private case class GetCounters[T](prev: Execution[T])
@@ -562,8 +560,7 @@ object Execution {
       cache.getOrElseInsert(
         conf,
         this,
-        prev
-          .runStats(conf, mode, cache)
+        prev.runStats(conf, mode, cache)
           .recoverWith(fn.andThen(_.runStats(conf, mode, cache))))
   }
 
@@ -573,8 +570,8 @@ object Execution {
   def failFastSequence[T](t: Iterable[Future[T]])(implicit
       cec: ConcurrentExecutionContext): Future[List[T]] = {
     t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
-        failFastZip(f, i).map { case (tail, h) => h :: tail }
-      }
+      failFastZip(f, i).map { case (tail, h) => h :: tail }
+    }
       .map(_.reverse)
   }
 
@@ -1052,8 +1049,7 @@ object Execution {
     val sem = new AsyncSemaphore(parallelism)
 
     def waitRun(e: Execution[T]): Execution[T] = {
-      Execution
-        .fromFuture(_ => sem.acquire())
+      Execution.fromFuture(_ => sem.acquire())
         .flatMap(p => e.liftToTry.map((_, p)))
         .onComplete {
           case Success((_, p)) => p.release()
@@ -1165,9 +1161,10 @@ object ExecutionCounters {
       override def isNonZero(that: ExecutionCounters) = that.keys.nonEmpty
       def zero = ExecutionCounters.empty
       def plus(left: ExecutionCounters, right: ExecutionCounters) = {
-        fromMap((left.keys ++ right.keys).map { k =>
-          (k, left(k) + right(k))
-        }.toMap)
+        fromMap(
+          (left.keys ++ right.keys)
+            .map { k => (k, left(k) + right(k)) }
+            .toMap)
       }
     }
 }

@@ -33,8 +33,9 @@ class FutureTest extends SpecLite {
     implicit def futureShow[A: Show]: Show[Future[A]] =
       Contravariant[Show].contramap(Show[String \/ A]) {
         future: Future[A] =>
-          val futureWithError =
-            future.map(\/-(_)).recover { case e => -\/(e.toString) }
+          val futureWithError = future.map(\/-(_)).recover {
+            case e => -\/(e.toString)
+          }
           Await.result(futureWithError, duration)
       }
 

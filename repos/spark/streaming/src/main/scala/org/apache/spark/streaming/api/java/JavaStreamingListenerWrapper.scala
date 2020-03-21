@@ -76,9 +76,8 @@ private[streaming] class JavaStreamingListenerWrapper(
       batchInfo.processingDelay.getOrElse(-1),
       batchInfo.totalDelay.getOrElse(-1),
       batchInfo.numRecords,
-      batchInfo.outputOperationInfos
-        .mapValues(toJavaOutputOperationInfo(_))
-        .asJava
+      batchInfo.outputOperationInfos.mapValues(
+        toJavaOutputOperationInfo(_)).asJava
     )
   }
 

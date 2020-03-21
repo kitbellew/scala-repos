@@ -14,11 +14,9 @@ class VerifySymbols extends Phase {
       def verifyScoping(n: Node, syms: Set[TermSymbol]): Unit =
         n match {
           case FwdPath(s :: _) if !syms.contains(s) =>
-            val all = n2
-              .collectAll[(TermSymbol, Node)] {
-                case d: DefNode => d.generators
-              }
-              .toMap
+            val all = n2.collectAll[(TermSymbol, Node)] {
+              case d: DefNode => d.generators
+            }.toMap
             val srcDef = all.getOrElse(s, null)
             throw new SlickTreeException(
               "Unreachable reference to " + s + " after resolving monadic joins",

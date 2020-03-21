@@ -143,10 +143,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     }
     for {
       i <- 0 until count
-      name <- Option(map.get(SbtPomExtraProperties.makeLicenseName(i)))
-        .map(_.toString)
-      url <- Option(map.get(SbtPomExtraProperties.makeLicenseUrl(i)))
-        .map(_.toString)
+      name <- Option(map.get(SbtPomExtraProperties.makeLicenseName(i))).map(
+        _.toString)
+      url <- Option(map.get(SbtPomExtraProperties.makeLicenseUrl(i))).map(
+        _.toString)
     } md.addLicense(new License(name, url))
   }
 
@@ -424,8 +424,9 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     for (d <- result.getManagedDependencies.asScala) {
       // TODO - Figure out what to do about exclusions on managed dependencies.
       md.addDependencyDescriptorMediator(
-        ModuleId
-          .newInstance(d.getArtifact.getGroupId, d.getArtifact.getArtifactId),
+        ModuleId.newInstance(
+          d.getArtifact.getGroupId,
+          d.getArtifact.getArtifactId),
         ExactPatternMatcher.INSTANCE,
         new OverrideDependencyDescriptorMediator(
           null,

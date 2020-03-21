@@ -103,8 +103,9 @@ class ScatterGatherFirstCompletedSpec
     "without routees should reply immediately" in {
       val probe = TestProbe()
       val router = system.actorOf(
-        ScatterGatherFirstCompletedPool(nrOfInstances = 0, within = 5.seconds)
-          .props(Props.empty))
+        ScatterGatherFirstCompletedPool(
+          nrOfInstances = 0,
+          within = 5.seconds).props(Props.empty))
       router.tell("hello", probe.ref)
       probe.expectMsgType[Status.Failure](2.seconds).cause.getClass should be(
         classOf[TimeoutException])

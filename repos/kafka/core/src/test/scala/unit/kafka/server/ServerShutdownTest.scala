@@ -71,9 +71,8 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
       servers = Seq(server))
 
     // send some messages
-    sent1
-      .map(value => producer.send(new ProducerRecord(topic, 0, value)))
-      .foreach(_.get)
+    sent1.map(value =>
+      producer.send(new ProducerRecord(topic, 0, value))).foreach(_.get)
 
     // do a clean shutdown and check that offset checkpoint file exists
     server.shutdown()
@@ -99,10 +98,8 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
     var fetchedMessage: ByteBufferMessageSet = null
     while (fetchedMessage == null || fetchedMessage.validBytes == 0) {
       val fetched = consumer.fetch(
-        new FetchRequestBuilder()
-          .addFetch(topic, 0, 0, 10000)
-          .maxWait(0)
-          .build())
+        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).maxWait(
+          0).build())
       fetchedMessage = fetched.messageSet(topic, 0)
     }
     assertEquals(
@@ -111,9 +108,8 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
     val newOffset = fetchedMessage.last.nextOffset
 
     // send some more messages
-    sent2
-      .map(value => producer.send(new ProducerRecord(topic, 0, value)))
-      .foreach(_.get)
+    sent2.map(value =>
+      producer.send(new ProducerRecord(topic, 0, value))).foreach(_.get)
 
     fetchedMessage = null
     while (fetchedMessage == null || fetchedMessage.validBytes == 0) {
@@ -166,8 +162,8 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
         assertEquals(NotRunning.state, server.brokerState.currentState)
       case e: Throwable =>
         fail(
-          "Expected ZkException during Kafka server starting up but caught a different exception %s"
-            .format(e.toString))
+          "Expected ZkException during Kafka server starting up but caught a different exception %s".format(
+            e.toString))
     } finally {
       if (server.brokerState.currentState != NotRunning.state)
         server.shutdown()
@@ -184,9 +180,7 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
   def verifyNonDaemonThreadsStatus() {
     assertEquals(
       0,
-      Thread.getAllStackTraces
-        .keySet()
-        .toArray
+      Thread.getAllStackTraces.keySet().toArray
         .map { _.asInstanceOf[Thread] }
         .count(isNonDaemonKafkaThread))
   }

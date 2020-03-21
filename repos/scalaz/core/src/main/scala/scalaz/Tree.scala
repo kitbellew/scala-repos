@@ -30,12 +30,9 @@ sealed abstract class Tree[A] {
     val reversedLines = draw.run
     val first = new StringBuilder(reversedLines.head.toString.reverse)
     val rest = reversedLines.tail
-    rest
-      .foldLeft(first) { (acc, elem) =>
-        acc.append("\n").append(elem.toString.reverse)
-      }
-      .append("\n")
-      .toString
+    rest.foldLeft(first) { (acc, elem) =>
+      acc.append("\n").append(elem.toString.reverse)
+    }.append("\n").toString
   }
 
   /** A histomorphic transform. Each element in the resulting tree
@@ -145,9 +142,8 @@ sealed abstract class Tree[A] {
       case x #:: xs =>
         G.apply2(
           f(rootLabel),
-          NonEmptyList
-            .nel(x, IList.fromFoldable(xs))
-            .traverse1(_.traverse1(f))) {
+          NonEmptyList.nel(x, IList.fromFoldable(xs)).traverse1(
+            _.traverse1(f))) {
           case (h, t) => Node(h, t.list.toStream)
         }
     }

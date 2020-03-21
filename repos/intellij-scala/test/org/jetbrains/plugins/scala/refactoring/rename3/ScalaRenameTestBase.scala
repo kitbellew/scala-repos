@@ -43,8 +43,9 @@ abstract class ScalaRenameTestBase
   protected val folderPath: String = TestUtils.getTestDataPath + "/rename3/"
 
   private def rootBefore =
-    (folderPath + getTestName(true) + "/before")
-      .replace(File.separatorChar, '/')
+    (folderPath + getTestName(true) + "/before").replace(
+      File.separatorChar,
+      '/')
   private def rootAfter =
     (folderPath + getTestName(true) + "/after").replace(File.separatorChar, '/')
 
@@ -54,9 +55,8 @@ abstract class ScalaRenameTestBase
       moduleAdapter,
       rootBefore,
       new util.HashSet[File]())
-    VirtualFilePointerManager.getInstance
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance.asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
     val filesBefore = myDirectory.findChild("tests").getChildren
 
     val caretPositions = findCaretsAndRemoveMarkers(filesBefore)
@@ -107,11 +107,8 @@ abstract class ScalaRenameTestBase
       }
       val result = findOffsets(text).map(offset => CaretPosition(file, offset))
       if (result.nonEmpty) {
-        inWriteAction(
-          FileDocumentManager
-            .getInstance()
-            .getDocument(file)
-            .replaceString(0, fileLength, text))
+        inWriteAction(FileDocumentManager.getInstance().getDocument(
+          file).replaceString(0, fileLength, text))
       }
       result
     }
@@ -148,9 +145,8 @@ abstract class ScalaRenameTestBase
       element.getText != null && element.getText.contains("Comments")
     var oldName: String = ""
     inWriteAction {
-      val subst = RenamePsiElementProcessor
-        .forElement(element)
-        .substituteElementToRename(element, getEditorAdapter)
+      val subst = RenamePsiElementProcessor.forElement(
+        element).substituteElementToRename(element, getEditorAdapter)
       if (subst != null) {
         oldName = ScalaNamesUtil.scalaName(subst)
         new RenameProcessor(
@@ -164,9 +160,8 @@ abstract class ScalaRenameTestBase
     PsiDocumentManager.getInstance(getProjectAdapter).commitAllDocuments()
     val document =
       PsiDocumentManager.getInstance(getProjectAdapter).getDocument(file)
-    PsiDocumentManager
-      .getInstance(getProjectAdapter)
-      .doPostponedOperationsAndUnblockDocument(document)
+    PsiDocumentManager.getInstance(
+      getProjectAdapter).doPostponedOperationsAndUnblockDocument(document)
     FileDocumentManager.getInstance.saveAllDocuments()
     oldName
   }

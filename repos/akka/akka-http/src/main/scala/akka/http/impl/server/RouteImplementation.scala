@@ -98,12 +98,10 @@ private[http] object RouteImplementation
         case MethodFilter(m) ⇒ method(m.asScala)
         case Extract(extractions) ⇒
           extractRequestContext.flatMap { ctx ⇒
-            extractions
-              .map { e ⇒
-                e.directive.flatMap(
-                  addExtraction(e.asInstanceOf[RequestVal[Any]], _))
-              }
-              .reduce(_ & _)
+            extractions.map { e ⇒
+              e.directive.flatMap(
+                addExtraction(e.asInstanceOf[RequestVal[Any]], _))
+            }.reduce(_ & _)
           }
 
         case BasicAuthentication(authenticator) ⇒
@@ -128,11 +126,8 @@ private[http] object RouteImplementation
                     }
                 }
 
-              authenticator
-                .authenticate(javaCreds)
-                .toScala
-                .map(_.asScala)(
-                  akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
+              authenticator.authenticate(javaCreds).toScala.map(_.asScala)(
+                akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
             }
           ).flatMap { user ⇒
             addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
@@ -160,10 +155,8 @@ private[http] object RouteImplementation
                     }
                 }
 
-              authenticator
-                .authenticate(javaCreds)
-                .toScala
-                .map(_.asScala)(sameThreadExecutionContext)
+              authenticator.authenticate(javaCreds).toScala.map(_.asScala)(
+                sameThreadExecutionContext)
             }
           ).flatMap { user ⇒
             addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
@@ -229,27 +222,26 @@ private[http] object RouteImplementation
       case dyn: DynamicDirectiveRoute1[t1Type] ⇒
         def runToRoute(t1: t1Type): ScalaRoute =
           apply(
-            dyn
-              .createDirective(t1)
-              .route(dyn.innerRoute, dyn.moreInnerRoutes: _*))
+            dyn.createDirective(t1).route(
+              dyn.innerRoute,
+              dyn.moreInnerRoutes: _*))
 
         requestValToDirective(dyn.value1)(runToRoute)
 
       case dyn: DynamicDirectiveRoute2[t1Type, t2Type] ⇒
         def runToRoute(t1: t1Type, t2: t2Type): ScalaRoute =
           apply(
-            dyn
-              .createDirective(t1, t2)
-              .route(dyn.innerRoute, dyn.moreInnerRoutes: _*))
+            dyn.createDirective(t1, t2).route(
+              dyn.innerRoute,
+              dyn.moreInnerRoutes: _*))
 
         (requestValToDirective(dyn.value1) & requestValToDirective(dyn.value2))(
           runToRoute)
 
       case o: OpaqueRoute ⇒
         (ctx ⇒
-          o.handle(new RequestContextImpl(ctx))
-            .asInstanceOf[RouteResultImpl]
-            .underlying)
+          o.handle(new RequestContextImpl(ctx)).asInstanceOf[
+            RouteResultImpl].underlying)
       case p: Product ⇒
         extractExecutionContext { implicit ec ⇒
           complete((500, s"Not implemented: ${p.productPrefix}"))
@@ -276,10 +268,8 @@ private[http] object RouteImplementation
         Tuple1(prefix._1 ++ suffix._1)
     }
     def toScala(matcher: PathMatcher[_]): ScalaPathMatcher[ValMap] =
-      matcher
-        .asInstanceOf[PathMatcherImpl[_]]
-        .matcher
-        .transform(_.map(v ⇒ Tuple1(Map(matcher -> v._1))))
+      matcher.asInstanceOf[PathMatcherImpl[_]].matcher.transform(_.map(v ⇒
+        Tuple1(Map(matcher -> v._1))))
     def addExtractions(valMap: T): Directive0 =
       transformExtractionMap(
         _.addAll(valMap.asInstanceOf[Map[RequestVal[_], Any]]))

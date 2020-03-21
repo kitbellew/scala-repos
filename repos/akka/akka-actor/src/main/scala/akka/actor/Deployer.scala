@@ -143,15 +143,10 @@ private[akka] class Deployer(
   private val config = settings.config.getConfig("akka.actor.deployment")
   protected val default = config.getConfig("default")
   val routerTypeMapping: Map[String, String] =
-    settings.config
-      .getConfig("akka.actor.router.type-mapping")
-      .root
-      .unwrapped
-      .asScala
-      .collect {
-        case (key, value: String) ⇒ (key -> value)
-      }
-      .toMap
+    settings.config.getConfig(
+      "akka.actor.router.type-mapping").root.unwrapped.asScala.collect {
+      case (key, value: String) ⇒ (key -> value)
+    }.toMap
 
   config.root.asScala flatMap {
     case ("default", _) ⇒ None
@@ -235,22 +230,16 @@ private[akka] class Deployer(
       val args2 = List(
         classOf[Config] -> deployment2,
         classOf[DynamicAccess] -> dynamicAccess)
-      dynamicAccess
-        .createInstanceFor[RouterConfig](fqn, args1)
-        .recover({
-          case e @ (_: IllegalArgumentException | _: ConfigException) ⇒ throw e
-          case e: NoSuchMethodException ⇒
-            dynamicAccess
-              .createInstanceFor[RouterConfig](fqn, args2)
-              .recover({
-                case e @ (_: IllegalArgumentException | _: ConfigException) ⇒
-                  throw e
-                case e2 ⇒ throwCannotInstantiateRouter(args2, e)
-              })
-              .get
-          case e ⇒ throwCannotInstantiateRouter(args2, e)
-        })
-        .get
+      dynamicAccess.createInstanceFor[RouterConfig](fqn, args1).recover({
+        case e @ (_: IllegalArgumentException | _: ConfigException) ⇒ throw e
+        case e: NoSuchMethodException ⇒
+          dynamicAccess.createInstanceFor[RouterConfig](fqn, args2).recover({
+            case e @ (_: IllegalArgumentException | _: ConfigException) ⇒
+              throw e
+            case e2 ⇒ throwCannotInstantiateRouter(args2, e)
+          }).get
+        case e ⇒ throwCannotInstantiateRouter(args2, e)
+      }).get
     }
 
 }

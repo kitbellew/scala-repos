@@ -457,8 +457,10 @@ class ScalaControlFlowBuilder(
         ref.resolve() match {
           case p: ScParameter if parameters.contains(p) =>
           case named: PsiNamedElement
-              if !PsiTreeUtil.isAncestor(paramOwner, named, false) && policy
-                .isElementAccepted(named) =>
+              if !PsiTreeUtil.isAncestor(
+                paramOwner,
+                named,
+                false) && policy.isElementAccepted(named) =>
             collectedRefs += ref
           case _ =>
         }

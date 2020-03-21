@@ -25,15 +25,13 @@ import cascading.cascade.Cascade
 import cascading.flow.FlowSkipIfSinkNotStale
 
 class Job1(args: Args) extends Job(args) {
-  Tsv(args("input0"), ('line)).pipe
-    .map[String, String]('line -> 'line)((x: String) => "job1:" + x)
-    .write(Tsv(args("output0"), fields = 'line))
+  Tsv(args("input0"), ('line)).pipe.map[String, String]('line -> 'line)(
+    (x: String) => "job1:" + x).write(Tsv(args("output0"), fields = 'line))
 }
 
 class Job2(args: Args) extends Job(args) {
-  Tsv(args("output0"), ('line)).pipe
-    .map[String, String]('line -> 'line)((x: String) => "job2" + x)
-    .write(Tsv(args("output1")))
+  Tsv(args("output0"), ('line)).pipe.map[String, String]('line -> 'line)(
+    (x: String) => "job2" + x).write(Tsv(args("output1")))
 }
 
 class CascadeTestJob(args: Args) extends CascadeJob(args) {

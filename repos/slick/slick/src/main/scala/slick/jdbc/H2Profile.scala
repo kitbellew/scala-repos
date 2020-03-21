@@ -66,15 +66,12 @@ trait H2Profile extends JdbcProfile {
             _ != Int.MaxValue
           ) // H2 sometimes show this value, but doesn't accept it back in the DBType
         override def default =
-          rawDefault
-            .map((_, tpe))
-            .collect {
-              case (v, "java.util.UUID") =>
-                Some(
-                  Some(java.util.UUID.fromString(v.replaceAll("[\'\"]", "")))
-                ) //strip quotes
-            }
-            .getOrElse { super.default }
+          rawDefault.map((_, tpe)).collect {
+            case (v, "java.util.UUID") =>
+              Some(
+                Some(java.util.UUID.fromString(v.replaceAll("[\'\"]", "")))
+              ) //strip quotes
+          }.getOrElse { super.default }
         override def tpe =
           dbType match {
             case Some("UUID") => "java.util.UUID"
@@ -91,8 +88,8 @@ trait H2Profile extends JdbcProfile {
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler
-      .replace(Phase.resolveZipJoinsRownumStyle) - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(
+      Phase.resolveZipJoinsRownumStyle) - Phase.fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =

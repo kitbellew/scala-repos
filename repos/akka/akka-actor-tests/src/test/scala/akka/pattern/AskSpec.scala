@@ -126,8 +126,7 @@ class AskSpec extends AkkaSpec {
         "select-echo")
       val identityFuture =
         (system.actorSelection("/user/select-echo") ? Identify(None))
-          .mapTo[ActorIdentity]
-          .map(_.ref.get)
+          .mapTo[ActorIdentity].map(_.ref.get)
 
       Await.result(identityFuture, 5 seconds) should ===(echo)
     }

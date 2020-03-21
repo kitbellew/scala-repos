@@ -324,8 +324,9 @@ class BasicOperationsSuite extends TestSuiteBase {
       s.context.transform(
         Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
         (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+          rdds.head.context.union(
+            rdds.map(_.asInstanceOf[RDD[Int]])
+          ) // union of RDDs
       )
     }
 
@@ -341,8 +342,9 @@ class BasicOperationsSuite extends TestSuiteBase {
       s.context.transform(
         Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
         (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+          rdds.head.context.union(
+            rdds.map(_.asInstanceOf[RDD[Int]])
+          ) // union of RDDs
       )
     }
 
@@ -364,9 +366,8 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq()
     )
     val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1.map(x => (x, 1))
-        .cogroup(s2.map(x => (x, "x")))
-        .mapValues(x => (x._1.toSeq, x._2.toSeq))
+      s1.map(x => (x, 1)).cogroup(s2.map(x => (x, "x"))).mapValues(x =>
+        (x._1.toSeq, x._2.toSeq))
     }
     testOperation(inputData1, inputData2, operation, outputData, true)
   }
@@ -493,11 +494,10 @@ class BasicOperationsSuite extends TestSuiteBase {
       val updateFunc = (values: Seq[Int], state: Option[Int]) => {
         Some(values.sum + state.getOrElse(0))
       }
-      s.map(x => (x, 1))
-        .updateStateByKey[Int](
-          updateFunc,
-          new HashPartitioner(numInputPartitions),
-          initialRDD)
+      s.map(x => (x, 1)).updateStateByKey[Int](
+        updateFunc,
+        new HashPartitioner(numInputPartitions),
+        initialRDD)
     }
 
     testOperation(inputData, updateStateOperation, outputData, true)
@@ -535,12 +535,11 @@ class BasicOperationsSuite extends TestSuiteBase {
         (iterator: Iterator[(String, Seq[Int], Option[Int])]) => {
           iterator.flatMap(t => updateFunc(t._2, t._3).map(s => (t._1, s)))
         }
-      s.map(x => (x, 1))
-        .updateStateByKey[Int](
-          newUpdateFunc,
-          new HashPartitioner(numInputPartitions),
-          true,
-          initialRDD)
+      s.map(x => (x, 1)).updateStateByKey[Int](
+        newUpdateFunc,
+        new HashPartitioner(numInputPartitions),
+        true,
+        initialRDD)
     }
 
     testOperation(inputData, updateStateOperation, outputData, true)
@@ -586,9 +585,8 @@ class BasicOperationsSuite extends TestSuiteBase {
           case _ => Option(stateObj)
         }
       }
-      s.map(x => (x, 1))
-        .updateStateByKey[StateObject](updateFunc)
-        .mapValues(_.counter)
+      s.map(x => (x, 1)).updateStateByKey[StateObject](updateFunc).mapValues(
+        _.counter)
     }
 
     testOperation(inputData, updateStateOperation, outputData, true)
@@ -602,10 +600,8 @@ class BasicOperationsSuite extends TestSuiteBase {
       ssc.start()
       Thread.sleep(2000)
       def getInputFromSlice(fromMillis: Long, toMillis: Long): Set[Int] = {
-        stream
-          .slice(new Time(fromMillis), new Time(toMillis))
-          .flatMap(_.collect())
-          .toSet
+        stream.slice(new Time(fromMillis), new Time(toMillis)).flatMap(
+          _.collect()).toSet
       }
 
       assert(getInputFromSlice(0, 1000) == Set(1))
@@ -787,12 +783,8 @@ class BasicOperationsSuite extends TestSuiteBase {
       "Batch duration has changed from 1 second, check cleanup tests")
     withStreamingContext(setupStreams(cleanupTestInput, operation)) { ssc =>
       val operatedStream =
-        ssc.graph
-          .getOutputStreams()
-          .head
-          .dependencies
-          .head
-          .asInstanceOf[DStream[T]]
+        ssc.graph.getOutputStreams().head.dependencies.head.asInstanceOf[
+          DStream[T]]
       if (rememberDuration != null) ssc.remember(rememberDuration)
       val output =
         runStreams[(Int, Int)](ssc, cleanupTestInput.size, numExpectedOutput)

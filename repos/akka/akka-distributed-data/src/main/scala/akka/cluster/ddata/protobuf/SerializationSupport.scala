@@ -93,10 +93,8 @@ trait SerializationSupport {
 
   def uniqueAddressToProto(
       uniqueAddress: UniqueAddress): dm.UniqueAddress.Builder =
-    dm.UniqueAddress
-      .newBuilder()
-      .setAddress(addressToProto(uniqueAddress.address))
-      .setUid(uniqueAddress.uid)
+    dm.UniqueAddress.newBuilder().setAddress(
+      addressToProto(uniqueAddress.address)).setUid(uniqueAddress.uid)
 
   def uniqueAddressFromProto(uniqueAddress: dm.UniqueAddress): UniqueAddress =
     UniqueAddress(
@@ -110,9 +108,8 @@ trait SerializationSupport {
     def buildOther(): dm.OtherMessage = {
       val m = msg.asInstanceOf[AnyRef]
       val msgSerializer = serialization.findSerializerFor(m)
-      val builder = dm.OtherMessage
-        .newBuilder()
-        .setEnclosedMessage(ByteString.copyFrom(msgSerializer.toBinary(m)))
+      val builder = dm.OtherMessage.newBuilder().setEnclosedMessage(
+        ByteString.copyFrom(msgSerializer.toBinary(m)))
         .setSerializerId(msgSerializer.identifier)
 
       msgSerializer match {
@@ -146,12 +143,10 @@ trait SerializationSupport {
     val manifest =
       if (other.hasMessageManifest) other.getMessageManifest.toStringUtf8
       else ""
-    serialization
-      .deserialize(
-        other.getEnclosedMessage.toByteArray,
-        other.getSerializerId,
-        manifest)
-      .get
+    serialization.deserialize(
+      other.getEnclosedMessage.toByteArray,
+      other.getSerializerId,
+      manifest).get
   }
 
 }

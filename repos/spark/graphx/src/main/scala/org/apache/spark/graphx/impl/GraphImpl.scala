@@ -106,28 +106,25 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       numPartitions: Int): Graph[VD, ED] = {
     val edTag = classTag[ED]
     val vdTag = classTag[VD]
-    val newEdges = edges
-      .withPartitionsRDD(
-        edges
-          .map { e =>
-            val part: PartitionID =
-              partitionStrategy.getPartition(e.srcId, e.dstId, numPartitions)
-            (part, (e.srcId, e.dstId, e.attr))
-          }
-          .partitionBy(new HashPartitioner(numPartitions))
-          .mapPartitionsWithIndex(
-            { (pid, iter) =>
-              val builder = new EdgePartitionBuilder[ED, VD]()(edTag, vdTag)
-              iter.foreach { message =>
-                val data = message._2
-                builder.add(data._1, data._2, data._3)
-              }
-              val edgePartition = builder.toEdgePartition
-              Iterator((pid, edgePartition))
-            },
-            preservesPartitioning = true
-          ))
-      .cache()
+    val newEdges = edges.withPartitionsRDD(
+      edges.map { e =>
+        val part: PartitionID =
+          partitionStrategy.getPartition(e.srcId, e.dstId, numPartitions)
+        (part, (e.srcId, e.dstId, e.attr))
+      }
+        .partitionBy(new HashPartitioner(numPartitions))
+        .mapPartitionsWithIndex(
+          { (pid, iter) =>
+            val builder = new EdgePartitionBuilder[ED, VD]()(edTag, vdTag)
+            iter.foreach { message =>
+              val data = message._2
+              builder.add(data._1, data._2, data._3)
+            }
+            val edgePartition = builder.toEdgePartition
+            Iterator((pid, edgePartition))
+          },
+          preservesPartitioning = true
+        )).cache()
     GraphImpl.fromExistingRDDs(vertices.withEdges(newEdges), newEdges)
   }
 
@@ -146,9 +143,9 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       // The map preserves type, so we can use incremental replication
       val newVerts = vertices.mapVertexPartitions(_.map(f)).cache()
       val changedVerts = vertices.asInstanceOf[VertexRDD[VD2]].diff(newVerts)
-      val newReplicatedVertexView = replicatedVertexView
-        .asInstanceOf[ReplicatedVertexView[VD2, ED]]
-        .updateVertices(changedVerts)
+      val newReplicatedVertexView =
+        replicatedVertexView.asInstanceOf[ReplicatedVertexView[VD2, ED]]
+          .updateVertices(changedVerts)
       new GraphImpl(newVerts, newReplicatedVertexView)
     } else {
       // The map does not preserve type, so we must re-replicate all vertices
@@ -236,64 +233,62 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
     val activeDirectionOpt = activeSetOpt.map(_._2)
 
     // Map and combine.
-    val preAgg = view.edges.partitionsRDD
-      .mapPartitions(_.flatMap {
-        case (pid, edgePartition) =>
-          // Choose scan method
-          val activeFraction = edgePartition.numActives.getOrElse(
-            0) / edgePartition.indexSize.toFloat
-          activeDirectionOpt match {
-            case Some(EdgeDirection.Both) =>
-              if (activeFraction < 0.8) {
-                edgePartition.aggregateMessagesIndexScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.Both)
-              } else {
-                edgePartition.aggregateMessagesEdgeScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.Both)
-              }
-            case Some(EdgeDirection.Either) =>
-              // TODO: Because we only have a clustered index on the source vertex ID, we can't filter
-              // the index here. Instead we have to scan all edges and then do the filter.
+    val preAgg = view.edges.partitionsRDD.mapPartitions(_.flatMap {
+      case (pid, edgePartition) =>
+        // Choose scan method
+        val activeFraction = edgePartition.numActives.getOrElse(
+          0) / edgePartition.indexSize.toFloat
+        activeDirectionOpt match {
+          case Some(EdgeDirection.Both) =>
+            if (activeFraction < 0.8) {
+              edgePartition.aggregateMessagesIndexScan(
+                sendMsg,
+                mergeMsg,
+                tripletFields,
+                EdgeActiveness.Both)
+            } else {
               edgePartition.aggregateMessagesEdgeScan(
                 sendMsg,
                 mergeMsg,
                 tripletFields,
-                EdgeActiveness.Either)
-            case Some(EdgeDirection.Out) =>
-              if (activeFraction < 0.8) {
-                edgePartition.aggregateMessagesIndexScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.SrcOnly)
-              } else {
-                edgePartition.aggregateMessagesEdgeScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.SrcOnly)
-              }
-            case Some(EdgeDirection.In) =>
+                EdgeActiveness.Both)
+            }
+          case Some(EdgeDirection.Either) =>
+            // TODO: Because we only have a clustered index on the source vertex ID, we can't filter
+            // the index here. Instead we have to scan all edges and then do the filter.
+            edgePartition.aggregateMessagesEdgeScan(
+              sendMsg,
+              mergeMsg,
+              tripletFields,
+              EdgeActiveness.Either)
+          case Some(EdgeDirection.Out) =>
+            if (activeFraction < 0.8) {
+              edgePartition.aggregateMessagesIndexScan(
+                sendMsg,
+                mergeMsg,
+                tripletFields,
+                EdgeActiveness.SrcOnly)
+            } else {
               edgePartition.aggregateMessagesEdgeScan(
                 sendMsg,
                 mergeMsg,
                 tripletFields,
-                EdgeActiveness.DstOnly)
-            case _ => // None
-              edgePartition.aggregateMessagesEdgeScan(
-                sendMsg,
-                mergeMsg,
-                tripletFields,
-                EdgeActiveness.Neither)
-          }
-      })
-      .setName("GraphImpl.aggregateMessages - preAgg")
+                EdgeActiveness.SrcOnly)
+            }
+          case Some(EdgeDirection.In) =>
+            edgePartition.aggregateMessagesEdgeScan(
+              sendMsg,
+              mergeMsg,
+              tripletFields,
+              EdgeActiveness.DstOnly)
+          case _ => // None
+            edgePartition.aggregateMessagesEdgeScan(
+              sendMsg,
+              mergeMsg,
+              tripletFields,
+              EdgeActiveness.Neither)
+        }
+    }).setName("GraphImpl.aggregateMessages - preAgg")
 
     // do the final reduction reusing the index map
     vertices.aggregateUsingIndex(preAgg, mergeMsg)
@@ -309,9 +304,9 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       // updateF preserves type, so we can use incremental replication
       val newVerts = vertices.leftJoin(other)(updateF).cache()
       val changedVerts = vertices.asInstanceOf[VertexRDD[VD2]].diff(newVerts)
-      val newReplicatedVertexView = replicatedVertexView
-        .asInstanceOf[ReplicatedVertexView[VD2, ED]]
-        .updateVertices(changedVerts)
+      val newReplicatedVertexView =
+        replicatedVertexView.asInstanceOf[ReplicatedVertexView[VD2, ED]]
+          .updateVertices(changedVerts)
       new GraphImpl(newVerts, newReplicatedVertexView)
     } else {
       // updateF does not preserve type, so we must re-replicate all vertices
@@ -369,8 +364,7 @@ object GraphImpl {
       defaultVertexAttr: VD,
       edgeStorageLevel: StorageLevel,
       vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] = {
-    val edgeRDD = EdgeRDD
-      .fromEdges(edges)(classTag[ED], classTag[VD])
+    val edgeRDD = EdgeRDD.fromEdges(edges)(classTag[ED], classTag[VD])
       .withTargetStorageLevel(edgeStorageLevel)
     val vertexRDD = VertexRDD(vertices, edgeRDD, defaultVertexAttr)
       .withTargetStorageLevel(vertexStorageLevel)
@@ -389,8 +383,7 @@ object GraphImpl {
     vertices.cache()
 
     // Convert the vertex partitions in edges to the correct type
-    val newEdges = edges
-      .asInstanceOf[EdgeRDDImpl[ED, _]]
+    val newEdges = edges.asInstanceOf[EdgeRDDImpl[ED, _]]
       .mapEdgePartitions((pid, part) => part.withoutVertexAttributes[VD])
       .cache()
 
@@ -421,11 +414,10 @@ object GraphImpl {
       vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] = {
     val edgesCached = edges.withTargetStorageLevel(edgeStorageLevel).cache()
     val vertices =
-      VertexRDD
-        .fromEdges(
-          edgesCached,
-          edgesCached.partitions.length,
-          defaultVertexAttr)
+      VertexRDD.fromEdges(
+        edgesCached,
+        edgesCached.partitions.length,
+        defaultVertexAttr)
         .withTargetStorageLevel(vertexStorageLevel)
     fromExistingRDDs(vertices, edgesCached)
   }

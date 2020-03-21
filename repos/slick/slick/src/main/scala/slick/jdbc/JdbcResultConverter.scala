@@ -23,8 +23,9 @@ class BaseResultConverter[
   def set(value: T, pp: PreparedStatement) =
     ti.setValue(value, pp, idx)
   override def getDumpInfo =
-    super.getDumpInfo
-      .copy(mainInfo = s"idx=$idx, name=$name", attrInfo = ": " + ti)
+    super.getDumpInfo.copy(
+      mainInfo = s"idx=$idx, name=$name",
+      attrInfo = ": " + ti)
   def width = 1
 }
 

@@ -16,9 +16,8 @@ import mesosphere.marathon.io.SSLContextUtil
   */
 class LeaderProxyFilterModule extends ServletModule {
   protected override def configureServlets() {
-    bind(classOf[RequestForwarder])
-      .to(classOf[JavaUrlConnectionRequestForwarder])
-      .in(Scopes.SINGLETON)
+    bind(classOf[RequestForwarder]).to(
+      classOf[JavaUrlConnectionRequestForwarder]).in(Scopes.SINGLETON)
     bind(classOf[LeaderProxyFilter]).asEagerSingleton()
     filter("/*").through(classOf[LeaderProxyFilter])
   }
@@ -70,8 +69,13 @@ class MarathonRestModule extends BaseRestModule {
     serve("/v2/events").`with`(classOf[HttpEventStreamServlet])
 
     bind(classOf[WebJarServlet]).in(Scopes.SINGLETON)
-    serve("/", "/ui", "/ui/*", "/help", "/api-console", "/api-console/*")
-      .`with`(classOf[WebJarServlet])
+    serve(
+      "/",
+      "/ui",
+      "/ui/*",
+      "/help",
+      "/api-console",
+      "/api-console/*").`with`(classOf[WebJarServlet])
 
     bind(classOf[PublicServlet]).in(Scopes.SINGLETON)
     serve("/public/*").`with`(classOf[PublicServlet])

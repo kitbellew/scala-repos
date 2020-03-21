@@ -123,15 +123,14 @@ class TungstenAggregationIterator(
   // and when we create the re-used buffer for sort-based aggregation).
   private def createNewAggregationBuffer(): UnsafeRow = {
     val bufferSchema = aggregateFunctions.flatMap(_.aggBufferAttributes)
-    val buffer: UnsafeRow = UnsafeProjection
-      .create(bufferSchema.map(_.dataType))
-      .apply(new GenericMutableRow(bufferSchema.length))
+    val buffer: UnsafeRow =
+      UnsafeProjection.create(bufferSchema.map(_.dataType))
+        .apply(new GenericMutableRow(bufferSchema.length))
     // Initialize declarative aggregates' buffer values
     expressionAggInitialProjection.target(buffer)(EmptyRow)
     // Initialize imperative aggregates' buffer values
-    aggregateFunctions
-      .collect { case f: ImperativeAggregate => f }
-      .foreach(_.initialize(buffer))
+    aggregateFunctions.collect { case f: ImperativeAggregate => f }.foreach(
+      _.initialize(buffer))
     buffer
   }
 

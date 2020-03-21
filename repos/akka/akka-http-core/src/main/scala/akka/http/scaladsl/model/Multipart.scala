@@ -121,8 +121,9 @@ object Multipart {
 
     /** Java API */
     override def getParts: JSource[_ <: jm.Multipart.BodyPart.Strict, AnyRef] =
-      super.getParts
-        .asInstanceOf[JSource[_ <: jm.Multipart.BodyPart.Strict, AnyRef]]
+      super.getParts.asInstanceOf[JSource[
+        _ <: jm.Multipart.BodyPart.Strict,
+        AnyRef]]
 
     /** Java API */
     override def getStrictParts
@@ -235,22 +236,21 @@ object Multipart {
     def toStrict(timeout: FiniteDuration)(implicit
         fm: Materializer): Future[Multipart.General.Strict] = {
       import fm.executionContext
-      strictify(parts)(_.toStrict(timeout)).fast
-        .map(General.Strict(mediaType, _))
+      strictify(parts)(_.toStrict(timeout)).fast.map(
+        General.Strict(mediaType, _))
     }
 
     /** Java API */
     override def getParts: JSource[_ <: jm.Multipart.General.BodyPart, AnyRef] =
-      super.getParts
-        .asInstanceOf[JSource[_ <: jm.Multipart.General.BodyPart, AnyRef]]
+      super.getParts.asInstanceOf[JSource[
+        _ <: jm.Multipart.General.BodyPart,
+        AnyRef]]
 
     /** Java API */
     override def toStrict(timeoutMillis: Long, materializer: Materializer)
         : CompletionStage[jm.Multipart.General.Strict] =
-      super
-        .toStrict(timeoutMillis, materializer)
-        .asInstanceOf[Future[jm.Multipart.General.Strict]]
-        .toJava
+      super.toStrict(timeoutMillis, materializer).asInstanceOf[Future[
+        jm.Multipart.General.Strict]].toJava
   }
   object General {
     def apply(mediaType: MediaType.Multipart, parts: BodyPart.Strict*): Strict =
@@ -315,10 +315,8 @@ object Multipart {
       /** Java API */
       override def toStrict(timeoutMillis: Long, materializer: Materializer)
           : CompletionStage[jm.Multipart.General.BodyPart.Strict] =
-        super
-          .toStrict(timeoutMillis, materializer)
-          .asInstanceOf[Future[jm.Multipart.General.BodyPart.Strict]]
-          .toJava
+        super.toStrict(timeoutMillis, materializer).asInstanceOf[Future[
+          jm.Multipart.General.BodyPart.Strict]].toJava
 
       private[BodyPart] def tryCreateFormDataBodyPart[T](
           f: (String, Map[String, String], immutable.Seq[HttpHeader]) ⇒ T)
@@ -401,23 +399,22 @@ object Multipart {
     def toStrict(timeout: FiniteDuration)(implicit
         fm: Materializer): Future[Multipart.FormData.Strict] = {
       import fm.executionContext
-      strictify(parts)(_.toStrict(timeout)).fast
-        .map(Multipart.FormData.Strict(_))
+      strictify(parts)(_.toStrict(timeout)).fast.map(
+        Multipart.FormData.Strict(_))
     }
 
     /** Java API */
     override def getParts
         : JSource[_ <: jm.Multipart.FormData.BodyPart, AnyRef] =
-      super.getParts
-        .asInstanceOf[JSource[_ <: jm.Multipart.FormData.BodyPart, AnyRef]]
+      super.getParts.asInstanceOf[JSource[
+        _ <: jm.Multipart.FormData.BodyPart,
+        AnyRef]]
 
     /** Java API */
     override def toStrict(timeoutMillis: Long, materializer: Materializer)
         : CompletionStage[jm.Multipart.FormData.Strict] =
-      super
-        .toStrict(timeoutMillis, materializer)
-        .asInstanceOf[Future[jm.Multipart.FormData.Strict]]
-        .toJava
+      super.toStrict(timeoutMillis, materializer).asInstanceOf[Future[
+        jm.Multipart.FormData.Strict]].toJava
   }
   object FormData {
     def apply(
@@ -453,8 +450,12 @@ object Multipart {
         file: File,
         chunkSize: Int = -1): Multipart.FormData =
       Multipart.FormData(
-        Source.single(Multipart.FormData.BodyPart
-          .fromFile(name, contentType, file, chunkSize)))
+        Source.single(
+          Multipart.FormData.BodyPart.fromFile(
+            name,
+            contentType,
+            file,
+            chunkSize)))
 
     /**
       * Strict [[FormData]].
@@ -473,8 +474,9 @@ object Multipart {
       /** Java API */
       override def getParts
           : JSource[jm.Multipart.FormData.BodyPart.Strict, AnyRef] =
-        super.getParts
-          .asInstanceOf[JSource[jm.Multipart.FormData.BodyPart.Strict, AnyRef]]
+        super.getParts.asInstanceOf[JSource[
+          jm.Multipart.FormData.BodyPart.Strict,
+          AnyRef]]
 
       /** Java API */
       override def getStrictParts
@@ -520,11 +522,12 @@ object Multipart {
       def toStrict(timeout: FiniteDuration)(implicit
           fm: Materializer): Future[Multipart.FormData.BodyPart.Strict] = {
         import fm.executionContext
-        entity
-          .toStrict(timeout)
-          .map(
-            Multipart.FormData.BodyPart
-              .Strict(name, _, additionalDispositionParams, additionalHeaders))
+        entity.toStrict(timeout).map(
+          Multipart.FormData.BodyPart.Strict(
+            name,
+            _,
+            additionalDispositionParams,
+            additionalHeaders))
       }
 
       /** Java API */
@@ -544,10 +547,8 @@ object Multipart {
       /** Java API */
       override def toStrict(timeoutMillis: Long, materializer: Materializer)
           : CompletionStage[jm.Multipart.FormData.BodyPart.Strict] =
-        super
-          .toStrict(timeoutMillis, materializer)
-          .asInstanceOf[Future[jm.Multipart.FormData.BodyPart.Strict]]
-          .toJava
+        super.toStrict(timeoutMillis, materializer).asInstanceOf[Future[
+          jm.Multipart.FormData.BodyPart.Strict]].toJava
     }
     object BodyPart {
       def apply(
@@ -627,16 +628,15 @@ object Multipart {
     /** Java API */
     override def getParts
         : JSource[_ <: jm.Multipart.ByteRanges.BodyPart, AnyRef] =
-      super.getParts
-        .asInstanceOf[JSource[_ <: jm.Multipart.ByteRanges.BodyPart, AnyRef]]
+      super.getParts.asInstanceOf[JSource[
+        _ <: jm.Multipart.ByteRanges.BodyPart,
+        AnyRef]]
 
     /** Java API */
     override def toStrict(timeoutMillis: Long, materializer: Materializer)
         : CompletionStage[jm.Multipart.ByteRanges.Strict] =
-      super
-        .toStrict(timeoutMillis, materializer)
-        .asInstanceOf[Future[jm.Multipart.ByteRanges.Strict]]
-        .toJava
+      super.toStrict(timeoutMillis, materializer).asInstanceOf[Future[
+        jm.Multipart.ByteRanges.Strict]].toJava
   }
   object ByteRanges {
     def apply(parts: Multipart.ByteRanges.BodyPart.Strict*): Strict =
@@ -708,11 +708,12 @@ object Multipart {
       def toStrict(timeout: FiniteDuration)(implicit
           fm: Materializer): Future[Multipart.ByteRanges.BodyPart.Strict] = {
         import fm.executionContext
-        entity
-          .toStrict(timeout)
-          .map(
-            Multipart.ByteRanges.BodyPart
-              .Strict(contentRange, _, rangeUnit, additionalHeaders))
+        entity.toStrict(timeout).map(
+          Multipart.ByteRanges.BodyPart.Strict(
+            contentRange,
+            _,
+            rangeUnit,
+            additionalHeaders))
       }
 
       /** Java API */
@@ -731,10 +732,8 @@ object Multipart {
       /** Java API */
       override def toStrict(timeoutMillis: Long, materializer: Materializer)
           : CompletionStage[jm.Multipart.ByteRanges.BodyPart.Strict] =
-        super
-          .toStrict(timeoutMillis, materializer)
-          .asInstanceOf[Future[jm.Multipart.ByteRanges.BodyPart.Strict]]
-          .toJava
+        super.toStrict(timeoutMillis, materializer).asInstanceOf[Future[
+          jm.Multipart.ByteRanges.BodyPart.Strict]].toJava
     }
     object BodyPart {
       def apply(

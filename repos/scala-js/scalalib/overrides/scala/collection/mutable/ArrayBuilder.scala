@@ -104,9 +104,9 @@ object ArrayBuilder {
       }
       result.asInstanceOf[Array[T]]
     } else {
-      val result: Array[T] = java.lang.reflect.Array
-        .newInstance(runtimeClass, len)
-        .asInstanceOf[Array[T]]
+      val result: Array[T] = java.lang.reflect.Array.newInstance(
+        runtimeClass,
+        len).asInstanceOf[Array[T]]
       var i = 0
       while (i != len) {
         result(i) = a(i).asInstanceOf[T]

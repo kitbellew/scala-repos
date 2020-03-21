@@ -74,10 +74,8 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     // underlying dataframe (such as the one below) doesn't guarantee a deterministic ordering of
     // rows in each partition.
     val data =
-      sparkContext
-        .parallelize(1 to 600, 2)
-        .mapPartitions(scala.util.Random.shuffle(_))
-        .toDF("id")
+      sparkContext.parallelize(1 to 600, 2).mapPartitions(
+        scala.util.Random.shuffle(_)).toDF("id")
     val splits = data.randomSplit(Array[Double](2, 3), seed = 1)
 
     assert(splits.length == 2, "wrong number of splits")
@@ -90,10 +88,8 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
 
     // Verify that the results are deterministic across multiple runs
     val firstRun = splits.toSeq.map(_.collect().toSeq)
-    val secondRun = data
-      .randomSplit(Array[Double](2, 3), seed = 1)
-      .toSeq
-      .map(_.collect().toSeq)
+    val secondRun = data.randomSplit(Array[Double](2, 3), seed = 1).toSeq.map(
+      _.collect().toSeq)
     assert(firstRun == secondRun)
   }
 
@@ -121,19 +117,21 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
   }
 
   test("covariance") {
-    val df = Seq
-      .tabulate(10)(i => (i, 2.0 * i, toLetter(i)))
-      .toDF("singles", "doubles", "letters")
+    val df = Seq.tabulate(10)(i => (i, 2.0 * i, toLetter(i))).toDF(
+      "singles",
+      "doubles",
+      "letters")
 
     val results = df.stat.cov("singles", "doubles")
     assert(math.abs(results - 55.0 / 3) < 1e-12)
     intercept[IllegalArgumentException] {
-      df.stat
-        .cov("singles", "letters") // doesn't accept non-numerical dataTypes
+      df.stat.cov(
+        "singles",
+        "letters"
+      ) // doesn't accept non-numerical dataTypes
     }
-    val decimalData = Seq
-      .tabulate(6)(i => (BigDecimal(i % 3), BigDecimal(i % 2)))
-      .toDF("a", "b")
+    val decimalData = Seq.tabulate(6)(i =>
+      (BigDecimal(i % 3), BigDecimal(i % 2))).toDF("a", "b")
     val decimalRes = decimalData.stat.cov("a", "b")
     assert(math.abs(decimalRes) < 1e-12)
   }
@@ -237,15 +235,13 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     // this is a regression test, where when merging partitions, we omitted values with higher
     // counts than those that existed in the map when the map was full. This test should also fail
     // if anything like SPARK-9614 is observed once again
-    val df = rows
-      .mapPartitionsWithIndex { (idx, iter) =>
-        if (idx == 3) { // must come from one of the later merges, therefore higher partition index
-          Iterator("3", "3", "3", "3", "3")
-        } else {
-          Iterator("0", "1", "2", "3", "4")
-        }
+    val df = rows.mapPartitionsWithIndex { (idx, iter) =>
+      if (idx == 3) { // must come from one of the later merges, therefore higher partition index
+        Iterator("3", "3", "3", "3", "3")
+      } else {
+        Iterator("0", "1", "2", "3", "4")
       }
-      .toDF("a")
+    }.toDF("a")
     val results = df.stat.freqItems(Array("a"), 0.25)
     val items = results.collect().head.getSeq[String](0)
     assert(items.contains("3"))

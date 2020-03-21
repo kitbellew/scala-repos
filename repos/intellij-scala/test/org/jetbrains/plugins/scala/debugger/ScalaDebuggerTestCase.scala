@@ -328,9 +328,8 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
       val location = suspendContext.getFrameProxy.getStackFrame.location
       val expected = format(source, methodName, lineNumber)
       val actualLine = inReadAction {
-        new ScalaPositionManager(getDebugProcess)
-          .getSourcePosition(location)
-          .getLine
+        new ScalaPositionManager(getDebugProcess).getSourcePosition(
+          location).getLine
       }
       val actual =
         format(location.sourceName, location.method().name(), actualLine + 1)

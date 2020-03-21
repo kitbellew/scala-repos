@@ -86,8 +86,8 @@ class MasterWebUISuite extends SparkFunSuite with BeforeAndAfter {
 
     when(masterPage.getMasterState).thenReturn(stateResponse)
 
-    val resultJson = Source
-      .fromURL(s"http://localhost:${masterWebUI.boundPort}/api/v1/applications")
+    val resultJson = Source.fromURL(
+      s"http://localhost:${masterWebUI.boundPort}/api/v1/applications")
       .mkString
     val parsedJson = parse(resultJson)
     val firstApp = parsedJson(0)

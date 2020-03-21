@@ -357,13 +357,10 @@ object RegressionForest {
 case class ClassificationForest[K](trees: List[DecisionTree[K]])
     extends Forest[K] {
   def predict(v: Array[Double]): K = {
-    trees
-      .foldLeft(Map.empty[K, Int]) { (acc, classify) =>
-        val k = classify(v)
-        acc + (k -> (acc.getOrElse(k, 0) + 1))
-      }
-      .maxBy(_._2)
-      ._1
+    trees.foldLeft(Map.empty[K, Int]) { (acc, classify) =>
+      val k = classify(v)
+      acc + (k -> (acc.getOrElse(k, 0) + 1))
+    }.maxBy(_._2)._1
   }
   def ++(that: Forest[K]) = ClassificationForest(trees ++ that.trees)
 }
@@ -671,11 +668,9 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             }
 
             treesM flatMap { trees =>
-              val forests: List[F] = (1 to numChunks)
-                .foldLeft(Nil: List[F]) { (acc, i) =>
-                  (forest(trees take (i * chunkSize)) |+| prev) :: acc
-                }
-                .reverse
+              val forests: List[F] = (1 to numChunks).foldLeft(Nil: List[F]) {
+                (acc, i) => (forest(trees take (i * chunkSize)) |+| prev) :: acc
+              }.reverse
 
               val errors: M[List[Double]] =
                 (forests zip validationSamples) traverse {
@@ -731,11 +726,9 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   val valueColumns =
                     models.foldLeft(Map.empty[ColumnRef, Column]) {
                       case (acc, (modelId, (_, forest))) =>
-                        val modelSlice = head
-                          .deref(paths.Value)
-                          .deref(CPathField(modelId))
-                          .mapColumns(cf.util.CoerceToDouble)
-                          .toArray[Double]
+                        val modelSlice = head.deref(paths.Value).deref(
+                          CPathField(modelId)).mapColumns(
+                          cf.util.CoerceToDouble).toArray[Double]
                         val vecsOpt =
                           sliceToArray[Array[Double]](modelSlice, null) {
                             case (c: HomogeneousArrayColumn[_]) => {

@@ -20,12 +20,9 @@ class FlowReduceSpec extends AkkaSpec {
     val inputSource = Source(input).filter(_ ⇒ true).map(identity)
     val reduceSource =
       inputSource.reduce[Int](_ + _).filter(_ ⇒ true).map(identity)
-    val reduceFlow = Flow[Int]
-      .filter(_ ⇒ true)
-      .map(identity)
-      .reduce(_ + _)
-      .filter(_ ⇒ true)
-      .map(identity)
+    val reduceFlow =
+      Flow[Int].filter(_ ⇒ true).map(identity).reduce(_ + _).filter(_ ⇒
+        true).map(identity)
     val reduceSink = Sink.reduce[Int](_ + _)
 
     "work when using Source.runReduce" in assertAllStagesStopped {

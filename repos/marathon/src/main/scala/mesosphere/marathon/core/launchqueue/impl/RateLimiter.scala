@@ -26,9 +26,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
   }
 
   def getDelay(app: AppDefinition): Timestamp =
-    taskLaunchDelays
-      .get(app.id -> app.versionInfo.lastConfigChangeVersion)
-      .map(_.deadline) getOrElse clock.now()
+    taskLaunchDelays.get(app.id -> app.versionInfo.lastConfigChangeVersion).map(
+      _.deadline) getOrElse clock.now()
 
   def addDelay(app: AppDefinition): Timestamp = {
     setNewDelay(app, "Increasing delay") {

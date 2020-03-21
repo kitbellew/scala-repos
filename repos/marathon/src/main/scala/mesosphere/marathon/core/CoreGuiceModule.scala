@@ -172,12 +172,10 @@ class CoreGuiceModule extends AbstractModule {
     bind(classOf[TaskStatusUpdateProcessor])
       .annotatedWith(
         Names.named(ThrottlingTaskStatusUpdateProcessor.dependencyTag))
-      .to(classOf[TaskStatusUpdateProcessorImpl])
-      .asEagerSingleton()
+      .to(classOf[TaskStatusUpdateProcessorImpl]).asEagerSingleton()
 
-    bind(classOf[TaskStatusUpdateProcessor])
-      .to(classOf[ThrottlingTaskStatusUpdateProcessor])
-      .asEagerSingleton()
+    bind(classOf[TaskStatusUpdateProcessor]).to(
+      classOf[ThrottlingTaskStatusUpdateProcessor]).asEagerSingleton()
 
     bind(classOf[AppInfoModule]).asEagerSingleton()
   }

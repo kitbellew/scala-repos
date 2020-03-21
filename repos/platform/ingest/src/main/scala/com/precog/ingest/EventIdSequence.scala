@@ -103,9 +103,9 @@ object SystemEventIdSequence {
       coordination: SystemCoordination,
       blockSize: Int = 100000): SystemEventIdSequence = {
     def loadInitialState() = {
-      val eventRelayState = coordination
-        .registerRelayAgent(agent, blockSize)
-        .getOrElse(throw new UnableToRetrieveRelayAgentState)
+      val eventRelayState =
+        coordination.registerRelayAgent(agent, blockSize).getOrElse(
+          throw new UnableToRetrieveRelayAgentState)
       InternalState(eventRelayState)
     }
 

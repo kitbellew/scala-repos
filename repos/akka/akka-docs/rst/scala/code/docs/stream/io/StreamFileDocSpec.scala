@@ -48,8 +48,7 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
     //#file-source
 
-    val foreach: Future[IOResult] = FileIO
-      .fromFile(file)
+    val foreach: Future[IOResult] = FileIO.fromFile(file)
       .to(Sink.ignore)
       .run()
     //#file-source
@@ -57,8 +56,7 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
   "configure dispatcher in code" in {
     //#custom-dispatcher-code
-    FileIO
-      .fromFile(file)
+    FileIO.fromFile(file)
       .withAttributes(
         ActorAttributes.dispatcher("custom-blocking-io-dispatcher"))
     //#custom-dispatcher-code

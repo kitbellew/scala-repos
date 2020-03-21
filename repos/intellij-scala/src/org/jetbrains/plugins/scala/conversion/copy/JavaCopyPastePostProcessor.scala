@@ -38,16 +38,14 @@ class JavaCopyPastePostProcessor
     extends SingularCopyPastePostProcessor[TextBlockTransferableData] {
   private val Log = Logger.getInstance(classOf[JavaCopyPastePostProcessor])
 
-  private lazy val referenceProcessor = Extensions
-    .getExtensions(CopyPastePostProcessor.EP_NAME)
-    .find(_.isInstanceOf[JavaCopyPasteReferenceProcessor])
-    .get
+  private lazy val referenceProcessor =
+    Extensions.getExtensions(CopyPastePostProcessor.EP_NAME)
+      .find(_.isInstanceOf[JavaCopyPasteReferenceProcessor]).get
 
-  private lazy val scalaProcessor = Extensions
-    .getExtensions(CopyPastePostProcessor.EP_NAME)
-    .find(_.isInstanceOf[ScalaCopyPastePostProcessor])
-    .get
-    .asInstanceOf[ScalaCopyPastePostProcessor]
+  private lazy val scalaProcessor =
+    Extensions.getExtensions(CopyPastePostProcessor.EP_NAME)
+      .find(_.isInstanceOf[ScalaCopyPastePostProcessor]).get.asInstanceOf[
+        ScalaCopyPastePostProcessor]
 
   protected def collectTransferableData0(
       file: PsiFile,
@@ -55,9 +53,8 @@ class JavaCopyPastePostProcessor
       startOffsets: Array[Int],
       endOffsets: Array[Int]): TextBlockTransferableData = {
     if (DumbService.getInstance(file.getProject).isDumb) return null
-    if (!ScalaProjectSettings
-          .getInstance(file.getProject)
-          .isEnableJavaToScalaConversion ||
+    if (!ScalaProjectSettings.getInstance(
+          file.getProject).isEnableJavaToScalaConversion ||
         !file.isInstanceOf[PsiJavaFile]) return null
 
     sealed trait Part
@@ -80,16 +77,17 @@ class JavaCopyPastePostProcessor
           }
           var elem: PsiElement = findElem(startOffset)
           if (elem != null) {
-            while (elem.getParent != null && !elem.getParent
-                     .isInstanceOf[PsiFile] &&
+            while (elem.getParent != null && !elem.getParent.isInstanceOf[
+                     PsiFile] &&
                    elem.getParent.getTextRange.getEndOffset <= endOffset &&
                    elem.getParent.getTextRange.getStartOffset >= startOffset) {
               elem = elem.getParent
             }
             if (startOffset < elem.getTextRange.getStartOffset) {
               buffer += TextPart(
-                new TextRange(startOffset, elem.getTextRange.getStartOffset)
-                  .substring(file.getText))
+                new TextRange(
+                  startOffset,
+                  elem.getTextRange.getStartOffset).substring(file.getText))
             }
             buffer += ElementPart(elem)
             while (elem.getNextSibling != null && elem.getNextSibling.getTextRange.getEndOffset <= endOffset) {
@@ -98,8 +96,9 @@ class JavaCopyPastePostProcessor
             }
             if (elem.getTextRange.getEndOffset < endOffset) {
               buffer += TextPart(
-                new TextRange(elem.getTextRange.getEndOffset, endOffset)
-                  .substring(file.getText))
+                new TextRange(
+                  elem.getTextRange.getEndOffset,
+                  endOffset).substring(file.getText))
             }
           }
         }
@@ -157,12 +156,11 @@ class JavaCopyPastePostProcessor
           new Association(a.kind, range, a.path)
         }
 
-      updatedAssociations ++= associationsHelper
-        .filter(_.itype.isInstanceOf[JavaCodeReferenceStatement])
-        .map { a =>
-          val range = rangeMap.getOrElse(a.itype, new TextRange(0, 0))
-          new Association(a.kind, range, a.path)
-        }
+      updatedAssociations ++= associationsHelper.filter(
+        _.itype.isInstanceOf[JavaCodeReferenceStatement]).map { a =>
+        val range = rangeMap.getOrElse(a.itype, new TextRange(0, 0))
+        new Association(a.kind, range, a.path)
+      }
 
       new ConvertedCode(text, updatedAssociations.toArray)
     } catch {
@@ -183,9 +181,8 @@ class JavaCopyPastePostProcessor
   protected def extractTransferableData0(
       content: Transferable): TextBlockTransferableData = {
     if (content.isDataFlavorSupported(ConvertedCode.Flavor))
-      content
-        .getTransferData(ConvertedCode.Flavor)
-        .asInstanceOf[TextBlockTransferableData]
+      content.getTransferData(ConvertedCode.Flavor).asInstanceOf[
+        TextBlockTransferableData]
     else
       null
   }
@@ -197,9 +194,8 @@ class JavaCopyPastePostProcessor
       i: Int,
       ref: Ref[Boolean],
       value: TextBlockTransferableData) {
-    if (!ScalaProjectSettings
-          .getInstance(project)
-          .isEnableJavaToScalaConversion) return
+    if (!ScalaProjectSettings.getInstance(
+          project).isEnableJavaToScalaConversion) return
     if (value == null) return
     val file =
       PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
@@ -212,15 +208,13 @@ class JavaCopyPastePostProcessor
     if (text == "") return //copy as usually
     if (!ScalaProjectSettings.getInstance(project).isDontShowConversionDialog)
       dialog.show()
-    if (ScalaProjectSettings
-          .getInstance(project)
-          .isDontShowConversionDialog || dialog.isOK) {
+    if (ScalaProjectSettings.getInstance(
+          project).isDontShowConversionDialog || dialog.isOK) {
       val shiftedAssociations = inWriteAction {
         replaceByConvertedCode(editor, bounds, text)
         editor.getCaretModel.moveToOffset(bounds.getStartOffset + text.length)
-        PsiDocumentManager
-          .getInstance(file.getProject)
-          .commitDocument(editor.getDocument)
+        PsiDocumentManager.getInstance(file.getProject).commitDocument(
+          editor.getDocument)
 
         val markedAssociations = associations.toList.zipMapped { dependency =>
           editor.getDocument.createRangeMarker(
@@ -255,9 +249,8 @@ class JavaCopyPastePostProcessor
   }
 
   private def withSpecialStyleIn(project: Project)(block: => Unit) {
-    val settings = CodeStyleSettingsManager
-      .getSettings(project)
-      .getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
+    val settings = CodeStyleSettingsManager.getSettings(
+      project).getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
 
     val keep_blank_lines_in_code = settings.KEEP_BLANK_LINES_IN_CODE
     val keep_blank_lines_in_declarations =

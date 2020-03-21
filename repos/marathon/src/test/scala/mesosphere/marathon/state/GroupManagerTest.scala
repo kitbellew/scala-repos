@@ -128,8 +128,9 @@ class GroupManagerTest
           portDefinitions = Seq(),
           container = Some(container))
       ))
-    val update = manager(minServicePort = 10, maxServicePort = 20)
-      .assignDynamicServicePorts(Group.empty, group)
+    val update = manager(
+      minServicePort = 10,
+      maxServicePort = 20).assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
     update.transitiveApps.flatMap(
       _.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 2
@@ -149,8 +150,9 @@ class GroupManagerTest
         AppDefinition(
           "/app1".toPath,
           portDefinitions = PortDefinitions(10, 0, 11))))
-    val update = manager(minServicePort = 10, maxServicePort = 20)
-      .assignDynamicServicePorts(from, to)
+    val update = manager(
+      minServicePort = 10,
+      maxServicePort = 20).assignDynamicServicePorts(from, to)
     update.app("/app1".toPath).get.portNumbers should be(Seq(10, 12, 11))
   }
 
@@ -185,8 +187,9 @@ class GroupManagerTest
       Set(
         AppDefinition("/app1".toPath, container = Some(container))
       ))
-    val update = manager(minServicePort = 90, maxServicePort = 900)
-      .assignDynamicServicePorts(Group.empty, group)
+    val update = manager(
+      minServicePort = 90,
+      maxServicePort = 900).assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
     update.transitiveApps.flatMap(_.portNumbers) should equal(Set(80, 81))
   }
@@ -298,8 +301,8 @@ class GroupManagerTest
       Set(Group("/group1".toPath)))
 
     when(f.groupRepo.zkRootName).thenReturn(GroupRepository.zkRootName)
-    when(f.groupRepo.group(GroupRepository.zkRootName))
-      .thenReturn(Future.successful(None))
+    when(f.groupRepo.group(GroupRepository.zkRootName)).thenReturn(
+      Future.successful(None))
 
     intercept[ValidationFailedException] {
       Await.result(f.manager.update(group.id, _ => group), 3.seconds)
@@ -317,17 +320,17 @@ class GroupManagerTest
       portDefinitions = Seq.empty)
     val group = Group(PathId.empty, Set(app)).copy(version = Timestamp(1))
     when(f.groupRepo.zkRootName).thenReturn(GroupRepository.zkRootName)
-    when(f.groupRepo.group(GroupRepository.zkRootName))
-      .thenReturn(Future.successful(None))
+    when(f.groupRepo.group(GroupRepository.zkRootName)).thenReturn(
+      Future.successful(None))
     when(f.scheduler.deploy(any(), any())).thenReturn(Future.successful(()))
     val appWithVersionInfo = app.copy(versionInfo =
       AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
     val groupWithVersionInfo =
       Group(PathId.empty, Set(appWithVersionInfo)).copy(version = Timestamp(1))
-    when(f.appRepo.store(any()))
-      .thenReturn(Future.successful(appWithVersionInfo))
-    when(f.groupRepo.store(any(), any()))
-      .thenReturn(Future.successful(groupWithVersionInfo))
+    when(f.appRepo.store(any())).thenReturn(
+      Future.successful(appWithVersionInfo))
+    when(f.groupRepo.store(any(), any())).thenReturn(
+      Future.successful(groupWithVersionInfo))
 
     Await.result(
       f.manager.update(group.id, _ => group, version = Timestamp(1)),
@@ -347,12 +350,12 @@ class GroupManagerTest
     val group = Group(PathId.empty, Set(app)).copy(version = Timestamp(1))
     val groupEmpty = group.copy(apps = Set(), version = Timestamp(2))
     when(f.groupRepo.zkRootName).thenReturn(GroupRepository.zkRootName)
-    when(f.groupRepo.group(GroupRepository.zkRootName))
-      .thenReturn(Future.successful(Some(group)))
+    when(f.groupRepo.group(GroupRepository.zkRootName)).thenReturn(
+      Future.successful(Some(group)))
     when(f.scheduler.deploy(any(), any())).thenReturn(Future.successful(()))
     when(f.appRepo.expunge(any())).thenReturn(Future.successful(Seq(true)))
-    when(f.groupRepo.store(any(), any()))
-      .thenReturn(Future.successful(groupEmpty))
+    when(f.groupRepo.store(any(), any())).thenReturn(
+      Future.successful(groupEmpty))
 
     Await.result(
       f.manager.update(group.id, _ => groupEmpty, version = Timestamp(1)),

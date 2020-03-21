@@ -163,12 +163,10 @@ class RewriteJoins extends Phase {
     val invalid = inv1 ++ inv2
     if ((l1 eq j.left) && (r1 eq j.right)) (j, invalid)
     else {
-      val j2 = j
-        .copy(
-          left = l1,
-          right = r1,
-          on = and(p1Opt, and(p2Opt, j.on.untypeReferences(invalid))))
-        .infer()
+      val j2 = j.copy(
+        left = l1,
+        right = r1,
+        on = and(p1Opt, and(p2Opt, j.on.untypeReferences(invalid)))).infer()
       logger.debug("Hoisting join filters from:", j)
       logger.debug("Hoisted join filters in:", j2)
       (j2, invalid)
@@ -197,9 +195,9 @@ class RewriteJoins extends Phase {
             (
               p,
               (
-                pOnBGen, /*None: Option[Symbol]*/ struct1
-                  .find { case (s, n) => pOnBGen == n }
-                  .map(_._1)))
+                pOnBGen, /*None: Option[Symbol]*/ struct1.find {
+                  case (s, n) => pOnBGen == n
+                }.map(_._1)))
         }.toMap
         logger.debug(
           "Found references in predicate: " + foundRefs.mkString(", "))
@@ -225,13 +223,10 @@ class RewriteJoins extends Phase {
         val fs = new AnonSymbol
         val pred = pred1.replace {
           case p: Select =>
-            allRefs
-              .get(p)
-              .map(s =>
-                Select(
-                  Ref(fs) :@ b.nodeType.asCollectionType.elementType,
-                  s) :@ p.nodeType)
-              .getOrElse(p)
+            allRefs.get(p).map(s =>
+              Select(
+                Ref(fs) :@ b.nodeType.asCollectionType.elementType,
+                s) :@ p.nodeType).getOrElse(p)
         }
         val res = Filter(fs, Bind(b.generator, from1, sel), pred).infer()
         logger.debug(
@@ -269,16 +264,14 @@ class RewriteJoins extends Phase {
           "Pulling refs to [" + illegal.mkString(
             ", ") + "] with OK base " + ok + " out of:",
           sn)
-        val requiredOkPaths = illegalDefs
-          .flatMap(
-            _._2.collect { case p @ FwdPath(s :: _) if s == ok => p }.toSeq)
-          .toSet
+        val requiredOkPaths = illegalDefs.flatMap(_._2.collect {
+          case p @ FwdPath(s :: _) if s == ok => p
+        }.toSeq).toSet
         val existingOkDefs = legalDefs.collect {
           case (s, p @ FwdPath(s2 :: _)) if s2 == ok => (p, s)
         }.toMap
-        val createDefs = (requiredOkPaths -- existingOkDefs.keySet)
-          .map(p => (new AnonSymbol, p))
-          .toMap
+        val createDefs = (requiredOkPaths -- existingOkDefs.keySet).map(p =>
+          (new AnonSymbol, p)).toMap
         val sn2 = StructNode(ConstArray.from(legalDefs ++ createDefs))
         logger.debug("Pulled refs out of:", sn2)
         val replacements =
@@ -318,23 +311,21 @@ class RewriteJoins extends Phase {
     val (r1, r1m) = trChild(j.right, illegal + j.leftGen, j.rightGen)
     if (l1m.isEmpty && r1m.isEmpty) (j, Map.empty)
     else {
-      val on1 = j.on
-        .replace(
-          {
-            case p @ FwdPath(r1 :: rest)
-                if r1 == j.leftGen && l1m.contains(rest) =>
-              l1m(rest)
-            case p @ FwdPath(r1 :: rest)
-                if r1 == j.rightGen && r1m.contains(rest) =>
-              r1m(rest)
-          },
-          keepType = true,
-          bottomUp = true
-        )
-        .replace {
-          case r @ Ref(s) if s == j.leftGen || s == j.rightGen =>
-            r.untyped // Structural expansion may have changed
-        }
+      val on1 = j.on.replace(
+        {
+          case p @ FwdPath(r1 :: rest)
+              if r1 == j.leftGen && l1m.contains(rest) =>
+            l1m(rest)
+          case p @ FwdPath(r1 :: rest)
+              if r1 == j.rightGen && r1m.contains(rest) =>
+            r1m(rest)
+        },
+        keepType = true,
+        bottomUp = true
+      ).replace {
+        case r @ Ref(s) if s == j.leftGen || s == j.rightGen =>
+          r.untyped // Structural expansion may have changed
+      }
       val j2 = j.copy(left = l1, right = r1, on = on1).infer()
       logger.debug(
         "Eliminated illegal refs [" + illegal.mkString(", ") + "] in:",
@@ -432,8 +423,9 @@ class RewriteJoins extends Phase {
         def isAliasing(s: ConstArray[(TermSymbol, Node)]) =
           s.forall {
             case (_, n) =>
-              n.collect({ case Path(_) => true }, stopOnMatch = true)
-                .length <= 1
+              n.collect(
+                { case Path(_) => true },
+                stopOnMatch = true).length <= 1
           }
         val a1 = isAliasing(p1)
         if (a1 || isAliasing(p2)) {

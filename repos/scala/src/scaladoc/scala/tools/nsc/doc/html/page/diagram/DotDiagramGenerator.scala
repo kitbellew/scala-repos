@@ -162,9 +162,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               "style=\"invis\"\n" +
               incomingImplicits.reverse.map(n => node2Dot(n)).mkString +
               (if (incomingImplicits.size > 1)
-                 incomingImplicits
-                   .map(n => "node" + node2Index(n))
-                   .mkString(" -> ") +
+                 incomingImplicits.map(n => "node" + node2Index(n)).mkString(
+                   " -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
                else "") +
               "}"
@@ -177,22 +176,19 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               "style=\"invis\"\n" +
               outgoingImplicits.reverse.map(n => node2Dot(n)).mkString +
               (if (outgoingImplicits.size > 1)
-                 outgoingImplicits
-                   .map(n => "node" + node2Index(n))
-                   .mkString(" -> ") +
+                 outgoingImplicits.map(n => "node" + node2Index(n)).mkString(
+                   " -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
                else "") +
               "}"
         }
 
         // assemble clusters into another cluster
-        val incomingTooltip = incomingImplicits
-          .map(_.name)
-          .mkString(", ") + " can be implicitly converted to " + thisNode.name
+        val incomingTooltip = incomingImplicits.map(_.name).mkString(
+          ", ") + " can be implicitly converted to " + thisNode.name
         val outgoingTooltip =
-          thisNode.name + " can be implicitly converted to " + outgoingImplicits
-            .map(_.name)
-            .mkString(", ")
+          thisNode.name + " can be implicitly converted to " + outgoingImplicits.map(
+            _.name).mkString(", ")
         "subgraph clusterAll {\n" +
           "style=\"invis\"\n" +
           outgoingCluster + "\n" +
@@ -234,20 +230,18 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       // inheritance edges
       edges.map {
         case (from, tos) =>
-          tos
-            .map(to => {
-              val id = "graph" + counter + "_" + node2Index(
-                to) + "_" + node2Index(from)
-              // the X -> Y edge is inverted twice to keep the diagram flowing the right way
-              // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
-              "node" + node2Index(to) + " -> node" + node2Index(from) +
-                " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
-                "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
-                                              " are subtypes of "
-                                            else " is a subtype of ") +
-                to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
-            })
-            .mkString
+          tos.map(to => {
+            val id =
+              "graph" + counter + "_" + node2Index(to) + "_" + node2Index(from)
+            // the X -> Y edge is inverted twice to keep the diagram flowing the right way
+            // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
+            "node" + node2Index(to) + " -> node" + node2Index(from) +
+              " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
+              "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
+                                            " are subtypes of "
+                                          else " is a subtype of ") +
+              to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
+          }).mkString
       }.mkString +
       "}"
 
@@ -379,8 +373,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     val result = if (dotOutput != null) {
       val src = scala.io.Source.fromString(dotOutput)
       try {
-        val cpa = scala.xml.parsing.ConstructingParser
-          .fromSource(src, preserveWS = false)
+        val cpa = scala.xml.parsing.ConstructingParser.fromSource(
+          src,
+          preserveWS = false)
         val doc = cpa.document()
         if (doc != null)
           transform(doc.docElem)
@@ -394,13 +389,15 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
             settings.printMsg(
               "Encountered an error while generating page for " + template.qualifiedName)
             settings.printMsg(
-              dotInput.toString
-                .split("\n")
-                .mkString("\nDot input:\n\t", "\n\t", ""))
+              dotInput.toString.split("\n").mkString(
+                "\nDot input:\n\t",
+                "\n\t",
+                ""))
             settings.printMsg(
-              dotOutput.toString
-                .split("\n")
-                .mkString("\nDot output:\n\t", "\n\t", ""))
+              dotOutput.toString.split("\n").mkString(
+                "\nDot output:\n\t",
+                "\n\t",
+                ""))
             settings.printMsg(
               exc.getStackTrace.mkString(
                 "\nException: " + exc.toString + ":\n\tat ",
@@ -612,9 +609,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
   )
 
   private def flatten(attributes: Map[String, String]) =
-    attributes
-      .map { case (key, value) => key + "=\"" + value + "\"" }
-      .mkString(", ")
+    attributes.map { case (key, value) => key + "=\"" + value + "\"" }.mkString(
+      ", ")
 
   private val graphAttributesStr = graphAttributes.map {
     case (key, value) => key + "=\"" + value + "\";\n"

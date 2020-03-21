@@ -36,10 +36,16 @@ object EnumeratorsSpec
 
     "yield when both enumerators EOF" in {
       mustExecute(8) { foldEC =>
-        val e1 = Enumerator(List(1), List(3), List(5), List(7)) >>> Enumerator
-          .enumInput(Input.EOF)
-        val e2 = Enumerator(List(2), List(4), List(6), List(8)) >>> Enumerator
-          .enumInput(Input.EOF)
+        val e1 = Enumerator(
+          List(1),
+          List(3),
+          List(5),
+          List(7)) >>> Enumerator.enumInput(Input.EOF)
+        val e2 = Enumerator(
+          List(2),
+          List(4),
+          List(6),
+          List(8)) >>> Enumerator.enumInput(Input.EOF)
         val e = e1 interleave e2
         val kk = e |>>> Iteratee.fold(List.empty[Int])((r, e: List[Int]) =>
           r ++ e)(foldEC)
@@ -289,9 +295,8 @@ object EnumeratorsSpec
     "read bytes from a stream" in {
       mustExecute(3) { fromStreamEC =>
         val s = "hello"
-        val enumerator = Enumerator
-          .fromStream(new ByteArrayInputStream(s.getBytes))(fromStreamEC)
-          .map(new String(_))
+        val enumerator = Enumerator.fromStream(
+          new ByteArrayInputStream(s.getBytes))(fromStreamEC).map(new String(_))
         mustEnumerateTo(s)(enumerator)
       }
     }
@@ -419,10 +424,8 @@ object EnumeratorsSpec
         }(outputEC)
         val promise = (enumerator |>>> Iteratee.fold[Array[Byte], Array[Byte]](
           Array[Byte]())(_ ++ _)(foldEC))
-        Await
-          .result(promise, Duration.Inf)
-          .map(_.toChar)
-          .foldLeft("")(_ + _) must equalTo(a + b)
+        Await.result(promise, Duration.Inf).map(_.toChar).foldLeft("")(
+          _ + _) must equalTo(a + b)
       }
     }
 

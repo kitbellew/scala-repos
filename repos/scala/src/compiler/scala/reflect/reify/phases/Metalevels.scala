@@ -134,11 +134,10 @@ trait Metalevels {
           val symtab1 = symtab -- inlinees
           if (reifyDebug)
             println(
-              "trimmed %s inlineable free defs from its symbol table: %s"
-                .format(
-                  inlinees.length,
-                  inlinees map (inlinee =>
-                    symtab.symName(inlinee)) mkString (", ")))
+              "trimmed %s inlineable free defs from its symbol table: %s".format(
+                inlinees.length,
+                inlinees map (inlinee =>
+                  symtab.symName(inlinee)) mkString (", ")))
           withinSplice {
             super.transform(
               TreeSplice(

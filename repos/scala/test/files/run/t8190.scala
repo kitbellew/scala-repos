@@ -102,9 +102,8 @@ object Test extends App with Overloads {
   }
   def check(): Unit = {
     println("checking exhaustiveness in scala.reflect.api.Universe...")
-    var types = typeOf[scala.reflect.api.Universe].members
-      .filter(sym => sym.isType && !sym.isClass)
-      .map(_.name.toString)
+    var types = typeOf[scala.reflect.api.Universe].members.filter(sym =>
+      sym.isType && !sym.isClass).map(_.name.toString)
     types =
       types.filter(
         _ != "ModifiersCreator"

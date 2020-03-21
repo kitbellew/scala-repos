@@ -139,8 +139,7 @@ class RecipeByteStrings extends RecipeSpec {
           ByteString(4, 5, 6),
           ByteString(7, 8, 9, 10)))
 
-      Await
-        .result(bytes1.via(limiter).limit(10).runWith(Sink.seq), 3.seconds)
+      Await.result(bytes1.via(limiter).limit(10).runWith(Sink.seq), 3.seconds)
         .fold(ByteString())(_ ++ _) should be(
         ByteString(1, 2, 3, 4, 5, 6, 7, 8, 9))
 
@@ -162,9 +161,8 @@ class RecipeByteStrings extends RecipeSpec {
       val compacted: Source[ByteString, NotUsed] = data.map(_.compact)
       //#compacting-bytestrings
 
-      Await
-        .result(compacted.limit(10).runWith(Sink.seq), 3.seconds)
-        .forall(_.isCompact) should be(true)
+      Await.result(compacted.limit(10).runWith(Sink.seq), 3.seconds).forall(
+        _.isCompact) should be(true)
     }
 
   }

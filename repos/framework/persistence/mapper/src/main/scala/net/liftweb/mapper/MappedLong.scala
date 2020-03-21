@@ -272,9 +272,10 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
     */
   override def _toForm: Box[NodeSeq] =
     Full(
-      SHtml
-        .checkbox[ENUM#Value](enum.values.iterator.toList, get, this(_))
-        .toForm)
+      SHtml.checkbox[ENUM#Value](
+        enum.values.iterator.toList,
+        get,
+        this(_)).toForm)
 }
 
 /**

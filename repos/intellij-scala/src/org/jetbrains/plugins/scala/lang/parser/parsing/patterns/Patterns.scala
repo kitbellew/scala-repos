@@ -141,8 +141,8 @@ object XmlPatterns extends ParserNode {
       return false
     }
 
-    if (!parseSeqWildcard(false) && !parseSeqWildcardBinding(false) && Pattern
-          .parse(builder)) {
+    if (!parseSeqWildcard(false) && !parseSeqWildcardBinding(
+          false) && Pattern.parse(builder)) {
       while (builder.getTokenType == ScalaTokenTypes.tCOMMA && !parseSeqWildcard(
                true) && !parseSeqWildcardBinding(true)) {
         builder.advanceLexer() // eat comma

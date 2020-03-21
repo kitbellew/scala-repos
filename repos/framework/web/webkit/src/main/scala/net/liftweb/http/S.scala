@@ -494,11 +494,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # deleteCookie ( String )
     */
   def findCookie(name: String): Box[HTTPCookie] =
-    Box
-      .legacyNullTest(_responseCookies.value)
-      .flatMap(rc =>
-        Box(rc.inCookies.filter(_.name == name))
-          .map(_.clone().asInstanceOf[HTTPCookie]))
+    Box.legacyNullTest(_responseCookies.value).flatMap(rc =>
+      Box(rc.inCookies.filter(_.name == name)).map(
+        _.clone().asInstanceOf[HTTPCookie]))
 
   /**
     * Get the cookie value for the given cookie
@@ -559,9 +557,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # responseCookies
     */
   def addCookie(cookie: HTTPCookie) {
-    Box
-      .legacyNullTest(_responseCookies.value)
-      .foreach(rc => _responseCookies.set(rc.add(cookie)))
+    Box.legacyNullTest(_responseCookies.value).foreach(rc =>
+      _responseCookies.set(rc.add(cookie)))
   }
 
   /**
@@ -574,9 +571,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # deleteCookie ( String )
     */
   def deleteCookie(cookie: HTTPCookie) {
-    Box
-      .legacyNullTest(_responseCookies.value)
-      .foreach(rc => _responseCookies.set(rc.delete(cookie)))
+    Box.legacyNullTest(_responseCookies.value).foreach(rc =>
+      _responseCookies.set(rc.delete(cookie)))
   }
 
   /**
@@ -589,9 +585,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # deleteCookie ( Cookie )
     */
   def deleteCookie(name: String) {
-    Box
-      .legacyNullTest(_responseCookies.value)
-      .foreach(rc => _responseCookies.set(rc.delete(name)))
+    Box.legacyNullTest(_responseCookies.value).foreach(rc =>
+      _responseCookies.set(rc.delete(name)))
   }
 
   /**
@@ -919,8 +914,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   )(implicit cometManifest: Manifest[T]): Box[T] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
-      cometActor <- session
-        .findOrCreateComet[T](cometName, cometHtml, cometAttributes)
+      cometActor <- session.findOrCreateComet[T](
+        cometName,
+        cometHtml,
+        cometAttributes)
     } yield {
       if (receiveUpdatesOnPage)
         addComet(cometActor)
@@ -974,20 +971,18 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
     if (cometVersions.nonEmpty) {
       List(
-        js.JE
-          .Call(
-            "lift.registerComets",
-            js.JE.JsObj(
-              cometVersions.toList.map {
-                case CometVersionPair(guid, version) =>
-                  (guid, js.JE.Num(version))
-              }: _*
-            ),
-            // Don't kick off a new comet request client-side if we're responding
-            // to a comet request right now.
-            !currentCometActor.isDefined
-          )
-          .cmd
+        js.JE.Call(
+          "lift.registerComets",
+          js.JE.JsObj(
+            cometVersions.toList.map {
+              case CometVersionPair(guid, version) =>
+                (guid, js.JE.Num(version))
+            }: _*
+          ),
+          // Don't kick off a new comet request client-side if we're responding
+          // to a comet request right now.
+          !currentCometActor.isDefined
+        ).cmd
       )
     } else {
       Nil
@@ -1066,20 +1061,18 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # loc ( String, NodeSeq )
     */
   def loc(str: String): Box[NodeSeq] =
-    resourceBundles
-      .flatMap(r =>
-        tryo(r.getObject(str) match {
-          case null =>
-            LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
-            Empty
-          case s: String   => Full(LiftRules.localizeStringToXml(s))
-          case g: Group    => Full(g)
-          case e: Elem     => Full(e)
-          case n: Node     => Full(n)
-          case ns: NodeSeq => Full(ns)
-          case x           => Full(Text(x.toString))
-        }).flatMap(s => s))
-      .find(e => true)
+    resourceBundles.flatMap(r =>
+      tryo(r.getObject(str) match {
+        case null =>
+          LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
+          Empty
+        case s: String   => Full(LiftRules.localizeStringToXml(s))
+        case g: Group    => Full(g)
+        case e: Elem     => Full(e)
+        case n: Node     => Full(n)
+        case ns: NodeSeq => Full(ns)
+        case x           => Full(Text(x.toString))
+      }).flatMap(s => s)).find(e => true)
 
   /**
     * Localize the incoming string based on a resource bundle for the current locale,
@@ -1136,22 +1129,20 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
             tryo {
               if (Props.devMode) {
                 tryo {
-                  val clz = this.getClass.getClassLoader
-                    .loadClass("java.util.ResourceBundle")
-                  val meth = clz.getDeclaredMethods
-                    .filter { m =>
-                      m.getName == "clearCache" && m.getParameterTypes.length == 0
-                    }
-                    .toList
-                    .head
+                  val clz = this.getClass.getClassLoader.loadClass(
+                    "java.util.ResourceBundle")
+                  val meth = clz.getDeclaredMethods.filter { m =>
+                    m.getName == "clearCache" && m.getParameterTypes.length == 0
+                  }.toList.head
                   meth.invoke(null)
                 }
               }
               List(ResourceBundle.getBundle(name, loc))
             }.openOr(
-              NamedPF
-                .applyBox((name, loc), LiftRules.resourceBundleFactories.toList)
-                .map(List(_)) openOr Nil
+              NamedPF.applyBox(
+                (name, loc),
+                LiftRules.resourceBundleFactories.toList).map(
+                List(_)) openOr Nil
             )))
         _resBundle.value
       }
@@ -1235,15 +1226,13 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
         }.toArray: _*)
 
   private def ?!(str: String, resBundle: List[ResourceBundle]): String =
-    resBundle
-      .flatMap(r =>
-        tryo(r.getObject(str) match {
-          case s: String   => Full(s)
-          case n: Node     => Full(n.text)
-          case ns: NodeSeq => Full(ns.text)
-          case _           => Empty
-        }).flatMap(s => s))
-      .find(s => true) getOrElse {
+    resBundle.flatMap(r =>
+      tryo(r.getObject(str) match {
+        case s: String   => Full(s)
+        case n: Node     => Full(n.text)
+        case ns: NodeSeq => Full(ns.text)
+        case _           => Empty
+      }).flatMap(s => s)).find(s => true) getOrElse {
       LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
       str
     }
@@ -1676,9 +1665,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # getHeaders
     */
   def setHeader(name: String, value: String) {
-    Box
-      .legacyNullTest(_responseHeaders.value)
-      .foreach(rh => rh.headers = rh.headers + (name -> value))
+    Box.legacyNullTest(_responseHeaders.value).foreach(rh =>
+      rh.headers = rh.headers + (name -> value))
   }
 
   /**
@@ -1700,12 +1688,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # getRequestHeader ( String )
     */
   def getResponseHeaders(in: List[(String, String)]): List[(String, String)] = {
-    Box
-      .legacyNullTest(_responseHeaders.value)
-      .map(rh =>
-        rh.headers.iterator.toList :::
-          in.filter { case (n, v) => !rh.headers.contains(n) })
-      .openOr(Nil)
+    Box.legacyNullTest(_responseHeaders.value).map(rh =>
+      rh.headers.iterator.toList :::
+        in.filter { case (n, v) => !rh.headers.contains(n) }).openOr(Nil)
   }
 
   /**
@@ -1720,10 +1705,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # getRequestHeader ( String )
     */
   def getResponseHeader(name: String): Box[String] = {
-    Box
-      .legacyNullTest(_responseHeaders.value)
-      .map(rh => Box(rh.headers.get(name)))
-      .openOr(Empty)
+    Box.legacyNullTest(_responseHeaders.value).map(rh =>
+      Box(rh.headers.get(name))).openOr(Empty)
   }
 
   /**
@@ -1764,10 +1747,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see DocType
     */
   def getDocType: (Boolean, Box[String]) =
-    Box
-      .legacyNullTest(_responseHeaders.value)
-      .map(rh => (rh.overrodeDocType, rh.docType))
-      .openOr((false, Empty))
+    Box.legacyNullTest(_responseHeaders.value).map(rh =>
+      (rh.overrodeDocType, rh.docType)).openOr((false, Empty))
 
   private object _skipDocType extends TransientRequestVar(false)
 
@@ -1997,16 +1978,14 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def prefixedAttrsToMap(
       prefix: String,
       start: Map[String, String]): Map[String, String] =
-    attrs.reverse
-      .flatMap {
-        case (Right((pre, name)), value) if pre == prefix => List((name, value))
-        case (Left(name), value) if name.startsWith(prefix + ":") =>
-          List(name.substring(prefix.length + 1) -> value)
-        case _ => Nil
-      }
-      .foldRight(start) {
-        case ((name, value), at) => at + (name -> value)
-      }
+    attrs.reverse.flatMap {
+      case (Right((pre, name)), value) if pre == prefix => List((name, value))
+      case (Left(name), value) if name.startsWith(prefix + ":") =>
+        List(name.substring(prefix.length + 1) -> value)
+      case _ => Nil
+    }.foldRight(start) {
+      case ((name, value), at) => at + (name -> value)
+    }
 
   /**
     * Returns the S attributes that are prefixed by 'prefix' parameter as a Map[String, String]
@@ -2244,20 +2223,16 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     type Info = String
 
     protected def findAttr(key: String): Option[Info] =
-      attrs
-        .find {
-          case (Left(v), _) if v == key => true
-          case _                        => false
-        }
-        .map(_._2)
+      attrs.find {
+        case (Left(v), _) if v == key => true
+        case _                        => false
+      }.map(_._2)
 
     protected def findAttr(prefix: String, key: String): Option[Info] =
-      attrs
-        .find {
-          case (Right((p, n)), _) if (p == prefix && n == key) => true
-          case _                                               => false
-        }
-        .map(_._2)
+      attrs.find {
+        case (Right((p, n)), _) if (p == prefix && n == key) => true
+        case _                                               => false
+      }.map(_._2)
 
     protected def convert[T](in: Option[T]): Box[T] = Box(in)
 
@@ -2392,9 +2367,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       currentAttrs.toList.find { _.key == key }.map(_.value.text)
 
     protected def findAttr(prefix: String, key: String): Option[Info] =
-      currentAttrs.toList
-        .find { _.prefixedKey == (prefix + ":" + key) }
-        .map(_.value.text)
+      currentAttrs.toList.find { _.prefixedKey == (prefix + ":" + key) }.map(
+        _.value.text)
 
     protected def convert[T](in: Option[T]): Box[T] = Box(in)
 
@@ -2850,11 +2824,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       new DecimalFormat("00000000000000000").format(bump + num)
     // take the first 2 non-Lift/non-Scala stack frames for use as hash issue 174
     "f" + prefix + "_" + Helpers.hashHex(
-      (new Exception).getStackTrace.toList
-        .filter(notLiftOrScala)
-        .take(2)
-        .map(_.toString)
-        .mkString(","))
+      (new Exception).getStackTrace.toList.filter(notLiftOrScala).take(2).map(
+        _.toString).mkString(","))
   }
 
   /** Standard func-name logic. This is the default routine. */
@@ -2941,16 +2912,13 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       (
         JsonCall(key),
         JsCmds.Run(
-          name
-            .map(n =>
-              onErrorFunc +
-                "/* JSON Func " + n + " $$ " + key + " */")
-            .openOr("") +
+          name.map(n =>
+            onErrorFunc +
+              "/* JSON Func " + n + " $$ " + key + " */").openOr("") +
             "function " + key + "(obj) {lift.ajax(" +
             "'" + key + "='+ encodeURIComponent(" +
-            LiftRules.jsArtifacts
-              .jsonStringify(JE.JsRaw("obj"))
-              .toJsCmd + "), null," + onErrorParam + ");}"))
+            LiftRules.jsArtifacts.jsonStringify(
+              JE.JsRaw("obj")).toJsCmd + "), null," + onErrorParam + ");}"))
     }
   }
 
@@ -3186,22 +3154,22 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Returns only ERROR notices
     */
   def errors: List[(NodeSeq, Box[String])] =
-    List(oldNotices.is, p_notice.is)
-      .flatMap(_.filter(_._1 == NoticeType.Error).map(n => (n._2, n._3)))
+    List(oldNotices.is, p_notice.is).flatMap(
+      _.filter(_._1 == NoticeType.Error).map(n => (n._2, n._3)))
 
   /**
     * Returns only NOTICE notices
     */
   def notices: List[(NodeSeq, Box[String])] =
-    List(oldNotices.is, p_notice.is)
-      .flatMap(_.filter(_._1 == NoticeType.Notice).map(n => (n._2, n._3)))
+    List(oldNotices.is, p_notice.is).flatMap(
+      _.filter(_._1 == NoticeType.Notice).map(n => (n._2, n._3)))
 
   /**
     * Returns only WARNING notices
     */
   def warnings: List[(NodeSeq, Box[String])] =
-    List(oldNotices.is, p_notice.is)
-      .flatMap(_.filter(_._1 == NoticeType.Warning).map(n => (n._2, n._3)))
+    List(oldNotices.is, p_notice.is).flatMap(
+      _.filter(_._1 == NoticeType.Warning).map(n => (n._2, n._3)))
 
   /**
     * Clears up the notices
@@ -3245,12 +3213,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def idMessages(
       f: => List[(NodeSeq, Box[String])]): List[(String, List[NodeSeq])] = {
     val res = new HashMap[String, List[NodeSeq]]
-    f.filter(_._2.isEmpty == false)
-      .foreach(_ match {
-        case (node, id) =>
-          val key = id openOrThrowException ("legacy code")
-          res += (key -> (res.getOrElseUpdate(key, Nil) ::: List(node)))
-      })
+    f.filter(_._2.isEmpty == false).foreach(_ match {
+      case (node, id) =>
+        val key = id openOrThrowException ("legacy code")
+        res += (key -> (res.getOrElseUpdate(key, Nil) ::: List(node)))
+    })
 
     res.toList
   }

@@ -252,8 +252,7 @@ private[process] trait ProcessImpl {
     override def isAlive() = p.isAlive()
     override def exitValue() = {
       try p.waitFor() // wait for the process to terminate
-      finally inputThread
-        .interrupt() // we interrupt the input thread to notify it that it can terminate
+      finally inputThread.interrupt() // we interrupt the input thread to notify it that it can terminate
       outputThreads foreach (_.join()) // this ensures that all output is complete before returning (waitFor does not ensure this)
 
       p.exitValue()

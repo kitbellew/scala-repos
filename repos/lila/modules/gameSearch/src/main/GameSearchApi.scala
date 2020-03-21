@@ -38,31 +38,29 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
   private def storable(game: Game) = (game.finished || game.imported)
 
   private def toDoc(game: Game, analysed: Boolean) =
-    Json
-      .obj(
-        Fields.status -> (game.status match {
-          case s if s.is(_.Timeout) => chess.Status.Resign
-          case s if s.is(_.NoStart) => chess.Status.Resign
-          case s                    => game.status
-        }).id,
-        Fields.turns -> math.ceil(game.turns.toFloat / 2),
-        Fields.rated -> game.rated,
-        Fields.perf -> game.perfType.map(_.id),
-        Fields.uids -> game.userIds.toArray.some.filterNot(_.isEmpty),
-        Fields.winner -> (game.winner flatMap (_.userId)),
-        Fields.winnerColor -> game.winner.fold(3)(_.color.fold(1, 2)),
-        Fields.averageRating -> game.averageUsersRating,
-        Fields.ai -> game.aiLevel,
-        Fields.date -> (lila.search.Date.formatter print game.updatedAtOrCreatedAt),
-        Fields.duration -> game.durationSeconds,
-        Fields.clockInit -> game.clock.map(_.limit),
-        Fields.clockInc -> game.clock.map(_.increment),
-        Fields.analysed -> analysed,
-        Fields.whiteUser -> game.whitePlayer.userId,
-        Fields.blackUser -> game.blackPlayer.userId,
-        Fields.source -> game.source.map(_.id)
-      )
-      .noNull
+    Json.obj(
+      Fields.status -> (game.status match {
+        case s if s.is(_.Timeout) => chess.Status.Resign
+        case s if s.is(_.NoStart) => chess.Status.Resign
+        case s                    => game.status
+      }).id,
+      Fields.turns -> math.ceil(game.turns.toFloat / 2),
+      Fields.rated -> game.rated,
+      Fields.perf -> game.perfType.map(_.id),
+      Fields.uids -> game.userIds.toArray.some.filterNot(_.isEmpty),
+      Fields.winner -> (game.winner flatMap (_.userId)),
+      Fields.winnerColor -> game.winner.fold(3)(_.color.fold(1, 2)),
+      Fields.averageRating -> game.averageUsersRating,
+      Fields.ai -> game.aiLevel,
+      Fields.date -> (lila.search.Date.formatter print game.updatedAtOrCreatedAt),
+      Fields.duration -> game.durationSeconds,
+      Fields.clockInit -> game.clock.map(_.limit),
+      Fields.clockInc -> game.clock.map(_.increment),
+      Fields.analysed -> analysed,
+      Fields.whiteUser -> game.whitePlayer.userId,
+      Fields.blackUser -> game.blackPlayer.userId,
+      Fields.source -> game.source.map(_.id)
+    ).noNull
 
   def indexAll: Funit = {
     writeable = false
@@ -111,11 +109,10 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
     val maxGames = Int.MaxValue
     // val maxGames = 10 * 1000 * 1000
 
-    lila.game.tube.gameTube.coll
-      .find(BSONDocument(
+    lila.game.tube.gameTube.coll.find(
+      BSONDocument(
         "ca" -> BSONDocument("$gt" -> since)
-      ))
-      .sort(BSONDocument("ca" -> 1))
+      )).sort(BSONDocument("ca" -> 1))
       .cursor[Game](ReadPreference.secondaryPreferred)
       .enumerate(maxGames, stopOnError = true) &>
       Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>

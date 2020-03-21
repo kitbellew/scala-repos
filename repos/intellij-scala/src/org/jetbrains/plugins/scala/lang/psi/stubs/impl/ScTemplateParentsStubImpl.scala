@@ -37,8 +37,8 @@ class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
       typesString: Seq[StringRef]) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.typesString = typesString
     this.constructor = constructor
   }
@@ -62,13 +62,11 @@ class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
           }) return typeElements
     }
     val res: Seq[ScTypeElement] =
-      constructor
-        .map(s =>
-          ScalaPsiElementFactory.createConstructorTypeElementFromText(
-            StringRef.toString(s),
-            getPsi,
-            null))
-        .toSeq ++
+      constructor.map(s =>
+        ScalaPsiElementFactory.createConstructorTypeElementFromText(
+          StringRef.toString(s),
+          getPsi,
+          null)).toSeq ++
         getTemplateParentsTypesTexts.map(
           ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))
     types = new SofterReference(res)

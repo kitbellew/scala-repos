@@ -297,8 +297,7 @@ package com.twitter.scalding {
     private[this] def mergeTraversableOnce[K, V: Semigroup](
         items: TraversableOnce[(K, V)]): Map[K, V] = {
       val mutable =
-        scala.collection.mutable
-          .OpenHashMap[K, V]() // Scala's OpenHashMap seems faster than Java and Scala's HashMap Impl's
+        scala.collection.mutable.OpenHashMap[K, V]() // Scala's OpenHashMap seems faster than Java and Scala's HashMap Impl's
       val innerIter = items.toIterator
       while (innerIter.hasNext) {
         val (k, v) = innerIter.next
@@ -820,7 +819,8 @@ package com.twitter.scalding {
     def operate(flowProcess: FlowProcess[_], call: BufferCall[Any]) {
       val oc = call.getOutputCollector
       val key = conv(call.getGroup)
-      val values = call.getArgumentsIterator.asScala
+      val values = call.getArgumentsIterator
+        .asScala
         .map(convV(_))
 
       // Avoiding a lambda here

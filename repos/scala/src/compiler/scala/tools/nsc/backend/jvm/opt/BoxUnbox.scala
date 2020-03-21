@@ -273,9 +273,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             case extraction =>
               val (slot, tp) =
                 localSlots(boxKind.extractedValueIndex(extraction))
-              val loadOps =
-                new VarInsnNode(tp.getOpcode(ILOAD), slot) :: extraction
-                  .postExtractionAdaptationOps(tp)
+              val loadOps = new VarInsnNode(
+                tp.getOpcode(ILOAD),
+                slot) :: extraction.postExtractionAdaptationOps(tp)
               if (keepBox) toReplace(extraction.consumer) = getPop(1) :: loadOps
               else toReplace(extraction.consumer) = loadOps
               toDelete ++= extraction.allInsns - extraction.consumer
@@ -485,9 +485,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     var consumers = Set.empty[BoxConsumer]
 
     def addCreations(boxConsumer: BoxConsumer): Boolean = {
-      val newProds = boxConsumer
-        .boxProducers(prodCons)
-        .filterNot(prod => creations.exists(_.producer == prod))
+      val newProds = boxConsumer.boxProducers(prodCons).filterNot(prod =>
+        creations.exists(_.producer == prod))
       newProds.forall(prod =>
         boxKind.checkBoxCreation(prod, prodCons) match {
           case Some(boxCreation) =>
@@ -499,9 +498,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     }
 
     def addBoxConsumers(creation: BoxCreation): Boolean = {
-      val newCons = creation
-        .boxConsumers(prodCons, ultimate = true)
-        .filterNot(cons => consumers.exists(_.consumer == cons))
+      val newCons =
+        creation.boxConsumers(prodCons, ultimate = true).filterNot(cons =>
+          consumers.exists(_.consumer == cons))
       newCons.forall(cons =>
         boxKind.checkBoxConsumer(cons, prodCons) match {
           case Some(boxConsumer) =>
@@ -600,9 +599,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       finalCons: Set[BoxConsumer],
       prodCons: ProdConsAnalyzer)
       extends Iterator[AbstractInsnNode] {
-    private var queue =
-      mutable.Queue.empty[AbstractInsnNode] ++ initialCreations.iterator
-        .flatMap(_.boxConsumers(prodCons, ultimate = false))
+    private var queue = mutable.Queue.empty[
+      AbstractInsnNode] ++ initialCreations.iterator.flatMap(
+      _.boxConsumers(prodCons, ultimate = false))
 
     // a single copy operation can consume multiple producers: val a = if (b) box(1) else box(2).
     // the `ASTORE a` has two producers (the two box operations). we need to handle it only once.
@@ -695,9 +694,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               val stackTopAfterInit = prodCons.frameAt(afterInit).stackTop
               val initializedInstanceCons =
                 prodCons.consumersOfValueAt(afterInit, stackTopAfterInit)
-              if (initializedInstanceCons == dupConsWithoutInit && prodCons
-                    .producersForValueAt(afterInit, stackTopAfterInit) == Set(
-                    dupOp)) {
+              if (initializedInstanceCons == dupConsWithoutInit && prodCons.producersForValueAt(
+                    afterInit,
+                    stackTopAfterInit) == Set(dupOp)) {
                 return Some((dupOp, initCall))
               }
             }
@@ -795,9 +794,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           if ((isScalaUnbox(mi) || isJavaUnbox(mi)) && typeOK(mi))
             Some(StaticGetterOrInstanceRead(mi))
           else if (isPredefAutoUnbox(mi) && typeOK(mi))
-            BoxKind
-              .checkReceiverPredefLoad(mi, prodCons)
-              .map(ModuleGetter(_, mi))
+            BoxKind.checkReceiverPredefLoad(mi, prodCons).map(
+              ModuleGetter(_, mi))
           else None
 
         case _ => None
@@ -951,8 +949,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           val tupleClass = mi.owner
           if (isSpecializedTupleClass(expectedTupleClass)) {
             val typeOK =
-              tupleClass == expectedTupleClass || tupleClass == expectedTupleClass
-                .substring(0, expectedTupleClass.indexOf('$'))
+              tupleClass == expectedTupleClass || tupleClass == expectedTupleClass.substring(
+                0,
+                expectedTupleClass.indexOf('$'))
             if (typeOK) {
               if (isSpecializedTupleGetter(mi))
                 return Some(StaticGetterOrInstanceRead(mi))

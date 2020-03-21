@@ -88,18 +88,20 @@ akka.loglevel = DEBUG
   lazy val remoteDaemon = {
     {
       val p = TestProbe()(client)
-      client
-        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
-        .tell(IdentifyReq("/remote"), p.ref)
+      client.actorSelection(
+        RootActorPath(addr) / receptionist.path.elements).tell(
+        IdentifyReq("/remote"),
+        p.ref)
       p.expectMsgType[ActorIdentity].ref.get
     }
   }
 
   lazy val target2 = {
     val p = TestProbe()(client)
-    client
-      .actorSelection(RootActorPath(addr) / receptionist.path.elements)
-      .tell(IdentifyReq("child2"), p.ref)
+    client.actorSelection(
+      RootActorPath(addr) / receptionist.path.elements).tell(
+      IdentifyReq("child2"),
+      p.ref)
     p.expectMsgType[ActorIdentity].ref.get
   }
 
@@ -173,9 +175,10 @@ akka.loglevel = DEBUG
 
     "discard actor selection with non root anchor" in {
       val p = TestProbe()(client)
-      client
-        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
-        .tell(Identify(None), p.ref)
+      client.actorSelection(
+        RootActorPath(addr) / receptionist.path.elements).tell(
+        Identify(None),
+        p.ref)
       val clientReceptionistRef = p.expectMsgType[ActorIdentity].ref.get
 
       val sel = ActorSelection(

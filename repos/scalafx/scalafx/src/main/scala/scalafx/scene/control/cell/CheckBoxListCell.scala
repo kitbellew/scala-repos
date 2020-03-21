@@ -91,9 +91,8 @@ object CheckBoxListCell {
       selectedProperty: T => ObservableValue[Boolean, java.lang.Boolean],
       converter: StringConverter[T]): (ListView[T] => ListCell[T]) = {
     (view: ListView[T]) =>
-      jfxscc.CheckBoxListCell
-        .forListView(selectedProperty, converter)
-        .call(view)
+      jfxscc.CheckBoxListCell.forListView(selectedProperty, converter).call(
+        view)
   }
 
   /**

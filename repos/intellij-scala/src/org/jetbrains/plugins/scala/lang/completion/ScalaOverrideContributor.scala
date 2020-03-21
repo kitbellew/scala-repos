@@ -236,11 +236,12 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       insertionHandler: ClassMember => InsertHandler[LookupElement]): Unit = {
     classMembers.foreach {
       case mm: ScalaNamedMember =>
-        val lookupItem = LookupElementBuilder
-          .create(mm.getElement, name(mm, td))
-          .withIcon(mm.getPsiElement.getIcon(
-            ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
-          .withInsertHandler(insertionHandler(mm))
+        val lookupItem =
+          LookupElementBuilder.create(mm.getElement, name(mm, td))
+            .withIcon(
+              mm.getPsiElement.getIcon(
+                ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
+            .withInsertHandler(insertionHandler(mm))
 
         val renderingDecorator = LookupElementDecorator.withRenderer(
           lookupItem,

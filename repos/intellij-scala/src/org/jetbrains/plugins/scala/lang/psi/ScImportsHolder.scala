@@ -49,11 +49,9 @@ trait ScImportsHolder extends ScalaPsiElement {
       case s: ScalaStubBasedElementImpl[_] =>
         val stub: StubElement[_] = s.getStub
         if (stub != null) {
-          return stub
-            .getChildrenByType(
-              ScalaElementTypes.IMPORT_STMT,
-              JavaArrayFactoryUtil.ScImportStmtFactory)
-            .toSeq
+          return stub.getChildrenByType(
+            ScalaElementTypes.IMPORT_STMT,
+            JavaArrayFactoryUtil.ScImportStmtFactory).toSeq
         }
       case _ =>
     }
@@ -178,16 +176,16 @@ trait ScImportsHolder extends ScalaPsiElement {
       val pathQualifier =
         Option(ref).flatMap(_.qualifier.map(_.getText)).getOrElse("")
       val ourPackageName: Option[String] =
-        Option(PsiTreeUtil.getParentOfType(this, classOf[ScPackaging], false))
-          .map(_.fullPackageName)
+        Option(
+          PsiTreeUtil.getParentOfType(this, classOf[ScPackaging], false)).map(
+          _.fullPackageName)
       ourPackageName.contains(pathQualifier)
     }
 
     getFirstChild match {
       case pack: ScPackaging
-          if !pack.isExplicit && children
-            .filterByType(classOf[ScImportStmt])
-            .isEmpty =>
+          if !pack.isExplicit && children.filterByType(
+            classOf[ScImportStmt]).isEmpty =>
         pack.addImportsForPaths(paths, refsContainer)
         return
       case _ =>
@@ -226,8 +224,10 @@ trait ScImportsHolder extends ScalaPsiElement {
       val importText = s"import $path"
       val place =
         getImportStatements.lastOption.getOrElse(getFirstChild.getNextSibling)
-      val importStmt = ScalaPsiElementFactory
-        .createImportFromTextWithContext(importText, this, place)
+      val importStmt = ScalaPsiElementFactory.createImportFromTextWithContext(
+        importText,
+        this,
+        place)
       createInfo(importStmt)
     }
 
@@ -258,9 +258,8 @@ trait ScImportsHolder extends ScalaPsiElement {
     } else {
       val sortedRanges = importRanges.toSeq.sortBy(_._1.getStartOffset)
       val selectedRange =
-        if (refsContainer != null && ScalaCodeStyleSettings
-              .getInstance(getProject)
-              .isAddImportMostCloseToReference)
+        if (refsContainer != null && ScalaCodeStyleSettings.getInstance(
+              getProject).isAddImportMostCloseToReference)
           sortedRanges.reverse.find(
             _._1.getEndOffset < refsContainer.getTextRange.getStartOffset)
         else sortedRanges.headOption
@@ -314,16 +313,20 @@ trait ScImportsHolder extends ScalaPsiElement {
   }
 
   def addImport(element: PsiElement): PsiElement = {
-    CodeEditUtil
-      .addChildren(getNode, element.getNode, element.getNode, null)
-      .getPsi
+    CodeEditUtil.addChildren(
+      getNode,
+      element.getNode,
+      element.getNode,
+      null).getPsi
   }
 
   def addImportBefore(element: PsiElement, anchor: PsiElement): PsiElement = {
     val anchorNode = anchor.getNode
-    CodeEditUtil
-      .addChildren(getNode, element.getNode, element.getNode, anchorNode)
-      .getPsi
+    CodeEditUtil.addChildren(
+      getNode,
+      element.getNode,
+      element.getNode,
+      anchorNode).getPsi
   }
 
   def addImportAfter(element: PsiElement, anchor: PsiElement): PsiElement = {

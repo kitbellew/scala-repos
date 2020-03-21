@@ -98,18 +98,18 @@ class SbtProjectResolver
       data: sbtStructure.StructureData,
       jdk: Option[String]): Node[ProjectData] = {
     val projects = data.projects
-    val project = data.projects
-      .find(p => FileUtil.filesEqual(p.base, new File(root)))
-      .orElse(data.projects.headOption)
-      .getOrElse(throw new RuntimeException("No root project found"))
+    val project =
+      data.projects.find(p => FileUtil.filesEqual(p.base, new File(root)))
+        .orElse(data.projects.headOption)
+        .getOrElse(throw new RuntimeException("No root project found"))
     val projectNode = new ProjectNode(project.name, root, root)
 
     val basePackages = projects.flatMap(_.basePackages).distinct
     val javacOptions = project.java.map(_.options).getOrElse(Seq.empty)
     val sbtVersion = data.sbtVersion
-    val projectJdk = project.android
-      .map(android => Android(android.targetVersion))
-      .orElse(jdk.map(JdkByName))
+    val projectJdk =
+      project.android.map(android => Android(android.targetVersion))
+        .orElse(jdk.map(JdkByName))
 
     projectNode.add(
       new SbtProjectNode(
@@ -154,10 +154,10 @@ class SbtProjectResolver
     projects.zip(moduleNodes).foreach {
       case (moduleProject, moduleNode) =>
         moduleProject.dependencies.projects.foreach { dependencyId =>
-          val dependency = moduleNodes
-            .find(_.getId == dependencyId.project)
-            .getOrElse(throw new ExternalSystemException(
-              "Cannot find project dependency: " + dependencyId.project))
+          val dependency =
+            moduleNodes.find(_.getId == dependencyId.project).getOrElse(
+              throw new ExternalSystemException(
+                "Cannot find project dependency: " + dependencyId.project))
           val data = new ModuleDependencyNode(moduleNode, dependency)
           data.setScope(scopeFor(dependencyId.configuration))
           data.setExported(true)
@@ -170,9 +170,8 @@ class SbtProjectResolver
       projects: Seq[sbtStructure.ProjectData],
       libraryNodes: Seq[LibraryNode],
       moduleFilesDirectory: File): Seq[ModuleNode] = {
-    val unmanagedSourcesAndDocsLibrary = libraryNodes
-      .map(_.data)
-      .find(_.getExternalName == Sbt.UnmanagedSourcesAndDocsName)
+    val unmanagedSourcesAndDocsLibrary = libraryNodes.map(_.data).find(
+      _.getExternalName == Sbt.UnmanagedSourcesAndDocsName)
     projects.map { project =>
       val moduleNode = createModule(project, moduleFilesDirectory)
       val contentRootNode = createContentRoot(project)
@@ -207,9 +206,8 @@ class SbtProjectResolver
       projects.flatMap(_.dependencies.modules.map(_.id)).toSet --
         repositoryModules.map(_.id).toSet
 
-    val libs =
-      modulesWithBinaries.map(createResolvedLibrary) ++ otherModuleIds.map(
-        createUnresolvedLibrary)
+    val libs = modulesWithBinaries.map(
+      createResolvedLibrary) ++ otherModuleIds.map(createUnresolvedLibrary)
 
     val modulesWithDocumentation =
       modulesWithoutBinaries.filter(m => m.docs.nonEmpty || m.sources.nonEmpty)
@@ -233,8 +231,7 @@ class SbtProjectResolver
       s.compilerJar +: s.libraryJar +: s.extraJars)
     val scalacOptions = project.scala.fold(Seq.empty[String])(_.options)
     val javacOptions = project.java.fold(Seq.empty[String])(_.options)
-    val jdk = project.android
-      .map(android => Android(android.targetVersion))
+    val jdk = project.android.map(android => Android(android.targetVersion))
       .orElse(project.java.flatMap(java => java.home.map(JdkByHome)))
     new ModuleExtNode(
       scalaVersion,
@@ -284,9 +281,8 @@ class SbtProjectResolver
   private def nameFor(id: sbtStructure.ModuleIdentifier) = {
     val classifierOption =
       if (id.classifier.isEmpty) None else Some(id.classifier)
-    s"${id.organization}:${id.name}:${id.revision}" + classifierOption
-      .map(":" + _)
-      .getOrElse("") + s":${id.artifactType}"
+    s"${id.organization}:${id.name}:${id.revision}" + classifierOption.map(
+      ":" + _).getOrElse("") + s":${id.artifactType}"
   }
 
   private def createModule(
@@ -467,10 +463,8 @@ class SbtProjectResolver
       libraries: Seq[LibraryData]): Seq[LibraryDependencyNode] = {
     dependencies.map { dependency =>
       val name = nameFor(dependency.id)
-      val library = libraries
-        .find(_.getExternalName == name)
-        .getOrElse(
-          throw new ExternalSystemException("Library not found: " + name))
+      val library = libraries.find(_.getExternalName == name).getOrElse(
+        throw new ExternalSystemException("Library not found: " + name))
       val data =
         new LibraryDependencyNode(moduleData, library, LibraryLevel.PROJECT)
       data.setScope(scopeFor(dependency.configurations))

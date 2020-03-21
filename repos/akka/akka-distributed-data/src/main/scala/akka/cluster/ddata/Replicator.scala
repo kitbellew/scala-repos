@@ -160,9 +160,8 @@ object Replicator {
     * Factory method for the [[akka.actor.Props]] of the [[Replicator]] actor.
     */
   def props(settings: ReplicatorSettings): Props =
-    Props(new Replicator(settings))
-      .withDeploy(Deploy.local)
-      .withDispatcher(settings.dispatcher)
+    Props(new Replicator(settings)).withDeploy(Deploy.local).withDispatcher(
+      settings.dispatcher)
 
   sealed trait ReadConsistency {
     def timeout: FiniteDuration
@@ -580,8 +579,9 @@ object Replicator {
       def initRemovedNodePruning(
           removed: UniqueAddress,
           owner: UniqueAddress): DataEnvelope = {
-        copy(pruning = pruning
-          .updated(removed, PruningState(owner, PruningInitialized(Set.empty))))
+        copy(pruning = pruning.updated(
+          removed,
+          PruningState(owner, PruningInitialized(Set.empty))))
       }
 
       def prune(from: UniqueAddress): DataEnvelope = {
@@ -666,12 +666,10 @@ object Replicator {
         totChunks: Int)
         extends ReplicatorMessage {
       override def toString: String =
-        (digests
-          .map {
-            case (key, bytes) ⇒
-              key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
-          })
-          .mkString("Status(", ", ", ")")
+        (digests.map {
+          case (key, bytes) ⇒
+            key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
+        }).mkString("Status(", ", ", ")")
     }
     final case class Gossip(
         updatedData: Map[String, DataEnvelope],
@@ -992,8 +990,7 @@ final class Replicator(settings: ReplicatorSettings)
       sender() ! reply
     } else
       context.actorOf(
-        ReadAggregator
-          .props(key, consistency, req, nodes, localValue, sender())
+        ReadAggregator.props(key, consistency, req, nodes, localValue, sender())
           .withDispatcher(context.props.dispatcher))
   }
 
@@ -1036,8 +1033,13 @@ final class Replicator(settings: ReplicatorSettings)
           sender() ! UpdateSuccess(key, req)
         else
           context.actorOf(
-            WriteAggregator
-              .props(key, envelope, writeConsistency, req, nodes, sender())
+            WriteAggregator.props(
+              key,
+              envelope,
+              writeConsistency,
+              req,
+              nodes,
+              sender())
               .withDispatcher(context.props.dispatcher))
       case Failure(e: DataDeleted[_]) ⇒
         log.debug("Received Update for deleted key [{}]", key)
@@ -1065,9 +1067,8 @@ final class Replicator(settings: ReplicatorSettings)
       case Some(DataEnvelope(DeletedData, _)) ⇒ // already deleted
       case Some(envelope @ DataEnvelope(existing, _)) ⇒
         if (existing.getClass == writeEnvelope.data.getClass || writeEnvelope.data == DeletedData) {
-          val merged = envelope
-            .merge(pruningCleanupTombstoned(writeEnvelope))
-            .addSeen(selfAddress)
+          val merged = envelope.merge(
+            pruningCleanupTombstoned(writeEnvelope)).addSeen(selfAddress)
           setData(key, merged)
         } else {
           log.warning(
@@ -1105,8 +1106,13 @@ final class Replicator(settings: ReplicatorSettings)
           sender() ! DeleteSuccess(key)
         else
           context.actorOf(
-            WriteAggregator
-              .props(key, DeletedEnvelope, consistency, None, nodes, sender())
+            WriteAggregator.props(
+              key,
+              DeletedEnvelope,
+              consistency,
+              None,
+              nodes,
+              sender())
               .withDispatcher(context.props.dispatcher))
     }
   }

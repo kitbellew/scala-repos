@@ -38,9 +38,8 @@ class ImportPanelConverterProvider
       )
 
     def getElements: Seq[Element] = {
-      context.getSettingsBaseDir
-        .listFiles()
-        .find(_.getName == "scala_settings.xml") match {
+      context.getSettingsBaseDir.listFiles().find(
+        _.getName == "scala_settings.xml") match {
         case Some(file) =>
           import com.intellij.conversion.impl.ConversionContextImpl
           context match {
@@ -72,18 +71,16 @@ class ImportPanelConverterProvider
       }
 
       override def getAdditionalAffectedFiles: util.Collection[File] = {
-        context.getSettingsBaseDir
-          .listFiles()
-          .find(_.getName == "codeStyleSettings.xml") match {
+        context.getSettingsBaseDir.listFiles().find(
+          _.getName == "codeStyleSettings.xml") match {
           case Some(file) => Collections.singleton(file)
           case None       => Collections.emptyList()
         }
       }
 
       override def processingFinished(): Unit = {
-        context.getSettingsBaseDir
-          .listFiles()
-          .find(_.getName == "codeStyleSettings.xml") match {
+        context.getSettingsBaseDir.listFiles().find(
+          _.getName == "codeStyleSettings.xml") match {
           case Some(file) =>
             context match {
               case context: ConversionContextImpl =>

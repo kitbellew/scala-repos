@@ -260,7 +260,8 @@ object LoadService {
       } yield line
 
       val buffer = mutable.ListBuffer.empty[String]
-      val result = (classNames ++ classNamesFromResources).distinct
+      val result = (classNames ++ classNamesFromResources)
+        .distinct
         .filterNot { className =>
           val isDenied = denied.contains(className)
           if (isDenied)
@@ -295,8 +296,9 @@ object LoadService {
           }
         }
 
-      GlobalRegistry.get
-        .put(Seq("loadservice", ifaceName), buffer.mkString(","))
+      GlobalRegistry.get.put(
+        Seq("loadservice", ifaceName),
+        buffer.mkString(","))
       result
     }
 }

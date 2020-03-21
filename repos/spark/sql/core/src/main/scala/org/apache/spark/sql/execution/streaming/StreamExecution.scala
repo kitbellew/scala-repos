@@ -82,9 +82,8 @@ class StreamExecution(
 
   /** Returns current status of all the sources. */
   override def sourceStatuses: Array[SourceStatus] = {
-    sources
-      .map(s => new SourceStatus(s.toString, streamProgress.get(s)))
-      .toArray
+    sources.map(s =>
+      new SourceStatus(s.toString, streamProgress.get(s))).toArray
   }
 
   /** Returns current status of the sink. */
@@ -102,8 +101,7 @@ class StreamExecution(
   private[sql] def start(): Unit = {
     microBatchThread.setDaemon(true)
     microBatchThread.start()
-    startLatch
-      .await() // Wait until thread started and QueryStart event has been posted
+    startLatch.await() // Wait until thread started and QueryStart event has been posted
   }
 
   /**
@@ -190,18 +188,16 @@ class StreamExecution(
         val prevOffset = streamProgress.get(source)
         val newBatch = source.getNextBatch(prevOffset)
 
-        newBatch
-          .map { batch =>
-            newOffsets += ((source, batch.end))
-            val newPlan = batch.data.logicalPlan
+        newBatch.map { batch =>
+          newOffsets += ((source, batch.end))
+          val newPlan = batch.data.logicalPlan
 
-            assert(output.size == newPlan.output.size)
-            replacements ++= output.zip(newPlan.output)
-            newPlan
-          }
-          .getOrElse {
-            LocalRelation(output)
-          }
+          assert(output.size == newPlan.output.size)
+          replacements ++= output.zip(newPlan.output)
+          newPlan
+        }.getOrElse {
+          LocalRelation(output)
+        }
     }
 
     // Rewire the plan to use the new attributes that were returned by the source.

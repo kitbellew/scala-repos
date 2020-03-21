@@ -48,7 +48,8 @@ object CheckDistribution {
   def runMain(appId: Int) {
     val eventClient = Storage.getLEvents().asInstanceOf[HBLEvents]
 
-    entityType(eventClient, appId).toSeq
+    entityType(eventClient, appId)
+      .toSeq
       .sortBy(-_._2)
       .foreach { println }
 
@@ -89,13 +90,10 @@ object Upgrade_0_8_3 {
     "pio_rating")
 
   def hasPIOPrefix(eventClient: LEvents, appId: Int): Boolean = {
-    eventClient
-      .find(appId = appId)
-      .filter(e =>
-        (obsEntityTypes.contains(e.entityType) ||
-          e.targetEntityType.map(obsEntityTypes.contains(_)).getOrElse(false) ||
-          (!e.properties.keySet.forall(!obsProperties.contains(_)))))
-      .hasNext
+    eventClient.find(appId = appId).filter(e =>
+      (obsEntityTypes.contains(e.entityType) ||
+        e.targetEntityType.map(obsEntityTypes.contains(_)).getOrElse(false) ||
+        (!e.properties.keySet.forall(!obsProperties.contains(_))))).hasNext
   }
 
   def isEmpty(eventClient: LEvents, appId: Int): Boolean =
@@ -151,7 +149,8 @@ object Upgrade_0_8_3 {
     logger.info("ToAppId Distribution")
     toDist.toSeq.sortBy(-_._2).foreach { e => logger.info(e) }
 
-    val fromGood = fromDist.toSeq
+    val fromGood = fromDist
+      .toSeq
       .forall {
         case (k, c) => {
           val (et, tet) = k
@@ -167,7 +166,8 @@ object Upgrade_0_8_3 {
         }
       }
 
-    val toGood = toDist.toSeq
+    val toGood = toDist
+      .toSeq
       .forall {
         case (k, c) => {
           val (et, tet) = k

@@ -59,11 +59,13 @@ class StopOnFirstMatchingOfferMatcherTest
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
         offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = true)),
+          OfferMatcher.MatchedTaskOps.noMatch(
+            offer.getId,
+            resendThisOffer = true)),
         offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = false))
+          OfferMatcher.MatchedTaskOps.noMatch(
+            offer.getId,
+            resendThisOffer = false))
       )
     }
 
@@ -80,11 +82,13 @@ class StopOnFirstMatchingOfferMatcherTest
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
         offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = false)),
+          OfferMatcher.MatchedTaskOps.noMatch(
+            offer.getId,
+            resendThisOffer = false)),
         offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = true))
+          OfferMatcher.MatchedTaskOps.noMatch(
+            offer.getId,
+            resendThisOffer = true))
       )
     }
 

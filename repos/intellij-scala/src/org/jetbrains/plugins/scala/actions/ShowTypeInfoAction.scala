@@ -98,9 +98,8 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
         file,
         editor.getDocument,
         editor.logicalPositionToOffset(editor.getCaretModel.getLogicalPosition))
-      ShowTypeInfoAction
-        .getTypeInfoHint(editor, file, offset)
-        .foreach(ScalaActionUtil.showHint(editor, _))
+      ShowTypeInfoAction.getTypeInfoHint(editor, file, offset).foreach(
+        ScalaActionUtil.showHint(editor, _))
     }
   }
 }

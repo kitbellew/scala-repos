@@ -45,9 +45,8 @@ class Path private (val elements: String*) {
 
   def /(that: Path) = new Path(elements ++ that.elements: _*)
   def -(that: Path): Option[Path] =
-    elements
-      .startsWith(that.elements)
-      .option(new Path(elements.drop(that.elements.length): _*))
+    elements.startsWith(that.elements).option(
+      new Path(elements.drop(that.elements.length): _*))
 
   def isEqualOrParentOf(that: Path) = that.elements.startsWith(this.elements)
 

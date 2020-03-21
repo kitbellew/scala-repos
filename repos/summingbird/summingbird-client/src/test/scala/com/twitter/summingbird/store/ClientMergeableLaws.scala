@@ -49,12 +49,14 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       toMerge.forall {
         case (k, (v1, v2)) =>
           val tup = for {
-            prior <- machine.mergeable.readable
-              .multiGetBatch(BatchID(1), Set(k))(k)
+            prior <- machine.mergeable.readable.multiGetBatch(
+              BatchID(1),
+              Set(k))(k)
             mergePrior <- machine.mergeable.merge((k, BatchID(1)), v1)
             mergeAfter <- machine.mergeable.merge((k, BatchID(1)), v2)
-            last <- machine.mergeable.readable
-              .multiGetBatch(BatchID(1), Set(k))(k)
+            last <- machine.mergeable.readable.multiGetBatch(
+              BatchID(1),
+              Set(k))(k)
           } yield (prior, mergePrior, mergeAfter, last)
 
           Await.result(tup.map {
@@ -87,15 +89,12 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       }
 
       Await.result(
-        Future
-          .collect(
-            machine.mergeable
-              .multiMerge(keys)
-              .collect {
-                case ((k, BatchID(2)), fopt) =>
-                  fopt.map(_ == Some(toMerge(k)._1 + init.getOrElse(k, 0)))
-              }
-              .toSeq)
+        Future.collect(machine.mergeable.multiMerge(keys)
+          .collect {
+            case ((k, BatchID(2)), fopt) =>
+              fopt.map(_ == Some(toMerge(k)._1 + init.getOrElse(k, 0)))
+          }
+          .toSeq)
           .map(_.forall(identity)))
   }
 
@@ -115,11 +114,10 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       val merged = keys.map { kbv => (kbv._1, machine.mergeable.merge(kbv)) }
 
       Await.result(
-        Future
-          .collect(merged.collect {
-            case ((k, BatchID(2)), fopt) =>
-              fopt.map(_ == Some(toMerge(k)._1 + init.getOrElse(k, 0)))
-          })
+        Future.collect(merged.collect {
+          case ((k, BatchID(2)), fopt) =>
+            fopt.map(_ == Some(toMerge(k)._1 + init.getOrElse(k, 0)))
+        })
           .map(_.forall(identity)))
   }
 

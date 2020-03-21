@@ -63,20 +63,18 @@ private final class ExplorerIndexer(
         Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>
         Iteratee.foldM[Seq[GamePGN], Long](nowMillis) {
           case (millis, pairs) =>
-            WS.url(massImportEndPointUrl)
-              .put(pairs.map(_._2) mkString separator)
-              .flatMap {
-                case res if res.status == 200 =>
-                  val date = pairs.headOption.map(
-                    _._1.createdAt) ?? dateTimeFormatter.print
-                  val nb = pairs.size
-                  val gameMs = (nowMillis - millis) / nb.toDouble
-                  logger.info(
-                    s"$date $nb ${gameMs.toInt} ms/game ${(1000 / gameMs).toInt} games/s")
-                  funit
-                case res =>
-                  fufail(s"Stop import because of status ${res.status}")
-              } >> {
+            WS.url(massImportEndPointUrl).put(
+              pairs.map(_._2) mkString separator).flatMap {
+              case res if res.status == 200 =>
+                val date = pairs.headOption.map(
+                  _._1.createdAt) ?? dateTimeFormatter.print
+                val nb = pairs.size
+                val gameMs = (nowMillis - millis) / nb.toDouble
+                logger.info(
+                  s"$date $nb ${gameMs.toInt} ms/game ${(1000 / gameMs).toInt} games/s")
+                funit
+              case res => fufail(s"Stop import because of status ${res.status}")
+            } >> {
               pairs.headOption match {
                 case None => fufail(s"No games left, import complete!")
                 case Some((g, _))

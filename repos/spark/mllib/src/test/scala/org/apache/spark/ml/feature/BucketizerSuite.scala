@@ -42,41 +42,39 @@ class BucketizerSuite
     val validData = Array(-0.5, -0.3, 0.0, 0.2)
     val expectedBuckets = Array(0.0, 0.0, 1.0, 1.0)
     val dataFrame: DataFrame =
-      sqlContext
-        .createDataFrame(validData.zip(expectedBuckets))
-        .toDF("feature", "expected")
+      sqlContext.createDataFrame(validData.zip(expectedBuckets)).toDF(
+        "feature",
+        "expected")
 
     val bucketizer: Bucketizer = new Bucketizer()
       .setInputCol("feature")
       .setOutputCol("result")
       .setSplits(splits)
 
-    bucketizer
-      .transform(dataFrame)
-      .select("result", "expected")
-      .collect()
-      .foreach {
-        case Row(x: Double, y: Double) =>
-          assert(
-            x === y,
-            s"The feature value is not correct after bucketing.  Expected $y but found $x")
-      }
+    bucketizer.transform(dataFrame).select(
+      "result",
+      "expected").collect().foreach {
+      case Row(x: Double, y: Double) =>
+        assert(
+          x === y,
+          s"The feature value is not correct after bucketing.  Expected $y but found $x")
+    }
 
     // Check for exceptions when using a set of invalid feature values.
     val invalidData1: Array[Double] = Array(-0.9) ++ validData
     val invalidData2 = Array(0.51) ++ validData
-    val badDF1 = sqlContext
-      .createDataFrame(invalidData1.zipWithIndex)
-      .toDF("feature", "idx")
+    val badDF1 = sqlContext.createDataFrame(invalidData1.zipWithIndex).toDF(
+      "feature",
+      "idx")
     withClue(
       "Invalid feature value -0.9 was not caught as an invalid feature!") {
       intercept[SparkException] {
         bucketizer.transform(badDF1).collect()
       }
     }
-    val badDF2 = sqlContext
-      .createDataFrame(invalidData2.zipWithIndex)
-      .toDF("feature", "idx")
+    val badDF2 = sqlContext.createDataFrame(invalidData2.zipWithIndex).toDF(
+      "feature",
+      "idx")
     withClue(
       "Invalid feature value 0.51 was not caught as an invalid feature!") {
       intercept[SparkException] {
@@ -91,25 +89,23 @@ class BucketizerSuite
     val validData = Array(-0.9, -0.5, -0.3, 0.0, 0.2, 0.5, 0.9)
     val expectedBuckets = Array(0.0, 1.0, 1.0, 2.0, 2.0, 3.0, 3.0)
     val dataFrame: DataFrame =
-      sqlContext
-        .createDataFrame(validData.zip(expectedBuckets))
-        .toDF("feature", "expected")
+      sqlContext.createDataFrame(validData.zip(expectedBuckets)).toDF(
+        "feature",
+        "expected")
 
     val bucketizer: Bucketizer = new Bucketizer()
       .setInputCol("feature")
       .setOutputCol("result")
       .setSplits(splits)
 
-    bucketizer
-      .transform(dataFrame)
-      .select("result", "expected")
-      .collect()
-      .foreach {
-        case Row(x: Double, y: Double) =>
-          assert(
-            x === y,
-            s"The feature value is not correct after bucketing.  Expected $y but found $x")
-      }
+    bucketizer.transform(dataFrame).select(
+      "result",
+      "expected").collect().foreach {
+      case Row(x: Double, y: Double) =>
+        assert(
+          x === y,
+          s"The feature value is not correct after bucketing.  Expected $y but found $x")
+    }
   }
 
   test("Binary search correctness on hand-picked examples") {

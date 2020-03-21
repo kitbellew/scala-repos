@@ -101,8 +101,7 @@ object StormTestRun {
 
     implicit val s = Storm.local(
       Map(
-        "DEFAULT" -> Options()
-          .set(CacheSize(4))
+        "DEFAULT" -> Options().set(CacheSize(4))
           .set(FlushFrequency(Duration.fromMilliseconds(1)))
       ))
 

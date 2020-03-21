@@ -52,16 +52,14 @@ object VolumeSerializer {
   def toProto(volume: Volume): Protos.Volume =
     volume match {
       case p: PersistentVolume =>
-        Protos.Volume
-          .newBuilder()
+        Protos.Volume.newBuilder()
           .setContainerPath(p.containerPath)
           .setPersistent(PersistentVolumeInfoSerializer.toProto(p.persistent))
           .setMode(p.mode)
           .build()
 
       case d: DockerVolume =>
-        Protos.Volume
-          .newBuilder()
+        Protos.Volume.newBuilder()
           .setContainerPath(d.containerPath)
           .setHostPath(d.hostPath)
           .setMode(d.mode)
@@ -79,8 +77,7 @@ object VolumeSerializer {
 
 object PersistentVolumeInfoSerializer {
   def toProto(info: PersistentVolumeInfo): Protos.Volume.PersistentVolumeInfo =
-    Protos.Volume.PersistentVolumeInfo
-      .newBuilder()
+    Protos.Volume.PersistentVolumeInfo.newBuilder()
       .setSize(info.size)
       .build()
 }

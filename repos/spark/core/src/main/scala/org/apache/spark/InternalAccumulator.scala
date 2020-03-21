@@ -170,8 +170,8 @@ private[spark] object InternalAccumulator {
     * Accumulators for tracking input metrics.
     */
   def createInputAccums(): Seq[Accumulator[_]] = {
-    Seq[String](input.READ_METHOD, input.BYTES_READ, input.RECORDS_READ)
-      .map(create)
+    Seq[String](input.READ_METHOD, input.BYTES_READ, input.RECORDS_READ).map(
+      create)
   }
 
   /**

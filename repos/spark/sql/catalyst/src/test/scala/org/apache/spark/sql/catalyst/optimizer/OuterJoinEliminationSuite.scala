@@ -60,8 +60,8 @@ class OuterJoinEliminationSuite extends PlanTest {
     val y = testRelation1.subquery('y)
 
     val originalQuery =
-      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr))
-        .where("y.d".attr > 2)
+      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr)).where(
+        "y.d".attr > 2)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val left = testRelation
@@ -77,8 +77,8 @@ class OuterJoinEliminationSuite extends PlanTest {
     val y = testRelation1.subquery('y)
 
     val originalQuery =
-      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr))
-        .where("x.a".attr <=> 2)
+      x.join(y, FullOuter, Option("x.a".attr === "y.d".attr)).where(
+        "x.a".attr <=> 2)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val left = testRelation.where('a <=> 2)
@@ -94,8 +94,8 @@ class OuterJoinEliminationSuite extends PlanTest {
     val y = testRelation1.subquery('y)
 
     val originalQuery =
-      x.join(y, RightOuter, Option("x.a".attr === "y.d".attr))
-        .where("x.b".attr > 2)
+      x.join(y, RightOuter, Option("x.a".attr === "y.d".attr)).where(
+        "x.b".attr > 2)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val left = testRelation.where('b > 2)
@@ -193,12 +193,10 @@ class OuterJoinEliminationSuite extends PlanTest {
     val left = testRelation
     val right = testRelation1
     val correctAnswer =
-      left
-        .join(
-          right,
-          Inner,
-          Option("b".attr + 3 === "e".attr && "a".attr === "d".attr))
-        .analyze
+      left.join(
+        right,
+        Inner,
+        Option("b".attr + 3 === "e".attr && "a".attr === "d".attr)).analyze
 
     comparePlans(optimized, correctAnswer)
   }

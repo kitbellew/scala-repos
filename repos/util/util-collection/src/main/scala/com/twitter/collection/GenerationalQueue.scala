@@ -97,11 +97,9 @@ class BucketGenerationalQueue[A](timeout: Duration)
 
   private[this] def maybeGrowChain() = {
     // NB: age of youngest element is negative when bucket isn't expired
-    val growChain = buckets.headOption
-      .map((bucket) => {
-        bucket.age() > Duration.Zero
-      })
-      .getOrElse(true)
+    val growChain = buckets.headOption.map((bucket) => {
+      bucket.age() > Duration.Zero
+    }).getOrElse(true)
 
     if (growChain)
       buckets = TimeBucket.empty[A] :: buckets

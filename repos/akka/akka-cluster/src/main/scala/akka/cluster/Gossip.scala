@@ -151,8 +151,9 @@ private[cluster] final case class Gossip(
       that.members)
 
     // 3. merge reachability table by picking records with highest version
-    val mergedReachability = this.overview.reachability
-      .merge(mergedMembers.map(_.uniqueAddress), that.overview.reachability)
+    val mergedReachability = this.overview.reachability.merge(
+      mergedMembers.map(_.uniqueAddress),
+      that.overview.reachability)
 
     // 4. Nobody can have seen this new gossip yet
     val mergedSeen = Set.empty[UniqueAddress]
@@ -214,10 +215,9 @@ private[cluster] final case class Gossip(
             m.uniqueAddress) || m.uniqueAddress == selfUniqueAddress)
     if (reachableMembers.isEmpty) None
     else
-      reachableMembers
-        .find(m ⇒ Gossip.leaderMemberStatus(m.status))
-        .orElse(Some(reachableMembers.min(Member.leaderStatusOrdering)))
-        .map(_.uniqueAddress)
+      reachableMembers.find(m ⇒ Gossip.leaderMemberStatus(m.status)).orElse(
+        Some(reachableMembers.min(Member.leaderStatusOrdering))).map(
+        _.uniqueAddress)
   }
 
   def allRoles: Set[String] = members.flatMap(_.roles)

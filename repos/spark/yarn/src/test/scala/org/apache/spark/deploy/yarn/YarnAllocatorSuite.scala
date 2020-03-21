@@ -146,9 +146,10 @@ class YarnAllocatorSuite
     handler.allocatedHostToContainersMap.get("host1").get should contain(
       container.getId)
 
-    val size = rmClient
-      .getMatchingRequests(container.getPriority, "host1", containerResource)
-      .size
+    val size = rmClient.getMatchingRequests(
+      container.getPriority,
+      "host1",
+      containerResource).size
     size should be(0)
   }
 

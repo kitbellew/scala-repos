@@ -76,8 +76,9 @@ private[spark] class JavaDeserializationStream(
         // scalastyle:on classforname
       } catch {
         case e: ClassNotFoundException =>
-          JavaDeserializationStream.primitiveMappings
-            .getOrElse(desc.getName, throw e)
+          JavaDeserializationStream.primitiveMappings.getOrElse(
+            desc.getName,
+            throw e)
       }
   }
 

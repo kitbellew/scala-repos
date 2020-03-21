@@ -231,8 +231,10 @@ abstract class LambdaLift extends InfoTransform {
         val originalName = sym.name
         sym setName newName(sym)
         debuglog(
-          "renaming in %s: %s => %s"
-            .format(sym.owner.fullLocationString, originalName, sym.name))
+          "renaming in %s: %s => %s".format(
+            sym.owner.fullLocationString,
+            originalName,
+            sym.name))
       }
 
       // make sure that the name doesn't make the symbol accidentally `isAnonymousClass` (et.al) by

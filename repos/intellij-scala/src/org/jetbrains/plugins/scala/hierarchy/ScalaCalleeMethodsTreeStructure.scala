@@ -51,10 +51,8 @@ class ScalaCalleeMethodsTreeStructure(
         val body = method.getBody
         ScalaCalleeMethodsTreeStructure.visitor(body, methods)
     }
-    val baseMethod: PsiMethod = getBaseDescriptor
-      .asInstanceOf[CallHierarchyNodeDescriptor]
-      .getTargetElement
-      .asInstanceOf[PsiMethod]
+    val baseMethod: PsiMethod = getBaseDescriptor.asInstanceOf[
+      CallHierarchyNodeDescriptor].getTargetElement.asInstanceOf[PsiMethod]
     val baseClass: PsiClass = baseMethod.containingClass
     val methodToDescriptorMap
         : mutable.HashMap[PsiMethod, CallHierarchyNodeDescriptor] =
@@ -77,9 +75,8 @@ class ScalaCalleeMethodsTreeStructure(
       }
     }
     val overridingMethods: Array[PsiMethod] =
-      OverridingMethodsSearch
-        .search(method, method.getUseScope, true)
-        .toArray(PsiMethod.EMPTY_ARRAY)
+      OverridingMethodsSearch.search(method, method.getUseScope, true).toArray(
+        PsiMethod.EMPTY_ARRAY)
     for (overridingMethod <- overridingMethods
          if isInScope(baseClass, overridingMethod, myScopeType)) {
       val node: CallHierarchyNodeDescriptor = new CallHierarchyNodeDescriptor(

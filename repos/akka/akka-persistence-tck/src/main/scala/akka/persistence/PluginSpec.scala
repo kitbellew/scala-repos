@@ -45,6 +45,7 @@ abstract class PluginSpec(val config: Config)
   def writerUuid: String = _writerUuid
 
   def subscribe[T: ClassTag](subscriber: ActorRef) =
-    system.eventStream
-      .subscribe(subscriber, implicitly[ClassTag[T]].runtimeClass)
+    system.eventStream.subscribe(
+      subscriber,
+      implicitly[ClassTag[T]].runtimeClass)
 }

@@ -109,9 +109,8 @@ class Servlet30AsyncProvider(req: HTTPRequest)
 
   def resume(what: (Req, LiftResponse)): Boolean = {
     logger.trace("Servlet 3.0 begin resume")
-    val httpRes = getResponse
-      .invoke(asyncCtx)
-      .asInstanceOf[javax.servlet.http.HttpServletResponse]
+    val httpRes = getResponse.invoke(asyncCtx).asInstanceOf[
+      javax.servlet.http.HttpServletResponse]
     val httpResponse = new HTTPResponseServlet(httpRes)
     val liftServlet = req.provider.liftServlet
     try {

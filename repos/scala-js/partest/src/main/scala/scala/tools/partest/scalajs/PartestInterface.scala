@@ -96,9 +96,8 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
       forkedCp.split(java.io.File.pathSeparator).map(new File(_).toURI.toURL))
 
     if (Runtime.getRuntime().maxMemory() / (1024 * 1024) < 800)
-      loggers foreach (_.warn(s"""Low heap size detected (~ ${Runtime
-        .getRuntime()
-        .maxMemory() / (1024 * 1024)}M). Please add the following to your build.sbt: javaOptions in Test += "-Xmx1G""""))
+      loggers foreach (_.warn(
+        s"""Low heap size detected (~ ${Runtime.getRuntime().maxMemory() / (1024 * 1024)}M). Please add the following to your build.sbt: javaOptions in Test += "-Xmx1G""""))
 
     val maybeOptions =
       ScalaJSPartestOptions(args, str => loggers.foreach(_.error(str)))
@@ -148,20 +147,17 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
       scalaVersion: String): SBTRunner = {
     val runnerClass =
       Class.forName("scala.tools.partest.scalajs.ScalaJSSBTRunner")
-    runnerClass
-      .getConstructors()(0)
-      .newInstance(
-        partestFingerprint,
-        eventHandler,
-        loggers,
-        testRoot,
-        testClassLoader,
-        javaCmd,
-        javacCmd,
-        scalacArgs,
-        options,
-        scalaVersion)
-      .asInstanceOf[SBTRunner]
+    runnerClass.getConstructors()(0).newInstance(
+      partestFingerprint,
+      eventHandler,
+      loggers,
+      testRoot,
+      testClassLoader,
+      javaCmd,
+      javacCmd,
+      scalacArgs,
+      options,
+      scalaVersion).asInstanceOf[SBTRunner]
   }
 
   /** A possibly zero-length array of string tags associated with this task. */

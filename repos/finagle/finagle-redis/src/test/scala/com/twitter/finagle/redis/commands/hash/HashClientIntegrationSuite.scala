@@ -60,10 +60,8 @@ final class HashClientIntegrationSuite extends RedisClientTest {
       Await.result(client.hSet(foo, bar, baz))
       Await.result(client.hSet(foo, boo, moo))
       assert(
-        CBToString.fromList(
-          Await.result(client.hMGet(foo, Seq(bar, boo))).toList) == Seq(
-          "baz",
-          "moo"))
+        CBToString.fromList(Await.result(
+          client.hMGet(foo, Seq(bar, boo))).toList) == Seq("baz", "moo"))
     }
   }
 
@@ -71,10 +69,8 @@ final class HashClientIntegrationSuite extends RedisClientTest {
     withRedisClient { client =>
       Await.result(client.hMSet(foo, Map(baz -> bar, moo -> boo)))
       assert(
-        CBToString.fromList(
-          Await.result(client.hMGet(foo, Seq(baz, moo))).toList) == Seq(
-          "bar",
-          "boo"))
+        CBToString.fromList(Await.result(
+          client.hMGet(foo, Seq(baz, moo))).toList) == Seq("bar", "boo"))
     }
   }
 
@@ -87,10 +83,8 @@ final class HashClientIntegrationSuite extends RedisClientTest {
       Await.result(
         client.hMSet(foo, Map(baz -> bar, moo -> StringToChannelBuffer(""))))
       assert(
-        CBToString.fromList(
-          Await.result(client.hMGet(foo, Seq(baz, moo))).toList) == Seq(
-          "bar",
-          ""))
+        CBToString.fromList(Await.result(
+          client.hMGet(foo, Seq(baz, moo))).toList) == Seq("bar", ""))
     }
   }
 

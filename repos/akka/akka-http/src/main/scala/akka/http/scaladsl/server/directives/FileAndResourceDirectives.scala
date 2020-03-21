@@ -57,10 +57,8 @@ trait FileAndResourceDirectives {
                   HttpEntity.Default(
                     contentType,
                     file.length,
-                    FileIO
-                      .fromFile(file)
-                      .withAttributes(
-                        ActorAttributes.dispatcher(settings.fileIODispatcher)))
+                    FileIO.fromFile(file).withAttributes(
+                      ActorAttributes.dispatcher(settings.fileIODispatcher)))
                 }
             }
           } else complete(HttpEntity.Empty)
@@ -71,8 +69,8 @@ trait FileAndResourceDirectives {
   private def conditionalFor(length: Long, lastModified: Long): Directive0 =
     extractSettings.flatMap(settings ⇒
       if (settings.fileGetConditional) {
-        val tag = java.lang.Long
-          .toHexString(lastModified ^ java.lang.Long.reverse(length))
+        val tag = java.lang.Long.toHexString(
+          lastModified ^ java.lang.Long.reverse(length))
         val lastModifiedDateTime =
           DateTime(math.min(lastModified, System.currentTimeMillis))
         conditional(EntityTag(tag), lastModifiedDateTime)
@@ -108,10 +106,12 @@ trait FileAndResourceDirectives {
                       HttpEntity.Default(
                         contentType,
                         length,
-                        StreamConverters
-                          .fromInputStream(() ⇒ url.openStream())
-                          .withAttributes(ActorAttributes
-                            .dispatcher(settings.fileIODispatcher))
+                        StreamConverters.fromInputStream(() ⇒ url.openStream())
+                          .withAttributes(
+                            ActorAttributes.dispatcher(
+                              settings.fileIODispatcher
+                            )
+                          )
                       ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
                     }
                 }
@@ -337,9 +337,9 @@ object ContentTypeResolver {
               fileName.lastIndexOf('.', lastDotIx - 1) match {
                 case -1 ⇒ MediaTypes.`application/octet-stream`
                 case x ⇒
-                  MediaTypes
-                    .forExtension(fileName.substring(x + 1, lastDotIx))
-                    .withComp(MediaType.Gzipped)
+                  MediaTypes.forExtension(
+                    fileName.substring(x + 1, lastDotIx)).withComp(
+                    MediaType.Gzipped)
               }
             case ext ⇒ MediaTypes.forExtension(ext)
           }
@@ -392,48 +392,39 @@ object DirectoryListing {
           maxNameLength(directoryFilesAndNames) + 1,
           maxNameLength(fileFilesAndNames))
         val sb = new java.lang.StringBuilder
-        sb.append(html(0))
-          .append(path)
-          .append(html(1))
-          .append(path)
-          .append(html(2))
+        sb.append(html(0)).append(path).append(html(1)).append(path).append(
+          html(2))
         if (!isRoot) {
           val secondToLastSlash =
             path.lastIndexOf('/', path.lastIndexOf('/', path.length - 1) - 1)
           sb.append(
-            "<a href=\"%s/\">../</a>\n" format path
-              .substring(0, secondToLastSlash))
+            "<a href=\"%s/\">../</a>\n" format path.substring(
+              0,
+              secondToLastSlash))
         }
         def lastModified(file: File) =
           DateTime(file.lastModified).toIsoLikeDateTimeString
         def start(name: String) =
-          sb.append("<a href=\"")
-            .append(path + name)
-            .append("\">")
-            .append(name)
-            .append("</a>")
+          sb.append("<a href=\"").append(path + name).append("\">").append(
+            name).append("</a>")
             .append(" " * (maxNameLen - name.length))
         def renderDirectory(file: File, name: String) =
-          start(name + '/')
-            .append("        ")
-            .append(lastModified(file))
-            .append('\n')
+          start(name + '/').append("        ").append(
+            lastModified(file)).append('\n')
         def renderFile(file: File, name: String) = {
           val size =
             akka.http.impl.util.humanReadableByteCount(file.length, si = true)
           start(name).append("        ").append(lastModified(file))
-          sb.append("                ".substring(size.length))
-            .append(size)
-            .append('\n')
+          sb.append("                ".substring(size.length)).append(
+            size).append('\n')
         }
         for ((file, name) ← directoryFilesAndNames) renderDirectory(file, name)
         for ((file, name) ← fileFilesAndNames) renderFile(file, name)
         if (isRoot && files.isEmpty) sb.append("(no files)\n")
         sb.append(html(3))
         if (renderVanityFooter)
-          sb.append(html(4))
-            .append(DateTime.now.toIsoLikeDateTimeString)
-            .append(html(5))
+          sb.append(html(4)).append(
+            DateTime.now.toIsoLikeDateTimeString).append(html(5))
         sb.append(html(6)).toString
     }
 }

@@ -47,9 +47,9 @@ case class SimpleDDLScan(from: Int, to: Int, table: String)(
           "intType",
           IntegerType,
           nullable = false,
-          new MetadataBuilder()
-            .putString("comment", s"test comment $table")
-            .build()),
+          new MetadataBuilder().putString(
+            "comment",
+            s"test comment $table").build()),
         StructField("stringType", StringType, nullable = false),
         StructField("dateType", DateType, nullable = false),
         StructField("timestampType", TimestampType, nullable = false),
@@ -76,10 +76,9 @@ case class SimpleDDLScan(from: Int, to: Int, table: String)(
 
   override def buildScan(): RDD[Row] = {
     // Rely on a type erasure hack to pass RDD[InternalRow] back as RDD[Row]
-    sqlContext.sparkContext
-      .parallelize(from to to)
-      .map { e => InternalRow(UTF8String.fromString(s"people$e"), e * 2) }
-      .asInstanceOf[RDD[Row]]
+    sqlContext.sparkContext.parallelize(from to to).map { e =>
+      InternalRow(UTF8String.fromString(s"people$e"), e * 2)
+    }.asInstanceOf[RDD[Row]]
   }
 }
 
@@ -123,8 +122,8 @@ class DDLTestSuite extends DataSourceTest with SharedSQLContext {
 
   test(
     "SPARK-7686 DescribeCommand should have correct physical plan output attributes") {
-    val attributes =
-      sql("describe ddlPeople").queryExecution.executedPlan.output
+    val attributes = sql("describe ddlPeople")
+      .queryExecution.executedPlan.output
     assert(attributes.map(_.name) === Seq("col_name", "data_type", "comment"))
     assert(attributes.map(_.dataType).toSet === Set(StringType))
   }

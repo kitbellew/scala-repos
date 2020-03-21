@@ -81,8 +81,8 @@ object VFSPathUtils extends Logging {
     */
   def pathDir(baseDir: File, path: Path): File = {
     // The path component maps directly to the FS
-    val prefix = escapePath(path, Set(versionsSubdir)).elements
-      .filterNot(disallowedPathComponents)
+    val prefix = escapePath(path, Set(versionsSubdir)).elements.filterNot(
+      disallowedPathComponents)
     new File(baseDir, prefix.mkString(File.separator))
   }
 
@@ -95,8 +95,9 @@ object VFSPathUtils extends Logging {
       "Checking for children of path %s in dir %s".format(path, pathRoot))
     Option(pathRoot.listFiles(pathFileFilter)) map { files =>
       logger.debug(
-        "Filtering children %s in path %s"
-          .format(files.mkString("[", ", ", "]"), path))
+        "Filtering children %s in path %s".format(
+          files.mkString("[", ", ", "]"),
+          path))
       val childMetadata = files.toList traverse { f =>
         val childPath = unescapePath(path / Path(f.getName))
         currentPathMetadata(baseDir, childPath).fold[Option[PathMetadata]](
@@ -106,8 +107,8 @@ object VFSPathUtils extends Logging {
               None
             case error =>
               logger.error(
-                "Encountered corruption or error searching child paths: %s"
-                  .format(error.messages.list.mkString("; ")))
+                "Encountered corruption or error searching child paths: %s".format(
+                  error.messages.list.mkString("; ")))
               None
           },
           pathMetadata => Some(pathMetadata)
@@ -152,8 +153,9 @@ object VFSPathUtils extends Logging {
                         \/.right(PathMetadata(path, PathMetadata.PathOnly))
                       case false =>
                         \/.left(
-                          NotFound("All subpaths of %s appear to be empty."
-                            .format(path.path)))
+                          NotFound(
+                            "All subpaths of %s appear to be empty.".format(
+                              path.path)))
                     }
 
                   case otherError =>

@@ -35,26 +35,19 @@ object ColumnDefinitionProviderImpl {
     }
     // pick the last apply method which (anecdotally) gives us the defaults
     // set in the case class declaration, not the companion object
-    val applyList = moduleSym.typeSignature
-      .declaration(newTermName("apply"))
-      .asTerm
-      .alternatives
+    val applyList = moduleSym.typeSignature.declaration(
+      newTermName("apply")).asTerm.alternatives
     val apply = applyList.last.asMethod
     // can handle only default parameters from the first parameter list
     // because subsequent parameter lists might depend on previous parameters
-    apply.paramss.head
-      .map(_.asTerm)
-      .zipWithIndex
-      .flatMap {
-        case (p, i) =>
-          if (!p.isParamWithDefault) None
-          else {
-            val getterName = newTermName("apply$default$" + (i + 1))
-            Some(
-              p.name.toString -> c.Expr(q"${moduleSym}.$getterName.toString"))
-          }
-      }
-      .toMap
+    apply.paramss.head.map(_.asTerm).zipWithIndex.flatMap {
+      case (p, i) =>
+        if (!p.isParamWithDefault) None
+        else {
+          val getterName = newTermName("apply$default$" + (i + 1))
+          Some(p.name.toString -> c.Expr(q"${moduleSym}.$getterName.toString"))
+        }
+    }.toMap
   }
 
   private[scalding] def getColumnFormats[T](c: Context)(implicit
@@ -169,44 +162,42 @@ object ColumnDefinitionProviderImpl {
 
       // We have to build this up front as if the case class definition moves to another file
       // the annotation moves from the value onto the getter method?
-      val annotationData: Map[String, List[(Type, List[Tree])]] =
-        outerTpe.declarations
-          .map { m =>
-            val mappedAnnotations = m.annotations.map(t => (t.tpe, t.scalaArgs))
-            m.name.toString.trim -> mappedAnnotations
-          }
-          .groupBy(_._1)
-          .map {
-            case (k, l) =>
-              (k, l.map(_._2).reduce(_ ++ _))
-          }
-          .filter {
-            case (k, v) =>
-              !v.isEmpty
-          }
+      val annotationData: Map[String, List[(Type, List[Tree])]] = outerTpe
+        .declarations
+        .map { m =>
+          val mappedAnnotations = m.annotations.map(t => (t.tpe, t.scalaArgs))
+          m.name.toString.trim -> mappedAnnotations
+        }.groupBy(_._1).map {
+          case (k, l) =>
+            (k, l.map(_._2).reduce(_ ++ _))
+        }.filter {
+          case (k, v) =>
+            !v.isEmpty
+        }
 
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect { case m: MethodSymbol if m.isCaseAccessor => m }
         .map { m =>
           val fieldName = m.name.toTermName.toString.trim
           val defaultVal = defaultArgs.get(fieldName)
 
-          val annotationInfo: List[(Type, Option[Int])] = annotationData
-            .getOrElse(m.name.toString.trim, Nil)
-            .collect {
-              case (tpe, List(Literal(Constant(siz: Int))))
-                  if tpe =:= typeOf[com.twitter.scalding.db.macros.size] =>
-                (tpe, Some(siz))
-              case (tpe, _)
-                  if tpe =:= typeOf[com.twitter.scalding.db.macros.size] =>
-                c.abort(
-                  c.enclosingPosition,
-                  "Hit a size macro where we couldn't parse the value. Probably not a literal constant. Only literal constants are supported.")
-              case (tpe, _)
-                  if tpe <:< typeOf[
-                    com.twitter.scalding.db.macros.ScaldingDBAnnotation] =>
-                (tpe, None)
-            }
+          val annotationInfo: List[(Type, Option[Int])] =
+            annotationData.getOrElse(m.name.toString.trim, Nil)
+              .collect {
+                case (tpe, List(Literal(Constant(siz: Int))))
+                    if tpe =:= typeOf[com.twitter.scalding.db.macros.size] =>
+                  (tpe, Some(siz))
+                case (tpe, _)
+                    if tpe =:= typeOf[com.twitter.scalding.db.macros.size] =>
+                  c.abort(
+                    c.enclosingPosition,
+                    "Hit a size macro where we couldn't parse the value. Probably not a literal constant. Only literal constants are supported.")
+                case (tpe, _)
+                    if tpe <:< typeOf[
+                      com.twitter.scalding.db.macros.ScaldingDBAnnotation] =>
+                  (tpe, None)
+              }
           (m, fieldName, defaultVal, annotationInfo)
         }
         .map {

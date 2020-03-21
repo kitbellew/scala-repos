@@ -82,8 +82,10 @@ object FastTypeTag {
     macro Compat.FastTypeTagMacros_implClassTag[T]
 
   private def stdTag[T: ru.TypeTag]: FastTypeTag[T] =
-    apply(scala.reflect.runtime.currentMirror, ru.typeOf[T], ru.typeOf[T].key)
-      .asInstanceOf[FastTypeTag[T]]
+    apply(
+      scala.reflect.runtime.currentMirror,
+      ru.typeOf[T],
+      ru.typeOf[T].key).asInstanceOf[FastTypeTag[T]]
 
   implicit val Null = stdTag[Null]
   implicit val Byte = stdTag[Byte]
@@ -281,8 +283,8 @@ object FastTypeTag {
               val clazzName0 = clazz.getName()
               val clazzName =
                 if (clazzName0.contains("anonfun$") || clazzName0.contains(
-                      "$colon$colon") || clazzName0.endsWith("$") || clazzName0
-                      .endsWith("$sp")) clazzName0
+                      "$colon$colon") || clazzName0.endsWith(
+                      "$") || clazzName0.endsWith("$sp")) clazzName0
                 else clazzName0.replace('$', '.')
               apply(mirror, clazzName)
             }

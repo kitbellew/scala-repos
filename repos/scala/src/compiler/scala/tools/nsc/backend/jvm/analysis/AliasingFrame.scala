@@ -30,11 +30,8 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
   }
 
   override def toString: String =
-    super.toString + " - " + aliases.toList
-      .filter(s => s != null && s.size > 1)
-      .map(_.toString)
-      .distinct
-      .mkString(",")
+    super.toString + " - " + aliases.toList.filter(s =>
+      s != null && s.size > 1).map(_.toString).distinct.mkString(",")
 
   /**
     * For every value the set of values that are aliases of it.

@@ -361,9 +361,9 @@ private[http] object StreamUtils {
       new OneTimeValve {
         val promise = Promise[Unit]()
         val _source =
-          Source
-            .fromFuture(promise.future)
-            .drop(1) // we are only interested in the completion event
+          Source.fromFuture(promise.future).drop(
+            1
+          ) // we are only interested in the completion event
 
         def source[T]: Source[T, NotUsed] =
           _source.asInstanceOf[

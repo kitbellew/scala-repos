@@ -17,11 +17,9 @@ import org.jetbrains.plugins.scala.worksheet.runconfiguration.WorksheetViewerInf
 class MacrosheetFileHook(private val project: Project)
     extends ProjectComponent {
   override def projectOpened() {
-    project.getMessageBus
-      .connect(project)
-      .subscribe(
-        FileEditorManagerListener.FILE_EDITOR_MANAGER,
-        MacrosheetEditorListener)
+    project.getMessageBus.connect(project).subscribe(
+      FileEditorManagerListener.FILE_EDITOR_MANAGER,
+      MacrosheetEditorListener)
   }
 
   override def projectClosed() {

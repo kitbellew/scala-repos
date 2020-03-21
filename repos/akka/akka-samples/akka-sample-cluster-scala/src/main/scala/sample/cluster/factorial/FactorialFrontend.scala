@@ -50,9 +50,9 @@ object FactorialFrontend {
   def main(args: Array[String]): Unit = {
     val upToN = 200
 
-    val config = ConfigFactory
-      .parseString("akka.cluster.roles = [frontend]")
-      .withFallback(ConfigFactory.load("factorial"))
+    val config =
+      ConfigFactory.parseString("akka.cluster.roles = [frontend]").withFallback(
+        ConfigFactory.load("factorial"))
 
     val system = ActorSystem("ClusterSystem", config)
     system.log.info(

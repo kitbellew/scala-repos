@@ -121,19 +121,19 @@ class LogOffsetTest extends ZooKeeperTestHarness {
           15)),
       replicaId = 0)
     val consumerOffsets =
-      simpleConsumer
-        .getOffsetsBefore(offsetRequest)
-        .partitionErrorAndOffsets(topicAndPartition)
-        .offsets
+      simpleConsumer.getOffsetsBefore(offsetRequest).partitionErrorAndOffsets(
+        topicAndPartition).offsets
     assertEquals(
       Seq(20L, 18L, 16L, 14L, 12L, 10L, 8L, 6L, 4L, 2L, 0L),
       consumerOffsets)
 
     // try to fetch using latest offset
     val fetchResponse = simpleConsumer.fetch(
-      new FetchRequestBuilder()
-        .addFetch(topic, 0, consumerOffsets.head, 300 * 1024)
-        .build())
+      new FetchRequestBuilder().addFetch(
+        topic,
+        0,
+        consumerOffsets.head,
+        300 * 1024).build())
     assertFalse(fetchResponse.messageSet(topic, 0).iterator.hasNext)
   }
 
@@ -164,10 +164,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
               OffsetRequest.EarliestTime,
               1)))
       val consumerOffsets =
-        simpleConsumer
-          .getOffsetsBefore(offsetRequest)
-          .partitionErrorAndOffsets(topicAndPartition)
-          .offsets
+        simpleConsumer.getOffsetsBefore(offsetRequest).partitionErrorAndOffsets(
+          topicAndPartition).offsets
 
       if (consumerOffsets(0) == 1) {
         offsetChanged = true
@@ -212,10 +210,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       Map(topicAndPartition -> PartitionOffsetRequestInfo(now, 15)),
       replicaId = 0)
     val consumerOffsets =
-      simpleConsumer
-        .getOffsetsBefore(offsetRequest)
-        .partitionErrorAndOffsets(topicAndPartition)
-        .offsets
+      simpleConsumer.getOffsetsBefore(offsetRequest).partitionErrorAndOffsets(
+        topicAndPartition).offsets
     assertEquals(
       Seq(20L, 18L, 16L, 14L, 12L, 10L, 8L, 6L, 4L, 2L, 0L),
       consumerOffsets)
@@ -258,10 +254,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
             OffsetRequest.EarliestTime,
             10)))
     val consumerOffsets =
-      simpleConsumer
-        .getOffsetsBefore(offsetRequest)
-        .partitionErrorAndOffsets(topicAndPartition)
-        .offsets
+      simpleConsumer.getOffsetsBefore(offsetRequest).partitionErrorAndOffsets(
+        topicAndPartition).offsets
     assertEquals(Seq(0L), consumerOffsets)
   }
 

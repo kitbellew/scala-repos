@@ -48,7 +48,9 @@ class SourceTrackingMonitorTest extends FunSuite with MockitoSugar {
     monitor.handle(rejected)
 
     verify(logger).log(mockitoEq(Level.FINE), any(), mockitoEq(rejected))
-    verify(logger, never())
-      .log(mockitoEq(Level.WARNING), any(), mockitoEq(rejected))
+    verify(logger, never()).log(
+      mockitoEq(Level.WARNING),
+      any(),
+      mockitoEq(rejected))
   }
 }

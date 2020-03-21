@@ -135,7 +135,8 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
       // leaf-0 = (LESS_THAN_EQUALS age 5)
       // expr = (not leaf-0)
       assertResult(10) {
-        sql("SELECT name, contacts FROM t where age > 5").rdd
+        sql("SELECT name, contacts FROM t where age > 5")
+          .rdd
           .flatMap(_.getAs[Seq[_]]("contacts"))
           .count()
       }
@@ -316,12 +317,8 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
 
-      sqlContext
-        .range(0, 10)
-        .select('id as "Acol")
-        .write
-        .format("orc")
-        .save(path)
+      sqlContext.range(0, 10).select('id as "Acol").write.format("orc").save(
+        path)
       sqlContext.read.format("orc").load(path).schema("Acol")
       intercept[IllegalArgumentException] {
         sqlContext.read.format("orc").load(path).schema("acol")

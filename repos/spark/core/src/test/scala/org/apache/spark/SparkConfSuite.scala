@@ -51,8 +51,9 @@ class SparkConfSuite
     assert(
       conf.getTimeAsMs("fake", "1ms") === TimeUnit.MILLISECONDS.toMillis(1))
     assert(
-      conf.getTimeAsSeconds("fake", "1000ms") === TimeUnit.MILLISECONDS
-        .toSeconds(1000))
+      conf.getTimeAsSeconds(
+        "fake",
+        "1000ms") === TimeUnit.MILLISECONDS.toSeconds(1000))
   }
 
   test("loading from system properties") {

@@ -175,9 +175,8 @@ private[deploy] class Worker(
   def memoryFree: Int = memory - memoryUsed
 
   private def createWorkDir() {
-    workDir = Option(workDirPath)
-      .map(new File(_))
-      .getOrElse(new File(sparkHome, "work"))
+    workDir = Option(workDirPath).map(new File(_)).getOrElse(
+      new File(sparkHome, "work"))
     try {
       // This sporadically fails - not sure why ... !workDir.exists() && !workDir.mkdirs()
       // So attempting to create and then check if directory was created or not.
@@ -197,8 +196,11 @@ private[deploy] class Worker(
   override def onStart() {
     assert(!registered)
     logInfo(
-      "Starting Spark worker %s:%d with %d cores, %s RAM"
-        .format(host, port, cores, Utils.megabytesToString(memory)))
+      "Starting Spark worker %s:%d with %d cores, %s RAM".format(
+        host,
+        port,
+        cores,
+        Utils.megabytesToString(memory)))
     logInfo(s"Running Spark version ${org.apache.spark.SPARK_VERSION}")
     logInfo("Spark home: " + sparkHome)
     createWorkDir()
@@ -293,8 +295,9 @@ private[deploy] class Worker(
                 override def run(): Unit = {
                   try {
                     logInfo("Connecting to master " + masterAddress + "...")
-                    val masterEndpoint = rpcEnv
-                      .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+                    val masterEndpoint = rpcEnv.setupEndpointRef(
+                      masterAddress,
+                      Master.ENDPOINT_NAME)
                     registerWithMaster(masterEndpoint)
                   } catch {
                     case ie: InterruptedException => // Cancelled
@@ -376,16 +379,8 @@ private[deploy] class Worker(
   }
 
   private def registerWithMaster(masterEndpoint: RpcEndpointRef): Unit = {
-    masterEndpoint
-      .ask[RegisterWorkerResponse](
-        RegisterWorker(
-          workerId,
-          host,
-          port,
-          self,
-          cores,
-          memory,
-          workerWebUiUrl))
+    masterEndpoint.ask[RegisterWorkerResponse](
+      RegisterWorker(workerId, host, port, self, cores, memory, workerWebUiUrl))
       .onComplete {
         // This is a very fast action so we can use "ThreadUtils.sameThread"
         case Success(msg) =>
@@ -464,21 +459,19 @@ private[deploy] class Worker(
           if (appDirs == null) {
             throw new IOException("ERROR: Failed to list files in " + appDirs)
           }
-          appDirs
-            .filter { dir =>
-              // the directory is used by an application - check that the application is not running
-              // when cleaning up
-              val appIdFromDir = dir.getName
-              val isAppStillRunning = appIds.contains(appIdFromDir)
-              dir.isDirectory && !isAppStillRunning &&
-              !Utils.doesDirectoryContainAnyNewFiles(
-                dir,
-                APP_DATA_RETENTION_SECONDS)
-            }
-            .foreach { dir =>
-              logInfo(s"Removing directory: ${dir.getPath}")
-              Utils.deleteRecursively(dir)
-            }
+          appDirs.filter { dir =>
+            // the directory is used by an application - check that the application is not running
+            // when cleaning up
+            val appIdFromDir = dir.getName
+            val isAppStillRunning = appIds.contains(appIdFromDir)
+            dir.isDirectory && !isAppStillRunning &&
+            !Utils.doesDirectoryContainAnyNewFiles(
+              dir,
+              APP_DATA_RETENTION_SECONDS)
+          }.foreach { dir =>
+            logInfo(s"Removing directory: ${dir.getPath}")
+            Utils.deleteRecursively(dir)
+          }
         }(cleanupThreadExecutor)
 
         cleanupFuture.onFailure {
@@ -511,8 +504,10 @@ private[deploy] class Worker(
         } else {
           try {
             logInfo(
-              "Asked to launch executor %s/%d for %s"
-                .format(appId, execId, appDesc.name))
+              "Asked to launch executor %s/%d for %s".format(
+                appId,
+                execId,
+                appDesc.name))
 
             // Create the executor's working directory
             val executorDir = new File(workDir, appId + "/" + execId)
@@ -525,15 +520,11 @@ private[deploy] class Worker(
             // application finishes.
             val appLocalDirs = appDirectories.getOrElse(
               appId,
-              Utils
-                .getOrCreateLocalRootDirs(conf)
-                .map { dir =>
-                  val appDir =
-                    Utils.createDirectory(dir, namePrefix = "executor")
-                  Utils.chmod700(appDir)
-                  appDir.getAbsolutePath()
-                }
-                .toSeq
+              Utils.getOrCreateLocalRootDirs(conf).map { dir =>
+                val appDir = Utils.createDirectory(dir, namePrefix = "executor")
+                Utils.chmod700(appDir)
+                appDir.getAbsolutePath()
+              }.toSeq
             )
             appDirectories(appId) = appLocalDirs
             val manager = new ExecutorRunner(

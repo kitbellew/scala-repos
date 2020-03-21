@@ -98,7 +98,9 @@ class CompositeOffsetSuite extends OffsetSuite {
 
   compareInvalid(
     one =
-      CompositeOffset
-        .fill(LongOffset(2), LongOffset(1)), // vector time inconsistent
+      CompositeOffset.fill(
+        LongOffset(2),
+        LongOffset(1)
+      ), // vector time inconsistent
     two = CompositeOffset.fill(LongOffset(1), LongOffset(2)))
 }

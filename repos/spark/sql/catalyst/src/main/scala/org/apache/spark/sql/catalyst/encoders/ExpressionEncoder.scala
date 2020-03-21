@@ -117,22 +117,19 @@ object ExpressionEncoder {
     val cls = Utils.getContextOrSparkClassLoader.loadClass(
       s"scala.Tuple${encoders.size}")
 
-    val toRowExpressions = encoders
-      .map {
-        case e if e.flat => e.toRowExpressions.head
-        case other       => CreateStruct(other.toRowExpressions)
-      }
-      .zipWithIndex
-      .map {
-        case (expr, index) =>
-          expr.transformUp {
-            case BoundReference(0, t, _) =>
-              Invoke(
-                BoundReference(0, ObjectType(cls), nullable = true),
-                s"_${index + 1}",
-                t)
-          }
-      }
+    val toRowExpressions = encoders.map {
+      case e if e.flat => e.toRowExpressions.head
+      case other       => CreateStruct(other.toRowExpressions)
+    }.zipWithIndex.map {
+      case (expr, index) =>
+        expr.transformUp {
+          case BoundReference(0, t, _) =>
+            Invoke(
+              BoundReference(0, ObjectType(cls), nullable = true),
+              s"_${index + 1}",
+              t)
+        }
+    }
 
     val fromRowExpressions = encoders.zipWithIndex.map {
       case (enc, index) =>
@@ -191,8 +188,8 @@ object ExpressionEncoder {
       e3: ExpressionEncoder[T3],
       e4: ExpressionEncoder[T4],
       e5: ExpressionEncoder[T5]): ExpressionEncoder[(T1, T2, T3, T4, T5)] =
-    tuple(Seq(e1, e2, e3, e4, e5))
-      .asInstanceOf[ExpressionEncoder[(T1, T2, T3, T4, T5)]]
+    tuple(Seq(e1, e2, e3, e4, e5)).asInstanceOf[ExpressionEncoder[
+      (T1, T2, T3, T4, T5)]]
 }
 
 /**
@@ -267,9 +264,9 @@ case class ExpressionEncoder[T](
     */
   def fromRow(row: InternalRow): T =
     try {
-      constructProjection(row)
-        .get(0, ObjectType(clsTag.runtimeClass))
-        .asInstanceOf[T]
+      constructProjection(row).get(
+        0,
+        ObjectType(clsTag.runtimeClass)).asInstanceOf[T]
     } catch {
       case e: Exception =>
         throw new RuntimeException(
@@ -299,9 +296,8 @@ case class ExpressionEncoder[T](
       throw new AnalysisException(
         s"Try to map ${st.simpleString} to Tuple${maxOrdinal + 1}, " +
           "but failed as the number of fields does not line up.\n" +
-          " - Input schema: " + StructType
-          .fromAttributes(schema)
-          .simpleString + "\n" +
+          " - Input schema: " + StructType.fromAttributes(
+          schema).simpleString + "\n" +
           " - Target schema: " + this.schema.simpleString)
     }
 
@@ -351,8 +347,9 @@ case class ExpressionEncoder[T](
   def resolve(
       schema: Seq[Attribute],
       outerScopes: ConcurrentMap[String, AnyRef]): ExpressionEncoder[T] = {
-    val deserializer = SimpleAnalyzer.ResolveReferences
-      .resolveDeserializer(fromRowExpression, schema)
+    val deserializer = SimpleAnalyzer.ResolveReferences.resolveDeserializer(
+      fromRowExpression,
+      schema)
 
     // Make a fake plan to wrap the deserializer, so that we can go though the whole analyzer, check
     // analysis, go through optimizer, etc.
@@ -391,8 +388,9 @@ case class ExpressionEncoder[T](
   protected val schemaString =
     schema
       .zip(attrs)
-      .map { case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}" }
-      .mkString(", ")
+      .map {
+        case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}"
+      }.mkString(", ")
 
   override def toString: String = s"class[$schemaString]"
 }

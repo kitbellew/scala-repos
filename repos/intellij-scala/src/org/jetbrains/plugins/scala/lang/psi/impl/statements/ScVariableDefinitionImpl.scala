@@ -63,8 +63,7 @@ class ScVariableDefinitionImpl private (
     typeElement match {
       case Some(te) => te.getType(ctx)
       case None =>
-        expr
-          .map(_.getType(TypingContext.empty))
+        expr.map(_.getType(TypingContext.empty))
           .getOrElse(
             Failure("Cannot infer type without an expression", Some(this)))
     }
@@ -79,11 +78,9 @@ class ScVariableDefinitionImpl private (
   def pList: ScPatternList = {
     val stub = getStub
     if (stub != null) {
-      stub
-        .getChildrenByType(
-          ScalaElementTypes.PATTERN_LIST,
-          JavaArrayFactoryUtil.ScPatternListFactory)
-        .apply(0)
+      stub.getChildrenByType(
+        ScalaElementTypes.PATTERN_LIST,
+        JavaArrayFactoryUtil.ScPatternListFactory).apply(0)
     } else findChildByClass(classOf[ScPatternList])
   }
 }

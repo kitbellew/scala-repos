@@ -39,43 +39,30 @@ trait WebHookService {
   /** get All WebHook informations of repository */
   def getWebHooks(owner: String, repository: String)(implicit
       s: Session): List[(WebHook, Set[WebHook.Event])] =
-    WebHooks
-      .filter(_.byRepository(owner, repository))
-      .innerJoin(WebHookEvents)
-      .on { (w, t) => t.byWebHook(w) }
+    WebHooks.filter(_.byRepository(owner, repository))
+      .innerJoin(WebHookEvents).on { (w, t) => t.byWebHook(w) }
       .map { case (w, t) => w -> t.event }
-      .list
-      .groupBy(_._1)
-      .mapValues(_.map(_._2).toSet)
-      .toList
-      .sortBy(_._1.url)
+      .list.groupBy(_._1).mapValues(_.map(_._2).toSet).toList.sortBy(_._1.url)
 
   /** get All WebHook informations of repository event */
   def getWebHooksByEvent(
       owner: String,
       repository: String,
       event: WebHook.Event)(implicit s: Session): List[WebHook] =
-    WebHooks
-      .filter(_.byRepository(owner, repository))
-      .innerJoin(WebHookEvents)
-      .on { (wh, whe) => whe.byWebHook(wh) }
+    WebHooks.filter(_.byRepository(owner, repository))
+      .innerJoin(WebHookEvents).on { (wh, whe) => whe.byWebHook(wh) }
       .filter { case (wh, whe) => whe.event === event.bind }
       .map { case (wh, whe) => wh }
-      .list
-      .distinct
+      .list.distinct
 
   /** get All WebHook information from repository to url */
   def getWebHook(owner: String, repository: String, url: String)(implicit
       s: Session): Option[(WebHook, Set[WebHook.Event])] =
     WebHooks
       .filter(_.byPrimaryKey(owner, repository, url))
-      .innerJoin(WebHookEvents)
-      .on { (w, t) => t.byWebHook(w) }
+      .innerJoin(WebHookEvents).on { (w, t) => t.byWebHook(w) }
       .map { case (w, t) => w -> t.event }
-      .list
-      .groupBy(_._1)
-      .mapValues(_.map(_._2).toSet)
-      .headOption
+      .list.groupBy(_._1).mapValues(_.map(_._2).toSet).headOption
 
   def addWebHook(
       owner: String,
@@ -95,10 +82,8 @@ trait WebHookService {
       url: String,
       events: Set[WebHook.Event],
       token: Option[String])(implicit s: Session): Unit = {
-    WebHooks
-      .filter(_.byPrimaryKey(owner, repository, url))
-      .map(w => w.token)
-      .update(token)
+    WebHooks.filter(_.byPrimaryKey(owner, repository, url)).map(w =>
+      w.token).update(token)
     WebHookEvents.filter(_.byWebHook(owner, repository, url)).delete
     events.toSet.map { event: WebHook.Event =>
       WebHookEvents insert WebHookEvent(owner, repository, url, event)
@@ -297,9 +282,8 @@ trait WebHookPullRequestService extends WebHookService {
       ru <- Accounts if ru.userName === pr.requestUserName
       iu <- Accounts if iu.userName === is.openedUserName
       wh <- WebHooks if wh.byRepository(is.userName, is.repositoryName)
-      wht <- WebHookEvents if wht.event === WebHook.PullRequest
-        .asInstanceOf[WebHook.Event]
-        .bind && wht.byWebHook(wh)
+      wht <- WebHookEvents if wht.event === WebHook.PullRequest.asInstanceOf[
+        WebHook.Event].bind && wht.byWebHook(wh)
     } yield {
       ((is, iu, pr, bu, ru), wh)
     }).list.groupBy(_._1).mapValues(_.map(_._2))
@@ -486,8 +470,9 @@ object WebHookService {
         commits = commits.map { commit =>
           ApiCommit.forPushPayload(git, RepositoryName(repositoryInfo), commit)
         },
-        repository = ApiRepository
-          .forPushPayload(repositoryInfo, owner = ApiUser(repositoryOwner))
+        repository = ApiRepository.forPushPayload(
+          repositoryInfo,
+          owner = ApiUser(repositoryOwner))
       )
   }
 

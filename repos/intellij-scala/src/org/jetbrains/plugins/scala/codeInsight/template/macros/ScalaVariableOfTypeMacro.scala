@@ -48,29 +48,24 @@ class ScalaVariableOfTypeMacro extends Macro {
     val offset = context.getStartOffset
     val editor = context.getEditor
     val array = new ArrayBuffer[LookupElement]
-    val file = PsiDocumentManager
-      .getInstance(editor.getProject)
-      .getPsiFile(editor.getDocument)
-    PsiDocumentManager
-      .getInstance(editor.getProject)
-      .commitDocument(editor.getDocument)
+    val file = PsiDocumentManager.getInstance(editor.getProject).getPsiFile(
+      editor.getDocument)
+    PsiDocumentManager.getInstance(editor.getProject).commitDocument(
+      editor.getDocument)
     file match {
       case file: ScalaFile =>
         val element = file.findElementAt(offset)
-        val variants = MacroUtil
-          .getVariablesForScope(element)
-          .filter(r => {
-            val clazz =
-              PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
-            if (clazz == null) true
-            else {
-              clazz.qualifiedName match {
-                case "scala.Predef" => false
-                case "scala"        => false
-                case _              => true
-              }
+        val variants = MacroUtil.getVariablesForScope(element).filter(r => {
+          val clazz = PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
+          if (clazz == null) true
+          else {
+            clazz.qualifiedName match {
+              case "scala.Predef" => false
+              case "scala"        => false
+              case _              => true
             }
-          })
+          }
+        })
         for (variant <- variants) {
           variant.getElement match {
             case typed: ScTypedDefinition =>
@@ -97,35 +92,30 @@ class ScalaVariableOfTypeMacro extends Macro {
     if (!validExprs(exprs)) return null
     val offset = context.getStartOffset
     val editor = context.getEditor
-    val file = PsiDocumentManager
-      .getInstance(editor.getProject)
-      .getPsiFile(editor.getDocument)
-    PsiDocumentManager
-      .getInstance(editor.getProject)
-      .commitDocument(editor.getDocument)
+    val file = PsiDocumentManager.getInstance(editor.getProject).getPsiFile(
+      editor.getDocument)
+    PsiDocumentManager.getInstance(editor.getProject).commitDocument(
+      editor.getDocument)
     file match {
       case file: ScalaFile =>
         val element = file.findElementAt(offset)
-        val variants = MacroUtil
-          .getVariablesForScope(element)
-          .filter(r => {
-            val clazz =
-              PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
-            if (clazz == null) true
-            else {
-              clazz.qualifiedName match {
-                case "scala.Predef" => false
-                case "scala"        => false
-                case _              => true
-              }
+        val variants = MacroUtil.getVariablesForScope(element).filter(r => {
+          val clazz = PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
+          if (clazz == null) true
+          else {
+            clazz.qualifiedName match {
+              case "scala.Predef" => false
+              case "scala"        => false
+              case _              => true
             }
-          })
+          }
+        })
         for (variant <- variants) {
           variant.getElement match {
             case typed: ScTypedDefinition =>
               for (t <- typed.getType(TypingContext.empty))
-                getResult(exprs, context, variant, t, file.getProject)
-                  .map(return _)
+                getResult(exprs, context, variant, t, file.getProject).map(
+                  return _)
             case _ =>
           }
         }
@@ -176,13 +166,12 @@ class ScalaVariableOfTypeMacro extends Macro {
               None
           }
       case _ =>
-        exprs
-          .find(expr =>
-            (ScType.extractClassType(scType, Some(project)) match {
-              case Some((x, _)) => x.qualifiedName
-              case None         => ""
-            }) == expr.calculateResult(context).toString)
-          .map(_ => new TextResult(variant.getElement.name))
+        exprs.find(expr =>
+          (ScType.extractClassType(scType, Some(project)) match {
+            case Some((x, _)) => x.qualifiedName
+            case None         => ""
+          }) == expr.calculateResult(context).toString).map(_ =>
+          new TextResult(variant.getElement.name))
     }
   }
 
@@ -195,9 +184,9 @@ class ScalaVariableOfTypeMacro extends Macro {
       array: ArrayBuffer[LookupElement]) {
     exprs.apply(0) match {
       case "" =>
-        val item = LookupElementBuilder
-          .create(variant.getElement, variant.getElement.name)
-          .withTypeText(ScType.presentableText(scType))
+        val item = LookupElementBuilder.create(
+          variant.getElement,
+          variant.getElement.name).withTypeText(ScType.presentableText(scType))
         array += item
       case ScalaVariableOfTypeMacro.iterableId
           if scType.canonicalText.startsWith("_root_.scala.Array") =>

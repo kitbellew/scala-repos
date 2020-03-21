@@ -36,8 +36,8 @@ private[json] object ScalaSigReader {
       if (current == null)
         Meta.fail("Can't find field " + name + " from " + clazz)
       else
-        findField(findClass(current), name)
-          .getOrElse(read(current.getSuperclass))
+        findField(findClass(current), name).getOrElse(
+          read(current.getSuperclass))
     }
     findArgTypeForField(read(clazz), typeArgIndex)
   }
@@ -50,21 +50,18 @@ private[json] object ScalaSigReader {
   }
 
   private def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] = {
-    sig.symbols
-      .collect { case c: ClassSymbol if !c.isModule => c }
-      .find(_.name == clazz.getSimpleName)
-      .orElse {
-        sig.topLevelClasses
-          .find(_.symbolInfo.name == clazz.getSimpleName)
-          .orElse {
-            sig.topLevelObjects.map { obj =>
-              val t = obj.infoType.asInstanceOf[TypeRefType]
-              t.symbol.children collect {
-                case c: ClassSymbol => c
-              } find (_.symbolInfo.name == clazz.getSimpleName)
-            }.head
-          }
+    sig.symbols.collect { case c: ClassSymbol if !c.isModule => c }.find(
+      _.name == clazz.getSimpleName).orElse {
+      sig.topLevelClasses.find(
+        _.symbolInfo.name == clazz.getSimpleName).orElse {
+        sig.topLevelObjects.map { obj =>
+          val t = obj.infoType.asInstanceOf[TypeRefType]
+          t.symbol.children collect {
+            case c: ClassSymbol => c
+          } find (_.symbolInfo.name == clazz.getSimpleName)
+        }.head
       }
+    }
   }
 
   private def findConstructor(

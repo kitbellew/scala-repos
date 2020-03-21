@@ -223,8 +223,8 @@ trait ContentExtractor {
       }
       if (numberOfNodes > 15) {
         if ((numberOfNodes - i) <= bottomNodesForNegativeScore) {
-          val booster: Float = bottomNodesForNegativeScore
-            .asInstanceOf[Float] - (numberOfNodes - i).asInstanceOf[Float]
+          val booster: Float = bottomNodesForNegativeScore.asInstanceOf[
+            Float] - (numberOfNodes - i).asInstanceOf[Float]
           boostScore =
             -math.pow(booster, 2.asInstanceOf[Float]).asInstanceOf[Float]
           val negscore: Float = math.abs(boostScore) + negativeScoring
@@ -235,8 +235,8 @@ trait ContentExtractor {
       }
 
       trace(
-        logPrefix + "Location Boost Score: " + boostScore + " on interation: " + i + "' id='" + node.parent.id + "' class='" + node.parent
-          .attr("class"))
+        logPrefix + "Location Boost Score: " + boostScore + " on interation: " + i + "' id='" + node.parent.id + "' class='" + node.parent.attr(
+          "class"))
 
       val nodeText: String = node.text
       val wordStats: WordStats = StopWords.getStopWordCount(nodeText)
@@ -281,11 +281,10 @@ trait ContentExtractor {
   def printTraceLog(topNode: Element) {
     try {
       if (topNode != null) {
-        trace(
-          logPrefix + "Our TOPNODE: score='" + topNode.attr(
-            "gravityScore") + "' nodeCount='" + topNode.attr(
-            "gravityNodes") + "' id='" + topNode.id + "' class='" + topNode
-            .attr("class") + "' ")
+        trace(logPrefix + "Our TOPNODE: score='" + topNode.attr(
+          "gravityScore") + "' nodeCount='" + topNode.attr(
+          "gravityNodes") + "' id='" + topNode.id + "' class='" + topNode.attr(
+          "class") + "' ")
         val text =
           if (topNode.text.trim.length > 100)
             topNode.text.trim.substring(0, 100) + "..."

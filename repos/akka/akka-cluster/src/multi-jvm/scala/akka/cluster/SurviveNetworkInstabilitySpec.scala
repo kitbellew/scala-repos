@@ -34,13 +34,11 @@ object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
   val eighth = role("eighth")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(
-        ConfigFactory.parseString("""
+    debugConfig(on = false).withFallback(
+      ConfigFactory.parseString("""
       akka.remote.system-message-buffer-size=100
       akka.remote.netty.tcp.connection-timeout = 10s
-      """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+      """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)
 
@@ -280,12 +278,9 @@ abstract class SurviveNetworkInstabilitySpec
       enterBarrier("watcher-created")
 
       runOn(second) {
-        val sysMsgBufferSize = system
-          .asInstanceOf[ExtendedActorSystem]
-          .provider
-          .asInstanceOf[RemoteActorRefProvider]
-          .remoteSettings
-          .SysMsgBufferSize
+        val sysMsgBufferSize =
+          system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[
+            RemoteActorRefProvider].remoteSettings.SysMsgBufferSize
         val refs =
           Vector.fill(sysMsgBufferSize + 1)(system.actorOf(Props[Echo])).toSet
         system.actorSelection(node(third) / "user" / "watcher") ! Targets(refs)

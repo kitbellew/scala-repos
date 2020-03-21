@@ -58,14 +58,12 @@ private[spark] class ExecutorDelegationTokenUpdater(
     try {
       val credentialsFilePath = new Path(credentialsFile)
       val remoteFs = FileSystem.get(freshHadoopConf)
-      SparkHadoopUtil.get
-        .listFilesSorted(
-          remoteFs,
-          credentialsFilePath.getParent,
-          credentialsFilePath.getName,
-          SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)
-        .lastOption
-        .foreach { credentialsStatus =>
+      SparkHadoopUtil.get.listFilesSorted(
+        remoteFs,
+        credentialsFilePath.getParent,
+        credentialsFilePath.getName,
+        SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)
+        .lastOption.foreach { credentialsStatus =>
           val suffix = SparkHadoopUtil.get.getSuffixForCredentialsPath(
             credentialsStatus.getPath)
           if (suffix > lastCredentialsFileSuffix) {

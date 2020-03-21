@@ -48,9 +48,8 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
       akka.actor.deployment {
         /router1 {
           router = round-robin-pool
@@ -84,8 +83,7 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
           }
         }
       }
-      """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+      """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   nodeConfig(first, second)(
     ConfigFactory.parseString("""akka.cluster.roles =["a", "c"]"""))
@@ -148,10 +146,8 @@ abstract class ClusterRoundRobinSpec
     }
 
   def currentRoutees(router: ActorRef) =
-    Await
-      .result(router ? GetRoutees, timeout.duration)
-      .asInstanceOf[Routees]
-      .routees
+    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[
+      Routees].routees
 
   "A cluster router with a RoundRobin router" must {
     "start cluster with 2 nodes" in {

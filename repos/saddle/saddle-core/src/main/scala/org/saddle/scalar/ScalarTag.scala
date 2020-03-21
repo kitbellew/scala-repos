@@ -50,8 +50,7 @@ trait ScalarTag[@spec(Boolean, Int, Long, Float, Double) T]
   def isAnyVal = false
 
   override def hashCode(): Int =
-    isAny
-      .hashCode() + isAnyVal.hashCode() * 31 + runtimeClass.hashCode() * 31 * 31
+    isAny.hashCode() + isAnyVal.hashCode() * 31 + runtimeClass.hashCode() * 31 * 31
 
   override def equals(o: Any): Boolean =
     o match {

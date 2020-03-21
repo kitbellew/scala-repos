@@ -300,7 +300,8 @@ class Engine[TD, EI, PD, Q, P, A](
 
     logger.info(s"engineInstanceId=$engineInstanceId")
 
-    algoTuples.zipWithIndex
+    algoTuples
+      .zipWithIndex
       .map {
         case ((name, params, algo, model), ax) =>
           algo.makePersistentModel(
@@ -765,10 +766,10 @@ object Engine {
     logger.info(s"AlgorithmList: $algorithmList")
     logger.info(s"Serving: $serving")
 
-    val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] =
-      algorithmList.zipWithIndex
-        .map(_.swap)
-        .toMap
+    val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] = algorithmList
+      .zipWithIndex
+      .map(_.swap)
+      .toMap
     val algoCount = algoMap.size
 
     val evalTupleMap: Map[EX, (TD, EI, RDD[(Q, A)])] = dataSource
@@ -801,8 +802,8 @@ object Engine {
       qas.map { case (qx, (q, a)) => (qx, (serving.supplementBase(q), a)) }
     }
 
-    val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] = (0 until evalCount).map {
-      ex =>
+    val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] = (0 until evalCount)
+      .map { ex =>
         {
           val modelMap: Map[AX, Any] = algoModelsMap(ex)
 
@@ -824,8 +825,7 @@ object Engine {
               }
             }
 
-          val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc
-            .union(algoPredicts)
+          val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc.union(algoPredicts)
             .groupByKey()
             .mapValues { ps =>
               {
@@ -839,7 +839,8 @@ object Engine {
 
           (ex, unionAlgoPredicts)
         }
-    }.toMap
+      }
+      .toMap
 
     val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap
       .map {
@@ -847,8 +848,7 @@ object Engine {
           // The query passed to serving.serve is the original one, not
           // supplemented.
           val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
-          val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
-            .join(qasMap)
+          val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap.join(qasMap)
             .map { case (qx, t) => (qx, t._2._1, t._1, t._2._2) }
 
           val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
@@ -862,7 +862,8 @@ object Engine {
       {
         (evalInfoMap(ex), servingQPAMap(ex))
       }
-    }.toSeq
+    }
+      .toSeq
   }
 }
 

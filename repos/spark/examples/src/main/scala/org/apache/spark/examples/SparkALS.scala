@@ -131,13 +131,11 @@ object SparkALS {
     var usb = sc.broadcast(us)
     for (iter <- 1 to ITERATIONS) {
       println(s"Iteration $iter:")
-      ms = sc
-        .parallelize(0 until M, slices)
+      ms = sc.parallelize(0 until M, slices)
         .map(i => update(i, msb.value(i), usb.value, Rc.value))
         .collect()
       msb = sc.broadcast(ms) // Re-broadcast ms because it was updated
-      us = sc
-        .parallelize(0 until U, slices)
+      us = sc.parallelize(0 until U, slices)
         .map(i => update(i, usb.value(i), msb.value, Rc.value.transpose()))
         .collect()
       usb = sc.broadcast(us) // Re-broadcast us because it was updated

@@ -35,23 +35,20 @@ class TaskContextSuite
     with LocalSparkContext {
 
   test("provide metrics sources") {
-    val filePath = getClass.getClassLoader
-      .getResource("test_metrics_config.properties")
-      .getFile
+    val filePath = getClass.getClassLoader.getResource(
+      "test_metrics_config.properties").getFile
     val conf = new SparkConf(loadDefaults = false)
       .set("spark.metrics.conf", filePath)
     sc = new SparkContext("local", "test", conf)
     val rdd = sc.makeRDD(1 to 1)
-    val result = sc
-      .runJob(
-        rdd,
-        (tc: TaskContext, it: Iterator[Int]) => {
-          tc.getMetricsSources("jvm").count {
-            case source: JvmSource => true
-            case _                 => false
-          }
-        })
-      .sum
+    val result = sc.runJob(
+      rdd,
+      (tc: TaskContext, it: Iterator[Int]) => {
+        tc.getMetricsSources("jvm").count {
+          case source: JvmSource => true
+          case _                 => false
+        }
+      }).sum
     assert(result > 0)
   }
 
@@ -155,23 +152,20 @@ class TaskContextSuite
         "test"
       ) // use maxRetries = 2 because we test failed tasks
     // Check that attemptIds are 0 for all tasks' initial attempts
-    val attemptIds = sc
-      .parallelize(Seq(1, 2), 2)
-      .mapPartitions { iter => Seq(TaskContext.get().attemptNumber).iterator }
-      .collect()
+    val attemptIds = sc.parallelize(Seq(1, 2), 2).mapPartitions { iter =>
+      Seq(TaskContext.get().attemptNumber).iterator
+    }.collect()
     assert(attemptIds.toSet === Set(0))
 
     // Test a job with failed tasks
-    val attemptIdsWithFailedTask = sc
-      .parallelize(Seq(1, 2), 2)
-      .mapPartitions { iter =>
+    val attemptIdsWithFailedTask = sc.parallelize(Seq(1, 2), 2).mapPartitions {
+      iter =>
         val attemptId = TaskContext.get().attemptNumber
         if (iter.next() == 1 && attemptId == 0) {
           throw new Exception("First execution of task failed")
         }
         Seq(attemptId).iterator
-      }
-      .collect()
+    }.collect()
     assert(attemptIdsWithFailedTask.toSet === Set(0, 1))
   }
 
@@ -193,17 +187,15 @@ class TaskContextSuite
       internal = false,
       countFailedValues = false)
     // Fail first 3 attempts of every task. This means each task should be run 4 times.
-    sc.parallelize(1 to 10, 10)
-      .map { i =>
-        acc1 += 1
-        acc2 += 1
-        if (TaskContext.get.attemptNumber() <= 2) {
-          throw new Exception("you did something wrong")
-        } else {
-          0
-        }
+    sc.parallelize(1 to 10, 10).map { i =>
+      acc1 += 1
+      acc2 += 1
+      if (TaskContext.get.attemptNumber() <= 2) {
+        throw new Exception("you did something wrong")
+      } else {
+        0
       }
-      .count()
+    }.count()
     // The one that counts failed values should be 4x the one that didn't,
     // since we ran each task 4 times
     assert(Accumulators.get(acc1.id).get.value === 40L)

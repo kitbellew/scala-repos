@@ -145,15 +145,15 @@ private[streaming] class ReliableKafkaReceiver[
 
     blockGenerator.start()
 
-    val keyDecoder = classTag[U].runtimeClass
-      .getConstructor(classOf[VerifiableProperties])
-      .newInstance(consumerConfig.props)
-      .asInstanceOf[Decoder[K]]
+    val keyDecoder =
+      classTag[U].runtimeClass.getConstructor(classOf[VerifiableProperties])
+        .newInstance(consumerConfig.props)
+        .asInstanceOf[Decoder[K]]
 
-    val valueDecoder = classTag[T].runtimeClass
-      .getConstructor(classOf[VerifiableProperties])
-      .newInstance(consumerConfig.props)
-      .asInstanceOf[Decoder[V]]
+    val valueDecoder =
+      classTag[T].runtimeClass.getConstructor(classOf[VerifiableProperties])
+        .newInstance(consumerConfig.props)
+        .asInstanceOf[Decoder[V]]
 
     val topicMessageStreams =
       consumerConnector.createMessageStreams(topics, keyDecoder, valueDecoder)

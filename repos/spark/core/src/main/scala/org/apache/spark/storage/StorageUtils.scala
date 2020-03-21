@@ -221,8 +221,7 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     // Compute new info from old info
     val (oldMem, oldDisk) = blockId match {
       case RDDBlockId(rddId, _) =>
-        _rddStorageInfo
-          .get(rddId)
+        _rddStorageInfo.get(rddId)
           .map { case (mem, disk, _) => (mem, disk) }
           .getOrElse((0L, 0L))
       case _ =>
@@ -276,9 +275,8 @@ private[spark] object StorageUtils extends Logging {
       val rddId = rddInfo.id
       // Assume all blocks belonging to the same RDD have the same storage level
       val storageLevel = statuses
-        .flatMap(_.rddStorageLevel(rddId))
-        .headOption
-        .getOrElse(StorageLevel.NONE)
+        .flatMap(_.rddStorageLevel(rddId)).headOption.getOrElse(
+          StorageLevel.NONE)
       val numCachedPartitions = statuses.map(_.numRddBlocksById(rddId)).sum
       val memSize = statuses.map(_.memUsedByRdd(rddId)).sum
       val diskSize = statuses.map(_.diskUsedByRdd(rddId)).sum
@@ -302,8 +300,9 @@ private[spark] object StorageUtils extends Logging {
       status.rddBlocksById(rddId).foreach {
         case (bid, _) =>
           val location = status.blockManagerId.hostPort
-          blockLocations
-            .getOrElseUpdate(bid, mutable.ListBuffer.empty) += location
+          blockLocations.getOrElseUpdate(
+            bid,
+            mutable.ListBuffer.empty) += location
       }
     }
     blockLocations

@@ -62,9 +62,8 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
     }
     "addSessionId" in {
       val orderId = Query.create("orderId=123")
-      Uri
-        .create("/order")
-        .query(JavaApiTestCases.addSessionId(orderId)) must be(
+      Uri.create("/order").query(
+        JavaApiTestCases.addSessionId(orderId)) must be(
         Uri.create("/order?orderId=123&session=abcdefghijkl"))
     }
     "create HttpsContext" in {

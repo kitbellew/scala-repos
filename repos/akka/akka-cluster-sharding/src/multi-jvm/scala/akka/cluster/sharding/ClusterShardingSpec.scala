@@ -248,9 +248,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   def createCoordinator(): Unit = {
     val replicator = system.actorOf(
       Replicator.props(
-        ReplicatorSettings(system)
-          .withGossipInterval(1.second)
-          .withMaxDeltaElements(10)),
+        ReplicatorSettings(system).withGossipInterval(
+          1.second).withMaxDeltaElements(10)),
       "replicator")
 
     def coordinatorProps(
@@ -261,13 +260,12 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         new ShardCoordinator.LeastShardAllocationStrategy(
           rebalanceThreshold = 2,
           maxSimultaneousRebalance = 1)
-      val cfg = ConfigFactory
-        .parseString(s"""
+      val cfg = ConfigFactory.parseString(s"""
       handoff-timeout = 10s
       shard-start-timeout = 10s
       rebalance-interval = ${if (rebalanceEnabled) "2s" else "3600s"}
-      """)
-        .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
+      """).withFallback(
+        system.settings.config.getConfig("akka.cluster.sharding"))
       val settings =
         ClusterShardingSettings(cfg).withRememberEntities(rememberEntities)
       if (settings.stateStoreMode == "persistence")
@@ -291,16 +289,14 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     ).foreach { typeName ⇒
       val rebalanceEnabled = typeName.toLowerCase.startsWith("rebalancing")
       val rememberEnabled = typeName.toLowerCase.contains("remember")
-      val singletonProps = BackoffSupervisor
-        .props(
-          childProps =
-            coordinatorProps(typeName, rebalanceEnabled, rememberEnabled),
-          childName = "coordinator",
-          minBackoff = 5.seconds,
-          maxBackoff = 5.seconds,
-          randomFactor = 0.1
-        )
-        .withDeploy(Deploy.local)
+      val singletonProps = BackoffSupervisor.props(
+        childProps =
+          coordinatorProps(typeName, rebalanceEnabled, rememberEnabled),
+        childName = "coordinator",
+        minBackoff = 5.seconds,
+        maxBackoff = 5.seconds,
+        randomFactor = 0.1
+      ).withDeploy(Deploy.local)
       system.actorOf(
         ClusterSingletonManager.props(
           singletonProps,
@@ -312,14 +308,13 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   }
 
   def createRegion(typeName: String, rememberEntities: Boolean): ActorRef = {
-    val cfg = ConfigFactory
-      .parseString("""
+    val cfg = ConfigFactory.parseString("""
       retry-interval = 1s
       shard-failure-backoff = 1s
       entity-restart-backoff = 1s
       buffer-size = 1000
-      """)
-      .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
+      """).withFallback(
+      system.settings.config.getConfig("akka.cluster.sharding"))
     val settings = ClusterShardingSettings(cfg)
       .withRememberEntities(rememberEntities)
     system.actorOf(
@@ -456,13 +451,11 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
 
     "support proxy only mode" in within(10.seconds) {
       runOn(second) {
-        val cfg = ConfigFactory
-          .parseString("""
+        val cfg = ConfigFactory.parseString("""
           retry-interval = 1s
           buffer-size = 1000
-        """)
-          .withFallback(
-            system.settings.config.getConfig("akka.cluster.sharding"))
+        """).withFallback(
+          system.settings.config.getConfig("akka.cluster.sharding"))
         val settings = ClusterShardingSettings(cfg)
         val proxy = system.actorOf(
           ShardRegion.proxyProps(
@@ -675,8 +668,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       expectMsg(1)
       //#counter-usage
 
-      ClusterSharding(system)
-        .shardRegion("AnotherCounter") ! EntityEnvelope(123, Decrement)
+      ClusterSharding(system).shardRegion("AnotherCounter") ! EntityEnvelope(
+        123,
+        Decrement)
       ClusterSharding(system).shardRegion("AnotherCounter") ! Get(123)
       expectMsg(-1)
     }
@@ -686,8 +680,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     // sixth is a frontend node, i.e. proxy only
     runOn(sixth) {
       for (n ← 1000 to 1010) {
-        ClusterSharding(system)
-          .shardRegion("Counter") ! EntityEnvelope(n, Increment)
+        ClusterSharding(system).shardRegion("Counter") ! EntityEnvelope(
+          n,
+          Increment)
         ClusterSharding(system).shardRegion("Counter") ! Get(n)
         expectMsg(1)
         lastSender.path.address should not be (Cluster(system).selfAddress)
@@ -886,9 +881,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         awaitAssert(
           {
             counter1.tell(Identify(1), probe.ref)
-            probe
-              .expectMsgType[ActorIdentity](1 second)
-              .ref should not be (None)
+            probe.expectMsgType[ActorIdentity](
+              1 second).ref should not be (None)
           },
           5.seconds,
           500.millis)
@@ -931,9 +925,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         awaitAssert(
           {
             counter1.tell(Identify(1), probe.ref)
-            probe
-              .expectMsgType[ActorIdentity](1 second)
-              .ref should not be (None)
+            probe.expectMsgType[ActorIdentity](
+              1 second).ref should not be (None)
           },
           5.seconds,
           500 millis)

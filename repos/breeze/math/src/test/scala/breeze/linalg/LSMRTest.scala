@@ -76,8 +76,9 @@ class LSMRTest extends FunSuite {
       DenseVector.rand[Double](mat.cols, gen),
       1.0)
 
-    new LBFGS[DenseVector[Double]](tolerance = 1e-9)
-      .minimize(obj, DenseVector.rand[Double](mat.cols, gen))
+    new LBFGS[DenseVector[Double]](tolerance = 1e-9).minimize(
+      obj,
+      DenseVector.rand[Double](mat.cols, gen))
   }
 
   test("a few lsmr tests") {

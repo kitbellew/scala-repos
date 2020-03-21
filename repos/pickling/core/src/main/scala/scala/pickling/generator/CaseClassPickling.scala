@@ -17,13 +17,9 @@ class CaseClassPickling(
   // TODO - This helper method should be available elsewhere.
   def allVars(cls: IrClass): Seq[IrMethod] = {
     (cls.methods.filter(_.isParamAccessor) ++
-      IrSymbol
-        .allDeclaredMethodIncludingSubclasses(cls)
-        .filter(x => x.isVar || x.isVal))
-      .groupBy(_.methodName)
-      .map(_._2.head)
-      .toList
-      .filterNot(_.isMarkedTransient)
+      IrSymbol.allDeclaredMethodIncludingSubclasses(cls).filter(x =>
+        x.isVar || x.isVal)).groupBy(_.methodName).map(
+      _._2.head).toList.filterNot(_.isMarkedTransient)
   }
   private def checkConstructorImpl(
       tpe: IrClass,
@@ -111,10 +107,8 @@ class CaseClassPickling(
     // THis should be accurate, because all case calsses have companions
     (for {
       companion <- tpe.companion
-      factoryMethod <- tpe.methods
-        .filter(_.methodName == "apply")
-        .sortBy(_.parameterNames.flatten.size)
-        .headOption
+      factoryMethod <- tpe.methods.filter(_.methodName == "apply").sortBy(
+        _.parameterNames.flatten.size).headOption
     } yield {
       val vars = allVars(tpe)
       val names = factoryMethod.parameterNames.flatten.toSet
@@ -168,29 +162,27 @@ class CaseClassPickling(
           case scala.util.Success(subs) =>
             assert(subs.exists(_.className == tpe.className))
             behavior map { b =>
-              IrAst
-                .transform(b) {
-                  case x: PickleEntry =>
-                    SubclassDispatch.apply(
-                      subClasses = subs.filterNot(_.className == tpe.className),
-                      tpe,
-                      Some(x),
-                      allowReflection // TODO - This should be `allow runtime pickler lookup`.
-                    )
-                  case x: UnpickleBehavior =>
-                    UnpickleBehavior(
-                      Seq(
-                        SubclassUnpicklerDelegation(
-                          Nil,
-                          tpe,
-                          Some(x),
-                          allowReflection
-                        )
+              IrAst.transform(b) {
+                case x: PickleEntry =>
+                  SubclassDispatch.apply(
+                    subClasses = subs.filterNot(_.className == tpe.className),
+                    tpe,
+                    Some(x),
+                    allowReflection // TODO - This should be `allow runtime pickler lookup`.
+                  )
+                case x: UnpickleBehavior =>
+                  UnpickleBehavior(
+                    Seq(
+                      SubclassUnpicklerDelegation(
+                        Nil,
+                        tpe,
+                        Some(x),
+                        allowReflection
                       )
-                    ) // TODO - This should be `allow runtime pickler lookup`.
-                  case x => x
-                }
-                .asInstanceOf[PickleUnpickleImplementation]
+                    )
+                  ) // TODO - This should be `allow runtime pickler lookup`.
+                case x => x
+              }.asInstanceOf[PickleUnpickleImplementation]
             }
           case scala.util.Failure(ex) if !allowReflection =>
             AlgorithmFailure(
@@ -199,29 +191,27 @@ class CaseClassPickling(
             behavior.map { b =>
               logger.warn(
                 s"Warning:   Unpickler does not currently handle subclasss dipatch for type: $tpe")
-              IrAst
-                .transform(b) {
-                  case x: PickleEntry =>
-                    SubclassDispatch(
-                      Nil,
-                      tpe,
-                      Some(x),
-                      allowReflection
-                    ) // TODO - This should be `allow runtime pickler lookup`.
-                  case x: UnpickleBehavior =>
-                    UnpickleBehavior(
-                      Seq(
-                        SubclassUnpicklerDelegation(
-                          Nil,
-                          tpe,
-                          Some(x),
-                          allowReflection
-                        )
+              IrAst.transform(b) {
+                case x: PickleEntry =>
+                  SubclassDispatch(
+                    Nil,
+                    tpe,
+                    Some(x),
+                    allowReflection
+                  ) // TODO - This should be `allow runtime pickler lookup`.
+                case x: UnpickleBehavior =>
+                  UnpickleBehavior(
+                    Seq(
+                      SubclassUnpicklerDelegation(
+                        Nil,
+                        tpe,
+                        Some(x),
+                        allowReflection
                       )
-                    ) // TODO - This should be `allow runtime pickler lookup`.
-                  case x => x
-                }
-                .asInstanceOf[PickleUnpickleImplementation]
+                    )
+                  ) // TODO - This should be `allow runtime pickler lookup`.
+                case x => x
+              }.asInstanceOf[PickleUnpickleImplementation]
             }
         }
       } else behavior

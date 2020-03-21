@@ -147,9 +147,8 @@ trait SymbolTables {
       val symtabString = symtab.keys.map(symName(_)).mkString(", ")
       val trueAliases =
         aliases.distinct.filter(entry => symName(entry._1) != entry._2)
-      val aliasesString = trueAliases
-        .map(entry => s"${symName(entry._1)} -> ${entry._2}")
-        .mkString(", ")
+      val aliasesString = trueAliases.map(entry =>
+        s"${symName(entry._1)} -> ${entry._2}").mkString(", ")
       s"""symtab = [$symtabString], aliases = [$aliasesString]${if (original.isDefined)
         ", has original"
       else ""}"""
@@ -157,9 +156,9 @@ trait SymbolTables {
 
     def debugString: String = {
       val buf = new StringBuilder
-      buf
-        .append("symbol table = " + (if (syms.length == 0) "<empty>" else ""))
-        .append(EOL)
+      buf.append(
+        "symbol table = " + (if (syms.length == 0) "<empty>" else "")).append(
+        EOL)
       syms foreach (sym => buf.append(symDef(sym)).append(EOL))
       buf.delete(buf.length - EOL.length, buf.length)
       buf.toString

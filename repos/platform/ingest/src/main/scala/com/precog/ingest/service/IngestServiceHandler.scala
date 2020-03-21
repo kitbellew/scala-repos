@@ -180,9 +180,8 @@ class IngestServiceHandler(
       message: String): EitherT[Future, String, PrecogUnit] =
     durability match {
       case GlobalDurability(jobId) =>
-        jobManager
-          .addMessage(jobId, channel, JString(message))
-          .map(_ => PrecogUnit)
+        jobManager.addMessage(jobId, channel, JString(message)).map(_ =>
+          PrecogUnit)
       case LocalDurability =>
         right(Promise successful PrecogUnit)
     }
@@ -204,14 +203,12 @@ class IngestServiceHandler(
         {
           val timestamp = clock.now()
           def createJob: EitherT[Future, String, JobId] =
-            jobManager
-              .createJob(
-                apiKey,
-                "ingest-" + path,
-                "ingest",
-                None,
-                Some(timestamp))
-              .map(_.id)
+            jobManager.createJob(
+              apiKey,
+              "ingest-" + path,
+              "ingest",
+              None,
+              Some(timestamp)).map(_.id)
 
           findRequestWriteAuthorities(
             request,
@@ -225,9 +222,8 @@ class IngestServiceHandler(
               import Validation._
 
               val errorHandling =
-                if (request.parameters
-                      .get('mode)
-                      .exists(_ equalsIgnoreCase "batch")) IngestAllPossible
+                if (request.parameters.get('mode).exists(
+                      _ equalsIgnoreCase "batch")) IngestAllPossible
                 else StopOnFirstError
 
               val durabilityM = request.method match {
@@ -257,8 +253,11 @@ class IngestServiceHandler(
                     errorHandling,
                     storeMode) flatMap {
                     case NotIngested(reason) =>
-                      val message = "Ingest to %s by %s failed with reason: %s "
-                        .format(path, apiKey, reason)
+                      val message =
+                        "Ingest to %s by %s failed with reason: %s ".format(
+                          path,
+                          apiKey,
+                          reason)
                       logger.warn(message)
                       notifyJob(
                         durability,
@@ -271,8 +270,11 @@ class IngestServiceHandler(
                       }
 
                     case StreamingResult(ingested, None) =>
-                      val message = "Ingest to %s by %s succeeded (%d records)"
-                        .format(path, apiKey, ingested)
+                      val message =
+                        "Ingest to %s by %s succeeded (%d records)".format(
+                          path,
+                          apiKey,
+                          ingested)
                       logger.info(message)
                       notifyJob(
                         durability,
@@ -288,8 +290,11 @@ class IngestServiceHandler(
 
                     case StreamingResult(ingested, Some(error)) =>
                       val message =
-                        "Ingest to %s by %s failed after %d records with error %s"
-                          .format(path, apiKey, ingested, error)
+                        "Ingest to %s by %s failed after %d records with error %s".format(
+                          path,
+                          apiKey,
+                          ingested,
+                          error)
                       logger.error(message)
                       notifyJob(
                         durability,
@@ -316,13 +321,15 @@ class IngestServiceHandler(
                               "line" -> JNum(line),
                               "reason" -> JString(msg))
                         }: _*),
-                        "ingestId" -> durability.jobId
-                          .map(JString(_))
-                          .getOrElse(JUndefined)
+                        "ingestId" -> durability.jobId.map(
+                          JString(_)).getOrElse(JUndefined)
                       )
 
-                      val message = "Ingest to %s with %s succeeded. Result: %s"
-                        .format(path, apiKey, responseContent.renderPretty)
+                      val message =
+                        "Ingest to %s with %s succeeded. Result: %s".format(
+                          path,
+                          apiKey,
+                          responseContent.renderPretty)
                       logger.info(message)
                       notifyJob(
                         durability,
@@ -341,8 +348,10 @@ class IngestServiceHandler(
               }
             } getOrElse {
               logger.warn(
-                "No event data found for ingest request from %s owner %s at path %s"
-                  .format(apiKey, authorities, path))
+                "No event data found for ingest request from %s owner %s at path %s".format(
+                  apiKey,
+                  authorities,
+                  path))
               M.point(
                 HttpResponse[JValue](
                   BadRequest,

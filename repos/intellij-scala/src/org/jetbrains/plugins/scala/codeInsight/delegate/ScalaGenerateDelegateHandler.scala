@@ -72,21 +72,19 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
         val aClass = classAtOffset(editor.getCaretModel.getOffset, file)
         val generatedMethods = for (member <- candidates) yield {
           val prototype: ScFunctionDefinition =
-            ScalaPsiElementFactory
-              .createMethodFromSignature(
-                member.sign,
-                aClass.getManager,
-                specifyType,
-                body = "???")
+            ScalaPsiElementFactory.createMethodFromSignature(
+              member.sign,
+              aClass.getManager,
+              specifyType,
+              body = "???")
               .asInstanceOf[ScFunctionDefinition]
           prototype.setModifierProperty("override", value = member.isOverride)
           val body = methodBody(target, prototype)
           prototype.body.foreach(_.replace(body))
           val genInfo = new ScalaGenerationInfo(member)
-          val added = aClass
-            .addMember(
-              prototype,
-              Option(genInfo.findInsertionAnchor(aClass, elementAtOffset)))
+          val added = aClass.addMember(
+            prototype,
+            Option(genInfo.findInsertionAnchor(aClass, elementAtOffset)))
             .asInstanceOf[ScFunctionDefinition]
           if (added.superMethod.nonEmpty)
             added.setModifierProperty("override", value = true)
@@ -116,10 +114,9 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
         parameter: ScTypeParam,
         elements: Seq[PsiElement]) = {
       elements.exists(elem =>
-        ReferencesSearch
-          .search(parameter, new LocalSearchScope(elem))
-          .findAll()
-          .nonEmpty)
+        ReferencesSearch.search(
+          parameter,
+          new LocalSearchScope(elem)).findAll().nonEmpty)
     }
     val typeParamsForCall: String = {
       val typeParams = prototype.typeParameters
@@ -134,9 +131,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     def paramClauseApplicationText(paramClause: ScParameterClause) = {
       paramClause.parameters.map(_.name).mkString("(", ", ", ")")
     }
-    val params = prototype.effectiveParameterClauses
-      .map(paramClauseApplicationText)
-      .mkString
+    val params = prototype.effectiveParameterClauses.map(
+      paramClauseApplicationText).mkString
     ScalaPsiElementFactory.createExpressionFromText(
       s"$dText.$methodName$typeParamsForCall$params",
       prototype.getManager)
@@ -265,8 +261,7 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
 
   private def targetsIn(clazz: ScTemplateDefinition): Seq[ClassMember] = {
     //todo add ScObjectMember for targets
-    val allMembers = ScalaOIUtil
-      .allMembers(clazz, withSelfType = true)
+    val allMembers = ScalaOIUtil.allMembers(clazz, withSelfType = true)
       .flatMap(ScalaOIUtil.toClassMember(_, isImplement = false))
     allMembers.toSeq.filter(canBeTargetInClass(_, clazz))
   }

@@ -52,9 +52,8 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
     }
 
   private def isElementInSbtFile(element: PsiElement): Boolean =
-    Option(element)
-      .safeMap(_.getContainingFile)
-      .fold(false)(_.getFileType.getName != Sbt.Name)
+    Option(element).safeMap(_.getContainingFile).fold(false)(
+      _.getFileType.getName != Sbt.Name)
 
   private def extractDocFromSettingKey(settingKey: ScNamedElement): String = {
     val keyDefinition = findSettingKeyDefinition(settingKey)

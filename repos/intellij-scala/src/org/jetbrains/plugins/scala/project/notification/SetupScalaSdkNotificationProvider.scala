@@ -25,15 +25,13 @@ class SetupScalaSdkNotificationProvider(
     notifications: EditorNotifications)
     extends EditorNotifications.Provider[EditorNotificationPanel] {
 
-  project.getMessageBus
-    .connect(project)
-    .subscribe(
-      ProjectTopics.PROJECT_ROOTS,
-      new ModuleRootAdapter {
-        override def rootsChanged(event: ModuleRootEvent) {
-          notifications.updateAllNotifications()
-        }
-      })
+  project.getMessageBus.connect(project).subscribe(
+    ProjectTopics.PROJECT_ROOTS,
+    new ModuleRootAdapter {
+      override def rootsChanged(event: ModuleRootEvent) {
+        notifications.updateAllNotifications()
+      }
+    })
 
   override def getKey = ProviderKey
 
@@ -50,8 +48,9 @@ class SetupScalaSdkNotificationProvider(
         Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
       .filter(module =>
         ModuleUtil.getModuleType(module) == JavaModuleType.getModuleType)
-      .filter(!_.getName
-        .endsWith("-build")) // gen-idea doesn't use the SBT module type
+      .filter(
+        !_.getName.endsWith("-build")
+      ) // gen-idea doesn't use the SBT module type
       .map(module => module.hasScala)
 
     if (hasSdk.contains(false))

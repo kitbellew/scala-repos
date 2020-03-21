@@ -99,8 +99,8 @@ class StandardScaler(override val uid: String)
       new feature.StandardScaler(withMean = $(withMean), withStd = $(withStd))
     val scalerModel = scaler.fit(input)
     copyValues(
-      new StandardScalerModel(uid, scalerModel.std, scalerModel.mean)
-        .setParent(this))
+      new StandardScalerModel(uid, scalerModel.std, scalerModel.mean).setParent(
+        this))
   }
 
   override def transformSchema(schema: StructType): StructType = {
@@ -193,11 +193,8 @@ object StandardScalerModel extends MLReadable[StandardScalerModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.std, instance.mean)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -209,8 +206,7 @@ object StandardScalerModel extends MLReadable[StandardScalerModel] {
     override def load(path: String): StandardScalerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val Row(std: Vector, mean: Vector) = sqlContext.read
-        .parquet(dataPath)
+      val Row(std: Vector, mean: Vector) = sqlContext.read.parquet(dataPath)
         .select("std", "mean")
         .head()
       val model = new StandardScalerModel(metadata.uid, std, mean)

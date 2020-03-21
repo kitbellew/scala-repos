@@ -78,9 +78,8 @@ object ConsumerOffsetChecker extends Logging {
     val topicPartition = TopicAndPartition(topic, pid)
     val offsetOpt = offsetMap.get(topicPartition)
     val groupDirs = new ZKGroupTopicDirs(group, topic)
-    val owner = zkUtils
-      .readDataMaybeNull(groupDirs.consumerOwnerDir + "/%s".format(pid))
-      ._1
+    val owner = zkUtils.readDataMaybeNull(
+      groupDirs.consumerOwnerDir + "/%s".format(pid))._1
     zkUtils.getLeaderForPartition(topic, pid) match {
       case Some(bid) =>
         val consumerOpt =
@@ -94,11 +93,8 @@ object ConsumerOffsetChecker extends Logging {
                   topicAndPartition -> PartitionOffsetRequestInfo(
                     OffsetRequest.LatestTime,
                     1)))
-            val logSize = consumer
-              .getOffsetsBefore(request)
-              .partitionErrorAndOffsets(topicAndPartition)
-              .offsets
-              .head
+            val logSize = consumer.getOffsetsBefore(
+              request).partitionErrorAndOffsets(topicAndPartition).offsets.head
 
             val lagString = offsetOpt.map(o =>
               if (o == -1) "unknown" else (logSize - o).toString)
@@ -147,35 +143,25 @@ object ConsumerOffsetChecker extends Logging {
 
     val parser = new OptionParser()
 
-    val zkConnectOpt = parser
-      .accepts("zookeeper", "ZooKeeper connect string.")
-      .withRequiredArg()
-      .defaultsTo("localhost:2181")
-      .ofType(classOf[String])
-    val topicsOpt = parser
-      .accepts(
-        "topic",
-        "Comma-separated list of consumer topics (all topics if absent).")
-      .withRequiredArg()
-      .ofType(classOf[String])
-    val groupOpt = parser
-      .accepts("group", "Consumer group.")
-      .withRequiredArg()
-      .ofType(classOf[String])
-    val channelSocketTimeoutMsOpt = parser
-      .accepts(
-        "socket.timeout.ms",
-        "Socket timeout to use when querying for offsets.")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(6000)
-    val channelRetryBackoffMsOpt = parser
-      .accepts(
-        "retry.backoff.ms",
-        "Retry back-off to use for failed offset queries.")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(3000)
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "ZooKeeper connect string.").withRequiredArg().defaultsTo(
+      "localhost:2181").ofType(classOf[String])
+    val topicsOpt = parser.accepts(
+      "topic",
+      "Comma-separated list of consumer topics (all topics if absent).").withRequiredArg().ofType(
+      classOf[String])
+    val groupOpt =
+      parser.accepts("group", "Consumer group.").withRequiredArg().ofType(
+        classOf[String])
+    val channelSocketTimeoutMsOpt = parser.accepts(
+      "socket.timeout.ms",
+      "Socket timeout to use when querying for offsets.").withRequiredArg().ofType(
+      classOf[java.lang.Integer]).defaultsTo(6000)
+    val channelRetryBackoffMsOpt = parser.accepts(
+      "retry.backoff.ms",
+      "Retry back-off to use for failed offset queries.").withRequiredArg().ofType(
+      classOf[java.lang.Integer]).defaultsTo(3000)
 
     parser.accepts("broker-info", "Print broker info")
     parser.accepts("help", "Print this message.")
@@ -232,8 +218,9 @@ object ConsumerOffsetChecker extends Logging {
         channelRetryBackoffMs)
 
       debug(
-        "Sending offset fetch request to coordinator %s:%d."
-          .format(channel.host, channel.port))
+        "Sending offset fetch request to coordinator %s:%d.".format(
+          channel.host,
+          channel.port))
       channel.send(OffsetFetchRequest(group, topicPartitions))
       val offsetFetchResponse =
         OffsetFetchResponse.readFrom(channel.receive().payload())
@@ -246,12 +233,9 @@ object ConsumerOffsetChecker extends Logging {
             // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
             // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
             try {
-              val offset = zkUtils
-                .readData(
-                  topicDirs.consumerOffsetDir + "/%d".format(
-                    topicAndPartition.partition))
-                ._1
-                .toLong
+              val offset = zkUtils.readData(
+                topicDirs.consumerOffsetDir + "/%d".format(
+                  topicAndPartition.partition))._1.toLong
               offsetMap.put(topicAndPartition, offset)
             } catch {
               case z: ZkNoNodeException =>
@@ -272,8 +256,14 @@ object ConsumerOffsetChecker extends Logging {
       channel.disconnect()
 
       println(
-        "%-15s %-30s %-3s %-15s %-15s %-15s %s"
-          .format("Group", "Topic", "Pid", "Offset", "logSize", "Lag", "Owner"))
+        "%-15s %-30s %-3s %-15s %-15s %-15s %s".format(
+          "Group",
+          "Topic",
+          "Pid",
+          "Offset",
+          "logSize",
+          "Lag",
+          "Owner"))
       topicList.sorted.foreach {
         topic => processTopic(zkUtils, group, topic)
       }

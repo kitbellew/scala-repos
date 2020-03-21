@@ -125,14 +125,12 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             case obj: ScObject
                 if isAccessible(obj) && ScalaPsiUtil.hasStablePath(obj) =>
               def fetchAndApply(element: ScTypedDefinition) {
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(element),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup = LookupElementManager.getLookupElement(
+                  new ScalaResolveResult(element),
+                  isClassName = true,
+                  isOverloadedForClassName = false,
+                  shouldImport = true,
+                  isInStableCodeReference = false).head
                 lookup.addLookupStrings(obj.name + "." + element.name)
                 applyVariant(lookup)
               }
@@ -157,9 +155,10 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           }
           variant.element match {
             case f: PsiField
-                if ScType
-                  .create(f.getType, f.getProject, parentRef.getResolveScope)
-                  .conforms(expectedType) =>
+                if ScType.create(
+                  f.getType,
+                  f.getProject,
+                  parentRef.getResolveScope).conforms(expectedType) =>
               apply(variant)
             case typed: ScTypedDefinition
                 if typed.getType().getOrAny.conforms(expectedType) =>
@@ -187,14 +186,12 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           case Some(p: PsiClass) if isAccessible(p) =>
             p.getFields.foreach(field => {
               if (field.hasModifierProperty("static") && isAccessible(field)) {
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(field),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup = LookupElementManager.getLookupElement(
+                  new ScalaResolveResult(field),
+                  isClassName = true,
+                  isOverloadedForClassName = false,
+                  shouldImport = true,
+                  isInStableCodeReference = false).head
                 lookup.addLookupStrings(p.getName + "." + field.getName)
                 applyVariant(lookup)
               }

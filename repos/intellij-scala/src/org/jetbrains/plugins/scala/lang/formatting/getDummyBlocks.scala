@@ -49,8 +49,9 @@ import scala.collection.mutable.ArrayBuffer
 object getDummyBlocks {
   val fieldGroupAlignmentKey: Key[Alignment] =
     Key.create("field.group.alignment.key")
-  private val alignmentsMap = scala.collection.mutable
-    .Map[SmartPsiElementPointer[ScInterpolatedStringLiteral], Alignment]()
+  private val alignmentsMap = scala.collection.mutable.Map[
+    SmartPsiElementPointer[ScInterpolatedStringLiteral],
+    Alignment]()
 
   def apply(
       firstNode: ASTNode,
@@ -195,9 +196,9 @@ object getDummyBlocks {
         for (child <- children if isCorrectBlock(child)) {
           val context = (child.getElementType match {
             case ScalaDocElementTypes.DOC_TAG =>
-              val currentTag = Option(child.getFirstChildNode)
-                .filter(_.getElementType == ScalaDocTokenType.DOC_TAG_NAME)
-                .map(_.getText)
+              val currentTag = Option(child.getFirstChildNode).filter(
+                _.getElementType == ScalaDocTokenType.DOC_TAG_NAME).map(
+                _.getText)
               if (scalaDocPrevChildTag.isEmpty || scalaDocPrevChildTag != currentTag) {
                 contextAlignment = Alignment.createAlignment(true)
               }
@@ -242,9 +243,8 @@ object getDummyBlocks {
         //while it should be DOC_WHITESPACE
         childBlocks match {
           case tagName :: space :: tagParameter :: tail
-              if Option(docTag.getValueElement)
-                .map(_.getNode)
-                .exists(_ == tagParameter) =>
+              if Option(docTag.getValueElement).map(_.getNode).exists(
+                _ == tagParameter) =>
             subBlocks.add(getSubBlock(block, scalaSettings, tagName))
             subBlocks.add(getSubBlock(block, scalaSettings, space))
             subBlocks.add(
@@ -254,9 +254,8 @@ object getDummyBlocks {
                 tagParameter,
                 if (tail.isEmpty) null else tail.last))
           case tagName :: tail
-              if Option(docTag.getNameElement)
-                .map(_.getNode)
-                .exists(_ == tagName) =>
+              if Option(docTag.getNameElement).map(_.getNode).exists(
+                _ == tagName) =>
             subBlocks.add(getSubBlock(block, scalaSettings, tagName))
             if (tail.nonEmpty) {
               if (tail.head.getElementType != ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)
@@ -273,9 +272,8 @@ object getDummyBlocks {
       case interpolated: ScInterpolatedStringLiteral =>
         //create and store alignment; required for support of multi-line interploated strings (SCL-8665)
         alignmentsMap.put(
-          SmartPointerManager
-            .getInstance(interpolated.getProject)
-            .createSmartPsiElementPointer(interpolated),
+          SmartPointerManager.getInstance(
+            interpolated.getProject).createSmartPsiElementPointer(interpolated),
           Alignment.createAlignment())
       case _ =>
     }
@@ -340,10 +338,8 @@ object getDummyBlocks {
           case _: ScMethodCall | _: ScReferenceExpression =>
             if (child.getElementType == ScalaTokenTypes.tIDENTIFIER &&
                 child.getPsi.getParent.isInstanceOf[ScReferenceExpression] &&
-                child.getPsi.getParent
-                  .asInstanceOf[ScReferenceExpression]
-                  .qualifier
-                  .isEmpty) null
+                child.getPsi.getParent.asInstanceOf[
+                  ScReferenceExpression].qualifier.isEmpty) null
             else if (child.getPsi.isInstanceOf[ScExpression]) null
             else alignment
           case _: ScXmlStartTag | _: ScXmlEmptyTag =>
@@ -441,9 +437,8 @@ object getDummyBlocks {
         scaladocNode = scaladocNode.getTreeNext,
         true)._2)
 
-      val normalAlignment = block.myParentBlock.subBlocksContext
-        .flatMap(_.alignment)
-        .getOrElse(Alignment.createAlignment(true))
+      val normalAlignment = block.myParentBlock.subBlocksContext.flatMap(
+        _.alignment).getOrElse(Alignment.createAlignment(true))
 
       children.foreach { child =>
         val indent = ScalaIndentProcessor.getChildIndent(block, child)
@@ -502,8 +497,8 @@ object getDummyBlocks {
 
       do {
         val indent = ScalaIndentProcessor.getChildIndent(block, child)
-        if (isCorrectBlock(child) && !child.getPsi
-              .isInstanceOf[ScTemplateParents]) {
+        if (isCorrectBlock(child) && !child.getPsi.isInstanceOf[
+              ScTemplateParents]) {
           val (childAlignment, childWrap) = (
             block.getCustomAlignment(child).orNull,
             arrangeSuggestedWrapForChild(
@@ -609,8 +604,10 @@ object getDummyBlocks {
             child.getElementType == ScalaTokenTypes.tFUNTYPE_ASCII) {
           if (prev == null) return createNewAlignment
           val prevChild =
-            prev.findChildByType(TokenSet
-              .create(ScalaTokenTypes.tFUNTYPE, ScalaTokenTypes.tFUNTYPE_ASCII))
+            prev.findChildByType(
+              TokenSet.create(
+                ScalaTokenTypes.tFUNTYPE,
+                ScalaTokenTypes.tFUNTYPE_ASCII))
           if (prevChild == null) {
             return getChildAlignment(prev, child)
           } else return getAlignment(prevChild)
@@ -673,15 +670,11 @@ object getDummyBlocks {
               false
             case _: ScVariable | _: ScValue =>
               val hasMod1 = psi.isInstanceOf[ScModifierListOwner] &&
-                psi
-                  .asInstanceOf[ScModifierListOwner]
-                  .getModifierList
-                  .getText == ""
+                psi.asInstanceOf[
+                  ScModifierListOwner].getModifierList.getText == ""
               val hasMod2 = node.getPsi.isInstanceOf[ScModifierListOwner] &&
-                node.getPsi
-                  .asInstanceOf[ScModifierListOwner]
-                  .getModifierList
-                  .getText == ""
+                node.getPsi.asInstanceOf[
+                  ScModifierListOwner].getModifierList.getText == ""
               if (hasMod1 != hasMod2) {
                 breaks += 2
                 false
@@ -1000,17 +993,14 @@ object getDummyBlocks {
 
     val alignment = null
     val validAlignment = Option(
-      ScalaPsiUtil
-        .getParentOfType(node.getPsi, classOf[ScInterpolatedStringLiteral]))
-      .map(_.asInstanceOf[ScInterpolatedStringLiteral])
-      .flatMap(literal =>
-        alignmentsMap
-          .find {
-            case (pointer, _) =>
-              pointer.getElement == literal
-          }
-          .map(_._2))
-      .getOrElse(Alignment.createAlignment(true))
+      ScalaPsiUtil.getParentOfType(
+        node.getPsi,
+        classOf[ScInterpolatedStringLiteral])).map(
+      _.asInstanceOf[ScInterpolatedStringLiteral]).flatMap(literal =>
+      alignmentsMap.find {
+        case (pointer, _) =>
+          pointer.getElement == literal
+      }.map(_._2)).getOrElse(Alignment.createAlignment(true))
     val wrap: Wrap = Wrap.createWrap(WrapType.NONE, true)
     val scalaSettings =
       settings.getCustomSettings(classOf[ScalaCodeStyleSettings])
@@ -1034,9 +1024,8 @@ object getDummyBlocks {
       val linePrefixLength =
         if (settings useTabCharacter ScalaFileType.SCALA_FILE_TYPE) {
           val tabsCount = line.prefixLength(_ == '\t')
-          tabsCount /* *settings.getTabSize(ScalaFileType.SCALA_FILE_TYPE)*/ + line
-            .substring(tabsCount)
-            .prefixLength(_ == ' ')
+          tabsCount /* *settings.getTabSize(ScalaFileType.SCALA_FILE_TYPE)*/ + line.substring(
+            tabsCount).prefixLength(_ == ' ')
         } else {
           line.prefixLength(_ == ' ')
         }
@@ -1245,28 +1234,22 @@ object getDummyBlocks {
         addSubBlock(expr, null)
         addSubBlock(
           dot,
-          (id :: delegatedChildren)
-            .sortBy(_.getTextRange.getStartOffset)
-            .lastOption
-            .orNull,
+          (id :: delegatedChildren).sortBy(
+            _.getTextRange.getStartOffset).lastOption.orNull,
           Some(SubBlocksContext(id, alignment, delegatedChildren)))
       case expr :: typeArgs :: Nil
           if typeArgs.getPsi.isInstanceOf[ScTypeArgs] =>
         addSubBlock(
           expr,
-          (typeArgs :: delegatedChildren)
-            .sortBy(_.getTextRange.getStartOffset)
-            .lastOption
-            .orNull,
+          (typeArgs :: delegatedChildren).sortBy(
+            _.getTextRange.getStartOffset).lastOption.orNull,
           Some(SubBlocksContext(typeArgs, alignment, delegatedChildren))
         )
       case expr :: Nil =>
         addSubBlock(
           expr,
-          delegatedChildren
-            .sortBy(_.getTextRange.getStartOffset)
-            .lastOption
-            .orNull,
+          delegatedChildren.sortBy(
+            _.getTextRange.getStartOffset).lastOption.orNull,
           Some(SubBlocksContext(expr, alignment, delegatedChildren)))
 
       case _ =>

@@ -50,9 +50,8 @@ private[akka] trait TimedOps {
 
     val startTimed =
       Flow[O].transform(() ⇒ new StartTimed(ctx)).named("startTimed")
-    val stopTimed = Flow[Out]
-      .transform(() ⇒ new StopTimed(ctx, onComplete))
-      .named("stopTimed")
+    val stopTimed = Flow[Out].transform(() ⇒
+      new StopTimed(ctx, onComplete)).named("stopTimed")
 
     measuredOps(flow.via(startTimed)).via(stopTimed)
   }
@@ -75,9 +74,8 @@ private[akka] trait TimedIntervalBetweenOps {
       source: Source[O, Mat],
       matching: O ⇒ Boolean,
       onInterval: FiniteDuration ⇒ Unit): Source[O, Mat] = {
-    val timedInterval = Flow[O]
-      .transform(() ⇒ new TimedInterval[O](matching, onInterval))
-      .named("timedInterval")
+    val timedInterval = Flow[O].transform(() ⇒
+      new TimedInterval[O](matching, onInterval)).named("timedInterval")
     source.via(timedInterval)
   }
 
@@ -88,9 +86,8 @@ private[akka] trait TimedIntervalBetweenOps {
       flow: Flow[I, O, Mat],
       matching: O ⇒ Boolean,
       onInterval: FiniteDuration ⇒ Unit): Flow[I, O, Mat] = {
-    val timedInterval = Flow[O]
-      .transform(() ⇒ new TimedInterval[O](matching, onInterval))
-      .named("timedInterval")
+    val timedInterval = Flow[O].transform(() ⇒
+      new TimedInterval[O](matching, onInterval)).named("timedInterval")
     flow.via(timedInterval)
   }
 }

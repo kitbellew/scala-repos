@@ -132,8 +132,10 @@ class AppsResource @Inject() (
           case Some(group) =>
             checkAuthorization(ViewGroup, group)
             val appsWithTasks = result(
-              appInfoService
-                .selectAppsInGroup(groupId, allAuthorized, resolvedEmbed))
+              appInfoService.selectAppsInGroup(
+                groupId,
+                allAuthorized,
+                resolvedEmbed))
             ok(jsonObjString("*" -> appsWithTasks))
           case None =>
             unknownGroup(groupId)
@@ -177,8 +179,7 @@ class AppsResource @Inject() (
               now,
               force))
 
-          val response = plan.original
-            .app(appId)
+          val response = plan.original.app(appId)
             .map(_ => Response.ok())
             .getOrElse(Response.created(new URI(appId.toString)))
           maybePostEvent(req, plan.target.app(appId).get)
@@ -268,8 +269,11 @@ class AppsResource @Inject() (
 
       val newVersion = clock.now()
       val restartDeployment = result(
-        groupManager
-          .updateApp(id.toRootPath, markForRestartingOrThrow, newVersion, force)
+        groupManager.updateApp(
+          id.toRootPath,
+          markForRestartingOrThrow,
+          newVersion,
+          force)
       )
 
       deploymentResult(restartDeployment)
@@ -291,9 +295,8 @@ class AppsResource @Inject() (
     }
 
     def rollback(current: AppDefinition, version: Timestamp): AppDefinition = {
-      val app = service
-        .getApp(appId, version)
-        .getOrElse(throw UnknownAppException(appId))
+      val app = service.getApp(appId, version).getOrElse(
+        throw UnknownAppException(appId))
       checkAuthorization(ViewApp, app)
       checkAuthorization(UpdateApp, current)
       app

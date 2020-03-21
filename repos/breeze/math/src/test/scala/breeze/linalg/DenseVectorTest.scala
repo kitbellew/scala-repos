@@ -659,15 +659,12 @@ class DenseVectorOps_FloatTest
         offset <- Gen.choose(0, 5)
       } yield {
         (
-          DenseVector
-            .fill(n * stride + offset)(math.random * x toFloat)
-            .apply(offset until (n * stride + offset) by stride),
-          DenseVector
-            .fill(n * stride + offset)(math.random * y toFloat)
-            .apply(offset until (n * stride + offset) by stride),
-          DenseVector
-            .fill(n * stride + offset)(math.random * z toFloat)
-            .apply(offset until (n * stride + offset) by stride))
+          DenseVector.fill(n * stride + offset)(math.random * x toFloat).apply(
+            offset until (n * stride + offset) by stride),
+          DenseVector.fill(n * stride + offset)(math.random * y toFloat).apply(
+            offset until (n * stride + offset) by stride),
+          DenseVector.fill(n * stride + offset)(math.random * z toFloat).apply(
+            offset until (n * stride + offset) by stride))
       }
     }
   }

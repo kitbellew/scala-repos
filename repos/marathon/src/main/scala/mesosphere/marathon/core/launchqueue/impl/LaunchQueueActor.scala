@@ -174,7 +174,8 @@ private[impl] class LaunchQueueActor(
   private[this] def receiveHandleNormalCommands: Receive = {
     case List =>
       import context.dispatcher
-      val scatter = launchers.keys
+      val scatter = launchers
+        .keys
         .map(appId => (self ? Count(appId)).mapTo[Option[QueuedTaskInfo]])
       val gather: Future[Seq[QueuedTaskInfo]] =
         Future.sequence(scatter).map(_.flatten.to[Seq])
@@ -202,8 +203,8 @@ private[impl] class LaunchQueueActor(
         case Some(actorRef) =>
           import context.dispatcher
           val eventualCount: Future[QueuedTaskInfo] =
-            (actorRef ? AppTaskLauncherActor.AddTasks(app, count))
-              .mapTo[QueuedTaskInfo]
+            (actorRef ? AppTaskLauncherActor.AddTasks(app, count)).mapTo[
+              QueuedTaskInfo]
           eventualCount.map(_ => ()).pipeTo(sender())
       }
 

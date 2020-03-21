@@ -33,16 +33,16 @@ trait GlobalSettings {
     * Note, this should only be used for the default implementations of onError, onHandlerNotFound and onBadRequest.
     */
   private def defaultErrorHandler: HttpErrorHandler = {
-    Play.privateMaybeApplication
-      .fold[HttpErrorHandler](DefaultHttpErrorHandler)(dhehCache)
+    Play.privateMaybeApplication.fold[HttpErrorHandler](
+      DefaultHttpErrorHandler)(dhehCache)
   }
 
   /**
     * This should be used for all invocations of error handling in Global.
     */
   private def configuredErrorHandler: HttpErrorHandler = {
-    Play.privateMaybeApplication
-      .fold[HttpErrorHandler](DefaultHttpErrorHandler)(_.errorHandler)
+    Play.privateMaybeApplication.fold[HttpErrorHandler](
+      DefaultHttpErrorHandler)(_.errorHandler)
   }
 
   private val jchrhCache =
@@ -53,8 +53,8 @@ trait GlobalSettings {
 
   private val httpFiltersCache = Application.instanceCache[HttpFilters]
   private def filters: HttpFilters = {
-    Play.privateMaybeApplication
-      .fold[HttpFilters](NoHttpFilters)(httpFiltersCache)
+    Play.privateMaybeApplication.fold[HttpFilters](NoHttpFilters)(
+      httpFiltersCache)
   }
 
   /**
@@ -126,8 +126,9 @@ trait GlobalSettings {
       val context = Play.privateMaybeApplication.fold("") { app =>
         httpConfigurationCache(app).context.stripSuffix("/")
       }
-      val inContext = context.isEmpty || request.path == context || request.path
-        .startsWith(context + "/")
+      val inContext =
+        context.isEmpty || request.path == context || request.path.startsWith(
+          context + "/")
       next(request) match {
         case action: EssentialAction if inContext => doFilter(action)
         case handler                              => handler
@@ -217,10 +218,8 @@ object GlobalSettings {
     def javaGlobal: Option[play.GlobalSettings] =
       try {
         Option(
-          environment.classLoader
-            .loadClass(globalClass)
-            .newInstance()
-            .asInstanceOf[play.GlobalSettings])
+          environment.classLoader.loadClass(
+            globalClass).newInstance().asInstanceOf[play.GlobalSettings])
       } catch {
         case e: InstantiationException => None
         case e: ClassNotFoundException => None
@@ -228,11 +227,8 @@ object GlobalSettings {
 
     def scalaGlobal: GlobalSettings =
       try {
-        environment.classLoader
-          .loadClass(globalClass + "$")
-          .getDeclaredField("MODULE$")
-          .get(null)
-          .asInstanceOf[GlobalSettings]
+        environment.classLoader.loadClass(globalClass + "$").getDeclaredField(
+          "MODULE$").get(null).asInstanceOf[GlobalSettings]
       } catch {
         case e: ClassNotFoundException
             if !configuration.getString("application.global").isDefined =>

@@ -67,18 +67,14 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
           builder.build
         }
 
-        DaemonMsgCreateData.newBuilder
-          .setProps(propsProto)
-          .setDeploy(deployProto(deploy))
-          .setPath(path)
-          .setSupervisor(serializeActorRef(supervisor))
-          .build
-          .toByteArray
+        DaemonMsgCreateData.newBuilder.setProps(propsProto).setDeploy(
+          deployProto(deploy)).setPath(path).setSupervisor(
+          serializeActorRef(supervisor)).build.toByteArray
 
       case _ ⇒
         throw new IllegalArgumentException(
-          "Can't serialize a non-DaemonMsgCreate message using DaemonMsgCreateSerializer [%s]"
-            .format(obj))
+          "Can't serialize a non-DaemonMsgCreate message using DaemonMsgCreateSerializer [%s]".format(
+            obj))
     }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {

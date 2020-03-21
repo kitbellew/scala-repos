@@ -722,8 +722,8 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val funs =
-      js.eval("""
+    val funs = js.eval(
+      """
         var funs = {
           testIsChar: function(foo) { return JSUtils().isChar(foo.bar(65)); },
           testCharValue: function(foo) { return JSUtils().charToString(foo.bar(65)); }
@@ -741,13 +741,11 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val f = js
-      .eval(
-        """
+    val f = js.eval(
+      """
         var f = function(foo) { return foo.bar(JSUtils().stringToChar('e')); };
         f;
-        """)
-      .asInstanceOf[js.Dynamic]
+        """).asInstanceOf[js.Dynamic]
 
     assertEquals('e'.toInt, f(foo))
   }
@@ -761,8 +759,8 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val funs =
-      js.eval("""
+    val funs = js.eval(
+      """
         var funs = {
           testChar: function(foo) { return foo.bar(JSUtils().stringToChar('S')); },
           testInt: function(foo) { return foo.bar(68); }
@@ -1143,8 +1141,9 @@ class ExportsTest {
 
     import scala.language.reflectiveCalls
 
-    val obj2 = getObj()
-      .asInstanceOf[{ val x1: String; var y1: String; def z1(): String }]
+    val obj2 = getObj().asInstanceOf[{
+      val x1: String; var y1: String; def z1(): String
+    }]
 
     assertThrows(classOf[Throwable], obj2.x1)
     assertThrows(classOf[Throwable], obj2.y1)

@@ -49,12 +49,12 @@ private[spark] class MeanEvaluator(totalOutputs: Int, confidence: Double)
       val stdev = math.sqrt(counter.sampleVariance / counter.count)
       val confFactor = {
         if (counter.count > 100) {
-          new NormalDistribution()
-            .inverseCumulativeProbability(1 - (1 - confidence) / 2)
+          new NormalDistribution().inverseCumulativeProbability(
+            1 - (1 - confidence) / 2)
         } else {
           val degreesOfFreedom = (counter.count - 1).toInt
-          new TDistribution(degreesOfFreedom)
-            .inverseCumulativeProbability(1 - (1 - confidence) / 2)
+          new TDistribution(degreesOfFreedom).inverseCumulativeProbability(
+            1 - (1 - confidence) / 2)
         }
       }
       val low = mean - confFactor * stdev

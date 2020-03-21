@@ -145,12 +145,10 @@ object JsonConstants {
       |"cores":4,"user":"%s",
       |"memoryperslave":1234,"submitdate":"%s",
       |"state":"WAITING","duration":%d}
-    """
-      .format(
-        System.getProperty("user.name", "<unknown>"),
-        submitDate.toString,
-        currTimeInMillis - appInfoStartTime)
-      .stripMargin
+    """.format(
+      System.getProperty("user.name", "<unknown>"),
+      submitDate.toString,
+      currTimeInMillis - appInfoStartTime).stripMargin
 
   val workerInfoJsonStr =
     """
@@ -186,13 +184,11 @@ object JsonConstants {
       |"activeapps":[%s],"completedapps":[],
       |"activedrivers":[%s],
       |"status":"ALIVE"}
-    """
-      .format(
-        workerInfoJsonStr,
-        workerInfoJsonStr,
-        appInfoJsonStr,
-        driverInfoJsonStr)
-      .stripMargin
+    """.format(
+      workerInfoJsonStr,
+      workerInfoJsonStr,
+      appInfoJsonStr,
+      driverInfoJsonStr).stripMargin
 
   val workerStateJsonStr =
     """

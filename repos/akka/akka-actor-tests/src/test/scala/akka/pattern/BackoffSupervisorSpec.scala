@@ -166,12 +166,16 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
         }
 
         assertManualReset(
-          create(onStopOptions(ManualChild.props(testActor)).withManualReset
-            .withSupervisorStrategy(stoppingStrategy)))
+          create(
+            onStopOptions(ManualChild.props(testActor))
+              .withManualReset
+              .withSupervisorStrategy(stoppingStrategy)))
 
         assertManualReset(
-          create(onFailureOptions(ManualChild.props(testActor)).withManualReset
-            .withSupervisorStrategy(restartingStrategy)))
+          create(
+            onFailureOptions(ManualChild.props(testActor))
+              .withManualReset
+              .withSupervisorStrategy(restartingStrategy)))
       }
     }
   }

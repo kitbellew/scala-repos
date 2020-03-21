@@ -193,9 +193,9 @@ class HadoopRDD[K, V](
   }
 
   protected def getInputFormat(conf: JobConf): InputFormat[K, V] = {
-    val newInputFormat = ReflectionUtils
-      .newInstance(inputFormatClass.asInstanceOf[Class[_]], conf)
-      .asInstanceOf[InputFormat[K, V]]
+    val newInputFormat =
+      ReflectionUtils.newInstance(inputFormatClass.asInstanceOf[Class[_]], conf)
+        .asInstanceOf[InputFormat[K, V]]
     newInputFormat match {
       case c: Configurable => c.setConf(conf)
       case _               =>
@@ -473,13 +473,12 @@ private[spark] object HadoopRDD extends Logging {
     val out = ListBuffer[String]()
     infos.foreach { loc =>
       {
-        val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
-          .invoke(loc)
-          .asInstanceOf[String]
+        val locationStr =
+          HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation.invoke(
+            loc).asInstanceOf[String]
         if (locationStr != "localhost") {
-          if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
-                .invoke(loc)
-                .asInstanceOf[Boolean]) {
+          if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory.invoke(
+                loc).asInstanceOf[Boolean]) {
             logDebug("Partition " + locationStr + " is cached by Hadoop.")
             out += new HDFSCacheTaskLocation(locationStr).toString
           } else {

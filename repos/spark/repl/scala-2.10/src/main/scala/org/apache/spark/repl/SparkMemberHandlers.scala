@@ -129,8 +129,8 @@ private[repl] trait SparkMemberHandlers {
 
         val vidString =
           if (replProps.vids)
-            """" + " @ " + "%%8x".format(System.identityHashCode(%s)) + " """.trim
-              .format(req fullPath name)
+            """" + " @ " + "%%8x".format(System.identityHashCode(%s)) + " """.trim.format(
+              req fullPath name)
           else ""
 
         """ + "%s%s: %s = " + %s""".format(

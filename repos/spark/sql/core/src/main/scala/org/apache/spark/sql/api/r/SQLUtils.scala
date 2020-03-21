@@ -75,8 +75,9 @@ private[r] object SQLUtils {
           throw new IllegalArgumentException(
             "Key type of a map must be string or character")
         }
-        org.apache.spark.sql.types
-          .MapType(getSQLDataType(keyType), getSQLDataType(valueType))
+        org.apache.spark.sql.types.MapType(
+          getSQLDataType(keyType),
+          getSQLDataType(valueType))
       case r"\Astruct<(.+)${fieldsStr}>\Z" =>
         if (fieldsStr(fieldsStr.length - 1) == ',') {
           throw new IllegalArgumentException(s"Invaid type $dataType")

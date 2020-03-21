@@ -54,8 +54,8 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
       deprecatedName: Option[String]) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = name
     this.typeText = typeText
     this.stable = stable
@@ -85,8 +85,8 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
       deprecatedName: Option[String]) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = StringRef.toString(name)
     this.typeText = StringRef.toString(typeText)
     this.stable = stable
@@ -112,8 +112,10 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScTypeElement] =
       if (getTypeText != "")
         Some(
-          ScalaPsiElementFactory
-            .createTypeElementFromText(getTypeText, getPsi, null))
+          ScalaPsiElementFactory.createTypeElementFromText(
+            getTypeText,
+            getPsi,
+            null))
       else None
     myTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -145,8 +147,10 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
         case Some("") => None
         case Some(text) =>
           Some(
-            ScalaPsiElementFactory
-              .createExpressionWithContextFromText(text, getPsi, null))
+            ScalaPsiElementFactory.createExpressionWithContextFromText(
+              text,
+              getPsi,
+              null))
       }
     myDefaultExpression = new SofterReference[Option[ScExpression]](res)
     res

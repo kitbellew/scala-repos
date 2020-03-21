@@ -72,8 +72,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
 
       "which have the correct initial value" in {
         field.value must be_==(field.defaultValue).when(canCheckDefaultValues)
-        field.valueBox must be_==(field.defaultValueBox)
-          .when(canCheckDefaultValues)
+        field.valueBox must be_==(field.defaultValueBox).when(
+          canCheckDefaultValues)
       }
 
       "which are readable and writable" in {
@@ -89,8 +89,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       }
 
       "which correctly clear back to the default" in {
-        { field.clear; field.valueBox } must be_==(field.defaultValueBox)
-          .when(canCheckDefaultValues)
+        { field.clear; field.valueBox } must be_==(field.defaultValueBox).when(
+          canCheckDefaultValues)
       }
 
       "which capture error conditions set in" in {
@@ -624,8 +624,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         ("name" -> "subrecord") ~
           ("subsub" -> ("name" -> "subsub")) ~
           ("subsublist" -> JArray(Nil)) ~
-          ("when" -> ("$dt" -> rec.meta.formats.dateFormat
-            .format(subRec.when.value))) ~
+          ("when" -> ("$dt" -> rec.meta.formats.dateFormat.format(
+            subRec.when.value))) ~
           ("slist" -> JArray(Nil)) ~
           ("smap" -> JObject(Nil)) ~
           ("oid" -> ("$oid" -> subRec.oid.value.toString)) ~
@@ -668,8 +668,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         ("name" -> "subrec1") ~
           ("subsub" -> ("name" -> "subsub")) ~
           ("subsublist" -> JArray(Nil)) ~
-          ("when" -> ("$dt" -> rec.meta.formats.dateFormat
-            .format(lst(0).when.value))) ~
+          ("when" -> ("$dt" -> rec.meta.formats.dateFormat.format(
+            lst(0).when.value))) ~
           ("slist" -> JArray(Nil)) ~
           ("smap" -> JObject(Nil)) ~
           ("oid" -> ("$oid" -> lst(0).oid.value.toString)) ~
@@ -682,8 +682,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         ("name" -> "subrec2") ~
           ("subsub" -> ("name" -> "subsub")) ~
           ("subsublist" -> JArray(Nil)) ~
-          ("when" -> ("$dt" -> rec.meta.formats.dateFormat
-            .format(lst(1).when.value))) ~
+          ("when" -> ("$dt" -> rec.meta.formats.dateFormat.format(
+            lst(1).when.value))) ~
           ("slist" -> JArray(Nil)) ~
           ("smap" -> JObject(Nil)) ~
           ("oid" -> ("$oid" -> lst(1).oid.value.toString)) ~

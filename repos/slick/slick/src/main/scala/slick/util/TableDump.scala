@@ -30,9 +30,10 @@ class TableDump(maxColumnWidth: Int = 20) {
       math.min(maxColumnWidth, texts.map(_.apply(idx).length).max)
     }
     val buf = new ArrayBuffer[String](data.length + 4)
-    buf += cBlue + widths
-      .map(l => dashes.substring(0, l + 2))
-      .mkString(box(1), box(2), box(3)) + cNormal
+    buf += cBlue + widths.map(l => dashes.substring(0, l + 2)).mkString(
+      box(1),
+      box(2),
+      box(3)) + cNormal
     def pad(s: String, len: Int): String = {
       val slen = s.codePointCount(0, s.length)
       if (slen > maxColumnWidth) {
@@ -44,22 +45,28 @@ class TableDump(maxColumnWidth: Int = 20) {
     for ((line, lno) <- texts.zipWithIndex) {
       if (lno < headers.length) {
         val color = if (lno % 2 == 0) cYellow else cGreen
-        buf += (line, widths).zipped
-          .map((s, len) => color + " " + pad(s, len) + " ")
-          .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)
+        buf += (line, widths).zipped.map((s, len) =>
+          color + " " + pad(s, len) + " ").mkString(
+          cBlue + box(10),
+          cBlue + box(10),
+          cBlue + box(10) + cNormal)
         if (lno == headers.length - 1)
-          buf += cBlue + widths
-            .map(l => dashes.substring(0, l + 2))
-            .mkString(box(4), box(5), box(6)) + cNormal
+          buf += cBlue + widths.map(l => dashes.substring(0, l + 2)).mkString(
+            box(4),
+            box(5),
+            box(6)) + cNormal
       } else {
-        buf += (line, widths).zipped
-          .map((s, len) => cNormal + " " + pad(s, len) + " ")
-          .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)
+        buf += (line, widths).zipped.map((s, len) =>
+          cNormal + " " + pad(s, len) + " ").mkString(
+          cBlue + box(10),
+          cBlue + box(10),
+          cBlue + box(10) + cNormal)
       }
     }
-    buf += cBlue + widths
-      .map(l => dashes.substring(0, l + 2))
-      .mkString(box(7), box(8), box(9)) + cNormal
+    buf += cBlue + widths.map(l => dashes.substring(0, l + 2)).mkString(
+      box(7),
+      box(8),
+      box(9)) + cNormal
     buf
   }
 

@@ -67,8 +67,8 @@ case class WindowSpecDefinition(
               // as the boundary of a Range Window Frame.
               Some(
                 "This Range Window Frame only accepts at most one ORDER BY expression.")
-            } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
-                         .isInstanceOf[NumericType]) {
+            } else if (orderSpec.nonEmpty && !orderSpec.head.dataType.isInstanceOf[
+                         NumericType]) {
               Some(
                 "The data type of the expression in the ORDER BY clause should be a numeric type.")
             } else {
@@ -667,8 +667,7 @@ abstract class RankLike extends AggregateWindowFunction {
   }
 
   /** Predicate that detects if the order attributes have changed. */
-  protected val orderEquals = children
-    .zip(orderAttrs)
+  protected val orderEquals = children.zip(orderAttrs)
     .map(EqualNullSafe.tupled)
     .reduceOption(And)
     .getOrElse(Literal(true))

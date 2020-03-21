@@ -82,16 +82,16 @@ abstract class RemoteGatePiercingSpec
 
         enterBarrier("actors-communicate")
 
-        EventFilter
-          .warning(pattern = "address is now gated", occurrences = 1)
-          .intercept {
-            Await.result(
-              RARP(system).provider.transport.managementCommand(
-                ForceDisassociateExplicitly(
-                  node(second).address,
-                  AssociationHandle.Unknown)),
-              3.seconds)
-          }
+        EventFilter.warning(
+          pattern = "address is now gated",
+          occurrences = 1).intercept {
+          Await.result(
+            RARP(system).provider.transport.managementCommand(
+              ForceDisassociateExplicitly(
+                node(second).address,
+                AssociationHandle.Unknown)),
+            3.seconds)
+        }
 
         enterBarrier("gated")
 

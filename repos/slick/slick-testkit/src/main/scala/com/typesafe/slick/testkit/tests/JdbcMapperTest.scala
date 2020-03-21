@@ -48,34 +48,20 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
         User(None, "Carl", "Carlson")
       ),
       users.map(_.asFoo) += Foo(User(None, "Lenny", "Leonard")),
-      users
-        .filter(_.last inSet Set("Bouvier", "Ferdinand"))
-        .size
-        .result
-        .map(_ shouldBe 1),
+      users.filter(_.last inSet Set("Bouvier", "Ferdinand")).size.result.map(
+        _ shouldBe 1),
       updateQ.update(User(None, "Marge", "Simpson")),
       Query(users.filter(_.id === 1).exists).result.head.map(_ shouldBe true),
-      users
-        .filter(_.id between (1, 2))
-        .to[Set]
-        .result
-        .map(
-          _ shouldBe Set(
-            User(Some(1), "Homer", "Simpson"),
-            User(Some(2), "Marge", "Simpson"))),
-      users
-        .filter(_.id between (1, 2))
-        .map(_.asFoo)
-        .to[Set]
-        .result
-        .map(_ shouldBe Set(
+      users.filter(_.id between (1, 2)).to[Set].result.map(
+        _ shouldBe Set(
+          User(Some(1), "Homer", "Simpson"),
+          User(Some(2), "Marge", "Simpson"))),
+      users.filter(_.id between (1, 2)).map(_.asFoo).to[Set].result.map(
+        _ shouldBe Set(
           Foo(User(None, "Homer", "Simpson")),
           Foo(User(None, "Marge", "Simpson")))),
-      users
-        .byID(3)
-        .result
-        .head
-        .map(_ shouldBe User(Some(3), "Carl", "Carlson")),
+      users.byID(3).result.head.map(
+        _ shouldBe User(Some(3), "Carl", "Carlson")),
       q1.result.head.map(_.should(_.isInstanceOf[User]))
     )
   }
@@ -216,11 +202,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       ts += oData,
       ts.result.head.map(_ shouldBe oData),
       ts.map(_.m2).result.head.map(_ shouldBe oData),
-      ts.map(_.m3)
-        .result
-        .head
-        .map(_ shouldBe BigCase(0, 11, 12, 13, 14, 15, 16, 21, 22, 23, 24, 25,
-          26, 31, 32, 33, 34, 35, 36, 41, 42, 43, 44, 45, 46))
+      ts.map(_.m3).result.head.map(_ shouldBe BigCase(0, 11, 12, 13, 14, 15, 16,
+        21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36, 41, 42, 43, 44, 45, 46))
     )
   }
 
@@ -304,10 +287,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val as = TableQuery[A]
     val data = Seq(C(1, "a"), C(2, "b"))
 
-    as.schema.create >> (as ++= data) >> as
-      .sortBy(_.id)
-      .result
-      .map(_ shouldBe data)
+    as.schema.create >> (as ++= data) >> as.sortBy(_.id).result.map(
+      _ shouldBe data)
   }
 
   def testProductClassShape = {
@@ -351,10 +332,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val as = TableQuery[A]
     val data = Seq(new C(1, Some("a")), new C(2, Some("b")))
 
-    as.schema.create >> (as ++= data) >> as
-      .sortBy(_.id)
-      .result
-      .map(_ shouldBe data)
+    as.schema.create >> (as ++= data) >> as.sortBy(_.id).result.map(
+      _ shouldBe data)
   }
 
   def testCustomShape = {
@@ -443,13 +422,11 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
         _ shouldBe Vector(
           3 :: "bb" :: (42 :: HNil) :: HNil,
           2 :: "cc" :: (42 :: HNil) :: HNil)),
-      bs.map(_.mapped)
-        .result
-        .map(
-          _.toSet shouldBe Set(
-            Data(1, true, "a"),
-            Data(2, false, "c"),
-            Data(3, false, "b")))
+      bs.map(_.mapped).result.map(
+        _.toSet shouldBe Set(
+          Data(1, true, "a"),
+          Data(2, false, "c"),
+          Data(3, false, "b")))
     )
   }
 
@@ -481,11 +458,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       ares: String <- as.result.head
       _ = ares shouldBe "Foo"
       _ <- as.update("Foo")
-      _ <- as
-        .map(a => a :: a :: HNil)
-        .result
-        .head
-        .map(_ shouldBe "Foo" :: "Foo" :: HNil)
+      _ <- as.map(a => a :: a :: HNil).result.head.map(
+        _ shouldBe "Foo" :: "Foo" :: HNil)
       _ <- bs.schema.create
       _ <- bs += Tuple1("Foo")
       _ <- bs.update(Tuple1("Foo"))
@@ -506,12 +480,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def a = column[Int]("A")
       def b = column[Int]("B")
       def * =
-        (a, b)
-          .<>(Data.tupled, Data.unapply _)
-          .fastPath(new FastPath(_) {
-            val (a, b) = (next[Int], next[Int])
-            override def read(r: Reader) = Data(a.read(r), b.read(r))
-          })
+        (a, b).<>(Data.tupled, Data.unapply _).fastPath(new FastPath(_) {
+          val (a, b) = (next[Int], next[Int])
+          override def read(r: Reader) = Data(a.read(r), b.read(r))
+        })
       def auto = (a, b).mapTo[Data]
     }
     val ts = TableQuery[T]
@@ -521,13 +493,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       ts ++= Seq(new Data(1, 2), new Data(3, 4), new Data(5, 6)),
       ts.filter(_.a === 1).update(Data(7, 8)),
       ts.filter(_.a === 3).map(identity).update(Data(9, 10)),
-      ts.to[Set]
-        .result
-        .map(_ shouldBe Set(Data(7, 8), Data(9, 10), Data(5, 6))),
-      ts.map(_.auto)
-        .to[Set]
-        .result
-        .map(_ shouldBe Set(Data(7, 8), Data(9, 10), Data(5, 6)))
+      ts.to[Set].result.map(
+        _ shouldBe Set(Data(7, 8), Data(9, 10), Data(5, 6))),
+      ts.map(_.auto).to[Set].result.map(
+        _ shouldBe Set(Data(7, 8), Data(9, 10), Data(5, 6)))
     )
   }
 }

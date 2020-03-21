@@ -203,14 +203,12 @@ class BlockMatrix @Since("1.3.0") (
 
   /** Estimates the dimensions of the matrix. */
   private def estimateDim(): Unit = {
-    val (rows, cols) = blockInfo
-      .map {
-        case ((blockRowIndex, blockColIndex), (m, n)) =>
-          (
-            blockRowIndex.toLong * rowsPerBlock + m,
-            blockColIndex.toLong * colsPerBlock + n)
-      }
-      .reduce { (x0, x1) => (math.max(x0._1, x1._1), math.max(x0._2, x1._2)) }
+    val (rows, cols) = blockInfo.map {
+      case ((blockRowIndex, blockColIndex), (m, n)) =>
+        (
+          blockRowIndex.toLong * rowsPerBlock + m,
+          blockColIndex.toLong * colsPerBlock + n)
+    }.reduce { (x0, x1) => (math.max(x0._1, x1._1), math.max(x0._2, x1._2)) }
     if (nRows <= 0L) nRows = rows
     assert(
       rows <= nRows,
@@ -387,8 +385,7 @@ class BlockMatrix @Since("1.3.0") (
       "Both matrices must have the same number of columns. " +
         s"A.numCols: ${numCols()}, B.numCols: ${other.numCols()}")
     if (rowsPerBlock == other.rowsPerBlock && colsPerBlock == other.colsPerBlock) {
-      val newBlocks = blocks
-        .cogroup(other.blocks, createPartitioner())
+      val newBlocks = blocks.cogroup(other.blocks, createPartitioner())
         .map {
           case ((blockRowIndex, blockColIndex), (a, b)) =>
             if (a.size > 1 || b.size > 1) {
@@ -528,28 +525,25 @@ class BlockMatrix @Since("1.3.0") (
             Set.empty)
           destinations.map(j => (j, (blockRowIndex, blockColIndex, block)))
       }
-      val newBlocks = flatA
-        .cogroup(flatB, resultPartitioner)
-        .flatMap {
-          case (pId, (a, b)) =>
-            a.flatMap {
-              case (leftRowIndex, leftColIndex, leftBlock) =>
-                b.filter(_._1 == leftColIndex).map {
-                  case (rightRowIndex, rightColIndex, rightBlock) =>
-                    val C = rightBlock match {
-                      case dense: DenseMatrix => leftBlock.multiply(dense)
-                      case sparse: SparseMatrix =>
-                        leftBlock.multiply(sparse.toDense)
-                      case _ =>
-                        throw new SparkException(
-                          s"Unrecognized matrix type ${rightBlock.getClass}.")
-                    }
-                    ((leftRowIndex, rightColIndex), C.toBreeze)
-                }
-            }
-        }
-        .reduceByKey(resultPartitioner, (a, b) => a + b)
-        .mapValues(Matrices.fromBreeze)
+      val newBlocks = flatA.cogroup(flatB, resultPartitioner).flatMap {
+        case (pId, (a, b)) =>
+          a.flatMap {
+            case (leftRowIndex, leftColIndex, leftBlock) =>
+              b.filter(_._1 == leftColIndex).map {
+                case (rightRowIndex, rightColIndex, rightBlock) =>
+                  val C = rightBlock match {
+                    case dense: DenseMatrix => leftBlock.multiply(dense)
+                    case sparse: SparseMatrix =>
+                      leftBlock.multiply(sparse.toDense)
+                    case _ =>
+                      throw new SparkException(
+                        s"Unrecognized matrix type ${rightBlock.getClass}.")
+                  }
+                  ((leftRowIndex, rightColIndex), C.toBreeze)
+              }
+          }
+      }.reduceByKey(resultPartitioner, (a, b) => a + b).mapValues(
+        Matrices.fromBreeze)
       // TODO: Try to use aggregateByKey instead of reduceByKey to get rid of intermediate matrices
       new BlockMatrix(
         newBlocks,

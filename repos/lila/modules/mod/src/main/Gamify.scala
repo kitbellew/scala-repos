@@ -16,23 +16,18 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
   def history(orCompute: Boolean = true): Fu[List[HistoryMonth]] = {
     val until = DateTime.now minusMonths 1 withDayOfMonth 1
     val lastId = HistoryMonth.makeId(until.getYear, until.getMonthOfYear)
-    historyColl
-      .find(BSONDocument())
-      .sort(
-        BSONDocument(
-          "year" -> -1,
-          "month" -> -1
-        ))
-      .cursor[HistoryMonth]()
-      .collect[List]()
-      .flatMap { months =>
-        months.headOption match {
-          case Some(m) if m._id == lastId || !orCompute => fuccess(months)
-          case Some(m) =>
-            buildHistoryAfter(m.year, m.month, until) >> history(false)
-          case _ => buildHistoryAfter(2012, 6, until) >> history(false)
-        }
+    historyColl.find(BSONDocument()).sort(
+      BSONDocument(
+        "year" -> -1,
+        "month" -> -1
+      )).cursor[HistoryMonth]().collect[List]().flatMap { months =>
+      months.headOption match {
+        case Some(m) if m._id == lastId || !orCompute => fuccess(months)
+        case Some(m) =>
+          buildHistoryAfter(m.year, m.month, until) >> history(false)
+        case _ => buildHistoryAfter(2012, 6, until) >> history(false)
       }
+    }
   }
 
   private implicit val modMixedBSONHandler = Macros.handler[ModMixed]
@@ -42,33 +37,26 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
       afterYear: Int,
       afterMonth: Int,
       until: DateTime): Funit =
-    (afterYear to until.getYear)
-      .flatMap { year =>
-        ((year == afterYear).fold(afterMonth + 1, 1) to
-          (year == until.getYear).fold(until.getMonthOfYear, 12)).map { month =>
-          mixedLeaderboard(
-            after =
-              new DateTime(year, month, 1, 0, 0).pp("compute mod history"),
-            before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some
-          ).map {
-            _.headOption.map { champ =>
-              HistoryMonth(HistoryMonth.makeId(year, month), year, month, champ)
-            }
+    (afterYear to until.getYear).flatMap { year =>
+      ((year == afterYear).fold(afterMonth + 1, 1) to
+        (year == until.getYear).fold(until.getMonthOfYear, 12)).map { month =>
+        mixedLeaderboard(
+          after = new DateTime(year, month, 1, 0, 0).pp("compute mod history"),
+          before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some
+        ).map {
+          _.headOption.map { champ =>
+            HistoryMonth(HistoryMonth.makeId(year, month), year, month, champ)
           }
-        }.toList
-      }
-      .toList
-      .sequenceFu
-      .map(_.flatten)
-      .flatMap {
-        _.map { month =>
-          historyColl.update(
-            BSONDocument("_id" -> month._id),
-            month,
-            upsert = true)
-        }.sequenceFu
-      }
-      .void
+        }
+      }.toList
+    }.toList.sequenceFu.map(_.flatten).flatMap {
+      _.map { month =>
+        historyColl.update(
+          BSONDocument("_id" -> month._id),
+          month,
+          upsert = true)
+      }.sequenceFu
+    }.void
 
   def leaderboards = leaderboardsCache(true)
 
@@ -104,39 +92,37 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
   private def actionLeaderboard(
       after: DateTime,
       before: Option[DateTime]): Fu[List[ModCount]] =
-    logColl
-      .aggregate(
-        Match(
-          BSONDocument(
-            "date" -> dateRange(after, before),
-            "mod" -> notLichess
-          )),
-        List(GroupField("mod")("nb" -> SumValue(1)), Sort(Descending("nb"))))
-      .map {
-        _.documents.flatMap { obj =>
-          obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount.apply
-        }
+    logColl.aggregate(
+      Match(
+        BSONDocument(
+          "date" -> dateRange(after, before),
+          "mod" -> notLichess
+        )),
+      List(
+        GroupField("mod")("nb" -> SumValue(1)),
+        Sort(Descending("nb")))).map {
+      _.documents.flatMap { obj =>
+        obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount.apply
       }
+    }
 
   private def reportLeaderboard(
       after: DateTime,
       before: Option[DateTime]): Fu[List[ModCount]] =
-    reportColl
-      .aggregate(
-        Match(
-          BSONDocument(
-            "createdAt" -> dateRange(after, before),
-            "processedBy" -> notLichess
-          )),
-        List(
-          GroupField("processedBy")("nb" -> SumValue(1)),
-          Sort(Descending("nb")))
-      )
-      .map {
-        _.documents.flatMap { obj =>
-          obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount.apply
-        }
+    reportColl.aggregate(
+      Match(
+        BSONDocument(
+          "createdAt" -> dateRange(after, before),
+          "processedBy" -> notLichess
+        )),
+      List(
+        GroupField("processedBy")("nb" -> SumValue(1)),
+        Sort(Descending("nb")))
+    ).map {
+      _.documents.flatMap { obj =>
+        obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount.apply
       }
+    }
 }
 
 object Gamify {

@@ -607,9 +607,8 @@ case class OneForOneStrategy(
    */
   private val retriesWindow = (
     SupervisorStrategy.maxNrOfRetriesOption(maxNrOfRetries),
-    SupervisorStrategy
-      .withinTimeRangeOption(withinTimeRange)
-      .map(_.toMillis.toInt))
+    SupervisorStrategy.withinTimeRangeOption(withinTimeRange).map(
+      _.toMillis.toInt))
 
   def handleChildTerminated(
       context: ActorContext,

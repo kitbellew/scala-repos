@@ -61,8 +61,8 @@ object ConvertImplicitBoundsToImplicitParameter {
       paramTypeElement,
       classOf[ScTypeParametersOwner],
       true)
-    paramTypeElement != null && paramTypeElement.hasImplicitBound && !scTypeParamOwner
-      .isInstanceOf[ScTrait]
+    paramTypeElement != null && paramTypeElement.hasImplicitBound && !scTypeParamOwner.isInstanceOf[
+      ScTrait]
   }
 
   def doConversion(element: PsiElement): Seq[ScParameter] = {
@@ -113,9 +113,8 @@ object ConvertImplicitBoundsToImplicitParameter {
           case Some(implicitParamClause) if implicitParamClause.isImplicit =>
             // for a constructor, might need to add an empty parameter section before the
             // implicit section.
-            val extra = function.effectiveParameterClauses
-              .drop(declaredClauses.size)
-              .headOption
+            val extra = function.effectiveParameterClauses.drop(
+              declaredClauses.size).headOption
             var result: Seq[ScParameter] = Seq.empty
             for (c <- extra) {
               val newClause =

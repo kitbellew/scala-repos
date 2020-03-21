@@ -75,13 +75,11 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       val ephAddr3 = RandomSocket.nextAddress
 
       Seq(ephAddr1, ephAddr2, ephAddr3).foreach { sockAddr =>
-        serverSet
-          .join(
-            sockAddr,
-            Map[String, InetSocketAddress]().asJava,
-            sockAddr.getPort
-          )
-          .update(ALIVE)
+        serverSet.join(
+          sockAddr,
+          Map[String, InetSocketAddress]().asJava,
+          sockAddr.getPort
+        ).update(ALIVE)
       }
 
       eventually { assert(clust().size == 3) }
@@ -154,13 +152,11 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       val ephAddr2 = RandomSocket.nextAddress
       val ephAddr3 = RandomSocket.nextAddress
       Seq(ephAddr1, ephAddr2, ephAddr3).foreach { sockAddr =>
-        serverSet
-          .join(
-            sockAddr,
-            Map[String, InetSocketAddress](
-              sockAddr.getPort.toString -> sockAddr).asJava
-          )
-          .update(ALIVE)
+        serverSet.join(
+          sockAddr,
+          Map[String, InetSocketAddress](
+            sockAddr.getPort.toString -> sockAddr).asJava
+        ).update(ALIVE)
       }
 
       eventually { assert(clust().size == 3) }

@@ -67,20 +67,18 @@ class JavaCompiler(
         fm
     }
 
-    compiler
-      .getTask(
-        null,
-        fileManager,
-        listener,
-        List(
-          "-cp",
-          cp,
-          "-Xlint:" + lint,
-          "-proc:none"
-        ).asJava,
-        null,
-        files)
-      .asInstanceOf[JavacTask]
+    compiler.getTask(
+      null,
+      fileManager,
+      listener,
+      List(
+        "-cp",
+        cp,
+        "-Xlint:" + lint,
+        "-proc:none"
+      ).asJava,
+      null,
+      files).asInstanceOf[JavacTask]
   }
 
   def internSource(sf: SourceFileInfo): JavaFileObject = {
@@ -220,16 +218,13 @@ class JavaCompiler(
     val task = getTask("none", silencer, workingSet.values)
     val t = System.currentTimeMillis()
     try {
-      val units = task
-        .parse()
-        .asScala
-        .filter { unit => inputJfos.contains(unit.getSourceFile.toUri) }
-        .map(new CompilationInfo(task, _))
-        .toVector
+      val units = task.parse().asScala.filter { unit =>
+        inputJfos.contains(unit.getSourceFile.toUri)
+      }
+        .map(new CompilationInfo(task, _)).toVector
       task.analyze()
       log.info(
-        "Parsed and analyzed for trees: " + (System
-          .currentTimeMillis() - t) + "ms")
+        "Parsed and analyzed for trees: " + (System.currentTimeMillis() - t) + "ms")
       units
     } catch {
       case e @ (_: Abort | _: ArrayIndexOutOfBoundsException |

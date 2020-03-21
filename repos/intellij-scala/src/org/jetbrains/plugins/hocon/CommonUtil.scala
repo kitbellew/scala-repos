@@ -44,9 +44,8 @@ object CommonUtil {
 
   implicit class NodeOps(val node: ASTNode) extends AnyVal {
     def childrenIterator =
-      Iterator
-        .iterate(node.getFirstChildNode)(_.getTreeNext)
-        .takeWhile(_ != null)
+      Iterator.iterate(node.getFirstChildNode)(_.getTreeNext).takeWhile(
+        _ != null)
 
     def children =
       childrenIterator.toVector: Seq[ASTNode]

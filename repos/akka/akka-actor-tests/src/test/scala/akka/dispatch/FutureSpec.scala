@@ -135,23 +135,20 @@ class FutureSpec
     }
     "completed with an exception" must {
       val message = "Expected Exception"
-      val future = Promise[String]()
-        .complete(Failure(new RuntimeException(message)))
-        .future
+      val future = Promise[String]().complete(
+        Failure(new RuntimeException(message))).future
       behave like futureWithException[RuntimeException](_(future, message))
     }
     "completed with an InterruptedException" must {
       val message = "Boxed InterruptedException"
-      val future = Promise[String]()
-        .complete(Failure(new InterruptedException(message)))
-        .future
+      val future = Promise[String]().complete(
+        Failure(new InterruptedException(message))).future
       behave like futureWithException[RuntimeException](_(future, message))
     }
     "completed with a NonLocalReturnControl" must {
       val result = "test value"
-      val future = Promise[String]()
-        .complete(Failure(new NonLocalReturnControl[String]("test", result)))
-        .future
+      val future = Promise[String]().complete(
+        Failure(new NonLocalReturnControl[String]("test", result))).future
       behave like futureWithResult(_(future, result))
     }
 
@@ -505,25 +502,22 @@ class FutureSpec
         val f = new IllegalStateException("test")
         intercept[IllegalStateException] {
           Await.result(
-            Promise
-              .failed[String](f)
-              .future zip Promise.successful("foo").future,
+            Promise.failed[String](f).future zip Promise.successful(
+              "foo").future,
             timeout)
         } should ===(f)
 
         intercept[IllegalStateException] {
           Await.result(
-            Promise
-              .successful("foo")
-              .future zip Promise.failed[String](f).future,
+            Promise.successful("foo").future zip Promise.failed[String](
+              f).future,
             timeout)
         } should ===(f)
 
         intercept[IllegalStateException] {
           Await.result(
-            Promise
-              .failed[String](f)
-              .future zip Promise.failed[String](f).future,
+            Promise.failed[String](f).future zip Promise.failed[String](
+              f).future,
             timeout)
         } should ===(f)
 
@@ -580,8 +574,9 @@ class FutureSpec
       "reduce results" in {
         val futures = (1 to 10).toList map { i ⇒ Future(i) }
         assert(
-          Await
-            .result(Future.reduce(futures)(_ + _), remainingOrDefault) === 55)
+          Await.result(
+            Future.reduce(futures)(_ + _),
+            remainingOrDefault) === 55)
       }
 
       "reduce results with Exception" in {
@@ -630,18 +625,16 @@ class FutureSpec
         val oddFutures = List.fill(100)(oddActor ? 'GetNext mapTo classTag[Int])
 
         assert(
-          Await
-            .result(Future.sequence(oddFutures), timeout.duration)
-            .sum === 10000)
+          Await.result(
+            Future.sequence(oddFutures),
+            timeout.duration).sum === 10000)
         system.stop(oddActor)
 
         val list = (1 to 100).toList
         assert(
-          Await
-            .result(
-              Future.traverse(list)(x ⇒ Future(x * 2 - 1)),
-              timeout.duration)
-            .sum === 10000)
+          Await.result(
+            Future.traverse(list)(x ⇒ Future(x * 2 - 1)),
+            timeout.duration).sum === 10000)
       }
 
       "handle Throwables" in {

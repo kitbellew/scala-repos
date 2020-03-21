@@ -52,8 +52,8 @@ object CodeGenTools {
   }
 
   private def resetOutput(compiler: Global): Unit = {
-    compiler.settings.outputDirs
-      .setSingleOutput(new VirtualDirectory("(memory)", None))
+    compiler.settings.outputDirs.setSingleOutput(
+      new VirtualDirectory("(memory)", None))
   }
 
   def newCompiler(
@@ -172,8 +172,8 @@ object CodeGenTools {
 
     for (code <- codes) {
       val compiler = newCompilerWithoutVirtualOutdir(extraArgs = argsWithOutDir)
-      new compiler.Run()
-        .compileSources(List(makeSourceFile(code, "unitTestSource.scala")))
+      new compiler.Run().compileSources(
+        List(makeSourceFile(code, "unitTestSource.scala")))
       checkReport(compiler, allowMessage)
       afterEach(outDir)
     }
@@ -209,8 +209,8 @@ object CodeGenTools {
       : List[MethodNode] = {
     compileClasses(compiler)(
       s"class C { $code }",
-      allowMessage = allowMessage).head.methods.asScala.toList
-      .filterNot(_.name == "<init>")
+      allowMessage = allowMessage).head.methods.asScala.toList.filterNot(
+      _.name == "<init>")
   }
 
   def singleMethodInstructions(compiler: Global)(
@@ -242,12 +242,10 @@ object CodeGenTools {
       actual: List[Instruction],
       expected: List[Any]): Unit = {
     def expectedString =
-      expected
-        .map({
-          case s: String => s""""$s""""
-          case i: Int    => opcodeToString(i, i)
-        })
-        .mkString("List(", ", ", ")")
+      expected.map({
+        case s: String => s""""$s""""
+        case i: Int    => opcodeToString(i, i)
+      }).mkString("List(", ", ", ")")
     assert(
       actual.summary == expected,
       s"\nFound   : ${actual.summaryText}\nExpected: $expectedString")
@@ -311,9 +309,8 @@ object CodeGenTools {
   def findInstr(method: MethodNode, query: String): List[AbstractInsnNode] = {
     val useNext = query(0) == '+'
     val instrPart = if (useNext) query.drop(1) else query
-    val insns = method.instructions.iterator.asScala
-      .filter(i => textify(i) contains instrPart)
-      .toList
+    val insns = method.instructions.iterator.asScala.filter(i =>
+      textify(i) contains instrPart).toList
     if (useNext) insns.map(_.getNext) else insns
   }
 

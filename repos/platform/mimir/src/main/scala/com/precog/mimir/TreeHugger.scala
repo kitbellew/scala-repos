@@ -82,8 +82,9 @@ class Code extends UsefulStuff {
   }
 
   def objects1(method: String): Tree = {
-    OBJECTDEF(method) withParents ("""BIF1(Vector("std", "math"), "%s")"""
-      .format(method)) := BLOCK(
+    OBJECTDEF(
+      method) withParents ("""BIF1(Vector("std", "math"), "%s")""".format(
+      method)) := BLOCK(
       VAL("operandType") := (REF("Some(SDecimal)")),
       VAL("operation", sym.PartialFunction1) := BLOCK(
         CASE(REF("SDecimal(num)")) ==> REF(
@@ -92,8 +93,9 @@ class Code extends UsefulStuff {
   }
 
   def objects2(method: String): Tree = {
-    OBJECTDEF(method) withParents ("""BIF2(Vector("std", "math"), "%s")"""
-      .format(method)) := BLOCK(
+    OBJECTDEF(
+      method) withParents ("""BIF2(Vector("std", "math"), "%s")""".format(
+      method)) := BLOCK(
       VAL("operandType") := (REF("(Some(SDecimal), Some(SDecimal))")),
       VAL("operation", sym.PartialFunction2) := BLOCK(
         CASE(REF("(SDecimal(num1), SDecimal(num2))")) ==> REF(

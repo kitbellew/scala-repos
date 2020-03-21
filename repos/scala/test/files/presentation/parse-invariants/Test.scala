@@ -18,12 +18,10 @@ object Test extends InteractiveTest {
     */
   private def noNewSymbols(sf: SourceFile) {
     def nextId() =
-      compiler.NoSymbol
-        .newTermSymbol(
-          compiler.TermName("dummy"),
-          compiler.NoPosition,
-          compiler.NoFlags)
-        .id
+      compiler.NoSymbol.newTermSymbol(
+        compiler.TermName("dummy"),
+        compiler.NoPosition,
+        compiler.NoFlags).id
     val id = nextId()
     val tree = compiler.parseTree(sf)
     val id2 = nextId()

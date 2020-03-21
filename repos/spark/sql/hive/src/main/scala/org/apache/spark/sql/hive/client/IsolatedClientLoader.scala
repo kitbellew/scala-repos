@@ -283,8 +283,7 @@ private[hive] class IsolatedClientLoader(
     try {
       classLoader
         .loadClass(classOf[HiveClientImpl].getName)
-        .getConstructors
-        .head
+        .getConstructors.head
         .newInstance(version, sparkConf, hadoopConf, config, classLoader, this)
         .asInstanceOf[HiveClient]
     } catch {

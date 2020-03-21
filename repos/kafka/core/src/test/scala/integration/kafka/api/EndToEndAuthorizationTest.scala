@@ -191,8 +191,9 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
     classOf[SimpleAclAuthorizer].getName)
   // Some needed configuration for brokers, producers, and consumers
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig
-    .setProperty(KafkaConfig.OffsetsTopicReplicationFactorProp, "1")
+  this.serverConfig.setProperty(
+    KafkaConfig.OffsetsTopicReplicationFactorProp,
+    "1")
   this.serverConfig.setProperty(KafkaConfig.MinInSyncReplicasProp, "3")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group")
 
@@ -239,8 +240,10 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
         TopicReadAcl ++ TopicWriteAcl ++ TopicDescribeAcl,
         s.apis.authorizer.get,
         topicResource)
-      TestUtils
-        .waitAndVerifyAcls(GroupReadAcl, s.apis.authorizer.get, groupResource)
+      TestUtils.waitAndVerifyAcls(
+        GroupReadAcl,
+        s.apis.authorizer.get,
+        groupResource)
     })
     //Produce records
     debug("Starting to send records")

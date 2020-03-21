@@ -45,8 +45,8 @@ object Multipart {
     MultipartFormData.Part[Source[ByteString, _]],
     ByteString,
     NotUsed] = {
-    Flow[MultipartFormData.Part[Source[ByteString, _]]]
-      .transform(() => streamed(boundary, nioCharset, chunkSize))
+    Flow[MultipartFormData.Part[Source[ByteString, _]]].transform(() =>
+      streamed(boundary, nioCharset, chunkSize))
       .flatMapConcat(identity)
   }
 

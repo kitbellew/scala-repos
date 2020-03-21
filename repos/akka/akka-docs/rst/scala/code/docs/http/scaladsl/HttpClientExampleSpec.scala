@@ -28,8 +28,7 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
         : Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] =
       Http().outgoingConnection("akka.io")
     val responseFuture: Future[HttpResponse] =
-      Source
-        .single(HttpRequest(uri = "/"))
+      Source.single(HttpRequest(uri = "/"))
         .via(connectionFlow)
         .runWith(Sink.head)
     //#outgoing-connection-example
@@ -51,8 +50,7 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
     // construct a pool client flow with context type `Int`
     val poolClientFlow = Http().cachedHostConnectionPool[Int]("akka.io")
     val responseFuture: Future[(Try[HttpResponse], Int)] =
-      Source
-        .single(HttpRequest(uri = "/") -> 42)
+      Source.single(HttpRequest(uri = "/") -> 42)
         .via(poolClientFlow)
         .runWith(Sink.head)
     //#host-level-example
@@ -95,8 +93,7 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
       val http = Http(context.system)
 
       override def preStart() = {
-        http
-          .singleRequest(HttpRequest(uri = "http://akka.io"))
+        http.singleRequest(HttpRequest(uri = "http://akka.io"))
           .pipeTo(self)
       }
 

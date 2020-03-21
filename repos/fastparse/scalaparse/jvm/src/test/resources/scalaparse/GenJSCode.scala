@@ -222,9 +222,8 @@ abstract class GenJSCode
           /* Similarly, do not emit code for impl classes of raw JS traits. */
           val isRawJSImplClass =
             sym.isImplClass && isRawJSType(
-              sym.owner.info
-                .decl(sym.name.dropRight(nme.IMPL_CLASS_SUFFIX.length))
-                .tpe)
+              sym.owner.info.decl(
+                sym.name.dropRight(nme.IMPL_CLASS_SUFFIX.length)).tpe)
 
           if (!isPrimitive && !isRawJSImplClass) {
             withScopedVars(
@@ -305,9 +304,8 @@ abstract class GenJSCode
           isStdLibClassWithAdHocInlineAnnot(sym))
 
       val optimizerHints =
-        OptimizerHints.empty
-          .withInline(shouldMarkInline)
-          .withNoinline(sym.hasAnnotation(NoinlineAnnotationClass))
+        OptimizerHints.empty.withInline(shouldMarkInline).withNoinline(
+          sym.hasAnnotation(NoinlineAnnotationClass))
 
       // Generate members (constructor + methods)
 
@@ -636,9 +634,8 @@ abstract class GenJSCode
             }
 
             val optimizerHints =
-              OptimizerHints.empty
-                .withInline(shouldMarkInline)
-                .withNoinline(shouldMarkNoinline)
+              OptimizerHints.empty.withInline(shouldMarkInline).withNoinline(
+                shouldMarkNoinline)
 
             val methodDef = {
               if (sym.isClassConstructor) {
@@ -821,13 +818,11 @@ abstract class GenJSCode
         *  therefore an existing proxy).
         */
       def superHasProxy(s: Symbol) = {
-        val alts = sym.superClass.tpe
-          .findMember(
-            name = s.name,
-            excludedFlags = excludedFlags,
-            requiredFlags = Flags.METHOD,
-            stableOnly = false)
-          .alternatives
+        val alts = sym.superClass.tpe.findMember(
+          name = s.name,
+          excludedFlags = excludedFlags,
+          requiredFlags = Flags.METHOD,
+          stableOnly = false).alternatives
         alts.exists(weakMatch(s) _)
       }
 
@@ -1512,9 +1507,8 @@ abstract class GenJSCode
           js.BooleanLiteral(l == r)
       } else if (l.isValueType) {
         val result = if (cast) {
-          val ctor = ClassCastExceptionClass.info
-            .member(nme.CONSTRUCTOR)
-            .suchThat(_.tpe.params.isEmpty)
+          val ctor = ClassCastExceptionClass.info.member(
+            nme.CONSTRUCTOR).suchThat(_.tpe.params.isEmpty)
           js.Throw(genNew(ClassCastExceptionClass, ctor, Nil))
         } else {
           js.BooleanLiteral(false)
@@ -2452,8 +2446,9 @@ abstract class GenJSCode
 
       if (mustUseAnyComparator) {
         val equalsMethod: Symbol = {
-          val ptfm = platform
-            .asInstanceOf[backend.JavaPlatform with ThisPlatform] // 2.10 compat
+          val ptfm = platform.asInstanceOf[
+            backend.JavaPlatform with ThisPlatform
+          ] // 2.10 compat
           if (ltpe <:< BoxedNumberClass.tpe) {
             if (rtpe <:< BoxedNumberClass.tpe) ptfm.externalEqualsNumNum
             else if (rtpe <:< BoxedCharacterClass.tpe)
@@ -2577,9 +2572,9 @@ abstract class GenJSCode
           newArg
         case _ =>
           implicit val pos = tree.pos
-          val NPECtor =
-            getMemberMethod(NullPointerExceptionClass, nme.CONSTRUCTOR)
-              .suchThat(_.tpe.params.isEmpty)
+          val NPECtor = getMemberMethod(
+            NullPointerExceptionClass,
+            nme.CONSTRUCTOR).suchThat(_.tpe.params.isEmpty)
           js.Block(
             js.If(
               js.BinaryOp(js.BinaryOp.===, newReceiver, js.Null()),
@@ -4236,10 +4231,8 @@ abstract class GenJSCode
   /** Get JS name of Symbol if it was specified with JSName annotation, or
     *  infers a default from the Scala name. */
   def jsNameOf(sym: Symbol): String =
-    sym
-      .getAnnotation(JSNameAnnotation)
-      .flatMap(_.stringArg(0))
-      .getOrElse(sym.unexpandedName.decoded)
+    sym.getAnnotation(JSNameAnnotation).flatMap(_.stringArg(0)).getOrElse(
+      sym.unexpandedName.decoded)
 
   def isStaticModule(sym: Symbol): Boolean =
     sym.isModuleClass && !sym.isImplClass && !sym.isLifted

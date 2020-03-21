@@ -84,11 +84,9 @@ class ThrottlerTransportAdapterSpec
   def throttle(direction: Direction, mode: ThrottleMode): Boolean = {
     val rootBAddress =
       Address("akka", "systemB", "localhost", rootB.address.port.get)
-    val transport = system
-      .asInstanceOf[ExtendedActorSystem]
-      .provider
-      .asInstanceOf[RemoteActorRefProvider]
-      .transport
+    val transport =
+      system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[
+        RemoteActorRefProvider].transport
     Await.result(
       transport.managementCommand(SetThrottle(rootBAddress, direction, mode)),
       3.seconds)
@@ -97,11 +95,9 @@ class ThrottlerTransportAdapterSpec
   def disassociate(): Boolean = {
     val rootBAddress =
       Address("akka", "systemB", "localhost", rootB.address.port.get)
-    val transport = system
-      .asInstanceOf[ExtendedActorSystem]
-      .provider
-      .asInstanceOf[RemoteActorRefProvider]
-      .transport
+    val transport =
+      system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[
+        RemoteActorRefProvider].transport
     Await.result(
       transport.managementCommand(ForceDisassociate(rootBAddress)),
       3.seconds)

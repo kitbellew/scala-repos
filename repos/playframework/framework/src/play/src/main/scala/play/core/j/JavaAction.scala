@@ -39,16 +39,13 @@ class JavaActionAnnotations(
       method.getAnnotation(classOf[play.mvc.BodyParser.Of]),
       controller.getAnnotation(classOf[play.mvc.BodyParser.Of]))
       .filterNot(_ == null)
-      .headOption
-      .map(_.value)
-      .getOrElse(classOf[JBodyParser.Default])
+      .headOption.map(_.value).getOrElse(classOf[JBodyParser.Default])
 
-  val controllerAnnotations = play.api.libs.Collections
-    .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](
-      Option(controller)) { clazz =>
-      clazz.map(c => (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
-    }
-    .flatten
+  val controllerAnnotations = play.api.libs.Collections.unfoldLeft[
+    Seq[java.lang.annotation.Annotation],
+    Option[Class[_]]](Option(controller)) { clazz =>
+    clazz.map(c => (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
+  }.flatten
 
   val actionMixins = {
     val allDeclaredAnnotations: Seq[java.lang.annotation.Annotation] =
@@ -57,19 +54,12 @@ class JavaActionAnnotations(
       } else {
         method.getDeclaredAnnotations ++ controllerAnnotations
       }
-    allDeclaredAnnotations
-      .collect {
-        case a: play.mvc.With => a.value.map(c => (a, c)).toSeq
-        case a
-            if a.annotationType.isAnnotationPresent(classOf[play.mvc.With]) =>
-          a.annotationType
-            .getAnnotation(classOf[play.mvc.With])
-            .value
-            .map(c => (a, c))
-            .toSeq
-      }
-      .flatten
-      .reverse
+    allDeclaredAnnotations.collect {
+      case a: play.mvc.With => a.value.map(c => (a, c)).toSeq
+      case a if a.annotationType.isAnnotationPresent(classOf[play.mvc.With]) =>
+        a.annotationType.getAnnotation(classOf[play.mvc.With]).value.map(c =>
+          (a, c)).toSeq
+    }.flatten.reverse
   }
 
 }
@@ -103,8 +93,9 @@ abstract class JavaAction(components: JavaHandlerComponents)
       }
     }
 
-    val baseAction = components.actionCreator
-      .createAction(javaContext.request, annotations.method)
+    val baseAction = components.actionCreator.createAction(
+      javaContext.request,
+      annotations.method)
 
     val endOfChainAction = if (config.executeActionCreatorActionFirst) {
       rootAction
@@ -116,9 +107,9 @@ abstract class JavaAction(components: JavaHandlerComponents)
     val finalUserDeclaredAction =
       annotations.actionMixins.foldLeft[JAction[_ <: Any]](endOfChainAction) {
         case (delegate, (annotation, actionClass)) =>
-          val action = components
-            .getAction(actionClass)
-            .asInstanceOf[play.mvc.Action[Object]]
+          val action =
+            components.getAction(actionClass).asInstanceOf[play.mvc.Action[
+              Object]]
           action.configuration = annotation
           action.delegate = delegate
           action

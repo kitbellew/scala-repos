@@ -225,9 +225,7 @@ trait Batcher extends Serializable {
       other: Batcher): Iterable[BatchID] = {
     val (bottom, top) = extremities
     SortedSet(
-      BatchID
-        .range(bottom, top)
-        .toSeq
+      BatchID.range(bottom, top).toSeq
         .flatMap(enclosedBy(_, other)): _*
     )
   }

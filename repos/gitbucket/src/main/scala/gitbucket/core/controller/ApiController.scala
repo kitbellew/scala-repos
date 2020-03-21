@@ -202,13 +202,11 @@ trait ApiControllerBase extends ControllerBase {
         issueId <- params("id").toIntOpt
         issue <- getIssue(repository.owner, repository.name, issueId.toString)
         body <- extractFromJsonBody[CreateAComment].map(_.body) if !body.isEmpty
-        action = params
-          .get("action")
-          .filter(_ =>
-            isEditable(
-              issue.userName,
-              issue.repositoryName,
-              issue.openedUserName))
+        action = params.get("action").filter(_ =>
+          isEditable(
+            issue.userName,
+            issue.repositoryName,
+            issue.openedUserName))
         (issue, id) <- handleComment(issue, Some(body), repository, action)
         issueComment <- getComment(
           repository.owner,
@@ -407,14 +405,12 @@ trait ApiControllerBase extends ControllerBase {
                   val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
                   val newId = git.getRepository.resolve(pullreq.commitIdTo)
                   val repoFullName = RepositoryName(repository)
-                  val commits = git.log
-                    .addRange(oldId, newId)
-                    .call
-                    .iterator
-                    .asScala
-                    .map(c =>
-                      ApiCommitListItem(new CommitInfo(c), repoFullName))
-                    .toList
+                  val commits =
+                    git.log.addRange(oldId, newId).call.iterator.asScala.map(
+                      c =>
+                        ApiCommitListItem(
+                          new CommitInfo(c),
+                          repoFullName)).toList
                   JsonFormat(commits)
               }
           }
@@ -471,11 +467,13 @@ trait ApiControllerBase extends ControllerBase {
           sha <- JGitUtil.getShaByRef(repository.owner, repository.name, ref)
         } yield {
           JsonFormat(
-            getCommitStatuesWithCreator(repository.owner, repository.name, sha)
-              .map {
-                case (status, creator) =>
-                  ApiCommitStatus(status, ApiUser(creator))
-              })
+            getCommitStatuesWithCreator(
+              repository.owner,
+              repository.name,
+              sha).map {
+              case (status, creator) =>
+                ApiCommitStatus(status, ApiUser(creator))
+            })
         }) getOrElse NotFound
     })
 

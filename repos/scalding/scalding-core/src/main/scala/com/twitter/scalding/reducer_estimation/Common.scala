@@ -188,8 +188,7 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
     Option(conf.get(Config.ReducerEstimators)).map { clsNames =>
       val clsLoader = Thread.currentThread.getContextClassLoader
 
-      val estimators = StringUtility
-        .fastSplit(clsNames, ",")
+      val estimators = StringUtility.fastSplit(clsNames, ",")
         .map(clsLoader.loadClass(_).newInstance.asInstanceOf[ReducerEstimator])
       val combinedEstimator = Monoid.sum(estimators)
 

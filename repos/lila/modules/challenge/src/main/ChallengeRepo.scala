@@ -34,40 +34,32 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
     }
 
   def createdByChallengerId(userId: String): Fu[List[Challenge]] =
-    coll
-      .find(selectCreated ++ BSONDocument("challenger.id" -> userId))
+    coll.find(selectCreated ++ BSONDocument("challenger.id" -> userId))
       .sort(BSONDocument("createdAt" -> 1))
-      .cursor[Challenge]()
-      .collect[List]()
+      .cursor[Challenge]().collect[List]()
 
   def createdByDestId(userId: String): Fu[List[Challenge]] =
-    coll
-      .find(selectCreated ++ BSONDocument("destUser.id" -> userId))
+    coll.find(selectCreated ++ BSONDocument("destUser.id" -> userId))
       .sort(BSONDocument("createdAt" -> 1))
-      .cursor[Challenge]()
-      .collect[List]()
+      .cursor[Challenge]().collect[List]()
 
   def removeByUserId(userId: String): Funit =
-    coll
-      .remove(
-        BSONDocument(
-          "$or" -> BSONArray(
-            BSONDocument("challenger.id" -> userId),
-            BSONDocument("destUser.id" -> userId)
-          )))
-      .void
+    coll.remove(
+      BSONDocument(
+        "$or" -> BSONArray(
+          BSONDocument("challenger.id" -> userId),
+          BSONDocument("destUser.id" -> userId)
+        ))).void
 
   def like(c: Challenge) =
     ~(for {
       challengerId <- c.challengerUserId
       destUserId <- c.destUserId
       if c.active
-    } yield coll
-      .find(
-        selectCreated ++ BSONDocument(
-          "challenger.id" -> challengerId,
-          "destUser.id" -> destUserId))
-      .one[Challenge])
+    } yield coll.find(
+      selectCreated ++ BSONDocument(
+        "challenger.id" -> challengerId,
+        "destUser.id" -> destUserId)).one[Challenge])
 
   private[challenge] def countCreatedByDestId(userId: String): Fu[Int] =
     coll.count(Some(selectCreated ++ BSONDocument("destUser.id" -> userId)))
@@ -75,13 +67,10 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
   private[challenge] def realTimeUnseenSince(
       date: DateTime,
       max: Int): Fu[List[Challenge]] =
-    coll
-      .find(
-        selectCreated ++ selectClock ++ BSONDocument(
-          "seenAt" -> BSONDocument("$lt" -> date)
-        ))
-      .cursor[Challenge]()
-      .collect[List](max)
+    coll.find(
+      selectCreated ++ selectClock ++ BSONDocument(
+        "seenAt" -> BSONDocument("$lt" -> date)
+      )).cursor[Challenge]().collect[List](max)
 
   private[challenge] def expiredIds(max: Int): Fu[List[Challenge.ID]] =
     coll.distinct(
@@ -90,24 +79,20 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
     ) map lila.db.BSON.asStrings
 
   def setSeenAgain(id: Challenge.ID) =
-    coll
-      .update(
-        selectId(id),
-        BSONDocument(
-          "$set" -> BSONDocument(
-            "status" -> Status.Created.id,
-            "seenAt" -> DateTime.now,
-            "expiresAt" -> inTwoWeeks))
-      )
-      .void
+    coll.update(
+      selectId(id),
+      BSONDocument(
+        "$set" -> BSONDocument(
+          "status" -> Status.Created.id,
+          "seenAt" -> DateTime.now,
+          "expiresAt" -> inTwoWeeks))
+    ).void
 
   def setSeen(id: Challenge.ID) =
-    coll
-      .update(
-        selectId(id),
-        BSONDocument("$set" -> BSONDocument("seenAt" -> DateTime.now))
-      )
-      .void
+    coll.update(
+      selectId(id),
+      BSONDocument("$set" -> BSONDocument("seenAt" -> DateTime.now))
+    ).void
 
   def offline(challenge: Challenge) =
     setStatus(challenge, Status.Offline, Some(_ plusHours 3))
@@ -119,28 +104,23 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
     setStatus(challenge, Status.Accepted, Some(_ plusHours 3))
 
   def statusById(id: Challenge.ID) =
-    coll
-      .find(
-        selectId(id),
-        BSONDocument("status" -> true, "_id" -> false)
-      )
-      .one[BSONDocument]
-      .map { _.flatMap(_.getAs[Status]("status")) }
+    coll.find(
+      selectId(id),
+      BSONDocument("status" -> true, "_id" -> false)
+    ).one[BSONDocument].map { _.flatMap(_.getAs[Status]("status")) }
 
   private def setStatus(
       challenge: Challenge,
       status: Status,
       expiresAt: Option[DateTime => DateTime] = None) =
-    coll
-      .update(
-        selectCreated ++ selectId(challenge.id),
-        BSONDocument(
-          "$set" -> BSONDocument(
-            "status" -> status.id,
-            "expiresAt" -> expiresAt.fold(inTwoWeeks) { _(DateTime.now) }
-          ))
-      )
-      .void
+    coll.update(
+      selectCreated ++ selectId(challenge.id),
+      BSONDocument(
+        "$set" -> BSONDocument(
+          "status" -> status.id,
+          "expiresAt" -> expiresAt.fold(inTwoWeeks) { _(DateTime.now) }
+        ))
+    ).void
 
   private[challenge] def remove(id: Challenge.ID) =
     coll.remove(selectId(id)).void

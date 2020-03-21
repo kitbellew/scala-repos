@@ -124,13 +124,12 @@ class SocketServer(
           processors.slice(processorBeginIndex, processorEndIndex),
           connectionQuotas)
         acceptors.put(endpoint, acceptor)
-        Utils
-          .newThread(
-            "kafka-socket-acceptor-%s-%d"
-              .format(protocol.toString, endpoint.port),
-            acceptor,
-            false)
-          .start()
+        Utils.newThread(
+          "kafka-socket-acceptor-%s-%d".format(
+            protocol.toString,
+            endpoint.port),
+          acceptor,
+          false).start()
         acceptor.awaitStartup()
 
         processorBeginIndex = processorEndIndex
@@ -141,9 +140,9 @@ class SocketServer(
       "NetworkProcessorAvgIdlePercent",
       new Gauge[Double] {
         def value =
-          allMetricNames
-            .map(metricName => metrics.metrics().get(metricName).value())
-            .sum / totalProcessorThreads
+          allMetricNames.map(metricName =>
+            metrics.metrics().get(
+              metricName).value()).sum / totalProcessorThreads
       }
     )
 
@@ -274,13 +273,13 @@ private[kafka] class Acceptor(
 
   this.synchronized {
     processors.foreach { processor =>
-      Utils
-        .newThread(
-          "kafka-network-thread-%d-%s-%d"
-            .format(brokerId, endPoint.protocolType.toString, processor.id),
-          processor,
-          false)
-        .start()
+      Utils.newThread(
+        "kafka-network-thread-%d-%s-%d".format(
+          brokerId,
+          endPoint.protocolType.toString,
+          processor.id),
+        processor,
+        false).start()
     }
   }
 
@@ -353,8 +352,10 @@ private[kafka] class Acceptor(
     } catch {
       case e: SocketException =>
         throw new KafkaException(
-          "Socket server failed to bind to %s:%d: %s."
-            .format(socketAddress.getHostString, port, e.getMessage),
+          "Socket server failed to bind to %s:%d: %s.".format(
+            socketAddress.getHostString,
+            port,
+            e.getMessage),
           e)
     }
     serverChannel
@@ -388,8 +389,9 @@ private[kafka] class Acceptor(
     } catch {
       case e: TooManyConnectionsException =>
         info(
-          "Rejected connection from %s, address already has the configured maximum of %d connections."
-            .format(e.ip, e.count))
+          "Rejected connection from %s, address already has the configured maximum of %d connections.".format(
+            e.ip,
+            e.count))
         close(socketChannel)
     }
   }
@@ -457,11 +459,11 @@ private[kafka] class Processor(
     "IdlePercent",
     new Gauge[Double] {
       def value = {
-        metrics
-          .metrics()
-          .get(metrics
-            .metricName("io-wait-ratio", "socket-server-metrics", metricTags))
-          .value()
+        metrics.metrics().get(
+          metrics.metricName(
+            "io-wait-ratio",
+            "socket-server-metrics",
+            metricTags)).value()
       }
     },
     metricTags.asScala
@@ -491,8 +493,8 @@ private[kafka] class Processor(
         } catch {
           case e @ (_: IllegalStateException | _: IOException) =>
             error(
-              "Closing processor %s due to illegal state or IO exception"
-                .format(id))
+              "Closing processor %s due to illegal state or IO exception".format(
+                id))
             swallow(closeAll())
             shutdownComplete()
             throw e
@@ -534,13 +536,10 @@ private[kafka] class Processor(
         }
 
         selector.disconnected.asScala.foreach { connectionId =>
-          val remoteHost = ConnectionId
-            .fromString(connectionId)
-            .getOrElse {
-              throw new IllegalStateException(
-                s"connectionId has unexpected format: $connectionId")
-            }
-            .remoteHost
+          val remoteHost = ConnectionId.fromString(connectionId).getOrElse {
+            throw new IllegalStateException(
+              s"connectionId has unexpected format: $connectionId")
+          }.remoteHost
           // the channel has been closed by the selector but the quotas still need to be updated
           connectionQuotas.dec(InetAddress.getByName(remoteHost))
         }

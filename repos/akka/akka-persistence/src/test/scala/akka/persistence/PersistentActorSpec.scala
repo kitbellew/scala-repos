@@ -248,8 +248,9 @@ object PersistentActorSpec {
 
         1 to 3 foreach { i ⇒
           persistAsync(Evt(s"$data-${incCounter()}")) { evt ⇒
-            sender() ! ("a" + evt.data.toString
-              .drop(1)) // c-1 => a-1, as in "ack"
+            sender() ! ("a" + evt.data.toString.drop(
+              1
+            )) // c-1 => a-1, as in "ack"
           }
         }
     }
@@ -865,9 +866,9 @@ abstract class PersistentActorSpec(config: Config)
       }
 
       val all: Seq[String] =
-        this
-          .receiveN(40)
-          .asInstanceOf[Seq[String]] // each command = 1 reply + 3 event-replies
+        this.receiveN(40).asInstanceOf[Seq[
+          String
+        ]] // each command = 1 reply + 3 event-replies
 
       val replies = all.filter(r ⇒ r.count(_ == '-') == 1)
       replies should equal(commands.map(_.data))
@@ -1171,8 +1172,9 @@ abstract class PersistentActorSpec(config: Config)
       persistentActor ! "b"
       persistentActor ! "c"
       val expectedReplies = 2 + (nestedPersistAsyncs * 2)
-      receiveN(expectedReplies)
-        .map(_.toString) should beIndependentlyOrdered("b-", "c-")
+      receiveN(expectedReplies).map(_.toString) should beIndependentlyOrdered(
+        "b-",
+        "c-")
     }
     "allow mixed nesting of persistAsync in persist calls" in {
       val persistentActor = system.actorOf(

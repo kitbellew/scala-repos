@@ -211,11 +211,9 @@ trait DiagramDirectiveParser {
         }
 
         def preparePattern(className: String) =
-          "^" + className
-            .stripPrefix("\"")
-            .stripSuffix("\"")
-            .replaceAll("\\.", "\\\\.")
-            .replaceAll("\\*", ".*") + "$"
+          "^" + className.stripPrefix("\"").stripSuffix("\"").replaceAll(
+            "\\.",
+            "\\\\.").replaceAll("\\*", ".*") + "$"
 
         // separate entries:
         val entries =

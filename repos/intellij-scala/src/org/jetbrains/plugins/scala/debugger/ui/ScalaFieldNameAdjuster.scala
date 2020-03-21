@@ -43,10 +43,8 @@ class ScalaFieldNameAdjuster extends NodeDescriptorNameAdjuster {
 
         def isFieldFromTrait = {
           def hasMethodForField(ref: ReferenceType) = {
-            ref
-              .methodsByName(name)
-              .asScala
-              .exists(_.signature().startsWith("()"))
+            ref.methodsByName(name).asScala.exists(
+              _.signature().startsWith("()"))
           }
 
           field.declaringType() match {

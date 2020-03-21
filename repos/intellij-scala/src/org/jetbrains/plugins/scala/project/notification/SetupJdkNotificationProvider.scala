@@ -27,15 +27,13 @@ class SetupJdkNotificationProvider(
     notifications: EditorNotifications)
     extends EditorNotifications.Provider[EditorNotificationPanel] {
 
-  project.getMessageBus
-    .connect(project)
-    .subscribe(
-      ProjectTopics.PROJECT_ROOTS,
-      new ModuleRootAdapter {
-        override def rootsChanged(event: ModuleRootEvent) {
-          notifications.updateAllNotifications()
-        }
-      })
+  project.getMessageBus.connect(project).subscribe(
+    ProjectTopics.PROJECT_ROOTS,
+    new ModuleRootAdapter {
+      override def rootsChanged(event: ModuleRootEvent) {
+        notifications.updateAllNotifications()
+      }
+    })
 
   override def getKey = ProviderKey
 
@@ -73,13 +71,14 @@ object SetupJdkNotificationProvider {
   }
 
   private def setupSdk(project: Project, file: PsiFile) {
-    Option(ProjectSettingsService.getInstance(project).chooseAndSetSdk())
-      .foreach { projectSdk =>
+    Option(
+      ProjectSettingsService.getInstance(project).chooseAndSetSdk()).foreach {
+      projectSdk =>
         Option(ModuleUtilCore.findModuleForPsiElement(file)).foreach { module =>
           inWriteAction {
             ModuleRootModificationUtil.setSdkInherited(module)
           }
         }
-      }
+    }
   }
 }

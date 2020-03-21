@@ -217,10 +217,8 @@ object Source {
       : Source[E, NotUsed] =
     new Source(
       scaladsl.Source.unfoldAsync(s)((s: S) ⇒
-        f.apply(s)
-          .toScala
-          .map(_.asScala.map(_.toScala))(
-            akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
+        f.apply(s).toScala.map(_.asScala.map(_.toScala))(
+          akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
 
   /**
     * Create a `Source` that immediately ends the stream with the `cause` failure to every connected `Sink`.
@@ -334,9 +332,9 @@ object Source {
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
       : Source[T, SourceQueueWithComplete[T]] =
     new Source(
-      scaladsl.Source
-        .queue[T](bufferSize, overflowStrategy)
-        .mapMaterializedValue(new SourceQueueAdapter(_)))
+      scaladsl.Source.queue[T](
+        bufferSize,
+        overflowStrategy).mapMaterializedValue(new SourceQueueAdapter(_)))
 
 }
 

@@ -132,8 +132,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           val methodCache = reflMethodSym.newVariable(
             mkTerm("methodCache"),
             ad.pos) setInfo StructuralCallSite.tpe
-          val methodSym = reflMethodSym
-            .newVariable(mkTerm("method"), ad.pos) setInfo MethodClass.tpe
+          val methodSym = reflMethodSym.newVariable(
+            mkTerm("method"),
+            ad.pos) setInfo MethodClass.tpe
 
           val dummyMethodType =
             MethodType(NoSymbol.newSyntheticValueParams(paramTypes), AnyTpe)
@@ -406,8 +407,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             case tpe @ OverloadedType(pre, alts) =>
               reporter.warning(
                 ad.pos,
-                s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
-                  .map(_.tpe)
+                s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args.map(
+                  _.tpe)
               )
               alts filter (_.paramss.flatten.size == params.length) map (_.tpe) match {
                 case mt @ MethodType(mparams, resType) :: Nil =>

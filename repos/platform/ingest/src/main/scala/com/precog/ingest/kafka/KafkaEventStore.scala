@@ -63,10 +63,8 @@ object KafkaEventStore {
     println(
       "centralConfig.get[String](\"zk.connect\")=%s".format(
         centralConfig.get[String]("zk.connect")))
-    centralConfig
-      .get[String]("zk.connect")
-      .toSuccess(
-        NEL("central.zk.connect configuration parameter is required")) map {
+    centralConfig.get[String]("zk.connect").toSuccess(
+      NEL("central.zk.connect configuration parameter is required")) map {
       centralZookeeperHosts =>
         val serviceUID = ZookeeperSystemCoordination.extractServiceUID(config)
         val coordination = ZookeeperSystemCoordination(
@@ -100,8 +98,9 @@ class LocalKafkaEventStore(
     extends EventStore[Future]
     with Logging {
   logger.info(
-    "Creating LocalKafkaEventStore for %s with max message size = %d"
-      .format(topic, maxMessageSize))
+    "Creating LocalKafkaEventStore for %s with max message size = %d".format(
+      topic,
+      maxMessageSize))
   private[this] val codec = new KafkaEventCodec
   private implicit val M = new blueeyes.bkka.FutureMonad(executor)
 

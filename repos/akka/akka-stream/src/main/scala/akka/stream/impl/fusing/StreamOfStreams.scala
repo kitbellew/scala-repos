@@ -91,9 +91,8 @@ final class FlattenMerge[T, M](breadth: Int)
         })
         sinkIn.pull()
         sources += sinkIn
-        Source
-          .fromGraph(source)
-          .runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
+        Source.fromGraph(source).runWith(sinkIn.sink)(
+          interpreter.subFusingMaterializer)
       }
 
       def removeSource(src: SubSinkInlet[T]): Unit = {
@@ -170,11 +169,8 @@ final class PrefixAndTail[T](n: Int)
       }
 
     private def openSubstream(): Source[T, NotUsed] = {
-      val timeout = ActorMaterializer
-        .downcast(interpreter.materializer)
-        .settings
-        .subscriptionTimeoutSettings
-        .timeout
+      val timeout = ActorMaterializer.downcast(
+        interpreter.materializer).settings.subscriptionTimeoutSettings.timeout
       tailSource = new SubSourceOutlet[T]("TailSource")
       tailSource.setHandler(subHandler)
       setKeepGoing(true)
@@ -284,11 +280,8 @@ final class Split[T](
       private var substreamCancelled = false
 
       override def preStart(): Unit = {
-        timeout = ActorMaterializer
-          .downcast(interpreter.materializer)
-          .settings
-          .subscriptionTimeoutSettings
-          .timeout
+        timeout = ActorMaterializer.downcast(
+          interpreter.materializer).settings.subscriptionTimeoutSettings.timeout
       }
 
       setHandler(
@@ -568,9 +561,8 @@ final class SubSource[T](
         f.invoke(ActorSubscriberMessage.OnComplete)
       case null ⇒
         if (!status.compareAndSet(null, ActorSubscriberMessage.OnComplete))
-          status.get
-            .asInstanceOf[AsyncCallback[Any]]
-            .invoke(ActorSubscriberMessage.OnComplete)
+          status.get.asInstanceOf[AsyncCallback[Any]].invoke(
+            ActorSubscriberMessage.OnComplete)
     }
 
   def failSubstream(ex: Throwable): Unit =

@@ -77,11 +77,9 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
 
     "be able to parse 'akka.actor.deployment._' with all default values" in {
       val service = "/service1"
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
-        .lookup(service.split("/").drop(1))
+      val deployment =
+        system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(
+          service.split("/").drop(1))
 
       deployment should ===(
         Some(
@@ -96,21 +94,17 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
 
     "use None deployment for undefined service" in {
       val service = "/undefined"
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
-        .lookup(service.split("/").drop(1))
+      val deployment =
+        system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(
+          service.split("/").drop(1))
       deployment should ===(None)
     }
 
     "be able to parse 'akka.actor.deployment._' with dispatcher config" in {
       val service = "/service3"
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
-        .lookup(service.split("/").drop(1))
+      val deployment =
+        system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(
+          service.split("/").drop(1))
 
       deployment should ===(
         Some(
@@ -125,11 +119,9 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
 
     "be able to parse 'akka.actor.deployment._' with mailbox config" in {
       val service = "/service4"
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
-        .lookup(service.split("/").drop(1))
+      val deployment =
+        system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(
+          service.split("/").drop(1))
 
       deployment should ===(
         Some(
@@ -144,9 +136,8 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
 
     "detect invalid number-of-instances" in {
       intercept[com.typesafe.config.ConfigException.WrongType] {
-        val invalidDeployerConf = ConfigFactory
-          .parseString(
-            """
+        val invalidDeployerConf = ConfigFactory.parseString(
+          """
             akka.actor.deployment {
               /service-invalid-number-of-instances {
                 router = round-robin-pool
@@ -154,9 +145,8 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
               }
             }
             """,
-            ConfigParseOptions.defaults
-          )
-          .withFallback(AkkaSpec.testConf)
+          ConfigParseOptions.defaults
+        ).withFallback(AkkaSpec.testConf)
 
         shutdown(
           ActorSystem("invalid-number-of-instances", invalidDeployerConf))
@@ -165,9 +155,8 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
 
     "detect invalid deployment path" in {
       val e = intercept[InvalidActorNameException] {
-        val invalidDeployerConf = ConfigFactory
-          .parseString(
-            """
+        val invalidDeployerConf = ConfigFactory.parseString(
+          """
             akka.actor.deployment {
               /gul/ubåt {
                 router = round-robin-pool
@@ -175,9 +164,8 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
               }
             }
             """,
-            ConfigParseOptions.defaults
-          )
-          .withFallback(AkkaSpec.testConf)
+          ConfigParseOptions.defaults
+        ).withFallback(AkkaSpec.testConf)
 
         shutdown(ActorSystem("invalid-path", invalidDeployerConf))
       }
@@ -268,11 +256,9 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         service: String,
         expected: RouterConfig,
         expectPath: String): Unit = {
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
-        .lookup(service.split("/").drop(1))
+      val deployment =
+        system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(
+          service.split("/").drop(1))
       deployment.map(_.path).getOrElse("NOT FOUND") should ===(expectPath)
       deployment.get.routerConfig.getClass should ===(expected.getClass)
       deployment.get.scope should ===(NoScopeGiven)

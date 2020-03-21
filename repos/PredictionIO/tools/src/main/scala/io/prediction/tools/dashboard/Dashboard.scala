@@ -90,9 +90,11 @@ trait DashboardService
           respondWithMediaType(`text/html`) {
             complete {
               val completedInstances = evaluationInstances.getCompleted
-              html
-                .index(dc, serverStartTime, pioEnvVars, completedInstances)
-                .toString
+              html.index(
+                dc,
+                serverStartTime,
+                pioEnvVars,
+                completedInstances).toString
             }
           }
         }

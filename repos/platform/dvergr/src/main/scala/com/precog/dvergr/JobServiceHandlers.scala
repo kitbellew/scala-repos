@@ -400,11 +400,9 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
     import scalaz.std.option._
 
     val result = for {
-      timestamp <- (obj \? "timestamp")
-        .map(_.validated[DateTime])
+      timestamp <- (obj \? "timestamp").map(_.validated[DateTime])
         .sequence[({ type λ[α] = Validation[Error, α] })#λ, DateTime]
-      reason <- (obj \? "reason")
-        .map(_.validated[String])
+      reason <- (obj \? "reason").map(_.validated[String])
         .sequence[({ type λ[α] = Validation[Error, α] })#λ, String]
     } yield (timestamp getOrElse (new DateTime), reason)
 
@@ -443,8 +441,11 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
             case JString("cancelled") =>
               transition(obj) {
                 case (timestamp, Some(reason)) =>
-                  jobs.cancel(jobId, reason, timestamp) map (Validation
-                    .fromEither(_)) map (_ map (_.state))
+                  jobs.cancel(
+                    jobId,
+                    reason,
+                    timestamp) map (Validation.fromEither(
+                    _)) map (_ map (_.state))
                 case (_, _) =>
                   Future(
                     Failure("Missing required field 'reason' in request body."))
@@ -459,8 +460,11 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
             case JString("aborted") =>
               transition(obj) {
                 case (timestamp, Some(reason)) =>
-                  jobs.abort(jobId, reason, timestamp) map (Validation
-                    .fromEither(_)) map (_ map (_.state))
+                  jobs.abort(
+                    jobId,
+                    reason,
+                    timestamp) map (Validation.fromEither(
+                    _)) map (_ map (_.state))
                 case (_, _) =>
                   Future(
                     Failure("Missing required field 'reason' in request body."))
@@ -540,8 +544,9 @@ class CreateResultHandler(jobs: JobManager[Future])(implicit
         HttpResponse[ByteChunk](
           BadRequest,
           content = Some(
-            ByteChunk("Missing required 'jobId parameter or request body."
-              .getBytes("UTF-8")))))
+            ByteChunk(
+              "Missing required 'jobId parameter or request body.".getBytes(
+                "UTF-8")))))
     })
   }
 

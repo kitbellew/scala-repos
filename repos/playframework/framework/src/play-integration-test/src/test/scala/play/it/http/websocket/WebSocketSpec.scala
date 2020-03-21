@@ -46,11 +46,9 @@ trait WebSocketSpec
   def withServer[A](webSocket: Application => Handler)(
       block: Application => A): A = {
     val currentApp = new AtomicReference[Application]
-    val app = GuiceApplicationBuilder()
-      .routes {
-        case _ => webSocket(currentApp.get())
-      }
-      .build()
+    val app = GuiceApplicationBuilder().routes {
+      case _ => webSocket(currentApp.get())
+    }.build()
     currentApp.set(app)
     running(TestServer(testServerPort, app))(block(app))
   }
@@ -85,9 +83,8 @@ trait WebSocketSpec
     }
 
   def consumeFrames[A]: Sink[A, Future[List[A]]] =
-    Sink
-      .fold[List[A], A](Nil)((result, next) => next :: result)
-      .mapMaterializedValue { future => future.map(_.reverse) }
+    Sink.fold[List[A], A](Nil)((result, next) =>
+      next :: result).mapMaterializedValue { future => future.map(_.reverse) }
 
   def onFramesConsumed[A](onDone: List[A] => Unit): Sink[A, _] =
     consumeFrames[A].mapMaterializedValue { future =>
@@ -154,10 +151,8 @@ trait WebSocketSpec
     withServer(app => webSocket(app)) { app =>
       import app.materializer
       val frames = runWebSocket { flow =>
-        Source
-          .repeat[ExtendedMessage](TextMessage("a"))
-          .via(flow)
-          .runWith(consumeFrames)
+        Source.repeat[ExtendedMessage](TextMessage("a")).via(flow).runWith(
+          consumeFrames)
       }
       frames must contain(
         exactly(
@@ -171,15 +166,13 @@ trait WebSocketSpec
     withServer(app => webSocket(app)(FORBIDDEN)) { app =>
       implicit val port = testServerPort
       await(
-        wsUrl("/stream")
-          .withHeaders(
-            "Upgrade" -> "websocket",
-            "Connection" -> "upgrade",
-            "Sec-WebSocket-Version" -> "13",
-            "Sec-WebSocket-Key" -> "x3JJHMbDL1EzLkh9GBhXDw==",
-            "Origin" -> "http://example.com"
-          )
-          .get()).status must_== FORBIDDEN
+        wsUrl("/stream").withHeaders(
+          "Upgrade" -> "websocket",
+          "Connection" -> "upgrade",
+          "Sec-WebSocket-Version" -> "13",
+          "Sec-WebSocket-Key" -> "x3JJHMbDL1EzLkh9GBhXDw==",
+          "Origin" -> "http://example.com"
+        ).get()).status must_== FORBIDDEN
     }
   }
 
@@ -368,8 +361,8 @@ trait WebSocketSpec
         WebSocket.using[String] { req =>
           val tick = Enumerator.unfoldM(()) { _ =>
             val p = Promise[Option[(Unit, String)]]()
-            app.actorSystem.scheduler
-              .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
+            app.actorSystem.scheduler.scheduleOnce(100.millis)(
+              p.success(Some(() -> "foo")))
             p.future
           }
           (

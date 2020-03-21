@@ -19,14 +19,12 @@ import akka.testkit._
 import scala.util.control.NoStackTrace
 
 object SchedulerSpec {
-  val testConfRevolver = ConfigFactory
-    .parseString(
-      """
+  val testConfRevolver = ConfigFactory.parseString(
+    """
     akka.scheduler.implementation = akka.actor.LightArrayRevolverScheduler
     akka.scheduler.ticks-per-wheel = 32
     akka.actor.serialize-messages = off
-  """)
-    .withFallback(AkkaSpec.testConf)
+  """).withFallback(AkkaSpec.testConf)
 }
 
 trait SchedulerSpec
@@ -55,8 +53,11 @@ trait SchedulerSpec
       }))
       // run every 50 milliseconds
       collectCancellable(
-        system.scheduler
-          .schedule(0 milliseconds, 50 milliseconds, tickActor, Tick))
+        system.scheduler.schedule(
+          0 milliseconds,
+          50 milliseconds,
+          tickActor,
+          Tick))
 
       // after max 1 second it should be executed at least the 3 times already
       expectMsg(Tock)
@@ -82,8 +83,11 @@ trait SchedulerSpec
 
       // run immediately and then every 100 milliseconds
       collectCancellable(
-        system.scheduler
-          .schedule(0 milliseconds, 100 milliseconds, actor, "msg"))
+        system.scheduler.schedule(
+          0 milliseconds,
+          100 milliseconds,
+          actor,
+          "msg"))
       expectMsg("msg")
 
       // stop the actor and, hence, the continuous messaging from happening
@@ -217,8 +221,11 @@ trait SchedulerSpec
         Await.result((supervisor ? props).mapTo[ActorRef], timeout.duration)
 
       collectCancellable(
-        system.scheduler
-          .schedule(500 milliseconds, 500 milliseconds, actor, Ping))
+        system.scheduler.schedule(
+          500 milliseconds,
+          500 milliseconds,
+          actor,
+          Ping))
       // appx 2 pings before crash
       EventFilter[Exception]("CRASH", occurrences = 1) intercept {
         collectCancellable(
@@ -248,8 +255,10 @@ trait SchedulerSpec
 
       (1 to 300).foreach { i ⇒
         collectCancellable(
-          system.scheduler
-            .scheduleOnce(20 milliseconds, actor, Msg(System.nanoTime)))
+          system.scheduler.scheduleOnce(
+            20 milliseconds,
+            actor,
+            Msg(System.nanoTime)))
         Thread.sleep(5)
       }
 

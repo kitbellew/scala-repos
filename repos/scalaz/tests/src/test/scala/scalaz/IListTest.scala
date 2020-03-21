@@ -43,10 +43,8 @@ object IListTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: IList[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
-        .zipWithIndex
-        .filter(p => isEven(p._2))
-        .map(_._1) must_=== (a)
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2)).map(
+        _._1) must_=== (a)
   }
 
   "intercalate is same as a.intersperse(b).flatten" ! forAll {
@@ -92,8 +90,8 @@ object IListTest extends SpecLite {
 
   "mapAccumLeft" ! forAll { xs: IList[Int] =>
     val f = (_: Int) + 1
-    xs.mapAccumLeft(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (xs, xs
-      .map(f))
+    xs.mapAccumLeft(IList[Int]())((c, a) =>
+      (c :+ a, f(a))) must_=== (xs, xs.map(f))
   }
 
   "mapAccumRight" ! forAll { xs: IList[Int] =>
@@ -216,10 +214,9 @@ object IListTest extends SpecLite {
   }
 
   "groupBy1" ! forAll { (ns: IList[Int], f: Int => Int) =>
-    ns.groupBy1(f)
-      .map(oa => (oa.head :: oa.tail).toList.reverse)
-      .toList
-      .toMap must_=== ns.toList.groupBy(f)
+    ns.groupBy1(f).map(oa =>
+      (oa.head :: oa.tail).toList.reverse).toList.toMap must_=== ns.toList.groupBy(
+      f)
   }
 
   "headOption" ! forAll { ns: IList[Int] =>
@@ -268,8 +265,9 @@ object IListTest extends SpecLite {
         a.index(index) == Some(y)
     } must_=== true
 
-    xs.interleave(ys).toStream must_=== std.stream
-      .interleave(xs.toStream, ys.toStream)
+    xs.interleave(ys).toStream must_=== std.stream.interleave(
+      xs.toStream,
+      ys.toStream)
   }
 
   // intersperse is tested above
@@ -344,8 +342,8 @@ object IListTest extends SpecLite {
   "scanRight" ! forAll { (ss: IList[String], f: (String, Int) => Int) =>
     ss.scanRight(0)(f).toList must_=== ss.toList.scanRight(0)(f)
     ss.scanRight("z")(_ + _).toList must_=== ss.toList.scanRight("z")(_ + _)
-    ss.scanRight(IList.empty[String])(_ +: _).toList must_=== ss.toList
-      .scanRight(IList.empty[String])(_ +: _)
+    ss.scanRight(IList.empty[String])(
+      _ +: _).toList must_=== ss.toList.scanRight(IList.empty[String])(_ +: _)
   }
 
   "slice" ! forAll { (ns: IList[Int], a: Int, b: Int) =>

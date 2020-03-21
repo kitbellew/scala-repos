@@ -171,10 +171,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
     val expected = JArray(seq.toList)
 
-    val arrayM = table
-      .renderJson("[", ",", "]")
-      .foldLeft("")(_ + _.toString)
-      .map(JParser.parseUnsafe)
+    val arrayM = table.renderJson("[", ",", "]").foldLeft("")(
+      _ + _.toString).map(JParser.parseUnsafe)
 
     val minimized = minimize(expected) getOrElse JArray(Nil)
     arrayM.copoint mustEqual minimized
@@ -382,12 +380,10 @@ trait ColumnarTableModuleSpec[M[+_]]
         val dataset1 = fromJson(sample.toStream, Some(3))
         val dataset2 = fromJson(sample.toStream, Some(3))
 
-        dataset1
-          .cross(dataset1)(
-            InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
-          .slices
-          .uncons
-          .copoint must beLike {
+        dataset1.cross(dataset1)(
+          InnerObjectConcat(
+            Leaf(SourceLeft),
+            Leaf(SourceRight))).slices.uncons.copoint must beLike {
           case Some((head, _)) =>
             head.size must beLessThanOrEqualTo(yggConfig.maxSliceSize)
         }
@@ -624,10 +620,8 @@ trait ColumnarTableModuleSpec[M[+_]]
         val expectedSlices = (sample.data.size.toDouble / defaultSliceSize).ceil
 
         val table = fromSample(sample)
-        val t0 = table
-          .transform(TransSpec1.Id)
-          .transform(TransSpec1.Id)
-          .transform(TransSpec1.Id)
+        val t0 = table.transform(TransSpec1.Id).transform(
+          TransSpec1.Id).transform(TransSpec1.Id)
         t0.toJson.copoint must_== sample.data
 
         table.metrics.startCount must_== 1
@@ -643,10 +637,8 @@ trait ColumnarTableModuleSpec[M[+_]]
         val expectedSlices = (sample.data.size.toDouble / defaultSliceSize).ceil
 
         val table = fromSample(sample)
-        val t0 = table
-          .compact(TransSpec1.Id)
-          .compact(TransSpec1.Id)
-          .compact(TransSpec1.Id)
+        val t0 = table.compact(TransSpec1.Id).compact(TransSpec1.Id).compact(
+          TransSpec1.Id)
         table.toJson.copoint must_== sample.data
         t0.toJson.copoint must_== sample.data
 

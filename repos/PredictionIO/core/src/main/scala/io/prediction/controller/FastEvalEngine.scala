@@ -179,7 +179,8 @@ object FastEvalEngineWorkflow {
         workflow = workflow,
         prefix = new DataSourcePrefix(prefix))
 
-    val algoResult: Map[EX, RDD[(QX, Seq[P])]] = dataSourceResult.par
+    val algoResult: Map[EX, RDD[(QX, Seq[P])]] = dataSourceResult
+      .par
       .map {
         case (ex, (td, ei, iqaRDD)) => {
           val modelsMap: Map[AX, Any] = algoModelsMap(ex)
@@ -256,8 +257,7 @@ object FastEvalEngineWorkflow {
         .map {
           case (ex, psMap) => {
             val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
-            val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
-              .join(qasMap)
+            val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap.join(qasMap)
               .map { case (qx, t) => (qx, t._2._1, t._1, t._2._2) }
 
             val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
@@ -271,7 +271,8 @@ object FastEvalEngineWorkflow {
         {
           (evalInfoMap(ex), servingQPAMap(ex))
         }
-      }.toSeq
+      }
+        .toSeq
 
       cache += Tuple2(prefix, servingResult)
     }

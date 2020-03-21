@@ -40,9 +40,8 @@ private[play] object Streamed {
         // a reactive-streams `Publisher` needs to be returned to implement `execute2`. Though,
         // once `execute2` is removed, we should move the code here inside
         // `DefaultStreamedAsyncHandler.onCompleted`.
-        val source = Source
-          .fromPublisher(publisher)
-          .map(bodyPart => ByteString(bodyPart.getBodyPartBytes))
+        val source = Source.fromPublisher(publisher).map(bodyPart =>
+          ByteString(bodyPart.getBodyPartBytes))
         StreamedResponse(headers, source)
     }
   }

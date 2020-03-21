@@ -189,11 +189,9 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
   }
 
   def preferred(candidates: Seq[Lang]): Lang =
-    candidates
-      .collectFirst(Function.unlift { lang =>
-        availables.find(_.satisfies(lang))
-      })
-      .getOrElse(availables.headOption.getOrElse(Lang.defaultLang))
+    candidates.collectFirst(Function.unlift { lang =>
+      availables.find(_.satisfies(lang))
+    }).getOrElse(availables.headOption.getOrElse(Lang.defaultLang))
 }
 
 /**
@@ -560,12 +558,10 @@ class DefaultMessagesApi @Inject() (
   }
 
   def apply(keys: Seq[String], args: Any*)(implicit lang: Lang): String = {
-    keys
-      .foldLeft[Option[String]](None) {
-        case (None, key) => translate(key, args)
-        case (acc, _)    => acc
-      }
-      .getOrElse(noMatch(keys.last, args))
+    keys.foldLeft[Option[String]](None) {
+      case (None, key) => translate(key, args)
+      case (acc, _)    => acc
+    }.getOrElse(noMatch(keys.last, args))
   }
 
   protected def noMatch(key: String, args: Seq[Any])(implicit lang: Lang) = key
@@ -577,8 +573,8 @@ class DefaultMessagesApi @Inject() (
       codesToTry.foldLeft[Option[String]](None)((res, lang) =>
         res.orElse(messages.get(lang).flatMap(_.get(key))))
     pattern.map(pattern =>
-      new MessageFormat(pattern, lang.toLocale)
-        .format(args.map(_.asInstanceOf[java.lang.Object]).toArray))
+      new MessageFormat(pattern, lang.toLocale).format(
+        args.map(_.asInstanceOf[java.lang.Object]).toArray))
   }
 
   def isDefinedAt(key: String)(implicit lang: Lang): Boolean = {
@@ -598,25 +594,21 @@ class DefaultMessagesApi @Inject() (
   protected def loadMessages(file: String): Map[String, String] = {
     import scala.collection.JavaConverters._
 
-    environment.classLoader
-      .getResources(joinPaths(messagesPrefix, file))
-      .asScala
-      .toList
-      .filterNot(url => Resources.isDirectory(environment.classLoader, url))
-      .reverse
+    environment.classLoader.getResources(
+      joinPaths(messagesPrefix, file)).asScala.toList
+      .filterNot(url =>
+        Resources.isDirectory(environment.classLoader, url)).reverse
       .map { messageFile =>
-        Messages
-          .parse(Messages.UrlMessageSource(messageFile), messageFile.toString)
-          .fold(e => throw e, identity)
-      }
-      .foldLeft(Map.empty[String, String]) { _ ++ _ }
+        Messages.parse(
+          Messages.UrlMessageSource(messageFile),
+          messageFile.toString).fold(e => throw e, identity)
+      }.foldLeft(Map.empty[String, String]) { _ ++ _ }
   }
 
   protected def loadAllMessages: Map[String, Map[String, String]] = {
-    langs.availables
-      .map(_.code)
-      .map { lang => (lang, loadMessages("messages." + lang)) }
-      .toMap
+    langs.availables.map(_.code).map { lang =>
+      (lang, loadMessages("messages." + lang))
+    }.toMap
       .+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))
   }

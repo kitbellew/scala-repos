@@ -95,7 +95,8 @@ object CumulativeSum {
             (k, partition(u)) -> (Some(u), v)
         } ++ sumPerS
 
-      summands.group
+      summands
+        .group
         .sortBy { case (u, _) => u }
         .scanLeft(None: Option[(Option[U], V)]) {
           case (acc, (maybeU, v)) =>

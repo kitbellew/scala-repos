@@ -67,10 +67,10 @@ class LogManager(
 
   createAndValidateLogDirs(logDirs)
   private val dirLocks = lockLogDirs(logDirs)
-  private val recoveryPointCheckpoints = logDirs
-    .map(dir =>
-      (dir, new OffsetCheckpoint(new File(dir, RecoveryPointCheckpointFile))))
-    .toMap
+  private val recoveryPointCheckpoints = logDirs.map(dir =>
+    (
+      dir,
+      new OffsetCheckpoint(new File(dir, RecoveryPointCheckpointFile)))).toMap
   loadLogs()
 
   // public, so we can access this from kafka.admin.DeleteTopicTest
@@ -366,9 +366,8 @@ class LogManager(
   private def checkpointLogsInDir(dir: File): Unit = {
     val recoveryPoints = this.logsByDir.get(dir.toString)
     if (recoveryPoints.isDefined) {
-      this
-        .recoveryPointCheckpoints(dir)
-        .write(recoveryPoints.get.mapValues(_.recoveryPoint))
+      this.recoveryPointCheckpoints(dir).write(
+        recoveryPoints.get.mapValues(_.recoveryPoint))
     }
   }
 

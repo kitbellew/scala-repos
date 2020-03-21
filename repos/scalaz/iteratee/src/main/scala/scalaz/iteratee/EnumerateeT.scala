@@ -47,13 +47,11 @@ trait EnumerateeTFunctions {
           step.fold(
             cont = contf =>
               cont[O, F, StepT[I, F, A]] {
-                (_: Input[O])
-                  .map(e => f(e))
-                  .fold(
-                    el = en => en.apply(step) >>== loop,
-                    empty = contf(emptyInput) >>== loop,
-                    eof = done(step, emptyInput)
-                  )
+                (_: Input[O]).map(e => f(e)).fold(
+                  el = en => en.apply(step) >>== loop,
+                  empty = contf(emptyInput) >>== loop,
+                  eof = done(step, emptyInput)
+                )
               },
             done = (a, _) => done(sdone(a, emptyInput), emptyInput)
           )
@@ -136,12 +134,11 @@ trait EnumerateeTFunctions {
             k: StepEl,
             i: Long): (Input[E] => IterateeT[E, F, StepT[(E, Long), F, A]]) = {
           (in: Input[E]) =>
-            in.map(e => (e, i))
-              .fold(
-                el = e => k(elInput(e)) >>== doneOr(loop(i + 1)),
-                empty = cont(step(k, i)),
-                eof = done(scont(k), in)
-              )
+            in.map(e => (e, i)).fold(
+              el = e => k(elInput(e)) >>== doneOr(loop(i + 1)),
+              empty = cont(step(k, i)),
+              eof = done(scont(k), in)
+            )
         }
 
         doneOr(loop(0))
@@ -177,9 +174,8 @@ trait EnumerateeTFunctions {
             outerOpt <- head[E1, F]
             sa <- outerOpt match {
               case Some(e) =>
-                val pairingIteratee = EnumerateeT
-                  .map[E2, (E1, E2), F]((a: E2) => (e, a))
-                  .apply(step)
+                val pairingIteratee = EnumerateeT.map[E2, (E1, E2), F](
+                  (a: E2) => (e, a)).apply(step)
                 val nextStep = (pairingIteratee &= e2).run
                 iterateeT[(E1, E2), F, A](nextStep) >>== outerLoop
 

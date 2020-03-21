@@ -186,8 +186,9 @@ object ScalaExtractMethodUtils {
                         ScalaPsiElementFactory.createExpressionFromText(
                           param.newName,
                           method.getManager)
-                      ref.getParent.getNode
-                        .replaceChild(ref.getNode, newRef.getNode)
+                      ref.getParent.getNode.replaceChild(
+                        ref.getNode,
+                        newRef.getNode)
                     }
                   }
                   ref.getParent match {
@@ -196,8 +197,9 @@ object ScalaExtractMethodUtils {
                         ScalaPsiElementFactory.createExpressionFromText(
                           param.newName,
                           method.getManager)
-                      sect.getParent.getNode
-                        .replaceChild(sect.getNode, newRef.getNode)
+                      sect.getParent.getNode.replaceChild(
+                        sect.getNode,
+                        newRef.getNode)
                     case _ if param.isEmptyParamFunction =>
                       ref.getParent match {
                         case ref: ScReferenceElement
@@ -215,8 +217,9 @@ object ScalaExtractMethodUtils {
                                 ScalaPsiElementFactory.createExpressionFromText(
                                   param.newName + "()",
                                   method.getManager)
-                              ref.getParent.getNode
-                                .replaceChild(ref.getNode, newRef.getNode)
+                              ref.getParent.getNode.replaceChild(
+                                ref.getNode,
+                                newRef.getNode)
                           }
                       }
                     case _ => tail()
@@ -238,8 +241,7 @@ object ScalaExtractMethodUtils {
         element match {
           case named: PsiNamedElement
               if named != method && named.getTextOffset < offset =>
-            settings.parameters
-              .find(p => p.oldName == named.name)
+            settings.parameters.find(p => p.oldName == named.name)
               .filter(p => p.oldName != p.newName)
               .foreach(p => bindTo += ((named, p.newName)))
           case _ =>
@@ -438,9 +440,8 @@ object ScalaExtractMethodUtils {
       elements: Seq[PsiElement],
       parameterText: ExtractMethodParameter => String,
       outputName: ExtractMethodOutput => String) {
-    val element = elements
-      .find(elem => elem.isInstanceOf[ScalaPsiElement])
-      .getOrElse(return
+    val element =
+      elements.find(elem => elem.isInstanceOf[ScalaPsiElement]).getOrElse(return
       )
     val manager = element.getManager
     val processor = new CompletionProcessor(
@@ -461,8 +462,7 @@ object ScalaExtractMethodUtils {
     }
     val mFreshName = generateFreshName(settings.methodName + "Result")
 
-    val params = settings.parameters
-      .filter(_.passAsParameter)
+    val params = settings.parameters.filter(_.passAsParameter)
       .map(param => parameterText(param) + (if (param.isFunction) " _" else ""))
 
     val paramsText =

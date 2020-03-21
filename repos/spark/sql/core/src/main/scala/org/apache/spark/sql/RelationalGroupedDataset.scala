@@ -315,8 +315,7 @@ class RelationalGroupedDataset protected[sql] (
     val maxValues =
       df.sqlContext.conf.getConf(SQLConf.DATAFRAME_PIVOT_MAX_VALUES)
     // Get the distinct values of the column and sort them so its consistent
-    val values = df
-      .select(pivotColumn)
+    val values = df.select(pivotColumn)
       .distinct()
       .sort(
         pivotColumn
@@ -361,8 +360,9 @@ class RelationalGroupedDataset protected[sql] (
         new RelationalGroupedDataset(
           df,
           groupingExprs,
-          RelationalGroupedDataset
-            .PivotType(df.resolve(pivotColumn), values.map(Literal.apply)))
+          RelationalGroupedDataset.PivotType(
+            df.resolve(pivotColumn),
+            values.map(Literal.apply)))
       case _: RelationalGroupedDataset.PivotType =>
         throw new UnsupportedOperationException(
           "repeated pivots are not supported")

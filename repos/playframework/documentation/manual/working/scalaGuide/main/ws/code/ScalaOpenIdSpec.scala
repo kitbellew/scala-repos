@@ -48,10 +48,9 @@ object ScalaOpenIdSpec extends PlaySpecification {
           Future.successful(BadRequest(error.toString))
         },
         { openId =>
-          openIdClient
-            .redirectURL(
-              openId,
-              routes.Application.openIdCallback.absoluteURL())
+          openIdClient.redirectURL(
+            openId,
+            routes.Application.openIdCallback.absoluteURL())
             .map(url => Redirect(url))
             .recover { case t: Throwable => Redirect(routes.Application.login) }
         }
@@ -60,9 +59,8 @@ object ScalaOpenIdSpec extends PlaySpecification {
 
   def openIdCallback =
     Action.async { implicit request =>
-      openIdClient
-        .verifiedId(request)
-        .map(info => Ok(info.id + "\n" + info.attributes))
+      openIdClient.verifiedId(request).map(info =>
+        Ok(info.id + "\n" + info.attributes))
         .recover {
           case t: Throwable =>
             // Here you should look at the error, and give feedback to the user

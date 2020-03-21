@@ -51,8 +51,7 @@ private[prediction] object MailChimpConnector extends FormConnector {
     json
   }
 
-  val mailChimpDateTimeFormat = DateTimeFormat
-    .forPattern("yyyy-MM-dd HH:mm:ss")
+  val mailChimpDateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
     .withZone(EventValidation.defaultTimeZone)
 
   def parseMailChimpDateTime(s: String): DateTime = {

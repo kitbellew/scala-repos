@@ -445,8 +445,9 @@ private[http] abstract class HttpMessageParser[
         def result(terminatorLen: Int) = {
           emit(
             EntityChunk(
-              HttpEntity
-                .Chunk(input.slice(cursor, chunkBodyEnd).compact, extension)))
+              HttpEntity.Chunk(
+                input.slice(cursor, chunkBodyEnd).compact,
+                extension)))
           Trampoline(_ ⇒
             parseChunk(
               input,

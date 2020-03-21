@@ -169,10 +169,9 @@ class MatchToPartialFunctionQuickFix(
       case ScMatchStmt(expr: ScReferenceExpression, _) =>
         val arg = expr.resolve()
         if (arg == null) return Nil
-        val refs = ReferencesSearch
-          .search(arg, new LocalSearchScope(matchStmt))
-          .findAll()
-          .asScala
+        val refs = ReferencesSearch.search(
+          arg,
+          new LocalSearchScope(matchStmt)).findAll().asScala
         for {
           (clause, index) <- matchStmt.caseClauses.zipWithIndex
           if refs.exists(ref =>
@@ -186,22 +185,22 @@ class MatchToPartialFunctionQuickFix(
       matchStmt: ScMatchStmt,
       indexes: Seq[Int]): Unit = {
     val clauses = matchStmt.caseClauses
-    val name = matchStmt.expr
-      .map(_.getText)
-      .getOrElse(return
-      )
+    val name = matchStmt.expr.map(_.getText).getOrElse(return
+    )
     indexes.map(i => clauses(i).pattern).foreach {
       case Some(w: ScWildcardPattern) =>
         w.replace(
-          ScalaPsiElementFactory
-            .createPatternFromText(name, matchStmt.getManager))
+          ScalaPsiElementFactory.createPatternFromText(
+            name,
+            matchStmt.getManager))
       case Some(p: ScPattern) =>
         val newPatternText =
           if (needParentheses(p)) s"$name @ (${p.getText})"
           else s"$name @ ${p.getText}"
         p.replace(
-          ScalaPsiElementFactory
-            .createPatternFromText(newPatternText, matchStmt.getManager))
+          ScalaPsiElementFactory.createPatternFromText(
+            newPatternText,
+            matchStmt.getManager))
       case _ =>
     }
   }

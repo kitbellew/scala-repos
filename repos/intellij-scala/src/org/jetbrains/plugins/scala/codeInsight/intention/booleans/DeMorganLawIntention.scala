@@ -58,12 +58,9 @@ class DeMorganLawIntention extends PsiElementBaseIntentionAction {
       editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
 
     val buf = new StringBuilder
-    buf
-      .append(IntentionUtils.negate(infixExpr.getBaseExpr))
-      .append(" ")
-      .append(replaceOper(infixExpr.operation.nameId.getText))
-      .append(" ")
-      .append(IntentionUtils.negate(infixExpr.getArgExpr))
+    buf.append(IntentionUtils.negate(infixExpr.getBaseExpr)).append(" ").append(
+      replaceOper(infixExpr.operation.nameId.getText)).append(" ").append(
+      IntentionUtils.negate(infixExpr.getArgExpr))
 
     val res = IntentionUtils.negateAndValidateExpression(
       infixExpr,

@@ -52,10 +52,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
 
     // The default IpAddress has an empty DiscoveryInfo
     val defaultIpAddressProto =
-      Protos.IpAddress
-        .newBuilder()
-        .setDiscoveryInfo(Protos.DiscoveryInfo.getDefaultInstance)
-        .build()
+      Protos.IpAddress.newBuilder().setDiscoveryInfo(
+        Protos.DiscoveryInfo.getDefaultInstance).build()
     proto should be(defaultIpAddressProto)
   }
 

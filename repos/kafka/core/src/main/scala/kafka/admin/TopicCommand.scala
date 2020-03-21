@@ -218,8 +218,8 @@ object TopicCommand extends Logging {
       try {
         if (TopicConstants.INTERNAL_TOPICS.contains(topic)) {
           throw new AdminOperationException(
-            "Topic %s is a kafka internal topic and is not allowed to be marked for deletion."
-              .format(topic))
+            "Topic %s is a kafka internal topic and is not allowed to be marked for deletion.".format(
+              topic))
         } else {
           zkUtils.createPersistentPath(getDeleteTopicPath(topic))
           println("Topic %s is marked for deletion.".format(topic))
@@ -278,8 +278,8 @@ object TopicCommand extends Logging {
               val leader = zkUtils.getLeaderForPartition(topic, partitionId)
               if ((!reportUnderReplicatedPartitions && !reportUnavailablePartitions) ||
                   (reportUnderReplicatedPartitions && inSyncReplicas.size < assignedReplicas.size) ||
-                  (reportUnavailablePartitions && (!leader.isDefined || !liveBrokers
-                    .contains(leader.get)))) {
+                  (reportUnavailablePartitions && (!leader.isDefined || !liveBrokers.contains(
+                    leader.get)))) {
                 print("\tTopic: " + topic)
                 print("\tPartition: " + partitionId)
                 print(
@@ -307,8 +307,8 @@ object TopicCommand extends Logging {
     LogConfig.validate(props)
     if (props.containsKey(LogConfig.MessageFormatVersionProp)) {
       println(
-        s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props
-          .getProperty(LogConfig.MessageFormatVersionProp)} is specified. " +
+        s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props.getProperty(
+          LogConfig.MessageFormatVersionProp)} is specified. " +
           s"This configuration will be ignored if the version is newer than the inter.broker.protocol.version specified in the broker.")
     }
     props
@@ -335,8 +335,8 @@ object TopicCommand extends Logging {
       val duplicateBrokers = CoreUtils.duplicates(brokerList)
       if (duplicateBrokers.nonEmpty)
         throw new AdminCommandFailedException(
-          "Partition replica lists may not contain duplicate entries: %s"
-            .format(duplicateBrokers.mkString(",")))
+          "Partition replica lists may not contain duplicate entries: %s".format(
+            duplicateBrokers.mkString(",")))
       ret.put(i, brokerList.toList)
       if (ret(i).size != ret(0).size)
         throw new AdminOperationException(
@@ -347,11 +347,10 @@ object TopicCommand extends Logging {
 
   class TopicCommandOptions(args: Array[String]) {
     val parser = new OptionParser
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
-          "Multiple URLS can be given to allow fail-over.")
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over.")
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
@@ -364,54 +363,47 @@ object TopicCommand extends Logging {
     val describeOpt =
       parser.accepts("describe", "List details for the given topics.")
     val helpOpt = parser.accepts("help", "Print usage information.")
-    val topicOpt = parser
-      .accepts(
-        "topic",
-        "The topic to be create, alter or describe. Can also accept a regular " +
-          "expression except for --create option")
+    val topicOpt = parser.accepts(
+      "topic",
+      "The topic to be create, alter or describe. Can also accept a regular " +
+        "expression except for --create option")
       .withRequiredArg
       .describedAs("topic")
       .ofType(classOf[String])
     val nl = System.getProperty("line.separator")
-    val configOpt = parser
-      .accepts(
-        "config",
-        "A topic configuration override for the topic being created or altered." +
-          "The following is a list of valid configurations: " + nl + LogConfig.configNames
-          .map("\t" + _)
-          .mkString(nl) + nl +
-          "See the Kafka documentation for full details on the topic configs."
-      )
+    val configOpt = parser.accepts(
+      "config",
+      "A topic configuration override for the topic being created or altered." +
+        "The following is a list of valid configurations: " + nl + LogConfig.configNames.map(
+        "\t" + _).mkString(nl) + nl +
+        "See the Kafka documentation for full details on the topic configs."
+    )
       .withRequiredArg
       .describedAs("name=value")
       .ofType(classOf[String])
-    val deleteConfigOpt = parser
-      .accepts(
-        "delete-config",
-        "A topic configuration override to be removed for an existing topic (see the list of configurations under the --config option).")
+    val deleteConfigOpt = parser.accepts(
+      "delete-config",
+      "A topic configuration override to be removed for an existing topic (see the list of configurations under the --config option).")
       .withRequiredArg
       .describedAs("name")
       .ofType(classOf[String])
-    val partitionsOpt = parser
-      .accepts(
-        "partitions",
-        "The number of partitions for the topic being created or " +
-          "altered (WARNING: If partitions are increased for a topic that has a key, the partition logic or ordering of the messages will be affected"
-      )
+    val partitionsOpt = parser.accepts(
+      "partitions",
+      "The number of partitions for the topic being created or " +
+        "altered (WARNING: If partitions are increased for a topic that has a key, the partition logic or ordering of the messages will be affected"
+    )
       .withRequiredArg
       .describedAs("# of partitions")
       .ofType(classOf[java.lang.Integer])
-    val replicationFactorOpt = parser
-      .accepts(
-        "replication-factor",
-        "The replication factor for each partition in the topic being created.")
+    val replicationFactorOpt = parser.accepts(
+      "replication-factor",
+      "The replication factor for each partition in the topic being created.")
       .withRequiredArg
       .describedAs("replication factor")
       .ofType(classOf[java.lang.Integer])
-    val replicaAssignmentOpt = parser
-      .accepts(
-        "replica-assignment",
-        "A list of manual partition-to-broker assignments for the topic being created or altered.")
+    val replicaAssignmentOpt = parser.accepts(
+      "replica-assignment",
+      "A list of manual partition-to-broker assignments for the topic being created or altered.")
       .withRequiredArg
       .describedAs(
         "broker_id_for_part1_replica1 : broker_id_for_part1_replica2 , " +

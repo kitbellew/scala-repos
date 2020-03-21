@@ -70,16 +70,15 @@ class NIHDBProjectionSpecs
   val authorities = Authorities("test")
 
   def newNihdb(workDir: File, threshold: Int = 1000): NIHDB =
-    NIHDB
-      .create(
-        chef,
-        authorities,
-        workDir,
-        threshold,
-        Duration(60, "seconds"),
-        txLogScheduler)(actorSystem)
-      .unsafePerformIO
-      .valueOr { e => throw new Exception(e.message) }
+    NIHDB.create(
+      chef,
+      authorities,
+      workDir,
+      threshold,
+      Duration(60, "seconds"),
+      txLogScheduler)(actorSystem).unsafePerformIO.valueOr { e =>
+      throw new Exception(e.message)
+    }
 
   val maxDuration = Duration(60, "seconds")
 

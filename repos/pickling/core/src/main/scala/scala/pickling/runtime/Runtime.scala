@@ -83,9 +83,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
     // build "interpreted" runtime pickler
     new Pickler[Any] with PickleTools {
       val fields: List[(irs.FieldIR, Boolean)] =
-        cir.fields
-          .filter(_.hasGetter)
-          .map(fir => (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
+        cir.fields.filter(_.hasGetter).map(fir =>
+          (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
 
       def tag: FastTypeTag[Any] =
         FastTypeTag.mkRaw(clazz, mirror).asInstanceOf[FastTypeTag[Any]]
@@ -124,9 +123,11 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                 // therefore we pass fir.tpe (as pretpe) in addition to the class and use it for the is primitive check
                 //val fldRuntime = new InterpretedPicklerRuntime(classLoader, fldClass)
                 val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
-                val fldPickler = scala.pickling.internal.currentRuntime.picklers
-                  .genPickler(classLoader, fldClass, fldTag)
-                  .asInstanceOf[Pickler[Any]]
+                val fldPickler =
+                  scala.pickling.internal.currentRuntime.picklers.genPickler(
+                    classLoader,
+                    fldClass,
+                    fldTag).asInstanceOf[Pickler[Any]]
 
                 builder.putField(
                   fir.name,
@@ -136,9 +137,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                       pickleInto(fir.tpe, fldValue, b, fldPickler)
                     } else {
                       val subPicklee = fldValue
-                      if (subPicklee == null || subPicklee.getClass == mirror
-                            .runtimeClass(fir.tpe.erasure))
-                        b.hintElidedType(fldTag)
+                      if (subPicklee == null || subPicklee.getClass == mirror.runtimeClass(
+                            fir.tpe.erasure)) b.hintElidedType(fldTag)
                       else ()
                       pickleInto(fir.tpe, subPicklee, b, fldPickler)
                     }
@@ -257,8 +257,9 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
                     result
                   } else {
                     val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
+                      scala.pickling.internal.currentRuntime.picklers.genUnpickler(
+                        mirror,
+                        fdynamicTag)
                     fieldUnpickler.unpickle(fdynamicTag, freader)
                   }
                 }
@@ -365,8 +366,9 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                     result
                   } else {
                     val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
+                      scala.pickling.internal.currentRuntime.picklers.genUnpickler(
+                        mirror,
+                        fdynamicTag)
                     fieldUnpickler.unpickle(fdynamicTag, freader)
                   }
                 }

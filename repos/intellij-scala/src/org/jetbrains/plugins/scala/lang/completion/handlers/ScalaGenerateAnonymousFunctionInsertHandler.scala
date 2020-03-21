@@ -61,10 +61,9 @@ class ScalaGenerateAnonymousFunctionInsertHandler(
 
     ScalaPsiUtil.adjustTypes(commonParent)
 
-    val builder: TemplateBuilderImpl = TemplateBuilderFactory
-      .getInstance()
-      .createTemplateBuilder(commonParent)
-      .asInstanceOf[TemplateBuilderImpl]
+    val builder: TemplateBuilderImpl =
+      TemplateBuilderFactory.getInstance().createTemplateBuilder(
+        commonParent).asInstanceOf[TemplateBuilderImpl]
 
     val abstractNames =
       abstracts.map(at => ScTypePresentation.ABSTRACT_TYPE_PREFIX + at.tpt.name)
@@ -144,22 +143,18 @@ class ScalaGenerateAnonymousFunctionInsertHandler(
     document.deleteString(
       commonParent.getTextRange.getStartOffset,
       commonParent.getTextRange.getEndOffset)
-    TemplateManager
-      .getInstance(context.getProject)
-      .startTemplate(
-        editor,
-        template,
-        new TemplateEditingAdapter {
-          override def templateFinished(
-              template: Template,
-              brokenOff: Boolean) {
-            if (!brokenOff) {
-              val offset = editor.getCaretModel.getOffset
-              document.insertString(offset, " ")
-              editor.getCaretModel.moveToOffset(offset + 1)
-            }
+    TemplateManager.getInstance(context.getProject).startTemplate(
+      editor,
+      template,
+      new TemplateEditingAdapter {
+        override def templateFinished(template: Template, brokenOff: Boolean) {
+          if (!brokenOff) {
+            val offset = editor.getCaretModel.getOffset
+            document.insertString(offset, " ")
+            editor.getCaretModel.moveToOffset(offset + 1)
           }
         }
-      )
+      }
+    )
   }
 }

@@ -35,9 +35,10 @@ class BitsetColumn(definedAt: BitSet) { this: Column =>
   override def toString = {
     val limit = definedAt.max
     val repr = (row: Int) => if (definedAt(row)) 'x' else '_'
-    getClass.getName + "(" + (0 until limit)
-      .map(repr)
-      .mkString("[", ",", "]") + ", " + limit + ")"
+    getClass.getName + "(" + (0 until limit).map(repr).mkString(
+      "[",
+      ",",
+      "]") + ", " + limit + ")"
   }
 }
 
@@ -125,8 +126,8 @@ class OrLotsColumn(cols: Array[BoolColumn])
 
 class ConcatColumn[T <: Column](at: Int, c1: T, c2: T) { this: T =>
   def isDefinedAt(row: Int) =
-    row >= 0 && ((row < at && c1.isDefinedAt(row)) || (row >= at && c2
-      .isDefinedAt(row - at)))
+    row >= 0 && ((row < at && c1.isDefinedAt(
+      row)) || (row >= at && c2.isDefinedAt(row - at)))
 }
 
 class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
@@ -252,9 +253,8 @@ object ArraySetColumn {
           ctype,
           columnSet.map(_.asInstanceOf[BoolColumn])) with BoolColumn {
           def apply(row: Int): Boolean =
-            backing(firstDefinedIndexAt(row))
-              .asInstanceOf[BoolColumn]
-              .apply(row)
+            backing(firstDefinedIndexAt(row)).asInstanceOf[BoolColumn].apply(
+              row)
         }
 
       case CLong =>
@@ -262,9 +262,8 @@ object ArraySetColumn {
           ctype,
           columnSet.map(_.asInstanceOf[LongColumn])) with LongColumn {
           def apply(row: Int): Long =
-            backing(firstDefinedIndexAt(row))
-              .asInstanceOf[LongColumn]
-              .apply(row)
+            backing(firstDefinedIndexAt(row)).asInstanceOf[LongColumn].apply(
+              row)
         }
 
       case CDouble =>
@@ -272,9 +271,8 @@ object ArraySetColumn {
           ctype,
           columnSet.map(_.asInstanceOf[DoubleColumn])) with DoubleColumn {
           def apply(row: Int): Double =
-            backing(firstDefinedIndexAt(row))
-              .asInstanceOf[DoubleColumn]
-              .apply(row)
+            backing(firstDefinedIndexAt(row)).asInstanceOf[DoubleColumn].apply(
+              row)
         }
 
       case CNum =>
@@ -290,9 +288,8 @@ object ArraySetColumn {
           ctype,
           columnSet.map(_.asInstanceOf[DateColumn])) with DateColumn {
           def apply(row: Int): DateTime =
-            backing(firstDefinedIndexAt(row))
-              .asInstanceOf[DateColumn]
-              .apply(row)
+            backing(firstDefinedIndexAt(row)).asInstanceOf[DateColumn].apply(
+              row)
         }
 
       case CPeriod =>
@@ -300,9 +297,8 @@ object ArraySetColumn {
           ctype,
           columnSet.map(_.asInstanceOf[PeriodColumn])) with PeriodColumn {
           def apply(row: Int): Period =
-            backing(firstDefinedIndexAt(row))
-              .asInstanceOf[PeriodColumn]
-              .apply(row)
+            backing(firstDefinedIndexAt(row)).asInstanceOf[PeriodColumn].apply(
+              row)
         }
 
       case ctype: CArrayType[a] =>
@@ -312,9 +308,8 @@ object ArraySetColumn {
           with HomogeneousArrayColumn[a] {
           override val tpe = ctype
           def apply(row: Int): Array[a] =
-            backing(firstDefinedIndexAt(row))
-              .asInstanceOf[HomogeneousArrayColumn[a]]
-              .apply(row)
+            backing(firstDefinedIndexAt(row)).asInstanceOf[
+              HomogeneousArrayColumn[a]].apply(row)
         }
 
       case CNull =>

@@ -20,9 +20,8 @@ object ProtobufSerializer {
     * protobuf representation.
     */
   def serializeActorRef(ref: ActorRef): ActorRefData = {
-    ActorRefData.newBuilder
-      .setPath(Serialization.serializedActorPath(ref))
-      .build
+    ActorRefData.newBuilder.setPath(
+      Serialization.serializedActorPath(ref)).build
   }
 
   /**
@@ -108,8 +107,9 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
             else method
           if (toByteArrayMethodBindingRef.compareAndSet(
                 toByteArrayMethodBinding,
-                toByteArrayMethodBinding
-                  .updated(clazz, unCachedtoByteArrayMethod)))
+                toByteArrayMethodBinding.updated(
+                  clazz,
+                  unCachedtoByteArrayMethod)))
             unCachedtoByteArrayMethod
           else
             toByteArrayMethod(unCachedtoByteArrayMethod)

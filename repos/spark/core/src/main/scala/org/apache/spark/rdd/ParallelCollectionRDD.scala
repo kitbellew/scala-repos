@@ -100,9 +100,8 @@ private[spark] class ParallelCollectionRDD[T: ClassTag](
 
   override def getPartitions: Array[Partition] = {
     val slices = ParallelCollectionRDD.slice(data, numSlices).toArray
-    slices.indices
-      .map(i => new ParallelCollectionPartition(id, i, slices(i)))
-      .toArray
+    slices.indices.map(i =>
+      new ParallelCollectionPartition(id, i, slices(i))).toArray
   }
 
   override def compute(s: Partition, context: TaskContext): Iterator[T] = {
@@ -139,21 +138,18 @@ private object ParallelCollectionRDD {
     }
     seq match {
       case r: Range => {
-        positions(r.length, numSlices).zipWithIndex
-          .map({
-            case ((start, end), index) =>
-              // If the range is inclusive, use inclusive range for the last slice
-              if (r.isInclusive && index == numSlices - 1) {
-                new Range.Inclusive(r.start + start * r.step, r.end, r.step)
-              } else {
-                new Range(
-                  r.start + start * r.step,
-                  r.start + end * r.step,
-                  r.step)
-              }
-          })
-          .toSeq
-          .asInstanceOf[Seq[Seq[T]]]
+        positions(r.length, numSlices).zipWithIndex.map({
+          case ((start, end), index) =>
+            // If the range is inclusive, use inclusive range for the last slice
+            if (r.isInclusive && index == numSlices - 1) {
+              new Range.Inclusive(r.start + start * r.step, r.end, r.step)
+            } else {
+              new Range(
+                r.start + start * r.step,
+                r.start + end * r.step,
+                r.step)
+            }
+        }).toSeq.asInstanceOf[Seq[Seq[T]]]
       }
       case nr: NumericRange[_] => {
         // For ranges of Long, Double, BigInteger, etc
@@ -168,12 +164,10 @@ private object ParallelCollectionRDD {
       }
       case _ => {
         val array = seq.toArray // To prevent O(n^2) operations for List etc
-        positions(array.length, numSlices)
-          .map({
-            case (start, end) =>
-              array.slice(start, end).toSeq
-          })
-          .toSeq
+        positions(array.length, numSlices).map({
+          case (start, end) =>
+            array.slice(start, end).toSeq
+        }).toSeq
       }
     }
   }

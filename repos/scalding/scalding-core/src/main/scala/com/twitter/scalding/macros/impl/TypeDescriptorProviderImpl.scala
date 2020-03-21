@@ -324,15 +324,18 @@ object TypeDescriptorProviderImpl {
       T: c.WeakTypeTag[T]): c.Expr[TypeDescriptor[T]] = {
     import c.universe._
 
-    val converter = TupleConverterImpl
-      .caseClassTupleConverterCommonImpl[T](c, allowUnknownTypes)
+    val converter = TupleConverterImpl.caseClassTupleConverterCommonImpl[T](
+      c,
+      allowUnknownTypes)
     val setter =
       TupleSetterImpl.caseClassTupleSetterCommonImpl[T](c, allowUnknownTypes)
 
     val namingScheme = if (isTuple[T](c)) Indexed else NamedWithPrefix
 
-    val fields = FieldsProviderImpl
-      .toFieldsCommonImpl[T](c, namingScheme, allowUnknownTypes)
+    val fields = FieldsProviderImpl.toFieldsCommonImpl[T](
+      c,
+      namingScheme,
+      allowUnknownTypes)
 
     val res = q"""
     new _root_.com.twitter.scalding.TypeDescriptor[$T] with _root_.com.twitter.bijection.macros.MacroGenerated {

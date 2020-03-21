@@ -35,54 +35,48 @@ object TestPurgatoryPerformance {
 
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser
-    val keySpaceSizeOpt = parser
-      .accepts("key-space-size", "The total number of possible keys")
-      .withRequiredArg
-      .describedAs("total_num_possible_keys")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(100)
-    val numRequestsOpt = parser
-      .accepts("num", "The number of requests")
+    val keySpaceSizeOpt =
+      parser.accepts("key-space-size", "The total number of possible keys")
+        .withRequiredArg
+        .describedAs("total_num_possible_keys")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(100)
+    val numRequestsOpt = parser.accepts("num", "The number of requests")
       .withRequiredArg
       .describedAs("num_requests")
       .ofType(classOf[java.lang.Double])
-    val requestRateOpt = parser
-      .accepts("rate", "The request rate per second")
+    val requestRateOpt = parser.accepts("rate", "The request rate per second")
       .withRequiredArg
       .describedAs("request_per_second")
       .ofType(classOf[java.lang.Double])
-    val requestDataSizeOpt = parser
-      .accepts("size", "The request data size in bytes")
-      .withRequiredArg
-      .describedAs("num_bytes")
-      .ofType(classOf[java.lang.Long])
-    val numKeysOpt = parser
-      .accepts("keys", "The number of keys for each request")
-      .withRequiredArg
-      .describedAs("num_keys")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(3)
-    val timeoutOpt = parser
-      .accepts("timeout", "The request timeout in ms")
+    val requestDataSizeOpt =
+      parser.accepts("size", "The request data size in bytes")
+        .withRequiredArg
+        .describedAs("num_bytes")
+        .ofType(classOf[java.lang.Long])
+    val numKeysOpt =
+      parser.accepts("keys", "The number of keys for each request")
+        .withRequiredArg
+        .describedAs("num_keys")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(3)
+    val timeoutOpt = parser.accepts("timeout", "The request timeout in ms")
       .withRequiredArg
       .describedAs("timeout_milliseconds")
       .ofType(classOf[java.lang.Long])
-    val pct75Opt = parser
-      .accepts(
-        "pct75",
-        "75th percentile of request latency in ms (log-normal distribution)")
+    val pct75Opt = parser.accepts(
+      "pct75",
+      "75th percentile of request latency in ms (log-normal distribution)")
       .withRequiredArg
       .describedAs("75th_percentile")
       .ofType(classOf[java.lang.Double])
-    val pct50Opt = parser
-      .accepts(
-        "pct50",
-        "50th percentile of request latency in ms (log-normal distribution)")
+    val pct50Opt = parser.accepts(
+      "pct50",
+      "50th percentile of request latency in ms (log-normal distribution)")
       .withRequiredArg
       .describedAs("50th_percentile")
       .ofType(classOf[java.lang.Double])
-    val verboseOpt = parser
-      .accepts("verbose", "show additional information")
+    val verboseOpt = parser.accepts("verbose", "show additional information")
       .withRequiredArg
       .describedAs("true|false")
       .ofType(classOf[java.lang.Boolean])
@@ -167,8 +161,9 @@ object TestPurgatoryPerformance {
       val gcCountHeader = gcNames.map("<" + _ + " count>").mkString(" ")
       val gcTimeHeader = gcNames.map("<" + _ + " time ms>").mkString(" ")
       println(
-        "# <elapsed time ms>\t<target rate>\t<actual rate>\t<process cpu time ms>\t%s\t%s"
-          .format(gcCountHeader, gcTimeHeader))
+        "# <elapsed time ms>\t<target rate>\t<actual rate>\t<process cpu time ms>\t%s\t%s".format(
+          gcCountHeader,
+          gcTimeHeader))
     }
 
     val targetRate =
@@ -196,20 +191,15 @@ object TestPurgatoryPerformance {
   private def getProcessCpuTimeNanos(osMXBean: OperatingSystemMXBean) = {
     try {
       Some(
-        Class
-          .forName("com.sun.management.OperatingSystemMXBean")
-          .getMethod("getProcessCpuTime")
-          .invoke(osMXBean)
-          .asInstanceOf[Long])
+        Class.forName("com.sun.management.OperatingSystemMXBean").getMethod(
+          "getProcessCpuTime").invoke(osMXBean).asInstanceOf[Long])
     } catch {
       case _: Throwable =>
         try {
           Some(
-            Class
-              .forName("com.ibm.lang.management.OperatingSystemMXBean")
-              .getMethod("getProcessCpuTimeByNS")
-              .invoke(osMXBean)
-              .asInstanceOf[Long])
+            Class.forName(
+              "com.ibm.lang.management.OperatingSystemMXBean").getMethod(
+              "getProcessCpuTimeByNS").invoke(osMXBean).asInstanceOf[Long])
         } catch {
           case _: Throwable => None
         }
@@ -256,8 +246,11 @@ object TestPurgatoryPerformance {
       val p50 = samples.sorted.apply((sampleSize.toDouble * 0.5d).toInt)
 
       println(
-        "# latency samples: pct75 = %d, pct50 = %d, min = %d, max = %d"
-          .format(p75, p50, samples.min, samples.max))
+        "# latency samples: pct75 = %d, pct50 = %d, min = %d, max = %d".format(
+          p75,
+          p50,
+          samples.min,
+          samples.max))
     }
   }
 

@@ -135,8 +135,7 @@ class RetryPolicyTest extends FunSpec {
     var currentMaxRetries: Int = 0
     val maxBackoffs = Stream.fill(3)(10.milliseconds)
     val policy =
-      RetryPolicy
-        .backoff(maxBackoffs)(RetryPolicy.ChannelClosedExceptionsOnly)
+      RetryPolicy.backoff(maxBackoffs)(RetryPolicy.ChannelClosedExceptionsOnly)
         .limit(currentMaxRetries)
 
     it("limits retries dynamically") {

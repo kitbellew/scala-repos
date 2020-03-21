@@ -103,8 +103,8 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
   @Test
   def testMultipleLogDirsMetaProps() {
     // add multiple logDirs and check if the generate brokerId is stored in all of them
-    val logDirs = props1
-      .getProperty("log.dir") + "," + TestUtils.tempDir().getAbsolutePath +
+    val logDirs = props1.getProperty(
+      "log.dir") + "," + TestUtils.tempDir().getAbsolutePath +
       "," + TestUtils.tempDir().getAbsolutePath
     props1.setProperty("log.dir", logDirs)
     config1 = KafkaConfig.fromProps(props1)

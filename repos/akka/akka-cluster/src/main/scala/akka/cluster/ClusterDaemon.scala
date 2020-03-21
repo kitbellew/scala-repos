@@ -192,19 +192,19 @@ private[cluster] final class ClusterDaemon(settings: ClusterSettings)
       coreSupervisor.foreach(_ forward msg)
     case AddOnMemberUpListener(code) ⇒
       context.actorOf(
-        Props(classOf[OnMemberStatusChangedListener], code, Up)
-          .withDeploy(Deploy.local))
+        Props(classOf[OnMemberStatusChangedListener], code, Up).withDeploy(
+          Deploy.local))
     case AddOnMemberRemovedListener(code) ⇒
       context.actorOf(
-        Props(classOf[OnMemberStatusChangedListener], code, Removed)
-          .withDeploy(Deploy.local))
+        Props(classOf[OnMemberStatusChangedListener], code, Removed).withDeploy(
+          Deploy.local))
     case PublisherCreated(publisher) ⇒
       if (settings.MetricsEnabled) {
         // metrics must be started after core/publisher to be able
         // to inject the publisher ref to the ClusterMetricsCollector
         context.actorOf(
-          Props(classOf[ClusterMetricsCollector], publisher)
-            .withDispatcher(context.props.dispatcher),
+          Props(classOf[ClusterMetricsCollector], publisher).withDispatcher(
+            context.props.dispatcher),
           name = "metrics")
       }
   }
@@ -238,8 +238,8 @@ private[cluster] final class ClusterCoreSupervisor
     coreDaemon = Some(
       context.watch(
         context.actorOf(
-          Props(classOf[ClusterCoreDaemon], publisher)
-            .withDispatcher(context.props.dispatcher),
+          Props(classOf[ClusterCoreDaemon], publisher).withDispatcher(
+            context.props.dispatcher),
           name = "daemon")))
     context.parent ! PublisherCreated(publisher)
   }
@@ -334,8 +334,12 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   val publishStatsTask: Option[Cancellable] = PublishStatsInterval match {
     case Duration.Zero | _: Duration.Infinite ⇒ None
     case d: FiniteDuration ⇒
-      Some(scheduler
-        .schedule(PeriodicTasksInitialDelay.max(d), d, self, PublishStatsTick))
+      Some(
+        scheduler.schedule(
+          PeriodicTasksInitialDelay.max(d),
+          d,
+          self,
+          PublishStatsTick))
   }
 
   override def preStart(): Unit = {
@@ -471,14 +475,16 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           if (newSeedNodes.head == selfAddress) {
             Some(
               context.actorOf(
-                Props(classOf[FirstSeedNodeProcess], newSeedNodes)
-                  .withDispatcher(UseDispatcher),
+                Props(
+                  classOf[FirstSeedNodeProcess],
+                  newSeedNodes).withDispatcher(UseDispatcher),
                 name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
           } else {
             Some(
               context.actorOf(
-                Props(classOf[JoinSeedNodeProcess], newSeedNodes)
-                  .withDispatcher(UseDispatcher),
+                Props(
+                  classOf[JoinSeedNodeProcess],
+                  newSeedNodes).withDispatcher(UseDispatcher),
                 name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
           }
         }
@@ -903,8 +909,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       val localGossip = latestGossip
 
       val preferredGossipTargets: Vector[UniqueAddress] =
-        if (ThreadLocalRandom.current
-              .nextDouble() < adjustedGossipDifferentViewProbability) {
+        if (ThreadLocalRandom.current.nextDouble() < adjustedGossipDifferentViewProbability) {
           // If it's time to try to gossip to some nodes with a different view
           // gossip to a random alive member with preference to a member with older gossip version
           localGossip.members.collect {
@@ -981,10 +986,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           logInfo(
             "Leader can currently not perform its duties, reachability status: [{}], member status: [{}]",
             latestGossip.reachabilityExcludingDownedObservers,
-            latestGossip.members
-              .map(m ⇒
-                s"${m.address} ${m.status} seen=${latestGossip.seenByNode(m.uniqueAddress)}")
-              .mkString(", ")
+            latestGossip.members.map(m ⇒
+              s"${m.address} ${m.status} seen=${latestGossip.seenByNode(
+                m.uniqueAddress)}").mkString(", ")
           )
       }
     }
@@ -1007,9 +1011,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         logInfo("Shutting down myself")
         // not crucial to send gossip, but may speedup removal since fallback to failure detection is not needed
         // if other downed know that this node has seen the version
-        downed
-          .filterNot(n ⇒ unreachable(n) || n == selfUniqueAddress)
-          .take(MaxGossipsBeforeShuttingDownMyself)
+        downed.filterNot(n ⇒ unreachable(n) || n == selfUniqueAddress).take(
+          MaxGossipsBeforeShuttingDownMyself)
           .foreach(gossipTo)
         shutdown()
       }
@@ -1137,8 +1140,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
     val enoughMembers: Boolean = isMinNrOfMembersFulfilled
     def isJoiningToWeaklyUp(m: Member): Boolean =
-      m.status == Joining && enoughMembers && latestGossip.reachabilityExcludingDownedObservers
-        .isReachable(m.uniqueAddress)
+      m.status == Joining && enoughMembers && latestGossip.reachabilityExcludingDownedObservers.isReachable(
+        m.uniqueAddress)
     val changedMembers = localMembers.collect {
       case m if isJoiningToWeaklyUp(m) ⇒ m.copy(status = WeaklyUp)
     }
@@ -1181,13 +1184,14 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         failureDetector.isAvailable(member.address)
       }
 
-      val newlyDetectedReachableMembers = localOverview.reachability
-        .allUnreachableFrom(selfUniqueAddress) collect {
-        case node
-            if node != selfUniqueAddress && failureDetector.isAvailable(
-              node.address) ⇒
-          localGossip.member(node)
-      }
+      val newlyDetectedReachableMembers =
+        localOverview.reachability.allUnreachableFrom(
+          selfUniqueAddress) collect {
+          case node
+              if node != selfUniqueAddress && failureDetector.isAvailable(
+                node.address) ⇒
+            localGossip.member(node)
+        }
 
       if (newlyDetectedUnreachableMembers.nonEmpty || newlyDetectedReachableMembers.nonEmpty) {
 

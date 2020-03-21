@@ -99,11 +99,10 @@ private case class LibraryReference(level: Level, name: String) {
   private def deleteProjectBasedLibrary(context: ConversionContext) {
     val libraryElement = {
       val rootElement = context.getProjectSettings.getRootElement
-      XPath
-        .selectSingleNode(
-          rootElement,
-          s"component[@name='libraryTable']/library[@name='$name']")
-        .asInstanceOf[Element]
+      XPath.selectSingleNode(
+        rootElement,
+        s"component[@name='libraryTable']/library[@name='$name']").asInstanceOf[
+        Element]
     }
     if (libraryElement == null) {
       throw new IllegalArgumentException(
@@ -115,8 +114,8 @@ private case class LibraryReference(level: Level, name: String) {
 
 private object LibraryReference {
   def findAllIn(module: ModuleSettings): Seq[LibraryReference] = {
-    val libraryEntries = module.getOrderEntries.asScala
-      .filter(_.getAttributeValue("type") == "library")
+    val libraryEntries = module.getOrderEntries.asScala.filter(
+      _.getAttributeValue("type") == "library")
     libraryEntries.map(LibraryReference(_))
   }
 

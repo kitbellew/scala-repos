@@ -96,10 +96,8 @@ private class PoolInterfaceActor(
       setup.log)
       .named("PoolFlow")
 
-    Source
-      .fromPublisher(ActorPublisher(self))
-      .via(poolFlow)
-      .runWith(Sink.fromSubscriber(ActorSubscriber[ResponseContext](self)))
+    Source.fromPublisher(ActorPublisher(self)).via(poolFlow).runWith(
+      Sink.fromSubscriber(ActorSubscriber[ResponseContext](self)))
   }
 
   activateIdleTimeoutIfNecessary()

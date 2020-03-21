@@ -91,9 +91,8 @@ trait GenSymbols {
         val rname = reify(sym.name.toString)
         if (sym.isType)
           mirrorBuildCall(nme.selectType, rowner, rname)
-        else if (sym.isMethod && sym.owner.isClass && sym.owner.info
-                   .decl(sym.name)
-                   .isOverloaded) {
+        else if (sym.isMethod && sym.owner.isClass && sym.owner.info.decl(
+                   sym.name).isOverloaded) {
           val index = sym.owner.info.decl(sym.name).alternatives indexOf sym
           assert(index >= 0, sym)
           mirrorBuildCall(

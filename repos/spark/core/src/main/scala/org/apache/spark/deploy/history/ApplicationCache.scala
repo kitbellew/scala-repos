@@ -106,8 +106,7 @@ private[history] class ApplicationCache(
     * Tagged as `protected` so as to allow subclasses in tests to access it directly
     */
   protected val appCache: LoadingCache[CacheKey, CacheEntry] = {
-    CacheBuilder
-      .newBuilder()
+    CacheBuilder.newBuilder()
       .maximumSize(retainedApplications)
       .removalListener(removalListener)
       .build(appLoader)
@@ -330,9 +329,8 @@ private[history] class ApplicationCache(
           logInfo(s"Failed to load application attempt $appId/$attemptId")
           throw new NoSuchElementException(
             s"no application with application Id '$appId'" +
-              attemptId
-                .map { id => s" attemptId '$id'" }
-                .getOrElse(" and no attempt Id"))
+              attemptId.map { id => s" attemptId '$id'" }.getOrElse(
+                " and no attempt Id"))
       }
     }
   }

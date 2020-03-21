@@ -40,8 +40,7 @@ class FilePublisherTest extends AkkaPublisherVerification[ByteString] {
   }
 
   def createPublisher(elements: Long): Publisher[ByteString] =
-    FileIO
-      .fromFile(file, chunkSize = 512)
+    FileIO.fromFile(file, chunkSize = 512)
       .take(elements)
       .runWith(Sink.asPublisher(false))
 

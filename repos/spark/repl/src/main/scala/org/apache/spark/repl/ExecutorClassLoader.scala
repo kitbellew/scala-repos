@@ -135,11 +135,9 @@ class ExecutorClassLoader(
     } else {
       new URL(classUri + "/" + urlEncode(pathInDirectory))
     }
-    val connection: HttpURLConnection = Utils
-      .setupSecureURLConnection(
-        url.openConnection(),
-        SparkEnv.get.securityManager)
-      .asInstanceOf[HttpURLConnection]
+    val connection: HttpURLConnection = Utils.setupSecureURLConnection(
+      url.openConnection(),
+      SparkEnv.get.securityManager).asInstanceOf[HttpURLConnection]
     // Set the connection timeouts (for testing purposes)
     if (httpUrlConnectionTimeoutMillis != -1) {
       connection.setConnectTimeout(httpUrlConnectionTimeoutMillis)

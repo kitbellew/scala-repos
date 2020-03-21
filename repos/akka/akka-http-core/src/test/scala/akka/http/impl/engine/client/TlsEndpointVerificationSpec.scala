@@ -103,10 +103,8 @@ class TlsEndpointVerificationSpec
       clientContext: ConnectionContext,
       hostname: String): HttpRequest ⇒ Future[HttpResponse] =
     req ⇒
-      Source
-        .single(req)
-        .via(pipelineFlow(clientContext, hostname))
-        .runWith(Sink.head)
+      Source.single(req).via(pipelineFlow(clientContext, hostname)).runWith(
+        Sink.head)
 
   def pipelineFlow(
       clientContext: ConnectionContext,
@@ -130,15 +128,13 @@ class TlsEndpointVerificationSpec
       Http().sslTlsStage(clientContext, Client, Some(hostname -> 8080))
 
     val server =
-      Http()
-        .serverLayer()
+      Http().serverLayer()
         .atop(serverSideTls)
         .reversed
         .join(Flow[HttpRequest].map(handler))
 
     val client =
-      Http()
-        .clientLayer(Host(hostname, 8080))
+      Http().clientLayer(Host(hostname, 8080))
         .atop(clientSideTls)
 
     client.join(server)

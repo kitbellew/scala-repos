@@ -80,8 +80,7 @@ class ActorSubscriberDocSpec extends AkkaSpec {
 
     //#actor-subscriber-usage
     val N = 117
-    Source(1 to N)
-      .map(WorkerPool.Msg(_, replyTo))
+    Source(1 to N).map(WorkerPool.Msg(_, replyTo))
       .runWith(Sink.actorSubscriber(WorkerPool.props))
     //#actor-subscriber-usage
 

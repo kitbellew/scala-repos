@@ -238,8 +238,7 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
       // TODO: Fix this issue for real.
       val memThreshold = 768
       if (sc.isLocal) {
-        val driverMemory = sc.getConf
-          .getOption("spark.driver.memory")
+        val driverMemory = sc.getConf.getOption("spark.driver.memory")
           .orElse(Option(System.getenv("SPARK_DRIVER_MEMORY")))
           .map(Utils.memoryStringToMb)
           .getOrElse(Utils.DEFAULT_DRIVER_MEM_MB)
@@ -267,8 +266,7 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
 
       // Create Parquet data.
       val nodes = model.topNode.subtreeIterator.toSeq
-      val dataRDD: DataFrame = sc
-        .parallelize(nodes)
+      val dataRDD: DataFrame = sc.parallelize(nodes)
         .map(NodeData.apply(0, _))
         .toDF()
       dataRDD.write.parquet(Loader.dataPath(path))
@@ -307,8 +305,7 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         .map {
           case (treeId, data) =>
             (treeId, constructTree(data))
-        }
-        .sortBy(_._1)
+        }.sortBy(_._1)
       val numTrees = trees.length
       val treeIndices = trees.map(_._1).toSeq
       assert(

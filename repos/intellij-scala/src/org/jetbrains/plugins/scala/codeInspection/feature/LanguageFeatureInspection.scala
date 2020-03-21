@@ -83,8 +83,8 @@ class LanguageFeatureInspection
             e.parameters.size == 1 &&
             !e.parameterList.clauses.exists(_.isImplicit) =>
         Option(
-          e.getModifierList.findFirstChildByType(ScalaTokenTypes.kIMPLICIT))
-          .getOrElse(e)
+          e.getModifierList.findFirstChildByType(
+            ScalaTokenTypes.kIMPLICIT)).getOrElse(e)
     },
     Feature(
       "higher-kinded type",
@@ -159,9 +159,10 @@ private case class Feature(
   }
 
   private def isFlagImportedFor(e: PsiElement): Boolean = {
-    ScalaPsiElementFactory
-      .createReferenceFromText(flagName, e, e)
-      .resolve() match {
+    ScalaPsiElementFactory.createReferenceFromText(
+      flagName,
+      e,
+      e).resolve() match {
       case e: ScReferencePattern =>
         Option(e.containingClass).exists(_.qualifiedName == flagQualifier)
       case _ => false

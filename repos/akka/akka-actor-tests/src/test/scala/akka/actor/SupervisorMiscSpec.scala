@@ -52,20 +52,22 @@ class SupervisorMiscSpec
           }
         })
 
-        val actor1, actor2 = Await.result(
-          (supervisor ? workerProps.withDispatcher("pinned-dispatcher"))
-            .mapTo[ActorRef],
-          timeout.duration)
+        val actor1, actor2 =
+          Await.result(
+            (supervisor ? workerProps.withDispatcher(
+              "pinned-dispatcher")).mapTo[ActorRef],
+            timeout.duration)
 
         val actor3 = Await.result(
-          (supervisor ? workerProps.withDispatcher("test-dispatcher"))
-            .mapTo[ActorRef],
+          (supervisor ? workerProps.withDispatcher("test-dispatcher")).mapTo[
+            ActorRef],
           timeout.duration)
 
-        val actor4 = Await.result(
-          (supervisor ? workerProps.withDispatcher("pinned-dispatcher"))
-            .mapTo[ActorRef],
-          timeout.duration)
+        val actor4 =
+          Await.result(
+            (supervisor ? workerProps.withDispatcher(
+              "pinned-dispatcher")).mapTo[ActorRef],
+            timeout.duration)
 
         actor1 ! Kill
         actor2 ! Kill

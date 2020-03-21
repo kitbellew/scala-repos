@@ -74,9 +74,9 @@ object HiveFromSpark {
 
     // Queries can then join RDD data with data stored in Hive.
     println("Result of SELECT *:")
-    sql("SELECT * FROM records r JOIN src s ON r.key = s.key")
-      .collect()
-      .foreach(println)
+    sql(
+      "SELECT * FROM records r JOIN src s ON r.key = s.key").collect().foreach(
+      println)
 
     sc.stop()
   }

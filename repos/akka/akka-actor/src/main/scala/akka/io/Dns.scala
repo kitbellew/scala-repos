@@ -87,17 +87,14 @@ class DnsExt(system: ExtendedActorSystem) extends IO.Extension {
     val ProviderObjectName: String = ResolverConfig.getString("provider-object")
   }
 
-  val provider: DnsProvider = system.dynamicAccess
-    .getClassFor[DnsProvider](Settings.ProviderObjectName)
-    .get
-    .newInstance()
+  val provider: DnsProvider = system.dynamicAccess.getClassFor[DnsProvider](
+    Settings.ProviderObjectName).get.newInstance()
   val cache: Dns = provider.cache
 
   val manager: ActorRef = {
     system.systemActorOf(
-      props = Props(classOf[SimpleDnsManager], this)
-        .withDeploy(Deploy.local)
-        .withDispatcher(Settings.Dispatcher),
+      props = Props(classOf[SimpleDnsManager], this).withDeploy(
+        Deploy.local).withDispatcher(Settings.Dispatcher),
       name = "IO-DNS")
   }
 

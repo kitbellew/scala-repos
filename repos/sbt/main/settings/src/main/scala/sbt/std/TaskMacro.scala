@@ -369,9 +369,9 @@ object TaskMacro {
     }
     def wrapInitParser[T: c.WeakTypeTag](tree: Tree) = {
       val e = c.Expr[Initialize[State => Parser[T]]](tree)
-      ParserInput
-        .wrap[T](c)(wrapInit[State => Parser[T]](c)(e, tree.pos), tree.pos)
-        .tree
+      ParserInput.wrap[T](c)(
+        wrapInit[State => Parser[T]](c)(e, tree.pos),
+        tree.pos).tree
     }
     def wrapInitInput[T: c.WeakTypeTag](tree: Tree) = {
       val e = c.Expr[Initialize[InputTask[T]]](tree)

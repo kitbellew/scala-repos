@@ -152,8 +152,9 @@ class MapWithStateRDDSuite
           timeoutThreshold,
           removeTimedoutData)
 
-      val updatedStateData =
-        updatedRecord.stateMap.getAll().map { x => (x._2, x._3) }
+      val updatedStateData = updatedRecord.stateMap.getAll().map { x =>
+        (x._2, x._3)
+      }
       assert(
         updatedStateData.toSet === expectedStates.toSet,
         "states do not match after updating the MapWithStateRDDRecord")
@@ -279,12 +280,10 @@ class MapWithStateRDDSuite
     val initTime = 123
     val initStateWthTime = initStates.map { x => (x._1, x._2, initTime) }.toSet
     val partitioner = new HashPartitioner(2)
-    val initStateRDD = MapWithStateRDD
-      .createFromPairRDD[String, Int, Int, Int](
-        sc.parallelize(initStates),
-        partitioner,
-        Time(initTime))
-      .persist()
+    val initStateRDD = MapWithStateRDD.createFromPairRDD[String, Int, Int, Int](
+      sc.parallelize(initStates),
+      partitioner,
+      Time(initTime)).persist()
     assertRDD(initStateRDD, initStateWthTime, Set.empty)
 
     val updateTime = 345
@@ -431,12 +430,10 @@ class MapWithStateRDDSuite
       */
     def rddCollectFunc(rdd: RDD[MapWithStateRDDRecord[Int, Int, Int]])
         : Set[(List[(Int, Int, Long)], List[Int])] = {
-      rdd
-        .map { record =>
-          (record.stateMap.getAll().toList, record.mappedData.toList)
-        }
-        .collect
-        .toSet
+      rdd.map { record =>
+        (record.stateMap.getAll().toList, record.mappedData.toList)
+      }
+        .collect.toSet
     }
 
     /** Generate MapWithStateRDD with data RDD having a long lineage */
@@ -468,9 +465,8 @@ class MapWithStateRDDSuite
       // Create a new MapWithStateRDD, with the lineage lineage MapWithStateRDD as the parent
       new MapWithStateRDD[Int, Int, Int, Int](
         stateRDDWithLongLineage,
-        stateRDDWithLongLineage.sparkContext
-          .emptyRDD[(Int, Int)]
-          .partitionBy(partitioner),
+        stateRDDWithLongLineage.sparkContext.emptyRDD[(Int, Int)].partitionBy(
+          partitioner),
         (time: Time, key: Int, value: Option[Int], state: State[Int]) => None,
         Time(10),
         None

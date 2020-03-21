@@ -89,9 +89,9 @@ class ScalaFileImpl(
         return stub.getFileName
       }
       val virtualFile = getVirtualFile
-      DecompilerUtil
-        .decompile(virtualFile, virtualFile.contentsToByteArray)
-        .sourceName
+      DecompilerUtil.decompile(
+        virtualFile,
+        virtualFile.contentsToByteArray).sourceName
     } else ""
   }
 
@@ -109,10 +109,8 @@ class ScalaFileImpl(
     if (!isCompiled) this
     else {
       val inner: String = getPackageNameInner
-      val pName = inner + typeDefinitions
-        .find(_.isPackageObject)
-        .map((if (inner.length > 0) "." else "") + _.name)
-        .getOrElse("")
+      val pName = inner + typeDefinitions.find(_.isPackageObject).map(
+        (if (inner.length > 0) "." else "") + _.name).getOrElse("")
       val sourceFile = sourceName
       val relPath =
         if (pName.length == 0) sourceFile
@@ -232,10 +230,8 @@ class ScalaFileImpl(
     val vFile = getVirtualFile
 
     vFile != null && (vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
-    ScratchFileService
-      .getInstance()
-      .getRootType(vFile)
-      .isInstanceOf[ScratchRootType] &&
+    ScratchFileService.getInstance().getRootType(vFile).isInstanceOf[
+      ScratchRootType] &&
     ScalaProjectSettings.getInstance(getProject).isTreatScratchFilesAsWorksheet)
   }
 
@@ -273,8 +269,7 @@ class ScalaFileImpl(
       val documentManager = PsiDocumentManager.getInstance(getProject)
       val document = documentManager.getDocument(this)
 
-      val prefixText = children
-        .findByType(classOf[ScPackaging])
+      val prefixText = children.findByType(classOf[ScPackaging])
         .map(it => getText.substring(0, it.getTextRange.getStartOffset))
         .filter(!_.isEmpty)
 
@@ -283,9 +278,8 @@ class ScalaFileImpl(
         if (vector.nonEmpty) {
           val packagingsText = {
             val path = {
-              val splits =
-                ScalaFileImpl.toVector(base) :: ScalaFileImpl.splitsIn(
-                  ScalaFileImpl.pathIn(this))
+              val splits = ScalaFileImpl.toVector(
+                base) :: ScalaFileImpl.splitsIn(ScalaFileImpl.pathIn(this))
               splits.foldLeft(List(vector))(ScalaFileImpl.splitAt)
             }
             path.map(_.mkString("package ", ".", "")).mkString("", "\n", "\n\n")
@@ -308,21 +302,21 @@ class ScalaFileImpl(
 
     for ((aClass, oldClass) <- typeDefinitions.zip(data)) {
       CodeEditUtil.setNodeGenerated(oldClass.getNode, true)
-      PostprocessReformattingAspect
-        .getInstance(getProject)
-        .disablePostprocessFormattingInside {
-          new Runnable {
-            def run() {
-              try {
-                DebugUtil.startPsiModification(null)
-                aClass.getNode.getTreeParent
-                  .replaceChild(aClass.getNode, oldClass.getNode)
-              } finally {
-                DebugUtil.finishPsiModification()
-              }
+      PostprocessReformattingAspect.getInstance(
+        getProject).disablePostprocessFormattingInside {
+        new Runnable {
+          def run() {
+            try {
+              DebugUtil.startPsiModification(null)
+              aClass.getNode.getTreeParent.replaceChild(
+                aClass.getNode,
+                oldClass.getNode)
+            } finally {
+              DebugUtil.finishPsiModification()
             }
           }
         }
+      }
     }
   }
 
@@ -466,11 +460,8 @@ class ScalaFileImpl(
   }
 
   def packagingRanges: Seq[TextRange] =
-    depthFirst
-      .filterByType(classOf[ScPackaging])
-      .flatMap(_.reference)
-      .map(_.getTextRange)
-      .toList
+    depthFirst.filterByType(classOf[ScPackaging]).flatMap(_.reference).map(
+      _.getTextRange).toList
 
   def getFileResolveScope: GlobalSearchScope = {
     val vFile = getOriginalFile.getVirtualFile
@@ -478,10 +469,8 @@ class ScalaFileImpl(
     else {
       val resolveScopeManager = ResolveScopeManager.getInstance(getProject)
       if (isCompiled) {
-        val orderEntries = ProjectRootManager
-          .getInstance(getProject)
-          .getFileIndex
-          .getOrderEntriesForFile(vFile)
+        val orderEntries = ProjectRootManager.getInstance(
+          getProject).getFileIndex.getOrderEntriesForFile(vFile)
         LibraryScopeCache.getInstance(getProject).getLibraryScope(orderEntries)
       } else resolveScopeManager.getDefaultResolveScope(vFile)
     }

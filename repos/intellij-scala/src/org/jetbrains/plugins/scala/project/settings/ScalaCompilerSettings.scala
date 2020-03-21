@@ -110,10 +110,8 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
       case (option, setter) => setter(options.contains(option))
     }
 
-    debuggingInfoLevel = DebuggingOptions
-      .find(p => options.contains(p._1))
-      .map(_._2)
-      .getOrElse(DebuggingInfoLevel.Vars)
+    debuggingInfoLevel = DebuggingOptions.find(p => options.contains(p._1)).map(
+      _._2).getOrElse(DebuggingInfoLevel.Vars)
 
     plugins = options collect {
       case PluginOptionPattern(path) => path

@@ -83,10 +83,9 @@ object DenseKMeans {
 
     Logger.getRootLogger.setLevel(Level.WARN)
 
-    val examples = sc
-      .textFile(params.input)
-      .map { line => Vectors.dense(line.split(' ').map(_.toDouble)) }
-      .cache()
+    val examples = sc.textFile(params.input).map { line =>
+      Vectors.dense(line.split(' ').map(_.toDouble))
+    }.cache()
 
     val numExamples = examples.count()
 

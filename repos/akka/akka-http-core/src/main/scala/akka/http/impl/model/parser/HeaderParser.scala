@@ -44,12 +44,11 @@ private[http] class HeaderParser(
   def `field-value` = {
     var fwsStart = cursor
     rule {
-      zeroOrMore(`field-value-chunk`)
-        .separatedBy { // zeroOrMore because we need to also accept empty values
-          run { fwsStart = cursor } ~ FWS ~ &(`field-value-char`) ~ run {
-            if (cursor > fwsStart) sb.append(' ')
-          }
+      zeroOrMore(`field-value-chunk`).separatedBy { // zeroOrMore because we need to also accept empty values
+        run { fwsStart = cursor } ~ FWS ~ &(`field-value-char`) ~ run {
+          if (cursor > fwsStart) sb.append(' ')
         }
+      }
     }
   }
   def `field-value-chunk` = rule { oneOrMore(`field-value-char` ~ appendSB()) }

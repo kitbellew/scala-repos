@@ -95,15 +95,13 @@ case class BatchPythonEvaluation(
       val joined = new JoinedRow
       val resultProj = UnsafeProjection.create(output, output)
 
-      outputIterator
-        .flatMap { pickedResult =>
-          val unpickledBatch = unpickle.loads(pickedResult)
-          unpickledBatch.asInstanceOf[java.util.ArrayList[Any]].asScala
-        }
-        .map { result =>
-          row(0) = EvaluatePython.fromJava(result, udf.dataType)
-          resultProj(joined(queue.poll(), row))
-        }
+      outputIterator.flatMap { pickedResult =>
+        val unpickledBatch = unpickle.loads(pickedResult)
+        unpickledBatch.asInstanceOf[java.util.ArrayList[Any]].asScala
+      }.map { result =>
+        row(0) = EvaluatePython.fromJava(result, udf.dataType)
+        resultProj(joined(queue.poll(), row))
+      }
     }
   }
 }

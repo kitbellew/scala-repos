@@ -86,9 +86,9 @@ class ScalaAliasedImportedElementSearcher
           UsageSearchContext.IN_CODE,
           true,
           myTarget)
-        PsiSearchHelper.SERVICE
-          .getInstance(element.getProject)
-          .processRequests(collector, consumer)
+        PsiSearchHelper.SERVICE.getInstance(element.getProject).processRequests(
+          collector,
+          consumer)
       }
   }
 

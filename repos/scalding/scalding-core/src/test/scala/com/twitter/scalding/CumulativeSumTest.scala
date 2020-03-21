@@ -5,8 +5,7 @@ import org.scalatest.WordSpec
 import com.twitter.scalding.typed.CumulativeSum._
 
 class AddRankingWithCumulativeSum(args: Args) extends Job(args) {
-  TypedPipe
-    .from(TypedTsv[(String, Double)]("input1"))
+  TypedPipe.from(TypedTsv[(String, Double)]("input1"))
     .map {
       case (gender, height) =>
         (gender, (height, 1L))
@@ -20,8 +19,7 @@ class AddRankingWithCumulativeSum(args: Args) extends Job(args) {
 }
 
 class AddRankingWithPartitionedCumulativeSum(args: Args) extends Job(args) {
-  TypedPipe
-    .from(TypedTsv[(String, Double)]("input1"))
+  TypedPipe.from(TypedTsv[(String, Double)]("input1"))
     .map {
       case (gender, height) =>
         (gender, (height, 1L))

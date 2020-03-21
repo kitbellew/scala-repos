@@ -28,15 +28,16 @@ private object KeyValidation {
 
       if (tooLong(key))
         throw new IllegalArgumentException(
-          "Invalid keys: key cannot be longer than %d bytes (%d)"
-            .format(MaxKeyLength, key.length))
+          "Invalid keys: key cannot be longer than %d bytes (%d)".format(
+            MaxKeyLength,
+            key.length))
 
       val index = invalidByteIndex(key)
       if (index != -1) {
         val ch = Buf.ByteArray.Owned.extract(key)(index)
         throw new IllegalArgumentException(
-          "Invalid keys: key cannot have whitespace or control characters: '0x%d'"
-            .format(ch))
+          "Invalid keys: key cannot have whitespace or control characters: '0x%d'".format(
+            ch))
       }
     }
 

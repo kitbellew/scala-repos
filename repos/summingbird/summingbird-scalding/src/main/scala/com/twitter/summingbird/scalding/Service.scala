@@ -73,8 +73,7 @@ private[scalding] object InternalService {
       n match {
         case summer @ Summer(_, StoreService(thatStore), _)
             if thatStore == store =>
-          Producer
-            .transitiveDependenciesOf(summer)
+          Producer.transitiveDependenciesOf(summer)
             .collectFirst {
               case ljp @ LeftJoinedProducer(l, s) if ljp == joinProducer => ()
             }
@@ -94,8 +93,8 @@ private[scalding] object InternalService {
      * 2) After the join, there are only flatMapValues (later we can handle merges as well)
      */
     val summerToStore =
-      getSummer[K, V](dag, store)
-        .getOrElse(sys.error("Could not find the Summer for store."))
+      getSummer[K, V](dag, store).getOrElse(
+        sys.error("Could not find the Summer for store."))
 
     val depsOfSummer: List[Producer[Scalding, Any]] =
       Producer.transitiveDependenciesOf(summerToStore)
@@ -168,8 +167,8 @@ private[scalding] object InternalService {
       (((U, Option[V])) => TraversableOnce[V]),
       Option[Producer[Scalding, (K, V)]]) = {
 
-    val Summer(summerProd, _, _) = getSummer[K, V](dag, store)
-      .getOrElse(sys.error("Could not find the Summer for store."))
+    val Summer(summerProd, _, _) = getSummer[K, V](dag, store).getOrElse(
+      sys.error("Could not find the Summer for store."))
 
     type ValueFlatMapFn = ((U, Option[V])) => TraversableOnce[V]
 
@@ -246,7 +245,8 @@ private[scalding] object InternalService {
       }
 
     val bothPipes = (left.map { case (t, (k, v)) => (k, (t, Left(v))) } ++
-      mergeLog.map { case (t, (k, u))            => (k, (t, Right(u))) }).group
+      mergeLog.map { case (t, (k, u))            => (k, (t, Right(u))) })
+      .group
       .withReducers(
         reducers.getOrElse(-1)
       ) // jank, but scalding needs a way to maybe set reducers
@@ -259,9 +259,9 @@ private[scalding] object InternalService {
            * This is a lookup, but there is no value for this key
            */
           val joinResult = Some((time, (v, None)))
-          val sumResult = Semigroup
-            .sumOption(valueExpansion((v, None)))
-            .map(u => (time, (None, u)))
+          val sumResult =
+            Semigroup.sumOption(valueExpansion((v, None))).map(u =>
+              (time, (None, u)))
           (joinResult, sumResult)
         case ((_, Some((_, (optu, u)))), (time, Left(v))) =>
           /*
@@ -270,9 +270,9 @@ private[scalding] object InternalService {
           val currentU =
             Some(sum(optu, u)) // isn't u already a sum and optu prev value?
           val joinResult = Some((time, (v, currentU)))
-          val sumResult = Semigroup
-            .sumOption(valueExpansion((v, currentU)))
-            .map(u => (time, (currentU, u)))
+          val sumResult =
+            Semigroup.sumOption(valueExpansion((v, currentU))).map(u =>
+              (time, (currentU, u)))
           (joinResult, sumResult)
         case ((_, None), (time, Right(u))) =>
           /*

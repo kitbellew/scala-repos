@@ -127,8 +127,8 @@ private[http] class HttpResponseParser(
       statusCode match {
         case _: StatusCodes.Informational if handleInformationalResponses ⇒
           if (statusCode == StatusCodes.Continue)
-            contextForCurrentResponse.get.oneHundredContinueTrigger
-              .foreach(_.trySuccess(()))
+            contextForCurrentResponse.get.oneHundredContinueTrigger.foreach(
+              _.trySuccess(()))
 
           // http://tools.ietf.org/html/rfc7231#section-6.2 says:
           // "A client MUST be able to parse one or more 1xx responses received prior to a final response,

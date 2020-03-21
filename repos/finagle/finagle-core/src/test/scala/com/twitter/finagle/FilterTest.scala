@@ -84,11 +84,9 @@ class FilterTest extends FunSuite {
 
   test("Filter.choose: apply the underlying filter to certain requests") {
     val spied = spy(new PassThruFilter)
-    val svc = Filter
-      .choose[Int, Int] {
-        case req if req > 0 => spied
-      }
-      .andThen(constSvc)
+    val svc = Filter.choose[Int, Int] {
+      case req if req > 0 => spied
+    }.andThen(constSvc)
 
     assert(Await.result(svc(100)) == 2)
     verify(spied, times(1)).apply(any[Int], any[Service[Int, Int]])

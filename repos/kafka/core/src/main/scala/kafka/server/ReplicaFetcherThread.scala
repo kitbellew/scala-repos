@@ -140,8 +140,9 @@ class ReplicaFetcherThread(
 
       if (fetchOffset != replica.logEndOffset.messageOffset)
         throw new RuntimeException(
-          "Offset mismatch: fetched offset = %d, log end offset = %d."
-            .format(fetchOffset, replica.logEndOffset.messageOffset))
+          "Offset mismatch: fetched offset = %d, log end offset = %d.".format(
+            fetchOffset,
+            replica.logEndOffset.messageOffset))
       if (logger.isTraceEnabled)
         trace(
           "Follower %d has replica log end offset %d for partition %s. Received %d messages and leader hw %d"
@@ -194,9 +195,9 @@ class ReplicaFetcherThread(
     * Handle a partition whose offset is out of range and return a new fetch offset.
     */
   def handleOffsetOutOfRange(topicAndPartition: TopicAndPartition): Long = {
-    val replica = replicaMgr
-      .getReplica(topicAndPartition.topic, topicAndPartition.partition)
-      .get
+    val replica = replicaMgr.getReplica(
+      topicAndPartition.topic,
+      topicAndPartition.partition).get
 
     /**
       * Unclean leader election: A follower goes down, in the meanwhile the leader keeps appending messages. The follower comes back up
@@ -217,14 +218,12 @@ class ReplicaFetcherThread(
       // Prior to truncating the follower's log, ensure that doing so is not disallowed by the configuration for unclean leader election.
       // This situation could only happen if the unclean election configuration for a topic changes while a replica is down. Otherwise,
       // we should never encounter this situation since a non-ISR leader cannot be elected if disallowed by the broker configuration.
-      if (!LogConfig
-            .fromProps(
-              brokerConfig.originals,
-              AdminUtils.fetchEntityConfig(
-                replicaMgr.zkUtils,
-                ConfigType.Topic,
-                topicAndPartition.topic))
-            .uncleanLeaderElectionEnable) {
+      if (!LogConfig.fromProps(
+            brokerConfig.originals,
+            AdminUtils.fetchEntityConfig(
+              replicaMgr.zkUtils,
+              ConfigType.Topic,
+              topicAndPartition.topic)).uncleanLeaderElectionEnable) {
         // Log a fatal error and shutdown the broker to ensure that data loss does not unexpectedly occur.
         fatal(
           "Halting because log truncation is not allowed for topic %s,".format(
@@ -289,8 +288,9 @@ class ReplicaFetcherThread(
         Math.max(leaderStartOffset, replica.logEndOffset.messageOffset)
       // Only truncate log when current leader's log start offset is greater than follower's log end offset.
       if (leaderStartOffset > replica.logEndOffset.messageOffset)
-        replicaMgr.logManager
-          .truncateFullyAndStartAt(topicAndPartition, leaderStartOffset)
+        replicaMgr.logManager.truncateFullyAndStartAt(
+          topicAndPartition,
+          leaderStartOffset)
       offsetToFetch
     }
   }
@@ -328,12 +328,11 @@ class ReplicaFetcherThread(
           new RequestSend(sourceBroker.id.toString, header, request.toStruct)
         val clientRequest =
           new ClientRequest(time.milliseconds(), true, send, null)
-        networkClient
-          .blockingSendAndReceive(clientRequest, socketTimeout)(time)
-          .getOrElse {
-            throw new SocketTimeoutException(
-              s"No response received within $socketTimeout ms")
-          }
+        networkClient.blockingSendAndReceive(clientRequest, socketTimeout)(
+          time).getOrElse {
+          throw new SocketTimeoutException(
+            s"No response received within $socketTimeout ms")
+        }
       }
     } catch {
       case e: Throwable =>
@@ -389,12 +388,10 @@ object ReplicaFetcherThread {
       extends AbstractFetcherThread.FetchRequest {
     def isEmpty: Boolean = underlying.fetchData.isEmpty
     def offset(topicAndPartition: TopicAndPartition): Long =
-      underlying.fetchData
-        .asScala(
-          new TopicPartition(
-            topicAndPartition.topic,
-            topicAndPartition.partition))
-        .offset
+      underlying.fetchData.asScala(
+        new TopicPartition(
+          topicAndPartition.topic,
+          topicAndPartition.partition)).offset
   }
 
   private[server] class PartitionData(

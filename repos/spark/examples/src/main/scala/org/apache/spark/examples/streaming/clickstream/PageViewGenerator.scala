@@ -72,10 +72,8 @@ object PageViewGenerator {
         return item
       }
     }
-    inputMap
-      .take(1)
-      .head
-      ._1 // Shouldn't get here if probabilities add up to 1.0
+    inputMap.take(
+      1).head._1 // Shouldn't get here if probabilities add up to 1.0
   }
 
   def getNextClickEvent(): String = {

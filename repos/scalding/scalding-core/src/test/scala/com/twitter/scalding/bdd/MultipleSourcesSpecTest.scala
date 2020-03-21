@@ -19,11 +19,10 @@ class MultipleSourcesSpecTest extends WordSpec with Matchers with BddDsl {
       } When {
         (pipe1: RichPipe, pipe2: RichPipe) =>
           {
-            pipe1
-              .joinWithSmaller('name -> 'name, pipe2)
-              .map('address -> 'address_transf) {
-                address: String => address + "_transf"
-              }
+            pipe1.joinWithSmaller('name -> 'name, pipe2).map(
+              'address -> 'address_transf) {
+              address: String => address + "_transf"
+            }
           }
       } Then {
         buffer: Buffer[(String, String, String, String)] =>
@@ -47,11 +46,10 @@ class MultipleSourcesSpecTest extends WordSpec with Matchers with BddDsl {
       } When {
         (pipe1: RichPipe, pipe2: RichPipe) =>
           {
-            pipe1
-              .joinWithSmaller('name -> 'name, pipe2)
-              .map('address -> 'address_transf) {
-                address: String => address + "_transf"
-              }
+            pipe1.joinWithSmaller('name -> 'name, pipe2).map(
+              'address -> 'address_transf) {
+              address: String => address + "_transf"
+            }
           }
       } Then {
         buffer: Buffer[(String, String, String, String)] =>

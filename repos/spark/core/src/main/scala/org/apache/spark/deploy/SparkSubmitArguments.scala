@@ -185,8 +185,7 @@ private[deploy] class SparkSubmitArguments(
     packages =
       Option(packages).orElse(sparkProperties.get("spark.jars.packages")).orNull
     packagesExclusions = Option(packagesExclusions)
-      .orElse(sparkProperties.get("spark.jars.excludes"))
-      .orNull
+      .orElse(sparkProperties.get("spark.jars.excludes")).orNull
     deployMode = Option(deployMode)
       .orElse(sparkProperties.get("spark.submit.deployMode"))
       .orElse(env.get("DEPLOY_MODE"))
@@ -195,9 +194,8 @@ private[deploy] class SparkSubmitArguments(
       .getOrElse(sparkProperties.get("spark.executor.instances").orNull)
     keytab =
       Option(keytab).orElse(sparkProperties.get("spark.yarn.keytab")).orNull
-    principal = Option(principal)
-      .orElse(sparkProperties.get("spark.yarn.principal"))
-      .orNull
+    principal = Option(principal).orElse(
+      sparkProperties.get("spark.yarn.principal")).orNull
 
     // Try to set main class from JAR if no --class argument is given
     if (mainClass == null && !isPython && !isR && primaryResource != null) {
@@ -502,10 +500,8 @@ private[deploy] class SparkSubmitArguments(
     if (unknownParam != null) {
       outStream.println("Unknown/unsupported param " + unknownParam)
     }
-    val command = sys.env
-      .get("_SPARK_CMD_USAGE")
-      .getOrElse(
-        """Usage: spark-submit [options] <app jar | python file> [app arguments]
+    val command = sys.env.get("_SPARK_CMD_USAGE").getOrElse(
+      """Usage: spark-submit [options] <app jar | python file> [app arguments]
         |Usage: spark-submit --kill [submission ID] --master [spark://...]
         |Usage: spark-submit --status [submission ID] --master [spark://...]""".stripMargin)
     outStream.println(command)
@@ -625,9 +621,7 @@ private[deploy] class SparkSubmitArguments(
       System.setSecurityManager(sm)
 
       try {
-        Utils
-          .classForName(mainClass)
-          .getMethod("main", classOf[Array[String]])
+        Utils.classForName(mainClass).getMethod("main", classOf[Array[String]])
           .invoke(null, Array(HELP))
       } catch {
         case e: InvocationTargetException =>
@@ -640,9 +634,8 @@ private[deploy] class SparkSubmitArguments(
       stream.flush()
 
       // Get the output and discard any unnecessary lines from it.
-      Source
-        .fromString(new String(out.toByteArray(), StandardCharsets.UTF_8))
-        .getLines
+      Source.fromString(
+        new String(out.toByteArray(), StandardCharsets.UTF_8)).getLines
         .filter { line =>
           !line.startsWith("log4j") && !line.startsWith("usage")
         }

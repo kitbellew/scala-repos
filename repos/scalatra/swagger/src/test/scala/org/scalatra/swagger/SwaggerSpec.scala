@@ -117,18 +117,12 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       val bd = JsonParser.parseOpt(body)
       bd must beSome[JValue] and {
         val j = bd.get
-        val props = (j \ "models" \ "Pet" \ "properties")
-          .asInstanceOf[JObject]
-          .values
-          .map {
-            case (x, y) ⇒
-              x → y
-                .asInstanceOf[Map[String, BigInt]]
-                .get("position")
-                .flatMap(x ⇒ parseInt(x.toString))
-                .getOrElse(0)
-          }
-          .toList sortBy (_._2) map (_._1)
+        val props = (j \ "models" \ "Pet" \ "properties").asInstanceOf[
+          JObject].values.map {
+          case (x, y) ⇒
+            x → y.asInstanceOf[Map[String, BigInt]].get("position").flatMap(x ⇒
+              parseInt(x.toString)).getOrElse(0)
+        }.toList sortBy (_._2) map (_._1)
         props must_== propOrder
       }
     }
@@ -189,9 +183,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
             "/pet/findByTags",
             "/pet/findByStatus",
             "/pet/")) and
-        petOperations
-          .map(verifyOperation(bo.get, petOperationsJValue, _))
-          .reduce(_ and _) and
+        petOperations.map(
+          verifyOperation(bo.get, petOperationsJValue, _)).reduce(_ and _) and
         verifyPetModel(bo.get)
     }
   }
@@ -204,9 +197,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
           bo.get,
           storeOperationsJValue,
           List("/store/order/{orderId}", "/store/order")) and
-        storeOperations
-          .map(verifyOperation(bo.get, storeOperationsJValue, _))
-          .reduce(_ and _) and
+        storeOperations.map(
+          verifyOperation(bo.get, storeOperationsJValue, _)).reduce(_ and _) and
         verifyStoreModel(bo.get)
     }
   }
@@ -242,8 +234,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
   def verifyOperation(actual: JValue, expected: JValue, name: String) = {
     val op = findOperation(actual, name)
     val exp = findOperation(expected, name)
-    (op must beSome[JValue])
-      .setMessage("Couldn't find operation: " + name) and {
+    (op must beSome[JValue]).setMessage(
+      "Couldn't find operation: " + name) and {
       val m = verifyFields(
         op.get,
         exp.get,
@@ -320,8 +312,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
             mm setMessage (mm.message + " in response messages collection")
           }
           def countsmatch =
-            (af.size must_== ef.size)
-              .setMessage("The count for the responseMessages is different")
+            (af.size must_== ef.size).setMessage(
+              "The count for the responseMessages is different")
           if (r.nonEmpty) { countsmatch and (r reduce (_ and _)) }
           else countsmatch
         case "parameters" =>
@@ -341,16 +333,17 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
               "name",
               "required",
               "paramAccess")
-            mm setMessage (mm.message + " in parameter " + (v \ "name")
-              .extractOrElse("N/A"))
+            mm setMessage (mm.message + " in parameter " + (v \ "name").extractOrElse(
+              "N/A"))
           }
 
           if (r.nonEmpty) r reduce (_ and _) else 1.must_==(1)
         case _ =>
           val m = act \ fn must_== exp \ fn
           m setMessage (JsonMethods.compact(
-            JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
-            .compact(JsonMethods.render(exp \ fn)) + " for field " + fn)
+            JsonMethods.render(
+              act \ fn)) + " does not match\n" + JsonMethods.compact(
+            JsonMethods.render(exp \ fn)) + " for field " + fn)
       }
     }
 
@@ -407,8 +400,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
       responseMessages (StringResponseMessage(
         400,
         "Invalid ID supplied"), StringResponseMessage(404, "Pet not found"))
-      parameter pathParam[String]("petId")
-        .description("ID of pet that needs to be fetched")
+      parameter pathParam[String]("petId").description(
+        "ID of pet that needs to be fetched")
       produces ("application/json", "application/xml")
       authorizations ("oauth2"))
 
@@ -471,9 +464,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
       notes "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing."
       produces ("application/json", "application/xml")
       responseMessage StringResponseMessage(400, "Invalid tag value")
-      parameter queryParam[String]("tags")
-        .description("Tags to filter by")
-        .multiValued)
+      parameter queryParam[String]("tags").description(
+        "Tags to filter by").multiValued)
 
   get("/findByTags", operation(findByTags)) {
     data.findPetsByTags(params("tags"))
@@ -500,9 +492,8 @@ class StoreApi(val swagger: Swagger)
       summary "Find purchase order by ID"
       notes "For valid response try integer IDs with value <= 5. Anything above 5 or nonintegers will generate API errors"
       produces ("application/json", "application/xml")
-      parameter pathParam[String]("orderId")
-        .description("ID of pet that needs to be fetched")
-        .required
+      parameter pathParam[String]("orderId").description(
+        "ID of pet that needs to be fetched").required
       responseMessages (
         StringResponseMessage(400, "Invalid ID supplied"),
         StringResponseMessage(404, "Order not found")

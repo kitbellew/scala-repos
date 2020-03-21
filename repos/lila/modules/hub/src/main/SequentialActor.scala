@@ -52,15 +52,12 @@ trait SequentialActor extends Actor {
       case SequentialActor.Terminate => self ! PoisonPill
       case msg =>
         val future = (process orElse fallback)(msg)
-        futureTimeout
-          .fold(future) { timeout =>
-            future.withTimeout(
-              timeout,
-              LilaException(s"Sequential actor timeout: $timeout"))(
-              context.system)
-          }
-          .addFailureEffect(onFailure)
-          .andThenAnyway { self ! Done }
+        futureTimeout.fold(future) { timeout =>
+          future.withTimeout(
+            timeout,
+            LilaException(s"Sequential actor timeout: $timeout"))(
+            context.system)
+        }.addFailureEffect(onFailure).andThenAnyway { self ! Done }
     }
   }
 }

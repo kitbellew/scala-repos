@@ -141,10 +141,8 @@ package ll {
     }
 
     def permute(targs: List[Type]): List[String] = {
-      permuteAsSeenFrom(targs)
-        .groupBy(_._1)
-        .toList
-        .sortBy(_._1.toString) flatMap {
+      permuteAsSeenFrom(targs).groupBy(_._1).toList.sortBy(
+        _._1.toString) flatMap {
         case (site, xs) =>
           block(fmt(site)) {
             fmt("type", "seen from prefix", "is") ::

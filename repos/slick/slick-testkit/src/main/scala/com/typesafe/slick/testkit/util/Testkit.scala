@@ -65,11 +65,10 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
     if (!children.isEmpty) {
       tdb.cleanUpBefore()
       try {
-        val is = children.iterator
-          .map(ch => (ch, ch.cl.newInstance()))
-          .filter { case (_, to) => to.setTestDB(tdb) }
-          .zipWithIndex
-          .toIndexedSeq
+        val is = children.iterator.map(ch => (ch, ch.cl.newInstance()))
+          .filter {
+            case (_, to) => to.setTestDB(tdb)
+          }.zipWithIndex.toIndexedSeq
         val last = is.length - 1
         var previousTestObject: GenericTest[_ >: Null <: TestDB] = null
         for (((ch, preparedTestObject), idx) <- is) {
@@ -158,8 +157,7 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](implicit
     val db = tdb.createDB()
     keepAliveSession = db.createSession()
     if (!tdb.isPersistent && tdb.isShared)
-      keepAliveSession
-        .force() // keep the database in memory with an extra connection
+      keepAliveSession.force() // keep the database in memory with an extra connection
     db
   }
 
@@ -431,9 +429,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex.getStackTrace.iterator
-              .filterNot(_.getClassName.startsWith(cln))
-              .toArray)
+            ex.getStackTrace.iterator.filterNot(
+              _.getClassName.startsWith(cln)).toArray)
           throw ex
       }
 
@@ -466,9 +463,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex.getStackTrace.iterator
-              .filterNot(_.getClassName.startsWith(cln))
-              .toArray)
+            ex.getStackTrace.iterator.filterNot(
+              _.getClassName.startsWith(cln)).toArray)
           throw ex
       }
 

@@ -81,16 +81,24 @@ class UIUtilsSuite extends SparkFunSuite with Matchers {
     val tzForTest = TimeZone.getTimeZone("America/Los_Angeles")
     val batchTime = 1431637480452L // Thu May 14 14:04:40 PDT 2015
     assert(
-      "2015/05/14 14:04:40" === UIUtils
-        .formatBatchTime(batchTime, 1000, timezone = tzForTest))
+      "2015/05/14 14:04:40" === UIUtils.formatBatchTime(
+        batchTime,
+        1000,
+        timezone = tzForTest))
     assert(
       "2015/05/14 14:04:40.452" ===
         UIUtils.formatBatchTime(batchTime, 999, timezone = tzForTest))
     assert(
-      "14:04:40" === UIUtils
-        .formatBatchTime(batchTime, 1000, false, timezone = tzForTest))
+      "14:04:40" === UIUtils.formatBatchTime(
+        batchTime,
+        1000,
+        false,
+        timezone = tzForTest))
     assert(
-      "14:04:40.452" === UIUtils
-        .formatBatchTime(batchTime, 999, false, timezone = tzForTest))
+      "14:04:40.452" === UIUtils.formatBatchTime(
+        batchTime,
+        999,
+        false,
+        timezone = tzForTest))
   }
 }

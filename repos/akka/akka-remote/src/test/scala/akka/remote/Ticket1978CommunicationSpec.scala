@@ -76,10 +76,8 @@ object Configuration {
           keyStore,
           cipher,
           enabled.mkString(", ")))
-      val fullConfig = config
-        .withFallback(AkkaSpec.testConf)
-        .withFallback(ConfigFactory.load)
-        .getConfig("akka.remote.netty.ssl.security")
+      val fullConfig = config.withFallback(AkkaSpec.testConf).withFallback(
+        ConfigFactory.load).getConfig("akka.remote.netty.ssl.security")
       val settings = new SSLSettings(fullConfig)
 
       val rng = NettySSLSupport.initializeCustomSecureRandom(
@@ -195,9 +193,9 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
   lazy val other: ActorSystem = ActorSystem(
     "remote-sys",
-    ConfigFactory
-      .parseString("akka.remote.netty.ssl.port = " + cipherConfig.remotePort)
-      .withFallback(system.settings.config))
+    ConfigFactory.parseString(
+      "akka.remote.netty.ssl.port = " + cipherConfig.remotePort).withFallback(
+      system.settings.config))
 
   override def afterTermination() {
     if (cipherConfig.runTest) {
@@ -216,12 +214,9 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
           }
         }),
         "echo")
-      val otherAddress = other
-        .asInstanceOf[ExtendedActorSystem]
-        .provider
-        .asInstanceOf[RemoteActorRefProvider]
-        .transport
-        .defaultAddress
+      val otherAddress =
+        other.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[
+          RemoteActorRefProvider].transport.defaultAddress
 
       "support tell" in within(timeout.duration) {
         val here = {
@@ -247,10 +242,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
         val f =
           for (i ← 1 to 1000)
             yield here ? (("ping", i)) mapTo classTag[((String, Int), ActorRef)]
-        Await
-          .result(Future.sequence(f), remaining)
-          .map(_._1._1)
-          .toSet should ===(Set("pong"))
+        Await.result(Future.sequence(f), remaining).map(
+          _._1._1).toSet should ===(Set("pong"))
       }
 
     } else {

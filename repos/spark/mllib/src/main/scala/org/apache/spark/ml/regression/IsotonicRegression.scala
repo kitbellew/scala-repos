@@ -253,8 +253,8 @@ class IsotonicRegressionModel private[ml] (
 
   @Since("1.5.0")
   override def copy(extra: ParamMap): IsotonicRegressionModel = {
-    copyValues(new IsotonicRegressionModel(uid, oldModel), extra)
-      .setParent(parent)
+    copyValues(new IsotonicRegressionModel(uid, oldModel), extra).setParent(
+      parent)
   }
 
   @Since("1.5.0")
@@ -309,11 +309,8 @@ object IsotonicRegressionModel extends MLReadable[IsotonicRegressionModel] {
         instance.oldModel.predictions,
         instance.oldModel.isotonic)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -327,10 +324,8 @@ object IsotonicRegressionModel extends MLReadable[IsotonicRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("boundaries", "predictions", "isotonic")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("boundaries", "predictions", "isotonic").head()
       val boundaries = data.getAs[Seq[Double]](0).toArray
       val predictions = data.getAs[Seq[Double]](1).toArray
       val isotonic = data.getBoolean(2)

@@ -59,8 +59,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         // we need to use UUIDs here, because our toolbox might be spawned by another toolbox
         // that already has, say, __wrapper$1 in its virtual directory, which will shadow our codegen
         newTermName(
-          "__wrapper$" + wrapCount + "$" + java.util.UUID.randomUUID.toString
-            .replace("-", ""))
+          "__wrapper$" + wrapCount + "$" + java.util.UUID.randomUUID.toString.replace(
+            "-",
+            ""))
       }
 
       // should be called after every use of ToolBoxGlobal in order to prevent leaks
@@ -126,8 +127,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
                   else freeTermRef
                 case _ =>
                   throw new Error(
-                    "internal error: %s (%s, %s) is not supported"
-                      .format(tree, tree.productPrefix, tree.getClass))
+                    "internal error: %s (%s, %s) is not supported".format(
+                      tree,
+                      tree.productPrefix,
+                      tree.getClass))
               }
             } else {
               super.transform(tree)
@@ -171,9 +174,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             ClassInfoType(List(ObjectTpe), newScope, ownerClass))
           val owner = ownerClass.newLocalDummy(expr2.pos)
           val currentTyper = analyzer.newTyper(
-            analyzer
-              .rootContext(NoCompilationUnit, EmptyTree)
-              .make(expr2, owner))
+            analyzer.rootContext(NoCompilationUnit, EmptyTree).make(
+              expr2,
+              owner))
           val withImplicitFlag =
             if (!withImplicitViewsDisabled)
               (currentTyper.context.withImplicitsEnabled[Tree] _)
@@ -191,8 +194,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             run.typerPhase // need to set a phase to something <= typerPhase, otherwise implicits in typedSelect will be disabled
           globalPhase =
             run.typerPhase // amazing... looks like phase and globalPhase are different things, so we need to set them separately
-          currentTyper.context
-            .initRootContext() // need to manually set context mode, otherwise typer.silent will throw exceptions
+          currentTyper.context.initRootContext() // need to manually set context mode, otherwise typer.silent will throw exceptions
           reporter.reset()
 
           val expr3 = withContext(transform(currentTyper, expr2))
@@ -233,8 +235,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           withImplicitViewsDisabled = withImplicitViewsDisabled,
           withMacrosDisabled = withMacrosDisabled)((currentTyper, expr) => {
           trace(
-            "typing (implicit views = %s, macros = %s): "
-              .format(!withImplicitViewsDisabled, !withMacrosDisabled))(
+            "typing (implicit views = %s, macros = %s): ".format(
+              !withImplicitViewsDisabled,
+              !withMacrosDisabled))(
             showAttributed(
               expr,
               true,
@@ -275,8 +278,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           withImplicitViewsDisabled = false,
           withMacrosDisabled = withMacrosDisabled)((currentTyper, tree) => {
           trace(
-            "inferring implicit %s (macros = %s): "
-              .format(if (isView) "view" else "value", !withMacrosDisabled))(
+            "inferring implicit %s (macros = %s): ".format(
+              if (isView) "view" else "value",
+              !withMacrosDisabled))(
             showAttributed(
               pt,
               true,
@@ -391,9 +395,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           jClass.forName(moduleFileName(className), true, classLoader)
         val jmeth =
           jclazz.getDeclaredMethods.find(_.getName == wrapperMethodName).get
-        val jfield = jclazz.getDeclaredFields
-          .find(_.getName == NameTransformer.MODULE_INSTANCE_NAME)
-          .get
+        val jfield = jclazz.getDeclaredFields.find(
+          _.getName == NameTransformer.MODULE_INSTANCE_NAME).get
         val singleton = jfield.get(null)
 
         // @odersky writes: Not sure we will be able to drop this. I forgot the reason why we dereference () functions,
@@ -601,8 +604,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
 
         if (compiler.settings.verbose)
           println(
-            "inferring implicit %s of type %s, macros = %s"
-              .format(if (isView) "view" else "value", pt, !withMacrosDisabled))
+            "inferring implicit %s of type %s, macros = %s".format(
+              if (isView) "view" else "value",
+              pt,
+              !withMacrosDisabled))
         val itree: compiler.Tree = compiler.inferImplicit(
           ctree,
           cpt,

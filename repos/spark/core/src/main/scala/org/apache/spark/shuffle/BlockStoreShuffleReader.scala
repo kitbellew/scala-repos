@@ -51,8 +51,9 @@ private[spark] class BlockStoreShuffleReader[K, C](
         startPartition,
         endPartition),
       // Note: we use getSizeAsMb when no suffix is provided for backwards compatibility
-      SparkEnv.get.conf
-        .getSizeAsMb("spark.reducer.maxSizeInFlight", "48m") * 1024 * 1024,
+      SparkEnv.get.conf.getSizeAsMb(
+        "spark.reducer.maxSizeInFlight",
+        "48m") * 1024 * 1024,
       SparkEnv.get.conf.getInt("spark.reducer.maxReqsInFlight", Int.MaxValue))
 
     // Wrap the streams for compression based on configuration
@@ -90,8 +91,9 @@ private[spark] class BlockStoreShuffleReader[K, C](
           // We are reading values that are already combined
           val combinedKeyValuesIterator =
             interruptibleIter.asInstanceOf[Iterator[(K, C)]]
-          dep.aggregator.get
-            .combineCombinersByKey(combinedKeyValuesIterator, context)
+          dep.aggregator.get.combineCombinersByKey(
+            combinedKeyValuesIterator,
+            context)
         } else {
           // We don't know the value type, but also don't care -- the dependency *should*
           // have made sure its compatible w/ this aggregator, which will convert the value

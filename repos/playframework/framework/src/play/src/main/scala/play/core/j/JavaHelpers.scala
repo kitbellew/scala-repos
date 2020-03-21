@@ -71,14 +71,13 @@ trait JavaHelpers {
     * @param javaResult
     */
   def createResult(javaContext: JContext, javaResult: JResult): Result = {
-    val wResult = javaResult.asScala
-      .withHeaders(javaContext.response.getHeaders.asScala.toSeq: _*)
+    val wResult = javaResult.asScala.withHeaders(
+      javaContext.response.getHeaders.asScala.toSeq: _*)
       .withCookies(cookiesToScalaCookies(javaContext.response.cookies): _*)
 
     if (javaContext.session.isDirty && javaContext.flash.isDirty) {
-      wResult
-        .withSession(Session(javaContext.session.asScala.toMap))
-        .flashing(Flash(javaContext.flash.asScala.toMap))
+      wResult.withSession(Session(javaContext.session.asScala.toMap)).flashing(
+        Flash(javaContext.flash.asScala.toMap))
     } else {
       if (javaContext.session.isDirty) {
         wResult.withSession(Session(javaContext.session.asScala.toMap))
@@ -141,9 +140,8 @@ trait JavaHelpers {
     try {
       JContext.current.set(javaContext)
       Option(f(javaContext.request())).map(cs =>
-        FutureConverters
-          .toScala(cs)
-          .map(createResult(javaContext, _))(trampoline))
+        FutureConverters.toScala(cs).map(createResult(javaContext, _))(
+          trampoline))
     } finally {
       JContext.current.remove()
     }
@@ -164,9 +162,8 @@ trait JavaHelpers {
       request: RequestHeader,
       f: JRequest => CompletionStage[JResult]): Future[Result] = {
     withContext(request) { javaContext =>
-      FutureConverters
-        .toScala(f(javaContext.request()))
-        .map(createResult(javaContext, _))(trampoline)
+      FutureConverters.toScala(f(javaContext.request())).map(
+        createResult(javaContext, _))(trampoline)
     }
   }
 

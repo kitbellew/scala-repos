@@ -63,11 +63,9 @@ object Memcache {
       def concat(bytes: Array[Byte]): Array[Byte] =
         namespace.getBytes ++ bytes
 
-      (inj
-        .andThen(concat _)
+      (inj.andThen(concat _)
         .andThen(HashEncoder())
-        .andThen(Bijection.connect[Array[Byte], Base64String]))(key)
-        .str
+        .andThen(Bijection.connect[Array[Byte], Base64String]))(key).str
   }
 
   def store[K: Codec, V: Codec](keyPrefix: String): Store[K, V] = {

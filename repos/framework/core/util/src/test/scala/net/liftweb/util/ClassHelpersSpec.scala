@@ -104,8 +104,10 @@ object ClassHelpersSpec extends Specification {
       callableMethod_?(publicWithParameters) must beFalse
     }
     "return false if the method is private" in {
-      val privateMethod = classOf[java.util.ArrayList[Object]]
-        .getDeclaredMethod("readObject", classOf[java.io.ObjectInputStream])
+      val privateMethod =
+        classOf[java.util.ArrayList[Object]].getDeclaredMethod(
+          "readObject",
+          classOf[java.io.ObjectInputStream])
       callableMethod_?(privateMethod) must beFalse
     }
     "return false if the method is null" in {
@@ -226,16 +228,14 @@ object ClassHelpersSpec extends Specification {
       createInvoker("length", null) must_== Empty
     }
     "return a Full Box with the function from Unit to a Box containing the result of the method to invoke" in {
-      createInvoker("length", "")
-        .openOrThrowException("Test")
-        .apply() must_== Full(0)
+      createInvoker("length", "").openOrThrowException(
+        "Test").apply() must_== Full(0)
     }
     "The invoker function will throw the cause exception if the method can't be called" in {
       (
           () =>
-            createInvoker("get", "")
-              .openOrThrowException("Test")
-              .apply)() must throwA[Exception]
+            createInvoker("get", "").openOrThrowException(
+              "Test").apply)() must throwA[Exception]
     }
   }
 

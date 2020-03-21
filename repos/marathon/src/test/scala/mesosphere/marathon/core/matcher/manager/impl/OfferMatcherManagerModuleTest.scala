@@ -166,8 +166,9 @@ class OfferMatcherManagerModuleTest
 
   object f {
     import org.apache.mesos.{Protos => Mesos}
-    val launch = new TaskOpFactoryHelper(Some("principal"), Some("role"))
-      .launch(_: Mesos.TaskInfo, _: Task, None)
+    val launch = new TaskOpFactoryHelper(
+      Some("principal"),
+      Some("role")).launch(_: Mesos.TaskInfo, _: Task, None)
   }
 
   private[this] var module: OfferMatcherManagerModule = _
@@ -198,9 +199,11 @@ class OfferMatcherManagerModuleTest
     def numberedTasks() = {
       processCycle += 1
       tasks.map { task =>
-        task.toBuilder
-          .setTaskId(task.getTaskId.toBuilder.setValue(
-            task.getTaskId.getValue + "_" + processCycle))
+        task
+          .toBuilder
+          .setTaskId(
+            task.getTaskId.toBuilder.setValue(
+              task.getTaskId.getValue + "_" + processCycle))
           .build()
       }
     }
@@ -255,8 +258,7 @@ class OfferMatcherManagerModuleTest
         deadline: Timestamp,
         offer: Offer): Seq[TaskInfo] = {
       val cpusInOffer: Double =
-        offer.getResourcesList.asScala
-          .find(_.getName == "cpus")
+        offer.getResourcesList.asScala.find(_.getName == "cpus")
           .flatMap(r => Option(r.getScalar))
           .map(_.getValue)
           .getOrElse(0)

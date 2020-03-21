@@ -92,8 +92,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           case _: ScMethodCall =>
             return processMethodCall
           case _
-              if node.getTreeParent.getPsi
-                .isInstanceOf[ScReferenceExpression] =>
+              if node.getTreeParent.getPsi.isInstanceOf[
+                ScReferenceExpression] =>
             //proper indentation for chained ref exprs
             return Indent.getContinuationWithoutFirstIndent
           case _ =>
@@ -101,9 +101,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       }
 
     if (node.getElementType == ScalaTokenTypes.tLBRACE &&
-        Option(node.getTreeParent)
-          .map(_.getElementType)
-          .exists(Set[IElementType](
+        Option(node.getTreeParent).map(_.getElementType).exists(
+          Set[IElementType](
             ScalaElementTypes.TRY_BLOCK,
             ScalaElementTypes.PACKAGING).contains)) {
       return if (child.getElementType == ScalaTokenTypes.tLBRACE ||
@@ -204,8 +203,10 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       case arg: ScArgumentExprList if arg.isBraceArgs =>
         if (scalaSettings.INDENT_BRACED_FUNCTION_ARGS &&
             arg.children.exists(child =>
-              Set(ScalaTokenTypes.tLPARENTHESIS, ScalaTokenTypes.tRPARENTHESIS)
-                .contains(child.getNode.getElementType)) &&
+              Set(
+                ScalaTokenTypes.tLPARENTHESIS,
+                ScalaTokenTypes.tRPARENTHESIS).contains(
+                child.getNode.getElementType)) &&
             child.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
             child.getElementType != ScalaTokenTypes.tLPARENTHESIS)
           Indent.getNormalIndent
@@ -285,8 +286,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       case cl: ScParameterClause
           if scalaSettings.NOT_CONTINUATION_INDENT_FOR_PARAMS =>
         val parent = node.getTreeParent
-        if (parent != null && parent.getPsi
-              .isInstanceOf[ScParameters] && parent.getTreeParent != null) {
+        if (parent != null && parent.getPsi.isInstanceOf[
+              ScParameters] && parent.getTreeParent != null) {
           if (parent.getTreeParent.getPsi.isInstanceOf[ScFunctionExpr]) {
             return Indent.getNoneIndent
           }
@@ -308,8 +309,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       case _: ScDocComment => Indent.getNoneIndent
       case _
           if node.getElementType == ScalaTokenTypes.kEXTENDS && child.getElementType != ScalaTokenTypes.kEXTENDS =>
-        Indent
-          .getContinuationIndent() //this is here to not break whatever processing there is before
+        Indent.getContinuationIndent() //this is here to not break whatever processing there is before
       case _ => Indent.getNoneIndent
     }
   }
@@ -317,7 +317,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
   private def isConstructorArgOrMemberFunctionParameter(
       paramClause: ScParameterClause): Boolean = {
     val owner = paramClause.owner
-    owner != null && (owner.isInstanceOf[ScPrimaryConstructor] || owner
-      .isInstanceOf[ScFunction])
+    owner != null && (owner.isInstanceOf[
+      ScPrimaryConstructor] || owner.isInstanceOf[ScFunction])
   }
 }

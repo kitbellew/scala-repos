@@ -53,43 +53,40 @@ class InterpolatedStringReferenceProvider extends PsiReferenceProvider {
         val interpolated = ScalaPsiElementFactory.createExpressionFromText(
           "s" + l.getText,
           l.getContext)
-        interpolated.getChildren
-          .filter {
-            case r: ScInterpolatedStringPartReference => false
-            case ref: ScReferenceExpression           => true
-            case _                                    => false
-          }
-          .map {
-            case ref: ScReferenceExpression =>
-              new PsiReference {
-                override def getVariants: Array[AnyRef] = Array.empty
+        interpolated.getChildren.filter {
+          case r: ScInterpolatedStringPartReference => false
+          case ref: ScReferenceExpression           => true
+          case _                                    => false
+        }.map {
+          case ref: ScReferenceExpression =>
+            new PsiReference {
+              override def getVariants: Array[AnyRef] = Array.empty
 
-                override def getCanonicalText: String = ref.getCanonicalText
+              override def getCanonicalText: String = ref.getCanonicalText
 
-                override def getElement: PsiElement = l
+              override def getElement: PsiElement = l
 
-                override def isReferenceTo(element: PsiElement): Boolean =
-                  ref.isReferenceTo(element)
+              override def isReferenceTo(element: PsiElement): Boolean =
+                ref.isReferenceTo(element)
 
-                override def bindToElement(element: PsiElement): PsiElement =
-                  ref
+              override def bindToElement(element: PsiElement): PsiElement = ref
 
-                override def handleElementRename(
-                    newElementName: String): PsiElement = ref
+              override def handleElementRename(
+                  newElementName: String): PsiElement = ref
 
-                override def isSoft: Boolean = true
+              override def isSoft: Boolean = true
 
-                override def getRangeInElement: TextRange = {
-                  val range = ref.getTextRange
-                  val startOffset = interpolated.getTextRange.getStartOffset + 1
-                  new TextRange(
-                    range.getStartOffset - startOffset,
-                    range.getEndOffset - startOffset)
-                }
-
-                override def resolve(): PsiElement = null
+              override def getRangeInElement: TextRange = {
+                val range = ref.getTextRange
+                val startOffset = interpolated.getTextRange.getStartOffset + 1
+                new TextRange(
+                  range.getStartOffset - startOffset,
+                  range.getEndOffset - startOffset)
               }
-          }
+
+              override def resolve(): PsiElement = null
+            }
+        }
       case _ => Array.empty
     }
   }
@@ -132,10 +129,10 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
             JavaDirectoryService.getInstance.getPackage(directory)
           if (aPackage != null && aPackage.name != null) {
             try {
-              val createMethod = Class
-                .forName(
-                  "com.intellij.psi.impl.source.resolve.reference.impl.providers.PackagePrefixFileSystemItemImpl")
-                .getMethod("create", classOf[PsiDirectory])
+              val createMethod = Class.forName(
+                "com.intellij.psi.impl.source.resolve.reference.impl.providers.PackagePrefixFileSystemItemImpl").getMethod(
+                "create",
+                classOf[PsiDirectory])
               createMethod.setAccessible(true)
               createMethod.invoke(directory)
             } catch {
@@ -206,8 +203,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
   }
 
   protected def isPsiElementAccepted(element: PsiElement): Boolean = {
-    !(element.isInstanceOf[PsiJavaFile] && element
-      .isInstanceOf[PsiCompiledElement])
+    !(element.isInstanceOf[PsiJavaFile] && element.isInstanceOf[
+      PsiCompiledElement])
   }
 
   protected def createFileReference(

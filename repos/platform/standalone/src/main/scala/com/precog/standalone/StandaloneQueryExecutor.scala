@@ -130,8 +130,9 @@ trait StandaloneQueryExecutor
   def asyncExecutorFor(apiKey: APIKey)
       : Future[Validation[String, QueryExecutor[Future, JobId]]] = {
     logger.debug(
-      "Creating new async executor for %s => %s"
-        .format(apiKey, executionContext))
+      "Creating new async executor for %s => %s".format(
+        apiKey,
+        executionContext))
     Promise.successful(Success(new AsyncQueryExecutor {
       def executionContext: ExecutionContext = platform.executionContext
     }))
@@ -141,8 +142,9 @@ trait StandaloneQueryExecutor
     String,
     QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]]] = {
     logger.debug(
-      "Creating new sync executor for %s => %s"
-        .format(apiKey, executionContext))
+      "Creating new sync executor for %s => %s".format(
+        apiKey,
+        executionContext))
     Promise.successful(Success(new SyncQueryExecutor {
       def executionContext: ExecutionContext = platform.executionContext
     }))

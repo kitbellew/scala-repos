@@ -14,21 +14,24 @@ class GoToClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
 
   def testTrait() {
     val gotoModel = new GotoClassModel2(getProjectAdapter)
-    val length: Int = gotoModel
-      .getElementsByName("GoToClassSimpleTrait", false, "GoToClassSimpleT")
-      .length
+    val length: Int = gotoModel.getElementsByName(
+      "GoToClassSimpleTrait",
+      false,
+      "GoToClassSimpleT").length
     assert(length == 1, s"Number of SimpleTraits is $length...")
   }
 
   def testObject() {
     val gotoModel = new GotoClassModel2(getProjectAdapter)
-    val length: Int = gotoModel
-      .getElementsByName("GoToClassSimpleObject$", false, "GoToClassSimpleO")
-      .length
+    val length: Int = gotoModel.getElementsByName(
+      "GoToClassSimpleObject$",
+      false,
+      "GoToClassSimpleO").length
     assert(length == 1, s"Number of SimpleObjects$$ is $length...")
-    val length2: Int = gotoModel
-      .getElementsByName("GoToClassSimpleObject", false, "GoToClassSimpleO")
-      .length
+    val length2: Int = gotoModel.getElementsByName(
+      "GoToClassSimpleObject",
+      false,
+      "GoToClassSimpleO").length
     assert(length2 == 0, s"Number of SimpleObjects is $length2...")
   }
 }

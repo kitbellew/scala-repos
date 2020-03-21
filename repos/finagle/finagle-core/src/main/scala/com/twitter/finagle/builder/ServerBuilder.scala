@@ -225,15 +225,13 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def codec[Req1, Rep1](
       codec: Codec[Req1, Rep1]
   ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
-    this
-      .codec((_: ServerCodecConfig) => codec)
+    this.codec((_: ServerCodecConfig) => codec)
       .configured(ProtocolLibrary(codec.protocolLibraryName))
 
   def codec[Req1, Rep1](
       codecFactory: CodecFactory[Req1, Rep1]
   ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
-    this
-      .codec(codecFactory.server)
+    this.codec(codecFactory.server)
       .configured(ProtocolLibrary(codecFactory.protocolLibraryName))
 
   def codec[Req1, Rep1](
@@ -245,14 +243,11 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
       val Stats(stats) = ps[Stats]
       val codec = codecFactory(ServerCodecConfig(label, addr))
 
-      val newStack = StackServer
-        .newStack[Req1, Rep1]
-        .replace(
-          StackServer.Role.preparer,
-          (next: ServiceFactory[Req1, Rep1]) =>
-            codec.prepareConnFactory(next, ps + Stats(stats.scope(label)))
-        )
-        .replace(TraceInitializerFilter.role, codec.newTraceInitializer)
+      val newStack = StackServer.newStack[Req1, Rep1].replace(
+        StackServer.Role.preparer,
+        (next: ServiceFactory[Req1, Rep1]) =>
+          codec.prepareConnFactory(next, ps + Stats(stats.scope(label)))
+      ).replace(TraceInitializerFilter.role, codec.newTraceInitializer)
 
       case class Server(
           stack: Stack[ServiceFactory[Req1, Rep1]] = newStack,

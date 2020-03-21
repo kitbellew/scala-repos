@@ -118,8 +118,9 @@ object ColorSelector extends JFXApp {
   }
 
   private def formatColor() {
-    this.txfColorValue.text() = this.cmbColorFormat.value.value
-      .format(this.currentColor(), !this.chbDisableAlpha.selected.value)
+    this.txfColorValue.text() = this.cmbColorFormat.value.value.format(
+      this.currentColor(),
+      !this.chbDisableAlpha.selected.value)
   }
 
   private def getForegroundColor(d: Double) =
@@ -153,8 +154,10 @@ object ColorSelector extends JFXApp {
   }
 
   currentColor.onChange(
-    rectangleRegion.setStyle("-fx-background-color: " + RgbFormatter
-      .format(currentColor(), !this.chbDisableAlpha.selected.value)))
+    rectangleRegion.setStyle(
+      "-fx-background-color: " + RgbFormatter.format(
+        currentColor(),
+        !this.chbDisableAlpha.selected.value)))
 
   val controlRed = new SliderControl("R") {
     value = 255
@@ -189,8 +192,9 @@ object ColorSelector extends JFXApp {
   }
   controlBlue.value.onChange({
     changeColor()
-    controlBlue
-      .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
+    controlBlue.changeColor(
+      Color.rgb(0, 0, controlBlue.value.value.toInt),
+      Color.White)
   })
   controlBlue.selectedControl.onChange(controlSelected(controlBlue))
   controlBlue.changeColor(

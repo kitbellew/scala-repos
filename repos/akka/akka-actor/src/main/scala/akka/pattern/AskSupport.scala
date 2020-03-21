@@ -568,9 +568,8 @@ private[akka] final class PromiseActorRef private (
 
   @inline
   private[this] def watchedBy: Set[ActorRef] =
-    Unsafe.instance
-      .getObjectVolatile(this, watchedByOffset)
-      .asInstanceOf[Set[ActorRef]]
+    Unsafe.instance.getObjectVolatile(this, watchedByOffset).asInstanceOf[Set[
+      ActorRef]]
 
   @inline
   private[this] def updateWatchedBy(
@@ -702,8 +701,7 @@ private[akka] final class PromiseActorRef private (
       if (!watchers.isEmpty) {
         watchers foreach { watcher ⇒
           // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-          watcher
-            .asInstanceOf[InternalActorRef]
+          watcher.asInstanceOf[InternalActorRef]
             .sendSystemMessage(
               DeathWatchNotification(
                 this,

@@ -28,16 +28,15 @@ class ReferenceMustBePrefixedInspection
     extends AbstractInspection(id, displayName) {
   def actionFor(holder: ProblemsHolder) = {
     case ref: ScReferenceElement
-        if ref.qualifier.isEmpty && !ref.getParent
-          .isInstanceOf[ScImportSelector] =>
+        if ref.qualifier.isEmpty && !ref.getParent.isInstanceOf[
+          ScImportSelector] =>
       ref.bind() match {
         case Some(r: ScalaResolveResult) if r.nameShadow.isEmpty =>
           r.getActualElement match {
             case clazz: PsiClass if ScalaPsiUtil.hasStablePath(clazz) =>
               val qualName = clazz.qualifiedName
-              if (ScalaCodeStyleSettings
-                    .getInstance(holder.getProject)
-                    .hasImportWithPrefix(qualName)) {
+              if (ScalaCodeStyleSettings.getInstance(
+                    holder.getProject).hasImportWithPrefix(qualName)) {
                 holder.registerProblem(
                   ref,
                   getDisplayName,
@@ -69,8 +68,9 @@ class AddPrefixFix(ref: ScReferenceElement, clazz: PsiClass)
     refElem match {
       case stRef: ScStableCodeReferenceElement =>
         stRef.replace(
-          ScalaPsiElementFactory
-            .createReferenceFromText(newRefText, stRef.getManager)) match {
+          ScalaPsiElementFactory.createReferenceFromText(
+            newRefText,
+            stRef.getManager)) match {
           case r: ScStableCodeReferenceElement =>
             r.qualifier.foreach(_.bindToPackage(pckg, addImport = true))
           case _ =>

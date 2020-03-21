@@ -16,10 +16,8 @@ private[round] final class CheatDetector(reporter: ActorSelection) {
           mirror.players map (p => p -> p.userId) collectFirst {
             case (player, Some(userId)) =>
               game.players find (_.userId == player.userId) map { cheater =>
-                lila
-                  .log("cheat")
-                  .info(
-                    s"${cheater.color} ($userId) @ ${game.id} uses ${mirror.id}")
+                lila.log("cheat").info(
+                  s"${cheater.color} ($userId) @ ${game.id} uses ${mirror.id}")
                 if (createReport)
                   reporter ! lila.hub.actorApi.report.Cheater(
                     userId,

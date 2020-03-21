@@ -101,15 +101,16 @@ class DelayedFetch(
               if (endOffset.onOlderSegment(fetchOffset)) {
                 // Case C, this can happen when the new fetch operation is on a truncated leader
                 debug(
-                  "Satisfying fetch %s since it is fetching later segments of partition %s."
-                    .format(fetchMetadata, topicAndPartition))
+                  "Satisfying fetch %s since it is fetching later segments of partition %s.".format(
+                    fetchMetadata,
+                    topicAndPartition))
                 return forceComplete()
               } else if (fetchOffset.onOlderSegment(endOffset)) {
                 // Case C, this can happen when the fetch operation is falling behind the current segment
                 // or the partition has just rolled a new segment
                 debug(
-                  "Satisfying fetch %s immediately since it is fetching older segments."
-                    .format(fetchMetadata))
+                  "Satisfying fetch %s immediately since it is fetching older segments.".format(
+                    fetchMetadata))
                 return forceComplete()
               } else if (fetchOffset.messageOffset < endOffset.messageOffset) {
                 // we need take the partition fetch size as upper bound when accumulating the bytes
@@ -122,13 +123,15 @@ class DelayedFetch(
         } catch {
           case utpe: UnknownTopicOrPartitionException => // Case B
             debug(
-              "Broker no longer know of %s, satisfy %s immediately"
-                .format(topicAndPartition, fetchMetadata))
+              "Broker no longer know of %s, satisfy %s immediately".format(
+                topicAndPartition,
+                fetchMetadata))
             return forceComplete()
           case nle: NotLeaderForPartitionException => // Case A
             debug(
-              "Broker is no longer the leader of %s, satisfy %s immediately"
-                .format(topicAndPartition, fetchMetadata))
+              "Broker is no longer the leader of %s, satisfy %s immediately".format(
+                topicAndPartition,
+                fetchMetadata))
             return forceComplete()
         }
     }

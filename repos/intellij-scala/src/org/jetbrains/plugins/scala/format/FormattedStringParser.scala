@@ -125,13 +125,15 @@ object FormattedStringParser extends StringParser {
         } else {
           if (it.toString().equals("%n"))
             Injection(
-              ScalaPsiElementFactory
-                .createExpressionFromText("\"\\n\"", literal.getManager),
+              ScalaPsiElementFactory.createExpressionFromText(
+                "\"\\n\"",
+                literal.getManager),
               None)
           else if (it.toString == "%%")
             Injection(
-              ScalaPsiElementFactory
-                .createExpressionFromText("\"%\"", literal.getManager),
+              ScalaPsiElementFactory.createExpressionFromText(
+                "\"%\"",
+                literal.getManager),
               None)
           else if (remainingArguments.hasNext)
             Injection(remainingArguments.next(), Some(specifier))
@@ -149,10 +151,8 @@ object FormattedStringParser extends StringParser {
       case _        => true
     }
 
-    val unusedArguments = remainingArguments
-      .filterNot(refferredArguments.contains)
-      .map(UnboundExpression)
-      .toList
+    val unusedArguments = remainingArguments.filterNot(
+      refferredArguments.contains).map(UnboundExpression).toList
 
     prefix ++ unusedArguments
   }

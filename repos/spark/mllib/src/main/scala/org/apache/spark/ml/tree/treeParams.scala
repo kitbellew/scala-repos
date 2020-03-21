@@ -344,8 +344,11 @@ private[ml] trait TreeEnsembleParams extends DecisionTreeParams {
     this,
     "subsamplingRate",
     "Fraction of the training data used for learning each decision tree, in range (0, 1].",
-    ParamValidators
-      .inRange(0, 1, lowerInclusive = false, upperInclusive = true))
+    ParamValidators.inRange(
+      0,
+      1,
+      lowerInclusive = false,
+      upperInclusive = true))
 
   setDefault(subsamplingRate -> 1.0)
 
@@ -421,8 +424,7 @@ private[ml] trait RandomForestParams extends TreeEnsembleParams {
     this,
     "featureSubsetStrategy",
     "The number of features to consider for splits at each tree node." +
-      s" Supported options: ${RandomForestParams.supportedFeatureSubsetStrategies
-        .mkString(", ")}",
+      s" Supported options: ${RandomForestParams.supportedFeatureSubsetStrategies.mkString(", ")}",
     (value: String) =>
       RandomForestParams.supportedFeatureSubsetStrategies.contains(
         value.toLowerCase))

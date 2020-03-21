@@ -171,8 +171,10 @@ class GroupDeployIntegrationTest
     val v1Checks = appProxyCheck(appId, "v1", state = true)
 
     When("The group is updated")
-    waitForChange(marathon
-      .updateGroup(gid, group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
+    waitForChange(
+      marathon.updateGroup(
+        gid,
+        group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
 
     Then("The new version is deployed")
     val v2Checks = appProxyCheck(appId, "v2", state = true)
@@ -327,8 +329,9 @@ class GroupDeployIntegrationTest
       appProxyCheck(db.id, "v1", state = true).withHealthAction(storeFirst)
     val serviceHealth =
       appProxyCheck(service.id, "v1", state = true).withHealthAction(storeFirst)
-    val frontendHealth = appProxyCheck(frontend.id, "v1", state = true)
-      .withHealthAction(storeFirst)
+    val frontendHealth =
+      appProxyCheck(frontend.id, "v1", state = true).withHealthAction(
+        storeFirst)
     waitForChange(marathon.createGroup(group))
 
     Then("The correct order is maintained")
@@ -349,8 +352,8 @@ class GroupDeployIntegrationTest
         GroupUpdate(PathId("db"), apps = Set(db)),
         GroupUpdate(PathId("service"), apps = Set(service)).copy(dependencies =
           Some(Set("/test/db".toTestPath))),
-        GroupUpdate(PathId("frontend"), apps = Set(frontend))
-          .copy(dependencies = Some(Set("/test/service".toTestPath)))
+        GroupUpdate(PathId("frontend"), apps = Set(frontend)).copy(
+          dependencies = Some(Set("/test/service".toTestPath)))
       )
     )
 
@@ -363,8 +366,9 @@ class GroupDeployIntegrationTest
       appProxyCheck(db.id, "v1", state = true).withHealthAction(storeFirst)
     val serviceHealth =
       appProxyCheck(service.id, "v1", state = true).withHealthAction(storeFirst)
-    val frontendHealth = appProxyCheck(frontend.id, "v1", state = true)
-      .withHealthAction(storeFirst)
+    val frontendHealth =
+      appProxyCheck(frontend.id, "v1", state = true).withHealthAction(
+        storeFirst)
     waitForChange(marathon.createGroup(group))
 
     Then("The correct order is maintained")
@@ -395,12 +399,16 @@ class GroupDeployIntegrationTest
         dependencies = Set(service.id))
       (
         GroupUpdate("/test".toTestPath, Set(db, service, frontend)),
-        appProxyCheck(db.id, version, state = initialState)
-          .withHealthAction(storeFirst),
-        appProxyCheck(service.id, version, state = initialState)
-          .withHealthAction(storeFirst),
-        appProxyCheck(frontend.id, version, state = initialState)
-          .withHealthAction(storeFirst))
+        appProxyCheck(db.id, version, state = initialState).withHealthAction(
+          storeFirst),
+        appProxyCheck(
+          service.id,
+          version,
+          state = initialState).withHealthAction(storeFirst),
+        appProxyCheck(
+          frontend.id,
+          version,
+          state = initialState).withHealthAction(storeFirst))
     }
 
     Given("A group with 3 dependent applications")
@@ -469,8 +477,8 @@ class GroupDeployIntegrationTest
     List(dbV1, serviceV1, frontendV1).foreach(_.pinged = false)
     WaitTestSupport.validFor("all v2 apps are alive", 15.seconds) {
       !dbV1.pinged && !serviceV1.pinged && !frontendV1.pinged &&
-      dbV2.pingSince(2.seconds) && serviceV2.pingSince(2.seconds) && frontendV2
-        .pingSince(2.seconds)
+      dbV2.pingSince(2.seconds) && serviceV2.pingSince(
+        2.seconds) && frontendV2.pingSince(2.seconds)
     }
   }
 }

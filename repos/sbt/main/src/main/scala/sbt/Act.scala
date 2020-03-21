@@ -143,10 +143,10 @@ object Act {
 
   def showAmbiguous(keys: Seq[ScopedKey[_]])(implicit
       show: Show[ScopedKey[_]]): String =
-    keys
-      .take(3)
-      .map(x => show(x))
-      .mkString("", ", ", if (keys.size > 3) ", ..." else "")
+    keys.take(3).map(x => show(x)).mkString(
+      "",
+      ", ",
+      if (keys.size > 3) ", ..." else "")
 
   def isValid(data: Settings[Scope])(parsed: ParsedKey): Boolean = {
     val key = parsed.key

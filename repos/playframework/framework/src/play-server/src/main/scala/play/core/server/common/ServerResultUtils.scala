@@ -19,31 +19,27 @@ object ServerResultUtils {
       request: RequestHeader,
       result: Result): ConnectionHeader = {
     if (request.version == HttpProtocol.HTTP_1_1) {
-      if (result.header.headers
-            .get(CONNECTION)
-            .exists(_.equalsIgnoreCase(CLOSE))) {
+      if (result.header.headers.get(CONNECTION).exists(
+            _.equalsIgnoreCase(CLOSE))) {
         // Close connection, header already exists
         DefaultClose
       } else if ((result.body.isInstanceOf[
                    HttpEntity.Streamed] && result.body.contentLength.isEmpty)
-                 || request.headers
-                   .get(CONNECTION)
-                   .exists(_.equalsIgnoreCase(CLOSE))) {
+                 || request.headers.get(CONNECTION).exists(
+                   _.equalsIgnoreCase(CLOSE))) {
         // We need to close the connection and set the header
         SendClose
       } else {
         DefaultKeepAlive
       }
     } else {
-      if (result.header.headers
-            .get(CONNECTION)
-            .exists(_.equalsIgnoreCase(CLOSE))) {
+      if (result.header.headers.get(CONNECTION).exists(
+            _.equalsIgnoreCase(CLOSE))) {
         DefaultClose
       } else if ((result.body.isInstanceOf[
                    HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
-                 request.headers
-                   .get(CONNECTION)
-                   .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {
+                 request.headers.get(CONNECTION).forall(
+                   !_.equalsIgnoreCase(KEEP_ALIVE))) {
         DefaultClose
       } else {
         SendKeepAlive
@@ -58,11 +54,10 @@ object ServerResultUtils {
     */
   def validateResult(request: RequestHeader, result: Result)(implicit
       mat: Materializer): Result = {
-    if (request.version == HttpProtocol.HTTP_1_0 && result.body
-          .isInstanceOf[HttpEntity.Chunked]) {
+    if (request.version == HttpProtocol.HTTP_1_0 && result.body.isInstanceOf[
+          HttpEntity.Chunked]) {
       cancelEntity(result.body)
-      Results
-        .Status(Status.HTTP_VERSION_NOT_SUPPORTED)
+      Results.Status(Status.HTTP_VERSION_NOT_SUPPORTED)
         .apply(
           "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
         .withHeaders(CONNECTION -> CLOSE)
@@ -151,9 +146,8 @@ object ServerResultUtils {
   def cleanFlashCookie(requestHeader: RequestHeader, result: Result): Result = {
     val optResultFlashCookies: Option[_] =
       result.header.headers.get(SET_COOKIE).flatMap { setCookieValue: String =>
-        Cookies
-          .decodeSetCookieHeader(setCookieValue)
-          .find(_.name == Flash.COOKIE_NAME)
+        Cookies.decodeSetCookieHeader(setCookieValue).find(
+          _.name == Flash.COOKIE_NAME)
       }
 
     if (optResultFlashCookies.isDefined) {

@@ -62,9 +62,6 @@ private[sbt] object KeyMacro {
     enclosingVal(enclosingTrees(c).toList)
   }
   def enclosingTrees(c: Context): Seq[c.Tree] =
-    c.asInstanceOf[reflect.macros.runtime.Context]
-      .callsiteTyper
-      .context
-      .enclosingContextChain
-      .map(_.tree.asInstanceOf[c.Tree])
+    c.asInstanceOf[reflect.macros.runtime.Context].callsiteTyper.context.enclosingContextChain.map(
+      _.tree.asInstanceOf[c.Tree])
 }

@@ -52,32 +52,26 @@ class SimpleBuildFileModifier(
       : Option[VirtualFile] = {
     val locationProvidersStream = buildFileLocationProviders.toStream
     //TODO: rewrite this?
-    buildFileProviders
-      .map(fileProvider =>
-        fileProvider.findBuildFile(module, elementType, fileToWorkingCopy))
-      .toStream
-      .map(
-        _.map(buildFileEntry =>
-          locationProvidersStream
-            .map(locationProvider =>
-              buildPsiElement(
-                module.getProject,
-                Option(
-                  if (buildFileEntry.isModuleLocal) null else module.getName),
-                elementType).map(
-                SimpleBuildFileModifier.addElementsToBuildFile(
-                  module,
-                  locationProvider,
-                  elementType,
-                  buildFileEntry.file,
-                  SimpleBuildFileModifier.newLine(module.getProject),
-                  _)
-              ))
-            .find(_.isDefined)
-            .flatten))
-      .map(opt => opt.flatten.flatten)
-      .find(_.isDefined)
-      .flatten
+    buildFileProviders.map(fileProvider =>
+      fileProvider.findBuildFile(
+        module,
+        elementType,
+        fileToWorkingCopy)).toStream.map(
+      _.map(buildFileEntry =>
+        locationProvidersStream.map(locationProvider =>
+          buildPsiElement(
+            module.getProject,
+            Option(if (buildFileEntry.isModuleLocal) null else module.getName),
+            elementType).map(
+            SimpleBuildFileModifier.addElementsToBuildFile(
+              module,
+              locationProvider,
+              elementType,
+              buildFileEntry.file,
+              SimpleBuildFileModifier.newLine(module.getProject),
+              _)
+          )).find(_.isDefined).flatten)).map(opt => opt.flatten.flatten).find(
+      _.isDefined).flatten
   }
 
   protected def buildPsiElement(

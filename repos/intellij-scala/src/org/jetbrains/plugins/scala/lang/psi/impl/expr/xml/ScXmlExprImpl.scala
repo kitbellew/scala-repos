@@ -25,10 +25,9 @@ class ScXmlExprImpl(node: ASTNode)
 
   protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
     def getType(s: String): ScType = {
-      val typez = ScalaPsiManager
-        .instance(getProject)
-        .getCachedClasses(getResolveScope, s)
-        .filter(!_.isInstanceOf[ScObject])
+      val typez = ScalaPsiManager.instance(getProject).getCachedClasses(
+        getResolveScope,
+        s).filter(!_.isInstanceOf[ScObject])
       if (typez.length != 0) ScType.designator(typez(0))
       else types.Nothing
     }

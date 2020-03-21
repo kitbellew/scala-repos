@@ -242,8 +242,9 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
     * Any configured .sbt files are removed from this project's list.
     */
   def setSbtFiles(files: File*): Project =
-    copy(auto = AddSettings
-      .append(AddSettings.clearSbtFiles(auto), AddSettings.sbtFiles(files: _*)))
+    copy(auto = AddSettings.append(
+      AddSettings.clearSbtFiles(auto),
+      AddSettings.sbtFiles(files: _*)))
 
   /**
     * Sets the [[AutoPlugin]]s of this project.
@@ -562,10 +563,9 @@ object Project extends ProjectExtra {
       s: State): State = {
     val unloaded = runUnloadHooks(s)
     val (onLoad, onUnload) = getHooks(structure.data)
-    val newAttrs = unloaded.attributes
-      .put(stateBuildStructure, structure)
-      .put(sessionSettings, session)
-      .put(Keys.onUnload.key, onUnload)
+    val newAttrs = unloaded.attributes.put(stateBuildStructure, structure).put(
+      sessionSettings,
+      session).put(Keys.onUnload.key, onUnload)
     val newState = unloaded.copy(attributes = newAttrs)
     onLoad(
       LogManager.setGlobalLogLevels(updateCurrent(newState), structure.data))
@@ -598,8 +598,9 @@ object Project extends ProjectExtra {
     val newDefinedCommands = commandDefs ++ BasicCommands.removeTagged(
       s.definedCommands,
       projectCommand)
-    val newAttrs = setCond(Watched.Configuration, watched, s.attributes)
-      .put(historyPath.key, history)
+    val newAttrs = setCond(Watched.Configuration, watched, s.attributes).put(
+      historyPath.key,
+      history)
     s.copy(
       attributes = setCond(shellPrompt.key, prompt, newAttrs),
       definedCommands = newDefinedCommands)
@@ -643,10 +644,8 @@ object Project extends ProjectExtra {
     val targetAndRef = Def.setting {
       (Keys.thisProjectRef.value, Keys.target.value)
     }
-    new SettingKeyAll(Def.optional(targetAndRef)(idFun))
-      .all(allProjects)
-      .evaluate(data)
-      .flatMap(x => x)
+    new SettingKeyAll(Def.optional(targetAndRef)(idFun)).all(
+      allProjects).evaluate(data).flatMap(x => x)
   }
 
   def equal(a: ScopedKey[_], b: ScopedKey[_], mask: ScopeMask): Boolean =
@@ -721,11 +720,8 @@ object Project extends ProjectExtra {
     val cMap = Def.flattenLocals(comp)
     val related = cMap.keys.filter(k => k.key == key && k.scope != scope)
     def derivedDependencies(c: ScopedKey[_]): List[ScopedKey[_]] =
-      comp
-        .get(c)
-        .map(_.settings.flatMap(s => if (s.isDerived) s.dependencies else Nil))
-        .toList
-        .flatten
+      comp.get(c).map(_.settings.flatMap(s =>
+        if (s.isDerived) s.dependencies else Nil)).toList.flatten
 
     val depends = cMap.get(scoped) match {
       case Some(c) => c.dependencies.toSet; case None => Set.empty
@@ -760,9 +756,10 @@ object Project extends ProjectExtra {
         val (limited, more) =
           if (scopes.size <= max) (scopes, "\n")
           else (scopes.take(max), "\n...\n")
-        limited
-          .map(sk => prefix(sk) + display(sk))
-          .mkString(label + ":\n\t", "\n\t", more)
+        limited.map(sk => prefix(sk) + display(sk)).mkString(
+          label + ":\n\t",
+          "\n\t",
+          more)
       }
 
     data + "\n" +

@@ -122,8 +122,7 @@ object ScalaPluginUpdater {
       branch: ScalaApplicationSettings.pluginBranch) = {
     doUpdatePluginHosts(branch)
     if (UpdateSettings.getInstance().isCheckNeeded) {
-      UpdateChecker
-        .updateAndShowResult()
+      UpdateChecker.updateAndShowResult()
         .doWhenDone(toRunnable(postCheckIdeaCompatibility(branch)))
     }
   }
@@ -223,16 +222,13 @@ object ScalaPluginUpdater {
     val appSettings = ScalaApplicationSettings.getInstance()
     def getPlatformUpdateResult = {
       val a = ApplicationInfoEx.getInstanceEx.getUpdateUrls.getCheckingUrl
-      val info = HttpRequests
-        .request(a)
-        .connect(new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
+      val info = HttpRequests.request(a).connect(
+        new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
           def process(request: HttpRequests.Request) = {
             try {
               Some(
-                new UpdatesInfo(
-                  JDOMUtil
-                    .loadDocument(request.getInputStream)
-                    .detachRootElement))
+                new UpdatesInfo(JDOMUtil.loadDocument(
+                  request.getInputStream).detachRootElement))
             } catch { case e: JDOMException => LOG.info(e); None }
           }
         })
@@ -247,8 +243,8 @@ object ScalaPluginUpdater {
       } else None
     }
     def isUpToDatePlatform(result: CheckForUpdateResult) =
-      result.getUpdatedChannel.getLatestBuild.getNumber
-        .compareTo(infoImpl.getBuild) <= 0
+      result.getUpdatedChannel.getLatestBuild.getNumber.compareTo(
+        infoImpl.getBuild) <= 0
     def isBetaOrEAPPlatform = infoImpl.isEAP || infoImpl.isBetaOrRC
     val notification = getPlatformUpdateResult match {
       case Some(result)
@@ -293,12 +289,10 @@ object ScalaPluginUpdater {
   private def scheduleUpdate(): Unit = {
     val key = "scala.last.updated"
     val lastUpdateTime = PropertiesComponent.getInstance().getOrInitLong(key, 0)
-    EditorFactory
-      .getInstance()
-      .getEventMulticaster
-      .removeDocumentListener(updateListener)
-    if (lastUpdateTime == 0L || System
-          .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
+    EditorFactory.getInstance().getEventMulticaster.removeDocumentListener(
+      updateListener)
+    if (lastUpdateTime == 0L || System.currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(
+          1)) {
       ApplicationManager.getApplication.executeOnPooledThread(new Runnable {
         override def run() = {
           val buildNumber = ApplicationInfo.getInstance().getBuild.asString()
@@ -310,14 +304,13 @@ object ScalaPluginUpdater {
             UpdateChecker.getInstallationUID(PropertiesComponent.getInstance())
           val url =
             s"https://plugins.jetbrains.com/plugins/list?pluginId=$scalaPluginId&build=$buildNumber&pluginVersion=$pluginVersion&os=$os&uuid=$uid"
-          PropertiesComponent
-            .getInstance()
-            .setValue(key, System.currentTimeMillis().toString)
+          PropertiesComponent.getInstance().setValue(
+            key,
+            System.currentTimeMillis().toString)
           doneUpdating = true
           try {
-            HttpRequests
-              .request(url)
-              .connect(new HttpRequests.RequestProcessor[Unit] {
+            HttpRequests.request(url).connect(
+              new HttpRequests.RequestProcessor[Unit] {
                 override def process(request: Request) =
                   JDOMUtil.load(request.getReader())
               })
@@ -333,10 +326,8 @@ object ScalaPluginUpdater {
     if (ApplicationManager.getApplication.isUnitTestMode) return
 
     import com.intellij.openapi.editor.EditorFactory
-    EditorFactory
-      .getInstance()
-      .getEventMulticaster
-      .addDocumentListener(updateListener)
+    EditorFactory.getInstance().getEventMulticaster.addDocumentListener(
+      updateListener)
   }
 
   // this hack uses fake plugin.xml deserialization to downgrade plugin version

@@ -31,9 +31,8 @@ class KindProjectorUseCorrectLambdaKeywordInspection
       holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case param: ScParameterizedTypeElement
         if ScalaPsiUtil.kindProjectorPluginEnabled(param) =>
-      val useGreekLambda = ScalaCodeStyleSettings
-        .getInstance(param.getProject)
-        .REPLACE_LAMBDA_WITH_GREEK_LETTER
+      val useGreekLambda = ScalaCodeStyleSettings.getInstance(
+        param.getProject).REPLACE_LAMBDA_WITH_GREEK_LETTER
       param.children.foreach {
         case simple: ScSimpleTypeElement =>
           simple.getText match {
@@ -96,9 +95,8 @@ class ChangeLambdaCodeStyleSetting(useGreekLambda: Boolean)
     else codeStyleSettingUseWordLambda
 
   override def applyFix(project: Project, d: ProblemDescriptor): Unit = {
-    ScalaCodeStyleSettings
-      .getInstance(project)
-      .REPLACE_LAMBDA_WITH_GREEK_LETTER = useGreekLambda
+    ScalaCodeStyleSettings.getInstance(
+      project).REPLACE_LAMBDA_WITH_GREEK_LETTER = useGreekLambda
   }
 }
 

@@ -145,23 +145,22 @@ object WriteInputFormatTestDataGenerator {
     val intKeys =
       Seq((1, "aa"), (2, "bb"), (2, "aa"), (3, "cc"), (2, "bb"), (1, "aa"))
     sc.parallelize(intKeys).saveAsSequenceFile(intPath)
-    sc.parallelize(intKeys.map { case (k, v) => (k.toDouble, v) })
-      .saveAsSequenceFile(doublePath)
-    sc.parallelize(intKeys.map { case (k, v) => (k.toString, v) })
-      .saveAsSequenceFile(textPath)
+    sc.parallelize(
+      intKeys.map { case (k, v) => (k.toDouble, v) }).saveAsSequenceFile(
+      doublePath)
+    sc.parallelize(
+      intKeys.map { case (k, v) => (k.toString, v) }).saveAsSequenceFile(
+      textPath)
     sc.parallelize(intKeys.map {
-        case (k, v) => (k, v.getBytes(StandardCharsets.UTF_8))
-      })
-      .saveAsSequenceFile(bytesPath)
+      case (k, v) => (k, v.getBytes(StandardCharsets.UTF_8))
+    }).saveAsSequenceFile(bytesPath)
     val bools =
       Seq((1, true), (2, true), (2, false), (3, true), (2, false), (1, false))
     sc.parallelize(bools).saveAsSequenceFile(boolPath)
-    sc.parallelize(intKeys)
-      .map {
-        case (k, v) =>
-          (new IntWritable(k), NullWritable.get())
-      }
-      .saveAsSequenceFile(nullPath)
+    sc.parallelize(intKeys).map {
+      case (k, v) =>
+        (new IntWritable(k), NullWritable.get())
+    }.saveAsSequenceFile(nullPath)
 
     // Create test data for ArrayWritable
     val data = Seq(
@@ -175,8 +174,7 @@ object WriteInputFormatTestDataGenerator {
           val va = new DoubleArrayWritable
           va.set(v.map(new DoubleWritable(_)))
           (new IntWritable(k), va)
-      }
-      .saveAsNewAPIHadoopFile[SequenceFileOutputFormat[
+      }.saveAsNewAPIHadoopFile[SequenceFileOutputFormat[
         IntWritable,
         DoubleArrayWritable]](arrPath)
 
@@ -188,17 +186,15 @@ object WriteInputFormatTestDataGenerator {
       (2, Map(1.0 -> "aa")),
       (1, Map(3.0 -> "bb"))
     )
-    sc.parallelize(mapData, numSlices = 2)
-      .map {
-        case (i, m) =>
-          val mw = new MapWritable()
-          m.foreach {
-            case (k, v) =>
-              mw.put(new DoubleWritable(k), new Text(v))
-          }
-          (new IntWritable(i), mw)
-      }
-      .saveAsSequenceFile(mapPath)
+    sc.parallelize(mapData, numSlices = 2).map {
+      case (i, m) =>
+        val mw = new MapWritable()
+        m.foreach {
+          case (k, v) =>
+            mw.put(new DoubleWritable(k), new Text(v))
+        }
+        (new IntWritable(i), mw)
+    }.saveAsSequenceFile(mapPath)
 
     // Create test data for arbitrary custom writable TestWritable
     val testClass = Seq(

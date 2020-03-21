@@ -20,8 +20,9 @@ object JsonSpec extends org.specs2.mutable.Specification {
   implicit val UserFormat: Format[User] = (
     (__ \ 'id).format[Long] and
       (__ \ 'name).format[String] and
-      (__ \ 'friends)
-        .lazyFormat(Reads.list(UserFormat), Writes.list(UserFormat))
+      (__ \ 'friends).lazyFormat(
+        Reads.list(UserFormat),
+        Writes.list(UserFormat))
   )(User, unlift(User.unapply))
 
   case class Car(id: Long, models: Map[String, String])
@@ -40,14 +41,12 @@ object JsonSpec extends org.specs2.mutable.Specification {
 
   implicit val PostFormat: Format[Post] = (
     (__ \ 'body).format[String] and
-      (__ \ 'created_at)
-        .formatNullable[Option[Date]](
-          Format(
-            Reads.optionWithNull(Reads.dateReads(dateFormat)),
-            Writes.optionWithNull(Writes.dateWrites(dateFormat))
-          )
+      (__ \ 'created_at).formatNullable[Option[Date]](
+        Format(
+          Reads.optionWithNull(Reads.dateReads(dateFormat)),
+          Writes.optionWithNull(Writes.dateWrites(dateFormat))
         )
-        .inmap(optopt => optopt.flatten, (opt: Option[Date]) => Some(opt))
+      ).inmap(optopt => optopt.flatten, (opt: Option[Date]) => Some(opt))
   )(Post, unlift(Post.unapply))
 
   val LenientPostFormat: Format[Post] = (
@@ -176,10 +175,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48.000Z"}"""
       val expectedPost = Post("foobar", Some(postDate))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
-        .aka("parsed") must_== expectedPost
+      Json.parse(postJson).as[Post](LenientPostFormat).aka(
+        "parsed") must_== expectedPost
     }
 
     "with default/lenient date format with millis and ISO8601 zone" in {
@@ -191,10 +188,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48.000+0500"}"""
       val expectedPost = Post("foobar", Some(cal.getTime))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
-        .aka("parsed") must_== expectedPost
+      Json.parse(postJson).as[Post](LenientPostFormat).aka(
+        "parsed") must_== expectedPost
     }
 
     "with default/lenient date format with no millis and UTC zone" in {
@@ -202,10 +197,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48Z"}"""
       val expectedPost = Post("foobar", Some(postDate))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
-        .aka("parsed") must_== expectedPost
+      Json.parse(postJson).as[Post](LenientPostFormat).aka(
+        "parsed") must_== expectedPost
     }
 
     "with default/lenient date format with no millis and ISO8601 zone" in {
@@ -217,10 +210,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48+0700"}"""
       val expectedPost = Post("foobar", Some(cal.getTime))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
-        .aka("parsed") must_== expectedPost
+      Json.parse(postJson).as[Post](LenientPostFormat).aka(
+        "parsed") must_== expectedPost
     }
 
     "with default/lenient date format with millis" in {
@@ -229,10 +220,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
       val expectedPost =
         Post("foobar", Some(postDateWithTZ(TimeZone.getDefault)))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
-        .aka("parsed") must_== expectedPost
+      Json.parse(postJson).as[Post](LenientPostFormat).aka(
+        "parsed") must_== expectedPost
     }
 
     "with default/lenient date format without millis or time zone" in {
@@ -241,10 +230,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
       val expectedPost =
         Post("foobar", Some(postDateWithTZ(TimeZone.getDefault)))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
-        .aka("parsed") must_== expectedPost
+      Json.parse(postJson).as[Post](LenientPostFormat).aka(
+        "parsed") must_== expectedPost
     }
 
     "Optional parameters in JSON should generate post w/o date" in {
@@ -312,10 +299,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "Serialize and deserialize Jackson ObjectNodes" in {
-      val on = mapper
-        .createObjectNode()
-        .put("foo", 1)
-        .put("bar", "two")
+      val on = mapper.createObjectNode()
+        .put("foo", 1).put("bar", "two")
       val json = Json.obj("foo" -> 1, "bar" -> "two")
 
       toJson(on) must_== json and (
@@ -323,10 +308,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "Serialize and deserialize Jackson ArrayNodes" in {
-      val an = mapper
-        .createArrayNode()
-        .add("one")
-        .add(2)
+      val an = mapper.createArrayNode()
+        .add("one").add(2)
       val json = Json.arr("one", 2)
       toJson(an) must equalTo(json) and (
         fromJson[JsonNode](json).map(_.toString) must_== JsSuccess(an.toString))

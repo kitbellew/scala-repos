@@ -60,11 +60,9 @@ class PruneFiltersSuite extends PlanTest {
     val tr3 = LocalRelation('g.int, 'h.int, 'i.int)
 
     val query =
-      tr1
-        .where('a.attr > 10)
+      tr1.where('a.attr > 10)
         .unionAll(
-          tr2
-            .where('d.attr > 10)
+          tr2.where('d.attr > 10)
             .unionAll(tr3.where('g.attr > 10)))
     val queryWithUselessFilter = query.where('a.attr > 10)
 
@@ -119,8 +117,8 @@ class PruneFiltersSuite extends PlanTest {
       .join(
         tr2.where('d.attr < 100),
         Inner,
-        Some("tr1.a".attr === "tr2.a".attr && "tr1.a".attr === "tr2.d".attr))
-      .analyze
+        Some(
+          "tr1.a".attr === "tr2.a".attr && "tr1.a".attr === "tr2.d".attr)).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -134,11 +132,8 @@ class PruneFiltersSuite extends PlanTest {
 
     val optimized = Optimize.execute(queryWithExtraFilters.analyze)
     val correctAnswer =
-      testRelation
-        .where("b".attr.isNull)
-        .where("b".attr.isNotNull)
-        .join(testRelation, LeftOuter)
-        .analyze
+      testRelation.where("b".attr.isNull).where("b".attr.isNotNull)
+        .join(testRelation, LeftOuter).analyze
 
     comparePlans(optimized, correctAnswer)
   }

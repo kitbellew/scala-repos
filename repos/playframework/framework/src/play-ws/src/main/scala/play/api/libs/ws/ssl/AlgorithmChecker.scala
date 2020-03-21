@@ -95,9 +95,8 @@ class AlgorithmChecker(
   def checkKeyAlgorithms(x509Cert: X509Certificate): Unit = {
     val key = x509Cert.getPublicKey
     val keyAlgorithmName = key.getAlgorithm
-    val keySize = Algorithms
-      .keySize(key)
-      .getOrElse(throw new IllegalStateException(s"No keySize found for $key"))
+    val keySize = Algorithms.keySize(key).getOrElse(
+      throw new IllegalStateException(s"No keySize found for $key"))
 
     val keyAlgorithms = Algorithms.decomposes(keyAlgorithmName)
     logger.debug(

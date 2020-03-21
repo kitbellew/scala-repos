@@ -282,8 +282,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         }
       }
 
-      implicitly[BinaryRegistry[Matrix[T], Matrix[T], OpAdd.type, Matrix[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Matrix[T], Matrix[T], OpAdd.type, Matrix[T]]].register(
+        this)
     }
   }
 
@@ -613,8 +614,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           util.Arrays.copyOf(a.rowIndices, a.rowIndices.length))
       }
 
-      implicitly[BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]]].register(
+        this)
     }
   }
 
@@ -641,9 +642,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Vector[T],
+        OpMulMatrix.type,
+        Vector[T]]].register(this)
     }
 
   @expand
@@ -677,9 +680,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Vector[T],
+        OpMulMatrix.type,
+        Vector[T]]].register(this)
     }
 
   @expand
@@ -725,9 +730,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res.toSparseVector
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Vector[T],
+        OpMulMatrix.type,
+        Vector[T]]].register(this)
     }
 
   @expand
@@ -763,9 +770,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Matrix[T],
+        OpMulMatrix.type,
+        Matrix[T]]].register(this)
     }
 
   @expand
@@ -801,12 +810,16 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
-      implicitly[
-        BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Matrix[T],
+        OpMulMatrix.type,
+        Matrix[T]]].register(this)
+      implicitly[BinaryRegistry[
+        DenseMatrix[T],
+        Matrix[T],
+        OpMulMatrix.type,
+        Matrix[T]]].register(this)
     }
 
   @expand
@@ -852,9 +865,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res.result()
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Matrix[T],
+        OpMulMatrix.type,
+        Matrix[T]]].register(this)
     }
 
   // Update Ops
@@ -1775,8 +1790,9 @@ trait CSCMatrixOpsLowPrio extends SerializableLogging {
   implicit def canMulM_V_def[T, A, B <: Vector[T]](implicit
       bb: B <:< Vector[T],
       op: OpMulMatrix.Impl2[CSCMatrix[T], Vector[T], Vector[T]]) =
-    implicitly[OpMulMatrix.Impl2[CSCMatrix[T], Vector[T], Vector[T]]]
-      .asInstanceOf[breeze.linalg.operators.OpMulMatrix.Impl2[A, B, Vector[T]]]
+    implicitly[
+      OpMulMatrix.Impl2[CSCMatrix[T], Vector[T], Vector[T]]].asInstanceOf[
+      breeze.linalg.operators.OpMulMatrix.Impl2[A, B, Vector[T]]]
 
   // ibid.
   implicit def canMulM_M_def[T, B <: Matrix[T]](implicit

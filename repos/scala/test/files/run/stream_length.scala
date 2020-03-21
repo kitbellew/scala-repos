@@ -4,10 +4,8 @@ object Test {
       Stream(bias)
     else {
       (
-        Stream
-          .iterate(1, 99)(_ + 1)
-          .map((x: Int) => walk(depth - 1, bias + x)))
-        .flatten
+        Stream.iterate(1, 99)(_ + 1).map((x: Int) =>
+          walk(depth - 1, bias + x))).flatten
     }
   }
 

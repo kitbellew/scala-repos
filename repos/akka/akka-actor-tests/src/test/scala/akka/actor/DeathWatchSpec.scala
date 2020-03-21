@@ -226,8 +226,7 @@ trait DeathWatchSpec { this: AkkaSpec with ImplicitSender with DefaultTimeout â‡
         def receive = Actor.emptyBehavior
       }))
 
-      testActor
-        .asInstanceOf[InternalActorRef]
+      testActor.asInstanceOf[InternalActorRef]
         .sendSystemMessage(
           DeathWatchNotification(
             subject,

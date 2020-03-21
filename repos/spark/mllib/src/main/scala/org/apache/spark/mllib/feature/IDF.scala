@@ -55,13 +55,11 @@ class IDF @Since("1.2.0") (@Since("1.2.0") val minDocFreq: Int) {
     */
   @Since("1.1.0")
   def fit(dataset: RDD[Vector]): IDFModel = {
-    val idf = dataset
-      .treeAggregate(
-        new IDF.DocumentFrequencyAggregator(minDocFreq = minDocFreq))(
-        seqOp = (df, v) => df.add(v),
-        combOp = (df1, df2) => df1.merge(df2)
-      )
-      .idf()
+    val idf = dataset.treeAggregate(
+      new IDF.DocumentFrequencyAggregator(minDocFreq = minDocFreq))(
+      seqOp = (df, v) => df.add(v),
+      combOp = (df1, df2) => df1.merge(df2)
+    ).idf()
     new IDFModel(idf)
   }
 

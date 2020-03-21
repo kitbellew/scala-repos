@@ -107,8 +107,9 @@ object SerializationBugs extends Specification {
           val typeInfo = TypeInfo(
             parameterizedType
               .map(_.getActualTypeArguments()(0))
-              .getOrElse(failure("No type parameter info for type Seq"))
-              .asInstanceOf[Class[_]],
+              .getOrElse(
+                failure("No type parameter info for type Seq")).asInstanceOf[
+                Class[_]],
             None)
           xs.map(x => Extraction.extract(x, typeInfo))
       }

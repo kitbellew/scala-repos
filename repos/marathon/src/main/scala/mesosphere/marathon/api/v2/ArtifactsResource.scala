@@ -70,11 +70,8 @@ class ArtifactsResource @Inject() (
     if (!item.exists) {
       notFound(s"No artifact with path $path")
     } else {
-      Response
-        .ok(item.inputStream(), mediaMime(path))
-        .lastModified(new Date(item.lastModified))
-        .header("Content-Length", item.length)
-        .build()
+      Response.ok(item.inputStream(), mediaMime(path)).lastModified(new Date(
+        item.lastModified)).header("Content-Length", item.length).build()
     }
   }
 

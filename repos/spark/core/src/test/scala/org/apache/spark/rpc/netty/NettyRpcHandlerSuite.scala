@@ -48,12 +48,12 @@ class NettyRpcHandlerSuite extends SparkFunSuite {
     val channel = mock(classOf[Channel])
     val client =
       new TransportClient(channel, mock(classOf[TransportResponseHandler]))
-    when(channel.remoteAddress())
-      .thenReturn(new InetSocketAddress("localhost", 40000))
+    when(channel.remoteAddress()).thenReturn(
+      new InetSocketAddress("localhost", 40000))
     nettyRpcHandler.channelActive(client)
 
-    verify(dispatcher, times(1))
-      .postToAll(RemoteProcessConnected(RpcAddress("localhost", 40000)))
+    verify(dispatcher, times(1)).postToAll(
+      RemoteProcessConnected(RpcAddress("localhost", 40000)))
   }
 
   test("connectionTerminated") {
@@ -63,18 +63,18 @@ class NettyRpcHandlerSuite extends SparkFunSuite {
     val channel = mock(classOf[Channel])
     val client =
       new TransportClient(channel, mock(classOf[TransportResponseHandler]))
-    when(channel.remoteAddress())
-      .thenReturn(new InetSocketAddress("localhost", 40000))
+    when(channel.remoteAddress()).thenReturn(
+      new InetSocketAddress("localhost", 40000))
     nettyRpcHandler.channelActive(client)
 
-    when(channel.remoteAddress())
-      .thenReturn(new InetSocketAddress("localhost", 40000))
+    when(channel.remoteAddress()).thenReturn(
+      new InetSocketAddress("localhost", 40000))
     nettyRpcHandler.channelInactive(client)
 
-    verify(dispatcher, times(1))
-      .postToAll(RemoteProcessConnected(RpcAddress("localhost", 40000)))
-    verify(dispatcher, times(1))
-      .postToAll(RemoteProcessDisconnected(RpcAddress("localhost", 40000)))
+    verify(dispatcher, times(1)).postToAll(
+      RemoteProcessConnected(RpcAddress("localhost", 40000)))
+    verify(dispatcher, times(1)).postToAll(
+      RemoteProcessDisconnected(RpcAddress("localhost", 40000)))
   }
 
 }

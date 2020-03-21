@@ -62,11 +62,12 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
   private var sc: SparkContext = null
 
   override def beforeAll(): Unit = {
-    val conf = new SparkConf()
-      .setMaster("local[4]")
-      .setAppName(
-        "KinesisStreamSuite"
-      ) // Setting Spark app name to Kinesis app name
+    val conf =
+      new SparkConf()
+        .setMaster("local[4]")
+        .setAppName(
+          "KinesisStreamSuite"
+        ) // Setting Spark app name to Kinesis app name
     sc = new SparkContext(conf)
 
     runIfTestsEnabled("Prepare KinesisTestUtils") {
@@ -185,8 +186,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       _.asInstanceOf[KinesisBackedBlockRDDPartition]
     }.toSeq
     assert(
-      partitions
-        .map { _.seqNumberRanges } === Seq(seqNumRanges1, seqNumRanges2))
+      partitions.map { _.seqNumberRanges } === Seq(
+        seqNumRanges1,
+        seqNumRanges2))
     assert(partitions.map { _.blockId } === Seq(blockId1, blockId2))
     assert(partitions.forall { _.isBlockIdValid === true })
 
@@ -202,9 +204,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     kinesisStream.createBlockRDD(time, blockInfos).partitions.foreach {
       partition =>
         assert(
-          partition
-            .asInstanceOf[KinesisBackedBlockRDDPartition]
-            .isBlockIdValid === false)
+          partition.asInstanceOf[
+            KinesisBackedBlockRDDPartition].isBlockIdValid === false)
     }
   }
 
@@ -290,9 +291,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
   }
 
   testIfEnabled("failure recovery") {
-    val sparkConf = new SparkConf()
-      .setMaster("local[4]")
-      .setAppName(this.getClass.getSimpleName)
+    val sparkConf = new SparkConf().setMaster("local[4]").setAppName(
+      this.getClass.getSimpleName)
     val checkpointDir = Utils.createTempDir().getAbsolutePath
 
     ssc = new StreamingContext(sc, Milliseconds(1000))
@@ -357,10 +357,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       val times = collectedData.keySet
       times.foreach { time =>
         val (arrayOfSeqNumRanges, data) = collectedData(time)
-        val rdd = recoveredKinesisStream
-          .getOrCompute(time)
-          .get
-          .asInstanceOf[RDD[Array[Byte]]]
+        val rdd =
+          recoveredKinesisStream.getOrCompute(time).get.asInstanceOf[RDD[
+            Array[Byte]]]
         rdd shouldBe a[KinesisBackedBlockRDD[_]]
 
         // Verify the recovered sequence ranges
@@ -372,8 +371,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
         }
 
         // Verify the recovered data
-        assert(
-          rdd.map { bytes => new String(bytes).toInt }.collect().toSeq === data)
+        assert(rdd.map { bytes =>
+          new String(bytes).toInt
+        }.collect().toSeq === data)
       }
     }
     ssc.stop()

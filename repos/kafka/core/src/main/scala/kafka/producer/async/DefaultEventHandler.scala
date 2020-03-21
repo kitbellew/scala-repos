@@ -70,10 +70,8 @@ class DefaultEventHandler[K, V](
     serializedData.foreach {
       keyed =>
         val dataSize = keyed.message.payloadSize
-        producerTopicStats
-          .getProducerTopicStats(keyed.topic)
-          .byteRate
-          .mark(dataSize)
+        producerTopicStats.getProducerTopicStats(keyed.topic).byteRate.mark(
+          dataSize)
         producerTopicStats.getProducerAllTopicsStats.byteRate.mark(dataSize)
     }
     var outstandingProduceRequests = serializedData
@@ -96,8 +94,9 @@ class DefaultEventHandler[K, V](
         outstandingProduceRequests)
       if (outstandingProduceRequests.size > 0) {
         info(
-          "Back off for %d ms before retrying send. Remaining retries = %d"
-            .format(config.retryBackoffMs, remainingRetries - 1))
+          "Back off for %d ms before retrying send. Remaining retries = %d".format(
+            config.retryBackoffMs,
+            remainingRetries - 1))
         // back off and update the topic metadata cache before attempting another send operation
         Thread.sleep(config.retryBackoffMs)
         // get topics of the outstanding produce requests and refresh metadata for those
@@ -134,8 +133,11 @@ class DefaultEventHandler[K, V](
         for ((brokerid, messagesPerBrokerMap) <- partitionedData) {
           if (logger.isTraceEnabled) {
             messagesPerBrokerMap.foreach(partitionAndEvent =>
-              trace("Handling event for Topic: %s, Broker: %d, Partitions: %s"
-                .format(partitionAndEvent._1, brokerid, partitionAndEvent._2)))
+              trace(
+                "Handling event for Topic: %s, Broker: %d, Partitions: %s".format(
+                  partitionAndEvent._1,
+                  brokerid,
+                  partitionAndEvent._2)))
           }
           val messageSetPerBrokerOpt = groupMessagesToSet(messagesPerBrokerMap)
           messageSetPerBrokerOpt match {
@@ -318,8 +320,10 @@ class DefaultEventHandler[K, V](
         "Invalid partition id: " + partition + " for topic " + topic +
           "; Valid values are in the inclusive range of [0, " + (numPartitions - 1) + "]")
     trace(
-      "Assigning message of topic %s and key %s to a selected partition %d"
-        .format(topic, if (key == null) "[none]" else key.toString, partition))
+      "Assigning message of topic %s and key %s to a selected partition %d".format(
+        topic,
+        if (key == null) "[none]" else key.toString,
+        partition))
     partition
   }
 
@@ -371,8 +375,9 @@ class DefaultEventHandler[K, V](
         if (response != null) {
           if (response.status.size != producerRequest.data.size)
             throw new KafkaException(
-              "Incomplete response (%s) for producer request (%s)"
-                .format(response, producerRequest))
+              "Incomplete response (%s) for producer request (%s)".format(
+                response,
+                producerRequest))
           if (logger.isTraceEnabled) {
             val successfullySentData =
               response.status.filter(_._2.error == Errors.NONE.code)
@@ -395,14 +400,13 @@ class DefaultEventHandler[K, V](
                     p2._1.topic) == 0 && p1._1.partition < p2._1.partition))
               .map {
                 case (topicAndPartition, status) =>
-                  topicAndPartition.toString + ": " + Errors
-                    .forCode(status.error)
-                    .exceptionName
-              }
-              .mkString(",")
+                  topicAndPartition.toString + ": " + Errors.forCode(
+                    status.error).exceptionName
+              }.mkString(",")
             warn(
-              "Produce request with correlation id %d failed due to %s"
-                .format(currentCorrelationId, errorString))
+              "Produce request with correlation id %d failed due to %s".format(
+                currentCorrelationId,
+                errorString))
           }
           failedTopicPartitions
         } else {
@@ -445,8 +449,9 @@ class DefaultEventHandler[K, V](
             config.compressionCodec match {
               case NoCompressionCodec =>
                 debug(
-                  "Sending %d messages with no compression to %s"
-                    .format(messages.size, topicAndPartition))
+                  "Sending %d messages with no compression to %s".format(
+                    messages.size,
+                    topicAndPartition))
                 new ByteBufferMessageSet(NoCompressionCodec, rawMessages: _*)
               case _ =>
                 config.compressedTopics.size match {

@@ -377,8 +377,9 @@ class MockHttpServletRequest(
   def computeRealPath(path: String) = {
     if (!path.startsWith(contextPath)) {
       throw new IllegalArgumentException(
-        "Path \"%s\" doesn't begin with context path \"%s\"!"
-          .format(path, contextPath))
+        "Path \"%s\" doesn't begin with context path \"%s\"!".format(
+          path,
+          contextPath))
     }
 
     path.substring(contextPath.length)
@@ -432,9 +433,9 @@ class MockHttpServletRequest(
           k) ::: v :: Nil) // Ugly, but it works and keeps order
     }
 
-    newMap
-      .map { case (k, v) => (k, v.toArray) }
-      .asInstanceOf[Map[String, Array[String]]]
+    newMap.map { case (k, v) => (k, v.toArray) }.asInstanceOf[Map[
+      String,
+      Array[String]]]
 //    asMap(newMap.map{case (k,v) => (k,v.toArray)}.asInstanceOf[Map[Object,Object]])
   }
 
@@ -491,16 +492,12 @@ class MockHttpServletRequest(
       }
     }
 
-    Helpers
-      .tryo(
-        handler, {
-          // Have to use internetDateFormatter directly since parseInternetDate returns the epoch date on failure
-          Box
-            .!!(getHeader(h))
-            .map(Helpers.internetDateFormatter.parse(_).getTime)
-        }
-      )
-      .flatMap(x => x) openOr -1L
+    Helpers.tryo(
+      handler, {
+        // Have to use internetDateFormatter directly since parseInternetDate returns the epoch date on failure
+        Box.!!(getHeader(h)).map(Helpers.internetDateFormatter.parse(_).getTime)
+      }
+    ).flatMap(x => x) openOr -1L
   }
 
   def getHeader(h: String): String =

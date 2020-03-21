@@ -81,9 +81,8 @@ class GroupVersioningUtilTest
       nestedApp)
     Then("The timestamp of the app and groups are updated appropriately")
     def update(maybeApp: Option[AppDefinition]): AppDefinition =
-      maybeApp
-        .map(_.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10))))
-        .get
+      maybeApp.map(
+        _.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10)))).get
     updated should be(
       nestedApp.updateApp(
         PathId("/nested/app"),
@@ -100,20 +99,15 @@ class GroupVersioningUtilTest
       nestedAppScaled)
     Then("The timestamp of the app and groups are updated appropriately")
     def update(maybeApp: Option[AppDefinition]): AppDefinition =
-      maybeApp
-        .map(
-          _.copy(versionInfo = VersionInfo
-            .forNewConfig(Timestamp(0))
-            .withScaleOrRestartChange(Timestamp(10))))
-        .get
+      maybeApp.map(
+        _.copy(versionInfo = VersionInfo.forNewConfig(
+          Timestamp(0)).withScaleOrRestartChange(Timestamp(10)))).get
     updated.toString should be(
-      nestedAppScaled
-        .updateApp(
-          PathId("/nested/app"),
-          update,
-          Timestamp(10)
-        )
-        .toString)
+      nestedAppScaled.updateApp(
+        PathId("/nested/app"),
+        update,
+        Timestamp(10)
+      ).toString)
   }
 
   test("A updated app should get proper versionInfo") {
@@ -124,16 +118,13 @@ class GroupVersioningUtilTest
       nestedAppUpdated)
     Then("The timestamp of the app and groups are updated appropriately")
     def update(maybeApp: Option[AppDefinition]): AppDefinition =
-      maybeApp
-        .map(_.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10))))
-        .get
+      maybeApp.map(
+        _.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10)))).get
     updated.toString should be(
-      nestedAppUpdated
-        .updateApp(
-          PathId("/nested/app"),
-          update,
-          Timestamp(10)
-        )
-        .toString)
+      nestedAppUpdated.updateApp(
+        PathId("/nested/app"),
+        update,
+        Timestamp(10)
+      ).toString)
   }
 }

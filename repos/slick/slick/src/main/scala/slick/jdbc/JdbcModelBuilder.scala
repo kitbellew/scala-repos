@@ -48,21 +48,19 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     t.getImportedKeys.map(
       // remove foreign keys pointing to tables which were not included
       _.filter(fk => tableNamersByQName.isDefinedAt(fk.pkTable))
-        .groupBy(fk => (fk.pkTable, fk.fkName, fk.pkName, fk.fkTable))
-        .toSeq
-        .sortBy { case (key, _) => (key._1.name, key._2, key._3, key._4.name) }
-        .map(_._2.sortBy(_.keySeq)) // respect order
+      .groupBy(fk => (fk.pkTable, fk.fkName, fk.pkName, fk.fkTable))
+      .toSeq
+      .sortBy { case (key, _) => (key._1.name, key._2, key._3, key._4.name) }
+      .map(_._2.sortBy(_.keySeq)) // respect order
     )
 
   /** Read the index metadata grouped by name and in ordinal position order */
   def readIndices(t: MTable): DBIO[Seq[Seq[MIndexInfo]]] =
     t.getIndexInfo().asTry.map {
       case Success(iis) =>
-        iis
-          .groupBy(_.indexName)
-          .toSeq
-          .sortBy(_._1)
-          .map(_._2.sortBy(_.ordinalPosition)) // respect order
+        iis.groupBy(_.indexName).toSeq.sortBy(_._1).map(
+          _._2.sortBy(_.ordinalPosition)
+        ) // respect order
       case Failure(e: java.sql.SQLException) => // TODO: this needs a test!
         logger.debug(
           s"Skipping indices of table ${t.name.name} due to exception during getIndexInfo: " + e.getMessage.trim)
@@ -218,9 +216,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
 
     /** Foreign key models by key sequence order */
     final def buildForeignKeys(builders: Builders) =
-      mForeignKeys
-        .map(mf => createForeignKeyBuilder(this, mf).buildModel(builders))
-        .flatten
+      mForeignKeys.map(mf =>
+        createForeignKeyBuilder(this, mf).buildModel(builders)).flatten
 
     /** Index models by ordinal position order */
     final lazy val indices: Seq[m.Index] =
@@ -320,24 +317,24 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * If `ignoreInvalidDefaults = true`, Slick catches scala.MatchError and java.lang.NumberFormatException thrown by
       * this method, logs the message and treats it as no default value for convenience. */
     def defaultColumnOption: Option[RelationalProfile.ColumnOption.Default[_]] =
-      rawDefault
-        .map(v => (v, tpe))
-        .collect {
-          case (v, _)
-              if Seq("NOW", "CURRENT_TIMESTAMP", "CURRENT_DATE", "CURRENT_TIME")
-                .contains(v.stripSuffix("()").toUpperCase) =>
-            logger.debug(s"Ignoring" + formatDefault(v))
-            None
-        }
-        .getOrElse {
-          default.map(d =>
-            RelationalProfile.ColumnOption.Default(
-              if (nullable) d
-              else
-                d.getOrElse(throw new SlickException(
-                  s"Invalid default value $d for non-nullable column ${tableBuilder.namer.qualifiedName.asString}.$name of type $tpe, meta data: " + meta.toString))
-            ))
-        }
+      rawDefault.map(v => (v, tpe)).collect {
+        case (v, _)
+            if Seq(
+              "NOW",
+              "CURRENT_TIMESTAMP",
+              "CURRENT_DATE",
+              "CURRENT_TIME").contains(v.stripSuffix("()").toUpperCase) =>
+          logger.debug(s"Ignoring" + formatDefault(v))
+          None
+      }.getOrElse {
+        default.map(d =>
+          RelationalProfile.ColumnOption.Default(
+            if (nullable) d
+            else
+              d.getOrElse(throw new SlickException(
+                s"Invalid default value $d for non-nullable column ${tableBuilder.namer.qualifiedName.asString}.$name of type $tpe, meta data: " + meta.toString))
+          ))
+      }
 
     private def convenientDefault
         : Option[RelationalProfile.ColumnOption.Default[_]] =
@@ -368,8 +365,9 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           (if (createPrimaryKeyColumnOption) Some(ColumnOption.PrimaryKey)
            else None) ++
           length.map(
-            RelationalProfile.ColumnOption.Length
-              .apply(_, varying = varying)) ++
+            RelationalProfile.ColumnOption.Length.apply(
+              _,
+              varying = varying)) ++
           (if (!autoInc) convenientDefault else None)
       )
   }
@@ -438,9 +436,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     def enabled =
       (
         idx.indexType != DatabaseMetaData.tableIndexStatistic &&
-          (tableBuilder.mPrimaryKeys.isEmpty || tableBuilder.mPrimaryKeys
-            .map(_.column)
-            .toSet != columns.toSet) &&
+          (tableBuilder.mPrimaryKeys.isEmpty || tableBuilder.mPrimaryKeys.map(
+            _.column).toSet != columns.toSet) &&
           // preserve additional uniqueness constraints on (usually not unique) fk columns
           (unique || tableBuilder.mForeignKeys.forall(
             _.map(_.fkColumn).toSet != columns.toSet)) &&

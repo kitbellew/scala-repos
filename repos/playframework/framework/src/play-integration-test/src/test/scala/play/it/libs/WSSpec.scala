@@ -93,11 +93,9 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     "use queryString in url" in withServer { ws =>
-      val rep = ws
-        .url("/get?foo=bar")
-        .get()
-        .toCompletableFuture
-        .get(10, TimeUnit.SECONDS)
+      val rep = ws.url("/get?foo=bar").get().toCompletableFuture.get(
+        10,
+        TimeUnit.SECONDS)
 
       rep.getStatus aka "status" must_== 200 and (
         rep.asJson().path("args").path("foo").textValue() must_== "bar")
@@ -105,11 +103,9 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
     "use user:password in url" in Server.withApplication(app) { implicit port =>
       withClient { ws =>
-        val rep = ws
-          .url(s"http://user:password@localhost:$port/basic-auth/user/password")
-          .get()
-          .toCompletableFuture
-          .get(10, TimeUnit.SECONDS)
+        val rep = ws.url(
+          s"http://user:password@localhost:$port/basic-auth/user/password").get()
+          .toCompletableFuture.get(10, TimeUnit.SECONDS)
 
         rep.getStatus aka "status" must_== 200 and (
           rep.asJson().path("authenticated").booleanValue() must beTrue)
@@ -119,18 +115,18 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     "reject invalid query string" in withServer { ws =>
       import java.net.MalformedURLException
 
-      ws.url("/get?=&foo").aka("invalid request") must throwA[RuntimeException]
-        .like {
-          case e: RuntimeException =>
-            e.getCause must beAnInstanceOf[MalformedURLException]
-        }
+      ws.url("/get?=&foo").aka("invalid request") must throwA[
+        RuntimeException].like {
+        case e: RuntimeException =>
+          e.getCause must beAnInstanceOf[MalformedURLException]
+      }
     }
 
     "reject invalid user password string" in withServer { ws =>
       import java.net.MalformedURLException
 
-      ws.url("http://@localhost/get")
-        .aka("invalid request") must throwA[RuntimeException].like {
+      ws.url("http://@localhost/get").aka("invalid request") must throwA[
+        RuntimeException].like {
         case e: RuntimeException =>
           e.getCause must beAnInstanceOf[MalformedURLException]
       }
@@ -150,9 +146,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       Results.Ok.chunked(Source(List("a", "b", "c")))) { ws =>
       val res = ws.url("/get").stream().toCompletableFuture.get()
 
-      await(res.getBody().runWith(foldingSink, app.materializer))
-        .decodeString("utf-8")
-        .aka("streamed response") must_== "abc"
+      await(res.getBody().runWith(foldingSink, app.materializer)).decodeString(
+        "utf-8").aka("streamed response") must_== "abc"
     }
 
     "streaming a request body" in withEchoServer { ws =>
@@ -164,9 +159,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     "sending a simple multipart form body" in withServer { ws =>
-      val source = Source
-        .single(new Http.MultipartFormData.DataPart("hello", "world"))
-        .asJava
+      val source = Source.single(
+        new Http.MultipartFormData.DataPart("hello", "world")).asJava
       val res = ws.url("/post").post(source)
       val body = res.toCompletableFuture.get().asJson()
 
@@ -268,18 +262,14 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       val res = ws.url("/get").stream()
       val body = await(res).body
 
-      await(body.runWith(foldingSink))
-        .decodeString("utf-8")
-        .aka("streamed response") must_== "abc"
+      await(body.runWith(foldingSink)).decodeString("utf-8").aka(
+        "streamed response") must_== "abc"
     }
 
     "streaming a request body" in withEchoServer { ws =>
       val source = Source(List("a", "b", "c").map(ByteString.apply))
-      val res = ws
-        .url("/post")
-        .withMethod("POST")
-        .withBody(StreamedBody(source))
-        .execute()
+      val res = ws.url("/post").withMethod("POST").withBody(
+        StreamedBody(source)).execute()
       val body = await(res).body
 
       body must_== "abc"
@@ -319,9 +309,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       }
 
       "with query string" in withServer { ws =>
-        ws.url("/")
-          .withQueryString("lorem" -> "ipsum")
-          .sign(calc) aka "signed request" must not(throwA[Exception])
+        ws.url("/").withQueryString("lorem" -> "ipsum").sign(
+          calc) aka "signed request" must not(throwA[Exception])
       }
     }
   }

@@ -20,14 +20,12 @@ object DeterministicOldestWhenJoiningMultiJvmSpec extends MultiNodeConfig {
   val seed3 = role("seed3")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
     # not too quick to trigger problematic scenario more often
     akka.cluster.leader-actions-interval = 2000 ms
     akka.cluster.gossip-interval = 500 ms
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 }
 
 class DeterministicOldestWhenJoiningMultiJvmNode1
@@ -45,9 +43,8 @@ abstract class DeterministicOldestWhenJoiningSpec
 
   // reverse order because that expose the bug in issue #18554
   def seedNodes: immutable.IndexedSeq[Address] =
-    Vector(address(seed1), address(seed2), address(seed3))
-      .sorted(Member.addressOrdering)
-      .reverse
+    Vector(address(seed1), address(seed2), address(seed3)).sorted(
+      Member.addressOrdering).reverse
   val roleByAddress = Map(
     address(seed1) -> seed1,
     address(seed2) -> seed2,

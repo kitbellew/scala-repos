@@ -408,9 +408,9 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       AdminUtils.createTopic(zkUtils, "new-topic", 2, 1)
       TestUtils.waitUntilTrue(
         () =>
-          AdminUtils
-            .fetchTopicMetadataFromZk("new-topic", zkUtils)
-            .error != Errors.UNKNOWN_TOPIC_OR_PARTITION,
+          AdminUtils.fetchTopicMetadataFromZk(
+            "new-topic",
+            zkUtils).error != Errors.UNKNOWN_TOPIC_OR_PARTITION,
         "Topic new-topic not created after timeout",
         waitTime = zookeeper.tickTime
       )

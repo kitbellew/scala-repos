@@ -113,19 +113,17 @@ object Schemifier extends Loggable {
     val tables = stables.toList
     DB.use(dbId) { con =>
       // Some databases (Sybase) don't like doing transactional DDL, so we disable transactions
-      if (con.driverType.schemifierMustAutoCommit_? && !con.connection
-            .getAutoCommit()) {
+      if (con.driverType.schemifierMustAutoCommit_? && !con.connection.getAutoCommit()) {
         con.connection.commit
         con.connection.setAutoCommit(true)
       }
       logger.debug(
-        "Starting schemify. write=%s, structureOnly=%s, dbId=%s, schema=%s, tables=%s"
-          .format(
-            performWrite,
-            structureOnly,
-            dbId,
-            getDefaultSchemaName(con),
-            tables.map(_.dbTableName)))
+        "Starting schemify. write=%s, structureOnly=%s, dbId=%s, schema=%s, tables=%s".format(
+          performWrite,
+          structureOnly,
+          dbId,
+          getDefaultSchemaName(con),
+          tables.map(_.dbTableName)))
 
       val connection = con // SuperConnection(con)
       val driver = DriverType.calcDriver(connection)
@@ -143,8 +141,10 @@ object Schemifier extends Loggable {
           desc: String,
           f: => Collector): Collector = {
         actualTableNames.get(t._dbTableNameLC).map(x => f).getOrElse {
-          logger.warn("Skipping %s on table '%s' since it doesn't exist"
-            .format(desc, t.dbTableName))
+          logger.warn(
+            "Skipping %s on table '%s' since it doesn't exist".format(
+              desc,
+              t.dbTableName))
           EmptyCollector
         }
       }
@@ -253,8 +253,8 @@ object Schemifier extends Loggable {
     * Retrieves schema name where the unqualified db objects are searched.
     */
   def getDefaultSchemaName(connection: SuperConnection): String =
-    (connection.schemaName or connection.driverType.defaultSchemaName or DB.globalDefaultSchemaName)
-      .openOr(connection.getMetaData.getUserName)
+    (connection.schemaName or connection.driverType.defaultSchemaName or DB.globalDefaultSchemaName).openOr(
+      connection.getMetaData.getUserName)
 
   private def hasTable_?(
       table: BaseMetaMapper,
@@ -327,8 +327,7 @@ object Schemifier extends Loggable {
               table._dbTableNameLC,
               pkField._dbColumnNameLC) foreach { command =>
               cmds += maybeWrite(performWrite, logFunc, connection) {
-                () =>
-                  command
+                () => command
               }
             }
         }
@@ -368,10 +367,8 @@ object Schemifier extends Loggable {
             val tableName = rs.getString(3).toLowerCase
             val columnName = rs.getString(4).toLowerCase
 
-            if (tableName == table._dbTableNameLC.toLowerCase && field
-                  .dbColumnNames(field.name)
-                  .map(_.toLowerCase)
-                  .contains(columnName)) {
+            if (tableName == table._dbTableNameLC.toLowerCase && field.dbColumnNames(
+                  field.name).map(_.toLowerCase).contains(columnName)) {
               cols = columnName :: cols
               hasColumn = hasColumn + 1
               logger.trace(
@@ -380,19 +377,19 @@ object Schemifier extends Loggable {
             }
           })
         // FIXME deal with column types
-        (
-          field
-            .dbColumnNames(field.name)
-            .filter(f => !cols.map(_.toLowerCase).contains(f.toLowerCase)))
-          .foreach { colName =>
+        (field.dbColumnNames(field.name).filter(f =>
+          !cols.map(_.toLowerCase).contains(f.toLowerCase))).foreach {
+          colName =>
             logger.trace(
-              "Column does not exist: %s.%s "
-                .format(table.dbTableName, colName))
+              "Column does not exist: %s.%s ".format(
+                table.dbTableName,
+                colName))
 
             cmds += maybeWrite(performWrite, logFunc, connection) {
               () =>
-                "ALTER TABLE " + table._dbTableNameLC + " " + connection.driverType.alterAddColumn + " " + field
-                  .fieldCreatorString(connection.driverType, colName)
+                "ALTER TABLE " + table._dbTableNameLC + " " + connection.driverType.alterAddColumn + " " + field.fieldCreatorString(
+                  connection.driverType,
+                  colName)
             }
             if ((!connection.driverType.pkDefinedByIndexColumn_?) && field.dbPrimaryKey_?) {
               // Add primary key only when it has not been created by the index field itself.
@@ -401,7 +398,7 @@ object Schemifier extends Loggable {
                   "ALTER TABLE " + table._dbTableNameLC + " ADD CONSTRAINT " + table._dbTableNameLC + "_PK PRIMARY KEY(" + field._dbColumnNameLC + ")"
               }
             }
-          }
+        }
 
         field.dbAddedColumn.toList
 
@@ -459,28 +456,28 @@ object Schemifier extends Loggable {
     }.toList
     //rs.close
 
-    val single =
-      table.mappedFields.filter { f => f.dbIndexed_? }.toList.flatMap {
-        field =>
-          if (!indexedFields.contains(
-                List(field._dbColumnNameLC.toLowerCase))) {
-            cmds += maybeWrite(performWrite, logFunc, connection) {
-              () =>
-                "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"
-            }
-            field.dbAddedIndex.toList
-          } else Nil
-      }
+    val single = table.mappedFields.filter { f =>
+      f.dbIndexed_?
+    }.toList.flatMap {
+      field =>
+        if (!indexedFields.contains(List(field._dbColumnNameLC.toLowerCase))) {
+          cmds += maybeWrite(performWrite, logFunc, connection) {
+            () =>
+              "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"
+          }
+          field.dbAddedIndex.toList
+        } else Nil
+    }
 
     table.dbIndexes.foreach {
       index =>
         val columns = index.columns.toList
 
-        val standardCreationStatement = (table._dbTableNameLC + "_" + columns
-          .map(_.field._dbColumnNameLC)
-          .mkString("_")) + " ON " + table._dbTableNameLC + " ( " + columns
-          .map(_.indexDesc)
-          .comma + " )"
+        val standardCreationStatement =
+          (table._dbTableNameLC + "_" + columns.map(
+            _.field._dbColumnNameLC).mkString(
+            "_")) + " ON " + table._dbTableNameLC + " ( " + columns.map(
+            _.indexDesc).comma + " )"
 
         val createStatement = index match {
           case i: net.liftweb.mapper.Index[_] =>
@@ -517,46 +514,43 @@ object Schemifier extends Loggable {
     val ret =
       if (connection.supportsForeignKeys_? && MapperRules.createForeignKeys_?(
             dbId)) {
-        table.mappedFields
-          .flatMap { f =>
-            f match {
-              case f: BaseMappedField with BaseForeignKey => List(f);
-              case _                                      => Nil
-            }
+        table.mappedFields.flatMap { f =>
+          f match {
+            case f: BaseMappedField with BaseForeignKey => List(f);
+            case _                                      => Nil
           }
-          .toList
-          .flatMap {
-            field =>
-              val other = field.dbKeyToTable
-              val otherTable = actualTableNames(other._dbTableNameLC)
-              val myTable = actualTableNames(table._dbTableNameLC)
+        }.toList.flatMap {
+          field =>
+            val other = field.dbKeyToTable
+            val otherTable = actualTableNames(other._dbTableNameLC)
+            val myTable = actualTableNames(table._dbTableNameLC)
 
-              val md = connection.getMetaData
-              // val rs = md.getCrossReference(null, null,otherTable , null, null, myTable)
-              var foundIt = false
-              using(
-                md.getImportedKeys(
-                  null,
-                  getDefaultSchemaName(connection),
-                  myTable))(rs =>
-                //val rs = md.getCrossReference(null, null,myTable , null, null, otherTable)
-                while (!foundIt && rs.next) {
-                  val pkName = rs.getString(4)
-                  val fkName = rs.getString(8)
-                  foundIt =
-                    (field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase)
-                })
+            val md = connection.getMetaData
+            // val rs = md.getCrossReference(null, null,otherTable , null, null, myTable)
+            var foundIt = false
+            using(
+              md.getImportedKeys(
+                null,
+                getDefaultSchemaName(connection),
+                myTable))(rs =>
+              //val rs = md.getCrossReference(null, null,myTable , null, null, otherTable)
+              while (!foundIt && rs.next) {
+                val pkName = rs.getString(4)
+                val fkName = rs.getString(8)
+                foundIt =
+                  (field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase)
+              })
 
-              if (!foundIt) {
-                cmds += maybeWrite(performWrite, logFunc, connection) {
-                  () =>
-                    "ALTER TABLE " + table._dbTableNameLC + " ADD FOREIGN KEY ( " + field._dbColumnNameLC + " ) REFERENCES " + other._dbTableNameLC + " ( " + field.dbKeyToColumn._dbColumnNameLC + " ) "
-                }
-                field.dbAddedForeignKey.toList
-              } else {
-                Nil
+            if (!foundIt) {
+              cmds += maybeWrite(performWrite, logFunc, connection) {
+                () =>
+                  "ALTER TABLE " + table._dbTableNameLC + " ADD FOREIGN KEY ( " + field._dbColumnNameLC + " ) REFERENCES " + other._dbTableNameLC + " ( " + field.dbKeyToColumn._dbColumnNameLC + " ) "
               }
-          }
+              field.dbAddedForeignKey.toList
+            } else {
+              Nil
+            }
+        }
       } else {
         Nil
       }

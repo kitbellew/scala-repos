@@ -25,9 +25,8 @@ class ScalaLibraryProperties
   def getState = {
     val state = new ScalaLibraryPropertiesState()
     state.languageLevel = languageLevel.proxy
-    state.compilerClasspath = compilerClasspath
-      .map(file => pathToUrl(toCanonicalPath(file.getAbsolutePath)))
-      .toArray
+    state.compilerClasspath = compilerClasspath.map(file =>
+      pathToUrl(toCanonicalPath(file.getAbsolutePath))).toArray
     state
   }
 

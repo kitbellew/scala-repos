@@ -45,10 +45,8 @@ object InterpolatedStringParser extends StringParser {
               else
                 next match {
                   case Some(e) if isTextElement(e) =>
-                    FormatSpecifierPattern
-                      .findFirstIn(textIn(e))
-                      .map(format =>
-                        Specifier(Span(e, 0, format.length), format))
+                    FormatSpecifierPattern.findFirstIn(textIn(e)).map(format =>
+                      Specifier(Span(e, 0, format.length), format))
                   case _ => None
                 }
             Injection(actualExpression, specifier)
@@ -58,10 +56,8 @@ object InterpolatedStringParser extends StringParser {
               val s = textIn(e)
               if (!formatted) s
               else
-                FormatSpecifierPattern
-                  .findFirstIn(s)
-                  .map(format => s.substring(format.length))
-                  .getOrElse(s)
+                FormatSpecifierPattern.findFirstIn(s).map(format =>
+                  s.substring(format.length)).getOrElse(s)
             }
             Text(text)
           case (e, _)

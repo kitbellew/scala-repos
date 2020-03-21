@@ -45,9 +45,9 @@ final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration)
 
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes): (GraphStageLogic, InputStream) = {
-    val maxBuffer = inheritedAttributes
-      .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-      .max
+    val maxBuffer = inheritedAttributes.getAttribute(
+      classOf[InputBuffer],
+      InputBuffer(16, 16)).max
     require(maxBuffer > 0, "Buffer size must be greater than 0")
 
     val dataQueue =
@@ -145,8 +145,9 @@ private[akka] class InputStreamAdapter(
         detachedChunk match {
           case None ⇒
             try {
-              sharedBuffer
-                .poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
+              sharedBuffer.poll(
+                readTimeout.toMillis,
+                TimeUnit.MILLISECONDS) match {
                 case Data(data) ⇒
                   detachedChunk = Some(data)
                   readBytes(a, begin, length)

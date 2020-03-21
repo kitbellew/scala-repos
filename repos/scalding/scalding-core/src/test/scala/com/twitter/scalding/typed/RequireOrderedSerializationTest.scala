@@ -26,8 +26,7 @@ class NoOrderdSerJob(args: Args) extends Job(args) {
   override def config =
     super.config + (Config.ScaldingRequireOrderedSerialization -> "true")
 
-  TypedPipe
-    .from(TypedTsv[(String, String)]("input"))
+  TypedPipe.from(TypedTsv[(String, String)]("input"))
     .group
     .max
     .write(TypedTsv[(String, String)]("output"))
@@ -41,8 +40,7 @@ class OrderdSerJob(args: Args) extends Job(args) {
   override def config =
     super.config + (Config.ScaldingRequireOrderedSerialization -> "true")
 
-  TypedPipe
-    .from(TypedTsv[(String, String)]("input"))
+  TypedPipe.from(TypedTsv[(String, String)]("input"))
     .group
     .sorted
     .max

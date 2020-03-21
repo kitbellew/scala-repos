@@ -61,11 +61,9 @@ object TestJob {
 class TestJobWithOffline(env: Env) extends AbstractJob(env) {
   import TestJob._
 
-  EventSource
-    .fromOnline {
-      Spout.fromTraversable(1 to 100)
-    }
-    .withTime(new Date(_))
+  EventSource.fromOnline {
+    Spout.fromTraversable(1 to 100)
+  }.withTime(new Date(_))
     .map { i => (100L, i) }
     .groupAndSumTo(offlineStore)
 }
@@ -73,11 +71,9 @@ class TestJobWithOffline(env: Env) extends AbstractJob(env) {
 class TestJobWithOnline(env: Env) extends AbstractJob(env) {
   import TestJob._
 
-  EventSource
-    .fromOnline {
-      Spout.fromTraversable(1 to 100)
-    }
-    .withTime(new Date(_))
+  EventSource.fromOnline {
+    Spout.fromTraversable(1 to 100)
+  }.withTime(new Date(_))
     .map { i => (100L, i) }
     .groupAndSumTo(onlineStore)
 }

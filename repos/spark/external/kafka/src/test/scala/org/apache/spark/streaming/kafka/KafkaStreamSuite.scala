@@ -55,9 +55,8 @@ class KafkaStreamSuite
   }
 
   test("Kafka input stream") {
-    val sparkConf = new SparkConf()
-      .setMaster("local[4]")
-      .setAppName(this.getClass.getSimpleName)
+    val sparkConf = new SparkConf().setMaster("local[4]").setAppName(
+      this.getClass.getSimpleName)
     ssc = new StreamingContext(sparkConf, Milliseconds(500))
     val topic = "topic1"
     val sent = Map("a" -> 5, "b" -> 3, "c" -> 10)

@@ -188,8 +188,10 @@ class ScObjectImpl protected (
             val res = new ArrayBuffer[PsiMethod]
             c.getSyntheticMethodsText.foreach(s => {
               try {
-                val method = ScalaPsiElementFactory
-                  .createMethodWithContext(s, c.getContext, c)
+                val method = ScalaPsiElementFactory.createMethodWithContext(
+                  s,
+                  c.getContext,
+                  c)
                 method.setSynthetic(this)
                 method.syntheticCaseClass = Some(c)
                 res += method
@@ -228,19 +230,16 @@ class ScObjectImpl protected (
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   private def getModuleField: Option[PsiField] = {
-    if (getQualifiedName
-          .split('.')
-          .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this)))) None
+    if (getQualifiedName.split('.').exists(
+          JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this)))) None
     else {
       val field: LightField = new LightField(
         getManager,
-        JavaPsiFacade
-          .getInstance(getProject)
-          .getElementFactory
-          .createFieldFromText(
-            "public final static " + getQualifiedName + " MODULE$",
-            this
-          ),
+        JavaPsiFacade.getInstance(
+          getProject).getElementFactory.createFieldFromText(
+          "public final static " + getQualifiedName + " MODULE$",
+          this
+        ),
         this)
       field.setNavigationElement(this)
       Some(field)

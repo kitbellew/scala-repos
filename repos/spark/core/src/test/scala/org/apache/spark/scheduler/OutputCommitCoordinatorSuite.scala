@@ -132,8 +132,9 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
           }
         }
       }
-    }).when(mockTaskScheduler)
-      .createTaskSetManager(Matchers.any(), Matchers.any())
+    }).when(mockTaskScheduler).createTaskSetManager(
+      Matchers.any(),
+      Matchers.any())
 
     sc.taskScheduler = mockTaskScheduler
     val dagSchedulerWithMockTaskScheduler =
@@ -169,12 +170,10 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
 
   test("Job should not complete if all commits are denied") {
     // Create a mock OutputCommitCoordinator that denies all attempts to commit
-    doReturn(false)
-      .when(outputCommitCoordinator)
-      .handleAskPermissionToCommit(
-        Matchers.any(),
-        Matchers.any(),
-        Matchers.any())
+    doReturn(false).when(outputCommitCoordinator).handleAskPermissionToCommit(
+      Matchers.any(),
+      Matchers.any(),
+      Matchers.any())
     val rdd: RDD[Int] = sc.parallelize(Seq(1), 1)
     def resultHandler(x: Int, y: Unit): Unit = {}
     val futureAction: SimpleFutureAction[Unit] = sc.submitJob[Int, Unit, Unit](
@@ -202,8 +201,10 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
     assert(
       outputCommitCoordinator.canCommit(stage, partition, authorizedCommitter))
     assert(
-      !outputCommitCoordinator
-        .canCommit(stage, partition, nonAuthorizedCommitter))
+      !outputCommitCoordinator.canCommit(
+        stage,
+        partition,
+        nonAuthorizedCommitter))
     // The non-authorized committer fails
     outputCommitCoordinator.taskCompleted(
       stage,
@@ -212,8 +213,10 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
       reason = TaskKilled)
     // New tasks should still not be able to commit because the authorized committer has not failed
     assert(
-      !outputCommitCoordinator
-        .canCommit(stage, partition, nonAuthorizedCommitter + 1))
+      !outputCommitCoordinator.canCommit(
+        stage,
+        partition,
+        nonAuthorizedCommitter + 1))
     // The authorized committer now fails, clearing the lock
     outputCommitCoordinator.taskCompleted(
       stage,
@@ -222,12 +225,16 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
       reason = TaskKilled)
     // A new task should now be allowed to become the authorized committer
     assert(
-      outputCommitCoordinator
-        .canCommit(stage, partition, nonAuthorizedCommitter + 2))
+      outputCommitCoordinator.canCommit(
+        stage,
+        partition,
+        nonAuthorizedCommitter + 2))
     // There can only be one authorized committer
     assert(
-      !outputCommitCoordinator
-        .canCommit(stage, partition, nonAuthorizedCommitter + 3))
+      !outputCommitCoordinator.canCommit(
+        stage,
+        partition,
+        nonAuthorizedCommitter + 3))
   }
 }
 

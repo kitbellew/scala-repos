@@ -32,8 +32,7 @@ object OAuthRequestVerifier {
     if (input == null) {
       ""
     } else {
-      java.net.URLEncoder
-        .encode(input, "UTF-8")
+      java.net.URLEncoder.encode(input, "UTF-8")
         .replace("+", "%20")
         .replace("*", "%2A")
         .replace("%7E", "~")
@@ -123,15 +122,11 @@ object OAuthRequestVerifier {
     // See https://dev.twitter.com/docs/auth/creating-signature
 
     // Params must be percent encoded before they are sorted
-    val parameterString = params
-      .map {
-        case (key, value) => percentEncode(key) -> percentEncode(value)
-      }
-      .sorted
-      .map {
-        case (key, value) => s"$key=$value"
-      }
-      .mkString("&")
+    val parameterString = params.map {
+      case (key, value) => percentEncode(key) -> percentEncode(value)
+    }.sorted.map {
+      case (key, value) => s"$key=$value"
+    }.mkString("&")
 
     val signatureBaseString =
       s"${method.toUpperCase(Locale.ENGLISH)}&${percentEncode(baseUrl)}&${percentEncode(parameterString)}"

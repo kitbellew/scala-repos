@@ -59,16 +59,15 @@ object OpenSSL {
     if (initializedLibrary.compareAndSet(false, true)) {
       aprInitMethod.invoke(aprClass, null)
       sslInitMethod.invoke(sslClass, null)
-      mallocPool = poolCreateMethod
-        .invoke(poolClass, 0L.asInstanceOf[AnyRef])
-        .asInstanceOf[AnyRef]
+      mallocPool = poolCreateMethod.invoke(
+        poolClass,
+        0L.asInstanceOf[AnyRef]).asInstanceOf[AnyRef]
 
       // We need to know how many workers might need buffers simultaneously, and to allocate a large
       // enough pool.
       val capacity = Runtime.getRuntime().availableProcessors() * 2
-      bufferPool = bufferPoolCtor
-        .newInstance(capacity.asInstanceOf[AnyRef])
-        .asInstanceOf[AnyRef]
+      bufferPool = bufferPoolCtor.newInstance(
+        capacity.asInstanceOf[AnyRef]).asInstanceOf[AnyRef]
     }
   }
 
@@ -121,9 +120,9 @@ object OpenSSL {
         "OpenSSL context instantiated for certificate '%s'".format(
           certificatePath))
 
-      linker.contextHolderCtor
-        .newInstance(mallocPool, config.asInstanceOf[AnyRef])
-        .asInstanceOf[AnyRef]
+      linker.contextHolderCtor.newInstance(
+        mallocPool,
+        config.asInstanceOf[AnyRef]).asInstanceOf[AnyRef]
     }
 
     val contextHolder = synchronized {
@@ -133,12 +132,10 @@ object OpenSSL {
         makeContextHolder
     }
 
-    val engine: SSLEngine = linker.sslEngineCtor
-      .newInstance(
-        contextHolder,
-        bufferPool
-      )
-      .asInstanceOf[SSLEngine]
+    val engine: SSLEngine = linker.sslEngineCtor.newInstance(
+      contextHolder,
+      bufferPool
+    ).asInstanceOf[SSLEngine]
 
     Some(new Engine(engine, true))
   }

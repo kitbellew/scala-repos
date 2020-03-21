@@ -37,11 +37,9 @@ trait LinkConverter { self: RequestCache =>
     // escape HTML tags
     val escaped =
       if (escapeHtml)
-        text
-          .replace("&", "&amp;")
-          .replace("<", "&lt;")
-          .replace(">", "&gt;")
-          .replace("\"", "&quot;")
+        text.replace("&", "&amp;").replace("<", "&lt;").replace(
+          ">",
+          "&gt;").replace("\"", "&quot;")
       else text
 
     escaped
@@ -50,9 +48,9 @@ trait LinkConverter { self: RequestCache =>
         "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)@([a-f0-9]{40})(?=(\\W|$))".r) {
         m =>
           getAccountByUserName(m.group(2)).map { _ =>
-            s"""<a href="${context.path}/${m.group(2)}/${m.group(3)}/commit/${m
-              .group(4)}">${m.group(2)}/${m
-              .group(3)}@${m.group(4).substring(0, 7)}</a>"""
+            s"""<a href="${context.path}/${m.group(2)}/${m.group(
+              3)}/commit/${m.group(4)}">${m.group(2)}/${m.group(3)}@${m.group(
+              4).substring(0, 7)}</a>"""
           }
       }
       // convert username/project#Num to link
@@ -77,8 +75,8 @@ trait LinkConverter { self: RequestCache =>
         ("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)@([a-f0-9]{40})(?=(\\W|$))").r) { m =>
         getAccountByUserName(m.group(2)).map { _ =>
           s"""<a href="${context.path}/${m.group(
-            2)}/${repository.name}/commit/${m.group(3)}">${m
-            .group(2)}@${m.group(3).substring(0, 7)}</a>"""
+            2)}/${repository.name}/commit/${m.group(3)}">${m.group(
+            2)}@${m.group(3).substring(0, 7)}</a>"""
         }
       }
       // convert username#Num to link
@@ -88,12 +86,12 @@ trait LinkConverter { self: RequestCache =>
           getIssue(m.group(2), repository.name, m.group(3)) match {
             case Some(issue) if (issue.isPullRequest) =>
               Some(s"""<a href="${context.path}/${m.group(
-                2)}/${repository.name}/pull/${m.group(3)}">${m.group(2)}#${m
-                .group(3)}</a>""")
+                2)}/${repository.name}/pull/${m.group(3)}">${m.group(
+                2)}#${m.group(3)}</a>""")
             case Some(_) =>
               Some(s"""<a href="${context.path}/${m.group(
-                2)}/${repository.name}/issues/${m.group(3)}">${m.group(2)}#${m
-                .group(3)}</a>""")
+                2)}/${repository.name}/issues/${m.group(3)}">${m.group(
+                2)}#${m.group(3)}</a>""")
             case None =>
               Some(s"""${m.group(2)}#${m.group(3)}""")
           }
@@ -105,12 +103,12 @@ trait LinkConverter { self: RequestCache =>
         getIssue(repository.owner, repository.name, m.group(3)) match {
           case Some(issue) if (issue.isPullRequest) =>
             Some(
-              s"""<a href="${context.path}/${repository.owner}/${repository.name}/pull/${m
-                .group(3)}">${prefix}${m.group(3)}</a>""")
+              s"""<a href="${context.path}/${repository.owner}/${repository.name}/pull/${m.group(
+                3)}">${prefix}${m.group(3)}</a>""")
           case Some(_) =>
             Some(
-              s"""<a href="${context.path}/${repository.owner}/${repository.name}/issues/${m
-                .group(3)}">${prefix}${m.group(3)}</a>""")
+              s"""<a href="${context.path}/${repository.owner}/${repository.name}/issues/${m.group(
+                3)}">${prefix}${m.group(3)}</a>""")
           case None =>
             Some(s"""${m.group(2)}${m.group(3)}""")
         }

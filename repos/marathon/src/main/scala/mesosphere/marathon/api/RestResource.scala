@@ -38,18 +38,15 @@ trait RestResource {
   }
 
   protected def notFound(message: String): Response = {
-    Response
-      .status(Status.NOT_FOUND)
-      .entity(jsonObjString("message" -> message))
-      .build()
+    Response.status(Status.NOT_FOUND).entity(
+      jsonObjString("message" -> message)).build()
   }
 
   protected def deploymentResult(
       d: DeploymentPlan,
       response: ResponseBuilder = Response.ok()) = {
-    response
-      .entity(jsonObjString("version" -> d.version, "deploymentId" -> d.id))
-      .build()
+    response.entity(
+      jsonObjString("version" -> d.version, "deploymentId" -> d.id)).build()
   }
 
   protected def status(code: Status) = Response.status(code).build()

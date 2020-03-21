@@ -71,10 +71,8 @@ sealed trait SValue {
               case JPathIndex(_) => SArray.Empty
             }
 
-            obj
-              .getOrElse(name, child)
-              .set(JPath(xs), value)
-              .map(sv => (SObject(obj + (name -> sv))))
+            obj.getOrElse(name, child).set(JPath(xs), value).map(sv =>
+              (SObject(obj + (name -> sv))))
         }
 
       case SArray(arr) =>
@@ -87,11 +85,8 @@ sealed trait SValue {
               case JPathIndex(_) => SArray.Empty
             }
 
-            arr
-              .lift(i)
-              .getOrElse(child)
-              .set(JPath(xs), value)
-              .map(sv => SArray(arr.padTo(i + 1, SNull).updated(i, sv)))
+            arr.lift(i).getOrElse(child).set(JPath(xs), value).map(sv =>
+              SArray(arr.padTo(i + 1, SNull).updated(i, sv)))
         }
 
       case SNull if (selector == JPath.Identity) => Some(value)
@@ -202,11 +197,11 @@ trait SValueInstances {
       private val objectOrder = (o1: Map[String, SValue]) =>
         (o2: Map[String, SValue]) => {
           (o1.size ?|? o2.size) |+|
-            (o1.toSeq.sortBy(_._1) zip o2.toSeq.sortBy(_._1))
-              .foldLeft[Ordering](EQ) {
-                case (ord, ((k1, v1), (k2, v2))) =>
-                  ord |+| (k1 ?|? k2) |+| (v1 ?|? v2)
-              }
+            (o1.toSeq.sortBy(_._1) zip o2.toSeq.sortBy(_._1)).foldLeft[
+              Ordering](EQ) {
+              case (ord, ((k1, v1), (k2, v2))) =>
+                ord |+| (k1 ?|? k2) |+| (v1 ?|? v2)
+            }
         }
 
       private val arrayOrder = (o1: Vector[SValue]) =>

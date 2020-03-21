@@ -803,8 +803,8 @@ object Serializers {
             ConstructorExportDef(readString(), readParamDefs(), readTree())
           if (foundArguments) {
             foundArguments = false
-            new RewriteArgumentsTransformer()
-              .transformConstructorExportDef(result)
+            new RewriteArgumentsTransformer().transformConstructorExportDef(
+              result)
           } else {
             result
           }
@@ -1002,14 +1002,12 @@ object Serializers {
       tree match {
         case VarRef(Ident(name, origName)) =>
           implicit val pos = tree.pos
-          paramToIndex
-            .get(name)
-            .fold {
-              if (name == "arguments") argumentsRef
-              else tree
-            } { paramIndex =>
-              JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
-            }
+          paramToIndex.get(name).fold {
+            if (name == "arguments") argumentsRef
+            else tree
+          } { paramIndex =>
+            JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
+          }
 
         case _ =>
           super.transform(tree, isStat)

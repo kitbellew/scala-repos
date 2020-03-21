@@ -175,8 +175,9 @@ case class DefaultOptimalSizeExploringResizer(
   checkParamAsPositiveNum(upperBound, "upperBound")
   if (upperBound < lowerBound)
     throw new IllegalArgumentException(
-      "upperBound must be >= lowerBound, was: [%s] < [%s]"
-        .format(upperBound, lowerBound))
+      "upperBound must be >= lowerBound, was: [%s] < [%s]".format(
+        upperBound,
+        lowerBound))
 
   checkParamLowerBound(
     numOfAdjacentSizesToConsiderDuringOptimization,
@@ -297,18 +298,10 @@ case class DefaultOptimalSizeExploringResizer(
       val sizes = performanceLog.keys.toSeq
       val numOfSizesEachSide =
         numOfAdjacentSizesToConsiderDuringOptimization / 2
-      val leftBoundary = sizes
-        .filter(_ < currentSize)
-        .sortBy(adjacency)
-        .take(numOfSizesEachSide)
-        .lastOption
-        .getOrElse(currentSize)
-      val rightBoundary = sizes
-        .filter(_ >= currentSize)
-        .sortBy(adjacency)
-        .take(numOfSizesEachSide)
-        .lastOption
-        .getOrElse(currentSize)
+      val leftBoundary = sizes.filter(_ < currentSize).sortBy(adjacency).take(
+        numOfSizesEachSide).lastOption.getOrElse(currentSize)
+      val rightBoundary = sizes.filter(_ >= currentSize).sortBy(adjacency).take(
+        numOfSizesEachSide).lastOption.getOrElse(currentSize)
       performanceLog.filter {
         case (size, _) ⇒ size >= leftBoundary && size <= rightBoundary
       }

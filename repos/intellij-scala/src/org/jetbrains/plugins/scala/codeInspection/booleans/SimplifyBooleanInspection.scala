@@ -91,10 +91,9 @@ object SimplifyBooleanUtil {
   }
 
   private def isOfBooleanType(expr: ScExpression): Boolean =
-    expr
-      .getType(TypingContext.empty)
-      .getOrAny
-      .conforms(lang.psi.types.Boolean, checkWeak = true)
+    expr.getType(TypingContext.empty).getOrAny.conforms(
+      lang.psi.types.Boolean,
+      checkWeak = true)
 
   private def getScExprChildren(expr: ScExpression) =
     expr.children.collect { case expr: ScExpression => expr }.toList
@@ -166,12 +165,14 @@ object SimplifyBooleanUtil {
               (true, "&") | (false, "||") | (false, "|") =>
             expr.getText
           case (false, "==") | (true, "!=") | (true, "^") =>
-            val negated: ScPrefixExpr = ScalaPsiElementFactory
-              .createExpressionFromText("!a", manager)
-              .asInstanceOf[ScPrefixExpr]
+            val negated: ScPrefixExpr =
+              ScalaPsiElementFactory.createExpressionFromText(
+                "!a",
+                manager).asInstanceOf[ScPrefixExpr]
             val copyExpr = expr.copy.asInstanceOf[ScExpression]
-            negated.operand
-              .replaceExpression(copyExpr, removeParenthesis = true)
+            negated.operand.replaceExpression(
+              copyExpr,
+              removeParenthesis = true)
             negated.getText
           case (true, "||") | (true, "|") =>
             ScalaKeyword.TRUE

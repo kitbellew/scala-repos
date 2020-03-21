@@ -52,19 +52,20 @@ object EphemeralStreamTest extends SpecLite {
 
   "take from infinite stream" in {
     val n = util.Random.nextInt(1000)
-    EphemeralStream.iterate(0)(_ + 1).take(n) must_=== (EphemeralStream
-      .fromStream(Stream.iterate(0)(_ + 1).take(n)))
+    EphemeralStream.iterate(0)(_ + 1).take(
+      n) must_=== (EphemeralStream.fromStream(Stream.iterate(0)(_ + 1).take(n)))
   }
 
   "takeWhile" ! forAll { (xs: Stream[Int], n: Int) =>
-    EphemeralStream.fromStream(xs).takeWhile(_ < n) must_=== (EphemeralStream
-      .fromStream(xs.takeWhile(_ < n)))
+    EphemeralStream.fromStream(xs).takeWhile(
+      _ < n) must_=== (EphemeralStream.fromStream(xs.takeWhile(_ < n)))
   }
 
   "takeWhile from infinite stream" in {
     val n = util.Random.nextInt(1000)
-    EphemeralStream.iterate(0)(_ + 1).takeWhile(_ < n) must_=== (EphemeralStream
-      .fromStream(Stream.iterate(0)(_ + 1).takeWhile(_ < n)))
+    EphemeralStream.iterate(0)(_ + 1).takeWhile(
+      _ < n) must_=== (EphemeralStream.fromStream(
+      Stream.iterate(0)(_ + 1).takeWhile(_ < n)))
   }
 
   "index" ! forAll { (xs: EphemeralStream[Int], i: Int) =>
@@ -74,8 +75,9 @@ object EphemeralStreamTest extends SpecLite {
   "index infinite stream" in {
     val i = util.Random.nextInt(1000)
     val xs = Stream from 0
-    Foldable[EphemeralStream]
-      .index(EphemeralStream.fromStream(xs), i) must_=== (xs.lift.apply(i))
+    Foldable[EphemeralStream].index(
+      EphemeralStream.fromStream(xs),
+      i) must_=== (xs.lift.apply(i))
   }
 
   "inits" ! forAll { xs: EphemeralStream[Int] =>
@@ -95,9 +97,7 @@ object EphemeralStreamTest extends SpecLite {
 
   "tails infinite stream" in {
     val n = util.Random.nextInt(1000)
-    EphemeralStream
-      .iterate(0)(_ + 1)
-      .tails
+    EphemeralStream.iterate(0)(_ + 1).tails
       .map(t => Foldable[EphemeralStream].toStream(t.take(n)))
       .take(n) must_=== (
       EphemeralStream.fromStream(
@@ -132,10 +132,8 @@ object EphemeralStreamTest extends SpecLite {
   }
 
   "zipWithIndex" ! forAll { (xs: Stream[Int], n: Int) =>
-    EphemeralStream
-      .fromStream(xs)
-      .take(n)
-      .zipWithIndex must_=== (EphemeralStream.fromStream(
+    EphemeralStream.fromStream(xs).take(
+      n).zipWithIndex must_=== (EphemeralStream.fromStream(
       xs.take(n).zipWithIndex))
   }
 

@@ -31,16 +31,14 @@ class GraphPartialSpec extends AkkaSpec {
         FlowShape(bcast.in, zip.out)
       }
 
-      val (_, _, result) = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
-            implicit b ⇒ (d1, d2, sink) ⇒
-              Source(List(1, 2, 3)) ~> d1.in
-              d1.out ~> d2.in
-              d2.out.grouped(100) ~> sink.in
-              ClosedShape
-          })
-        .run()
+      val (_, _, result) = RunnableGraph.fromGraph(
+        GraphDSL.create(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
+          implicit b ⇒ (d1, d2, sink) ⇒
+            Source(List(1, 2, 3)) ~> d1.in
+            d1.out ~> d2.in
+            d2.out.grouped(100) ~> sink.in
+            ClosedShape
+        }).run()
 
       Await.result(result, 3.seconds) should be(List(4, 8, 12))
     }
@@ -56,16 +54,14 @@ class GraphPartialSpec extends AkkaSpec {
         FlowShape(bcast.in, zip.out)
       }
 
-      val (sub1, sub2, result) = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
-            implicit b ⇒ (d1, d2, sink) ⇒
-              Source(List(1, 2, 3)) ~> d1.in
-              d1.out ~> d2.in
-              d2.out.grouped(100) ~> sink.in
-              ClosedShape
-          })
-        .run()
+      val (sub1, sub2, result) = RunnableGraph.fromGraph(
+        GraphDSL.create(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
+          implicit b ⇒ (d1, d2, sink) ⇒
+            Source(List(1, 2, 3)) ~> d1.in
+            d1.out ~> d2.in
+            d2.out.grouped(100) ~> sink.in
+            ClosedShape
+        }).run()
 
       Await.result(result, 3.seconds) should be(List(4, 8, 12))
       Await.result(sub1, 3.seconds) should be(List(1, 2, 3))
@@ -91,16 +87,14 @@ class GraphPartialSpec extends AkkaSpec {
           FlowShape(bcast.in, bcast2.out(1))
       }
 
-      val (sub1, sub2, result) = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
-            implicit b ⇒ (d1, d2, sink) ⇒
-              Source(List(1, 2, 3)) ~> d1.in
-              d1.out ~> d2.in
-              d2.out.grouped(100) ~> sink.in
-              ClosedShape
-          })
-        .run()
+      val (sub1, sub2, result) = RunnableGraph.fromGraph(
+        GraphDSL.create(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
+          implicit b ⇒ (d1, d2, sink) ⇒
+            Source(List(1, 2, 3)) ~> d1.in
+            d1.out ~> d2.in
+            d2.out.grouped(100) ~> sink.in
+            ClosedShape
+        }).run()
 
       Await.result(result, 3.seconds) should be(List(4, 8, 12))
       Await.result(sub1._1, 3.seconds) should be(6)
@@ -114,15 +108,14 @@ class GraphPartialSpec extends AkkaSpec {
         FlowShape(flow.in, flow.out)
       }
 
-      val fut = RunnableGraph
-        .fromGraph(GraphDSL.create(Sink.head[Int], p)(Keep.left) {
+      val fut =
+        RunnableGraph.fromGraph(GraphDSL.create(Sink.head[Int], p)(Keep.left) {
           implicit b ⇒ (sink, flow) ⇒
             import GraphDSL.Implicits._
             Source.single(0) ~> flow.in
             flow.out ~> sink.in
             ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(fut, 3.seconds) should be(1)
 

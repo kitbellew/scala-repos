@@ -124,11 +124,10 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       if (completionChar == '\t') {
         file.findElementAt(startOffset) match {
           case elem
-              if elem.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER && elem.getParent
-                .isInstanceOf[ScReferenceExpression]
+              if elem.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER && elem.getParent.isInstanceOf[
+                ScReferenceExpression]
                 && elem.getParent.getParent.isInstanceOf[
-                  ScReferenceExpression] && item.getAllLookupStrings
-                .size() > 1 =>
+                  ScReferenceExpression] && item.getAllLookupStrings.size() > 1 =>
             val ref = elem.getParent.asInstanceOf[ScReferenceExpression]
             val newRefText = ref.getText
             val newRef = ScalaPsiElementFactory.createExpressionFromText(
@@ -345,14 +344,13 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                   document.insertString(endOffset, " ")
                   endOffset += 1
                   editor.getCaretModel.moveToOffset(endOffset + someNum)
-                } else if (endOffset == document.getTextLength || document.getCharsSequence
-                             .charAt(endOffset) != '(') {
+                } else if (endOffset == document.getTextLength || document.getCharsSequence.charAt(
+                             endOffset) != '(') {
                   disableParenthesesCompletionChar()
                   if (!item.etaExpanded) {
                     if (context.getCompletionChar == '{') {
-                      if (ScalaPsiUtil
-                            .getSettings(context.getProject)
-                            .SPACE_BEFORE_BRACE_METHOD_CALL) {
+                      if (ScalaPsiUtil.getSettings(
+                            context.getProject).SPACE_BEFORE_BRACE_METHOD_CALL) {
                         insertIfNeeded(
                           placeInto = true,
                           openChar = '{',
@@ -380,9 +378,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                     endOffset += 2
                     editor.getCaretModel.moveToOffset(endOffset)
                   }
-                  AutoPopupController
-                    .getInstance(element.getProject)
-                    .autoPopupParameterInfo(editor, element)
+                  AutoPopupController.getInstance(
+                    element.getProject).autoPopupParameterInfo(editor, element)
                 } else if (completionChar != ',') {
                   editor.getCaretModel.moveToOffset(endOffset + 1 + someNum)
                 } else moveCaretIfNeeded()

@@ -50,9 +50,8 @@ abstract class AbstractFixOnTwoPsiElements[T <: PsiElement, S <: PsiElement](
     second: S)
     extends LocalQuickFixOnPsiElement(first) {
 
-  private val secondRef = SmartPointerManager
-    .getInstance(second.getProject)
-    .createSmartPsiElementPointer(second)
+  private val secondRef = SmartPointerManager.getInstance(
+    second.getProject).createSmartPsiElementPointer(second)
 
   override def getText: String = name
 

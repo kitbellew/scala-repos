@@ -129,9 +129,8 @@ class UISeleniumSuite
           _.matches("Completed Batches \\(last \\d+ out of \\d+\\)")) should be(
           true)
 
-        findAll(cssSelector("""#active-batches-table th"""))
-          .map(_.text)
-          .toSeq should be {
+        findAll(cssSelector("""#active-batches-table th""")).map(
+          _.text).toSeq should be {
           List(
             "Batch Time",
             "Input Size",
@@ -140,9 +139,8 @@ class UISeleniumSuite
             "Output Ops: Succeeded/Total",
             "Status")
         }
-        findAll(cssSelector("""#completed-batches-table th"""))
-          .map(_.text)
-          .toSeq should be {
+        findAll(cssSelector("""#completed-batches-table th""")).map(
+          _.text).toSeq should be {
           List(
             "Batch Time",
             "Input Size",
@@ -153,9 +151,8 @@ class UISeleniumSuite
         }
 
         val batchLinks =
-          findAll(cssSelector("""#completed-batches-table a"""))
-            .flatMap(_.attribute("href"))
-            .toSeq
+          findAll(cssSelector("""#completed-batches-table a""")).flatMap(
+            _.attribute("href")).toSeq
         batchLinks.size should be >= 1
 
         // Check a normal batch page
@@ -167,9 +164,8 @@ class UISeleniumSuite
         summaryText should contain("Processing time:")
         summaryText should contain("Total delay:")
 
-        findAll(cssSelector("""#batch-job-table th"""))
-          .map(_.text)
-          .toSeq should be {
+        findAll(cssSelector("""#batch-job-table th""")).map(
+          _.text).toSeq should be {
           List(
             "Output Op Id",
             "Description",
@@ -197,9 +193,8 @@ class UISeleniumSuite
         jobLinks.size should be(4)
 
         // Check stage progress
-        findAll(cssSelector(""".stage-progress-cell"""))
-          .map(_.text)
-          .toList should be(List("1/1", "1/1", "1/1", "0/1 (1 failed)"))
+        findAll(cssSelector(""".stage-progress-cell""")).map(
+          _.text).toList should be(List("1/1", "1/1", "1/1", "0/1 (1 failed)"))
 
         // Check job progress
         findAll(cssSelector(""".progress-cell""")).map(_.text).toList should be(

@@ -28,11 +28,8 @@ object BSONHandlers {
       def reads(r: BSON.Reader) =
         Crazyhouse.Data(
           pockets = {
-            val (white, black) = r
-              .str("p")
-              .toList
-              .flatMap(chess.Piece.fromChar)
-              .partition(_ is chess.White)
+            val (white, black) = r.str("p").toList.flatMap(
+              chess.Piece.fromChar).partition(_ is chess.White)
             Pockets(
               white = Pocket(white.map(_.role)),
               black = Pocket(black.map(_.role)))
@@ -142,8 +139,8 @@ object BSONHandlers {
         clock -> (o.clock map { c => clockBSONWrite(o.createdAt, c) }),
         positionHashes -> w.bytesO(o.positionHashes),
         checkCount -> o.checkCount.nonEmpty.option(o.checkCount),
-        castleLastMoveTime -> CastleLastMoveTime.castleLastMoveTimeBSONHandler
-          .write(o.castleLastMoveTime),
+        castleLastMoveTime -> CastleLastMoveTime.castleLastMoveTimeBSONHandler.write(
+          o.castleLastMoveTime),
         daysPerTurn -> o.daysPerTurn,
         moveTimes -> (BinaryFormat.moveTime write o.moveTimes),
         rated -> w.boolO(o.mode.rated),
@@ -170,13 +167,11 @@ object BSONHandlers {
       blackBerserk: Boolean) =
     new BSONReader[BSONBinary, Color => Clock] {
       def read(bin: BSONBinary) =
-        BinaryFormat
-          .clock(since)
-          .read(
-            ByteArrayBSONHandler read bin,
-            whiteBerserk,
-            blackBerserk
-          )
+        BinaryFormat.clock(since).read(
+          ByteArrayBSONHandler read bin,
+          whiteBerserk,
+          blackBerserk
+        )
     }
   private[game] def clockBSONWrite(since: DateTime, clock: Clock) =
     ByteArrayBSONHandler write {

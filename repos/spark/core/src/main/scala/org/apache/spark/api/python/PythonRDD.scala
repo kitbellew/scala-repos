@@ -105,9 +105,8 @@ private[spark] class PythonRunner(
       context: TaskContext): Iterator[Array[Byte]] = {
     val startTime = System.currentTimeMillis
     val env = SparkEnv.get
-    val localdir = env.blockManager.diskBlockManager.localDirs
-      .map(f => f.getPath())
-      .mkString(",")
+    val localdir = env.blockManager.diskBlockManager.localDirs.map(f =>
+      f.getPath()).mkString(",")
     envVars.put(
       "SPARK_LOCAL_DIRS",
       localdir
@@ -172,8 +171,11 @@ private[spark] class PythonRunner(
               val finish = finishTime - initTime
               val total = finishTime - startTime
               logInfo(
-                "Times: total = %s, boot = %s, init = %s, finish = %s"
-                  .format(total, boot, init, finish))
+                "Times: total = %s, boot = %s, init = %s, finish = %s".format(
+                  total,
+                  boot,
+                  init,
+                  finish))
               val memoryBytesSpilled = stream.readLong()
               val diskBytesSpilled = stream.readLong()
               context.taskMetrics.incMemoryBytesSpilled(memoryBytesSpilled)

@@ -60,8 +60,7 @@ object Publish extends AutoPlugin {
     Some(Resolver.file("Default Local Repository", repository))
 
   private def akkaCredentials: Seq[Credentials] =
-    Option(System.getProperty("akka.publish.credentials", null))
-      .map(f => Credentials(new File(f)))
-      .toSeq
+    Option(System.getProperty("akka.publish.credentials", null)).map(f =>
+      Credentials(new File(f))).toSeq
 
 }

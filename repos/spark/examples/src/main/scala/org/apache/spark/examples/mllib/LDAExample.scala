@@ -74,12 +74,14 @@ object LDAExample {
           s"number of iterations of learning. default: ${defaultParams.maxIterations}")
         .action((x, c) => c.copy(maxIterations = x))
       opt[Double]("docConcentration")
-        .text(s"amount of topic smoothing to use (> 1.0) (-1=auto)." +
-          s"  default: ${defaultParams.docConcentration}")
+        .text(
+          s"amount of topic smoothing to use (> 1.0) (-1=auto)." +
+            s"  default: ${defaultParams.docConcentration}")
         .action((x, c) => c.copy(docConcentration = x))
       opt[Double]("topicConcentration")
-        .text(s"amount of term (word) smoothing to use (> 1.0) (-1=auto)." +
-          s"  default: ${defaultParams.topicConcentration}")
+        .text(
+          s"amount of term (word) smoothing to use (> 1.0) (-1=auto)." +
+            s"  default: ${defaultParams.topicConcentration}")
         .action((x, c) => c.copy(topicConcentration = x))
       opt[Int]("vocabSize")
         .text(
@@ -92,13 +94,15 @@ object LDAExample {
             s"  default: ${defaultParams.stopwordFile}")
         .action((x, c) => c.copy(stopwordFile = x))
       opt[String]("algorithm")
-        .text(s"inference algorithm to use. em and online are supported." +
-          s" default: ${defaultParams.algorithm}")
+        .text(
+          s"inference algorithm to use. em and online are supported." +
+            s" default: ${defaultParams.algorithm}")
         .action((x, c) => c.copy(algorithm = x))
       opt[String]("checkpointDir")
-        .text(s"Directory for checkpointing intermediate results." +
-          s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
-          s"  default: ${defaultParams.checkpointDir}")
+        .text(
+          s"Directory for checkpointing intermediate results." +
+            s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
+            s"  default: ${defaultParams.checkpointDir}")
         .action((x, c) => c.copy(checkpointDir = Some(x)))
       opt[Int]("checkpointInterval")
         .text(
@@ -149,15 +153,14 @@ object LDAExample {
       case "em" => new EMLDAOptimizer
       // add (1.0 / actualCorpusSize) to MiniBatchFraction be more robust on tiny datasets.
       case "online" =>
-        new OnlineLDAOptimizer()
-          .setMiniBatchFraction(0.05 + 1.0 / actualCorpusSize)
+        new OnlineLDAOptimizer().setMiniBatchFraction(
+          0.05 + 1.0 / actualCorpusSize)
       case _ =>
         throw new IllegalArgumentException(
           s"Only em, online are supported but got ${params.algorithm}.")
     }
 
-    lda
-      .setOptimizer(optimizer)
+    lda.setOptimizer(optimizer)
       .setK(params.k)
       .setMaxIterations(params.maxIterations)
       .setDocConcentration(params.docConcentration)
@@ -243,8 +246,7 @@ object LDAExample {
       .setStages(Array(tokenizer, stopWordsRemover, countVectorizer))
 
     val model = pipeline.fit(df)
-    val documents = model
-      .transform(df)
+    val documents = model.transform(df)
       .select("features")
       .rdd
       .map { case Row(features: Vector) => features }
@@ -253,10 +255,8 @@ object LDAExample {
 
     (
       documents,
-      model
-        .stages(2)
-        .asInstanceOf[CountVectorizerModel]
-        .vocabulary, // vocabulary
+      model.stages(2).asInstanceOf[
+        CountVectorizerModel].vocabulary, // vocabulary
       documents.map(_._2.numActives).sum().toLong
     ) // total token count
   }

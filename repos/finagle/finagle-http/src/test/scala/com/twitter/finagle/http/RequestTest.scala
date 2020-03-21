@@ -91,8 +91,10 @@ class RequestTest extends FunSuite {
     assert(Request.queryString() == "")
     assert(Request.queryString(Map.empty[String, String]) == "")
     assert(Request.queryString("/search.json") == "/search.json")
-    assert(Request
-      .queryString("/search.json", Map.empty[String, String]) == "/search.json")
+    assert(
+      Request.queryString(
+        "/search.json",
+        Map.empty[String, String]) == "/search.json")
 
     assert(
       Request.queryString(

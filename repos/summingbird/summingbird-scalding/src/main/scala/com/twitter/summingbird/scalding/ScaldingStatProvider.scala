@@ -26,12 +26,13 @@ private[summingbird] object ScaldingStatProvider extends PlatformStatProvider {
       jobID: JobId): Option[FlowProcess[_]] =
     ScalaTry[FlowProcess[_]] {
       ScaldingRuntimeStats.getFlowProcessForUniqueId(UniqueID(jobID.get))
-    }.recoverWith {
-      case NonFatal(e) =>
-        logger.debug(
-          s"Unable to get Scalding FlowProcess for jobID $jobID, error $e")
-        Failure(e)
-    }.toOption
+    }
+      .recoverWith {
+        case NonFatal(e) =>
+          logger.debug(
+            s"Unable to get Scalding FlowProcess for jobID $jobID, error $e")
+          Failure(e)
+      }.toOption
 
   // Incrementor from PlatformStatProvicer
   // We use a partially applied function: if successful, ScaldingRuntimeStats.getFlowProcessForUniqueId

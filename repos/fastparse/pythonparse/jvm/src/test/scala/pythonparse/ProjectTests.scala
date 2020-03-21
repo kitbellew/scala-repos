@@ -36,27 +36,23 @@ object ProjectTests extends TestSuite {
       .map(_.toString)
       .toSeq
 
-    val grouped = Await
-      .result(
-        Future.sequence(pythonFiles.map { p =>
-          Future {
-            print("-")
-            (
-              Seq(
-                "python",
-                "pythonparse/jvm/src/test/resources/pythonparse/parse.py",
-                p).!,
-              p)
-          }
-        }),
-        Duration.Inf)
-      .groupBy(_._1)
-      .mapValues(_.map(_._2))
+    val grouped = Await.result(
+      Future.sequence(pythonFiles.map { p =>
+        Future {
+          print("-")
+          (
+            Seq(
+              "python",
+              "pythonparse/jvm/src/test/resources/pythonparse/parse.py",
+              p).!,
+            p)
+        }
+      }),
+      Duration.Inf).groupBy(_._1).mapValues(_.map(_._2))
     val selfParsed = grouped(0) groupBy { x =>
       print(".")
-      pythonparse.Statements.file_input
-        .parse(new String(Files.readAllBytes(Paths.get(x))))
-        .getClass
+      pythonparse.Statements.file_input.parse(
+        new String(Files.readAllBytes(Paths.get(x)))).getClass
     }
 
     selfParsed.get(classOf[fastparse.core.Parsed.Failure]) match {

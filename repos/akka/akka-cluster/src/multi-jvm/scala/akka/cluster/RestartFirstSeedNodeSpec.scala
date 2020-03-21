@@ -25,13 +25,11 @@ object RestartFirstSeedNodeMultiJvmSpec extends MultiNodeConfig {
   val seed3 = role("seed3")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+    debugConfig(on = false).withFallback(
+      ConfigFactory.parseString("""
       akka.cluster.auto-down-unreachable-after = off
       akka.cluster.retry-unsuccessful-join-after = 3s
-      """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+      """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 }
 
 class RestartFirstSeedNodeMultiJvmNode1 extends RestartFirstSeedNodeSpec
@@ -56,9 +54,9 @@ abstract class RestartFirstSeedNodeSpec
 
   lazy val restartedSeed1System = ActorSystem(
     system.name,
-    ConfigFactory
-      .parseString("akka.remote.netty.tcp.port=" + seedNodes.head.port.get)
-      .withFallback(system.settings.config))
+    ConfigFactory.parseString(
+      "akka.remote.netty.tcp.port=" + seedNodes.head.port.get).withFallback(
+      system.settings.config))
 
   override def afterAll(): Unit = {
     runOn(seed1) {
@@ -125,8 +123,8 @@ abstract class RestartFirstSeedNodeSpec
           awaitAssert(
             Cluster(restartedSeed1System).readView.members.size should ===(3))
           awaitAssert(
-            Cluster(restartedSeed1System).readView.members
-              .map(_.status) should ===(Set(Up)))
+            Cluster(restartedSeed1System).readView.members.map(
+              _.status) should ===(Set(Up)))
         }
       }
       runOn(seed2, seed3) {

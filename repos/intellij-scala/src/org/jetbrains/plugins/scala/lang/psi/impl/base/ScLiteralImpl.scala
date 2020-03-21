@@ -56,18 +56,16 @@ class ScLiteralImpl(node: ASTNode)
         else Double
       case ScalaTokenTypes.tCHAR => Char
       case ScalaTokenTypes.tSYMBOL =>
-        val sym = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            "scala.Symbol",
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)
+        val sym = ScalaPsiManager.instance(getProject).getCachedClass(
+          "scala.Symbol",
+          getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE)
         if (sym != null) ScType.designator(sym) else Nothing
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tWRONG_STRING |
           ScalaTokenTypes.tMULTILINE_STRING =>
-        val str = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(getResolveScope, "java.lang.String")
+        val str = ScalaPsiManager.instance(getProject).getCachedClass(
+          getResolveScope,
+          "java.lang.String")
         str.map(ScType.designator(_)).getOrElse(Nothing)
       case ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE => Boolean
       case _                                              => return Failure("Wrong Psi to get Literal type", Some(this))
@@ -283,8 +281,9 @@ class ScLiteralImpl(node: ASTNode)
     if (System.currentTimeMillis() > expirationTime || myAnnotationOwner.exists(
           !_.isValid)) {
       myAnnotationOwner = annotationOwnerLookUp(this)
-      expirationTime = System
-        .currentTimeMillis() + (2 + expTimeLengthGenerator.nextInt(8)) * 1000
+      expirationTime =
+        System.currentTimeMillis() + (2 + expTimeLengthGenerator.nextInt(
+          8)) * 1000
     }
 
     myAnnotationOwner

@@ -138,27 +138,22 @@ trait ApiFormats extends ScalatraBase {
       val accepted = fmts.foldLeft(Map.empty[Int, List[String]]) { (acc, f) =>
         val parts = f.split(";").map(_.trim)
         val i = if (parts.size > 1) {
-          val pars = parts(1)
-            .split("=")
-            .map(_.trim)
-            .grouped(2)
-            .find(isValidQPair)
-            .getOrElse(Array("q", "0"))
+          val pars = parts(1).split("=").map(_.trim).grouped(2).find(
+            isValidQPair).getOrElse(Array("q", "0"))
           (pars(1).toDouble * 10).ceil.toInt
         } else 10
         acc + (i -> (parts(0) :: acc.get(i).getOrElse(List.empty)))
       }
-      accepted.toList
-        .sortWith((kv1, kv2) => kv1._1 > kv2._1)
-        .flatMap(_._2.reverse)
+      accepted.toList.sortWith((kv1, kv2) => kv1._1 > kv2._1).flatMap(
+        _._2.reverse)
     } getOrElse Nil
   }
 
   protected def formatForMimeTypes(mimeTypes: String*): Option[String] = {
     val defaultMimeType = formats(defaultFormat.name)
     def matchMimeType(tm: String, f: String) = {
-      tm.toLowerCase(ENGLISH).startsWith(f) || (defaultMimeType == f && tm
-        .contains(defaultMimeType))
+      tm.toLowerCase(ENGLISH).startsWith(
+        f) || (defaultMimeType == f && tm.contains(defaultMimeType))
     }
     mimeTypes find { hdr =>
       formats exists { case (k, v) => matchMimeType(hdr, v) }
@@ -237,13 +232,11 @@ trait ApiFormats extends ScalatraBase {
   def format(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
-    request
-      .get(FormatKey)
-      .fold({
-        val fmt = getFormat
-        request(FormatKey) = fmt
-        fmt
-      })(_.asInstanceOf[String])
+    request.get(FormatKey).fold({
+      val fmt = getFormat
+      request(FormatKey) = fmt
+      fmt
+    })(_.asInstanceOf[String])
   }
 
 }

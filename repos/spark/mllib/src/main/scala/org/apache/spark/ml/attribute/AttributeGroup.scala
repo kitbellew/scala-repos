@@ -77,9 +77,9 @@ class AttributeGroup private (
   }.toArray)
 
   private lazy val nameToIndex: Map[String, Int] = {
-    attributes
-      .map(_.view.flatMap { attr => attr.name.map(_ -> attr.index.get) }.toMap)
-      .getOrElse(Map.empty)
+    attributes.map(_.view.flatMap { attr =>
+      attr.name.map(_ -> attr.index.get)
+    }.toMap).getOrElse(Map.empty)
   }
 
   /** Size of the attribute group. Returns -1 if the size is unknown. */
@@ -221,20 +221,17 @@ object AttributeGroup {
       val attributes = new Array[Attribute](numAttrs)
       val attrMetadata = metadata.getMetadata(ATTRIBUTES)
       if (attrMetadata.contains(Numeric.name)) {
-        attrMetadata
-          .getMetadataArray(Numeric.name)
+        attrMetadata.getMetadataArray(Numeric.name)
           .map(NumericAttribute.fromMetadata)
           .foreach { attr => attributes(attr.index.get) = attr }
       }
       if (attrMetadata.contains(Nominal.name)) {
-        attrMetadata
-          .getMetadataArray(Nominal.name)
+        attrMetadata.getMetadataArray(Nominal.name)
           .map(NominalAttribute.fromMetadata)
           .foreach { attr => attributes(attr.index.get) = attr }
       }
       if (attrMetadata.contains(Binary.name)) {
-        attrMetadata
-          .getMetadataArray(Binary.name)
+        attrMetadata.getMetadataArray(Binary.name)
           .map(BinaryAttribute.fromMetadata)
           .foreach { attr => attributes(attr.index.get) = attr }
       }

@@ -150,8 +150,8 @@ class BasicFieldDescriptor[T](
     val conv = original.fold(
       e => ValidationError(e).failure,
       o =>
-        (o.flatMap(convert(_)) orElse defaultValue)
-          .fold(requiredValidationFailure)(_.success)
+        (o.flatMap(convert(_)) orElse defaultValue).fold(
+          requiredValidationFailure)(_.success)
     )
     val o = original.fold(_ => None, identity)
     BoundFieldDescriptor(o, conv, this)
@@ -177,8 +177,8 @@ class BasicFieldDescriptor[T](
     copy(valueSource = valueSource)
 
   def allowableValues(vals: T*): FieldDescriptor[T] =
-    copy(allowableValues = vals.toList)
-      .validateWith(BindingValidators.oneOf("%%s must be one of %s.", vals))
+    copy(allowableValues = vals.toList).validateWith(
+      BindingValidators.oneOf("%%s must be one of %s.", vals))
 
   def displayName(name: String): FieldDescriptor[T] =
     copy(displayName = name.blankOption)
@@ -471,8 +471,10 @@ object BindingValidators {
         messageFormat: String = "%s must be a valid absolute url.",
         schemes: Seq[String] = Seq("http", "https")): FieldDescriptor[String] =
       b.validateWith(
-        BindingValidators
-          .validAbsoluteUrl(allowLocalHost, messageFormat, schemes))
+        BindingValidators.validAbsoluteUrl(
+          allowLocalHost,
+          messageFormat,
+          schemes))
 
     def validUrl(
         allowLocalHost: Boolean,
@@ -513,9 +515,10 @@ object BindingValidators {
       validate: TValue => Boolean,
       messageFormat: String = "%s is invalid."): BindingValidator[TValue] =
     (s: String) => {
-      _ flatMap Validators
-        .validate(s, messageFormat = messageFormat, validate = validate)
-        .validate
+      _ flatMap Validators.validate(
+        s,
+        messageFormat = messageFormat,
+        validate = validate).validate
     }
 
   def nonEmptyString: BindingValidator[String] = nonEmptyString()
@@ -553,9 +556,11 @@ object BindingValidators {
       messageFormat: String = "%s must be a absolute valid url.",
       schemes: Seq[String] = Seq("http", "https")): BindingValidator[String] =
     (s: String) => {
-      _ flatMap Validators
-        .validAbsoluteUrl(s, allowLocalHost, messageFormat, schemes)
-        .validate
+      _ flatMap Validators.validAbsoluteUrl(
+        s,
+        allowLocalHost,
+        messageFormat,
+        schemes).validate
     }
 
   def validUrl(
@@ -563,9 +568,11 @@ object BindingValidators {
       messageFormat: String = "%s must be a valid url.",
       schemes: Seq[String] = Seq("http", "https")): BindingValidator[String] =
     (s: String) => {
-      _ flatMap Validators
-        .validUrl(s, allowLocalHost, messageFormat, schemes)
-        .validate
+      _ flatMap Validators.validUrl(
+        s,
+        allowLocalHost,
+        messageFormat,
+        schemes).validate
     }
 
   def validFormat(
@@ -580,13 +587,11 @@ object BindingValidators {
       messageFormat: String = "%%s must match %s."): BindingValidator[String] =
     (s: String) => {
       _ flatMap {
-        Validators
-          .validConfirmation(
-            s,
-            against.name,
-            (against.value orElse against.defaultValue).orNull,
-            messageFormat)
-          .validate
+        Validators.validConfirmation(
+          s,
+          against.name,
+          (against.value orElse against.defaultValue).orNull,
+          messageFormat).validate
       }
     }
 

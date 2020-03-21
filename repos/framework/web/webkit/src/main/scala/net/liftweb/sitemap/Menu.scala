@@ -127,17 +127,12 @@ object Menu extends MenuSingleton {
         linkText,
         parser,
         encoder,
-        pathElement
-          .charSplit('/')
-          .drop(if (pathElement.startsWith("/")) 1
-          else 0)
-          .map(_.trim)
-          .filter(_ != "**")
-          .map {
-            case "*" => *
-            case ""  => NormalLocPath("index")
-            case str => NormalLocPath(str)
-          } match {
+        pathElement.charSplit('/').drop(if (pathElement.startsWith("/")) 1
+        else 0).map(_.trim).filter(_ != "**").map {
+          case "*" => *
+          case ""  => NormalLocPath("index")
+          case str => NormalLocPath(str)
+        } match {
           case Nil => List(NormalLocPath("index"))
           case xs  => xs
         },

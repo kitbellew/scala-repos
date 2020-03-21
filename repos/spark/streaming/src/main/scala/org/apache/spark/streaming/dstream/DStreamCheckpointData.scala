@@ -52,9 +52,9 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
   def update(time: Time) {
 
     // Get the checkpointed RDDs from the generated RDDs
-    val checkpointFiles = dstream.generatedRDDs
-      .filter(_._2.getCheckpointFile.isDefined)
-      .map(x => (x._1, x._2.getCheckpointFile.get))
+    val checkpointFiles =
+      dstream.generatedRDDs.filter(_._2.getCheckpointFile.isDefined)
+        .map(x => (x._1, x._2.getCheckpointFile.get))
     logDebug(
       "Current checkpoint files:\n" + checkpointFiles.toSeq.mkString("\n"))
 

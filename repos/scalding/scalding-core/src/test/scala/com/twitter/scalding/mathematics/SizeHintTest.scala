@@ -100,10 +100,8 @@ object SizeHintProps extends Properties("SizeHint") {
   property("diagonals are about as big as the min(rows,cols)") = forAll {
     (a: FiniteHint) =>
       SizeHint.asDiagonal(a).total.getOrElse(BigInt(-1L)) <= (a.rows min a.cols)
-      SizeHint
-        .asDiagonal(a)
-        .total
-        .getOrElse(BigInt(-1L)) >= ((a.rows min a.cols) - 1L)
+      SizeHint.asDiagonal(a).total.getOrElse(
+        BigInt(-1L)) >= ((a.rows min a.cols) - 1L)
   }
 
   property("transpose law is obeyed in total") = forAll {

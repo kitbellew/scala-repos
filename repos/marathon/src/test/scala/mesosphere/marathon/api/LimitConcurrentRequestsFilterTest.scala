@@ -60,8 +60,9 @@ class LimitConcurrentRequestsFilterTest
 
     Then("The requests got answered")
     verify(chain, times(1)).doFilter(request, response)
-    verify(response, times(1))
-      .sendError(503, "Too many concurrent requests! Allowed: 1.")
+    verify(response, times(1)).sendError(
+      503,
+      "Too many concurrent requests! Allowed: 1.")
     semaphore.release() //release the blocked thread
   }
 

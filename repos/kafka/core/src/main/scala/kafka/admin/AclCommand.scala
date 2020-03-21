@@ -62,9 +62,9 @@ object AclCommand {
       if (opts.options.has(opts.authorizerPropertiesOpt)) {
         val authorizerProperties =
           opts.options.valuesOf(opts.authorizerPropertiesOpt).asScala
-        CommandLineUtils
-          .parseKeyValueArgs(authorizerProperties, acceptMissingValue = false)
-          .asScala
+        CommandLineUtils.parseKeyValueArgs(
+          authorizerProperties,
+          acceptMissingValue = false).asScala
       } else {
         Map.empty[String, Any]
       }
@@ -88,8 +88,8 @@ object AclCommand {
 
       for ((resource, acls) <- resourceToAcl) {
         val acls = resourceToAcl(resource)
-        println(
-          s"Adding ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+        println(s"Adding ACLs for resource `${resource}`: $Newline ${acls.map(
+          "\t" + _).mkString(Newline)} $Newline")
         authorizer.addAcls(acls, resource)
       }
 
@@ -107,9 +107,9 @@ object AclCommand {
                 s"Are you sure you want to delete all ACLs for resource `${resource}`? (y/n)"))
             authorizer.removeAcls(resource)
         } else {
-          if (confirmAction(s"Are you sure you want to remove ACLs: $Newline ${acls
-                .map("\t" + _)
-                .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
+          if (confirmAction(
+                s"Are you sure you want to remove ACLs: $Newline ${acls.map("\t" + _).mkString(
+                  Newline)} $Newline from resource `${resource}`? (y/n)"))
             authorizer.removeAcls(acls, resource)
         }
       }
@@ -128,8 +128,8 @@ object AclCommand {
           resources.map(resource => (resource -> authorizer.getAcls(resource)))
 
       for ((resource, acls) <- resourceToAcls)
-        println(
-          s"Current ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+        println(s"Current ACLs for resource `${resource}`: $Newline ${acls.map(
+          "\t" + _).mkString(Newline)} $Newline")
     }
   }
 
@@ -215,11 +215,9 @@ object AclCommand {
   }
 
   private def getAcl(opts: AclCommandOptions): Set[Acl] = {
-    val operations = opts.options
-      .valuesOf(opts.operationsOpt)
-      .asScala
-      .map(operation => Operation.fromString(operation.trim))
-      .toSet
+    val operations =
+      opts.options.valuesOf(opts.operationsOpt).asScala.map(operation =>
+        Operation.fromString(operation.trim)).toSet
     getAcl(opts, operations)
   }
 
@@ -252,11 +250,8 @@ object AclCommand {
       principalOptionSpec: ArgumentAcceptingOptionSpec[String])
       : Set[KafkaPrincipal] = {
     if (opts.options.has(principalOptionSpec))
-      opts.options
-        .valuesOf(principalOptionSpec)
-        .asScala
-        .map(s => KafkaPrincipal.fromString(s.trim))
-        .toSet
+      opts.options.valuesOf(principalOptionSpec).asScala.map(s =>
+        KafkaPrincipal.fromString(s.trim)).toSet
     else
       Set.empty[KafkaPrincipal]
   }
@@ -266,19 +261,15 @@ object AclCommand {
       dieIfNoResourceFound: Boolean = true): Set[Resource] = {
     var resources = Set.empty[Resource]
     if (opts.options.has(opts.topicOpt))
-      opts.options
-        .valuesOf(opts.topicOpt)
-        .asScala
-        .foreach(topic => resources += new Resource(Topic, topic.trim))
+      opts.options.valuesOf(opts.topicOpt).asScala.foreach(topic =>
+        resources += new Resource(Topic, topic.trim))
 
     if (opts.options.has(opts.clusterOpt))
       resources += Resource.ClusterResource
 
     if (opts.options.has(opts.groupOpt))
-      opts.options
-        .valuesOf(opts.groupOpt)
-        .asScala
-        .foreach(group => resources += new Resource(Group, group.trim))
+      opts.options.valuesOf(opts.groupOpt).asScala.foreach(group =>
+        resources += new Resource(Group, group.trim))
 
     if (resources.isEmpty && dieIfNoResourceFound)
       CommandLineUtils.printUsageAndDie(
@@ -301,47 +292,42 @@ object AclCommand {
       if ((acls.map(_.operation) -- validOps).nonEmpty)
         CommandLineUtils.printUsageAndDie(
           opts.parser,
-          s"ResourceType ${resource.resourceType} only supports operations ${validOps
-            .mkString(",")}")
+          s"ResourceType ${resource.resourceType} only supports operations ${validOps.mkString(",")}")
     }
   }
 
   class AclCommandOptions(args: Array[String]) {
     val parser = new OptionParser
-    val authorizerOpt = parser
-      .accepts(
-        "authorizer",
-        "Fully qualified class name of the authorizer, defaults to kafka.security.auth.SimpleAclAuthorizer.")
+    val authorizerOpt = parser.accepts(
+      "authorizer",
+      "Fully qualified class name of the authorizer, defaults to kafka.security.auth.SimpleAclAuthorizer.")
       .withRequiredArg
       .describedAs("authorizer")
       .ofType(classOf[String])
       .defaultsTo(classOf[SimpleAclAuthorizer].getName)
 
-    val authorizerPropertiesOpt = parser
-      .accepts(
-        "authorizer-properties",
-        "REQUIRED: properties required to configure an instance of Authorizer. " +
-          "These are key=val pairs. For the default authorizer the example values are: zookeeper.connect=localhost:2181"
-      )
+    val authorizerPropertiesOpt = parser.accepts(
+      "authorizer-properties",
+      "REQUIRED: properties required to configure an instance of Authorizer. " +
+        "These are key=val pairs. For the default authorizer the example values are: zookeeper.connect=localhost:2181"
+    )
       .withRequiredArg
       .describedAs("authorizer-properties")
       .ofType(classOf[String])
 
-    val topicOpt = parser
-      .accepts(
-        "topic",
-        "topic to which ACLs should be added or removed. " +
-          "A value of * indicates ACL should apply to all topics.")
+    val topicOpt = parser.accepts(
+      "topic",
+      "topic to which ACLs should be added or removed. " +
+        "A value of * indicates ACL should apply to all topics.")
       .withRequiredArg
       .describedAs("topic")
       .ofType(classOf[String])
 
     val clusterOpt = parser.accepts("cluster", "Add/Remove cluster ACLs.")
-    val groupOpt = parser
-      .accepts(
-        "group",
-        "Consumer Group to which the ACLs should be added or removed. " +
-          "A value of * indicates the ACLs should apply to all groups.")
+    val groupOpt = parser.accepts(
+      "group",
+      "Consumer Group to which the ACLs should be added or removed. " +
+        "A value of * indicates the ACLs should apply to all groups.")
       .withRequiredArg
       .describedAs("group")
       .ofType(classOf[String])
@@ -353,57 +339,52 @@ object AclCommand {
       "list",
       "List ACLs for the specified resource, use --topic <topic> or --group <group> or --cluster to specify a resource.")
 
-    val operationsOpt = parser
-      .accepts(
-        "operation",
-        "Operation that is being allowed or denied. Valid operation names are: " + Newline +
-          Operation.values.map("\t" + _).mkString(Newline) + Newline)
+    val operationsOpt = parser.accepts(
+      "operation",
+      "Operation that is being allowed or denied. Valid operation names are: " + Newline +
+        Operation.values.map("\t" + _).mkString(Newline) + Newline)
       .withRequiredArg
       .ofType(classOf[String])
       .defaultsTo(All.name)
 
-    val allowPrincipalsOpt = parser
-      .accepts(
-        "allow-principal",
-        "principal is in principalType:name format." +
-          " Note that principalType must be supported by the Authorizer being used." +
-          " For example, User:* is the wild card indicating all users."
-      )
+    val allowPrincipalsOpt = parser.accepts(
+      "allow-principal",
+      "principal is in principalType:name format." +
+        " Note that principalType must be supported by the Authorizer being used." +
+        " For example, User:* is the wild card indicating all users."
+    )
       .withRequiredArg
       .describedAs("allow-principal")
       .ofType(classOf[String])
 
-    val denyPrincipalsOpt = parser
-      .accepts(
-        "deny-principal",
-        "principal is in principalType:name format. " +
-          "By default anyone not added through --allow-principal is denied access. " +
-          "You only need to use this option as negation to already allowed set. " +
-          "Note that principalType must be supported by the Authorizer being used. " +
-          "For example if you wanted to allow access to all users in the system but not test-user you can define an ACL that " +
-          "allows access to User:* and specify --deny-principal=User:test@EXAMPLE.COM. " +
-          "AND PLEASE REMEMBER DENY RULES TAKES PRECEDENCE OVER ALLOW RULES."
-      )
+    val denyPrincipalsOpt = parser.accepts(
+      "deny-principal",
+      "principal is in principalType:name format. " +
+        "By default anyone not added through --allow-principal is denied access. " +
+        "You only need to use this option as negation to already allowed set. " +
+        "Note that principalType must be supported by the Authorizer being used. " +
+        "For example if you wanted to allow access to all users in the system but not test-user you can define an ACL that " +
+        "allows access to User:* and specify --deny-principal=User:test@EXAMPLE.COM. " +
+        "AND PLEASE REMEMBER DENY RULES TAKES PRECEDENCE OVER ALLOW RULES."
+    )
       .withRequiredArg
       .describedAs("deny-principal")
       .ofType(classOf[String])
 
-    val allowHostsOpt = parser
-      .accepts(
-        "allow-host",
-        "Host from which principals listed in --allow-principal will have access. " +
-          "If you have specified --allow-principal then the default for this option will be set to * which allows access from all hosts."
-      )
+    val allowHostsOpt = parser.accepts(
+      "allow-host",
+      "Host from which principals listed in --allow-principal will have access. " +
+        "If you have specified --allow-principal then the default for this option will be set to * which allows access from all hosts."
+    )
       .withRequiredArg
       .describedAs("allow-host")
       .ofType(classOf[String])
 
-    val denyHostssOpt = parser
-      .accepts(
-        "deny-host",
-        "Host from which principals listed in --deny-principal will be denied access. " +
-          "If you have specified --deny-principal then the default for this option will be set to * which denies access from all hosts."
-      )
+    val denyHostssOpt = parser.accepts(
+      "deny-host",
+      "Host from which principals listed in --deny-principal will be denied access. " +
+        "If you have specified --deny-principal then the default for this option will be set to * which denies access from all hosts."
+    )
       .withRequiredArg
       .describedAs("deny-host")
       .ofType(classOf[String])

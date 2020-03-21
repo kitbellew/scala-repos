@@ -33,60 +33,57 @@ object TestLinearWriteSpeed {
 
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser
-    val dirOpt = parser
-      .accepts("dir", "The directory to write to.")
+    val dirOpt = parser.accepts("dir", "The directory to write to.")
       .withRequiredArg
       .describedAs("path")
       .ofType(classOf[java.lang.String])
       .defaultsTo(System.getProperty("java.io.tmpdir"))
-    val bytesOpt = parser
-      .accepts("bytes", "REQUIRED: The total number of bytes to write.")
-      .withRequiredArg
-      .describedAs("num_bytes")
-      .ofType(classOf[java.lang.Long])
-    val sizeOpt = parser
-      .accepts("size", "REQUIRED: The size of each write.")
+    val bytesOpt =
+      parser.accepts("bytes", "REQUIRED: The total number of bytes to write.")
+        .withRequiredArg
+        .describedAs("num_bytes")
+        .ofType(classOf[java.lang.Long])
+    val sizeOpt = parser.accepts("size", "REQUIRED: The size of each write.")
       .withRequiredArg
       .describedAs("num_bytes")
       .ofType(classOf[java.lang.Integer])
-    val messageSizeOpt = parser
-      .accepts(
-        "message-size",
-        "REQUIRED: The size of each message in the message set.")
+    val messageSizeOpt = parser.accepts(
+      "message-size",
+      "REQUIRED: The size of each message in the message set.")
       .withRequiredArg
       .describedAs("num_bytes")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(1024)
-    val filesOpt = parser
-      .accepts("files", "REQUIRED: The number of logs or files.")
-      .withRequiredArg
-      .describedAs("num_files")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
-    val reportingIntervalOpt = parser
-      .accepts("reporting-interval", "The number of ms between updates.")
-      .withRequiredArg
-      .describedAs("ms")
-      .ofType(classOf[java.lang.Long])
-      .defaultsTo(1000)
-    val maxThroughputOpt = parser
-      .accepts("max-throughput-mb", "The maximum throughput.")
-      .withRequiredArg
-      .describedAs("mb")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(Integer.MAX_VALUE)
-    val flushIntervalOpt = parser
-      .accepts("flush-interval", "The number of messages between flushes")
-      .withRequiredArg()
-      .describedAs("message_count")
-      .ofType(classOf[java.lang.Long])
-      .defaultsTo(Long.MaxValue)
-    val compressionCodecOpt = parser
-      .accepts("compression", "The compression codec to use")
-      .withRequiredArg
-      .describedAs("codec")
-      .ofType(classOf[java.lang.String])
-      .defaultsTo(NoCompressionCodec.name)
+    val filesOpt =
+      parser.accepts("files", "REQUIRED: The number of logs or files.")
+        .withRequiredArg
+        .describedAs("num_files")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(1)
+    val reportingIntervalOpt =
+      parser.accepts("reporting-interval", "The number of ms between updates.")
+        .withRequiredArg
+        .describedAs("ms")
+        .ofType(classOf[java.lang.Long])
+        .defaultsTo(1000)
+    val maxThroughputOpt =
+      parser.accepts("max-throughput-mb", "The maximum throughput.")
+        .withRequiredArg
+        .describedAs("mb")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(Integer.MAX_VALUE)
+    val flushIntervalOpt =
+      parser.accepts("flush-interval", "The number of messages between flushes")
+        .withRequiredArg()
+        .describedAs("message_count")
+        .ofType(classOf[java.lang.Long])
+        .defaultsTo(Long.MaxValue)
+    val compressionCodecOpt =
+      parser.accepts("compression", "The compression codec to use")
+        .withRequiredArg
+        .describedAs("codec")
+        .ofType(classOf[java.lang.String])
+        .defaultsTo(NoCompressionCodec.name)
     val mmapOpt = parser.accepts("mmap", "Do writes to memory-mapped files.")
     val channelOpt = parser.accepts("channel", "Do writes to file channesl.")
     val logOpt = parser.accepts("log", "Do writes to kafka logs.")

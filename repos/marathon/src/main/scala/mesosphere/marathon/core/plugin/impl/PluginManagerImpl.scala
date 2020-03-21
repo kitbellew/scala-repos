@@ -40,8 +40,7 @@ private[plugin] class PluginManagerImpl(
     */
   private[this] def load[T](implicit ct: ClassTag[T]): PluginHolder[T] = {
     log.info(
-      s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls
-        .mkString(", ")}]")
+      s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls.mkString(", ")}]")
     def configure(plugin: T, definition: PluginDefinition): T =
       plugin match {
         case cf: PluginConfiguration if definition.configuration.isDefined =>
@@ -87,8 +86,7 @@ private[plugin] class PluginManagerImpl(
         .find(_.classTag == ct)
         .map(_.asInstanceOf[PluginHolder[T]])
         .getOrElse(loadAndAdd)
-        .plugins
-        .map(_.plugin)
+        .plugins.map(_.plugin)
     }
 }
 
@@ -100,13 +98,9 @@ object PluginManagerImpl {
   implicit val definitionFormat = Json.format[PluginDefinition]
 
   def parse(fileName: String): PluginDefinitions = {
-    val plugins = Json
-      .parse(IO.readFile(fileName))
-      .as[JsObject]
-      .\("plugins")
-      .as[JsObject]
-      .fields
-      .map {
+    val plugins = Json.parse(IO.readFile(fileName)).as[JsObject]
+      .\("plugins").as[JsObject]
+      .fields.map {
         case (id, value) =>
           JsObject(value.as[JsObject].fields :+ ("id" -> JsString(id)))
       }

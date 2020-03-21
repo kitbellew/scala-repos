@@ -18,7 +18,8 @@ class TfIdfJob(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val docWordMatrix = Tsv(args("input"), ('doc, 'word, 'count)).read
+  val docWordMatrix = Tsv(args("input"), ('doc, 'word, 'count))
+    .read
     .toMatrix[Long, String, Double]('doc, 'word, 'count)
 
   // compute the overall document frequency of each row
@@ -33,10 +34,8 @@ class TfIdfJob(args: Args) extends Job(args) {
     docWordMatrix.zip(invDocFreqVct.getRow(1)).mapValues(pair => pair._2)
 
   // multiply the term frequency with the inverse document frequency and keep the top nrWords
-  docWordMatrix
-    .hProd(invDocFreqMat)
-    .topRowElems(args("nrWords").toInt)
-    .write(Tsv(args("output")))
+  docWordMatrix.hProd(invDocFreqMat).topRowElems(args("nrWords").toInt).write(
+    Tsv(args("output")))
 
   def log2(x: Double) = scala.math.log(x) / scala.math.log(2.0)
 

@@ -29,9 +29,9 @@ class LegacyProjectFormatNotifier(project: Project)
       if (fromGenIdea) {
         sbtSettings.sbtSupportSuggested = true
 
-        val builder = NotificationUtil
-          .builder(project, Message)
-          .setNotificationType(NotificationType.WARNING)
+        val builder =
+          NotificationUtil.builder(project, Message).setNotificationType(
+            NotificationType.WARNING)
 
         builder.setHandler { ref =>
           val manager = ActionManager.getInstance

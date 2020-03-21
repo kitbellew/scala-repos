@@ -238,15 +238,12 @@ object Statistics {
       elem
     }
     override def toString =
-      this.toSeq
-        .sortWith(_._2 > _._2)
-        .map {
-          case (cls: Class[_], elem) =>
-            s"${cls.toString.substring(cls.toString.lastIndexOf("$") + 1)}: $elem"
-          case (key, elem) =>
-            s"$key: $elem"
-        }
-        .mkString(", ")
+      this.toSeq.sortWith(_._2 > _._2).map {
+        case (cls: Class[_], elem) =>
+          s"${cls.toString.substring(cls.toString.lastIndexOf("$") + 1)}: $elem"
+        case (key, elem) =>
+          s"$key: $elem"
+      }.mkString(", ")
   }
 
   /** A stack of timers, all active, where a timer's specific "clock"

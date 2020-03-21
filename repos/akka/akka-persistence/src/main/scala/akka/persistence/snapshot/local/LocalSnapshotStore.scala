@@ -29,10 +29,9 @@ private[persistence] class LocalSnapshotStore
   private val FilenamePattern = """^snapshot-(.+)-(\d+)-(\d+)""".r
 
   import akka.util.Helpers._
-  private val config = context.system.settings.config
-    .getConfig("akka.persistence.snapshot-store.local")
-  private val maxLoadAttempts = config
-    .getInt("max-load-attempts")
+  private val config = context.system.settings.config.getConfig(
+    "akka.persistence.snapshot-store.local")
+  private val maxLoadAttempts = config.getInt("max-load-attempts")
     .requiring(_ > 1, "max-load-attempts must be >= 1")
 
   private val streamDispatcher =
@@ -53,8 +52,8 @@ private[persistence] class LocalSnapshotStore
     // This may help in situations where saving of a snapshot could not be completed because of a JVM crash.
     // Hence, an attempt to load that snapshot will fail but loading an older snapshot may succeed.
     //
-    val metadata = snapshotMetadatas(persistenceId, criteria).sorted
-      .takeRight(maxLoadAttempts)
+    val metadata = snapshotMetadatas(persistenceId, criteria).sorted.takeRight(
+      maxLoadAttempts)
     Future(load(metadata))(streamDispatcher)
   }
 
@@ -80,11 +79,9 @@ private[persistence] class LocalSnapshotStore
       persistenceId: String,
       criteria: SnapshotSelectionCriteria): Future[Unit] = {
     val metadatas = snapshotMetadatas(persistenceId, criteria)
-    Future
-      .sequence {
-        metadatas.map(deleteAsync)
-      }(collection.breakOut, streamDispatcher)
-      .map(_ ⇒ ())(streamDispatcher)
+    Future.sequence {
+      metadatas.map(deleteAsync)
+    }(collection.breakOut, streamDispatcher).map(_ ⇒ ())(streamDispatcher)
   }
 
   override def receivePluginInternal: Receive = {
@@ -118,9 +115,9 @@ private[persistence] class LocalSnapshotStore
   }
 
   protected def deserialize(inputStream: InputStream): Snapshot =
-    serializationExtension
-      .deserialize(streamToBytes(inputStream), classOf[Snapshot])
-      .get
+    serializationExtension.deserialize(
+      streamToBytes(inputStream),
+      classOf[Snapshot]).get
 
   protected def serialize(
       outputStream: OutputStream,
@@ -162,17 +159,13 @@ private[persistence] class LocalSnapshotStore
     val files = snapshotDir.listFiles(new SnapshotFilenameFilter(persistenceId))
     if (files eq null) Nil // if the dir was removed
     else
-      files
-        .map(_.getName)
-        .collect {
-          case FilenamePattern(pid, snr, tms) ⇒
-            SnapshotMetadata(
-              URLDecoder.decode(pid, UTF_8),
-              snr.toLong,
-              tms.toLong)
-        }
-        .filter(md ⇒ criteria.matches(md) && !saving.contains(md))
-        .toVector
+      files.map(_.getName).collect {
+        case FilenamePattern(pid, snr, tms) ⇒
+          SnapshotMetadata(
+            URLDecoder.decode(pid, UTF_8),
+            snr.toLong,
+            tms.toLong)
+      }.filter(md ⇒ criteria.matches(md) && !saving.contains(md)).toVector
   }
 
   override def preStart() {
@@ -210,8 +203,8 @@ private[persistence] class LocalSnapshotStore
         tms: String): Boolean = {
       pid.equals(URLEncoder.encode(md.persistenceId)) &&
       Try(
-        snr.toLong == md.sequenceNr && (md.timestamp == 0L || tms.toLong == md.timestamp))
-        .getOrElse(false)
+        snr.toLong == md.sequenceNr && (md.timestamp == 0L || tms.toLong == md.timestamp)).getOrElse(
+        false)
     }
 
     def accept(dir: File, name: String): Boolean =

@@ -72,13 +72,11 @@ class LogisticRegressionSuite
     * so we can validate the training accuracy compared with R's glmnet package.
     */
   ignore("export test data into CSV format") {
-    binaryDataset.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
-      }
-      .repartition(1)
-      .saveAsTextFile("target/tmp/LogisticRegressionSuite/binaryDataset")
+    binaryDataset.rdd.map {
+      case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
+    }.repartition(1).saveAsTextFile(
+      "target/tmp/LogisticRegressionSuite/binaryDataset")
   }
 
   test("params") {
@@ -98,8 +96,7 @@ class LogisticRegressionSuite
     assert(lr.getFitIntercept)
     assert(lr.getStandardization)
     val model = lr.fit(dataset)
-    model
-      .transform(dataset)
+    model.transform(dataset)
       .select("label", "probability", "prediction", "rawPrediction")
       .collect()
     assert(model.getThreshold === 0.5)
@@ -191,8 +188,7 @@ class LogisticRegressionSuite
 
     // Modify model params, and check that the params worked.
     model.setThreshold(1.0)
-    val predAllZero = model
-      .transform(dataset)
+    val predAllZero = model.transform(dataset)
       .select("prediction", "myProbability")
       .collect()
       .map { case Row(pred: Double, prob: Vector) => pred }
@@ -203,11 +199,10 @@ class LogisticRegressionSuite
     )
     // Call transform with params, and check that the params worked.
     val predNotAllZero =
-      model
-        .transform(
-          dataset,
-          model.threshold -> 0.0,
-          model.probabilityCol -> "myProb")
+      model.transform(
+        dataset,
+        model.threshold -> 0.0,
+        model.probabilityCol -> "myProb")
         .select("prediction", "myProb")
         .collect()
         .map { case Row(pred: Double, prob: Vector) => pred }
@@ -260,46 +255,26 @@ class LogisticRegressionSuite
 
   test("MultiClassSummarizer") {
     val summarizer1 = (new MultiClassSummarizer)
-      .add(0.0)
-      .add(3.0)
-      .add(4.0)
-      .add(3.0)
-      .add(6.0)
+      .add(0.0).add(3.0).add(4.0).add(3.0).add(6.0)
     assert(summarizer1.histogram === Array[Double](1, 0, 0, 2, 1, 0, 1))
     assert(summarizer1.countInvalid === 0)
     assert(summarizer1.numClasses === 7)
 
     val summarizer2 = (new MultiClassSummarizer)
-      .add(1.0)
-      .add(5.0)
-      .add(3.0)
-      .add(0.0)
-      .add(4.0)
-      .add(1.0)
+      .add(1.0).add(5.0).add(3.0).add(0.0).add(4.0).add(1.0)
     assert(summarizer2.histogram === Array[Double](1, 2, 0, 1, 1, 1))
     assert(summarizer2.countInvalid === 0)
     assert(summarizer2.numClasses === 6)
 
     val summarizer3 = (new MultiClassSummarizer)
-      .add(0.0)
-      .add(1.3)
-      .add(5.2)
-      .add(2.5)
-      .add(2.0)
-      .add(4.0)
-      .add(4.0)
-      .add(4.0)
-      .add(1.0)
+      .add(0.0).add(1.3).add(5.2).add(2.5).add(2.0).add(4.0).add(4.0).add(
+        4.0).add(1.0)
     assert(summarizer3.histogram === Array[Double](1, 1, 1, 0, 3))
     assert(summarizer3.countInvalid === 3)
     assert(summarizer3.numClasses === 5)
 
     val summarizer4 = (new MultiClassSummarizer)
-      .add(3.1)
-      .add(4.3)
-      .add(2.0)
-      .add(1.0)
-      .add(3.0)
+      .add(3.1).add(4.3).add(2.0).add(1.0).add(3.0)
     assert(summarizer4.histogram === Array[Double](0, 1, 1, 1))
     assert(summarizer4.countInvalid === 2)
     assert(summarizer4.numClasses === 4)
@@ -321,11 +296,9 @@ class LogisticRegressionSuite
 
   test("MultiClassSummarizer with weighted samples") {
     val summarizer1 = (new MultiClassSummarizer)
-      .add(label = 0.0, weight = 0.2)
-      .add(3.0, 0.8)
-      .add(4.0, 3.2)
-      .add(3.0, 1.3)
-      .add(6.0, 3.1)
+      .add(label = 0.0, weight = 0.2).add(3.0, 0.8).add(4.0, 3.2).add(
+        3.0,
+        1.3).add(6.0, 3.1)
     assert(
       Vectors.dense(summarizer1.histogram) ~==
         Vectors.dense(Array(0.2, 0, 0, 2.1, 3.2, 0, 3.1)) absTol 1e-10)
@@ -333,13 +306,9 @@ class LogisticRegressionSuite
     assert(summarizer1.numClasses === 7)
 
     val summarizer2 = (new MultiClassSummarizer)
-      .add(1.0, 1.1)
-      .add(5.0, 2.3)
-      .add(3.0)
-      .add(0.0)
-      .add(4.0)
-      .add(1.0)
-      .add(2, 0.0)
+      .add(1.0, 1.1).add(5.0, 2.3).add(3.0).add(0.0).add(4.0).add(1.0).add(
+        2,
+        0.0)
     assert(
       Vectors.dense(summarizer2.histogram) ~==
         Vectors.dense(Array[Double](1.0, 2.1, 0.0, 1, 1, 2.3)) absTol 1e-10)
@@ -434,16 +403,10 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression with intercept with L1 regularization") {
-    val trainer1 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(1.0)
-      .setRegParam(0.12)
-      .setStandardization(true)
-    val trainer2 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(1.0)
-      .setRegParam(0.12)
-      .setStandardization(false)
+    val trainer1 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(1.0).setRegParam(0.12).setStandardization(true)
+    val trainer2 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(1.0).setRegParam(0.12).setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -499,16 +462,10 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression without intercept with L1 regularization") {
-    val trainer1 = (new LogisticRegression)
-      .setFitIntercept(false)
-      .setElasticNetParam(1.0)
-      .setRegParam(0.12)
-      .setStandardization(true)
-    val trainer2 = (new LogisticRegression)
-      .setFitIntercept(false)
-      .setElasticNetParam(1.0)
-      .setRegParam(0.12)
-      .setStandardization(false)
+    val trainer1 = (new LogisticRegression).setFitIntercept(false)
+      .setElasticNetParam(1.0).setRegParam(0.12).setStandardization(true)
+    val trainer2 = (new LogisticRegression).setFitIntercept(false)
+      .setElasticNetParam(1.0).setRegParam(0.12).setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -565,16 +522,10 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression with intercept with L2 regularization") {
-    val trainer1 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(0.0)
-      .setRegParam(1.37)
-      .setStandardization(true)
-    val trainer2 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(0.0)
-      .setRegParam(1.37)
-      .setStandardization(false)
+    val trainer1 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(0.0).setRegParam(1.37).setStandardization(true)
+    val trainer2 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(0.0).setRegParam(1.37).setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -632,16 +583,10 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression without intercept with L2 regularization") {
-    val trainer1 = (new LogisticRegression)
-      .setFitIntercept(false)
-      .setElasticNetParam(0.0)
-      .setRegParam(1.37)
-      .setStandardization(true)
-    val trainer2 = (new LogisticRegression)
-      .setFitIntercept(false)
-      .setElasticNetParam(0.0)
-      .setRegParam(1.37)
-      .setStandardization(false)
+    val trainer1 = (new LogisticRegression).setFitIntercept(false)
+      .setElasticNetParam(0.0).setRegParam(1.37).setStandardization(true)
+    val trainer2 = (new LogisticRegression).setFitIntercept(false)
+      .setElasticNetParam(0.0).setRegParam(1.37).setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -701,16 +646,10 @@ class LogisticRegressionSuite
 
   test(
     "binary logistic regression with intercept with ElasticNet regularization") {
-    val trainer1 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(0.38)
-      .setRegParam(0.21)
-      .setStandardization(true)
-    val trainer2 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(0.38)
-      .setRegParam(0.21)
-      .setStandardization(false)
+    val trainer1 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(0.38).setRegParam(0.21).setStandardization(true)
+    val trainer2 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(0.38).setRegParam(0.21).setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -768,16 +707,10 @@ class LogisticRegressionSuite
 
   test(
     "binary logistic regression without intercept with ElasticNet regularization") {
-    val trainer1 = (new LogisticRegression)
-      .setFitIntercept(false)
-      .setElasticNetParam(0.38)
-      .setRegParam(0.21)
-      .setStandardization(true)
-    val trainer2 = (new LogisticRegression)
-      .setFitIntercept(false)
-      .setElasticNetParam(0.38)
-      .setRegParam(0.21)
-      .setStandardization(false)
+    val trainer1 = (new LogisticRegression).setFitIntercept(false)
+      .setElasticNetParam(0.38).setRegParam(0.21).setStandardization(true)
+    val trainer2 = (new LogisticRegression).setFitIntercept(false)
+      .setElasticNetParam(0.38).setRegParam(0.21).setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -836,22 +769,17 @@ class LogisticRegressionSuite
 
   test(
     "binary logistic regression with intercept with strong L1 regularization") {
-    val trainer1 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(1.0)
-      .setRegParam(6.0)
-      .setStandardization(true)
-    val trainer2 = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setElasticNetParam(1.0)
-      .setRegParam(6.0)
-      .setStandardization(false)
+    val trainer1 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(1.0).setRegParam(6.0).setStandardization(true)
+    val trainer2 = (new LogisticRegression).setFitIntercept(true)
+      .setElasticNetParam(1.0).setRegParam(6.0).setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
 
-    val histogram = binaryDataset.rdd
-      .map { case Row(label: Double, features: Vector) => label }
+    val histogram = binaryDataset.rdd.map {
+      case Row(label: Double, features: Vector) => label
+    }
       .treeAggregate(new MultiClassSummarizer)(
         seqOp = (c, v) =>
           (c, v) match {
@@ -865,8 +793,7 @@ class LogisticRegressionSuite
                   classSummarizer2: MultiClassSummarizer) =>
               classSummarizer1.merge(classSummarizer2)
           }
-      )
-      .histogram
+      ).histogram
 
     /*
        For binary logistic regression with strong L1 regularization, all the coefficients
@@ -928,14 +855,11 @@ class LogisticRegressionSuite
     assert(summary.roc.collect() === sameSummary.roc.collect())
     assert(summary.pr.collect === sameSummary.pr.collect())
     assert(
-      summary.fMeasureByThreshold.collect() === sameSummary.fMeasureByThreshold
-        .collect())
+      summary.fMeasureByThreshold.collect() === sameSummary.fMeasureByThreshold.collect())
     assert(
-      summary.recallByThreshold.collect() === sameSummary.recallByThreshold
-        .collect())
+      summary.recallByThreshold.collect() === sameSummary.recallByThreshold.collect())
     assert(
-      summary.precisionByThreshold
-        .collect() === sameSummary.precisionByThreshold.collect())
+      summary.precisionByThreshold.collect() === sameSummary.precisionByThreshold.collect())
   }
 
   test("statistics on training data") {
@@ -946,7 +870,8 @@ class LogisticRegressionSuite
       .setThreshold(0.6)
     val model = lr.fit(dataset)
     assert(
-      model.summary.objectiveHistory
+      model.summary
+        .objectiveHistory
         .sliding(2)
         .forall(x => x(0) >= x(1)))
 
@@ -1008,15 +933,11 @@ class LogisticRegressionSuite
         sqlContext.createDataFrame(sc.parallelize(data2, 4)))
     }
 
-    val trainer1a = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setRegParam(0.0)
-      .setStandardization(true)
-    val trainer1b = (new LogisticRegression)
-      .setFitIntercept(true)
-      .setWeightCol("weight")
-      .setRegParam(0.0)
-      .setStandardization(true)
+    val trainer1a = (new LogisticRegression).setFitIntercept(true)
+      .setRegParam(0.0).setStandardization(true)
+    val trainer1b =
+      (new LogisticRegression).setFitIntercept(true).setWeightCol("weight")
+        .setRegParam(0.0).setStandardization(true)
     val model1a0 = trainer1a.fit(dataset)
     val model1a1 = trainer1a.fit(weightedDataset)
     val model1b = trainer1b.fit(weightedDataset)

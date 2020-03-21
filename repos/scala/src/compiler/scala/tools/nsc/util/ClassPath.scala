@@ -121,12 +121,9 @@ object ClassPath {
 
   def manifests: List[java.net.URL] = {
     import scala.collection.convert.WrapAsScala.enumerationAsScalaIterator
-    Thread
-      .currentThread()
-      .getContextClassLoader()
+    Thread.currentThread().getContextClassLoader()
       .getResources("META-INF/MANIFEST.MF")
-      .filter(_.getProtocol == "jar")
-      .toList
+      .filter(_.getProtocol == "jar").toList
   }
 
   class JavaContext extends ClassPathContext[AbstractFile] {
@@ -224,8 +221,9 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
           case x: ClassRepresentation[T] => x
           case x =>
             throw new FatalError(
-              "Unexpected ClassRep '%s' found searching for name '%s'"
-                .format(x, name))
+              "Unexpected ClassRep '%s' found searching for name '%s'".format(
+                x,
+                name))
         }
       case _ =>
         classes find (_.name == name)
@@ -411,8 +409,9 @@ class MergedClassPath[T](
 
   def show() {
     println(
-      "ClassPath %s has %d entries and results in:\n"
-        .format(name, entries.size))
+      "ClassPath %s has %d entries and results in:\n".format(
+        name,
+        entries.size))
     asClassPathString split ':' foreach (x => println("  " + x))
   }
 

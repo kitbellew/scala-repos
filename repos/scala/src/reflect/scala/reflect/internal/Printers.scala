@@ -594,8 +594,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
       def addBackquotes(s: String) =
         if (decoded && (decName.exists(ch =>
               brackets.contains(ch) || isWhitespace(ch) || isDot(ch)) ||
-            (name.isOperatorName && decName.exists(isOperatorPart) && decName
-              .exists(isScalaLetter) && !decName.contains(bslash))))
+            (name.isOperatorName && decName.exists(
+              isOperatorPart) && decName.exists(
+              isScalaLetter) && !decName.contains(bslash))))
           s"`$s`"
         else s
 
@@ -1335,8 +1336,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     def print(args: Any*): Unit = {
       // don't print type footnotes if the argument is a mere type
-      if (depth == 0 && args.length == 1 && args(0) != null && args(0)
-            .isInstanceOf[Type])
+      if (depth == 0 && args.length == 1 && args(0) != null && args(
+            0).isInstanceOf[Type])
         printTypesInFootnotes = false
 
       depth += 1
@@ -1507,10 +1508,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
       val s_flags = new scala.collection.mutable.ListBuffer[String]
       def hasFlag(left: Long, right: Long): Boolean = (left & right) != 0
       for (i <- 0 to 63 if hasFlag(flags, 1L << i))
-        s_flags += flagToString(1L << i)
-          .replace("<", "")
-          .replace(">", "")
-          .toUpperCase
+        s_flags += flagToString(1L << i).replace("<", "").replace(
+          ">",
+          "").toUpperCase
       s_flags mkString " | "
     }
   }

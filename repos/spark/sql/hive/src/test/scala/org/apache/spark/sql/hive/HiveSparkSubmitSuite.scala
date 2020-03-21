@@ -180,8 +180,9 @@ class HiveSparkSubmitSuite
   // NOTE: This is an expensive operation in terms of time (10 seconds+). Use sparingly.
   // This is copied from org.apache.spark.deploy.SparkSubmitSuite
   private def runSparkSubmit(args: Seq[String]): Unit = {
-    val sparkHome = sys.props
-      .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
+    val sparkHome = sys.props.getOrElse(
+      "spark.test.home",
+      fail("spark.test.home is not set!"))
     val history = ArrayBuffer.empty[String]
     val commands = Seq("./bin/spark-submit") ++ args
     val commandLine = commands.mkString("'", "' '", "'")
@@ -207,10 +208,12 @@ class HiveSparkSubmitSuite
     }
 
     val process = builder.start()
-    new ProcessOutputCapturer(process.getInputStream, captureOutput("stdout"))
-      .start()
-    new ProcessOutputCapturer(process.getErrorStream, captureOutput("stderr"))
-      .start()
+    new ProcessOutputCapturer(
+      process.getInputStream,
+      captureOutput("stdout")).start()
+    new ProcessOutputCapturer(
+      process.getErrorStream,
+      captureOutput("stderr")).start()
 
     try {
       val exitCode = failAfter(300.seconds) { process.waitFor() }
@@ -265,20 +268,18 @@ object SparkSubmitClassLoaderTest extends Logging {
     }
     // Second, we load classes at the executor side.
     logInfo("Testing load classes at the executor side.")
-    val result = df.rdd
-      .mapPartitions { x =>
-        var exception: String = null
-        try {
-          Utils.classForName(args(0))
-          Utils.classForName(args(1))
-        } catch {
-          case t: Throwable =>
-            exception = t + "\n" + Utils.exceptionString(t)
-            exception = exception.replaceAll("\n", "\n\t")
-        }
-        Option(exception).toSeq.iterator
+    val result = df.rdd.mapPartitions { x =>
+      var exception: String = null
+      try {
+        Utils.classForName(args(0))
+        Utils.classForName(args(1))
+      } catch {
+        case t: Throwable =>
+          exception = t + "\n" + Utils.exceptionString(t)
+          exception = exception.replaceAll("\n", "\n\t")
       }
-      .collect()
+      Option(exception).toSeq.iterator
+    }.collect()
     if (result.nonEmpty) {
       throw new Exception("Could not load user class from jar:\n" + result(0))
     }
@@ -291,9 +292,9 @@ object SparkSubmitClassLoaderTest extends Logging {
         |AS 'org.apache.hadoop.hive.contrib.udaf.example.UDAFExampleMax'
       """.stripMargin)
     val source =
-      hiveContext
-        .createDataFrame((1 to 10).map(i => (i, s"str$i")))
-        .toDF("key", "val")
+      hiveContext.createDataFrame((1 to 10).map(i => (i, s"str$i"))).toDF(
+        "key",
+        "val")
     source.registerTempTable("sourceTable")
     // Load a Hive SerDe from the jar.
     logInfo("Creating a Hive table with a SerDe provided in a jar.")
@@ -383,10 +384,8 @@ object SPARK_9757 extends QueryTest {
           hiveContext
             .range(10)
             .select(('id + 0.1) cast DecimalType(10, 3) as 'dec)
-        df.write
-          .option("path", dir.getCanonicalPath)
-          .mode("overwrite")
-          .saveAsTable("t")
+        df.write.option("path", dir.getCanonicalPath).mode(
+          "overwrite").saveAsTable("t")
         checkAnswer(hiveContext.table("t"), df)
       }
 
@@ -398,10 +397,8 @@ object SPARK_9757 extends QueryTest {
               callUDF(
                 "struct",
                 ('id + 0.2) cast DecimalType(10, 3)) as 'dec_struct)
-        df.write
-          .option("path", dir.getCanonicalPath)
-          .mode("overwrite")
-          .saveAsTable("t")
+        df.write.option("path", dir.getCanonicalPath).mode(
+          "overwrite").saveAsTable("t")
         checkAnswer(hiveContext.table("t"), df)
       }
     } finally {
@@ -433,9 +430,10 @@ object SPARK_11009 extends QueryTest {
       val df2 =
         df.select((df("id") % 1000).alias("A"), (df("id") / 1000).alias("B"))
       val ws = Window.partitionBy(df2("A")).orderBy(df2("B"))
-      val df3 = df2
-        .select(df2("A"), df2("B"), row_number().over(ws).alias("rn"))
-        .filter("rn < 0")
+      val df3 = df2.select(
+        df2("A"),
+        df2("B"),
+        row_number().over(ws).alias("rn")).filter("rn < 0")
       if (df3.rdd.count() != 0) {
         throw new Exception("df3 should have 0 output row.")
       }

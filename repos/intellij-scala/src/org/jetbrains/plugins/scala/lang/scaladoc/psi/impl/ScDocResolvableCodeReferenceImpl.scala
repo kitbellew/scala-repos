@@ -35,9 +35,8 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
     extends ScStableCodeReferenceElementImpl(node)
     with ScDocResolvableCodeReference {
   private def is2_10plus: Boolean =
-    this.scalaLanguageLevel
-      .map(_ >= ScalaLanguageLevel.Scala_2_10)
-      .getOrElse(true)
+    this.scalaLanguageLevel.map(_ >= ScalaLanguageLevel.Scala_2_10).getOrElse(
+      true)
 
   override def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
     val s = super.multiResolve(incomplete)
@@ -79,8 +78,8 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
             null,
             ref)
         case Some(q: ScDocResolvableCodeReference) =>
-          q.multiResolve(true)
-            .foreach(processQualifierResolveResult(_, processor, ref))
+          q.multiResolve(true).foreach(
+            processQualifierResolveResult(_, processor, ref))
         case _ =>
       }
   }

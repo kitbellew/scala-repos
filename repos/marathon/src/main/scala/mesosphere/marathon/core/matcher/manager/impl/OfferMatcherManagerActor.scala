@@ -268,9 +268,8 @@ private[impl] class OfferMatcherManagerActor private (
     case MatchTimeout(offerId) =>
       // When the timeout is reached, we will answer with all matching tasks we found until then.
       // Since we cannot be sure if we found all matching tasks, we set resendThisOffer to true.
-      offerQueues
-        .get(offerId)
-        .foreach(sendMatchResult(_, resendThisOffer = true))
+      offerQueues.get(offerId).foreach(
+        sendMatchResult(_, resendThisOffer = true))
   }
 
   private[this] def scheduleNextMatcherOrFinish(data: OfferData): Unit = {
@@ -308,8 +307,7 @@ private[impl] class OfferMatcherManagerActor private (
                 data.offer.getId,
                 Seq.empty,
                 resendThisOffer = true)
-          }
-          .pipeTo(self)
+          }.pipeTo(self)
       case None => sendMatchResult(data, data.resendThisOffer)
     }
   }

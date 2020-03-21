@@ -587,8 +587,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       generalRawMultiParseTo(parser, expected.map(Right(_)): _*)
 
     def parseToError(status: StatusCode, info: ErrorInfo): Matcher[String] =
-      generalMultiParseTo(Left(MessageStartError(status, info)))
-        .compose(_ :: Nil)
+      generalMultiParseTo(Left(MessageStartError(status, info))).compose(
+        _ :: Nil)
 
     def generalMultiParseTo(
         expected: Either[RequestOutput, HttpRequest]*): Matcher[Seq[String]] =
@@ -610,8 +610,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         : Seq[Either[RequestOutput, StrictEqualHttpRequest]] =
       Source(input.toList)
         .map(bytes ⇒ SessionBytes(TLSPlacebo.dummySession, ByteString(bytes)))
-        .transform(() ⇒ parser.stage)
-        .named("parser")
+        .transform(() ⇒ parser.stage).named("parser")
         .splitWhen(x ⇒
           x.isInstanceOf[MessageStart] || x.isInstanceOf[EntityStreamError])
         .prefixAndTail(1)
@@ -653,8 +652,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           }
         }
         .map(strictEqualify)
-        .limit(100000)
-        .runWith(Sink.seq)
+        .limit(100000).runWith(Sink.seq)
         .awaitResult(awaitAtMost)
 
     protected def parserSettings: ParserSettings = ParserSettings(system)
@@ -674,9 +672,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
     private def compactEntityChunks(
         data: Source[ChunkStreamPart, Any]): Future[Seq[ChunkStreamPart]] =
-      data.limit(100000).runWith(Sink.seq).fast.recover {
-        case _: NoSuchElementException ⇒ Nil
-      }
+      data.limit(100000).runWith(Sink.seq)
+        .fast.recover { case _: NoSuchElementException ⇒ Nil }
 
     def prep(response: String) = response.stripMarginWithNewline("\r\n")
   }

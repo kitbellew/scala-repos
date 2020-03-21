@@ -390,13 +390,10 @@ trait SHtml extends Loggable {
       }
 
       def apply(ns: NodeSeq): NodeSeq =
-        Helpers
-          .findBox(ns) { e =>
-            latestElem = fixElem(e);
-            latestKids = e.child; Full(e)
-          }
-          .map(ignore => applyAgain())
-          .openOr(NodeSeq.Empty)
+        Helpers.findBox(ns) { e =>
+          latestElem = fixElem(e);
+          latestKids = e.child; Full(e)
+        }.map(ignore => applyAgain()).openOr(NodeSeq.Empty)
 
       def applyAgain(): NodeSeq =
         latestElem.copy(child = f(this)(latestKids))
@@ -570,12 +567,11 @@ trait SHtml extends Loggable {
         show: String,
         showContents: => NodeSeq,
         hide: String): JsCmd =
-      (SHtml
-        .ajaxCall(
-          Str("ignore"),
-          { ignore: String => SetHtml(show, showContents) })
-        ._2
-        .cmd & swapJsCmd(show, hide))
+      (SHtml.ajaxCall(
+        Str("ignore"),
+        { ignore: String => SetHtml(show, showContents) })._2.cmd & swapJsCmd(
+        show,
+        hide))
 
     def displayMarkup: NodeSeq =
       displayContents ++ Text(" ") ++
@@ -1290,9 +1286,8 @@ trait SHtml extends Loggable {
       hidden(ui.show(sid).toJsCmd + ";" + ui.hide(hid).toJsCmd + ";")
     }</span>
     (<span>{
-      rs % ("onclick" -> (ui.hide(sid).toJsCmd + ";" + ui
-        .show(hid)
-        .toJsCmd + "; return false;"))
+      rs % ("onclick" -> (ui.hide(sid).toJsCmd + ";" + ui.show(
+        hid).toJsCmd + "; return false;"))
     }{(rh % ("style" -> "display: none"))}</span>)
   }
 
@@ -1634,9 +1629,8 @@ trait SHtml extends Loggable {
 
             // submit
             case e: Elem
-                if e.label == "input" && e
-                  .attribute("type")
-                  .map(_.text) == Some("submit") =>
+                if e.label == "input" && e.attribute("type").map(
+                  _.text) == Some("submit") =>
               _formGroup.is match {
                 case Empty =>
                   formGroup(1)(fmapFunc(func) { dupWithName(e, _) })
@@ -2679,19 +2673,17 @@ trait SHtml extends Loggable {
     }
 
     S.fmapFunc(selectionHandler _)(funcName => {
-      cssSelToValue
-        .map {
-          case (cssSel, value) =>
-            s"$cssSel [name]" #> funcName &
-              s"$cssSel [value]" #> radioOptions(value) &
-              s"$cssSel [checked]" #> {
-                if (initialValue === value)
-                  Some("true")
-                else
-                  None
-              }
-        }
-        .reduceLeft(_ & _)
+      cssSelToValue.map {
+        case (cssSel, value) =>
+          s"$cssSel [name]" #> funcName &
+            s"$cssSel [value]" #> radioOptions(value) &
+            s"$cssSel [checked]" #> {
+              if (initialValue === value)
+                Some("true")
+              else
+                None
+            }
+      }.reduceLeft(_ & _)
     })
   }
 

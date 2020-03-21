@@ -178,8 +178,9 @@ abstract class SymbolLoaders {
       classRep: ClassRepresentation[AbstractFile]) {
     ((classRep.binary, classRep.source): @unchecked) match {
       case (Some(bin), Some(src))
-          if platform
-            .needCompile(bin, src) && !binaryOnly(owner, classRep.name) =>
+          if platform.needCompile(bin, src) && !binaryOnly(
+            owner,
+            classRep.name) =>
         if (settings.verbose)
           inform("[symloader] picked up newer source file for " + src.path)
         enterToplevelsFromSource(owner, classRep.name, src)
@@ -398,13 +399,16 @@ abstract class SymbolLoaders {
           // In fact, the ModuleSymbol forwards its setter to the module class
           case _: ClassSymbol | _: ModuleSymbol =>
             debuglog(
-              "ClassfileLoader setting %s.associatedFile = %s"
-                .format(root.name, classfile))
+              "ClassfileLoader setting %s.associatedFile = %s".format(
+                root.name,
+                classfile))
             root.associatedFile = classfile
           case _ =>
             debuglog(
-              "Not setting associatedFile to %s because %s is a %s"
-                .format(classfile, root.name, root.shortSymbolClass))
+              "Not setting associatedFile to %s because %s is a %s".format(
+                classfile,
+                root.name,
+                root.shortSymbolClass))
         }
       }
       if (Statistics.canEnable) Statistics.stopTimer(classReadNanos, start)

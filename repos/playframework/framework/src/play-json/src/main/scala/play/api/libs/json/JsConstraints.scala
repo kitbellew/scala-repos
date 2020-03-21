@@ -47,20 +47,18 @@ trait PathReads {
     */
   def nullable[A](path: JsPath)(implicit reads: Reads[A]) =
     Reads[Option[A]] { json =>
-      path
-        .applyTillLast(json)
-        .fold(
-          jserr => jserr,
-          jsres =>
-            jsres.fold(
-              _ => JsSuccess(None),
-              a =>
-                a match {
-                  case JsNull => JsSuccess(None)
-                  case js     => reads.reads(js).repath(path).map(Some(_))
-                }
-            )
-        )
+      path.applyTillLast(json).fold(
+        jserr => jserr,
+        jsres =>
+          jsres.fold(
+            _ => JsSuccess(None),
+            a =>
+              a match {
+                case JsNull => JsSuccess(None)
+                case js     => reads.reads(js).repath(path).map(Some(_))
+              }
+          )
+      )
     }
 
   def jsPick[A <: JsValue](path: JsPath)(implicit reads: Reads[A]): Reads[A] =
@@ -69,10 +67,9 @@ trait PathReads {
   def jsPickBranch[A <: JsValue](path: JsPath)(implicit
       reads: Reads[A]): Reads[JsObject] =
     Reads[JsObject](js =>
-      path
-        .asSingleJsResult(js)
-        .flatMap { jsv => reads.reads(jsv).repath(path) }
-        .map(jsv => JsPath.createObj(path -> jsv)))
+      path.asSingleJsResult(js).flatMap { jsv =>
+        reads.reads(jsv).repath(path)
+      }.map(jsv => JsPath.createObj(path -> jsv)))
 
   def jsPut(path: JsPath, a: => JsValue) =
     Reads[JsObject](json => JsSuccess(JsPath.createObj(path -> a)))
@@ -85,8 +82,7 @@ trait PathReads {
     Reads[JsObject](js =>
       js match {
         case o: JsObject =>
-          path
-            .asSingleJsResult(o)
+          path.asSingleJsResult(o)
             .flatMap(js => reads.reads(js).repath(path))
             .map(jsv => JsPath.createObj(path -> jsv))
             .map(opath => o.deepMerge(opath))
@@ -184,12 +180,11 @@ trait ConstraintReads {
       rds: Reads[A]) =
     Reads[A] { js =>
       rds.reads(js).flatMap { t =>
-        (scala.util.control.Exception.catching(classOf[MatchError]) opt cond(t))
-          .flatMap { b =>
-            if (b) Some(subreads.reads(js).map(_ => t))
-            else None
-          }
-          .getOrElse(JsSuccess(t))
+        (scala.util.control.Exception.catching(classOf[MatchError]) opt cond(
+          t)).flatMap { b =>
+          if (b) Some(subreads.reads(js).map(_ => t))
+          else None
+        }.getOrElse(JsSuccess(t))
       }
     }
 
@@ -227,10 +222,9 @@ trait PathWrites {
       wrs: OWrites[JsValue]): OWrites[JsValue] =
     OWrites[JsValue] { js =>
       JsPath.createObj(
-        path -> path(js).headOption
-          .flatMap(js =>
-            js.asOpt[JsObject].map(obj => obj.deepMerge(wrs.writes(obj))))
-          .getOrElse(JsNull)
+        path -> path(js).headOption.flatMap(js =>
+          js.asOpt[JsObject].map(obj =>
+            obj.deepMerge(wrs.writes(obj)))).getOrElse(JsNull)
       )
     }
 

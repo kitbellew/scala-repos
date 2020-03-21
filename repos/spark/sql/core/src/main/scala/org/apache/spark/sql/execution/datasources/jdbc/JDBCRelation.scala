@@ -108,17 +108,15 @@ private[sql] case class JDBCRelation(
       requiredColumns: Array[String],
       filters: Array[Filter]): RDD[Row] = {
     // Rely on a type erasure hack to pass RDD[InternalRow] back as RDD[Row]
-    JDBCRDD
-      .scanTable(
-        sqlContext.sparkContext,
-        schema,
-        url,
-        properties,
-        table,
-        requiredColumns,
-        filters,
-        parts)
-      .asInstanceOf[RDD[Row]]
+    JDBCRDD.scanTable(
+      sqlContext.sparkContext,
+      schema,
+      url,
+      properties,
+      table,
+      requiredColumns,
+      filters,
+      parts).asInstanceOf[RDD[Row]]
   }
 
   override def insert(data: DataFrame, overwrite: Boolean): Unit = {

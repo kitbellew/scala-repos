@@ -125,8 +125,9 @@ class PersistentActorJournalProtocolSpec
     w.messages.foreach {
       case AtomicWrite(msgs) ⇒
         msgs.foreach(msg ⇒
-          w.persistentActor
-            .tell(WriteMessageSuccess(msg, w.actorInstanceId), msg.sender))
+          w.persistentActor.tell(
+            WriteMessageSuccess(msg, w.actorInstanceId),
+            msg.sender))
       case NonPersistentRepr(msg, sender) ⇒ w.persistentActor.tell(msg, sender)
     }
   }

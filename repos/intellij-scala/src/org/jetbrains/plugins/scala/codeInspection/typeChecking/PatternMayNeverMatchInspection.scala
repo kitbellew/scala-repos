@@ -29,8 +29,9 @@ class PatternMayNeverMatchInspection
   override def actionFor(
       holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case pat @ ScPatternExpectedAndPatternType(exTp, patType)
-        if !PatternAnnotatorUtil.matchesPattern(exTp, patType) && !Conformance
-          .conforms(exTp, patType) =>
+        if !PatternAnnotatorUtil.matchesPattern(
+          exTp,
+          patType) && !Conformance.conforms(exTp, patType) =>
       if (!isNeverSubType(exTp, patType)) {
         //need to check so inspection highlighting doesn't interfere with PatterAnnotator's
         val message = PatternMayNeverMatchInspection.message(exTp, patType)

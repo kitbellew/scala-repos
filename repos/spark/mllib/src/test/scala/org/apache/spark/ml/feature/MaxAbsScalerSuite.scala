@@ -39,18 +39,15 @@ class MaxAbsScalerSuite
       Vectors.sparse(3, Array(0, 2), Array(-1, -1)),
       Vectors.sparse(3, Array(0), Array(-0.75)))
 
-    val df = sqlContext
-      .createDataFrame(data.zip(expected))
-      .toDF("features", "expected")
+    val df = sqlContext.createDataFrame(data.zip(expected)).toDF(
+      "features",
+      "expected")
     val scaler = new MaxAbsScaler()
       .setInputCol("features")
       .setOutputCol("scaled")
 
     val model = scaler.fit(df)
-    model
-      .transform(df)
-      .select("expected", "scaled")
-      .collect()
+    model.transform(df).select("expected", "scaled").collect()
       .foreach {
         case Row(vector1: Vector, vector2: Vector) =>
           assert(

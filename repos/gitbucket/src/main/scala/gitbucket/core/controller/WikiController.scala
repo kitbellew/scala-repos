@@ -121,9 +121,8 @@ trait WikiControllerBase extends ControllerBase {
             Some(pageName),
             from,
             to,
-            JGitUtil
-              .getDiffs(git, from, to, true)
-              .filter(_.newPath == pageName + ".md"),
+            JGitUtil.getDiffs(git, from, to, true).filter(
+              _.newPath == pageName + ".md"),
             repository,
             hasWritePermission(
               repository.owner,
@@ -171,8 +170,9 @@ trait WikiControllerBase extends ControllerBase {
           s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}")
       } else {
         flash += "info" -> "This patch was not able to be reversed."
-        redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
-          .urlEncode(pageName)}/_compare/${from}...${to}")
+        redirect(
+          s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(
+            pageName)}/_compare/${from}...${to}")
       }
   })
 
@@ -225,8 +225,8 @@ trait WikiControllerBase extends ControllerBase {
               commitId)
           }
           if (notReservedPageName(form.pageName)) {
-            redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
-              .urlEncode(form.pageName)}")
+            redirect(
+              s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(form.pageName)}")
           } else {
             redirect(s"/${repository.owner}/${repository.name}/wiki")
           }
@@ -259,8 +259,8 @@ trait WikiControllerBase extends ControllerBase {
             form.pageName)
 
           if (notReservedPageName(form.pageName)) {
-            redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
-              .urlEncode(form.pageName)}")
+            redirect(
+              s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(form.pageName)}")
           } else {
             redirect(s"/${repository.owner}/${repository.name}/wiki")
           }
@@ -321,9 +321,8 @@ trait WikiControllerBase extends ControllerBase {
           value: String,
           params: Map[String, String],
           messages: Messages): Option[String] =
-        getWikiPageList(params("owner"), params("repository"))
-          .find(_ == value)
-          .map(_ => "Page already exists.")
+        getWikiPageList(params("owner"), params("repository")).find(
+          _ == value).map(_ => "Page already exists.")
     }
 
   private def pagename: Constraint =
@@ -334,8 +333,8 @@ trait WikiControllerBase extends ControllerBase {
           messages: Messages): Option[String] =
         if (value.exists("\\/:*?\"<>|".contains(_))) {
           Some(s"${name} contains invalid character.")
-        } else if (notReservedPageName(value) && (value.startsWith("_") || value
-                     .startsWith("-"))) {
+        } else if (notReservedPageName(value) && (value.startsWith(
+                     "_") || value.startsWith("-"))) {
           Some(s"${name} starts with invalid character.")
         } else {
           None

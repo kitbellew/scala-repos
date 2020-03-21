@@ -35,13 +35,10 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
   val parser = new HiveQl(SimpleParserConf())
 
   private def extractTableDesc(sql: String): (CatalogTable, Boolean) = {
-    parser
-      .parsePlan(sql)
-      .collect {
-        case CreateTableAsSelect(desc, child, allowExisting) =>
-          (desc, allowExisting)
-      }
-      .head
+    parser.parsePlan(sql).collect {
+      case CreateTableAsSelect(desc, child, allowExisting) =>
+        (desc, allowExisting)
+    }.head
   }
 
   test("Test CTAS #1") {
@@ -257,10 +254,8 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
       """.stripMargin)
 
     assert(
-      plan.children.head
-        .asInstanceOf[Generate]
-        .generator
-        .isInstanceOf[JsonTuple])
+      plan.children.head.asInstanceOf[Generate].generator.isInstanceOf[
+        JsonTuple])
   }
 
   test("use backticks in output of Script Transform") {

@@ -98,8 +98,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     AccountPlan.Free)
 
   def dropStreamToFuture =
-    implicitly[Hoist[StreamT]]
-      .hoist[TestFuture, Future](new (TestFuture ~> Future) {
+    implicitly[Hoist[StreamT]].hoist[TestFuture, Future](
+      new (TestFuture ~> Future) {
         def apply[A](fa: TestFuture[A]): Future[A] = fa.value
       })
 
@@ -130,9 +130,11 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     val result = for {
       // TODO: No idea how to work with EitherT[TestFuture, so sys.error it is]
       executor <- executorFor(apiKey) valueOr { err => sys.error(err.toString) }
-      result0 <- executor
-        .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
-        .valueOr(err => sys.error(err.toString)) mapValue {
+      result0 <- executor.execute(
+        numTicks.toString,
+        ctx,
+        QueryOptions(timeout = timeout)).valueOr(err =>
+        sys.error(err.toString)) mapValue {
         case (w, s) => (w, (w: Option[(JobId, AtomicInteger)], s))
       }
     } yield {
@@ -153,10 +155,9 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   // Cancels the job after `ticks` ticks.
   def cancel(jobId: JobId, ticks: Int): Future[Boolean] = {
     schedule(ticks) {
-      jobManager
-        .cancel(jobId, "Yarrrr", yggConfig.clock.now())
-        .map { _.fold(_ => false, _ => true) }
-        .copoint
+      jobManager.cancel(jobId, "Yarrrr", yggConfig.clock.now()).map {
+        _.fold(_ => false, _ => true)
+      }.copoint
     }
   }
 

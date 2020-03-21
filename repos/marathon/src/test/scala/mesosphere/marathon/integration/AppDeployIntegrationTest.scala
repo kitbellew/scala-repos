@@ -166,10 +166,9 @@ class AppDeployIntegrationTest
     val app =
       appProxy(testBasePath / "app", "v1", instances = 1, withHealth = false)
 
-    var appCount = (marathon
-      .metrics()
-      .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value")
-      .as[Int]
+    var appCount =
+      (marathon.metrics().entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value").as[
+        Int]
     appCount should be(0)
 
     When("The app is deployed")
@@ -177,10 +176,9 @@ class AppDeployIntegrationTest
 
     Then("The app count metric should increase")
     result.code should be(201) // Created
-    appCount = (marathon
-      .metrics()
-      .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value")
-      .as[Int]
+    appCount =
+      (marathon.metrics().entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value").as[
+        Int]
     appCount should be(1)
   }
 
@@ -273,8 +271,9 @@ class AppDeployIntegrationTest
       "v1",
       instances = 1,
       withHealth = false).copy(healthChecks = Set(
-      healthCheck
-        .copy(protocol = Protocol.COMMAND, command = Some(Command("true")))))
+      healthCheck.copy(
+        protocol = Protocol.COMMAND,
+        command = Some(Command("true")))))
 
     When("The app is deployed")
     val result = marathon.createAppV2(app)
@@ -570,10 +569,8 @@ class AppDeployIntegrationTest
       "deployment_success")(30.seconds)
 
     val Seq(apiPostEvent) = events("api_post_event")
-    apiPostEvent
-      .info("appDefinition")
-      .asInstanceOf[Map[String, Any]]("id")
-      .asInstanceOf[String] should
+    apiPostEvent.info("appDefinition").asInstanceOf[Map[String, Any]](
+      "id").asInstanceOf[String] should
       be(appId)
 
     val Seq(groupChangeSuccess) = events("group_change_success")
@@ -605,12 +602,8 @@ class AppDeployIntegrationTest
 
   test("stop (forcefully delete) a deployment") {
     Given("a new app with constraints that cannot be fulfilled")
-    val c = Protos.Constraint
-      .newBuilder()
-      .setField("nonExistent")
-      .setOperator(Operator.CLUSTER)
-      .setValue("na")
-      .build()
+    val c = Protos.Constraint.newBuilder().setField("nonExistent").setOperator(
+      Operator.CLUSTER).setValue("na").build()
     val appId = testBasePath / "app"
     val app = AppDefinition(
       appId,
@@ -641,12 +634,8 @@ class AppDeployIntegrationTest
 
   test("rollback a deployment") {
     Given("a new app with constraints that cannot be fulfilled")
-    val c = Protos.Constraint
-      .newBuilder()
-      .setField("nonExistent")
-      .setOperator(Operator.CLUSTER)
-      .setValue("na")
-      .build()
+    val c = Protos.Constraint.newBuilder().setField("nonExistent").setOperator(
+      Operator.CLUSTER).setValue("na").build()
     val appId = testBasePath / "app"
     val app = AppDefinition(
       appId,

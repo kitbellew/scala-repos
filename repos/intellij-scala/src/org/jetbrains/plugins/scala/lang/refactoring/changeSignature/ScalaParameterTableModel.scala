@@ -68,8 +68,9 @@ class ScalaParameterTableModel(
     val fragments = Seq(paramTypeCodeFragment, defaultValueCodeFragment)
     codeFragments ++= fragments
     fragments.foreach(
-      HighlightLevelUtil
-        .forceRootHighlighting(_, FileHighlightingSetting.SKIP_HIGHLIGHTING))
+      HighlightLevelUtil.forceRootHighlighting(
+        _,
+        FileHighlightingSetting.SKIP_HIGHLIGHTING))
 
     paramTypeCodeFragment.setContext(typeContext.getParent, typeContext)
     defaultValueCodeFragment.setContext(

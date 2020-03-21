@@ -50,17 +50,17 @@ class AbstractProxyFactory[I <: AnyRef: Manifest] {
   }
 
   protected final def newWithCallback(f: MethodCall[I] => AnyRef) = {
-    proto
-      .newInstance(Array(new MethodInterceptor(None, f), NoOp.INSTANCE))
-      .asInstanceOf[I]
+    proto.newInstance(
+      Array(new MethodInterceptor(None, f), NoOp.INSTANCE)).asInstanceOf[I]
   }
 
   protected final def newWithCallback[T <: I](
       target: T,
       f: MethodCall[I] => AnyRef) = {
-    proto
-      .newInstance(Array(new MethodInterceptor(Some(target), f), NoOp.INSTANCE))
-      .asInstanceOf[I]
+    proto.newInstance(
+      Array(
+        new MethodInterceptor(Some(target), f),
+        NoOp.INSTANCE)).asInstanceOf[I]
   }
 }
 

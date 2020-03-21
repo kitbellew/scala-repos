@@ -347,9 +347,10 @@ class StatsReportListener extends SparkListener with Logging {
 
   private def getStatusDetail(info: StageInfo): String = {
     val failureReason = info.failureReason.map("(" + _ + ")").getOrElse("")
-    val timeTaken = info.submissionTime
-      .map(x => info.completionTime.getOrElse(System.currentTimeMillis()) - x)
-      .getOrElse("-")
+    val timeTaken =
+      info.submissionTime.map(x =>
+        info.completionTime.getOrElse(
+          System.currentTimeMillis()) - x).getOrElse("-")
 
     s"Stage(${info.stageId}, ${info.attemptId}); Name: '${info.name}'; " +
       s"Status: ${info.getStatusString}$failureReason; numTasks: ${info.numTasks}; " +

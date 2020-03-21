@@ -37,8 +37,8 @@ private[akka] class SSLSettings(config: Config) {
 
   val SSLTrustStorePassword = emptyIsNone(getString("trust-store-password"))
 
-  val SSLEnabledAlgorithms =
-    immutableSeq(getStringList("enabled-algorithms")).to[Set]
+  val SSLEnabledAlgorithms = immutableSeq(
+    getStringList("enabled-algorithms")).to[Set]
 
   val SSLProtocol = emptyIsNone(getString("protocol"))
 
@@ -165,8 +165,10 @@ private[akka] object NettySSLSupport {
         constructClientContext(settings, log, trustStore, password, protocol)
       case (trustStore, password, protocol) ⇒
         throw new GeneralSecurityException(
-          "One or several SSL trust store settings are missing: [trust-store: %s] [trust-store-password: %s] [protocol: %s]"
-            .format(trustStore, password, protocol))
+          "One or several SSL trust store settings are missing: [trust-store: %s] [trust-store-password: %s] [protocol: %s]".format(
+            trustStore,
+            password,
+            protocol))
     }) match {
       case Some(context) ⇒
         log.debug("Using client SSL context to create SSLEngine ...")
@@ -180,11 +182,10 @@ private[akka] object NettySSLSupport {
       case None ⇒
         throw new GeneralSecurityException(
           """Failed to initialize client SSL because SSL context could not be found." +
-              "Make sure your settings are correct: [trust-store: %s] [trust-store-password: %s] [protocol: %s]"""
-            .format(
-              settings.SSLTrustStore,
-              settings.SSLTrustStorePassword,
-              settings.SSLProtocol))
+              "Make sure your settings are correct: [trust-store: %s] [trust-store-password: %s] [protocol: %s]""".format(
+            settings.SSLTrustStore,
+            settings.SSLTrustStorePassword,
+            settings.SSLProtocol))
     }
   }
 
@@ -279,11 +280,10 @@ private[akka] object NettySSLSupport {
       case None ⇒
         throw new GeneralSecurityException(
           """Failed to initialize server SSL because SSL context could not be found.
-           Make sure your settings are correct: [key-store: %s] [key-store-password: %s] [protocol: %s]"""
-            .format(
-              settings.SSLKeyStore,
-              settings.SSLKeyStorePassword,
-              settings.SSLProtocol))
+           Make sure your settings are correct: [key-store: %s] [key-store-password: %s] [protocol: %s]""".format(
+            settings.SSLKeyStore,
+            settings.SSLKeyStorePassword,
+            settings.SSLProtocol))
     }
   }
 }

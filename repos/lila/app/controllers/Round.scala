@@ -70,8 +70,9 @@ object Round extends LilaController with TheftPrevention {
             (pov.game.isSwitchable ?? otherPovs(pov.game)) flatMap {
             case (((tour, simul), crosstable), playing) =>
               simul foreach Env.simul.api.onPlayerConnection(pov.game, ctx.me)
-              Env.api.roundApi
-                .player(pov, lila.api.Mobile.Api.currentVersion) map { data =>
+              Env.api.roundApi.player(
+                pov,
+                lila.api.Mobile.Api.currentVersion) map { data =>
                 Ok(
                   html.round.player(
                     pov,
@@ -90,9 +91,7 @@ object Round extends LilaController with TheftPrevention {
       api = apiVersion => {
         if (isTheft(pov)) fuccess(theftResponse)
         else
-          Env.api.roundApi
-            .player(pov, apiVersion)
-            .map { Ok(_) }
+          Env.api.roundApi.player(pov, apiVersion).map { Ok(_) }
             .mon(_.http.response.player.mobile)
       }
     ) map NoCache
@@ -205,10 +204,11 @@ object Round extends LilaController with TheftPrevention {
               }
           }.mon(_.http.response.watcher.website),
           api = apiVersion =>
-            Env.api.roundApi
-              .watcher(pov, apiVersion, tv = none, withOpening = false) map {
-              Ok(_)
-            }
+            Env.api.roundApi.watcher(
+              pov,
+              apiVersion,
+              tv = none,
+              withOpening = false) map { Ok(_) }
         ) map NoCache
     }
 

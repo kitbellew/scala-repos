@@ -107,10 +107,9 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
     def verifySerialization(msg: DaemonMsgCreate): Unit = {
       assertDaemonMsgCreate(
         msg,
-        ser
-          .deserialize(ser.serialize(msg).get, classOf[DaemonMsgCreate])
-          .get
-          .asInstanceOf[DaemonMsgCreate])
+        ser.deserialize(
+          ser.serialize(msg).get,
+          classOf[DaemonMsgCreate]).get.asInstanceOf[DaemonMsgCreate])
     }
 
     def assertDaemonMsgCreate(

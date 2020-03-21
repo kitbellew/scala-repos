@@ -197,10 +197,10 @@ object MapTest extends SpecLite {
     val d = fromList(List(5 -> "a", 3 -> "b"))
 
     "value lookup" in {
-      fromList(List(("John", "Sales"), ("Bob", "IT")))
-        .lookup("John") must_=== (Some("Sales"))
-      fromList(List(("John", "Sales"), ("Bob", "IT")))
-        .lookup("Sarah") must_=== (None)
+      fromList(List(("John", "Sales"), ("Bob", "IT"))).lookup(
+        "John") must_=== (Some("Sales"))
+      fromList(List(("John", "Sales"), ("Bob", "IT"))).lookup(
+        "Sarah") must_=== (None)
     }
 
     "index lookup" in {
@@ -301,8 +301,9 @@ object MapTest extends SpecLite {
         _ + _,
         7,
         "xxx") must_=== (fromList(List(3 -> "b", 5 -> "a", 7 -> "xxx")))
-      empty[Int, String]
-        .insertWith(_ + _, 5, "xxx") must_=== (singleton(5, "xxx"))
+      empty[Int, String].insertWith(_ + _, 5, "xxx") must_=== (singleton(
+        5,
+        "xxx"))
     }
 
     "insertWithKey" in {
@@ -379,8 +380,8 @@ object MapTest extends SpecLite {
 
     "unionWith" in {
       val adder = (a: String, b: String) => Semigroup[String].append(a, b)
-      val r = fromList(List(5 -> "a", 3 -> "b"))
-        .unionWith(fromList(List(5 -> "A", 7 -> "C")))(adder)
+      val r = fromList(List(5 -> "a", 3 -> "b")).unionWith(
+        fromList(List(5 -> "A", 7 -> "C")))(adder)
 
       r must_== fromList(List(3 -> "b", 5 -> "aA", 7 -> "C"))
     }
@@ -388,8 +389,8 @@ object MapTest extends SpecLite {
     "unionWithKey" in {
       val f = (key: Int, left: String, right: String) =>
         key.toString + ":" + left + "|" + right
-      val r = fromList(List(5 -> "a", 3 -> "b"))
-        .unionWithKey(fromList(List(5 -> "A", 7 -> "C")))(f)
+      val r = fromList(List(5 -> "a", 3 -> "b")).unionWithKey(
+        fromList(List(5 -> "A", 7 -> "C")))(f)
 
       r must_== fromList(List(3 -> "b", 5 -> "5:a|A", 7 -> "C"))
     }
@@ -397,8 +398,8 @@ object MapTest extends SpecLite {
 
   "==>> difference operations" should {
     "difference" in {
-      val r = fromList(List(5 -> "a", 3 -> "b"))
-        .difference(fromList(List(5 -> "A", 7 -> "C")))
+      val r = fromList(List(5 -> "a", 3 -> "b")).difference(
+        fromList(List(5 -> "A", 7 -> "C")))
       r must_== singleton[Int, String](3, "b")
     }
 
@@ -484,16 +485,16 @@ object MapTest extends SpecLite {
 
     "intersectionWith" in {
       val f = (a: String, b: String) => a + b
-      val r = fromList(List(5 -> "a", 3 -> "b"))
-        .intersectionWith(fromList(List(5 -> "A", 7 -> "C")))(f)
+      val r = fromList(List(5 -> "a", 3 -> "b")).intersectionWith(
+        fromList(List(5 -> "A", 7 -> "C")))(f)
       r must_== singleton(5, "aA")
     }
 
     "intersectionWithKey" in {
       val f =
         (k: Int, al: String, ar: String) => k.toString + ":" + al + "|" + ar
-      val r = fromList(List(5 -> "a", 3 -> "b"))
-        .intersectionWithKey(fromList(List(5 -> "A", 7 -> "C")))(f)
+      val r = fromList(List(5 -> "a", 3 -> "b")).intersectionWithKey(
+        fromList(List(5 -> "A", 7 -> "C")))(f)
       r must_== singleton(5, "5:a|A")
     }
   }
@@ -526,8 +527,9 @@ object MapTest extends SpecLite {
         List(3 -> "b", 5 -> "new a")))
       fromList(List(5 -> "a", 3 -> "b")).update(7, f) must_=== (fromList(
         List(3 -> "b", 5 -> "a")))
-      fromList(List(5 -> "a", 3 -> "b"))
-        .update(3, f) must_=== (singleton(5, "a"))
+      fromList(List(5 -> "a", 3 -> "b")).update(3, f) must_=== (singleton(
+        5,
+        "a"))
     }
 
     "updateWithKey" in {
@@ -538,8 +540,9 @@ object MapTest extends SpecLite {
         List(3 -> "b", 5 -> "5:new a")))
       fromList(List(5 -> "a", 3 -> "b")).updateWithKey(7, f) must_=== (fromList(
         List(3 -> "b", 5 -> "a")))
-      fromList(List(5 -> "a", 3 -> "b"))
-        .updateWithKey(3, f) must_=== (singleton(5, "a"))
+      fromList(List(5 -> "a", 3 -> "b")).updateWithKey(
+        3,
+        f) must_=== (singleton(5, "a"))
     }
 
     "updateLookupWithKey" in {
@@ -555,16 +558,19 @@ object MapTest extends SpecLite {
         (
           None,
           fromList(List(3 -> "b", 5 -> "a"))))
-      fromList(List(5 -> "a", 3 -> "b"))
-        .updateLookupWithKey(3, f) must_=== ((Some("b"), singleton(5, "a")))
+      fromList(List(5 -> "a", 3 -> "b")).updateLookupWithKey(3, f) must_=== (
+        (
+          Some("b"),
+          singleton(5, "a")))
     }
 
     "alter" in {
       val f1 = (_: Option[String]) => none[String]
       fromList(List(5 -> "a", 3 -> "b")).alter(7, f1) must_=== (fromList(
         List(3 -> "b", 5 -> "a")))
-      fromList(List(5 -> "a", 3 -> "b"))
-        .alter(5, f1) must_=== (singleton(3, "b"))
+      fromList(List(5 -> "a", 3 -> "b")).alter(5, f1) must_=== (singleton(
+        3,
+        "b"))
 
       val f2 = (_: Option[String]) => "c".some
       fromList(List(5 -> "a", 3 -> "b")).alter(7, f2) must_=== (fromList(
@@ -577,24 +583,28 @@ object MapTest extends SpecLite {
   "==>> submap" should {
     "isSubmapOfBy -> true" in {
       val o = implicitly[Order[Int]]
-      fromList(List('a' -> 1))
-        .isSubmapOfBy(fromList(List('a' -> 1, 'b' -> 2)), o.equal) must_== true
+      fromList(List('a' -> 1)).isSubmapOfBy(
+        fromList(List('a' -> 1, 'b' -> 2)),
+        o.equal) must_== true
       fromList(List('a' -> 1)).isSubmapOfBy(
         fromList(List('a' -> 1, 'b' -> 2)),
         o.lessThanOrEqual) must_== true
-      fromList(List('a' -> 1, 'b' -> 2))
-        .isSubmapOfBy(fromList(List('a' -> 1, 'b' -> 2)), o.equal) must_== true
+      fromList(List('a' -> 1, 'b' -> 2)).isSubmapOfBy(
+        fromList(List('a' -> 1, 'b' -> 2)),
+        o.equal) must_== true
     }
 
     "isSubmapOfBy -> false" in {
       val o = implicitly[Order[Int]]
-      fromList(List('a' -> 2))
-        .isSubmapOfBy(fromList(List('a' -> 1, 'b' -> 2)), o.equal) must_== false
+      fromList(List('a' -> 2)).isSubmapOfBy(
+        fromList(List('a' -> 1, 'b' -> 2)),
+        o.equal) must_== false
       fromList(List('a' -> 1)).isSubmapOfBy(
         fromList(List('a' -> 1, 'b' -> 2)),
         o.lessThan) must_== false
-      fromList(List('a' -> 1, 'b' -> 2))
-        .isSubmapOfBy(fromList(List('a' -> 1)), o.equal) must_== false
+      fromList(List('a' -> 1, 'b' -> 2)).isSubmapOfBy(
+        fromList(List('a' -> 1)),
+        o.equal) must_== false
     }
 
     "isSubmapOf" ! forAll { (a: Byte ==>> Byte, b: Byte ==>> Byte) =>
@@ -709,23 +719,26 @@ object MapTest extends SpecLite {
     }
 
     "mapWithKeys" in {
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
-        .mapKeysWith(_ => 1, _ + _) must_=== (singleton(1, "cdab"))
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
-        .mapKeysWith(_ => 3, _ + _) must_=== (singleton(3, "cdab"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeysWith(
+        _ => 1,
+        _ + _) must_=== (singleton(1, "cdab"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeysWith(
+        _ => 3,
+        _ + _) must_=== (singleton(3, "cdab"))
     }
 
     "mapOption" in {
       val f = (x: String) => if (x == "a") Some("new a") else None
-      fromList(List(5 -> "a", 3 -> "b"))
-        .mapOption(f) must_=== (singleton(5, "new a"))
+      fromList(List(5 -> "a", 3 -> "b")).mapOption(f) must_=== (singleton(
+        5,
+        "new a"))
     }
 
     "mapOptionWithKey" in {
       val f =
         (k: Int, _: String) => if (k < 5) Some("key : " + k.toString) else None
-      fromList(List(5 -> "a", 3 -> "b"))
-        .mapOptionWithKey(f) must_=== (singleton(3, "key : 3"))
+      fromList(List(5 -> "a", 3 -> "b")).mapOptionWithKey(
+        f) must_=== (singleton(3, "key : 3"))
     }
 
     "mapEither" in {
@@ -765,8 +778,8 @@ object MapTest extends SpecLite {
     "foldrWithKey" in {
       val f = (k: Int, a: String, result: String) =>
         result + "(" + k.toString + ":" + a + ")"
-      fromList(List(5 -> "a", 3 -> "b"))
-        .foldrWithKey("Map: ")(f) must_== "Map: (5:a)(3:b)"
+      fromList(List(5 -> "a", 3 -> "b")).foldrWithKey("Map: ")(
+        f) must_== "Map: (5:a)(3:b)"
     }
   }
 
@@ -857,15 +870,12 @@ object MapTest extends SpecLite {
     x.filter(_.isThat).keySet must_=== (keysB difference keysA)
     x.filter(_.isBoth).keySet must_=== (keysA intersection keysB)
 
-    x.filter(_.isThis) must_=== a
-      .filterWithKey((k, _) => !keysB.member(k))
-      .map(This(_))
-    x.filter(_.isThat) must_=== b
-      .filterWithKey((k, _) => !keysA.member(k))
-      .map(That(_))
-    x.filter(_.isBoth) must_=== a
-      .filterWithKey((k, _) => keysB.member(k))
-      .mapWithKey((k, v) => Both(v, b.lookup(k).get))
+    x.filter(_.isThis) must_=== a.filterWithKey((k, _) => !keysB.member(k)).map(
+      This(_))
+    x.filter(_.isThat) must_=== b.filterWithKey((k, _) => !keysA.member(k)).map(
+      That(_))
+    x.filter(_.isBoth) must_=== a.filterWithKey((k, _) =>
+      keysB.member(k)).mapWithKey((k, v) => Both(v, b.lookup(k).get))
   }
 
   type IntMap[A] = Int ==>> A

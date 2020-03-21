@@ -65,11 +65,13 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
     val shipDst = includeDst && !hasDstId
     if (shipSrc || shipDst) {
       val shippedVerts: RDD[(Int, VertexAttributeBlock[VD])] =
-        vertices
-          .shipVertexAttributes(shipSrc, shipDst)
+        vertices.shipVertexAttributes(shipSrc, shipDst)
           .setName(
-            "ReplicatedVertexView.upgrade(%s, %s) - shippedVerts %s %s (broadcast)"
-              .format(includeSrc, includeDst, shipSrc, shipDst))
+            "ReplicatedVertexView.upgrade(%s, %s) - shippedVerts %s %s (broadcast)".format(
+              includeSrc,
+              includeDst,
+              shipSrc,
+              shipDst))
           .partitionBy(edges.partitioner.get)
       val newEdges = edges.withPartitionsRDD(
         edges.partitionsRDD.zipPartitions(shippedVerts) {
@@ -94,8 +96,7 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
     * referenced, ignoring the attribute shipping level.
     */
   def withActiveSet(actives: VertexRDD[_]): ReplicatedVertexView[VD, ED] = {
-    val shippedActives = actives
-      .shipVertexIds()
+    val shippedActives = actives.shipVertexIds()
       .setName(
         "ReplicatedVertexView.withActiveSet - shippedActives (broadcast)")
       .partitionBy(edges.partitioner.get)
@@ -120,11 +121,11 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
     * position(s) specified by the attribute shipping level.
     */
   def updateVertices(updates: VertexRDD[VD]): ReplicatedVertexView[VD, ED] = {
-    val shippedVerts = updates
-      .shipVertexAttributes(hasSrcId, hasDstId)
+    val shippedVerts = updates.shipVertexAttributes(hasSrcId, hasDstId)
       .setName(
-        "ReplicatedVertexView.updateVertices - shippedVerts %s %s (broadcast)"
-          .format(hasSrcId, hasDstId))
+        "ReplicatedVertexView.updateVertices - shippedVerts %s %s (broadcast)".format(
+          hasSrcId,
+          hasDstId))
       .partitionBy(edges.partitioner.get)
 
     val newEdges =

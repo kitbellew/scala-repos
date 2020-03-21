@@ -20,13 +20,11 @@ object Macro {
       import symtab._
       val paramSym =
         NoSymbol.newTermSymbol(TermName("x")).setInfo(typeOf[CharSequence])
-      val dummySymbol = NoSymbol
-        .newTermSymbol(TermName("matcher"))
-        .setInfo(
-          internal.methodType(paramSym :: Nil, typeOf[java.util.regex.Matcher]))
+      val dummySymbol = NoSymbol.newTermSymbol(TermName("matcher")).setInfo(
+        internal.methodType(paramSym :: Nil, typeOf[java.util.regex.Matcher]))
       val bootstrapArgTrees: List[Tree] =
-        Literal(Constant(bootstrapMethod)).setType(NoType) :: bootstrapArgs
-          .asInstanceOf[List[Tree]]
+        Literal(Constant(bootstrapMethod)).setType(
+          NoType) :: bootstrapArgs.asInstanceOf[List[Tree]]
       val result = ApplyDynamic(
         Ident(dummySymbol).setType(dummySymbol.info),
         bootstrapArgTrees ::: dynArgs.asInstanceOf[List[Tree]])

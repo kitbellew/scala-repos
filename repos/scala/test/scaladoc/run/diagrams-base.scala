@@ -35,11 +35,8 @@ object Test extends ScaladocModelTest {
     // get the quick access implicit defs in scope (_package(s), _class(es), _trait(s), object(s) _method(s), _value(s))
     import access._
 
-    val base = rootPackage
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("diagrams")
+    val base = rootPackage._package("scala")._package("test")._package(
+      "scaladoc")._package("diagrams")
     val E = base._class("E")
     val diag = E.inheritanceDiagram.get
 

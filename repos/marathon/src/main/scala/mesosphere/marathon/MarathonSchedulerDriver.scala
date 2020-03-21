@@ -21,8 +21,7 @@ object MarathonSchedulerDriver {
 
     log.info(s"Create new Scheduler Driver with frameworkId: $frameworkId")
 
-    val frameworkInfoBuilder = FrameworkInfo
-      .newBuilder()
+    val frameworkInfoBuilder = FrameworkInfo.newBuilder()
       .setName(config.frameworkName())
       .setFailoverTimeout(config.mesosFailoverTimeout().toDouble)
       .setUser(config.mesosUser())
@@ -48,13 +47,12 @@ object MarathonSchedulerDriver {
     }
 
     // set the authentication principal, if provided
-    config.mesosAuthenticationPrincipal.get
-      .foreach(frameworkInfoBuilder.setPrincipal)
+    config.mesosAuthenticationPrincipal.get.foreach(
+      frameworkInfoBuilder.setPrincipal)
 
     val credential: Option[Credential] =
       config.mesosAuthenticationPrincipal.get.map { principal =>
-        val credentialBuilder = Credential
-          .newBuilder()
+        val credentialBuilder = Credential.newBuilder()
           .setPrincipal(principal)
 
         config.mesosAuthenticationSecretFile.get.foreach { secretFile =>

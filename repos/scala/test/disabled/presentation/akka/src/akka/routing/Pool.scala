@@ -124,9 +124,8 @@ trait SmallestMailboxSelector {
       else selectionCount
 
     while (take > 0) {
-      set = delegates
-        .sortWith(_.mailboxSize < _.mailboxSize)
-        .take(take) ++ set //Question, doesn't this risk selecting the same actor multiple times?
+      set = delegates.sortWith(_.mailboxSize < _.mailboxSize).take(
+        take) ++ set //Question, doesn't this risk selecting the same actor multiple times?
       take -= set.size
     }
 

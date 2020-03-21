@@ -31,17 +31,17 @@ case class Data(a: Int, B: Int, n: Nested, nestedArray: Seq[Nested])
 class HiveResolutionSuite extends HiveComparisonTest {
 
   test("SPARK-3698: case insensitive test for nested data") {
-    read
-      .json(sparkContext.makeRDD("""{"a": [{"a": {"a": 1}}]}""" :: Nil))
-      .registerTempTable("nested")
+    read.json(
+      sparkContext.makeRDD(
+        """{"a": [{"a": {"a": 1}}]}""" :: Nil)).registerTempTable("nested")
     // This should be successfully analyzed
     sql("SELECT a[0].A.A from nested").queryExecution.analyzed
   }
 
   test("SPARK-5278: check ambiguous reference to fields") {
-    read
-      .json(sparkContext.makeRDD("""{"a": [{"b": 1, "B": 2}]}""" :: Nil))
-      .registerTempTable("nested")
+    read.json(
+      sparkContext.makeRDD(
+        """{"a": [{"b": 1, "B": 2}]}""" :: Nil)).registerTempTable("nested")
 
     // there are 2 filed matching field name "b", we should report Ambiguous reference error
     val exception = intercept[AnalysisException] {
@@ -80,41 +80,40 @@ class HiveResolutionSuite extends HiveComparisonTest {
 
   test("case insensitivity with scala reflection") {
     // Test resolution with Scala Reflection
-    sparkContext
-      .parallelize(Data(1, 2, Nested(1, 2), Seq(Nested(1, 2))) :: Nil)
-      .toDF()
-      .registerTempTable("caseSensitivityTest")
+    sparkContext.parallelize(Data(1, 2, Nested(1, 2), Seq(Nested(1, 2))) :: Nil)
+      .toDF().registerTempTable("caseSensitivityTest")
 
     val query =
       sql("SELECT a, b, A, B, n.a, n.b, n.A, n.B FROM caseSensitivityTest")
     assert(
-      query.schema.fields
-        .map(_.name) === Seq("a", "b", "A", "B", "a", "b", "A", "B"),
+      query.schema.fields.map(_.name) === Seq(
+        "a",
+        "b",
+        "A",
+        "B",
+        "a",
+        "b",
+        "A",
+        "B"),
       "The output schema did not preserve the case of the query.")
     query.collect()
   }
 
   ignore("case insensitivity with scala reflection joins") {
     // Test resolution with Scala Reflection
-    sparkContext
-      .parallelize(Data(1, 2, Nested(1, 2), Seq(Nested(1, 2))) :: Nil)
-      .toDF()
-      .registerTempTable("caseSensitivityTest")
+    sparkContext.parallelize(Data(1, 2, Nested(1, 2), Seq(Nested(1, 2))) :: Nil)
+      .toDF().registerTempTable("caseSensitivityTest")
 
     sql(
-      "SELECT * FROM casesensitivitytest a JOIN casesensitivitytest b ON a.a = b.a")
-      .collect()
+      "SELECT * FROM casesensitivitytest a JOIN casesensitivitytest b ON a.a = b.a").collect()
   }
 
   test("nested repeated resolution") {
-    sparkContext
-      .parallelize(Data(1, 2, Nested(1, 2), Seq(Nested(1, 2))) :: Nil)
-      .toDF()
-      .registerTempTable("nestedRepeatedTest")
+    sparkContext.parallelize(Data(1, 2, Nested(1, 2), Seq(Nested(1, 2))) :: Nil)
+      .toDF().registerTempTable("nestedRepeatedTest")
     assert(
-      sql("SELECT nestedArray[0].a FROM nestedRepeatedTest")
-        .collect()
-        .head(0) === 1)
+      sql("SELECT nestedArray[0].a FROM nestedRepeatedTest").collect().head(
+        0) === 1)
   }
 
   createQueryTest(

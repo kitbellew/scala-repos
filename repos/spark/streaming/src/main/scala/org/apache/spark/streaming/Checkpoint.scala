@@ -60,10 +60,10 @@ private[streaming] class Checkpoint(
       "spark.ui.filters"
     )
 
-    val newSparkConf = new SparkConf(loadDefaults = false)
-      .setAll(sparkConfPairs)
-      .remove("spark.driver.host")
-      .remove("spark.driver.port")
+    val newSparkConf =
+      new SparkConf(loadDefaults = false).setAll(sparkConfPairs)
+        .remove("spark.driver.host")
+        .remove("spark.driver.port")
     val newReloadConf = new SparkConf(loadDefaults = true)
     propertiesToReload.foreach { prop =>
       newReloadConf.getOption(prop).foreach { value =>
@@ -264,9 +264,8 @@ private[streaming] class CheckpointWriter(
           val allCheckpointFiles =
             Checkpoint.getCheckpointFiles(checkpointDir, Some(fs))
           if (allCheckpointFiles.size > 10) {
-            allCheckpointFiles
-              .take(allCheckpointFiles.size - 10)
-              .foreach(file => {
+            allCheckpointFiles.take(allCheckpointFiles.size - 10).foreach(
+              file => {
                 logInfo("Deleting " + file)
                 fs.delete(file, true)
               })

@@ -34,9 +34,8 @@ final class PerfStatStorage(coll: Coll) {
   private implicit val PerfStatBSONHandler = Macros.handler[PerfStat]
 
   def find(userId: String, perfType: PerfType): Fu[Option[PerfStat]] =
-    coll
-      .find(BSONDocument("_id" -> PerfStat.makeId(userId, perfType)))
-      .one[PerfStat]
+    coll.find(BSONDocument("_id" -> PerfStat.makeId(userId, perfType))).one[
+      PerfStat]
 
   def update(perfStat: PerfStat): Funit =
     coll.update(BSONDocument("_id" -> perfStat.id), perfStat).void

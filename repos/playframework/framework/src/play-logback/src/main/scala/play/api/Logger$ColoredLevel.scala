@@ -15,8 +15,8 @@ class Logger$ColoredLevel extends ColoredLevel {
   override def start(): Unit = {
     super.start()
     val configLocation =
-      Option(ConfigurationWatchListUtil.getMainWatchURL(getContext))
-        .fold("your logback configuration")(_.toString)
+      Option(ConfigurationWatchListUtil.getMainWatchURL(getContext)).fold(
+        "your logback configuration")(_.toString)
     val migrationDocs =
       "https://www.playframework.com/documentation/2.5.x/Migration25#Change-to-Logback-configuration"
     addError(

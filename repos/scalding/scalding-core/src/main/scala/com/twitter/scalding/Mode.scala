@@ -145,11 +145,11 @@ trait HadoopMode extends Mode {
       case Some(Success(cls)) => asMap + (jarKey -> cls)
       case Some(Failure(err)) =>
         // This may or may not cause the job to fail at submission, let's punt till then
-        LoggerFactory
-          .getLogger(getClass)
+        LoggerFactory.getLogger(getClass)
           .error(
-            "Could not create class from: %s in config key: %s, Job may fail."
-              .format(conf.get(jarKey), AppProps.APP_JAR_CLASS),
+            "Could not create class from: %s in config key: %s, Job may fail.".format(
+              conf.get(jarKey),
+              AppProps.APP_JAR_CLASS),
             err)
         // Just delete the key and see if it fails when cascading tries to submit
         asMap - jarKey

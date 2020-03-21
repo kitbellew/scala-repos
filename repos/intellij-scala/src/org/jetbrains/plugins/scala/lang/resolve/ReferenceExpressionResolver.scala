@@ -44,10 +44,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           () => call.expectedType(),
           isUnderscore = false)
       case call: ScMethodCall =>
-        val args = call.argumentExpressions ++ call.getContext
-          .asInstanceOf[ScAssignStmt]
-          .getRExpression
-          .toList
+        val args = call.argumentExpressions ++ call.getContext.asInstanceOf[
+          ScAssignStmt].getRExpression.toList
         ContextInfo(Some(args), () => None, isUnderscore = false)
       case section: ScUnderscoreSection =>
         ContextInfo(None, () => section.expectedType(), isUnderscore = true)
@@ -139,9 +137,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           override def candidatesS: Set[ScalaResolveResult] = {
             if (!smartProcessor) super.candidatesS
             else {
-              val iterator = reference.shapeResolve
-                .map(_.asInstanceOf[ScalaResolveResult])
-                .iterator
+              val iterator = reference.shapeResolve.map(
+                _.asInstanceOf[ScalaResolveResult]).iterator
               while (iterator.hasNext) {
                 levelSet.add(iterator.next())
               }
@@ -182,8 +179,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           enableTupling = true)
         result = reference.doResolve(reference, assignProcessor)
         result.map(r =>
-          r.asInstanceOf[ScalaResolveResult]
-            .copy(isAssignment = true): ResolveResult)
+          r.asInstanceOf[ScalaResolveResult].copy(isAssignment =
+            true): ResolveResult)
       } else {
         result
       }

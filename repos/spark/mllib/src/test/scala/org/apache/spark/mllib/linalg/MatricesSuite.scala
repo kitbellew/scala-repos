@@ -49,9 +49,8 @@ class MatricesSuite extends SparkFunSuite {
     val values = Array(1.0, 2.0, 4.0, 5.0)
     val colPtrs = Array(0, 2, 2, 4, 4)
     val rowIndices = Array(1, 2, 1, 2)
-    val mat = Matrices
-      .sparse(m, n, colPtrs, rowIndices, values)
-      .asInstanceOf[SparseMatrix]
+    val mat = Matrices.sparse(m, n, colPtrs, rowIndices, values).asInstanceOf[
+      SparseMatrix]
     assert(mat.numRows === m)
     assert(mat.numCols === n)
     assert(mat.values.eq(values), "should not copy data")

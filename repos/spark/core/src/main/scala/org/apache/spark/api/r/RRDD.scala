@@ -356,10 +356,9 @@ private[r] class BufferedStreamThread(
 
   def getLines(): String =
     synchronized {
-      (0 until errBufferSize)
-        .filter { x => lines((x + lineIdx) % errBufferSize) != null }
-        .map { x => lines((x + lineIdx) % errBufferSize) }
-        .mkString("\n")
+      (0 until errBufferSize).filter { x =>
+        lines((x + lineIdx) % errBufferSize) != null
+      }.map { x => lines((x + lineIdx) % errBufferSize) }.mkString("\n")
     }
 }
 
@@ -379,8 +378,7 @@ private[r] object RRDD {
       sparkEnvirMap: JMap[Object, Object],
       sparkExecutorEnvMap: JMap[Object, Object]): JavaSparkContext = {
 
-    val sparkConf = new SparkConf()
-      .setAppName(appName)
+    val sparkConf = new SparkConf().setAppName(appName)
       .setSparkHome(sparkHome)
 
     // Override `master` if we have a user-specified value

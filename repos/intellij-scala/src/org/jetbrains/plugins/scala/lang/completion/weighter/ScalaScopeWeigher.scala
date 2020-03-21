@@ -38,8 +38,9 @@ class ScalaScopeWeigher extends CompletionWeigher {
     ScalaLookupItem.original(element) match {
       case sl: ScalaLookupItem =>
         if (sl.element.scopes.hasNext)
-          checkByContext(completionPosition, sl.element.scopes.next())
-            .getOrElse(Int.MinValue)
+          checkByContext(
+            completionPosition,
+            sl.element.scopes.next()).getOrElse(Int.MinValue)
         else null
       case _ => null
     }

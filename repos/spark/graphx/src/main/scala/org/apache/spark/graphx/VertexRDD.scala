@@ -68,10 +68,9 @@ abstract class VertexRDD[VD](sc: SparkContext, deps: Seq[Dependency[_]])
   override def compute(
       part: Partition,
       context: TaskContext): Iterator[(VertexId, VD)] = {
-    firstParent[ShippableVertexPartition[VD]]
-      .iterator(part, context)
-      .next()
-      .iterator
+    firstParent[ShippableVertexPartition[VD]].iterator(
+      part,
+      context).next().iterator
   }
 
   /**
@@ -380,17 +379,13 @@ object VertexRDD {
       edges: EdgeRDD[_],
       vertexPartitioner: Partitioner): RDD[RoutingTablePartition] = {
     // Determine which vertices each edge partition needs by creating a mapping from vid to pid.
-    val vid2pid = edges.partitionsRDD
-      .mapPartitions(
-        _.flatMap(Function.tupled(RoutingTablePartition.edgePartitionToMsgs)))
+    val vid2pid = edges.partitionsRDD.mapPartitions(
+      _.flatMap(Function.tupled(RoutingTablePartition.edgePartitionToMsgs)))
       .setName("VertexRDD.createRoutingTables - vid2pid (aggregation)")
 
     val numEdgePartitions = edges.partitions.length
-    vid2pid
-      .partitionBy(vertexPartitioner)
-      .mapPartitions(
-        iter =>
-          Iterator(RoutingTablePartition.fromMsgs(numEdgePartitions, iter)),
-        preservesPartitioning = true)
+    vid2pid.partitionBy(vertexPartitioner).mapPartitions(
+      iter => Iterator(RoutingTablePartition.fromMsgs(numEdgePartitions, iter)),
+      preservesPartitioning = true)
   }
 }

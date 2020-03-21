@@ -33,17 +33,21 @@ object JsonBodyParserSpec extends PlaySpecification {
     }
 
     "parse JSON bodies" in new WithApplication() {
-      parse("""{"foo":"bar"}""", Some("application/json"), "utf-8") must beRight
-        .like {
-          case json => (json \ "foo").as[String] must_== "bar"
-        }
+      parse(
+        """{"foo":"bar"}""",
+        Some("application/json"),
+        "utf-8") must beRight.like {
+        case json => (json \ "foo").as[String] must_== "bar"
+      }
     }
 
     "automatically detect the charset" in new WithApplication() {
-      parse("""{"foo":"bär"}""", Some("application/json"), "utf-8") must beRight
-        .like {
-          case json => (json \ "foo").as[String] must_== "bär"
-        }
+      parse(
+        """{"foo":"bär"}""",
+        Some("application/json"),
+        "utf-8") must beRight.like {
+        case json => (json \ "foo").as[String] must_== "bär"
+      }
       parse(
         """{"foo":"bär"}""",
         Some("application/json"),

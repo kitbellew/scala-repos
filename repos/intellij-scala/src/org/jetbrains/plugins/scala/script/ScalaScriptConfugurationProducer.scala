@@ -34,17 +34,16 @@ class ScalaScriptConfugurationProducer extends {
       existingConfigurations: util.List[RunnerAndConfigurationSettings],
       context: ConfigurationContext): RunnerAndConfigurationSettings = {
     import scala.collection.JavaConversions._
-    existingConfigurations
-      .find(c => isConfigurationByLocation(c.getConfiguration, location))
-      .orNull
+    existingConfigurations.find(c =>
+      isConfigurationByLocation(c.getConfiguration, location)).orNull
   }
 
   def createConfigurationByElement(
       location: Location[_ <: PsiElement],
       context: ConfigurationContext): RunnerAndConfigurationSettings = {
     myPsiElement = location.getPsiElement
-    createConfigurationByLocation(location)
-      .asInstanceOf[RunnerAndConfigurationSettingsImpl]
+    createConfigurationByLocation(location).asInstanceOf[
+      RunnerAndConfigurationSettingsImpl]
   }
 
   private def createConfigurationByLocation(
@@ -54,9 +53,10 @@ class ScalaScriptConfugurationProducer extends {
       case null => null
       case scalaFile: ScalaFile
           if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile => {
-        val settings = RunManager
-          .getInstance(location.getProject)
-          .createRunConfiguration(scalaFile.name, confFactory)
+        val settings =
+          RunManager.getInstance(location.getProject).createRunConfiguration(
+            scalaFile.name,
+            confFactory)
         val conf: ScalaScriptRunConfiguration =
           settings.getConfiguration.asInstanceOf[ScalaScriptRunConfiguration]
         val module = ModuleUtilCore.findModuleForFile(

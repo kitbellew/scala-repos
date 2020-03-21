@@ -163,9 +163,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         // Change repository HEAD
         using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
           git =>
-            git.getRepository
-              .updateRef(Constants.HEAD, true)
-              .link(Constants.R_HEADS + form.defaultBranch)
+            git.getRepository.updateRef(Constants.HEAD, true).link(
+              Constants.R_HEADS + form.defaultBranch)
         }
         flash += "info" -> "Repository default branch has been updated."
         redirect(s"/${repository.owner}/${repository.name}/settings/branches")
@@ -306,11 +305,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
                 .add(git.getRepository.resolve(
                   repository.repository.defaultBranch))
                 .setMaxCount(4)
-                .call
-                .iterator
-                .asScala
-                .map(new CommitInfo(_))
-                .toList
+                .call.iterator.asScala.map(new CommitInfo(_)).toList
           val pushedCommit = commits.drop(1)
 
           WebHookPushPayload(
@@ -320,14 +315,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             repositoryInfo = repository,
             commits = pushedCommit,
             repositoryOwner = ownerAccount,
-            oldId = commits.lastOption
-              .map(_.id)
-              .map(ObjectId.fromString)
-              .getOrElse(ObjectId.zeroId()),
-            newId = commits.headOption
-              .map(_.id)
-              .map(ObjectId.fromString)
-              .getOrElse(ObjectId.zeroId())
+            oldId = commits.lastOption.map(_.id).map(
+              ObjectId.fromString).getOrElse(ObjectId.zeroId()),
+            newId = commits.headOption.map(_.id).map(
+              ObjectId.fromString).getOrElse(ObjectId.zeroId())
           )
         }
 
@@ -348,23 +339,19 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         org.json4s.jackson.Serialization.write(Map(
           "url" -> url,
           "request" -> Await.result(
-            reqFuture
-              .map(req =>
-                Map(
-                  "headers" -> _headers(req.getAllHeaders),
-                  "payload" -> json
-                ))
-              .recover(toErrorMap),
+            reqFuture.map(req =>
+              Map(
+                "headers" -> _headers(req.getAllHeaders),
+                "payload" -> json
+              )).recover(toErrorMap),
             20 seconds),
           "responce" -> Await.result(
-            resFuture
-              .map(res =>
-                Map(
-                  "status" -> res.getStatusLine(),
-                  "body" -> EntityUtils.toString(res.getEntity()),
-                  "headers" -> _headers(res.getAllHeaders())
-                ))
-              .recover(toErrorMap),
+            resFuture.map(res =>
+              Map(
+                "status" -> res.getStatusLine(),
+                "body" -> EntityUtils.toString(res.getEntity()),
+                "headers" -> _headers(res.getAllHeaders())
+              )).recover(toErrorMap),
             20 seconds
           )
         ))
@@ -410,29 +397,27 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     (form, repository) =>
       // Change repository owner
       if (repository.owner != form.newOwner) {
-        LockUtil
-          .lock(s"${repository.owner}/${repository.name}") {
-            // Update database
-            renameRepository(
-              repository.owner,
-              repository.name,
-              form.newOwner,
-              repository.name)
-            // Move git repository
-            defining(getRepositoryDir(repository.owner, repository.name)) {
-              dir =>
-                FileUtils.moveDirectory(
-                  dir,
-                  getRepositoryDir(form.newOwner, repository.name))
-            }
-            // Move wiki repository
-            defining(getWikiRepositoryDir(repository.owner, repository.name)) {
-              dir =>
-                FileUtils.moveDirectory(
-                  dir,
-                  getWikiRepositoryDir(form.newOwner, repository.name))
-            }
+        LockUtil.lock(s"${repository.owner}/${repository.name}") {
+          // Update database
+          renameRepository(
+            repository.owner,
+            repository.name,
+            form.newOwner,
+            repository.name)
+          // Move git repository
+          defining(getRepositoryDir(repository.owner, repository.name)) { dir =>
+            FileUtils.moveDirectory(
+              dir,
+              getRepositoryDir(form.newOwner, repository.name))
           }
+          // Move wiki repository
+          defining(getWikiRepositoryDir(repository.owner, repository.name)) {
+            dir =>
+              FileUtils.moveDirectory(
+                dir,
+                getWikiRepositoryDir(form.newOwner, repository.name))
+          }
+        }
       }
       redirect(s"/${form.newOwner}/${repository.name}")
   })
@@ -531,9 +516,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           messages: Messages): Option[String] =
         params.get("repository").filter(_ != value).flatMap { _ =>
           params.get("owner").flatMap { userName =>
-            getRepositoryNamesOfUser(userName)
-              .find(_ == value)
-              .map(_ => "Repository already exists.")
+            getRepositoryNamesOfUser(userName).find(_ == value).map(_ =>
+              "Repository already exists.")
           }
         }
     }
@@ -554,9 +538,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
               Some("This is current repository owner.")
             } else {
               params.get("repository").flatMap { repositoryName =>
-                getRepositoryNamesOfUser(x.userName)
-                  .find(_ == repositoryName)
-                  .map { _ => "User already has same repository." }
+                getRepositoryNamesOfUser(x.userName).find(
+                  _ == repositoryName).map { _ =>
+                  "User already has same repository."
+                }
               }
             }
         }

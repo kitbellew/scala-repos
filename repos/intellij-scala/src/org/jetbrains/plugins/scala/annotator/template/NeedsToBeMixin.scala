@@ -31,11 +31,8 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
       holder: AnnotationHolder,
       typeAware: Boolean) {
     if (element.isInstanceOf[ScTrait]) return
-    val signaturesIterator = TypeDefinitionMembers
-      .getSignatures(element)
-      .allFirstSeq()
-      .flatMap(_.map(_._2))
-      .iterator
+    val signaturesIterator = TypeDefinitionMembers.getSignatures(
+      element).allFirstSeq().flatMap(_.map(_._2)).iterator
 
     while (signaturesIterator.hasNext) {
       val signature = signaturesIterator.next()
@@ -44,8 +41,8 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
           val m = sign.method
           m match {
             case f: ScFunctionDefinition =>
-              if (f.hasModifierPropertyScala("abstract") && f
-                    .hasModifierPropertyScala("override")) {
+              if (f.hasModifierPropertyScala(
+                    "abstract") && f.hasModifierPropertyScala("override")) {
                 signature.supers.find {
                   case node =>
                     node.info.namedElement match {
@@ -73,9 +70,8 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
                     val place: PsiElement = element match {
                       case td: ScTypeDefinition => td.nameId
                       case t: ScNewTemplateDefinition =>
-                        t.extendsBlock.templateParents
-                          .flatMap(_.typeElements.headOption)
-                          .orNull
+                        t.extendsBlock.templateParents.flatMap(
+                          _.typeElements.headOption).orNull
                       case _ => null
                     }
                     if (place != null) {

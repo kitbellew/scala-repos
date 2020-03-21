@@ -316,19 +316,17 @@ private[spark] class BlockManagerMasterEndpoint(
       filter: BlockId => Boolean,
       askSlaves: Boolean): Future[Seq[BlockId]] = {
     val getMatchingBlockIds = GetMatchingBlockIds(filter)
-    Future
-      .sequence(
-        blockManagerInfo.values.map { info =>
-          val future =
-            if (askSlaves) {
-              info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
-            } else {
-              Future { info.blocks.asScala.keys.filter(filter).toSeq }
-            }
-          future
-        }
-      )
-      .map(_.flatten.toSeq)
+    Future.sequence(
+      blockManagerInfo.values.map { info =>
+        val future =
+          if (askSlaves) {
+            info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
+          } else {
+            Future { info.blocks.asScala.keys.filter(filter).toSeq }
+          }
+        future
+      }
+    ).map(_.flatten.toSeq)
   }
 
   private def register(
@@ -347,8 +345,10 @@ private[spark] class BlockManagerMasterEndpoint(
         case None =>
       }
       logInfo(
-        "Registering block manager %s with %s RAM, %s"
-          .format(id.hostPort, Utils.bytesToString(maxMemSize), id))
+        "Registering block manager %s with %s RAM, %s".format(
+          id.hostPort,
+          Utils.bytesToString(maxMemSize),
+          id))
 
       blockManagerIdByExecutor(id.executorId) = id
 
@@ -424,10 +424,9 @@ private[spark] class BlockManagerMasterEndpoint(
   private def getPeers(blockManagerId: BlockManagerId): Seq[BlockManagerId] = {
     val blockManagerIds = blockManagerInfo.keySet
     if (blockManagerIds.contains(blockManagerId)) {
-      blockManagerIds
-        .filterNot { _.isDriver }
-        .filterNot { _ == blockManagerId }
-        .toSeq
+      blockManagerIds.filterNot { _.isDriver }.filterNot {
+        _ == blockManagerId
+      }.toSeq
     } else {
       Seq.empty
     }

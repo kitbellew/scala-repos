@@ -198,18 +198,16 @@ class Dispatchers(
         val args = List(
           classOf[Config] -> cfg,
           classOf[DispatcherPrerequisites] -> prerequisites)
-        prerequisites.dynamicAccess
-          .createInstanceFor[MessageDispatcherConfigurator](fqn, args)
-          .recover({
-            case exception ⇒
-              throw new ConfigurationException(
-                ("Cannot instantiate MessageDispatcherConfigurator type [%s], defined in [%s], " +
-                  "make sure it has constructor with [com.typesafe.config.Config] and " +
-                  "[akka.dispatch.DispatcherPrerequisites] parameters")
-                  .format(fqn, cfg.getString("id")),
-                exception)
-          })
-          .get
+        prerequisites.dynamicAccess.createInstanceFor[
+          MessageDispatcherConfigurator](fqn, args).recover({
+          case exception ⇒
+            throw new ConfigurationException(
+              ("Cannot instantiate MessageDispatcherConfigurator type [%s], defined in [%s], " +
+                "make sure it has constructor with [com.typesafe.config.Config] and " +
+                "[akka.dispatch.DispatcherPrerequisites] parameters")
+                .format(fqn, cfg.getString("id")),
+              exception)
+        }).get
     }
   }
 }
@@ -324,8 +322,8 @@ class PinnedDispatcherConfigurator(
         Warning(
           "PinnedDispatcherConfigurator",
           this.getClass,
-          "PinnedDispatcher [%s] not configured to use ThreadPoolExecutor, falling back to default config."
-            .format(config.getString("id"))
+          "PinnedDispatcher [%s] not configured to use ThreadPoolExecutor, falling back to default config.".format(
+            config.getString("id"))
         ))
       ThreadPoolConfig()
   }

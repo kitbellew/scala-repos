@@ -135,9 +135,10 @@ class SimpleConsumer(
     */
   def fetch(request: FetchRequest): FetchResponse = {
     var response: NetworkReceive = null
-    val specificTimer = fetchRequestAndResponseStats
-      .getFetchRequestAndResponseStats(host, port)
-      .requestTimer
+    val specificTimer =
+      fetchRequestAndResponseStats.getFetchRequestAndResponseStats(
+        host,
+        port).requestTimer
     val aggregateTimer =
       fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.requestTimer
     aggregateTimer.time {
@@ -148,18 +149,19 @@ class SimpleConsumer(
     val fetchResponse =
       FetchResponse.readFrom(response.payload(), request.versionId)
     val fetchedSize = fetchResponse.sizeInBytes
-    fetchRequestAndResponseStats
-      .getFetchRequestAndResponseStats(host, port)
-      .requestSizeHist
-      .update(fetchedSize)
-    fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.requestSizeHist
-      .update(fetchedSize)
-    fetchRequestAndResponseStats
-      .getFetchRequestAndResponseStats(host, port)
-      .throttleTimeStats
-      .update(fetchResponse.throttleTimeMs, TimeUnit.MILLISECONDS)
-    fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.throttleTimeStats
-      .update(fetchResponse.throttleTimeMs, TimeUnit.MILLISECONDS)
+    fetchRequestAndResponseStats.getFetchRequestAndResponseStats(
+      host,
+      port).requestSizeHist.update(fetchedSize)
+    fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.requestSizeHist.update(
+      fetchedSize)
+    fetchRequestAndResponseStats.getFetchRequestAndResponseStats(
+      host,
+      port).throttleTimeStats.update(
+      fetchResponse.throttleTimeMs,
+      TimeUnit.MILLISECONDS)
+    fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.throttleTimeStats.update(
+      fetchResponse.throttleTimeMs,
+      TimeUnit.MILLISECONDS)
     fetchResponse
   }
 

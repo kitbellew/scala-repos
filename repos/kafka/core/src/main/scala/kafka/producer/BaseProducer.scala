@@ -47,8 +47,9 @@ class NewShinyProducer(producerProps: Properties) extends BaseProducer {
     if (sync) {
       this.producer.send(record).get()
     } else {
-      this.producer
-        .send(record, new ErrorLoggingCallback(topic, key, value, false))
+      this.producer.send(
+        record,
+        new ErrorLoggingCallback(topic, key, value, false))
     }
   }
 
@@ -72,8 +73,8 @@ class OldProducer(producerProps: Properties) extends BaseProducer {
     new ProducerConfig(producerProps))
 
   override def send(topic: String, key: Array[Byte], value: Array[Byte]) {
-    this.producer
-      .send(new KeyedMessage[Array[Byte], Array[Byte]](topic, key, value))
+    this.producer.send(
+      new KeyedMessage[Array[Byte], Array[Byte]](topic, key, value))
   }
 
   override def close() {

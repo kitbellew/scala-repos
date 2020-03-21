@@ -184,8 +184,11 @@ class ClientTest extends FunSuite with MockitoSugar {
     }
 
     when(
-      finagledClient
-        .get(queueName, 1, Int.MaxValue, Int.MaxValue)) thenReturn promise
+      finagledClient.get(
+        queueName,
+        1,
+        Int.MaxValue,
+        Int.MaxValue)) thenReturn promise
 
     val rh = client.read(queueName)
 

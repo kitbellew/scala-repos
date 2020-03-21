@@ -237,8 +237,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         SafeTags.replaceAllIn(
           javadoclessComment,
           { mtch =>
-            java.util.regex.Matcher
-              .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker)
+            java.util.regex.Matcher.quoteReplacement(
+              safeTagMarker + mtch.matched + safeTagMarker)
           })
       markedTagComment.lines.toList map (cleanLine(_))
     }
@@ -627,8 +627,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
 
       val indent = countWhitespace
-      val style = (listStyles.keys find { checkSkipInitWhitespace(_) })
-        .getOrElse(listStyles.keys.head)
+      val style = (listStyles.keys find {
+        checkSkipInitWhitespace(_)
+      }).getOrElse(listStyles.keys.head)
       listLevel(indent, style)
     }
 
@@ -887,9 +888,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     def normalizeIndentation(_code: String): String = {
 
       val code =
-        _code
-          .replaceAll("\\s+$", "")
-          .dropWhile(_ == '\n') // right-trim + remove all leading '\n'
+        _code.replaceAll("\\s+$", "").dropWhile(
+          _ == '\n'
+        ) // right-trim + remove all leading '\n'
       val lines = code.split("\n")
 
       // maxSkip - size of the longest common whitespace prefix of non-empty lines
@@ -899,9 +900,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         else nonEmptyLines.map(line => line.prefixLength(_ == ' ')).min
 
       // remove common whitespace prefix
-      lines
-        .map(line => if (line.trim.nonEmpty) line.substring(maxSkip) else line)
-        .mkString("\n")
+      lines.map(line =>
+        if (line.trim.nonEmpty) line.substring(maxSkip) else line).mkString(
+        "\n")
     }
 
     def checkParaEnded(): Boolean = {

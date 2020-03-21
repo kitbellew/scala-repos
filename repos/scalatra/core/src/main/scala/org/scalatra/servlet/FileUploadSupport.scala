@@ -122,8 +122,9 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
                   params.fileParams + (
                     (
                       item.getFieldName,
-                      item +: params.fileParams
-                        .getOrElse(item.getFieldName, List[FileItem]())
+                      item +: params.fileParams.getOrElse(
+                        item.getFieldName,
+                        List[FileItem]())
                     )),
                   params.formParams)
               } else {
@@ -303,10 +304,8 @@ object Util {
       case Some(value) => {
         value.split(";").find(_.trim().startsWith(attributeName)) match {
           case Some(attributeValue) =>
-            attributeValue
-              .substring(attributeValue.indexOf('=') + 1)
-              .trim()
-              .replace("\"", "")
+            attributeValue.substring(
+              attributeValue.indexOf('=') + 1).trim().replace("\"", "")
           case _ => defaultValue
         }
       }

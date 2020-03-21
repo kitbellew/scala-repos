@@ -282,9 +282,10 @@ object Reloader {
             "fromJar",
             classOf[JarFile],
             classOf[String])
-          factoryMethod
-            .invoke(null, docsJarFile, "play/docs/content")
-            .asInstanceOf[BuildDocHandler]
+          factoryMethod.invoke(
+            null,
+            docsJarFile,
+            "play/docs/content").asInstanceOf[BuildDocHandler]
         case None =>
           val factoryMethod = docHandlerFactoryClass.getMethod("empty")
           factoryMethod.invoke(null).asInstanceOf[BuildDocHandler]
@@ -299,14 +300,12 @@ object Reloader {
             classOf[BuildDocHandler],
             classOf[Int],
             classOf[String])
-          mainDev
-            .invoke(
-              null,
-              reloader,
-              buildDocHandler,
-              httpPort.get: java.lang.Integer,
-              httpAddress)
-            .asInstanceOf[play.core.server.ServerWithStop]
+          mainDev.invoke(
+            null,
+            reloader,
+            buildDocHandler,
+            httpPort.get: java.lang.Integer,
+            httpAddress).asInstanceOf[play.core.server.ServerWithStop]
         } else {
           val mainDev = mainClass.getMethod(
             "mainDevOnlyHttpsMode",
@@ -314,14 +313,12 @@ object Reloader {
             classOf[BuildDocHandler],
             classOf[Int],
             classOf[String])
-          mainDev
-            .invoke(
-              null,
-              reloader,
-              buildDocHandler,
-              httpsPort.get: java.lang.Integer,
-              httpAddress)
-            .asInstanceOf[play.core.server.ServerWithStop]
+          mainDev.invoke(
+            null,
+            reloader,
+            buildDocHandler,
+            httpsPort.get: java.lang.Integer,
+            httpAddress).asInstanceOf[play.core.server.ServerWithStop]
         }
       }
 

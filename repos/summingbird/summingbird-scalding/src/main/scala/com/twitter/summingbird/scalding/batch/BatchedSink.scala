@@ -78,8 +78,9 @@ trait BatchedSink[T] extends Sink[T] {
       // This object combines some common scalding batching operations:
       val batchOps = new BatchedOperations(batcher)
 
-      val batchStreams =
-        batchOps.coverIt(timeSpan).map { b => (b, readStream(b, mode)) }
+      val batchStreams = batchOps.coverIt(timeSpan).map { b =>
+        (b, readStream(b, mode))
+      }
 
       // Maybe an inclusive interval of batches to pull from incoming
       val batchesToWrite: Option[(BatchID, BatchID)] = batchStreams
@@ -94,8 +95,7 @@ trait BatchedSink[T] extends Sink[T] {
         case (lower, upper) =>
           // Compute the times we need to read of the deltas
           val incBatches = Interval.leftClosedRightOpen(lower, upper.next)
-          batchOps
-            .readBatched(incBatches, mode, incoming)
+          batchOps.readBatched(incBatches, mode, incoming)
             .right
             .map {
               case (inbatches, flow2Pipe) =>
@@ -112,9 +112,9 @@ trait BatchedSink[T] extends Sink[T] {
           : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
         val (aBatches, aFlows) = existing.unzip
         val flows = aFlows ++ (optBuilt.map { _._2 })
-        val batches = aBatches ++ (optBuilt
-          .map { pair => BatchID.toIterable(pair._1) }
-          .getOrElse(Iterable.empty))
+        val batches = aBatches ++ (optBuilt.map { pair =>
+          BatchID.toIterable(pair._1)
+        }.getOrElse(Iterable.empty))
 
         if (flows.isEmpty)
           Left(List(

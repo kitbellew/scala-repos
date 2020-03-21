@@ -299,8 +299,7 @@ class PhantomJSEnv(
           loop()
         } catch {
           case e: Throwable if !e.isInstanceOf[TimeoutException] =>
-            fragmentsBuf
-              .clear() // the protocol is broken, so discard the buffer
+            fragmentsBuf.clear() // the protocol is broken, so discard the buffer
             throw e
         }
       }

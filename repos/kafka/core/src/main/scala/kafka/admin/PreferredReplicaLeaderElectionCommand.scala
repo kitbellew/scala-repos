@@ -29,23 +29,21 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
 
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser
-    val jsonFileOpt = parser
-      .accepts(
-        "path-to-json-file",
-        "The JSON file with the list of partitions " +
-          "for which preferred replica leader election should be done, in the following format - \n" +
-          "{\"partitions\":\n\t[{\"topic\": \"foo\", \"partition\": 1},\n\t {\"topic\": \"foobar\", \"partition\": 2}]\n}\n" +
-          "Defaults to all existing partitions"
-      )
+    val jsonFileOpt = parser.accepts(
+      "path-to-json-file",
+      "The JSON file with the list of partitions " +
+        "for which preferred replica leader election should be done, in the following format - \n" +
+        "{\"partitions\":\n\t[{\"topic\": \"foo\", \"partition\": 1},\n\t {\"topic\": \"foobar\", \"partition\": 2}]\n}\n" +
+        "Defaults to all existing partitions"
+    )
       .withRequiredArg
       .describedAs(
         "list of partitions for which preferred replica leader election needs to be triggered")
       .ofType(classOf[String])
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the " +
-          "form host:port. Multiple URLS can be given to allow fail-over.")
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the " +
+        "form host:port. Multiple URLS can be given to allow fail-over.")
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
@@ -81,8 +79,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
 
       preferredReplicaElectionCommand.moveLeaderToPreferredReplica()
       println(
-        "Successfully started preferred replica election for partitions %s"
-          .format(partitionsForPreferredReplicaElection))
+        "Successfully started preferred replica election for partitions %s".format(
+          partitionsForPreferredReplicaElection))
     } catch {
       case e: Throwable =>
         println("Failed to start preferred replica election")
@@ -110,8 +108,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
             val partitionsSet = partitions.toSet
             if (duplicatePartitions.nonEmpty)
               throw new AdminOperationException(
-                "Preferred replica election data contains duplicate partitions: %s"
-                  .format(duplicatePartitions.mkString(",")))
+                "Preferred replica election data contains duplicate partitions: %s".format(
+                  duplicatePartitions.mkString(",")))
             partitionsSet
           case None =>
             throw new AdminOperationException(
@@ -138,8 +136,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
     } catch {
       case nee: ZkNodeExistsException =>
         val partitionsUndergoingPreferredReplicaElection =
-          PreferredReplicaLeaderElectionCommand
-            .parsePreferredReplicaElectionData(zkUtils.readData(zkPath)._1)
+          PreferredReplicaLeaderElectionCommand.parsePreferredReplicaElectionData(
+            zkUtils.readData(zkPath)._1)
         throw new AdminOperationException(
           "Preferred replica leader election currently in progress for " +
             "%s. Aborting operation".format(
@@ -178,16 +176,19 @@ class PreferredReplicaLeaderElectionCommand(
           true
         } else {
           error(
-            "Skipping preferred replica leader election for partition [%s,%d] "
-              .format(topic, partition) +
+            "Skipping preferred replica leader election for partition [%s,%d] ".format(
+              topic,
+              partition) +
               "since it doesn't exist")
           false
         }
       case None =>
         error(
           "Skipping preferred replica leader election for partition " +
-            "[%s,%d] since topic %s doesn't exist"
-              .format(topic, partition, topic))
+            "[%s,%d] since topic %s doesn't exist".format(
+              topic,
+              partition,
+              topic))
         false
     }
   }

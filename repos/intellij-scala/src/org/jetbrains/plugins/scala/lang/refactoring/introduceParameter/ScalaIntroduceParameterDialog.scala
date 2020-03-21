@@ -129,8 +129,7 @@ class ScalaIntroduceParameterDialog(
       ListSelectionModel.SINGLE_SELECTION)
     table.setSurrendersFocusOnKeystroke(true)
     val buttonsPanel: JPanel =
-      ToolbarDecorator
-        .createDecorator(table)
+      ToolbarDecorator.createDecorator(table)
         .setMoveUpAction(upAction)
         .setMoveDownAction(downAction)
         .disableAddAction()

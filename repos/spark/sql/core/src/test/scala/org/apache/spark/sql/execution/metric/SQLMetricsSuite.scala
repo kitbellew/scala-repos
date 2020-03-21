@@ -91,16 +91,16 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       // If we can track all jobs, check the metric values
       val metricValues = sqlContext.listener.getExecutionMetrics(executionId)
       val actualMetrics = SparkPlanGraph(
-        SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan)).allNodes
-        .filter { node => expectedMetrics.contains(node.id) }
-        .map { node =>
-          val nodeMetrics = node.metrics.map { metric =>
-            val metricValue = metricValues(metric.accumulatorId)
-            (metric.name, metricValue)
-          }.toMap
-          (node.id, node.name -> nodeMetrics)
-        }
-        .toMap
+        SparkPlanInfo.fromSparkPlan(
+          df.queryExecution.executedPlan)).allNodes.filter { node =>
+        expectedMetrics.contains(node.id)
+      }.map { node =>
+        val nodeMetrics = node.metrics.map { metric =>
+          val metricValue = metricValues(metric.accumulatorId)
+          (metric.name, metricValue)
+        }.toMap
+        (node.id, node.name -> nodeMetrics)
+      }.toMap
 
       assert(expectedMetrics.keySet === actualMetrics.keySet)
       for (nodeId <- expectedMetrics.keySet) {

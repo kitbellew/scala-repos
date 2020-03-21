@@ -85,9 +85,8 @@ object ProdServerStart {
     }
 
     val rootDir: File = {
-      val path = configuration
-        .getString("play.server.dir")
-        .getOrElse(throw ServerStartException("No root server path supplied"))
+      val path = configuration.getString("play.server.dir").getOrElse(
+        throw ServerStartException("No root server path supplied"))
       val file = new File(path)
       if (!(file.exists && file.isDirectory)) {
         throw ServerStartException(s"Bad root server path: $path")
@@ -135,9 +134,9 @@ object ProdServerStart {
   def createPidFile(
       process: ServerProcess,
       configuration: Configuration): Option[File] = {
-    val pidFilePath = configuration
-      .getString("play.server.pidfile.path")
-      .getOrElse(throw ServerStartException("Pid file path not configured"))
+    val pidFilePath =
+      configuration.getString("play.server.pidfile.path").getOrElse(
+        throw ServerStartException("Pid file path not configured"))
     if (pidFilePath == "/dev/null") None
     else {
       val pidFile = new File(pidFilePath).getAbsoluteFile

@@ -226,9 +226,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
         case rformModel: RFormulaModel => Array(rformModel.pipelineModel)
         case _: Params                 => Array()
       }
-      val subStageMaps = subStages
-        .map(getUidMapImpl)
-        .foldLeft(List.empty[(String, Params)])(_ ++ _)
+      val subStageMaps = subStages.map(getUidMapImpl).foldLeft(
+        List.empty[(String, Params)])(_ ++ _)
       List((instance.uid, instance)) ++ subStageMaps
     }
   }
@@ -323,26 +322,23 @@ object CrossValidator extends MLReadable[CrossValidator] {
       val estimator =
         DefaultParamsReader.loadParamsInstance[Estimator[M]](estimatorPath, sc)
 
-      val uidToParams =
-        Map(evaluator.uid -> evaluator) ++ CrossValidatorReader.getUidMap(
-          estimator)
+      val uidToParams = Map(
+        evaluator.uid -> evaluator) ++ CrossValidatorReader.getUidMap(estimator)
 
       val numFolds = (metadata.params \ "numFolds").extract[Int]
       val estimatorParamMaps: Array[ParamMap] =
-        (metadata.params \ "estimatorParamMaps")
-          .extract[Seq[Seq[Map[String, String]]]]
-          .map {
-            pMap =>
-              val paramPairs = pMap.map {
-                case pInfo: Map[String, String] =>
-                  val est = uidToParams(pInfo("parent"))
-                  val param = est.getParam(pInfo("name"))
-                  val value = param.jsonDecode(pInfo("value"))
-                  param -> value
-              }
-              ParamMap(paramPairs: _*)
-          }
-          .toArray
+        (metadata.params \ "estimatorParamMaps").extract[Seq[
+          Seq[Map[String, String]]]].map {
+          pMap =>
+            val paramPairs = pMap.map {
+              case pInfo: Map[String, String] =>
+                val est = uidToParams(pInfo("parent"))
+                val param = est.getParam(pInfo("name"))
+                val value = param.jsonDecode(pInfo("value"))
+                param -> value
+            }
+            ParamMap(paramPairs: _*)
+        }.toArray
       (metadata, estimator, evaluator, estimatorParamMaps, numFolds)
     }
   }

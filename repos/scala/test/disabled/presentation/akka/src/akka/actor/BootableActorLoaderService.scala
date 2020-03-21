@@ -27,8 +27,7 @@ trait BootableActorLoaderService extends Bootable {
           System.exit(-1)
         }
         val filesToDeploy = DEPLOY_DIR.listFiles.toArray.toList
-          .asInstanceOf[List[File]]
-          .filter(_.getName.endsWith(".jar"))
+          .asInstanceOf[List[File]].filter(_.getName.endsWith(".jar"))
         var dependencyJars: List[URL] = Nil
         filesToDeploy.map { file =>
           val jarFile = new JarFile(file)
@@ -37,8 +36,10 @@ trait BootableActorLoaderService extends Bootable {
             val name = en.nextElement.getName
             if (name.endsWith(".jar"))
               dependencyJars ::= new File(
-                String
-                  .format("jar:file:%s!/%s", jarFile.getName, name)).toURI.toURL
+                String.format(
+                  "jar:file:%s!/%s",
+                  jarFile.getName,
+                  name)).toURI.toURL
           }
         }
         val toDeploy = filesToDeploy.map(_.toURI.toURL)

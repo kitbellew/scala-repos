@@ -395,9 +395,7 @@ private[streaming] object FileInputDStream {
   def calculateNumBatchesToRemember(
       batchDuration: Duration,
       minRememberDurationS: Duration): Int = {
-    math
-      .ceil(
-        minRememberDurationS.milliseconds.toDouble / batchDuration.milliseconds)
-      .toInt
+    math.ceil(
+      minRememberDurationS.milliseconds.toDouble / batchDuration.milliseconds).toInt
   }
 }

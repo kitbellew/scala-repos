@@ -41,8 +41,8 @@ case class LocalDataSource(val dsp: DataSourceParams)
       Double] {
   override def read()
       : Seq[(String, TrainingData, Seq[(Vector[Double], Double)])] = {
-    val lines =
-      Source.fromFile(dsp.filepath).getLines.toSeq.map(_.split(" ", 2))
+    val lines = Source.fromFile(dsp.filepath).getLines
+      .toSeq.map(_.split(" ", 2))
 
     // FIXME: Use different training / testing data.
     val x = lines.map { _(1).split(' ').map { _.toDouble } }.map { e =>
@@ -64,8 +64,7 @@ case class PreparatorParams(n: Int = 0, k: Int = 0) extends Params
 case class LocalPreparator(val pp: PreparatorParams = PreparatorParams())
     extends LPreparator[PreparatorParams, TrainingData, TrainingData] {
   def prepare(td: TrainingData): TrainingData = {
-    val xyi: Vector[(Vector[Double], Double)] = td.x
-      .zip(td.y)
+    val xyi: Vector[(Vector[Double], Double)] = td.x.zip(td.y)
       .zipWithIndex
       .filter { e => (e._2 % pp.n) != pp.k }
       .map { e => (e._1._1, e._1._2) }

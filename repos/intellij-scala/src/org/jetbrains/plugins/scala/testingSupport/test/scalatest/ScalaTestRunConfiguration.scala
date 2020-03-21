@@ -54,9 +54,8 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
     val project = clazz.getProject
     val constructors = clazz match {
       case c: ScClass =>
-        c.secondaryConstructors
-          .filter(_.isConstructor)
-          .toList ::: c.constructor.toList
+        c.secondaryConstructors.filter(
+          _.isConstructor).toList ::: c.constructor.toList
       case _ => clazz.getConstructors.toList
     }
     for (con <- constructors) {
@@ -67,11 +66,9 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
               val params = con.getParameterList.getParameters
               val firstParam = params(0)
               val psiManager = ScalaPsiManager.instance(project)
-              val mapPsiClass = psiManager
-                .getCachedClass(
-                  ProjectScope.getAllScope(project),
-                  "scala.collection.immutable.Map")
-                .orNull
+              val mapPsiClass = psiManager.getCachedClass(
+                ProjectScope.getAllScope(project),
+                "scala.collection.immutable.Map").orNull
               val mapClass = ScType.designator(mapPsiClass)
               val paramClass = ScType.create(firstParam.getType, project)
               val conformanceType = paramClass match {

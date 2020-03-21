@@ -103,8 +103,7 @@ final class RegressionEvaluator @Since("1.4.0") (
       .select(
         col($(predictionCol)).cast(DoubleType),
         col($(labelCol)).cast(DoubleType))
-      .rdd
-      .map {
+      .rdd.map {
         case Row(prediction: Double, label: Double) =>
           (prediction, label)
       }

@@ -54,8 +54,7 @@ class SbtCompiler(
     val incOptions = compilationData.sbtIncOptions match {
       case None => IncOptions.Default
       case Some(opt) =>
-        IncOptions.Default
-          .withNameHashing(opt.nameHashing)
+        IncOptions.Default.withNameHashing(opt.nameHashing)
           .withRecompileOnMacroDef(opt.recompileOnMacroDef)
           .withTransitiveStep(opt.transitiveStep)
           .withRecompileAllFraction(opt.recompileAllFraction)

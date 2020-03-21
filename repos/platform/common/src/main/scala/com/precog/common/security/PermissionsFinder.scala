@@ -51,11 +51,9 @@ object PermissionsFinder {
       })
 
       permWriteAs.nonEmpty &&
-      writeAsAlls
-        .foldLeft(authorities.accountIds)({
-          case (remaining, s) => remaining diff s
-        })
-        .isEmpty
+      writeAsAlls.foldLeft(authorities.accountIds)({
+        case (remaining, s) => remaining diff s
+      }).isEmpty
     }
   }
 }
@@ -99,9 +97,8 @@ class PermissionsFinder[M[+_]: Monad](
           case WritePermission(_, WriteAsAny) =>
             left(accountWriter)
           case WritePermission(_, WriteAsAll(accountIds)) =>
-            (Authorities
-              .ifPresent(accountIds)
-              .map(a => Some(a).point[M]) \/> accountWriter)
+            (Authorities.ifPresent(accountIds).map(a =>
+              Some(a).point[M]) \/> accountWriter)
         })(collection.breakOut)
 
       // if it is possible to write as the account holder for the api key, then do so, otherwise,
@@ -142,8 +139,10 @@ class PermissionsFinder[M[+_]: Monad](
 
       case None =>
         logger.warn(
-          "No API key details found for %s %s at %s"
-            .format(apiKey, path.path, at.toString))
+          "No API key details found for %s %s at %s".format(
+            apiKey,
+            path.path,
+            at.toString))
         Set()
     }
   }

@@ -82,13 +82,11 @@ object TaskOp {
       val maybeDestroyVolumes: Option[MesosProtos.Offer.Operation] =
         if (withDisk.nonEmpty) {
           val destroyOp =
-            MesosProtos.Offer.Operation.Destroy
-              .newBuilder()
+            MesosProtos.Offer.Operation.Destroy.newBuilder()
               .addAllVolumes(withDisk.asJava)
 
           val op =
-            MesosProtos.Offer.Operation
-              .newBuilder()
+            MesosProtos.Offer.Operation.newBuilder()
               .setType(MesosProtos.Offer.Operation.Type.DESTROY)
               .setDestroy(destroyOp)
               .build()
@@ -98,14 +96,12 @@ object TaskOp {
 
       val maybeUnreserve: Option[MesosProtos.Offer.Operation] =
         if (withDisk.nonEmpty || reservationsForDisks.nonEmpty) {
-          val unreserveOp = MesosProtos.Offer.Operation.Unreserve
-            .newBuilder()
+          val unreserveOp = MesosProtos.Offer.Operation.Unreserve.newBuilder()
             .addAllResources(withoutDisk.asJava)
             .addAllResources(reservationsForDisks.asJava)
             .build()
           val op =
-            MesosProtos.Offer.Operation
-              .newBuilder()
+            MesosProtos.Offer.Operation.newBuilder()
               .setType(MesosProtos.Offer.Operation.Type.UNRESERVE)
               .setUnreserve(unreserveOp)
               .build()

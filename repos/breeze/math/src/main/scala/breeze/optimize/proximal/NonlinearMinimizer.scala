@@ -90,93 +90,90 @@ class NonlinearMinimizer(
   }
 
   def iterations(primal: DiffFunction[BDV], init: BDV): Iterator[State] =
-    Iterator
-      .iterate(initialState(primal, init)) { state =>
-        import state._
+    Iterator.iterate(initialState(primal, init)) { state =>
+      import state._
 
-        val scale = sqrt(init.size) * abstol
-        val proxPrimal = NonlinearMinimizer.ProximalPrimal(primal, u, z, rho)
+      val scale = sqrt(init.size) * abstol
+      val proxPrimal = NonlinearMinimizer.ProximalPrimal(primal, u, z, rho)
 
-        val resultState = lbfgs.minimizeAndReturnState(proxPrimal, bfgsState.x)
-        //z-update with relaxation
+      val resultState = lbfgs.minimizeAndReturnState(proxPrimal, bfgsState.x)
+      //z-update with relaxation
 
-        //zold = (1-alpha)*z
-        //x_hat = alpha*x + zold
+      //zold = (1-alpha)*z
+      //x_hat = alpha*x + zold
 
-        zOld := z
-        zOld *= 1 - alpha
+      zOld := z
+      zOld *= 1 - alpha
 
-        xHat := resultState.x
-        xHat *= alpha
-        xHat += zOld
+      xHat := resultState.x
+      xHat *= alpha
+      xHat += zOld
 
-        //zold = z
-        zOld := z
+      //zold = z
+      zOld := z
 
-        //z = xHat + u
-        z := xHat
-        z += u
+      //z = xHat + u
+      z := xHat
+      z += u
 
-        //Apply proximal operator
-        proximal.prox(z, rho)
+      //Apply proximal operator
+      proximal.prox(z, rho)
 
-        //z has proximal(x_hat)
+      //z has proximal(x_hat)
 
-        //Dual (u) update
-        xHat -= z
-        u += xHat
+      //Dual (u) update
+      xHat -= z
+      u += xHat
 
-        //Convergence checks
-        //history.r_norm(k)  = norm(x - z)
-        residual := resultState.x
-        residual -= z
-        val residualNorm = norm(residual)
+      //Convergence checks
+      //history.r_norm(k)  = norm(x - z)
+      residual := resultState.x
+      residual -= z
+      val residualNorm = norm(residual)
 
-        //history.s_norm(k) = norm(-rho*(z - zold))
-        s := z
-        s -= zOld
-        s *= -rho
-        val sNorm = norm(s)
+      //history.s_norm(k) = norm(-rho*(z - zold))
+      s := z
+      s -= zOld
+      s *= -rho
+      val sNorm = norm(s)
 
-        //TO DO : Make sure z.muli(-1) is actually needed in norm calculation
-        residual := z
-        residual *= -1.0
+      //TO DO : Make sure z.muli(-1) is actually needed in norm calculation
+      residual := z
+      residual *= -1.0
 
-        //s = rho*u
-        s := u
-        s *= rho
+      //s = rho*u
+      s := u
+      s *= rho
 
-        val epsPrimal =
-          scale + reltol * max(norm(resultState.x), norm(residual))
-        val epsDual = scale + reltol * norm(s)
+      val epsPrimal = scale + reltol * max(norm(resultState.x), norm(residual))
+      val epsDual = scale + reltol * norm(s)
 
-        if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters) {
-          State(
-            resultState,
-            u,
-            z,
-            xHat,
-            zOld,
-            residual,
-            s,
-            admmIters,
-            iter + 1,
-            true)
-        } else {
-          State(
-            resultState,
-            u,
-            z,
-            xHat,
-            zOld,
-            residual,
-            s,
-            admmIters,
-            iter + 1,
-            false)
-        }
+      if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters) {
+        State(
+          resultState,
+          u,
+          z,
+          xHat,
+          zOld,
+          residual,
+          s,
+          admmIters,
+          iter + 1,
+          true)
+      } else {
+        State(
+          resultState,
+          u,
+          z,
+          xHat,
+          zOld,
+          residual,
+          s,
+          admmIters,
+          iter + 1,
+          false)
       }
-      .takeUpToWhere { _.converged }
+    }.takeUpToWhere { _.converged }
 
   def minimize(primal: DiffFunction[BDV], init: BDV): BDV = {
     minimizeAndReturnState(primal, init).z
@@ -338,9 +335,8 @@ object NonlinearMinimizer {
     init := 0.0
     val projectL1Linear = ProjectL1(sparseQpL1Obj)
     val nlSparseStart = System.nanoTime()
-    val nlSparseResult = NonlinearMinimizer
-      .project(projectL1Linear)
-      .minimizeAndReturnState(quadraticCostWithL2, init)
+    val nlSparseResult = NonlinearMinimizer.project(
+      projectL1Linear).minimizeAndReturnState(quadraticCostWithL2, init)
     val nlSparseTime = System.nanoTime() - nlSparseStart
     val nlSparseL1Obj = nlSparseResult.x.foldLeft(0.0) { (agg, entry) =>
       agg + abs(entry)
@@ -469,14 +465,16 @@ object NonlinearMinimizer {
     init := 0.0
     val proximalL1 = ProximalL1().setLambda(lambdaL1)
     val nlLogisticProximalL1Start = System.nanoTime()
-    val nlLogisticProximalL1Result = new NonlinearMinimizer(proximalL1)
-      .minimizeAndReturnState(elasticNetLoss, init)
+    val nlLogisticProximalL1Result = new NonlinearMinimizer(
+      proximalL1).minimizeAndReturnState(elasticNetLoss, init)
     val nlLogisticProximalL1Time = System.nanoTime() - nlLogisticProximalL1Start
 
     init := 0.0
     val nlLogisticProjectL1Start = System.nanoTime()
-    val nlLogisticProjectL1Result = NonlinearMinimizer(problemSize, SPARSE, s)
-      .minimizeAndReturnState(elasticNetLoss, init)
+    val nlLogisticProjectL1Result = NonlinearMinimizer(
+      problemSize,
+      SPARSE,
+      s).minimizeAndReturnState(elasticNetLoss, init)
     val nlLogisticProjectL1Time = System.nanoTime() - nlLogisticProjectL1Start
 
     val proximalL1Obj =

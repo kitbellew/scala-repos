@@ -156,9 +156,8 @@ private[hive] class HiveMetastoreCatalog(
           table.properties.get("spark.sql.sources.schema.numParts").map {
             numParts =>
               val parts = (0 until numParts.toInt).map { index =>
-                val part = table.properties
-                  .get(s"spark.sql.sources.schema.part.$index")
-                  .orNull
+                val part = table.properties.get(
+                  s"spark.sql.sources.schema.part.$index").orNull
                 if (part == null) {
                   throw new AnalysisException(
                     "Could not read schema from the metastore because it is corrupted " +
@@ -173,29 +172,25 @@ private[hive] class HiveMetastoreCatalog(
         }
 
         def getColumnNames(colType: String): Seq[String] = {
-          table.properties
-            .get(s"spark.sql.sources.schema.num${colType.capitalize}Cols")
-            .map {
-              numCols =>
-                (0 until numCols.toInt).map { index =>
-                  table.properties.getOrElse(
-                    s"spark.sql.sources.schema.${colType}Col.$index",
-                    throw new AnalysisException(
-                      s"Could not read $colType columns from the metastore because it is corrupted " +
-                        s"(missing part $index of it, $numCols parts are expected).")
-                  )
-                }
-            }
-            .getOrElse(Nil)
+          table.properties.get(
+            s"spark.sql.sources.schema.num${colType.capitalize}Cols").map {
+            numCols =>
+              (0 until numCols.toInt).map { index =>
+                table.properties.getOrElse(
+                  s"spark.sql.sources.schema.${colType}Col.$index",
+                  throw new AnalysisException(s"Could not read $colType columns from the metastore because it is corrupted " +
+                    s"(missing part $index of it, $numCols parts are expected).")
+                )
+              }
+          }.getOrElse(Nil)
         }
 
         // Originally, we used spark.sql.sources.schema to store the schema of a data source table.
         // After SPARK-6024, we removed this flag.
         // Although we are not using spark.sql.sources.schema any more, we need to still support.
         val schemaString =
-          table.properties
-            .get("spark.sql.sources.schema")
-            .orElse(schemaStringFromParts)
+          table.properties.get("spark.sql.sources.schema").orElse(
+            schemaStringFromParts)
 
         val userSpecifiedSchema =
           schemaString.map(s => DataType.fromJson(s).asInstanceOf[StructType])
@@ -417,16 +412,20 @@ private[hive] class HiveMetastoreCatalog(
           val message =
             s"Persisting partitioned data source relation $qualifiedTableName into " +
               "Hive metastore in Spark SQL specific format, which is NOT compatible with Hive. " +
-              "Input path(s): " + relation.location.paths
-              .mkString("\n", "\n", "")
+              "Input path(s): " + relation.location.paths.mkString(
+              "\n",
+              "\n",
+              "")
           (None, message)
 
         case (Some(serde), relation: HadoopFsRelation) =>
           val message =
             s"Persisting data source relation $qualifiedTableName with multiple input paths into " +
               "Hive metastore in Spark SQL specific format, which is NOT compatible with Hive. " +
-              s"Input paths: " + relation.location.paths
-              .mkString("\n", "\n", "")
+              s"Input paths: " + relation.location.paths.mkString(
+              "\n",
+              "\n",
+              "")
           (None, message)
 
         case (Some(serde), _) =>
@@ -493,9 +492,8 @@ private[hive] class HiveMetastoreCatalog(
         SubqueryAlias(qualifiedTableName.name, dataSourceTable)
       // Then, if alias is specified, wrap the table with a Subquery using the alias.
       // Otherwise, wrap the table with a Subquery using the table name.
-      alias
-        .map(a => SubqueryAlias(a, tableWithQualifiers))
-        .getOrElse(tableWithQualifiers)
+      alias.map(a => SubqueryAlias(a, tableWithQualifiers)).getOrElse(
+        tableWithQualifiers)
     } else if (table.tableType == CatalogTableType.VIRTUAL_VIEW) {
       val viewText =
         table.viewText.getOrElse(sys.error("Invalid view without text."))
@@ -546,16 +544,14 @@ private[hive] class HiveMetastoreCatalog(
           // If we have the same paths, same schema, and same partition spec,
           // we will use the cached Parquet Relation.
           val useCached =
-            parquetRelation.location.paths
-              .map(_.toString)
-              .toSet == pathsInMetastore.toSet &&
+            parquetRelation.location.paths.map(
+              _.toString).toSet == pathsInMetastore.toSet &&
               logical.schema.sameType(metastoreSchema) &&
-              parquetRelation.partitionSpec == partitionSpecInMetastore
-                .getOrElse {
-                  PartitionSpec(
-                    StructType(Nil),
-                    Array.empty[datasources.PartitionDirectory])
-                }
+              parquetRelation.partitionSpec == partitionSpecInMetastore.getOrElse {
+                PartitionSpec(
+                  StructType(Nil),
+                  Array.empty[datasources.PartitionDirectory])
+              }
 
           if (useCached) {
             Some(logical)
@@ -605,13 +601,9 @@ private[hive] class HiveMetastoreCatalog(
         val inferredSchema =
           format.inferSchema(hive, parquetOptions, fileCatalog.allFiles())
 
-        val mergedSchema = inferredSchema
-          .map { inferred =>
-            ParquetRelation.mergeMetastoreParquetSchema(
-              metastoreSchema,
-              inferred)
-          }
-          .getOrElse(metastoreSchema)
+        val mergedSchema = inferredSchema.map { inferred =>
+          ParquetRelation.mergeMetastoreParquetSchema(metastoreSchema, inferred)
+        }.getOrElse(metastoreSchema)
 
         val relation = HadoopFsRelation(
           sqlContext = hive,
@@ -828,8 +820,7 @@ private[hive] class HiveMetastoreCatalog(
       val tableOutputDataTypes =
         (table.attributes ++ table.partitionKeys.takeRight(
           numDynamicPartitions))
-          .take(child.output.length)
-          .map(_.dataType)
+          .take(child.output.length).map(_.dataType)
 
       if (childOutputDataTypes == tableOutputDataTypes) {
         InsertIntoHiveTable(
@@ -839,8 +830,7 @@ private[hive] class HiveMetastoreCatalog(
           p.overwrite,
           p.ifNotExists)
       } else if (childOutputDataTypes.size == tableOutputDataTypes.size &&
-                 childOutputDataTypes
-                   .zip(tableOutputDataTypes)
+                 childOutputDataTypes.zip(tableOutputDataTypes)
                    .forall { case (left, right) => left.sameType(right) }) {
         // If both types ignoring nullability of ArrayType, MapType, StructType are the same,
         // use InsertIntoHiveTable instead of InsertIntoTable.
@@ -1029,14 +1019,9 @@ private[hive] case class MetastoreRelation(
         // When table is external,`totalSize` is always zero, which will influence join strategy
         // so when `totalSize` is zero, use `rawDataSize` instead
         // if the size is still less than zero, we use default size
-        Option(totalSize)
-          .map(_.toLong)
-          .filter(_ > 0)
-          .getOrElse(
-            Option(rawDataSize)
-              .map(_.toLong)
-              .filter(_ > 0)
-              .getOrElse(sqlContext.conf.defaultSizeInBytes)))
+        Option(totalSize).map(_.toLong).filter(_ > 0)
+          .getOrElse(Option(rawDataSize).map(_.toLong).filter(_ > 0)
+            .getOrElse(sqlContext.conf.defaultSizeInBytes)))
     }
   )
 

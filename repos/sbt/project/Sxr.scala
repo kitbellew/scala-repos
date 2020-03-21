@@ -16,13 +16,11 @@ object Sxr {
     )
   def inSxrSettings =
     Seq(
-      managedClasspath := update.value
-        .matching(configurationFilter(sxrConf.name))
-        .classpath,
+      managedClasspath := update.value.matching(
+        configurationFilter(sxrConf.name)).classpath,
       scalacOptions += "-P:sxr:base-directory:" + sourceDirectories.value.absString,
-      scalacOptions += "-Xplugin:" + managedClasspath.value.files
-        .filter(_.getName.contains("sxr"))
-        .absString,
+      scalacOptions += "-Xplugin:" + managedClasspath.value.files.filter(
+        _.getName.contains("sxr")).absString,
       scalacOptions += "-Ystop-after:sxr",
       target := target.in(taskGlobal).value / "browse",
       sxr in taskGlobal <<= sxrTask

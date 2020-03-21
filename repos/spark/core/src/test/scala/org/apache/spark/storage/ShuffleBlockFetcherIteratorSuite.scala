@@ -45,8 +45,8 @@ class ShuffleBlockFetcherIteratorSuite
   private def createMockTransfer(
       data: Map[BlockId, ManagedBuffer]): BlockTransferService = {
     val transfer = mock(classOf[BlockTransferService])
-    when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
-      .thenAnswer(new Answer[Unit] {
+    when(transfer.fetchBlocks(any(), any(), any(), any(), any())).thenAnswer(
+      new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val blocks = invocation.getArguments()(3).asInstanceOf[Array[String]]
           val listener =
@@ -69,8 +69,8 @@ class ShuffleBlockFetcherIteratorSuite
   // Create a mock managed buffer for testing
   def createMockManagedBuffer(): ManagedBuffer = {
     val mockManagedBuffer = mock(classOf[ManagedBuffer])
-    when(mockManagedBuffer.createInputStream())
-      .thenReturn(mock(classOf[InputStream]))
+    when(mockManagedBuffer.createInputStream()).thenReturn(
+      mock(classOf[InputStream]))
     mockManagedBuffer
   }
 
@@ -131,16 +131,19 @@ class ShuffleBlockFetcherIteratorSuite
       verify(mockBuf, times(0)).release()
       val delegateAccess = PrivateMethod[InputStream]('delegate)
 
-      verify(wrappedInputStream.invokePrivate(delegateAccess()), times(0))
-        .close()
+      verify(
+        wrappedInputStream.invokePrivate(delegateAccess()),
+        times(0)).close()
       wrappedInputStream.close()
       verify(mockBuf, times(1)).release()
-      verify(wrappedInputStream.invokePrivate(delegateAccess()), times(1))
-        .close()
+      verify(
+        wrappedInputStream.invokePrivate(delegateAccess()),
+        times(1)).close()
       wrappedInputStream.close() // close should be idempotent
       verify(mockBuf, times(1)).release()
-      verify(wrappedInputStream.invokePrivate(delegateAccess()), times(1))
-        .close()
+      verify(
+        wrappedInputStream.invokePrivate(delegateAccess()),
+        times(1)).close()
     }
 
     // 3 local blocks, and 2 remote blocks
@@ -165,8 +168,8 @@ class ShuffleBlockFetcherIteratorSuite
     val sem = new Semaphore(0)
 
     val transfer = mock(classOf[BlockTransferService])
-    when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
-      .thenAnswer(new Answer[Unit] {
+    when(transfer.fetchBlocks(any(), any(), any(), any(), any())).thenAnswer(
+      new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val listener =
             invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
@@ -235,8 +238,8 @@ class ShuffleBlockFetcherIteratorSuite
     val sem = new Semaphore(0)
 
     val transfer = mock(classOf[BlockTransferService])
-    when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
-      .thenAnswer(new Answer[Unit] {
+    when(transfer.fetchBlocks(any(), any(), any(), any(), any())).thenAnswer(
+      new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val listener =
             invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]

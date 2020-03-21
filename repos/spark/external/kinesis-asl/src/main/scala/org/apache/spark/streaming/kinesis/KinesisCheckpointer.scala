@@ -86,8 +86,10 @@ private[kinesis] class KinesisCheckpointer(
           // safely do the string comparison
           if (lastSeqNum == null || latestSeqNum > lastSeqNum) {
             /* Perform the checkpoint */
-            KinesisRecordProcessor
-              .retryRandom(checkpointer.checkpoint(latestSeqNum), 4, 100)
+            KinesisRecordProcessor.retryRandom(
+              checkpointer.checkpoint(latestSeqNum),
+              4,
+              100)
             logDebug(
               s"Checkpoint:  WorkerId $workerId completed checkpoint at sequence number" +
                 s" $latestSeqNum for shardId $shardId")

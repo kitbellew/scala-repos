@@ -64,15 +64,13 @@ object Analyse extends LilaController {
                     pov,
                     data,
                     initialFen,
-                    Env.analyse
-                      .annotator(
-                        pgn,
-                        analysis,
-                        pov.game.opening,
-                        pov.game.winnerColor,
-                        pov.game.status,
-                        pov.game.clock)
-                      .toString,
+                    Env.analyse.annotator(
+                      pgn,
+                      analysis,
+                      pov.game.opening,
+                      pov.game.winnerColor,
+                      pov.game.status,
+                      pov.game.clock).toString,
                     analysis,
                     analysis map { a =>
                       AdvantageChart(
@@ -97,14 +95,16 @@ object Analyse extends LilaController {
     get("fen").fold(or) { atFen =>
       val url = routes.Round.watcher(pov.gameId, pov.color.name)
       fuccess {
-        chess.Replay
-          .plyAtFen(pov.game.pgnMoves, initialFen, pov.game.variant, atFen)
-          .fold(
-            err => {
-              logger.info(s"RedirectAtFen: $err")
-              Redirect(url)
-            },
-            ply => Redirect(s"$url#$ply"))
+        chess.Replay.plyAtFen(
+          pov.game.pgnMoves,
+          initialFen,
+          pov.game.variant,
+          atFen).fold(
+          err => {
+            logger.info(s"RedirectAtFen: $err")
+            Redirect(url)
+          },
+          ply => Redirect(s"$url#$ply"))
       }
     }
 
@@ -119,15 +119,13 @@ object Analyse extends LilaController {
             html.analyse.replayBot(
               pov,
               initialFen,
-              Env.analyse
-                .annotator(
-                  pgn,
-                  analysis,
-                  pov.game.opening,
-                  pov.game.winnerColor,
-                  pov.game.status,
-                  pov.game.clock)
-                .toString,
+              Env.analyse.annotator(
+                pgn,
+                analysis,
+                pov.game.opening,
+                pov.game.winnerColor,
+                pov.game.status,
+                pov.game.clock).toString,
               analysis,
               simul,
               crosstable

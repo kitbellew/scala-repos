@@ -61,9 +61,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       }
       "for futures failed with a RejectionError" in {
         Get() ~> complete(
-          Promise
-            .failed[String](RejectionError(AuthorizationFailedRejection))
-            .future) ~>
+          Promise.failed[String](
+            RejectionError(AuthorizationFailedRejection)).future) ~>
           check {
             rejection shouldEqual AuthorizationFailedRejection
           }

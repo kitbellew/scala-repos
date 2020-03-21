@@ -176,10 +176,8 @@ trait ManagedExecution
           import JobQueryState._
 
           complete(
-            EitherT
-              .eitherTHoist[EvaluationError]
-              .hoist(sink)
-              .apply(executor.execute(query, context, opts)),
+            EitherT.eitherTHoist[EvaluationError].hoist(sink).apply(
+              executor.execute(query, context, opts)),
             opts.output)
       }
     }

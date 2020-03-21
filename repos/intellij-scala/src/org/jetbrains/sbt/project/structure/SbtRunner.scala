@@ -115,12 +115,11 @@ class SbtRunner(
             sbtCommands.foreach(writer.println)
             writer.flush()
             val result = handle(process, listener)
-            result
-              .map { output =>
-                (structureFile.length > 0).either(XML.load(
-                  structureFile.toURI.toURL))(SbtException.fromSbtLog(output))
-              }
-              .getOrElse(Left(new ImportCancelledException))
+            result.map { output =>
+              (structureFile.length > 0).either(
+                XML.load(structureFile.toURI.toURL))(
+                SbtException.fromSbtLog(output))
+            }.getOrElse(Left(new ImportCancelledException))
         }
       } catch {
         case e: Exception => Left(e)
@@ -245,17 +244,15 @@ object SbtRunner {
 
     val jar = new JarFile(launcherFile)
     try {
-      Option(jar.getEntry("sbt/sbt.boot.properties"))
-        .fold(Map.empty[String, String]) { entry =>
-          val lines = scala.io.Source
-            .fromInputStream(jar.getInputStream(entry))
-            .getLines()
-          val sectionLines = lines
-            .dropWhile(_.trim != s"[$sectionName]")
-            .drop(1)
-            .takeWhile(!_.trim.startsWith("["))
-          sectionLines.flatMap(findProperty).toMap
-        }
+      Option(jar.getEntry("sbt/sbt.boot.properties")).fold(
+        Map.empty[String, String]) { entry =>
+        val lines =
+          scala.io.Source.fromInputStream(jar.getInputStream(entry)).getLines()
+        val sectionLines = lines
+          .dropWhile(_.trim != s"[$sectionName]").drop(1)
+          .takeWhile(!_.trim.startsWith("["))
+        sectionLines.flatMap(findProperty).toMap
+      }
     } finally {
       jar.close()
     }

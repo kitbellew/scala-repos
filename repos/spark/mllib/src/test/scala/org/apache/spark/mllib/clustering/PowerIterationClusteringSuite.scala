@@ -205,12 +205,9 @@ object PowerIterationClusteringSuite extends SparkFunSuite {
 
     val aAssignments = a.assignments.map(x => (x.id, x.cluster))
     val bAssignments = b.assignments.map(x => (x.id, x.cluster))
-    val unequalElements = aAssignments
-      .join(bAssignments)
-      .filter {
-        case (id, (c1, c2)) => c1 != c2
-      }
-      .count()
+    val unequalElements = aAssignments.join(bAssignments).filter {
+      case (id, (c1, c2)) => c1 != c2
+    }.count()
     assert(unequalElements === 0L)
   }
 }

@@ -48,15 +48,15 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         val name = symbolIndexerName(sym)
         val hit = search.findUnique(name)
         logger.debug(s"search: $name = $hit")
-        hit
-          .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
-          .flatMap { sourcePos =>
+        hit.flatMap(
+          LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs)).flatMap {
+          sourcePos =>
             if (sourcePos.file.getName.endsWith(".scala"))
               askLinkPos(sym, AbstractFile.getFile(sourcePos.file)).flatMap(
                 pos => OffsetSourcePositionHelper.fromPosition(pos))
             else
               Some(sourcePos)
-          }
+        }
       } else
         None
     }

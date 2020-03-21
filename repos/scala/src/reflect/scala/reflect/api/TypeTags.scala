@@ -193,9 +193,8 @@ trait TypeTags { self: Universe =>
     override def canEqual(x: Any) = x.isInstanceOf[WeakTypeTag[_]]
 
     override def equals(x: Any) =
-      x.isInstanceOf[WeakTypeTag[_]] && this.mirror == x
-        .asInstanceOf[WeakTypeTag[_]]
-        .mirror && this.tpe == x.asInstanceOf[WeakTypeTag[_]].tpe
+      x.isInstanceOf[WeakTypeTag[_]] && this.mirror == x.asInstanceOf[
+        WeakTypeTag[_]].mirror && this.tpe == x.asInstanceOf[WeakTypeTag[_]].tpe
 
     override def hashCode = mirror.hashCode * 31 + tpe.hashCode
 
@@ -237,8 +236,8 @@ trait TypeTags { self: Universe =>
     lazy val tpe: Type = tpec(mirror)
     def in[U <: Universe with Singleton](
         otherMirror: scala.reflect.api.Mirror[U]): U#WeakTypeTag[T] = {
-      val otherMirror1 = otherMirror
-        .asInstanceOf[scala.reflect.api.Mirror[otherMirror.universe.type]]
+      val otherMirror1 = otherMirror.asInstanceOf[
+        scala.reflect.api.Mirror[otherMirror.universe.type]]
       otherMirror.universe.WeakTypeTag[T](otherMirror1, tpec)
     }
     @throws(classOf[ObjectStreamException])
@@ -266,9 +265,8 @@ trait TypeTags { self: Universe =>
     override def canEqual(x: Any) = x.isInstanceOf[TypeTag[_]]
 
     override def equals(x: Any) =
-      x.isInstanceOf[TypeTag[_]] && this.mirror == x
-        .asInstanceOf[TypeTag[_]]
-        .mirror && this.tpe == x.asInstanceOf[TypeTag[_]].tpe
+      x.isInstanceOf[TypeTag[_]] && this.mirror == x.asInstanceOf[
+        TypeTag[_]].mirror && this.tpe == x.asInstanceOf[TypeTag[_]].tpe
 
     override def hashCode = mirror.hashCode * 31 + tpe.hashCode
 
@@ -325,8 +323,8 @@ trait TypeTags { self: Universe =>
       with TypeTag[T] {
     override def in[U <: Universe with Singleton](
         otherMirror: scala.reflect.api.Mirror[U]): U#TypeTag[T] = {
-      val otherMirror1 = otherMirror
-        .asInstanceOf[scala.reflect.api.Mirror[otherMirror.universe.type]]
+      val otherMirror1 = otherMirror.asInstanceOf[
+        scala.reflect.api.Mirror[otherMirror.universe.type]]
       otherMirror.universe.TypeTag[T](otherMirror1, tpec)
     }
     @throws(classOf[ObjectStreamException])

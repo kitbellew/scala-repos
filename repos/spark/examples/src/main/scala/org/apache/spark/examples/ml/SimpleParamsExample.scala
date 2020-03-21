@@ -105,8 +105,7 @@ object SimpleParamsExample {
     // LogisticRegressionModel.transform will only use the 'features' column.
     // Note that model2.transform() outputs a 'myProbability' column instead of the usual
     // 'probability' column since we renamed the lr.probabilityCol parameter previously.
-    model2
-      .transform(test.toDF())
+    model2.transform(test.toDF())
       .select("features", "label", "myProbability", "prediction")
       .collect()
       .foreach {

@@ -34,8 +34,8 @@ class ScSelfTypeElementStubImpl[ParentPsi <: PsiElement](
       typeNames: Array[String]) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = StringRef.fromString(name)
     this.typeElementText = StringRef.fromString(typeElementText)
     this.typeNames = typeNames

@@ -774,8 +774,8 @@ trait Trees extends api.Trees {
         vparamss: List[List[ValDef]],
         tpt: Tree,
         rhs: Tree) =
-      new DefDef(mods, name.toTermName, tparams, vparamss, tpt, rhs)
-        .copyAttrs(tree)
+      new DefDef(mods, name.toTermName, tparams, vparamss, tpt, rhs).copyAttrs(
+        tree)
     def TypeDef(
         tree: Tree,
         mods: Modifiers,
@@ -1785,12 +1785,16 @@ trait Trees extends api.Trees {
             // SI-5612
             if (newowner hasTransOwner oldowner)
               log(
-                "NOT changing owner of %s because %s is nested in %s"
-                  .format(tree, newowner, oldowner))
+                "NOT changing owner of %s because %s is nested in %s".format(
+                  tree,
+                  newowner,
+                  oldowner))
             else {
               log(
-                "changing owner of %s: %s => %s"
-                  .format(tree, oldowner, newowner))
+                "changing owner of %s: %s => %s".format(
+                  tree,
+                  oldowner,
+                  newowner))
               tree.symbol = newowner
             }
           }

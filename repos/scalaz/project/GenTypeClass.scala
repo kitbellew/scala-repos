@@ -16,9 +16,8 @@ case class TypeClass(
   def fqn = (pack :+ name).mkString(".")
   def doc =
     "[[" + fqn + "]]" + (if (extendsList.nonEmpty)
-                           " extends " + extendsList
-                             .map(tc => "[[" + tc.fqn + "]]")
-                             .mkString(" with ")
+                           " extends " + extendsList.map(tc =>
+                             "[[" + tc.fqn + "]]").mkString(" with ")
                          else "")
 }
 
@@ -304,8 +303,10 @@ object GenTypeClass {
       parents match {
         case Seq() => ""
         case es =>
-          es.map(n => n + suffix + "[" + cti + "]")
-            .mkString("extends ", " with ", "")
+          es.map(n => n + suffix + "[" + cti + "]").mkString(
+            "extends ",
+            " with ",
+            "")
       }
     def extendsToSyntaxListText =
       kind match {
@@ -324,12 +325,9 @@ object GenTypeClass {
       }
     val extendsLikeList = extendsListText("")
 
-    val syntaxPackString = tc.syntaxPack
-      .map("package " + _)
-      .mkString("\n") + (if (tc.pack == Seq("scalaz")) ""
-                         else
-                           "\n\n" + "import " + (tc.pack :+ tc.name)
-                             .mkString("."))
+    val syntaxPackString = tc.syntaxPack.map("package " + _).mkString(
+      "\n") + (if (tc.pack == Seq("scalaz")) ""
+               else "\n\n" + "import " + (tc.pack :+ tc.name).mkString("."))
     val syntaxPackString1 = tc.syntaxPack.mkString(".")
     val syntaxMember = if (tc.createSyntax) {
       if (kind.multipleParam) {

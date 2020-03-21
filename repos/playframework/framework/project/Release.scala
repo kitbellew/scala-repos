@@ -56,7 +56,7 @@ object Release {
       }
     }
 
-    runCommand(command, originalState.copy(remainingCommands = Nil))
-      .copy(remainingCommands = originalRemaining)
+    runCommand(command, originalState.copy(remainingCommands = Nil)).copy(
+      remainingCommands = originalRemaining)
   }
 }

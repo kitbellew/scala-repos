@@ -114,8 +114,8 @@ class BypassMergeSortShuffleWriterSuite
         )
       }
     })
-    when(diskBlockManager.createTempShuffleBlock())
-      .thenAnswer(new Answer[(TempShuffleBlockId, File)] {
+    when(diskBlockManager.createTempShuffleBlock()).thenAnswer(
+      new Answer[(TempShuffleBlockId, File)] {
         override def answer(
             invocation: InvocationOnMock): (TempShuffleBlockId, File) = {
           val blockId = new TempShuffleBlockId(UUID.randomUUID)
@@ -127,9 +127,8 @@ class BypassMergeSortShuffleWriterSuite
       })
     when(diskBlockManager.getFile(any[BlockId])).thenAnswer(new Answer[File] {
       override def answer(invocation: InvocationOnMock): File = {
-        blockIdToFileMap
-          .get(invocation.getArguments.head.asInstanceOf[BlockId])
-          .get
+        blockIdToFileMap.get(
+          invocation.getArguments.head.asInstanceOf[BlockId]).get
       }
     })
   }

@@ -54,9 +54,10 @@ object Framing {
       allowTruncation: FramingTruncation)
       : Flow[ByteString, ByteString, NotUsed] = {
     val truncationAllowed = allowTruncation == FramingTruncation.ALLOW
-    scaladsl.Framing
-      .delimiter(delimiter, maximumFrameLength, truncationAllowed)
-      .asJava
+    scaladsl.Framing.delimiter(
+      delimiter,
+      maximumFrameLength,
+      truncationAllowed).asJava
   }
 
   /**
@@ -78,9 +79,10 @@ object Framing {
       fieldLength: Int,
       fieldOffset: Int,
       maximumFrameLength: Int): Flow[ByteString, ByteString, NotUsed] =
-    scaladsl.Framing
-      .lengthField(fieldLength, fieldOffset, maximumFrameLength)
-      .asJava
+    scaladsl.Framing.lengthField(
+      fieldLength,
+      fieldOffset,
+      maximumFrameLength).asJava
 
   /**
     * Creates a Flow that decodes an incoming stream of unstructured byte chunks into a stream of frames, assuming that
@@ -101,9 +103,11 @@ object Framing {
       fieldOffset: Int,
       maximumFrameLength: Int,
       byteOrder: ByteOrder): Flow[ByteString, ByteString, NotUsed] =
-    scaladsl.Framing
-      .lengthField(fieldLength, fieldOffset, maximumFrameLength, byteOrder)
-      .asJava
+    scaladsl.Framing.lengthField(
+      fieldLength,
+      fieldOffset,
+      maximumFrameLength,
+      byteOrder).asJava
 
   /**
     * Returns a BidiFlow that implements a simple framing protocol. This is a convenience wrapper over [[Framing#lengthField]]

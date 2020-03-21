@@ -51,8 +51,9 @@ case class SortMergeJoin(
     with CodegenSupport {
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   override def output: Seq[Attribute] = {
     joinType match {
@@ -109,12 +110,11 @@ case class SortMergeJoin(
 
     left.execute().zipPartitions(right.execute()) { (leftIter, rightIter) =>
       val boundCondition: (InternalRow) => Boolean = {
-        condition
-          .map { cond => newPredicate(cond, left.output ++ right.output) }
-          .getOrElse {
-            (r: InternalRow) =>
-              true
-          }
+        condition.map { cond =>
+          newPredicate(cond, left.output ++ right.output)
+        }.getOrElse {
+          (r: InternalRow) => true
+        }
       }
       // An ordering that can be used to compare keys from both sides.
       val keyOrdering = newNaturalAscendingOrdering(leftKeys.map(_.dataType))
@@ -710,8 +710,7 @@ private[joins] class SortMergeJoinScanner(
     matchJoinKey = streamedRowKey.copy()
     bufferedMatches.clear()
     do {
-      bufferedMatches += bufferedRow
-        .copy() // need to copy mutable rows before buffering them
+      bufferedMatches += bufferedRow.copy() // need to copy mutable rows before buffering them
       advancedBufferedToRowWithNullFreeJoinKey()
     } while (bufferedRow != null && keyOrdering.compare(
       streamedRowKey,

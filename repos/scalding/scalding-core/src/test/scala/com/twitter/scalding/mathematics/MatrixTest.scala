@@ -155,7 +155,8 @@ class ScalarOps(args: Args) extends Job(args) {
 
 class DiagonalOps(args: Args) extends Job(args) {
   import Matrix._
-  val mat = Tsv("mat1", ('x1, 'y1, 'v1)).read
+  val mat = Tsv("mat1", ('x1, 'y1, 'v1))
+    .read
     .toMatrix[Int, Int, Double]('x1, 'y1, 'v1)
   (mat * mat.diagonal).write(Tsv("mat-diag"))
   (mat.diagonal * mat).write(Tsv("diag-mat"))
@@ -566,8 +567,7 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 2) -> 1.0)
             val grp = implicitly[Group[Map[(Int, Int), Double]]]
             // doubles are hard to compare
-            grp
-              .minus(pMap, exact)
+            grp.minus(pMap, exact)
               .mapValues { x => x * x }
               .map { _._2 }
               .sum should be < 0.0001

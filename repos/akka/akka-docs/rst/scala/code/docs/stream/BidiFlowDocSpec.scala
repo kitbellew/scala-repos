@@ -184,20 +184,20 @@ class BidiFlowDocSpec extends AkkaSpec {
 
     "work when chopped up" in {
       val stack = codec.atop(framing)
-      val flow = stack
-        .atop(chopUp)
-        .atop(stack.reversed)
-        .join(Flow[Message].map { case Ping(id) => Pong(id) })
+      val flow =
+        stack.atop(chopUp).atop(stack.reversed).join(Flow[Message].map {
+          case Ping(id) => Pong(id)
+        })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))
     }
 
     "work when accumulated" in {
       val stack = codec.atop(framing)
-      val flow = stack
-        .atop(accumulate)
-        .atop(stack.reversed)
-        .join(Flow[Message].map { case Ping(id) => Pong(id) })
+      val flow =
+        stack.atop(accumulate).atop(stack.reversed).join(Flow[Message].map {
+          case Ping(id) => Pong(id)
+        })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))
     }

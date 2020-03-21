@@ -38,8 +38,8 @@ class ValidationsSpec extends FunSpec with Validations {
     it("should convert date string ") {
       val result = date().convert("2013-10-05", null)
       assert(
-        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-          .format(result) == "2013-10-05 00:00:00")
+        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
+          result) == "2013-10-05 00:00:00")
     }
   }
 

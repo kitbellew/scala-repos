@@ -97,21 +97,18 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(c(7) === "4_")
 
       val nums1 = sc.makeRDD(Array("a\t1", "b\t2", "a\t3", "b\t4"), 2)
-      val d = nums1
-        .groupBy(str => str.split("\t")(0))
-        .pipe(
-          Seq("cat"),
-          Map[String, String](),
-          (f: String => Unit) => {
-            bl.value.map(f(_)); f("\u0001")
-          },
-          (i: Tuple2[String, Iterable[String]], f: String => Unit) => {
-            for (e <- i._2) {
-              f(e + "_")
-            }
+      val d = nums1.groupBy(str => str.split("\t")(0)).pipe(
+        Seq("cat"),
+        Map[String, String](),
+        (f: String => Unit) => {
+          bl.value.map(f(_)); f("\u0001")
+        },
+        (i: Tuple2[String, Iterable[String]], f: String => Unit) => {
+          for (e <- i._2) {
+            f(e + "_")
           }
-        )
-        .collect()
+        }
+      ).collect()
       assert(d.size === 8)
       assert(d(0) === "0")
       assert(d(1) === "\u0001")

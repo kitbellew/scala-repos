@@ -194,8 +194,7 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .groupBy('a)('a)
-        .analyze
+        .groupBy('a)('a).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -212,8 +211,7 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .groupBy('a)('a as 'c)
-        .analyze
+        .groupBy('a)('a as 'c).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -231,8 +229,7 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .limit(2)
-        .analyze
+        .limit(2).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -251,8 +248,7 @@ class ColumnPruningSuite extends PlanTest {
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
       x.select('a)
-        .sortBy(SortOrder('a, Ascending))
-        .analyze
+        .sortBy(SortOrder('a, Ascending)).analyze
 
     comparePlans(optimized, analysis.EliminateSubqueryAliases(correctAnswer))
 
@@ -267,8 +263,7 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer1 =
       x.select('a, 'b)
         .sortBy(SortOrder('a, Ascending))
-        .select('b)
-        .analyze
+        .select('b).analyze
 
     comparePlans(optimized1, analysis.EliminateSubqueryAliases(correctAnswer1))
   }
@@ -277,19 +272,17 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
     val originalQuery =
-      input
-        .groupBy('a, 'c, 'd)(
-          'a,
-          'c,
-          'd,
-          WindowExpression(
-            AggregateExpression(Count('b), Complete, isDistinct = false),
-            WindowSpecDefinition(
-              'a :: Nil,
-              SortOrder('b, Ascending) :: Nil,
-              UnspecifiedFrame)).as('window)
-        )
-        .select('a, 'c)
+      input.groupBy('a, 'c, 'd)(
+        'a,
+        'c,
+        'd,
+        WindowExpression(
+          AggregateExpression(Count('b), Complete, isDistinct = false),
+          WindowSpecDefinition(
+            'a :: Nil,
+            SortOrder('b, Ascending) :: Nil,
+            UnspecifiedFrame)).as('window)
+      ).select('a, 'c)
 
     val correctAnswer =
       input.select('a, 'c, 'd).groupBy('a, 'c, 'd)('a, 'c).analyze
@@ -303,25 +296,21 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
     val originalQuery =
-      input
-        .select(
-          'a,
-          'b,
-          'c,
-          'd,
-          WindowExpression(
-            AggregateExpression(Count('b), Complete, isDistinct = false),
-            WindowSpecDefinition(
-              'a :: Nil,
-              SortOrder('b, Ascending) :: Nil,
-              UnspecifiedFrame)).as('window)
-        )
-        .where('window > 1)
-        .select('a, 'c)
+      input.select(
+        'a,
+        'b,
+        'c,
+        'd,
+        WindowExpression(
+          AggregateExpression(Count('b), Complete, isDistinct = false),
+          WindowSpecDefinition(
+            'a :: Nil,
+            SortOrder('b, Ascending) :: Nil,
+            UnspecifiedFrame)).as('window)
+      ).where('window > 1).select('a, 'c)
 
     val correctAnswer =
-      input
-        .select('a, 'b, 'c)
+      input.select('a, 'b, 'c)
         .window(
           WindowExpression(
             AggregateExpression(Count('b), Complete, isDistinct = false),
@@ -332,10 +321,7 @@ class ColumnPruningSuite extends PlanTest {
           'a :: Nil,
           'b.asc :: Nil
         )
-        .select('a, 'c, 'window)
-        .where('window > 1)
-        .select('a, 'c)
-        .analyze
+        .select('a, 'c, 'window).where('window > 1).select('a, 'c).analyze
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
@@ -346,20 +332,18 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
     val originalQuery =
-      input
-        .select(
-          'a,
-          'b,
-          'c,
-          'd,
-          WindowExpression(
-            AggregateExpression(Count('b), Complete, isDistinct = false),
-            WindowSpecDefinition(
-              'a :: Nil,
-              SortOrder('b, Ascending) :: Nil,
-              UnspecifiedFrame)).as('window)
-        )
-        .select('a, 'c)
+      input.select(
+        'a,
+        'b,
+        'c,
+        'd,
+        WindowExpression(
+          AggregateExpression(Count('b), Complete, isDistinct = false),
+          WindowSpecDefinition(
+            'a :: Nil,
+            SortOrder('b, Ascending) :: Nil,
+            UnspecifiedFrame)).as('window)
+      ).select('a, 'c)
 
     val correctAnswer = input.select('a, 'c).analyze
 

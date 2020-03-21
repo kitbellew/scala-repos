@@ -54,12 +54,9 @@ trait HttpServiceBase {
 
     import system.dispatcher
     val r: server.Route = RouteImplementation(route)
-    Http(system)
-      .bind(interface, port)
-      .toMat(Sink.foreach(_.handleWith(RouteResult.route2HandlerFlow(r))))(
-        Keep.left)
-      .run()(materializer)
-      .toJava
+    Http(system).bind(interface, port).toMat(
+      Sink.foreach(_.handleWith(RouteResult.route2HandlerFlow(r))))(
+      Keep.left).run()(materializer).toJava
   }
 }
 

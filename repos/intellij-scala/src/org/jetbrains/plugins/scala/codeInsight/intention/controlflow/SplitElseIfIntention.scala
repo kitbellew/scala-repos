@@ -62,23 +62,16 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
       editor.getCaretModel.getOffset - ifStmt.thenBranch.get.getTextRange.getEndOffset - elseIndex
 
     val expr = new StringBuilder
-    expr
-      .append("if (")
-      .append(ifStmt.condition.get.getText)
-      .append(") ")
-      .append(ifStmt.thenBranch.get.getText)
-      .append(" else {\n")
-      .append(ifStmt.elseBranch.get.getText)
-      .append("\n}")
+    expr.append("if (").append(ifStmt.condition.get.getText).append(
+      ") ").append(ifStmt.thenBranch.get.getText).append(" else {\n").append(
+      ifStmt.elseBranch.get.getText).append("\n}")
 
-    val newIfStmt: ScExpression = ScalaPsiElementFactory
-      .createExpressionFromText(expr.toString(), element.getManager)
-    val size = newIfStmt
-      .asInstanceOf[ScIfStmt]
-      .thenBranch
-      .get
-      .getTextRange
-      .getEndOffset -
+    val newIfStmt: ScExpression =
+      ScalaPsiElementFactory.createExpressionFromText(
+        expr.toString(),
+        element.getManager)
+    val size = newIfStmt.asInstanceOf[
+      ScIfStmt].thenBranch.get.getTextRange.getEndOffset -
       newIfStmt.asInstanceOf[ScIfStmt].getTextRange.getStartOffset
 
     inWriteAction {

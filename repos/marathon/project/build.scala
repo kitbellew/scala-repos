@@ -52,7 +52,8 @@ object MarathonBuild extends Build {
         buildInfoPackage := "mesosphere.marathon",
         fork in Test := true
       )
-  ).configs(IntegrationTest)
+  )
+    .configs(IntegrationTest)
     .dependsOn(pluginInterface)
     // run mesos-simulation/test:test when running test
     .settings(
@@ -107,10 +108,8 @@ object MarathonBuild extends Build {
 
   lazy val scalaStyleSettings = styleSettings ++ Seq(
     testScalaStyle := {
-      org.scalastyle.sbt.ScalastylePlugin.scalastyle
-        .in(Compile)
-        .toTask("")
-        .value
+      org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask(
+        "").value
     },
     (test in Test) <<= (test in Test) dependsOn testScalaStyle
   )
@@ -301,9 +300,8 @@ object Dependencies {
     Test.mockito % "test",
     Test.akkaTestKit % "test"
   ).map(
-    _.excludeAll(excludeSlf4jLog4j12)
-      .excludeAll(excludeLog4j)
-      .excludeAll(excludeJCL))
+    _.excludeAll(excludeSlf4jLog4j12).excludeAll(excludeLog4j).excludeAll(
+      excludeJCL))
 }
 
 object Dependency {

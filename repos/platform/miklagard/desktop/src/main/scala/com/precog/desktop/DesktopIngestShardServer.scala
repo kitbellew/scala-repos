@@ -187,12 +187,12 @@ object DesktopIngestShardServer
       jobManager)
 
     val stoppable = Stoppable.fromFuture {
-      platform.shutdown
-        .onComplete { _ => logger.info("Platform shutdown complete") }
-        .onFailure {
-          case t: Throwable =>
-            logger.error("Failure during platform shutdown", t)
-        }
+      platform.shutdown.onComplete { _ =>
+        logger.info("Platform shutdown complete")
+      }.onFailure {
+        case t: Throwable =>
+          logger.error("Failure during platform shutdown", t)
+      }
     }
 
     (platform, stoppable)
@@ -284,30 +284,24 @@ object LaunchLabcoat {
 
     val params = CommandLineArguments(args: _*).parameters
 
-    params
-      .get("configFile")
-      .map { configFile =>
-        val config = Configuration.load(configFile)
+    params.get("configFile").map { configFile =>
+      val config = Configuration.load(configFile)
 
-        // Check for launch first
-        if (params.contains("launch")) {
-          launchBrowser(config)
-          sys.exit(0)
-        } else {
-          DesktopIngestShardServer
-            .runGUI(config)
-            .map {
-              _.map { _ => launchBrowser(config); println("Launch complete") }
-            }
-            .getOrElse {
-              sys.error("Failed to start bifrost!")
-            }
+      // Check for launch first
+      if (params.contains("launch")) {
+        launchBrowser(config)
+        sys.exit(0)
+      } else {
+        DesktopIngestShardServer.runGUI(config).map {
+          _.map { _ => launchBrowser(config); println("Launch complete") }
+        }.getOrElse {
+          sys.error("Failed to start bifrost!")
         }
       }
-      .getOrElse {
-        System.err.println("Usage: LaunchLabcoat --configFile <config file>")
-        sys.exit(1)
-      }
+    }.getOrElse {
+      System.err.println("Usage: LaunchLabcoat --configFile <config file>")
+      sys.exit(1)
+    }
   }
 
   def launchBrowser(config: Configuration): Unit = {
@@ -333,8 +327,8 @@ object LaunchLabcoat {
     @tailrec
     def doLaunch() {
       if (waitForPorts) {
-        java.awt.Desktop.getDesktop
-          .browse(new java.net.URI("http://localhost:%s".format(jettyPort)))
+        java.awt.Desktop.getDesktop.browse(
+          new java.net.URI("http://localhost:%s".format(jettyPort)))
       } else {
         import javax.swing.JOptionPane
         JOptionPane.showMessageDialog(

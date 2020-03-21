@@ -32,12 +32,8 @@ object Framing {
       delimiter: ByteString,
       maximumFrameLength: Int,
       allowTruncation: Boolean = false): Flow[ByteString, ByteString, NotUsed] =
-    Flow[ByteString]
-      .transform(() ⇒
-        new DelimiterFramingStage(
-          delimiter,
-          maximumFrameLength,
-          allowTruncation))
+    Flow[ByteString].transform(() ⇒
+      new DelimiterFramingStage(delimiter, maximumFrameLength, allowTruncation))
       .named("delimiterFraming")
 
   /**
@@ -63,13 +59,12 @@ object Framing {
     require(
       fieldLength >= 1 && fieldLength <= 4,
       "Length field length must be 1, 2, 3 or 4.")
-    Flow[ByteString]
-      .transform(() ⇒
-        new LengthFieldFramingStage(
-          fieldLength,
-          fieldOffset,
-          maximumFrameLength,
-          byteOrder))
+    Flow[ByteString].transform(() ⇒
+      new LengthFieldFramingStage(
+        fieldLength,
+        fieldOffset,
+        maximumFrameLength,
+        byteOrder))
       .named("lengthFieldFraming")
   }
 
@@ -103,8 +98,8 @@ object Framing {
     */
   def simpleFramingProtocolDecoder(
       maximumMessageLength: Int): Flow[ByteString, ByteString, NotUsed] =
-    lengthField(4, 0, maximumMessageLength + 4, ByteOrder.BIG_ENDIAN)
-      .map(_.drop(4))
+    lengthField(4, 0, maximumMessageLength + 4, ByteOrder.BIG_ENDIAN).map(
+      _.drop(4))
 
   /**
     * Protocol encoder that is used by [[Framing#simpleFramingProtocol]]

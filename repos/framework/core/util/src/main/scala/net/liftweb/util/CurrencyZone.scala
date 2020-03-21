@@ -127,8 +127,9 @@ abstract class CurrencyZone {
     override def equals(that: Any) =
       that match {
         case that: AbstractCurrency =>
-          this.designation + this.format("", scale) == that.designation + that
-            .format("", scale)
+          this.designation + this.format(
+            "",
+            scale) == that.designation + that.format("", scale)
         case _ => false
       }
 
@@ -146,9 +147,9 @@ abstract class CurrencyZone {
       val moneyValue = amount match {
         case null => 0
         case _ =>
-          amount
-            .setScale(numberOfFractionDigits, BigDecimal.RoundingMode.HALF_UP)
-            .doubleValue;
+          amount.setScale(
+            numberOfFractionDigits,
+            BigDecimal.RoundingMode.HALF_UP).doubleValue;
       }
 
       val numberFormat = NumberFormat.getCurrencyInstance(_locale);

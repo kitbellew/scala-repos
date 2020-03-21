@@ -61,11 +61,9 @@ trait IndexControllerBase extends ControllerBase {
       gitbucket.core.html.index(
         getRecentActivities(),
         getVisibleRepositories(loginAccount, withoutPhysicalInfo = true),
-        loginAccount
-          .map { account =>
-            getUserRepositories(account.userName, withoutPhysicalInfo = true)
-          }
-          .getOrElse(Nil)
+        loginAccount.map { account =>
+          getUserRepositories(account.userName, withoutPhysicalInfo = true)
+        }.getOrElse(Nil)
       )
     } else {
       val loginUserName = loginAccount.get.userName
@@ -77,11 +75,9 @@ trait IndexControllerBase extends ControllerBase {
       gitbucket.core.html.index(
         getRecentActivitiesByOwners(visibleOwnerSet),
         getVisibleRepositories(loginAccount, withoutPhysicalInfo = true),
-        loginAccount
-          .map { account =>
-            getUserRepositories(account.userName, withoutPhysicalInfo = true)
-          }
-          .getOrElse(Nil)
+        loginAccount.map { account =>
+          getUserRepositories(account.userName, withoutPhysicalInfo = true)
+        }.getOrElse(Nil)
       )
     }
   }
@@ -122,19 +118,16 @@ trait IndexControllerBase extends ControllerBase {
       redirect("/" + account.userName + "/_edit")
     }
 
-    flash
-      .get(Keys.Flash.Redirect)
-      .asInstanceOf[Option[String]]
-      .map { redirectUrl =>
+    flash.get(Keys.Flash.Redirect).asInstanceOf[Option[String]].map {
+      redirectUrl =>
         if (redirectUrl.stripSuffix("/") == request.getContextPath) {
           redirect("/")
         } else {
           redirect(redirectUrl)
         }
-      }
-      .getOrElse {
-        redirect("/")
-      }
+    }.getOrElse {
+      redirect("/")
+    }
   }
 
   /**
@@ -144,10 +137,8 @@ trait IndexControllerBase extends ControllerBase {
     contentType = formats("json")
     org.json4s.jackson.Serialization.write(
       Map(
-        "options" -> getAllUsers(false)
-          .filter(!_.isGroupAccount)
-          .map(_.userName)
-          .toArray)
+        "options" -> getAllUsers(false).filter(!_.isGroupAccount).map(
+          _.userName).toArray)
     )
   })
 

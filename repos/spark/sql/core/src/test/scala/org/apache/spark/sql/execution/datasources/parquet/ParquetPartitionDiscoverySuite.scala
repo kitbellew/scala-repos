@@ -88,9 +88,8 @@ class ParquetPartitionDiscoverySuite
         Set.empty[Path])
     }
     assert(
-      exception
-        .getMessage()
-        .contains("Conflicting directory structures detected"))
+      exception.getMessage().contains(
+        "Conflicting directory structures detected"))
 
     // Valid
     paths = Seq(
@@ -146,9 +145,8 @@ class ParquetPartitionDiscoverySuite
         Set(new Path("hdfs://host:9000/path/")))
     }
     assert(
-      exception
-        .getMessage()
-        .contains("Conflicting directory structures detected"))
+      exception.getMessage().contains(
+        "Conflicting directory structures detected"))
 
     // Invalid
     // Conflicting directory structure:
@@ -170,9 +168,8 @@ class ParquetPartitionDiscoverySuite
         Set(new Path("hdfs://host:9000/tmp/tables/")))
     }
     assert(
-      exception
-        .getMessage()
-        .contains("Conflicting directory structures detected"))
+      exception.getMessage().contains(
+        "Conflicting directory structures detected"))
   }
 
   test("parse partition") {
@@ -660,7 +657,8 @@ class ParquetPartitionDiscoverySuite
         (1 to 10).map(i => (i, i.toString)).toDF("intField", "stringField"),
         makePartitionDir(base, defaultPartitionName, "pi" -> 2))
 
-      sqlContext.read
+      sqlContext
+        .read
         .option("mergeSchema", "true")
         .format("parquet")
         .load(base.getCanonicalPath)
@@ -677,21 +675,16 @@ class ParquetPartitionDiscoverySuite
 
   test("SPARK-7749 Non-partitioned table should have empty partition spec") {
     withTempPath { dir =>
-      (1 to 10)
-        .map(i => (i, i.toString))
-        .toDF("a", "b")
-        .write
-        .parquet(dir.getCanonicalPath)
+      (1 to 10).map(i => (i, i.toString)).toDF("a", "b").write.parquet(
+        dir.getCanonicalPath)
       val queryExecution =
         sqlContext.read.parquet(dir.getCanonicalPath).queryExecution
-      queryExecution.analyzed
-        .collectFirst {
-          case LogicalRelation(relation: HadoopFsRelation, _, _) =>
-            assert(relation.partitionSpec === PartitionSpec.emptySpec)
-        }
-        .getOrElse {
-          fail(s"Expecting a ParquetRelation2, but got:\n$queryExecution")
-        }
+      queryExecution.analyzed.collectFirst {
+        case LogicalRelation(relation: HadoopFsRelation, _, _) =>
+          assert(relation.partitionSpec === PartitionSpec.emptySpec)
+      }.getOrElse {
+        fail(s"Expecting a ParquetRelation2, but got:\n$queryExecution")
+      }
     }
   }
 
@@ -744,10 +737,8 @@ class ParquetPartitionDiscoverySuite
       sqlContext.createDataFrame(sparkContext.parallelize(row :: Nil), schema)
 
     withTempPath { dir =>
-      df.write
-        .format("parquet")
-        .partitionBy(partitionColumns.map(_.name): _*)
-        .save(dir.toString)
+      df.write.format("parquet").partitionBy(
+        partitionColumns.map(_.name): _*).save(dir.toString)
       val fields = schema.map(f => Column(f.name).cast(f.dataType))
       checkAnswer(sqlContext.read.load(dir.toString).select(fields: _*), row)
     }
@@ -824,7 +815,8 @@ class ParquetPartitionDiscoverySuite
         .save(tablePath.getCanonicalPath)
 
       val twoPartitionsDF =
-        sqlContext.read
+        sqlContext
+          .read
           .option("basePath", tablePath.getCanonicalPath)
           .parquet(
             s"${tablePath.getCanonicalPath}/b=1",
@@ -833,7 +825,8 @@ class ParquetPartitionDiscoverySuite
       checkAnswer(twoPartitionsDF, df.filter("b != 3"))
 
       intercept[AssertionError] {
-        sqlContext.read
+        sqlContext
+          .read
           .parquet(
             s"${tablePath.getCanonicalPath}/b=1",
             s"${tablePath.getCanonicalPath}/b=2")
@@ -874,12 +867,10 @@ class ParquetPartitionDiscoverySuite
     def makeExpectedMessage(
         colNameLists: Seq[String],
         paths: Seq[String]): String = {
-      val conflictingColNameLists = colNameLists.zipWithIndex
-        .map {
-          case (list, index) =>
-            s"\tPartition column name list #$index: $list"
-        }
-        .mkString("\n", "\n", "\n")
+      val conflictingColNameLists = colNameLists.zipWithIndex.map {
+        case (list, index) =>
+          s"\tPartition column name list #$index: $list"
+      }.mkString("\n", "\n", "\n")
 
       // scalastyle:off
       s"""Conflicting partition column names detected:
@@ -936,10 +927,9 @@ class ParquetPartitionDiscoverySuite
     withTempPath { dir =>
       withSQLConf(SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key -> "1") {
         val path = dir.getCanonicalPath
-        val df = sqlContext
-          .range(5)
-          .select('id as 'a, 'id as 'b, 'id as 'c)
-          .coalesce(1)
+        val df =
+          sqlContext.range(5).select('id as 'a, 'id as 'b, 'id as 'c).coalesce(
+            1)
         df.write.partitionBy("b", "c").parquet(path)
         checkAnswer(sqlContext.read.parquet(path), df)
       }

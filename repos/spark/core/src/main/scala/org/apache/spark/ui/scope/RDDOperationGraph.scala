@@ -218,11 +218,9 @@ private[ui] object RDDOperationGraph extends Logging {
       subgraph: StringBuilder,
       cluster: RDDOperationCluster,
       indent: String): Unit = {
-    subgraph
-      .append(indent)
-      .append(s"subgraph cluster${cluster.id} {\n")
-      .append(indent)
-      .append(s"""  label="${StringEscapeUtils.escapeJava(cluster.name)}";\n""")
+    subgraph.append(indent).append(s"subgraph cluster${cluster.id} {\n")
+      .append(indent).append(s"""  label="${StringEscapeUtils.escapeJava(
+        cluster.name)}";\n""")
     cluster.childNodes.foreach { node =>
       subgraph.append(indent).append(s"  ${makeDotNode(node)};\n")
     }

@@ -80,8 +80,9 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     override def invoke(in: MethodInvocation): AnyRef = {
       val className = metrics.get.className(in.getThis.getClass)
       val logger = LoggerFactory.getLogger(className)
-      val method = s"""$className.${in.getMethod.getName}(${in.getArguments
-        .mkString(", ")})"""
+      val method =
+        s"""$className.${in.getMethod.getName}(${in.getArguments.mkString(
+          ", ")})"""
       logger.trace(s">>> $method")
       val result = in.proceed()
       logger.trace(s"<<< $method")
@@ -101,9 +102,8 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     conf.logLevel.get.foreach { levelName =>
       val level = Level.toLevel(
         if ("fatal".equalsIgnoreCase(levelName)) "fatal" else levelName)
-      val rootLogger = LoggerFactory
-        .getLogger(Logger.ROOT_LOGGER_NAME)
-        .asInstanceOf[ch.qos.logback.classic.Logger]
+      val rootLogger = LoggerFactory.getLogger(
+        Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
       rootLogger.setLevel(level)
     }
 
@@ -113,9 +113,8 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     val tracingBehavior =
       if (conf.enableDebugTracing) Some(new TracingBehavior(metricsProvider))
       else None
-    val metricsBehavior = conf.metrics.get
-      .filter(identity)
-      .map(_ => new MetricsBehavior(metricsProvider))
+    val metricsBehavior = conf.metrics.get.filter(identity).map(_ =>
+      new MetricsBehavior(metricsProvider))
 
     val behaviors = (tracingBehavior :: metricsBehavior :: Nil).flatten
     if (behaviors.nonEmpty)

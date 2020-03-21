@@ -62,11 +62,8 @@ trait ClassHelpers { self: ControlHelpers =>
             classOf[ClassNotFoundException],
             classOf[ClassCastException],
             classOf[NoClassDefFoundError]);
-          klass <- tryo(ignore)(
-            Class
-              .forName(fullName)
-              .asSubclass(targetType)
-              .asInstanceOf[Class[C]])) yield klass).headOption
+          klass <- tryo(ignore)(Class.forName(fullName).asSubclass(
+            targetType).asInstanceOf[Class[C]])) yield klass).headOption
 
   /**
     * General method to in find a class according to its type, its name, a list of possible
@@ -367,18 +364,17 @@ trait ClassHelpers { self: ControlHelpers =>
      }
      }
      */
-    possibleMethods.iterator
-      .filter(m => inst != null || isStatic(m.getModifiers))
-      .map((m: Method) => tryo { m.invoke(inst, params: _*) })
-      .find((x: Box[Any]) =>
-        x match {
-          case result @ Full(_)                                 => true
-          case Failure(_, Full(c: IllegalAccessException), _)   => false
-          case Failure(_, Full(c: IllegalArgumentException), _) => false
-          case Failure(_, Full(c), _) =>
-            if (c.getCause != null) throw c.getCause else throw c
-          case _ => false
-        }) match {
+    possibleMethods.iterator.filter(m =>
+      inst != null || isStatic(m.getModifiers)).map((m: Method) =>
+      tryo { m.invoke(inst, params: _*) }).find((x: Box[Any]) =>
+      x match {
+        case result @ Full(_)                                 => true
+        case Failure(_, Full(c: IllegalAccessException), _)   => false
+        case Failure(_, Full(c: IllegalArgumentException), _) => false
+        case Failure(_, Full(c), _) =>
+          if (c.getCause != null) throw c.getCause else throw c
+        case _ => false
+      }) match {
       case Some(result @ Full(_)) => result
       case _                      => Failure("invokeMethod " + meth, Empty, Empty)
     }

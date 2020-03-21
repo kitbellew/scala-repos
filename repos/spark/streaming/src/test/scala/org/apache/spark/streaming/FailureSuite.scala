@@ -46,9 +46,8 @@ class FailureSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     StreamingContext.getActive().foreach { _.stop() }
 
     // Stop SparkContext if active
-    SparkContext
-      .getOrCreate(new SparkConf().setMaster("local").setAppName("bla"))
-      .stop()
+    SparkContext.getOrCreate(
+      new SparkConf().setMaster("local").setAppName("bla")).stop()
   }
 
   test("multiple failures with map") {

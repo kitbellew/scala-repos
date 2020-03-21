@@ -67,26 +67,31 @@ class ScAssignStmtImpl(node: ASTNode)
       case ref: ScReferenceExpression =>
         val text =
           s"${ref.refName}_=(${getRExpression.map(_.getText).getOrElse("")})"
-        val mirrorExpr = ScalaPsiElementFactory
-          .createExpressionWithContextFromText(text, getContext, this)
+        val mirrorExpr =
+          ScalaPsiElementFactory.createExpressionWithContextFromText(
+            text,
+            getContext,
+            this)
         mirrorExpr match {
           case call: ScMethodCall =>
-            call.getInvokedExpr
-              .asInstanceOf[ScReferenceExpression]
-              .setupResolveFunctions(
-                () => resolveAssignment.toArray,
-                () => shapeResolveAssignment.toArray
-              )
+            call.getInvokedExpr.asInstanceOf[
+              ScReferenceExpression].setupResolveFunctions(
+              () => resolveAssignment.toArray,
+              () => shapeResolveAssignment.toArray
+            )
             Some(call)
           case _ => None
         }
       case methodCall: ScMethodCall =>
         val invokedExpr = methodCall.getInvokedExpr
-        val text =
-          s"${invokedExpr.getText}.update(${methodCall.args.exprs.map(_.getText).mkString(",")}," +
-            s" ${getRExpression.map(_.getText).getOrElse("")}"
-        val mirrorExpr = ScalaPsiElementFactory
-          .createExpressionWithContextFromText(text, getContext, this)
+        val text = s"${invokedExpr.getText}.update(${methodCall.args.exprs.map(
+          _.getText).mkString(",")}," +
+          s" ${getRExpression.map(_.getText).getOrElse("")}"
+        val mirrorExpr =
+          ScalaPsiElementFactory.createExpressionWithContextFromText(
+            text,
+            getContext,
+            this)
         //todo: improve performance: do not re-evaluate resolve to "update" method
         mirrorExpr match {
           case call: ScMethodCall => Some(call)
@@ -111,9 +116,8 @@ class ScAssignStmtImpl(node: ASTNode)
                 val processor = new MethodResolveProcessor(
                   ref,
                   fun.name + "_=",
-                  getRExpression
-                    .map(expr => List(Seq(new Expression(expr))))
-                    .getOrElse(Nil),
+                  getRExpression.map(expr =>
+                    List(Seq(new Expression(expr)))).getOrElse(Nil),
                   Nil,
                   ref.getPrevTypeInfoParams,
                   isShapeResolve = shapeResolve,

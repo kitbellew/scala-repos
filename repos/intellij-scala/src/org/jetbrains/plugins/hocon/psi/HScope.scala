@@ -7,7 +7,6 @@ trait HScope {
   def directKeyedFields: Iterator[HKeyedField]
 
   def directSubScopes(key: String): Iterator[HScope] =
-    directKeyedFields
-      .filter(_.validKey.map(_.stringValue).contains(key))
-      .flatMap(_.subScopes)
+    directKeyedFields.filter(
+      _.validKey.map(_.stringValue).contains(key)).flatMap(_.subScopes)
 }

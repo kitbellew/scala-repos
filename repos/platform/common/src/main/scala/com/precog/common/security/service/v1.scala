@@ -107,8 +107,8 @@ object v1 {
     implicit val newGrantRequestIso =
       Iso.hlist(NewGrantRequest.apply _, NewGrantRequest.unapply _)
 
-    val schemaV1 = "name" :: "description" :: ("parentIds" ||| Set
-      .empty[GrantId]) :: "permissions" :: "expirationDate" :: HNil
+    val schemaV1 = "name" :: "description" :: ("parentIds" ||| Set.empty[
+      GrantId]) :: "permissions" :: "expirationDate" :: HNil
 
     implicit val decomposerV1 =
       IsoSerialization.decomposer[NewGrantRequest](schemaV1)

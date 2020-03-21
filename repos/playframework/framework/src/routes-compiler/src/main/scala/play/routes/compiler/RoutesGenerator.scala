@@ -107,25 +107,21 @@ object StaticRoutesGenerator extends RoutesGenerator {
       namespace: Option[String],
       additionalImports: Seq[String],
       rules: List[Rule]) =
-    static.twirl
-      .forwardsRouter(
-        sourceInfo,
-        namespace,
-        additionalImports,
-        rules
-      )
-      .body
+    static.twirl.forwardsRouter(
+      sourceInfo,
+      namespace,
+      additionalImports,
+      rules
+    ).body
 
   private def generateRoutesPrefix(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String]) =
-    static.twirl
-      .routesPrefix(
-        sourceInfo,
-        namespace,
-        _.call.instantiate
-      )
-      .body
+    static.twirl.routesPrefix(
+      sourceInfo,
+      namespace,
+      _.call.instantiate
+    ).body
 
   private def generateReverseRouters(
       sourceInfo: RoutesSourceInfo,
@@ -135,22 +131,18 @@ object StaticRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
+        val packageName = namespace.filter(_ => namespaceReverseRouter).map(
+          _ + "." + pn).getOrElse(pn)
         (packageName.replace(".", "/") + "/" + ReverseRoutesFile) ->
-          static.twirl
-            .reverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _.call.instantiate
-            )
-            .body
+          static.twirl.reverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _.call.instantiate
+          ).body
     }
   }
 
@@ -162,23 +154,20 @@ object StaticRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        (packageName
-          .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
-          static.twirl
-            .javascriptReverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _.call.instantiate
-            )
-            .body
+        val packageName = namespace.filter(_ => namespaceReverseRouter).map(
+          _ + "." + pn).getOrElse(pn)
+        (packageName.replace(
+          ".",
+          "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
+          static.twirl.javascriptReverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _.call.instantiate
+          ).body
     }
   }
 
@@ -189,16 +178,16 @@ object StaticRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     rules.collect { case r: Route => r }.groupBy(_.call.packageName).map {
       case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
+        val packageName = namespace.filter(_ => namespaceReverseRouter).map(
+          _ + "." + pn).getOrElse(pn)
         val controllers = routes.groupBy(_.call.controller).keys.toSeq
 
         (packageName.replace(".", "/") + "/" + JavaWrapperFile) ->
-          static.twirl
-            .javaWrappers(sourceInfo, namespace, packageName, controllers)
-            .body
+          static.twirl.javaWrappers(
+            sourceInfo,
+            namespace,
+            packageName,
+            controllers).body
     }
   }
 }
@@ -273,35 +262,28 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       rules: List[Rule]) = {
 
     // Generate dependency descriptors for all includes
-    val includesDeps = rules
-      .collect {
-        case include: Include => include
-      }
-      .groupBy(_.router)
-      .zipWithIndex
-      .map {
-        case ((router, includes), index) =>
-          router -> Dependency(
-            router.replace('.', '_') + "_" + index,
-            router,
-            includes.head)
-      }
-      .toMap
+    val includesDeps = rules.collect {
+      case include: Include => include
+    }.groupBy(_.router).zipWithIndex.map {
+      case ((router, includes), index) =>
+        router -> Dependency(
+          router.replace('.', '_') + "_" + index,
+          router,
+          includes.head)
+    }.toMap
 
     // Generate dependency descriptors for all routes
     val routesDeps = rules
       .collect { case route: Route => route }
       .groupBy(r => (r.call.packageName, r.call.controller, r.call.instantiate))
-      .zipWithIndex
-      .map {
+      .zipWithIndex.map {
         case ((key @ (packageName, controller, instantiate), routes), index) =>
           val clazz = packageName + "." + controller
           // If it's using the @ syntax, we depend on the provider (ie, look it up each time)
           val dep = if (instantiate) s"javax.inject.Provider[$clazz]" else clazz
           val ident = controller + "_" + index
           key -> Dependency(ident, dep, routes.head)
-      }
-      .toMap
+      }.toMap
 
     // Get the distinct dependency descriptors in the same order as defined in the routes file
     val orderedDeps = rules.map {
@@ -327,28 +309,24 @@ object InjectedRoutesGenerator extends RoutesGenerator {
             route.call.instantiate)).copy(rule = route)
     }
 
-    inject.twirl
-      .forwardsRouter(
-        sourceInfo,
-        namespace,
-        additionalImports,
-        orderedDeps,
-        rulesWithDeps,
-        includesDeps.values.toSeq
-      )
-      .body
+    inject.twirl.forwardsRouter(
+      sourceInfo,
+      namespace,
+      additionalImports,
+      orderedDeps,
+      rulesWithDeps,
+      includesDeps.values.toSeq
+    ).body
   }
 
   private def generateRoutesPrefix(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String]) =
-    static.twirl
-      .routesPrefix(
-        sourceInfo,
-        namespace,
-        _ => true
-      )
-      .body
+    static.twirl.routesPrefix(
+      sourceInfo,
+      namespace,
+      _ => true
+    ).body
 
   private def generateReverseRouters(
       sourceInfo: RoutesSourceInfo,
@@ -358,22 +336,18 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
+        val packageName = namespace.filter(_ => namespaceReverseRouter).map(
+          _ + "." + pn).getOrElse(pn)
         (packageName.replace(".", "/") + "/" + ReverseRoutesFile) ->
-          static.twirl
-            .reverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _ => true
-            )
-            .body
+          static.twirl.reverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _ => true
+          ).body
     }
   }
 
@@ -385,23 +359,20 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        (packageName
-          .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
-          static.twirl
-            .javascriptReverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _ => true
-            )
-            .body
+        val packageName = namespace.filter(_ => namespaceReverseRouter).map(
+          _ + "." + pn).getOrElse(pn)
+        (packageName.replace(
+          ".",
+          "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
+          static.twirl.javascriptReverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _ => true
+          ).body
     }
   }
 
@@ -412,16 +383,16 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     rules.collect { case r: Route => r }.groupBy(_.call.packageName).map {
       case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
+        val packageName = namespace.filter(_ => namespaceReverseRouter).map(
+          _ + "." + pn).getOrElse(pn)
         val controllers = routes.groupBy(_.call.controller).keys.toSeq
 
         (packageName.replace(".", "/") + "/" + JavaWrapperFile) ->
-          static.twirl
-            .javaWrappers(sourceInfo, namespace, packageName, controllers)
-            .body
+          static.twirl.javaWrappers(
+            sourceInfo,
+            namespace,
+            packageName,
+            controllers).body
     }
   }
 }

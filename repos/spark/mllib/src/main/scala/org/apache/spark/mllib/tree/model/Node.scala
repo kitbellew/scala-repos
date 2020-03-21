@@ -188,9 +188,8 @@ class Node @Since("1.2.0") (
 
   /** Returns an iterator that traverses (DFS, left to right) the subtree of this node. */
   private[tree] def subtreeIterator: Iterator[Node] = {
-    Iterator.single(this) ++ leftNode
-      .map(_.subtreeIterator)
-      .getOrElse(Iterator.empty) ++
+    Iterator.single(this) ++ leftNode.map(_.subtreeIterator).getOrElse(
+      Iterator.empty) ++
       rightNode.map(_.subtreeIterator).getOrElse(Iterator.empty)
   }
 }
@@ -252,8 +251,8 @@ private[spark] object Node {
     if (nodeIndex == 0) {
       throw new IllegalArgumentException(s"0 is not a valid node index.")
     } else {
-      java.lang.Integer
-        .numberOfTrailingZeros(java.lang.Integer.highestOneBit(nodeIndex))
+      java.lang.Integer.numberOfTrailingZeros(
+        java.lang.Integer.highestOneBit(nodeIndex))
     }
 
   /**

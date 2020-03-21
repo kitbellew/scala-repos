@@ -21,9 +21,8 @@ object ScalastyleCodeInspection {
     val possibleLocations = Seq(".idea", "project")
 
     def findConfigFile(dir: VirtualFile) =
-      possibleConfigFileNames
-        .flatMap(name => Option(dir.findChild(name)))
-        .headOption
+      possibleConfigFileNames.flatMap(name =>
+        Option(dir.findChild(name))).headOption
 
     def findIn(project: Project): Option[VirtualFile] = {
       val root = project.getBaseDir
@@ -68,10 +67,8 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
     def withConfiguration(
         f: ScalastyleConfiguration => Iterable[ProblemDescriptor])
         : Array[ProblemDescriptor] = {
-      ScalastyleCodeInspection
-        .configuration(file.getProject)
-        .map(c => f(c).toArray)
-        .getOrElse(Array.empty)
+      ScalastyleCodeInspection.configuration(file.getProject).map(c =>
+        f(c).toArray).getOrElse(Array.empty)
     }
 
     if (!file.isInstanceOf[ScalaFile]) Array.empty
@@ -125,18 +122,17 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
                 Some(line),
                 column,
                 customMessage) =>
-            findPsiElement(line, column)
-              .filter(e => e.isPhysical && !e.getTextRange.isEmpty)
-              .map { e =>
-                val message = Messages.format(key, args, customMessage)
-                manager.createProblemDescriptor(
-                  e,
-                  message,
-                  Array.empty[LocalQuickFix],
-                  levelToProblemType(level),
-                  true,
-                  false)
-              }
+            findPsiElement(line, column).filter(e =>
+              e.isPhysical && !e.getTextRange.isEmpty).map { e =>
+              val message = Messages.format(key, args, customMessage)
+              manager.createProblemDescriptor(
+                e,
+                message,
+                Array.empty[LocalQuickFix],
+                levelToProblemType(level),
+                true,
+                false)
+            }
 
           case _ => None
         }

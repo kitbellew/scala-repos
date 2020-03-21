@@ -160,9 +160,8 @@ private[storage] class BlockInfoManager extends Logging {
     * [[BlockInfo.NON_TASK_WRITER]] if called by a non-task thread.
     */
   private def currentTaskAttemptId: TaskAttemptId = {
-    Option(TaskContext.get())
-      .map(_.taskAttemptId())
-      .getOrElse(BlockInfo.NON_TASK_WRITER)
+    Option(TaskContext.get()).map(_.taskAttemptId()).getOrElse(
+      BlockInfo.NON_TASK_WRITER)
   }
 
   /**

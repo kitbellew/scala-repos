@@ -20,9 +20,8 @@ object CaptureLogEvents {
 
     private[this] var events = Vector.empty[ILoggingEvent]
     private[this] def rootLogger: Logger =
-      LoggerFactory
-        .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
-        .asInstanceOf[Logger]
+      LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[
+        Logger]
 
     def appendToRootLogger(): Unit = {
       setContext(LoggerFactory.getILoggerFactory.asInstanceOf[Context])

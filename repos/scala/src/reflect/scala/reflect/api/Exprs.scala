@@ -119,9 +119,8 @@ trait Exprs { self: Universe =>
     override def canEqual(x: Any) = x.isInstanceOf[Expr[_]]
 
     override def equals(x: Any) =
-      x.isInstanceOf[Expr[_]] && this.mirror == x
-        .asInstanceOf[Expr[_]]
-        .mirror && this.tree == x.asInstanceOf[Expr[_]].tree
+      x.isInstanceOf[Expr[_]] && this.mirror == x.asInstanceOf[
+        Expr[_]].mirror && this.tree == x.asInstanceOf[Expr[_]].tree
 
     override def hashCode = mirror.hashCode * 31 + tree.hashCode
 
@@ -151,10 +150,10 @@ trait Exprs { self: Universe =>
       extends Expr[T] {
     def in[U <: Universe with Singleton](
         otherMirror: scala.reflect.api.Mirror[U]): U#Expr[T] = {
-      val otherMirror1 = otherMirror
-        .asInstanceOf[scala.reflect.api.Mirror[otherMirror.universe.type]]
-      val tag1 = (implicitly[WeakTypeTag[T]] in otherMirror)
-        .asInstanceOf[otherMirror.universe.WeakTypeTag[T]]
+      val otherMirror1 = otherMirror.asInstanceOf[
+        scala.reflect.api.Mirror[otherMirror.universe.type]]
+      val tag1 = (implicitly[WeakTypeTag[T]] in otherMirror).asInstanceOf[
+        otherMirror.universe.WeakTypeTag[T]]
       otherMirror.universe.Expr[T](otherMirror1, treec)(tag1)
     }
 

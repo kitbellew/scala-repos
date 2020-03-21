@@ -18,9 +18,10 @@ class BinaryClockTest extends Specification {
     (BinaryFormat.clock(since).read(ByteArray.parseBytes(bytes), false, false))(
       chess.White)
   def isomorphism(c: Clock): Clock =
-    (BinaryFormat
-      .clock(since)
-      .read(BinaryFormat.clock(since) write c, false, false))(chess.White)
+    (BinaryFormat.clock(since).read(
+      BinaryFormat.clock(since) write c,
+      false,
+      false))(chess.White)
 
   "binary Clock" should {
     val clock = Clock(120, 2)

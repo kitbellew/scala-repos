@@ -114,14 +114,15 @@ class StreamingContextSuite
     addInputStream(ssc1).register()
     ssc1.start()
     val cp = new Checkpoint(ssc1, Time(1000))
-    assert(Utils.timeStringAsSeconds(
-      cp.sparkConfPairs.toMap.getOrElse("spark.dummyTimeConfig", "-1")) === 10)
+    assert(
+      Utils.timeStringAsSeconds(cp.sparkConfPairs
+        .toMap.getOrElse("spark.dummyTimeConfig", "-1")) === 10)
     ssc1.stop()
     val newCp = Utils.deserialize[Checkpoint](Utils.serialize(cp))
     assert(
-      newCp
-        .createSparkConf()
-        .getTimeAsSeconds("spark.dummyTimeConfig", "-1") === 10)
+      newCp.createSparkConf().getTimeAsSeconds(
+        "spark.dummyTimeConfig",
+        "-1") === 10)
     ssc = new StreamingContext(null, newCp, null)
     assert(ssc.conf.getTimeAsSeconds("spark.dummyTimeConfig", "-1") === 10)
   }
@@ -172,9 +173,8 @@ class StreamingContextSuite
       ssc.start()
     }
     assert(
-      exception
-        .getMessage()
-        .contains("DStreams with their functions are not serializable"))
+      exception.getMessage().contains(
+        "DStreams with their functions are not serializable"))
     assert(ssc.getState() !== StreamingContextState.ACTIVE)
     assert(StreamingContext.getActive().isEmpty)
   }
@@ -475,9 +475,9 @@ class StreamingContextSuite
   test("awaitTermination with error in job generation") {
     ssc = new StreamingContext(master, appName, batchDuration)
     val inputStream = addInputStream(ssc)
-    inputStream
-      .transform { rdd => throw new TestException("error in transform"); rdd }
-      .register()
+    inputStream.transform { rdd =>
+      throw new TestException("error in transform"); rdd
+    }.register()
     val exception = intercept[TestException] {
       ssc.start()
       ssc.awaitTerminationOrTimeout(5000)
@@ -697,8 +697,9 @@ class StreamingContextSuite
     // getActiveOrCreate should return the current active context if there is one
     testGetActiveOrCreate {
       ssc = new StreamingContext(
-        conf.clone
-          .set("spark.streaming.clock", "org.apache.spark.util.ManualClock"),
+        conf.clone.set(
+          "spark.streaming.clock",
+          "org.apache.spark.util.ManualClock"),
         batchDuration)
       addInputStream(ssc).register()
       ssc.start()
@@ -755,8 +756,9 @@ class StreamingContextSuite
 
   test("multiple streaming contexts") {
     sc = new SparkContext(
-      conf.clone
-        .set("spark.streaming.clock", "org.apache.spark.util.ManualClock"))
+      conf.clone.set(
+        "spark.streaming.clock",
+        "org.apache.spark.util.ManualClock"))
     ssc = new StreamingContext(sc, Seconds(1))
     val input = addInputStream(ssc)
     input.foreachRDD { rdd => rdd.count }
@@ -995,10 +997,8 @@ package object testPackage extends Assertions {
       inputStream.foreachRDD { rdd =>
         rddCreationSiteCorrect = rdd.creationSite == creationSite
         foreachCallSiteCorrect =
-          rdd.sparkContext
-            .getCallSite()
-            .shortForm
-            .contains("StreamingContextSuite")
+          rdd.sparkContext.getCallSite().shortForm.contains(
+            "StreamingContextSuite")
         rddGenerated = true
       }
       ssc.start()

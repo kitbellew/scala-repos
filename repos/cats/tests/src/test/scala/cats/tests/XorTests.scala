@@ -86,15 +86,20 @@ class XorTests extends CatsSuite {
 
   checkAll(
     "? Xor ?",
-    BitraverseTests[Xor]
-      .bitraverse[Option, Int, Int, Int, String, String, String])
+    BitraverseTests[Xor].bitraverse[
+      Option,
+      Int,
+      Int,
+      Int,
+      String,
+      String,
+      String])
   checkAll("Bitraverse[Xor]", SerializableTests.serializable(Bitraverse[Xor]))
 
   test("catchOnly catches matching exceptions") {
     assert(
-      Xor
-        .catchOnly[NumberFormatException] { "foo".toInt }
-        .isInstanceOf[Xor.Left[NumberFormatException]])
+      Xor.catchOnly[NumberFormatException] { "foo".toInt }.isInstanceOf[
+        Xor.Left[NumberFormatException]])
   }
 
   test("catchOnly lets non-matching exceptions escape") {

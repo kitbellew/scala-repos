@@ -28,8 +28,9 @@ private[camel] object TestSupport {
   def stop(actorRef: ActorRef)(implicit system: ActorSystem, timeout: Timeout) {
     system.stop(actorRef)
     Await.result(
-      CamelExtension(system)
-        .deactivationFutureFor(actorRef)(timeout, system.dispatcher),
+      CamelExtension(system).deactivationFutureFor(actorRef)(
+        timeout,
+        system.dispatcher),
       timeout.duration)
   }
 
@@ -48,15 +49,17 @@ private[camel] object TestSupport {
         msg: String,
         timeout: Duration = 1 second): AnyRef = {
       try {
-        camel.template
-          .asyncRequestBody(to, msg)
-          .get(timeout.toNanos, TimeUnit.NANOSECONDS)
+        camel.template.asyncRequestBody(to, msg).get(
+          timeout.toNanos,
+          TimeUnit.NANOSECONDS)
       } catch {
         case e: ExecutionException ⇒ throw e.getCause
         case e: TimeoutException ⇒
           throw new AssertionError(
-            "Failed to get response to message [%s], send to endpoint [%s], within [%s]"
-              .format(msg, to, timeout))
+            "Failed to get response to message [%s], send to endpoint [%s], within [%s]".format(
+              msg,
+              to,
+              timeout))
       }
     }
 

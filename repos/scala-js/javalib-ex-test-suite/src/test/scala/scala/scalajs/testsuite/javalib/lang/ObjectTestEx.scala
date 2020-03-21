@@ -39,8 +39,8 @@ object ObjectTestEx extends JasmineTest {
       val o = new SomeCloneable(5)
       val o2 = o.clone()
       expect(o2.asInstanceOf[js.Any]).not.toBe(o.asInstanceOf[js.Any])
-      expect(o2.getClass.asInstanceOf[js.Any])
-        .toBe(classOf[SomeCloneable].asInstanceOf[js.Any])
+      expect(o2.getClass.asInstanceOf[js.Any]).toBe(
+        classOf[SomeCloneable].asInstanceOf[js.Any])
       expect(o2.x).toEqual(5)
       expect(o2.y()).toEqual(8)
     }

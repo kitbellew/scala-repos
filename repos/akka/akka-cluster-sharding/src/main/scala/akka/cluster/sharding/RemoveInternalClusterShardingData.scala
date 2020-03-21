@@ -69,8 +69,8 @@ object RemoveInternalClusterShardingData {
         println(
           "Specify the Cluster Sharding type names to remove in program arguments")
       else {
-        val journalPluginId = system.settings.config
-          .getString("akka.cluster.sharding.journal-plugin-id")
+        val journalPluginId = system.settings.config.getString(
+          "akka.cluster.sharding.journal-plugin-id")
         import system.dispatcher
         remove(
           system,

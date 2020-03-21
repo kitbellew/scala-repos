@@ -42,11 +42,9 @@ object AkkaBuild extends Build {
     SphinxDoc.akkaSettings ++ Dist.settings ++ s3Settings ++
     UnidocRoot.akkaSettings ++
     Protobuf.settings ++ Seq(
-    parallelExecution in GlobalScope := System
-      .getProperty(
-        "akka.parallelExecution",
-        parallelExecutionByDefault.toString)
-      .toBoolean,
+    parallelExecution in GlobalScope := System.getProperty(
+      "akka.parallelExecution",
+      parallelExecutionByDefault.toString).toBoolean,
     Dist.distExclude := Seq(actorTests.id, docs.id, samples.id, osgi.id),
     S3.host in S3.upload := "downloads.typesafe.com.s3.amazonaws.com",
     S3.progress in S3.upload := true,
@@ -329,7 +327,8 @@ object AkkaBuild extends Build {
   lazy val httpMarshallersScala = Project(
     id = "akka-http-marshallers-scala-experimental",
     base = file("akka-http-marshallers-scala")
-  ).settings(parentSettings: _*)
+  )
+    .settings(parentSettings: _*)
     .aggregate(httpSprayJson, httpXml)
 
   lazy val httpXml =
@@ -341,7 +340,8 @@ object AkkaBuild extends Build {
   lazy val httpMarshallersJava = Project(
     id = "akka-http-marshallers-java-experimental",
     base = file("akka-http-marshallers-java")
-  ).settings(parentSettings: _*)
+  )
+    .settings(parentSettings: _*)
     .aggregate(httpJackson)
 
   lazy val httpJackson =
@@ -477,7 +477,8 @@ object AkkaBuild extends Build {
           sampleDistributedDataScala,
           sampleDistributedDataJava
         )
-  ).settings(samplesSettings: _*)
+  )
+    .settings(samplesSettings: _*)
     .disablePlugins(MimaPlugin)
 
   lazy val sampleCamelJava = Sample.project("akka-sample-camel-java")
@@ -516,7 +517,8 @@ object AkkaBuild extends Build {
   lazy val osgiDiningHakkersSampleMavenTest = Project(
     id = "akka-sample-osgi-dining-hakkers-maven-test",
     base = file("akka-samples/akka-sample-osgi-dining-hakkers-maven-test")
-  ).settings(
+  )
+    .settings(
       publishArtifact := false,
       // force publication of artifacts to local maven repo, so latest versions can be used when running maven tests
       compile in Compile <<=
@@ -610,16 +612,16 @@ object AkkaBuild extends Build {
 
   lazy val resolverSettings = {
     // should we be allowed to use artifacts published to the local maven repository
-    if (System
-          .getProperty("akka.build.useLocalMavenResolver", "false")
-          .toBoolean)
+    if (System.getProperty(
+          "akka.build.useLocalMavenResolver",
+          "false").toBoolean)
       Seq(resolvers += mavenLocalResolver)
     else Seq.empty
   } ++ {
     // should we be allowed to use artifacts from sonatype snapshots
-    if (System
-          .getProperty("akka.build.useSnapshotSonatypeResolver", "false")
-          .toBoolean)
+    if (System.getProperty(
+          "akka.build.useSnapshotSonatypeResolver",
+          "false").toBoolean)
       Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
     else Seq.empty
   } ++ Seq(
@@ -687,14 +689,12 @@ object AkkaBuild extends Build {
       * Test settings
       */
 
-    parallelExecution in Test := System
-      .getProperty(
-        "akka.parallelExecution",
-        parallelExecutionByDefault.toString)
-      .toBoolean,
-    logBuffered in Test := System
-      .getProperty("akka.logBufferedTests", "false")
-      .toBoolean,
+    parallelExecution in Test := System.getProperty(
+      "akka.parallelExecution",
+      parallelExecutionByDefault.toString).toBoolean,
+    logBuffered in Test := System.getProperty(
+      "akka.logBufferedTests",
+      "false").toBoolean,
     // show full stack traces and test case durations
     testOptions in Test += Tests.Argument("-oDF"),
     // don't save test output to a file

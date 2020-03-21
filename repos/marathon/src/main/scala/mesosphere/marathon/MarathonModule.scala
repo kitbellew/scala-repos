@@ -88,28 +88,23 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
     bind(classOf[ZookeeperConf]).toInstance(conf)
 
     // needs to be eager to break circular dependencies
-    bind(classOf[SchedulerCallbacks])
-      .to(classOf[SchedulerCallbacksServiceAdapter])
-      .asEagerSingleton()
+    bind(classOf[SchedulerCallbacks]).to(
+      classOf[SchedulerCallbacksServiceAdapter]).asEagerSingleton()
 
     bind(classOf[MarathonSchedulerDriverHolder]).in(Scopes.SINGLETON)
-    bind(classOf[SchedulerDriverFactory])
-      .to(classOf[MesosSchedulerDriverFactory])
-      .in(Scopes.SINGLETON)
+    bind(classOf[SchedulerDriverFactory]).to(
+      classOf[MesosSchedulerDriverFactory]).in(Scopes.SINGLETON)
     bind(classOf[MarathonLeaderInfoMetrics]).in(Scopes.SINGLETON)
     bind(classOf[MarathonScheduler]).in(Scopes.SINGLETON)
     bind(classOf[MarathonSchedulerService]).in(Scopes.SINGLETON)
     bind(classOf[LeadershipAbdication]).to(classOf[MarathonSchedulerService])
-    bind(classOf[LeaderInfo])
-      .to(classOf[MarathonLeaderInfo])
-      .in(Scopes.SINGLETON)
-    bind(classOf[TaskOpFactory])
-      .to(classOf[TaskOpFactoryImpl])
-      .in(Scopes.SINGLETON)
+    bind(classOf[LeaderInfo]).to(classOf[MarathonLeaderInfo]).in(
+      Scopes.SINGLETON)
+    bind(classOf[TaskOpFactory]).to(classOf[TaskOpFactoryImpl]).in(
+      Scopes.SINGLETON)
 
-    bind(classOf[HealthCheckManager])
-      .to(classOf[MarathonHealthCheckManager])
-      .asEagerSingleton()
+    bind(classOf[HealthCheckManager]).to(
+      classOf[MarathonHealthCheckManager]).asEagerSingleton()
 
     bind(classOf[String])
       .annotatedWith(Names.named(ModuleNames.SERVER_SET_PATH))
@@ -149,8 +144,14 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
         EventSubscribers],
       @Named(ModuleNames.STORE_TASK) task: EntityStore[MarathonTaskState])
       : Seq[LeadershipCallback] = {
-    Seq(app, group, deployment, frameworkId, taskFailure, task, subscribers)
-      .collect { case l: LeadershipCallback => l }
+    Seq(
+      app,
+      group,
+      deployment,
+      frameworkId,
+      taskFailure,
+      task,
+      subscribers).collect { case l: LeadershipCallback => l }
   }
 
   @Named(ModuleNames.HTTP_EVENT_STREAM)
@@ -262,22 +263,20 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       new HistoryActor(eventBus, taskFailureRepository))
 
     system.actorOf(
-      MarathonSchedulerActor
-        .props(
-          createSchedulerActions,
-          deploymentManagerProps,
-          historyActorProps,
-          appRepository,
-          deploymentRepository,
-          healthCheckManager,
-          taskTracker,
-          taskQueue,
-          driverHolder,
-          leaderInfo,
-          eventBus
-        )
-        .withRouter(
-          RoundRobinPool(nrOfInstances = 1, supervisorStrategy = supervision)),
+      MarathonSchedulerActor.props(
+        createSchedulerActions,
+        deploymentManagerProps,
+        historyActorProps,
+        appRepository,
+        deploymentRepository,
+        healthCheckManager,
+        taskTracker,
+        taskQueue,
+        driverHolder,
+        leaderInfo,
+        eventBus
+      ).withRouter(
+        RoundRobinPool(nrOfInstances = 1, supervisorStrategy = supervision)),
       "MarathonScheduler"
     )
   }
@@ -385,10 +384,9 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       "service.mesosphere.marathon.app.count",
       new Gauge[Int] {
         override def getValue: Int = {
-          Await
-            .result(groupManager.rootGroup(), conf.zkTimeoutDuration)
-            .transitiveApps
-            .size
+          Await.result(
+            groupManager.rootGroup(),
+            conf.zkTimeoutDuration).transitiveApps.size
         }
       }
     )
@@ -397,10 +395,9 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       "service.mesosphere.marathon.group.count",
       new Gauge[Int] {
         override def getValue: Int = {
-          Await
-            .result(groupManager.rootGroup(), conf.zkTimeoutDuration)
-            .transitiveGroups
-            .size
+          Await.result(
+            groupManager.rootGroup(),
+            conf.zkTimeoutDuration).transitiveGroups.size
         }
       }
     )

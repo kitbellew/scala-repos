@@ -87,9 +87,8 @@ class ApplicationCacheSuite
         attemptId: Option[String]): Option[LoadedAppUI] = {
       logDebug(s"getAppUI($appId, $attemptId)")
       getAppUICount += 1
-      instances
-        .get(CacheKey(appId, attemptId))
-        .map(e => LoadedAppUI(e.ui, updateProbe(appId, attemptId, e.probeTime)))
+      instances.get(CacheKey(appId, attemptId)).map(e =>
+        LoadedAppUI(e.ui, updateProbe(appId, attemptId, e.probeTime)))
     }
 
     override def attachSparkUI(
@@ -523,8 +522,8 @@ class ApplicationCacheSuite
     ApplicationCacheCheckFilterRelay.setApplicationCache(cache)
     val request = mock[HttpServletRequest]
     when(request.getMethod()).thenReturn("GET")
-    when(request.getRequestURI())
-      .thenReturn("http://localhost:18080/history/local-123/jobs/job/")
+    when(request.getRequestURI()).thenReturn(
+      "http://localhost:18080/history/local-123/jobs/job/")
     when(request.getQueryString()).thenReturn("id=2")
     val resp = mock[HttpServletResponse]
     when(resp.encodeRedirectURL(any())).thenAnswer(new Answer[String]() {

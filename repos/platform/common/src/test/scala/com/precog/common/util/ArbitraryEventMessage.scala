@@ -146,10 +146,8 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
   }
 
   def buildBoundedJPaths(depth: Int): List[JPath] = {
-    buildChildPaths(List.empty, depth)
-      .map(_.reverse.mkString("."))
-      .filter(_.length > 0)
-      .map(JPath(_))
+    buildChildPaths(List.empty, depth).map(_.reverse.mkString(".")).filter(
+      _.length > 0).map(JPath(_))
   }
 
   def buildChildPaths(parent: List[String], depth: Int): List[List[String]] = {
@@ -159,11 +157,8 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
       parent ::
         containerOfN[List, String](
           choose(2, 4).sample.get,
-          resize(10, alphaStr))
-          .map(_.filter(_.length > 1).flatMap(child =>
-            buildChildPaths(child :: parent, depth - 1)))
-          .sample
-          .get
+          resize(10, alphaStr)).map(_.filter(_.length > 1).flatMap(child =>
+          buildChildPaths(child :: parent, depth - 1))).sample.get
     }
   }
 

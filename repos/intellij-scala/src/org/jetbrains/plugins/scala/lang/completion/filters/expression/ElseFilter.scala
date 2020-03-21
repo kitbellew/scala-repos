@@ -41,10 +41,8 @@ class ElseFilter extends ElementFilter {
             parent = parent.getParent
           if (parent == null) return false
           text = parent.getText
-          text = Pattern
-            .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
-            .matcher(text)
-            .replaceAll(Matcher.quoteReplacement(" else true"))
+          text = Pattern.compile(DUMMY_IDENTIFIER, Pattern.LITERAL).matcher(
+            text).replaceAll(Matcher.quoteReplacement(" else true"))
         } else {
           text = ifStmt.getText + " else true"
         }

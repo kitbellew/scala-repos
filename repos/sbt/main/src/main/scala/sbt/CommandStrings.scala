@@ -184,8 +184,8 @@ Tasks produce values.  Use the 'show' command to run the task and print the resu
   def commonPreamble(label: String) =
     """
 This is a list of %s defined for the current project.
-It does not list the scopes the %<s are defined in; use the 'inspect' command for that."""
-      .format(label)
+It does not list the scopes the %<s are defined in; use the 'inspect' command for that.""".format(
+      label)
 
   def settingsBrief(label: String) =
     (label, "Lists the " + label + " defined for the current project.")

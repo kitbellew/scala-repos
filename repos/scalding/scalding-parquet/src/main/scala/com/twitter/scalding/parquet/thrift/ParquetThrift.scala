@@ -44,8 +44,8 @@ trait ParquetThriftBase[T]
   def mf: Manifest[T]
 
   def config: ParquetValueScheme.Config[T] = {
-    val config = new ParquetValueScheme.Config[T]
-      .withRecordClass(mf.runtimeClass.asInstanceOf[Class[T]])
+    val config = new ParquetValueScheme.Config[T].withRecordClass(
+      mf.runtimeClass.asInstanceOf[Class[T]])
     val configWithFp = withFilter match {
       case Some(fp) => config.withFilterPredicate(fp)
       case None     => config

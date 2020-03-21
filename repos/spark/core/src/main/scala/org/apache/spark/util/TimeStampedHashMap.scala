@@ -100,9 +100,9 @@ private[spark] class TimeStampedHashMap[A, B](
   }
 
   override def filter(p: ((A, B)) => Boolean): mutable.Map[A, B] = {
-    internalMap.asScala
-      .map { case (k, TimeStampedValue(v, t)) => (k, v) }
-      .filter(p)
+    internalMap.asScala.map {
+      case (k, TimeStampedValue(v, t)) => (k, v)
+    }.filter(p)
   }
 
   override def empty: mutable.Map[A, B] = new TimeStampedHashMap[A, B]()

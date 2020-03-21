@@ -89,10 +89,8 @@ private[finagle] case class ThriftServerPreparer(
 
       val ttwitter = new TTwitterServerFilter(serviceName, protocolFactory)
 
-      payloadSize
-        .andThen(ttwitter)
-        .andThen(uncaughtExceptionsFilter)
-        .andThen(service)
+      payloadSize.andThen(ttwitter).andThen(uncaughtExceptionsFilter).andThen(
+        service)
     }
 }
 

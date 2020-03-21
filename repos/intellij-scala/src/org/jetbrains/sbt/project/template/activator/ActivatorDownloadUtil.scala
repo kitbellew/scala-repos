@@ -38,10 +38,8 @@ object ActivatorDownloadUtil {
     if (progress != null) progress.setText2("Downloading " + location)
 
     try {
-      HttpRequests
-        .request(location)
-        .productNameAsUserAgent
-        .connect(new HttpRequests.RequestProcessor[Object]() {
+      HttpRequests.request(location).productNameAsUserAgent.connect(
+        new HttpRequests.RequestProcessor[Object]() {
           def process(request: HttpRequests.Request): AnyRef = {
             try {
               val contentLength: Int = request.getConnection.getContentLength

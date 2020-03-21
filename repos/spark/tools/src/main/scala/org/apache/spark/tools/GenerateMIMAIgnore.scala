@@ -102,12 +102,9 @@ object GenerateMIMAIgnore {
     */
   def getInnerFunctions(classSymbol: unv.ClassSymbol): Seq[String] = {
     try {
-      Class
-        .forName(classSymbol.fullName, false, classLoader)
-        .getMethods
-        .map(_.getName)
-        .filter(_.contains("$$"))
-        .map(classSymbol.fullName + "." + _)
+      Class.forName(classSymbol.fullName, false, classLoader).getMethods.map(
+        _.getName)
+        .filter(_.contains("$$")).map(classSymbol.fullName + "." + _)
     } catch {
       case t: Throwable =>
         // scalastyle:off println
@@ -120,27 +117,25 @@ object GenerateMIMAIgnore {
 
   private def getAnnotatedOrPackagePrivateMembers(
       classSymbol: unv.ClassSymbol) = {
-    classSymbol.typeSignature.members
-      .filterNot(x =>
-        x.fullName.startsWith("java") || x.fullName.startsWith("scala"))
-      .filter(x => isPackagePrivate(x))
-      .map(_.fullName) ++ getInnerFunctions(classSymbol)
+    classSymbol.typeSignature.members.filterNot(x =>
+      x.fullName.startsWith("java") || x.fullName.startsWith("scala")).filter(
+      x => isPackagePrivate(x)).map(_.fullName) ++ getInnerFunctions(
+      classSymbol)
   }
 
   def main(args: Array[String]) {
     import scala.tools.nsc.io.File
     val (privateClasses, privateMembers) = privateWithin("org.apache.spark")
-    val previousContents = Try(File(".generated-mima-class-excludes").lines())
-      .getOrElse(Iterator.empty)
-      .mkString("\n")
+    val previousContents =
+      Try(File(".generated-mima-class-excludes").lines()).getOrElse(
+        Iterator.empty).mkString("\n")
     File(".generated-mima-class-excludes")
       .writeAll(previousContents + privateClasses.mkString("\n"))
     // scalastyle:off println
     println("Created : .generated-mima-class-excludes in current directory.")
     val previousMembersContents =
       Try(File(".generated-mima-member-excludes").lines)
-        .getOrElse(Iterator.empty)
-        .mkString("\n")
+        .getOrElse(Iterator.empty).mkString("\n")
     File(".generated-mima-member-excludes").writeAll(
       previousMembersContents +
         privateMembers.mkString("\n"))
@@ -163,7 +158,8 @@ object GenerateMIMAIgnore {
     */
   private def getClasses(packageName: String): Set[String] = {
     val finder = ClassFinder()
-    finder.getClasses
+    finder
+      .getClasses
       .map(_.name)
       .filter(_.startsWith(packageName))
       .filterNot(shouldExclude)

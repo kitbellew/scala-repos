@@ -55,14 +55,13 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
   def getOperationGraphForJob(jobId: Int): Seq[RDDOperationGraph] =
     synchronized {
       val skippedStageIds = jobIdToSkippedStageIds.getOrElse(jobId, Seq.empty)
-      val graphs = jobIdToStageIds
-        .getOrElse(jobId, Seq.empty)
+      val graphs = jobIdToStageIds.getOrElse(jobId, Seq.empty)
         .flatMap { sid => stageIdToGraph.get(sid) }
       // Mark any skipped stages as such
       graphs.foreach { g =>
-        val stageId = g.rootCluster.id
-          .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
-          .toInt
+        val stageId = g.rootCluster.id.replaceAll(
+          RDDOperationGraph.STAGE_CLUSTER_PREFIX,
+          "").toInt
         if (skippedStageIds.contains(stageId) && !g.rootCluster.name.contains(
               "skipped")) {
           g.rootCluster.setName(g.rootCluster.name + " (skipped)")

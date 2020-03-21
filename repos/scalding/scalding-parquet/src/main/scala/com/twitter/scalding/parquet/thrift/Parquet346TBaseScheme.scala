@@ -106,7 +106,10 @@ object Parquet346StructTypeRepairer extends StateVisitor[ThriftType, Unit] {
   }
 
   override def visit(structType: StructType, state: Unit): StructType = {
-    val repairedChildren = structType.getChildren.asScala.iterator
+    val repairedChildren = structType
+      .getChildren
+      .asScala
+      .iterator
       .map(copyRecurse)
 
     new StructType(repairedChildren.toBuffer.asJava, StructOrUnionType.UNION)

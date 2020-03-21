@@ -926,9 +926,9 @@ object GraphDSL extends GraphApply {
       if (StreamLayout.Debug) StreamLayout.validate(graph.module)
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(copy)
-      graph.shape
-        .copyFromPorts(copy.shape.inlets, copy.shape.outlets)
-        .asInstanceOf[S]
+      graph.shape.copyFromPorts(
+        copy.shape.inlets,
+        copy.shape.outlets).asInstanceOf[S]
     }
 
     /**
@@ -944,9 +944,9 @@ object GraphDSL extends GraphApply {
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(
         copy.transformMaterializedValue(transform.asInstanceOf[Any ⇒ Any]))
-      graph.shape
-        .copyFromPorts(copy.shape.inlets, copy.shape.outlets)
-        .asInstanceOf[S]
+      graph.shape.copyFromPorts(
+        copy.shape.inlets,
+        copy.shape.outlets).asInstanceOf[S]
     }
 
     /**
@@ -961,9 +961,9 @@ object GraphDSL extends GraphApply {
       if (StreamLayout.Debug) StreamLayout.validate(graph.module)
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(copy, combine)
-      graph.shape
-        .copyFromPorts(copy.shape.inlets, copy.shape.outlets)
-        .asInstanceOf[S]
+      graph.shape.copyFromPorts(
+        copy.shape.inlets,
+        copy.shape.outlets).asInstanceOf[S]
     }
 
     /**

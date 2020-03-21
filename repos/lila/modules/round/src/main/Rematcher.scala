@@ -31,11 +31,11 @@ private[round] final class Rematcher(
   def yes(pov: Pov): Fu[Events] =
     pov match {
       case Pov(game, color) if (game playerCanRematch color) =>
-        (game.opponent(color).isOfferingRematch || game.opponent(color).isAi)
-          .fold(
-            game.next.fold(rematchJoin(pov))(rematchExists(pov)),
-            rematchCreate(pov)
-          )
+        (game.opponent(color).isOfferingRematch || game.opponent(
+          color).isAi).fold(
+          game.next.fold(rematchJoin(pov))(rematchExists(pov)),
+          rematchCreate(pov)
+        )
       case _ => fuccess(Nil)
     }
 
@@ -119,15 +119,13 @@ private[round] final class Rematcher(
       game: Game,
       color: ChessColor,
       users: List[User]): lila.game.Player = {
-    val player = lila.game.Player
-      .make(color = color, aiLevel = game.opponent(color).aiLevel)
-    game
-      .player(!color)
-      .userId
-      .flatMap { id => users.find(_.id == id) }
-      .fold(player) { user =>
-        player.withUser(user.id, PerfPicker.mainOrDefault(game)(user.perfs))
-      }
+    val player = lila.game.Player.make(
+      color = color,
+      aiLevel = game.opponent(color).aiLevel)
+    game.player(!color).userId.flatMap { id => users.find(_.id == id) }.fold(
+      player) { user =>
+      player.withUser(user.id, PerfPicker.mainOrDefault(game)(user.perfs))
+    }
   }
 
   private def redirectEvents(game: Game): Events = {

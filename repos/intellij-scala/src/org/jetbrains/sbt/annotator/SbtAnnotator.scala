@@ -25,8 +25,7 @@ class SbtAnnotator extends Annotator {
     element match {
       case file: SbtFileImpl =>
         val sbtVersion =
-          SbtSystemSettings
-            .getInstance(file.getProject)
+          SbtSystemSettings.getInstance(file.getProject)
             .getLinkedProjectSettings(file)
             .safeMap(_.sbtVersion)
             .getOrElse(Sbt.LatestVersion)

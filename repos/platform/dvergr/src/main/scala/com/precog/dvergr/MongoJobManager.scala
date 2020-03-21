@@ -118,8 +118,9 @@ final class MongoJobManager(
       insert(job.serialize.asInstanceOf[JObject]).into(settings.jobs)) map {
       _ =>
         logger.info(
-          "Job %s created in %f ms"
-            .format(id, (System.nanoTime - start) / 1000000.0))
+          "Job %s created in %f ms".format(
+            id,
+            (System.nanoTime - start) / 1000000.0))
         job
     }
   }
@@ -156,11 +157,12 @@ final class MongoJobManager(
               val status = Status(jobId, statusId, msg, progress, unit, extra)
               val message = Status.toMessage(status)
               database(
-                insert(message.serialize.asInstanceOf[JObject])
-                  .into(settings.messages)) map { _ =>
+                insert(message.serialize.asInstanceOf[JObject]).into(
+                  settings.messages)) map { _ =>
                 logger.trace(
-                  "Job %s updated in %f ms"
-                    .format(jobId, (System.nanoTime - start) / 1000.0))
+                  "Job %s updated in %f ms".format(
+                    jobId,
+                    (System.nanoTime - start) / 1000.0))
                 Right(status)
               }
 
@@ -174,13 +176,12 @@ final class MongoJobManager(
           val status = Status(jobId, statusId, msg, progress, unit, extra)
           val message = Status.toMessage(status)
           database {
-            upsert(settings.jobs)
-              .set(JPath("status") set statusId)
-              .where("id" === jobId)
+            upsert(settings.jobs).set(JPath("status") set statusId).where(
+              "id" === jobId)
           } flatMap { _ =>
             database(
-              insert(message.serialize.asInstanceOf[JObject])
-                .into(settings.messages))
+              insert(message.serialize.asInstanceOf[JObject]).into(
+                settings.messages))
           } map { _ => Right(status) }
       }
     }
@@ -191,8 +192,10 @@ final class MongoJobManager(
     // TODO: Get Job object, find current status ID, then use that as since.
     // It'll include at least the last status, but rarely much more.
 
-    listMessages(jobId, channels.Status, None) map (_.lastOption flatMap (Status
-      .fromMessage(_)))
+    listMessages(
+      jobId,
+      channels.Status,
+      None) map (_.lastOption flatMap (Status.fromMessage(_)))
   }
 
   private def nextMessageId(jobId: JobId): Future[Long] = {
@@ -250,9 +253,8 @@ final class MongoJobManager(
           case Right(newState) =>
             val newJob = job.copy(state = newState)
             database {
-              update(settings.jobs)
-                .set(newJob.serialize.asInstanceOf[JObject])
-                .where("id" === job.id)
+              update(settings.jobs).set(
+                newJob.serialize.asInstanceOf[JObject]).where("id" === job.id)
             } map { _ => Right(newJob) }
 
           case Left(error) =>

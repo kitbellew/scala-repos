@@ -161,9 +161,8 @@ final class ChiSqSelectorModel private[ml] (
     val origAttrGroup = AttributeGroup.fromStructField(schema($(featuresCol)))
     val featureAttributes: Array[Attribute] =
       if (origAttrGroup.attributes.nonEmpty) {
-        origAttrGroup.attributes.get.zipWithIndex
-          .filter(x => selector.contains(x._2))
-          .map(_._1)
+        origAttrGroup.attributes.get.zipWithIndex.filter(x =>
+          selector.contains(x._2)).map(_._1)
       } else {
         Array.fill[Attribute](selector.size)(NominalAttribute.defaultAttr)
       }
@@ -193,11 +192,8 @@ object ChiSqSelectorModel extends MLReadable[ChiSqSelectorModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.selectedFeatures.toSeq)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 

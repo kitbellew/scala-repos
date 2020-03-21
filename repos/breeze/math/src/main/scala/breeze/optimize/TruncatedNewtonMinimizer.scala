@@ -124,15 +124,14 @@ class TruncatedNewtonMinimizer[T, H](
 
       if (actualReduction > eta0 * predictedReduction) {
         logger.info(
-          "Accept %d d=%.2E newv=%.4E newG=%.4E resNorm=%.2E pred=%.2E actual=%.2E"
-            .format(
-              iter,
-              delta,
-              adjNewV,
-              norm(adjNewG),
-              norm(residual),
-              predictedReduction,
-              actualReduction))
+          "Accept %d d=%.2E newv=%.4E newG=%.4E resNorm=%.2E pred=%.2E actual=%.2E".format(
+            iter,
+            delta,
+            adjNewV,
+            norm(adjNewG),
+            norm(residual),
+            predictedReduction,
+            actualReduction))
         val stop_cond =
           if (adjNewV < -1.0e+32 ||
               (math.abs(actualReduction) <= math.abs(adjNewV) * 1.0e-12
@@ -158,8 +157,9 @@ class TruncatedNewtonMinimizer[T, H](
         val this_iter = if (state.accept == true) iter + 1 else iter
         val stop_cond =
           if (adjFval < -1.0e+32 ||
-              (math.abs(actualReduction) <= math.abs(adjFval) * 1.0e-12 && math
-                .abs(predictedReduction) <= math.abs(adjFval) * 1.0e-12)) true
+              (math.abs(actualReduction) <= math.abs(
+                adjFval) * 1.0e-12 && math.abs(predictedReduction) <= math.abs(
+                adjFval) * 1.0e-12)) true
           else false
         logger.info(
           "Reject %d d=%.2f resNorm=%.2f pred=%.2f actual=%.2f".format(

@@ -57,8 +57,8 @@ class ScTemplateDefinitionStubImpl[ParentPsi <: PsiElement](
       visibleInJava: Boolean) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     mySourceFileName = sourceFileName
     myName = name
     myQualName = qualName
@@ -96,8 +96,8 @@ class ScTemplateDefinitionStubImpl[ParentPsi <: PsiElement](
       visibleInJava: Boolean) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     mySourceFileName = StringRef.toString(sourceFileName)
     myName = StringRef.toString(name)
     myQualName = StringRef.toString(qualName)

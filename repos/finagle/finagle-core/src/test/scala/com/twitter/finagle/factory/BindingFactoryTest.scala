@@ -242,8 +242,9 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
         Annotation.Message("namer.success"),
         Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
         Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")
@@ -265,10 +266,12 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
-        Annotation
-          .BinaryAnnotation("namer.failure", "java.lang.RuntimeException")
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.failure",
+          "java.lang.RuntimeException")
       )
     )
   })
@@ -282,8 +285,9 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
         Annotation.Message("namer.success"),
         Annotation.BinaryAnnotation("namer.tree", "~")
       )
@@ -315,8 +319,9 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
         Annotation.Message("namer.success"),
         Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
         Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")
@@ -435,8 +440,8 @@ class BindingFactoryTest
       }
 
     val params =
-      Stack.Params.empty + BindingFactory.Dest(unbound) + BindingFactory
-        .BaseDtab(baseDtab)
+      Stack.Params.empty + BindingFactory.Dest(
+        unbound) + BindingFactory.BaseDtab(baseDtab)
 
     val factory =
       new StackBuilder[ServiceFactory[String, String]](nilStack[String, String])
@@ -486,8 +491,8 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
   )
 
   test("queue requests until name is nonpending (ok)")(new Ctx {
-    when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
-      .thenReturn(Future.value(svc))
+    when(cache(any[NameTree[Name.Bound]], any[ClientConnection])).thenReturn(
+      Future.value(svc))
 
     val f1, f2 = dyn()
     assert(!f1.isDefined)
@@ -504,8 +509,8 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
   })
 
   test("queue requests until name is nonpending (fail)")(new Ctx {
-    when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
-      .thenReturn(Future.never)
+    when(cache(any[NameTree[Name.Bound]], any[ClientConnection])).thenReturn(
+      Future.never)
 
     val f1, f2 = dyn()
     assert(!f1.isDefined)
@@ -519,8 +524,8 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
   })
 
   test("dequeue interrupted requests")(new Ctx {
-    when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
-      .thenReturn(Future.never)
+    when(cache(any[NameTree[Name.Bound]], any[ClientConnection])).thenReturn(
+      Future.never)
 
     val f1, f2 = dyn()
     assert(!f1.isDefined)

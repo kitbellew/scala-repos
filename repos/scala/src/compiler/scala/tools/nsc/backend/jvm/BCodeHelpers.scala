@@ -291,37 +291,35 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
     // Primitive methods cannot be inlined, so there's no point in building a MethodInlineInfo. Also, some
     // primitive methods (e.g., `isInstanceOf`) have non-erased types, which confuses [[typeToBType]].
-    val methodInlineInfos = classSym.info.decls.iterator
-      .filter(m => m.isMethod && !scalaPrimitives.isPrimitive(m))
-      .flatMap({
-        case methodSym =>
-          if (completeSilentlyAndCheckErroneous(methodSym)) {
-            // Happens due to SI-9111. Just don't provide any MethodInlineInfo for that method, we don't need fail the compiler.
-            if (!classSym.isJavaDefined)
-              devWarning("SI-9111 should only be possible for Java classes")
-            warning = Some(ClassSymbolInfoFailureSI9111(classSym.fullName))
-            None
-          } else {
-            val name = methodSym.javaSimpleName.toString // same as in genDefDef
-            val signature = name + methodSymToDescriptor(methodSym)
+    val methodInlineInfos = classSym.info.decls.iterator.filter(m =>
+      m.isMethod && !scalaPrimitives.isPrimitive(m)).flatMap({
+      case methodSym =>
+        if (completeSilentlyAndCheckErroneous(methodSym)) {
+          // Happens due to SI-9111. Just don't provide any MethodInlineInfo for that method, we don't need fail the compiler.
+          if (!classSym.isJavaDefined)
+            devWarning("SI-9111 should only be possible for Java classes")
+          warning = Some(ClassSymbolInfoFailureSI9111(classSym.fullName))
+          None
+        } else {
+          val name = methodSym.javaSimpleName.toString // same as in genDefDef
+          val signature = name + methodSymToDescriptor(methodSym)
 
-            // Some detours are required here because of changing flags (lateDEFERRED):
-            // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
-            //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
-            //    but non-overridden methods of sealed traits from being inlined.
-            val effectivelyFinal = exitingPickler(
-              methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner.isTrait && methodSym.isModule)
+          // Some detours are required here because of changing flags (lateDEFERRED):
+          // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
+          //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
+          //    but non-overridden methods of sealed traits from being inlined.
+          val effectivelyFinal = exitingPickler(
+            methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner.isTrait && methodSym.isModule)
 
-            val info = MethodInlineInfo(
-              effectivelyFinal = effectivelyFinal,
-              traitMethodWithStaticImplementation = false,
-              annotatedInline = methodSym.hasAnnotation(ScalaInlineClass),
-              annotatedNoInline = methodSym.hasAnnotation(ScalaNoInlineClass)
-            )
-            Some((signature, info))
-          }
-      })
-      .toMap
+          val info = MethodInlineInfo(
+            effectivelyFinal = effectivelyFinal,
+            traitMethodWithStaticImplementation = false,
+            annotatedInline = methodSym.hasAnnotation(ScalaInlineClass),
+            annotatedNoInline = methodSym.hasAnnotation(ScalaNoInlineClass)
+          )
+          Some((signature, info))
+        }
+    }).toMap
 
     InlineInfo(
       traitSelfType,
@@ -348,18 +346,15 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       csym: Symbol,
       cName: String,
       cunit: CompilationUnit): _root_.scala.tools.nsc.io.AbstractFile =
-    _root_.scala.util
-      .Try {
-        outputDirectory(csym)
-      }
-      .recover {
-        case ex: Throwable =>
-          reporter.error(
-            cunit.body.pos,
-            s"Couldn't create file for class $cName\n${ex.getMessage}")
-          null
-      }
-      .get
+    _root_.scala.util.Try {
+      outputDirectory(csym)
+    }.recover {
+      case ex: Throwable =>
+        reporter.error(
+          cunit.body.pos,
+          s"Couldn't create file for class $cName\n${ex.getMessage}")
+        null
+    }.get
 
   var pickledBytes = 0 // statistics
 
@@ -404,8 +399,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         reporter.warning(
           sym.pos,
           sym.name +
-            s" has a main method with parameter type Array[String], but ${sym
-              .fullName('.')} will not be a runnable program.\n  Reason: $msg"
+            s" has a main method with parameter type Array[String], but ${sym.fullName(
+              '.')} will not be a runnable program.\n  Reason: $msg"
           // TODO: make this next claim true, if possible
           //   by generating valid main methods as static in module classes
           //   not sure what the jvm allows here
@@ -713,15 +708,11 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     }
 
     private def retentionPolicyOf(annot: AnnotationInfo): Symbol =
-      annot.atp.typeSymbol
-        .getAnnotation(AnnotationRetentionAttr)
-        .map(_.assocs)
-        .flatMap(assoc =>
-          assoc.collectFirst {
-            case (`nme`.value, LiteralAnnotArg(Constant(value: Symbol))) =>
-              value
-          })
-        .getOrElse(AnnotationRetentionPolicyClassValue)
+      annot.atp.typeSymbol.getAnnotation(AnnotationRetentionAttr).map(
+        _.assocs).flatMap(assoc =>
+        assoc.collectFirst {
+          case (`nme`.value, LiteralAnnotArg(Constant(value: Symbol))) => value
+        }).getOrElse(AnnotationRetentionPolicyClassValue)
 
     def ubytesToCharArray(bytes: Array[Byte]): Array[Char] = {
       val ca = new Array[Char](bytes.length)
@@ -1000,8 +991,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             """|compiler bug: created invalid generic signature for %s in %s
                  |signature: %s
                  |if this is reproducible, please report bug at https://issues.scala-lang.org/
-              """.trim.stripMargin
-              .format(sym, sym.owner.skipPackageObject.fullName, sig)
+              """.trim.stripMargin.format(
+              sym,
+              sym.owner.skipPackageObject.fullName,
+              sig)
           )
           return null
         }
@@ -1191,8 +1184,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           debuglog(
             s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m.isType} || ${m.isDeferred} || ${m.owner eq definitions.ObjectClass} || ${m.isConstructor}")
         else if (conflictingNames(m.name))
-          log(s"No forwarder for $m due to conflict with ${linkedClass.info
-            .member(m.name)}")
+          log(
+            s"No forwarder for $m due to conflict with ${linkedClass.info.member(m.name)}")
         else if (m.hasAccessBoundary)
           log(s"No forwarder for non-public member $m")
         else {
@@ -1237,15 +1230,13 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
      */
     def addSerialVUID(id: Long, jclass: asm.ClassVisitor) {
       // add static serialVersionUID field if `clasz` annotated with `@SerialVersionUID(uid: Long)`
-      jclass
-        .visitField(
-          GenBCode.PublicStaticFinal,
-          "serialVersionUID",
-          "J",
-          null, // no java-generic-signature
-          new java.lang.Long(id)
-        )
-        .visitEnd()
+      jclass.visitField(
+        GenBCode.PublicStaticFinal,
+        "serialVersionUID",
+        "J",
+        null, // no java-generic-signature
+        new java.lang.Long(id)
+      ).visitEnd()
     }
   } // end of trait BCClassGen
 
@@ -1456,15 +1447,13 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       val androidCreatorType = classBTypeFromSymbol(AndroidCreatorClass)
       val tdesc_creator = androidCreatorType.descriptor
 
-      cnode
-        .visitField(
-          GenBCode.PublicStaticFinal,
-          "CREATOR",
-          tdesc_creator,
-          null, // no java-generic-signature
-          null // no initial value
-        )
-        .visitEnd()
+      cnode.visitField(
+        GenBCode.PublicStaticFinal,
+        "CREATOR",
+        tdesc_creator,
+        null, // no java-generic-signature
+        null // no initial value
+      ).visitEnd()
 
       val moduleName = (thisName + "$")
 

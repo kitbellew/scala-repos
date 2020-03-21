@@ -40,9 +40,8 @@ class CleanMacrosheetAction() extends AnAction with TopComponentAction {
 
     if (editor == null || file == null) return
 
-    val psiFile: PsiFile = PsiDocumentManager
-      .getInstance(e.getProject)
-      .getPsiFile(editor.getDocument)
+    val psiFile: PsiFile = PsiDocumentManager.getInstance(
+      e.getProject).getPsiFile(editor.getDocument)
     val viewer = WorksheetViewerInfo.getViewer(editor)
 
     if (psiFile == null || viewer == null) return

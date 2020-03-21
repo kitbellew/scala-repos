@@ -57,7 +57,8 @@ class KeepDotsMetricKeyGenerator(config: Config)
     strategy match {
       case "keep-dots" =>
         (s: String) ⇒
-          s.replace(": ", "-")
+          s
+            .replace(": ", "-")
             .replace(" ", "_")
             .replace("/", ".")
       case _ => super.createNormalizer(strategy)

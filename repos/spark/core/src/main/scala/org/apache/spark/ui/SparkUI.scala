@@ -190,11 +190,9 @@ private[spark] object SparkUI {
       basePath,
       startTime = startTime)
 
-    val listenerFactories = ServiceLoader
-      .load(
-        classOf[SparkHistoryListenerFactory],
-        Utils.getContextOrSparkClassLoader)
-      .asScala
+    val listenerFactories = ServiceLoader.load(
+      classOf[SparkHistoryListenerFactory],
+      Utils.getContextOrSparkClassLoader).asScala
     listenerFactories.foreach { listenerFactory =>
       val listeners = listenerFactory.createListeners(conf, sparkUI)
       listeners.foreach(listenerBus.addListener)

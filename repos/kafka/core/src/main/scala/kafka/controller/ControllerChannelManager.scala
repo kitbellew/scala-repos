@@ -88,8 +88,9 @@ class ControllerChannelManager(
             QueueItem(apiKey, apiVersion, request, callback))
         case None =>
           warn(
-            "Not sending request %s to broker %d, since it is offline."
-              .format(request, brokerId))
+            "Not sending request %s to broker %d, since it is offline.".format(
+              request,
+              brokerId))
       }
     }
   }
@@ -113,8 +114,9 @@ class ControllerChannelManager(
   private def addNewBroker(broker: Broker) {
     val messageQueue = new LinkedBlockingQueue[QueueItem]
     debug(
-      "Controller %d trying to connect to broker %d"
-        .format(config.brokerId, broker.id))
+      "Controller %d trying to connect to broker %d".format(
+        config.brokerId,
+        broker.id))
     val brokerEndPoint =
       broker.getBrokerEndPoint(config.interBrokerSecurityProtocol)
     val brokerNode =
@@ -244,12 +246,12 @@ class RequestSendThread(
                 request.toStruct)
               val clientRequest =
                 new ClientRequest(time.milliseconds(), true, send, null)
-              clientResponse = networkClient
-                .blockingSendAndReceive(clientRequest, socketTimeoutMs)(time)
-                .getOrElse {
-                  throw new SocketTimeoutException(
-                    s"No response received within $socketTimeoutMs ms")
-                }
+              clientResponse = networkClient.blockingSendAndReceive(
+                clientRequest,
+                socketTimeoutMs)(time).getOrElse {
+                throw new SocketTimeoutException(
+                  s"No response received within $socketTimeoutMs ms")
+              }
               isSendSuccessful = true
             }
           } catch {
@@ -296,8 +298,9 @@ class RequestSendThread(
     } catch {
       case e: Throwable =>
         error(
-          "Controller %d fails to send a request to broker %s"
-            .format(controllerId, brokerNode.toString()),
+          "Controller %d fails to send a request to broker %s".format(
+            controllerId,
+            brokerNode.toString()),
           e)
         // If there is any socket error (eg, socket timeout), the connection is no longer usable and needs to be recreated.
         networkClient.close(brokerNode.idString)
@@ -319,15 +322,17 @@ class RequestSendThread(
             s"Failed to connect within $socketTimeoutMs ms")
 
         info(
-          "Controller %d connected to %s for sending state change requests"
-            .format(controllerId, brokerNode.toString()))
+          "Controller %d connected to %s for sending state change requests".format(
+            controllerId,
+            brokerNode.toString()))
         true
       }
     } catch {
       case e: Throwable =>
         warn(
-          "Controller %d's connection to broker %s was unsuccessful"
-            .format(controllerId, brokerNode.toString()),
+          "Controller %d's connection to broker %s was unsuccessful".format(
+            controllerId,
+            brokerNode.toString()),
           e)
         networkClient.close(brokerNode.idString)
         false
@@ -402,8 +407,9 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
       deletePartition: Boolean,
       callback: (AbstractRequestResponse, Int) => Unit = null) {
     brokerIds.filter(b => b >= 0).foreach { brokerId =>
-      stopReplicaRequestMap
-        .getOrElseUpdate(brokerId, Seq.empty[StopReplicaRequestInfo])
+      stopReplicaRequestMap.getOrElseUpdate(
+        brokerId,
+        Seq.empty[StopReplicaRequestInfo])
       val v = stopReplicaRequestMap(brokerId)
       if (callback != null)
         stopReplicaRequestMap(brokerId) = v :+ StopReplicaRequestInfo(
@@ -454,8 +460,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
           }
         case None =>
           info(
-            "Leader not yet assigned for partition %s. Skip sending UpdateMetadataRequest."
-              .format(partition))
+            "Leader not yet assigned for partition %s. Skip sending UpdateMetadataRequest.".format(
+              partition))
       }
     }
 
@@ -505,19 +511,17 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
                   topicPartition.topic,
                   topicPartition.partition))
           }
-          val leaderIds = partitionStateInfos
-            .map(_._2.leaderIsrAndControllerEpoch.leaderAndIsr.leader)
-            .toSet
-          val leaders = controllerContext.liveOrShuttingDownBrokers
-            .filter(b => leaderIds.contains(b.id))
-            .map { b =>
-              val brokerEndPoint = b.getBrokerEndPoint(
-                controller.config.interBrokerSecurityProtocol)
-              new BrokerEndPoint(
-                brokerEndPoint.id,
-                brokerEndPoint.host,
-                brokerEndPoint.port)
-            }
+          val leaderIds = partitionStateInfos.map(
+            _._2.leaderIsrAndControllerEpoch.leaderAndIsr.leader).toSet
+          val leaders = controllerContext.liveOrShuttingDownBrokers.filter(b =>
+            leaderIds.contains(b.id)).map { b =>
+            val brokerEndPoint =
+              b.getBrokerEndPoint(controller.config.interBrokerSecurityProtocol)
+            new BrokerEndPoint(
+              brokerEndPoint.id,
+              brokerEndPoint.host,
+              brokerEndPoint.port)
+          }
           val partitionStates = partitionStateInfos.map {
             case (topicPartition, partitionStateInfo) =>
               val LeaderIsrAndControllerEpoch(leaderIsr, controllerEpoch) =

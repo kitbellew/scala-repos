@@ -118,10 +118,8 @@ final case class DeploymentPlan(
         case StopApplication(app) => s"Stop(${appString(app)})"
         case ScaleApplication(app, scale, toKill) =>
           val killTasksString =
-            toKill
-              .filter(_.nonEmpty)
-              .map(", killTasks=" + _.map(_.taskId.idString).mkString(","))
-              .getOrElse("")
+            toKill.filter(_.nonEmpty).map(", killTasks=" + _.map(
+              _.taskId.idString).mkString(",")).getOrElse("")
           s"Scale(${appString(app)}, instances=$scale$killTasksString)"
         case RestartApplication(app) => s"Restart(${appString(app)})"
         case ResolveArtifacts(app, urls) =>
@@ -152,7 +150,8 @@ final case class DeploymentPlan(
     ).copy(id = msg.getId)
 
   override def toProto: Protos.DeploymentPlanDefinition =
-    Protos.DeploymentPlanDefinition.newBuilder
+    Protos.DeploymentPlanDefinition
+      .newBuilder
       .setId(id)
       .setOriginal(original.toProto)
       .setTarget(target.toProto)
@@ -215,9 +214,9 @@ object DeploymentPlan {
       if (outgoingEdges.isEmpty)
         Seq(vertex)
       else
-        outgoingEdges
-          .map { e => vertex +: longestPathFromVertex(g, g.getEdgeTarget(e)) }
-          .maxBy(_.length)
+        outgoingEdges.map { e =>
+          vertex +: longestPathFromVertex(g, g.getEdgeTarget(e))
+        }.maxBy(_.length)
 
     }
 
@@ -242,8 +241,8 @@ object DeploymentPlan {
     val appsByLongestPath: SortedMap[Int, Set[AppDefinition]] =
       appsGroupedByLongestPath(target)
 
-    appsByLongestPath.valuesIterator
-      .map { (equivalenceClass: Set[AppDefinition]) =>
+    appsByLongestPath.valuesIterator.map {
+      (equivalenceClass: Set[AppDefinition]) =>
         val actions: Set[DeploymentAction] = equivalenceClass.flatMap {
           (newApp: AppDefinition) =>
             originalApps.get(newApp.id) match {
@@ -270,8 +269,7 @@ object DeploymentPlan {
         }
 
         DeploymentStep(actions.to[Seq])
-      }
-      .to[Seq]
+    }.to[Seq]
   }
 
   /**
@@ -305,18 +303,18 @@ object DeploymentPlan {
 
     // 1. Destroy apps that do not exist in the target.
     steps += DeploymentStep(
-      (originalApps -- targetApps.keys).valuesIterator
-        .map { oldApp => StopApplication(oldApp) }
-        .to[Seq]
+      (originalApps -- targetApps.keys).valuesIterator.map { oldApp =>
+        StopApplication(oldApp)
+      }.to[Seq]
     )
 
     // 2. Start apps that do not exist in the original, requiring only 0
     //    instances.  These are scaled as needed in the dependency-ordered
     //    steps that follow.
     steps += DeploymentStep(
-      (targetApps -- originalApps.keys).valuesIterator
-        .map { newApp => StartApplication(newApp, 0) }
-        .to[Seq]
+      (targetApps -- originalApps.keys).valuesIterator.map { newApp =>
+        StartApplication(newApp, 0)
+      }.to[Seq]
     )
 
     // 3. For each app in each dependency class,

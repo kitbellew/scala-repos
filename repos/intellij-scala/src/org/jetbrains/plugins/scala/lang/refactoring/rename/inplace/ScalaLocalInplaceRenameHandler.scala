@@ -26,8 +26,8 @@ class ScalaLocalInplaceRenameHandler
       editor: Editor,
       file: PsiFile): Boolean = {
     val processor = renameProcessor(element)
-    editor.getSettings.isVariableInplaceRenameEnabled && processor != null && processor
-      .canProcessElement(element) &&
+    editor.getSettings.isVariableInplaceRenameEnabled && processor != null && processor.canProcessElement(
+      element) &&
     element.getUseScope.isInstanceOf[LocalSearchScope]
   }
 

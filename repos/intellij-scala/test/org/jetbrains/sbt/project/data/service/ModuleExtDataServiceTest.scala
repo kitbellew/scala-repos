@@ -85,9 +85,8 @@ class ModuleExtDataServiceTest
     importProjectData(generateScalaProject("2.11.5", Some("2.11.5"), options))
     val module =
       ModuleManager.getInstance(getProject).findModuleByName("Module 1")
-    val compilerConfiguration = ScalaCompilerConfiguration
-      .instanceIn(getProject)
-      .getSettingsForModule(module)
+    val compilerConfiguration = ScalaCompilerConfiguration.instanceIn(
+      getProject).getSettingsForModule(module)
 
     assertEquals(
       compilerConfiguration.debuggingInfoLevel,
@@ -216,11 +215,9 @@ class ModuleExtDataServiceTest
 
     importProjectData(projectData)
 
-    val isLibrarySetUp = ProjectLibraryTable
-      .getInstance(getProject)
-      .getLibraries
-      .filter(_.getName.contains(newVersion))
-      .exists(_.isScalaSdk)
+    val isLibrarySetUp =
+      ProjectLibraryTable.getInstance(getProject).getLibraries.filter(
+        _.getName.contains(newVersion)).exists(_.isScalaSdk)
     assertTrue("Scala library is not set up", isLibrarySetUp)
   }
 
@@ -282,11 +279,9 @@ class ModuleExtDataServiceTest
     import org.jetbrains.plugins.scala.project._
     importProjectData(
       generateScalaProject(scalaVersion, Some(scalaLibraryVersion), Seq.empty))
-    val isLibrarySetUp = ProjectLibraryTable
-      .getInstance(getProject)
-      .getLibraries
-      .filter(_.getName.contains("scala-library"))
-      .exists(_.isScalaSdk)
+    val isLibrarySetUp =
+      ProjectLibraryTable.getInstance(getProject).getLibraries.filter(
+        _.getName.contains("scala-library")).exists(_.isScalaSdk)
     assertTrue("Scala library is not set up", isLibrarySetUp)
   }
 

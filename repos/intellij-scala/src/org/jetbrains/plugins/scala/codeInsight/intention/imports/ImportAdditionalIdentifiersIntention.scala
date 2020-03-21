@@ -58,14 +58,14 @@ class ImportAdditionalIdentifiersIntention
                 element.getManager)
               val replaced = inWriteAction {
                 val replaced = imp.replace(newExpr)
-                PsiDocumentManager
-                  .getInstance(project)
-                  .commitDocument(editor.getDocument)
+                PsiDocumentManager.getInstance(project).commitDocument(
+                  editor.getDocument)
                 replaced
               }
               inWriteAction {
-                editor.getDocument
-                  .insertString(replaced.getTextRange.getEndOffset - 1, ", ")
+                editor.getDocument.insertString(
+                  replaced.getTextRange.getEndOffset - 1,
+                  ", ")
                 editor.getCaretModel.moveToOffset(
                   replaced.getTextRange.getEndOffset + 1)
               }

@@ -105,19 +105,8 @@ object ZipperExamples extends App {
 
   // All together in a single pass ...
   val singlePass =
-    z.down
-      .put("King Agamemnon")
-      .right
-      .put(8000)
-      .up
-      .right
-      .down
-      .right
-      .down
-      .right
-      .put(3000)
-      .root
-      .reify
+    z.down.put("King Agamemnon").right.put(
+      8000).up.right.down.right.down.right.put(3000).root.reify
 
   typed[D](singlePass)
   println(singlePass)

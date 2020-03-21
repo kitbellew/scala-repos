@@ -157,9 +157,8 @@ class MarathonHealthCheckManager @Inject() (
         log.info(s"reconcile [$appId] with latest version [${app.version}]")
 
         val tasks: Iterable[Task] = taskTracker.appTasksSync(app.id)
-        val activeAppVersions: Set[Timestamp] = tasks.iterator
-          .flatMap(_.launched.map(_.appVersion))
-          .toSet + app.version
+        val activeAppVersions: Set[Timestamp] = tasks.iterator.flatMap(
+          _.launched.map(_.appVersion)).toSet + app.version
 
         val healthCheckAppVersions: Set[Timestamp] = appHealthChecks.writeLock {
           ahcs =>
@@ -247,12 +246,10 @@ class MarathonHealthCheckManager @Inject() (
       case None => Future.successful(Nil)
       case Some(appVersion) =>
         Future.sequence(
-          listActive(appId, appVersion).iterator
-            .collect {
-              case ActiveHealthCheck(_, actor) =>
-                (actor ? GetTaskHealth(taskId)).mapTo[Health]
-            }
-            .to[Seq]
+          listActive(appId, appVersion).iterator.collect {
+            case ActiveHealthCheck(_, actor) =>
+              (actor ? GetTaskHealth(taskId)).mapTo[Health]
+          }.to[Seq]
         )
     }
   }

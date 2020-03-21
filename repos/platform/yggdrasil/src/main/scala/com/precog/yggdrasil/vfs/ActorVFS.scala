@@ -145,8 +145,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       } yield {
         nihdbV.disjunction leftMap {
           ResourceError.fromExtractorError(
-            "Failed to create NIHDB in %s as %s"
-              .format(versionDir.toString, authorities))
+            "Failed to create NIHDB in %s as %s".format(
+              versionDir.toString,
+              authorities))
         } map {
           NIHDBResource(_)
         }
@@ -184,17 +185,15 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       IO {
         //val metadataStore = PersistentJValue(versionDir, blobMetadataFilename)
         //val metadata = metadataStore.json.validated[BlobMetadata]
-        JParser
-          .parseFromFile(new File(versionDir, blobMetadataFilename))
-          .leftMap(Extractor.Error.thrown)
-          .flatMap(_.validated[BlobMetadata])
-          .disjunction
-          .map { metadata =>
-            FileBlobResource(
-              new File(versionDir, "data"),
-              metadata
-            ) //(actorSystem.dispatcher)
-          } leftMap {
+        JParser.parseFromFile(
+          new File(versionDir, blobMetadataFilename)).leftMap(
+          Extractor.Error.thrown).flatMap(
+          _.validated[BlobMetadata]).disjunction.map { metadata =>
+          FileBlobResource(
+            new File(versionDir, "data"),
+            metadata
+          ) //(actorSystem.dispatcher)
+        } leftMap {
           ResourceError.fromExtractorError(
             "Error reading metadata from versionDir %s".format(
               versionDir.toString))
@@ -301,11 +300,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
     /** Suck the file into a String */
     def asString(implicit M: Monad[Future]): OptionT[Future, String] =
       OptionT(M point {
-        stringTypes
-          .contains(mimeType)
-          .option(IOUtils.readFileToString(dataFile))
-          .sequence
-          .unsafePerformIO
+        stringTypes.contains(mimeType).option(
+          IOUtils.readFileToString(dataFile)).sequence.unsafePerformIO
       })
 
     /** Stream the file off disk. */
@@ -544,9 +540,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       case IngestData(messages) =>
         logger.debug("Received %d messages for ingest".format(messages.size))
         val requestor = sender
-        val groupedAndPermissioned = messages
-          .groupBy({ case (_, event) => event.path })
-          .toStream traverse {
+        val groupedAndPermissioned = messages.groupBy({
+          case (_, event) => event.path
+        }).toStream traverse {
           case (path, pathMessages) =>
             targetActor(path) map { pathActor =>
               pathMessages.map(_._2.apiKey).distinct.toStream traverse {
@@ -574,8 +570,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                       (archived, events, storeFiles + 1)
                   }
                 logger.debug(
-                  "Sending %d archives, %d storeFiles, and %d events to %s"
-                    .format(totalArchives, totalStoreFiles, totalEvents, path))
+                  "Sending %d archives, %d storeFiles, and %d events to %s".format(
+                    totalArchives,
+                    totalStoreFiles,
+                    totalEvents,
+                    path))
                 pathActor.tell(IngestBundle(pathMessages, allPerms), requestor)
               }
             } except {
@@ -670,8 +669,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             } yield resource
         } getOrElse {
           left(
-            IO(Corrupt("No version %s found to exist for resource %s."
-              .format(version, path.path))))
+            IO(
+              Corrupt("No version %s found to exist for resource %s.".format(
+                version,
+                path.path))))
         }
       }
     }
@@ -743,10 +744,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         terminal: Boolean,
         response: PathActionResponse) = {
       //TODO: Add job progress updates
-      (response == UpdateSuccess(msg.path) && terminal)
-        .option(msg.jobId)
-        .join traverse { jobManager.finish(_, clock.now()) } map { _ =>
-        response
+      (response == UpdateSuccess(msg.path) && terminal).option(
+        msg.jobId).join traverse { jobManager.finish(_, clock.now()) } map {
+        _ => response
       }
     }
 
@@ -755,8 +755,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         permissions: Map[APIKey, Set[WritePermission]],
         requestor: ActorRef): IO[PrecogUnit] = {
       logger.debug(
-        "About to persist %d messages; replying to %s"
-          .format(msgs.size, requestor.toString))
+        "About to persist %d messages; replying to %s".format(
+          msgs.size,
+          requestor.toString))
 
       def openNIHDB(
           version: UUID): EitherT[IO, ResourceError, ProjectionResource] = {
@@ -780,27 +781,25 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           NIHDB.Batch(offset, msg.data.map(_.value))
 
         if (versionLog.find(streamId).isDefined) {
-          openNIHDB(streamId)
-            .fold[IO[PrecogUnit]](
-              error => IO(requestor ! PathOpFailure(path, error)),
-              resource =>
-                for {
-                  _ <- resource.append(batch(msg))
-                  // FIXME: completeVersion and setHead should be one op
-                  _ <- terminal.whenM(
-                    versionLog.completeVersion(streamId) >> versionLog.setHead(
-                      streamId))
-                } yield {
-                  logger.trace("Sent insert message for " + msg + " to nihdb")
-                  // FIXME: We aren't actually guaranteed success here because NIHDB might do something screwy.
-                  maybeCompleteJob(
-                    msg,
-                    terminal,
-                    UpdateSuccess(msg.path)) pipeTo requestor
-                  PrecogUnit
-                }
-            )
-            .join
+          openNIHDB(streamId).fold[IO[PrecogUnit]](
+            error => IO(requestor ! PathOpFailure(path, error)),
+            resource =>
+              for {
+                _ <- resource.append(batch(msg))
+                // FIXME: completeVersion and setHead should be one op
+                _ <- terminal.whenM(
+                  versionLog.completeVersion(streamId) >> versionLog.setHead(
+                    streamId))
+              } yield {
+                logger.trace("Sent insert message for " + msg + " to nihdb")
+                // FIXME: We aren't actually guaranteed success here because NIHDB might do something screwy.
+                maybeCompleteJob(
+                  msg,
+                  terminal,
+                  UpdateSuccess(msg.path)) pipeTo requestor
+                PrecogUnit
+              }
+          ).join
         } else if (createIfAbsent) {
           logger.trace("Creating new nihdb database for streamId " + streamId)
           performCreate(
@@ -862,12 +861,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           streamRef match {
             case StreamRef.Create(streamId, terminal) =>
               logger.trace(
-                "Received create for %s stream %s: current: %b, complete: %b"
-                  .format(
-                    path.path,
-                    streamId,
-                    versionLog.current.isEmpty,
-                    versionLog.isCompleted(streamId)))
+                "Received create for %s stream %s: current: %b, complete: %b".format(
+                  path.path,
+                  streamId,
+                  versionLog.current.isEmpty,
+                  versionLog.isCompleted(streamId)))
               persistNIHDB(
                 versionLog.current.isEmpty && !versionLog.isCompleted(streamId),
                 offset,
@@ -876,8 +874,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 terminal)
 
             case StreamRef.Replace(streamId, terminal) =>
-              logger.trace("Received replace for %s stream %s: complete: %b"
-                .format(path.path, streamId, versionLog.isCompleted(streamId)))
+              logger.trace(
+                "Received replace for %s stream %s: complete: %b".format(
+                  path.path,
+                  streamId,
+                  versionLog.isCompleted(streamId)))
               persistNIHDB(
                 !versionLog.isCompleted(streamId),
                 offset,
@@ -908,8 +909,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             case StreamRef.Create(streamId, terminal) =>
               if (!terminal) {
                 logger.warn(
-                  "Non-terminal BLOB for %s will not currently behave correctly!"
-                    .format(path))
+                  "Non-terminal BLOB for %s will not currently behave correctly!".format(
+                    path))
               }
               persistFile(
                 versionLog.current.isEmpty && !versionLog.isCompleted(streamId),
@@ -921,8 +922,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             case StreamRef.Replace(streamId, terminal) =>
               if (!terminal) {
                 logger.warn(
-                  "Non-terminal BLOB for %s will not currently behave correctly!"
-                    .format(path))
+                  "Non-terminal BLOB for %s will not currently behave correctly!".format(
+                    path))
               }
               persistFile(
                 !versionLog.isCompleted(streamId),
@@ -976,8 +977,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         val io: IO[ReadResult] = version match {
           case Version.Current =>
             versionLog.current map { v =>
-              openResource(v.id)
-                .fold(PathOpFailure(path, _), ReadSuccess(path, _))
+              openResource(v.id).fold(
+                PathOpFailure(path, _),
+                ReadSuccess(path, _))
             } getOrElse {
               IO(
                 PathOpFailure(

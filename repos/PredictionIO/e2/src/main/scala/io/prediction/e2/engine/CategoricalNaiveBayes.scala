@@ -28,56 +28,52 @@ object CategoricalNaiveBayes {
     * @param points training data points
     */
   def train(points: RDD[LabeledPoint]): CategoricalNaiveBayesModel = {
-    val labelCountFeatureLikelihoods = points
-      .map { p => (p.label, p.features) }
-      .combineByKey[(Long, Array[Map[String, Long]])](
-        createCombiner =
-          (features: Array[String]) => {
-            val featureCounts = features.map { feature =>
-              Map[String, Long]().withDefaultValue(0L).updated(feature, 1L)
-            }
+    val labelCountFeatureLikelihoods = points.map { p =>
+      (p.label, p.features)
+    }.combineByKey[(Long, Array[Map[String, Long]])](
+      createCombiner =
+        (features: Array[String]) => {
+          val featureCounts = features.map { feature =>
+            Map[String, Long]().withDefaultValue(0L).updated(feature, 1L)
+          }
 
-            (1L, featureCounts)
-          },
-        mergeValue =
-          (c: (Long, Array[Map[String, Long]]), features: Array[String]) => {
-            (
-              c._1 + 1L,
-              c._2.zip(features).map {
-                case (m, feature) =>
-                  m.updated(feature, m(feature) + 1L)
-              })
-          },
-        mergeCombiners =
+          (1L, featureCounts)
+        },
+      mergeValue =
+        (c: (Long, Array[Map[String, Long]]), features: Array[String]) => {
           (
-              c1: (Long, Array[Map[String, Long]]),
-              c2: (Long, Array[Map[String, Long]])) => {
-            val labelCount1 = c1._1
-            val labelCount2 = c2._1
-            val featureCounts1 = c1._2
-            val featureCounts2 = c2._2
+            c._1 + 1L,
+            c._2.zip(features).map {
+              case (m, feature) =>
+                m.updated(feature, m(feature) + 1L)
+            })
+        },
+      mergeCombiners =
+        (
+            c1: (Long, Array[Map[String, Long]]),
+            c2: (Long, Array[Map[String, Long]])) => {
+          val labelCount1 = c1._1
+          val labelCount2 = c2._1
+          val featureCounts1 = c1._2
+          val featureCounts2 = c2._2
 
-            (
-              labelCount1 + labelCount2,
-              featureCounts1.zip(featureCounts2).map {
-                case (m1, m2) =>
-                  m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
-              })
-          }
-      )
-      .mapValues {
-        case (labelCount, featureCounts) =>
-          val featureLikelihoods = featureCounts.map { featureCount =>
-            // mapValues does not return a serializable map
-            featureCount
-              .mapValues(count => math.log(count.toDouble / labelCount))
-              .map(identity)
-          }
+          (
+            labelCount1 + labelCount2,
+            featureCounts1.zip(featureCounts2).map {
+              case (m1, m2) =>
+                m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
+            })
+        }
+    ).mapValues {
+      case (labelCount, featureCounts) =>
+        val featureLikelihoods = featureCounts.map { featureCount =>
+          // mapValues does not return a serializable map
+          featureCount.mapValues(count => math.log(count.toDouble / labelCount))
+            .map(identity)
+        }
 
-          (labelCount, featureLikelihoods)
-      }
-      .collect()
-      .toMap
+        (labelCount, featureLikelihoods)
+    }.collect().toMap
 
     val noOfPoints = labelCountFeatureLikelihoods.map(_._2._1).sum
     val priors =
@@ -153,9 +149,9 @@ case class CategoricalNaiveBayesModel(
     *
     */
   def predict(features: Array[String]): String = {
-    priors.keySet
-      .map { label => (label, logScoreInternal(label, features)) }
-      .toSeq
+    priors.keySet.map { label =>
+      (label, logScoreInternal(label, features))
+    }.toSeq
       .sortBy(_._2)(Ordering.Double.reverse)
       .take(1)
       .head

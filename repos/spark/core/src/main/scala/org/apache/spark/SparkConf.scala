@@ -204,9 +204,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     */
   def registerKryoClasses(classes: Array[Class[_]]): SparkConf = {
     val allClassNames = new LinkedHashSet[String]()
-    allClassNames ++= get("spark.kryo.classesToRegister", "")
-      .split(',')
-      .filter(!_.isEmpty)
+    allClassNames ++= get("spark.kryo.classesToRegister", "").split(',').filter(
+      !_.isEmpty)
     allClassNames ++= classes.map(_.getName)
 
     set("spark.kryo.classesToRegister", allClassNames.mkString(","))
@@ -231,8 +230,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   /** Gets all the avro schemas in the configuration used in the generic Avro record serializer */
   def getAvroSchema: Map[Long, String] = {
-    getAll
-      .filter { case (k, v) => k.startsWith(avroNamespace) }
+    getAll.filter { case (k, v) => k.startsWith(avroNamespace) }
       .map { case (k, v) => (k.substring(avroNamespace.length).toLong, v) }
       .toMap
   }
@@ -406,8 +404,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   /** Get all executor environment variables set on this SparkConf */
   def getExecutorEnv: Seq[(String, String)] = {
     val prefix = "spark.executorEnv."
-    getAll
-      .filter { case (k, v) => k.startsWith(prefix) }
+    getAll.filter { case (k, v) => k.startsWith(prefix) }
       .map { case (k, v) => (k.substring(prefix.length), v) }
   }
 

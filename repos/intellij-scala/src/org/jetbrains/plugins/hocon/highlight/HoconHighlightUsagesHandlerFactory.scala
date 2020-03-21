@@ -18,17 +18,12 @@ class HoconHighlightUsagesHandlerFactory
       editor: Editor,
       file: PsiFile,
       target: PsiElement) =
-    Iterator
-      .iterate(target)(_.getParent)
-      .takeWhile {
-        case null | _: PsiFile => false
-        case _                 => true
-      }
-      .collectFirst {
-        case hkey: HKey =>
-          new HoconHighlightKeyUsagesHandler(editor, file, hkey)
-      }
-      .orNull
+    Iterator.iterate(target)(_.getParent).takeWhile {
+      case null | _: PsiFile => false
+      case _                 => true
+    }.collectFirst {
+      case hkey: HKey => new HoconHighlightKeyUsagesHandler(editor, file, hkey)
+    }.orNull
 }
 
 class HoconHighlightKeyUsagesHandler(
@@ -59,10 +54,8 @@ class HoconHighlightKeyUsagesHandler(
             keys match {
               case Nil => Iterator.empty
               case List(lastKey) =>
-                scopes
-                  .flatMap(_.directKeyedFields)
-                  .flatMap(_.validKey)
-                  .filter(_.stringValue == lastKey.stringValue)
+                scopes.flatMap(_.directKeyedFields).flatMap(_.validKey).filter(
+                  _.stringValue == lastKey.stringValue)
               case nextKey :: restOfKeys =>
                 fromFields(
                   scopes.flatMap(_.directSubScopes(nextKey.stringValue)),
@@ -92,9 +85,8 @@ class HoconHighlightKeyUsagesHandler(
           Iterator.empty
       }
     foundKeys.foreach(key =>
-      key
-        .forParent(path => myReadUsages, field => myWriteUsages)
-        .add(key.getTextRange))
+      key.forParent(path => myReadUsages, field => myWriteUsages).add(
+        key.getTextRange))
 
     // don't highlight if there is only one occurrence
     if (myReadUsages.size + myWriteUsages.size == 1) {

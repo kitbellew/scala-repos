@@ -78,8 +78,7 @@ class DCTSuite
       .setOutputCol("resultVec")
       .setInverse(inverse)
 
-    transformer
-      .transform(dataset)
+    transformer.transform(dataset)
       .select("resultVec", "wantedVec")
       .collect()
       .foreach {

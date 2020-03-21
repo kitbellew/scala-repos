@@ -481,17 +481,14 @@ class ReceivedBlockHandlerSuite
       blocks: Seq[ReceivedBlock]
   ): (Seq[StreamBlockId], Seq[ReceivedBlockStoreResult]) = {
     val blockIds = Seq.fill(blocks.size)(generateBlockId())
-    val storeResults = blocks
-      .zip(blockIds)
-      .map {
-        case (block, id) =>
-          manualClock.advance(
-            500
-          ) // log rolling interval set to 1000 ms through SparkConf
-          logDebug("Inserting block " + id)
-          receivedBlockHandler.storeBlock(id, block)
-      }
-      .toList
+    val storeResults = blocks.zip(blockIds).map {
+      case (block, id) =>
+        manualClock.advance(
+          500
+        ) // log rolling interval set to 1000 ms through SparkConf
+        logDebug("Inserting block " + id)
+        receivedBlockHandler.storeBlock(id, block)
+    }.toList
     logDebug("Done inserting")
     (blockIds, storeResults)
   }

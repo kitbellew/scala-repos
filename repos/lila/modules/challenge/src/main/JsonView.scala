@@ -46,8 +46,9 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
         case TimeControl.Unlimited => Json.obj("type" -> "unlimited")
       }),
       "color" -> c.colorChoice.toString.toLowerCase,
-      "perf" -> Json
-        .obj("icon" -> iconChar(c).toString, "name" -> c.perfType.name)
+      "perf" -> Json.obj(
+        "icon" -> iconChar(c).toString,
+        "name" -> c.perfType.name)
     )
 
   private def iconChar(c: Challenge) =
@@ -56,14 +57,12 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
 
   private implicit val RegisteredWrites = OWrites[Registered] { r =>
     val light = getLightUser(r.id)
-    Json
-      .obj(
-        "id" -> r.id,
-        "name" -> light.fold(r.id)(_.name),
-        "title" -> light.map(_.title),
-        "rating" -> r.rating.int,
-        "provisional" -> r.rating.provisional
-      )
-      .noNull
+    Json.obj(
+      "id" -> r.id,
+      "name" -> light.fold(r.id)(_.name),
+      "title" -> light.map(_.title),
+      "rating" -> r.rating.int,
+      "provisional" -> r.rating.provisional
+    ).noNull
   }
 }

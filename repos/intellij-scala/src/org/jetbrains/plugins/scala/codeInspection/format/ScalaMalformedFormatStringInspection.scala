@@ -43,8 +43,7 @@ import org.jetbrains.plugins.scala.format.{Injection, Span, _}
 class ScalaMalformedFormatStringInspection extends AbstractInspection {
   def actionFor(holder: ProblemsHolder) = {
     case element =>
-      val representation = FormattedStringParser
-        .parse(element)
+      val representation = FormattedStringParser.parse(element)
         .orElse(PrintStringParser.parse(element))
         .orElse(InterpolatedStringParser.parse(element))
 
@@ -63,12 +62,16 @@ class ScalaMalformedFormatStringInspection extends AbstractInspection {
               holder.registerProblem(
                 element,
                 new TextRange(start, end),
-                "Format specifier %s cannot be used for an argument %s (%s)"
-                  .format(format, exp.getText, argumentType.presentableText))
+                "Format specifier %s cannot be used for an argument %s (%s)".format(
+                  format,
+                  exp.getText,
+                  argumentType.presentableText))
               holder.registerProblem(
                 exp,
-                "Argument %s (%s) cannot be used for a format specifier %s"
-                  .format(exp.getText, argumentType.presentableText, format))
+                "Argument %s (%s) cannot be used for a format specifier %s".format(
+                  exp.getText,
+                  argumentType.presentableText,
+                  format))
             }
           case Some(Malformed) =>
             holder.registerProblem(

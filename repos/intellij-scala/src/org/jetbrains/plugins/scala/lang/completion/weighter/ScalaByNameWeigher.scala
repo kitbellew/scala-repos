@@ -71,8 +71,9 @@ class ScalaByNameWeigher extends CompletionWeigher {
 
       def afterNew: Option[String] = {
         val newTemplateDefinition = Option(
-          PsiTreeUtil
-            .getContextOfType(position, classOf[ScNewTemplateDefinition]))
+          PsiTreeUtil.getContextOfType(
+            position,
+            classOf[ScNewTemplateDefinition]))
         val result = newTemplateDefinition.map(_.getContext).flatMap {
           case patterDef: ScPatternDefinition =>
             patterDef.bindings.headOption.map(_.name)

@@ -40,8 +40,8 @@ object Common {
     Path.userHome / ".IdeaData" / "IDEA-15" / "scala" / "test-system"
 
   def ivyHomeDir: File =
-    Option(System.getProperty("sbt.ivy.home"))
-      .fold(Path.userHome / ".ivy2")(file)
+    Option(System.getProperty("sbt.ivy.home")).fold(Path.userHome / ".ivy2")(
+      file)
 
   def commonTestSettings(packagedPluginDir: SettingKey[File]): Seq[Setting[_]] =
     Seq(

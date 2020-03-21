@@ -126,9 +126,8 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       case class Person(name: String)
       val jsonUnmarshaller: FromEntityUnmarshaller[Person] = jsonFormat1(Person)
       val xmlUnmarshaller: FromEntityUnmarshaller[Person] =
-        ScalaXmlSupport
-          .nodeSeqUnmarshaller(`text/xml`)
-          .map(seq ⇒ Person(seq.text))
+        ScalaXmlSupport.nodeSeqUnmarshaller(`text/xml`).map(seq ⇒
+          Person(seq.text))
 
       implicit val unmarshaller =
         Unmarshaller.firstOf(jsonUnmarshaller, xmlUnmarshaller)

@@ -34,8 +34,6 @@ class BoundAddressesExtension(val system: ExtendedActorSystem)
     */
   def boundAddresses: Map[String, Set[Address]] =
     system.provider
-      .asInstanceOf[RemoteActorRefProvider]
-      .transport
-      .asInstanceOf[Remoting]
-      .boundAddresses
+      .asInstanceOf[RemoteActorRefProvider].transport
+      .asInstanceOf[Remoting].boundAddresses
 }

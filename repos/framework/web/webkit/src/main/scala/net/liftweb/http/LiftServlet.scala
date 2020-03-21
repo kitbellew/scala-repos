@@ -254,8 +254,7 @@ class LiftServlet extends Loggable {
         net.liftweb.common.Failure("Not found")
       } else {
         Full(
-          session
-            .map(_.checkRedirect(req.createNotFound))
+          session.map(_.checkRedirect(req.createNotFound))
             .getOrElse(req.createNotFound)
         )
       }
@@ -316,10 +315,8 @@ class LiftServlet extends Loggable {
         } else {
           val cmd =
             if (isComet)
-              js.JE
-                .JsRaw(
-                  LiftRules.noCometSessionCmd.vend.toJsCmd + ";lift.setToWatch({});")
-                .cmd
+              js.JE.JsRaw(
+                LiftRules.noCometSessionCmd.vend.toJsCmd + ";lift.setToWatch({});").cmd
             else
               js.JE.JsRaw(LiftRules.noAjaxSessionCmd.vend.toJsCmd).cmd
 
@@ -380,14 +377,14 @@ class LiftServlet extends Loggable {
 
       if (S.statelessInit(req) {
             // if the request is matched is defined in the stateless table, dispatch
-            tmpStatelessHolder = NamedPF
-              .applyBox(req, LiftRules.statelessDispatch.toList)
-              .map(_.apply() match {
-                case Full(a) =>
-                  Full(
-                    LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
-                case r => r
-              })
+            tmpStatelessHolder = NamedPF.applyBox(
+              req,
+              LiftRules.statelessDispatch.toList).map(_.apply() match {
+              case Full(a) =>
+                Full(
+                  LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
+              case r => r
+            })
             tmpStatelessHolder.isDefined
           }) {
         val f = tmpStatelessHolder.openOrThrowException(
@@ -628,8 +625,9 @@ class LiftServlet extends Loggable {
             java.lang.Long.parseLong(
               ajaxPathPart.substring(separator + 1, ajaxPathPart.length - 1),
               36),
-            Integer
-              .parseInt(ajaxPathPart.substring(ajaxPathPart.length - 1), 36)
+            Integer.parseInt(
+              ajaxPathPart.substring(ajaxPathPart.length - 1),
+              36)
           )
         )
       else
@@ -849,8 +847,9 @@ class LiftServlet extends Loggable {
             result
 
           case Right(future) =>
-            val ret = future.get(ajaxPostTimeout) openOr net.liftweb.common
-              .Failure("AJAX retry timeout.")
+            val ret =
+              future.get(ajaxPostTimeout) openOr net.liftweb.common.Failure(
+                "AJAX retry timeout.")
 
             ret
         }
@@ -940,19 +939,15 @@ class LiftServlet extends Loggable {
     val actors: List[(LiftCometActor, Long)] =
       requestState.params.toList.flatMap {
         case (name, when) =>
-          sessionActor
-            .getAsyncComponent(name)
-            .toList
-            .map(c => (c, toLong(when)))
+          sessionActor.getAsyncComponent(name).toList.map(c =>
+            (c, toLong(when)))
       }
 
     if (actors.isEmpty)
       Left(
         Full(
-          new JsCommands(
-            LiftRules.noCometSessionCmd.vend :: js.JE
-              .JsRaw("lift.setToWatch({});")
-              .cmd :: Nil).toResponse))
+          new JsCommands(LiftRules.noCometSessionCmd.vend :: js.JE.JsRaw(
+            "lift.setToWatch({});").cmd :: Nil).toResponse))
     else
       requestState.request.suspendResumeSupport_? match {
         case true => {
@@ -976,9 +971,9 @@ class LiftServlet extends Loggable {
       ret: Seq[AnswerRender],
       actors: List[(LiftCometActor, Long)]): LiftResponse = {
     val ret2: List[AnswerRender] = ret.toList
-    val jsUpdateTime = ret2
-      .map(ar => "lift.updWatch('" + ar.who.uniqueId + "', '" + ar.when + "');")
-      .mkString("\n")
+    val jsUpdateTime = ret2.map(ar =>
+      "lift.updWatch('" + ar.who.uniqueId + "', '" + ar.when + "');").mkString(
+      "\n")
     val jsUpdateStuff = ret2.map {
       ar =>
         {
@@ -1079,8 +1074,8 @@ class LiftServlet extends Loggable {
               v._1,
               (
                 (for (updated <- Full(
-                        (if (!LiftRules.excludePathFromContextPathRewriting
-                               .vend(uri)) u.contextPath
+                        (if (!LiftRules.excludePathFromContextPathRewriting.vend(
+                               uri)) u.contextPath
                          else "") + uri).filter(ignore => uri.startsWith("/"));
                       rwf <- URLRewriter.rewriteFunc)
                   yield rwf(updated)) openOr uri
@@ -1105,13 +1100,11 @@ class LiftServlet extends Loggable {
         toInsure: List[(String, String)]): List[(String, String)] = {
       val org = Map(headers: _*)
 
-      toInsure
-        .foldLeft(org) {
-          case (map, (key, value)) =>
-            if (map.contains(key)) map
-            else map + (key -> value)
-        }
-        .toList
+      toInsure.foldLeft(org) {
+        case (map, (key, value)) =>
+          if (map.contains(key)) map
+          else map + (key -> value)
+      }.toList
 
     }
 

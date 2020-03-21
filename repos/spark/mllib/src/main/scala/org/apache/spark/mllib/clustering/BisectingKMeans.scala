@@ -155,8 +155,9 @@ class BisectingKMeans private (
     // Compute and cache vector norms for fast distance computation.
     val norms =
       input.map(v => Vectors.norm(v, 2.0)).persist(StorageLevel.MEMORY_AND_DISK)
-    val vectors =
-      input.zip(norms).map { case (x, norm) => new VectorWithNorm(x, norm) }
+    val vectors = input.zip(norms).map {
+      case (x, norm) => new VectorWithNorm(x, norm)
+    }
     var assignments = vectors.map(v => (ROOT_INDEX, v))
     var activeClusters = summarize(d, assignments)
     val rootSummary = activeClusters(ROOT_INDEX)
@@ -181,28 +182,24 @@ class BisectingKMeans private (
       }
       // If we don't need all divisible clusters, take the larger ones.
       if (divisibleClusters.size > numLeafClustersNeeded) {
-        divisibleClusters = divisibleClusters.toSeq
-          .sortBy {
-            case (_, summary) =>
-              -summary.size
-          }
-          .take(numLeafClustersNeeded)
+        divisibleClusters = divisibleClusters.toSeq.sortBy {
+          case (_, summary) =>
+            -summary.size
+        }.take(numLeafClustersNeeded)
           .toMap
       }
       if (divisibleClusters.nonEmpty) {
         val divisibleIndices = divisibleClusters.keys.toSet
         logInfo(s"Dividing ${divisibleIndices.size} clusters on level $level.")
-        var newClusterCenters = divisibleClusters
-          .flatMap {
-            case (index, summary) =>
-              val (left, right) = splitCenter(summary.center, random)
-              Iterator(
-                (leftChildIndex(index), left),
-                (rightChildIndex(index), right))
-          }
-          .map(
-            identity
-          ) // workaround for a Scala bug (SI-7005) that produces a not serializable map
+        var newClusterCenters = divisibleClusters.flatMap {
+          case (index, summary) =>
+            val (left, right) = splitCenter(summary.center, random)
+            Iterator(
+              (leftChildIndex(index), left),
+              (rightChildIndex(index), right))
+        }.map(
+          identity
+        ) // workaround for a Scala bug (SI-7005) that produces a not serializable map
         var newClusters: Map[Long, ClusterSummary] = null
         var newAssignments: RDD[(Long, VectorWithNorm)] = null
         for (iter <- 0 until maxIterations) {
@@ -283,14 +280,11 @@ private object BisectingKMeans extends Serializable {
   private def summarize(
       d: Int,
       assignments: RDD[(Long, VectorWithNorm)]): Map[Long, ClusterSummary] = {
-    assignments
-      .aggregateByKey(new ClusterSummaryAggregator(d))(
-        seqOp = (agg, v) => agg.add(v),
-        combOp = (agg1, agg2) => agg1.merge(agg2)
-      )
-      .mapValues(_.summary)
-      .collect()
-      .toMap
+    assignments.aggregateByKey(new ClusterSummaryAggregator(d))(
+      seqOp = (agg, v) => agg.add(v),
+      combOp = (agg1, agg2) => agg1.merge(agg2)
+    ).mapValues(_.summary)
+      .collect().toMap
   }
 
   /**
@@ -522,13 +516,9 @@ private[clustering] class ClusteringTreeNode private[clustering] (
     if (isLeaf) {
       (index, cost)
     } else {
-      val (selectedChild, minCost) = children
-        .map { child =>
-          (
-            child,
-            KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm))
-        }
-        .minBy(_._2)
+      val (selectedChild, minCost) = children.map { child =>
+        (child, KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm))
+      }.minBy(_._2)
       selectedChild.predict(pointWithNorm, minCost)
     }
   }

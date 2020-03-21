@@ -963,16 +963,13 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
 
     val messageHandler: Flow[Message, Message, NotUsed] =
       Flow.fromSinkAndSource(
-        Flow[Message]
-          .buffer(1, OverflowStrategy.backpressure)
-          .to(
-            Sink.fromSubscriber(messageIn)
-          ), // alternatively need to request(1) before expectComplete
+        Flow[Message].buffer(1, OverflowStrategy.backpressure).to(
+          Sink.fromSubscriber(messageIn)
+        ), // alternatively need to request(1) before expectComplete
         Source.fromPublisher(messageOut)
       )
 
-    Source
-      .fromPublisher(netIn)
+    Source.fromPublisher(netIn)
       .via(printEvent("netIn"))
       .via(FrameEventParser)
       .via(

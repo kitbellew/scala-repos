@@ -80,8 +80,9 @@ abstract class BaseScalaApplicationConfigurationProducer[
       JavaExecutionUtil.getRuntimeQualifiedName(aClass)
     configuration.setName(configuration.suggestedName())
     setupConfigurationModule(context, configuration)
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(configuration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      configuration,
+      location)
   }
 
   private var myPsiElement: PsiElement = null
@@ -121,14 +122,11 @@ abstract class BaseScalaApplicationConfigurationProducer[
           configuration.MAIN_CLASS_NAME)) return false
     val aClass: PsiClass = getMainClass(context.getPsiLocation)
     if (aClass == null) return false
-    val predefinedModule: Module = RunManagerEx
-      .getInstanceEx(location.getProject)
-      .asInstanceOf[RunManagerImpl]
-      .getConfigurationTemplate(getConfigurationFactory)
-      .getConfiguration
-      .asInstanceOf[T]
-      .getConfigurationModule
-      .getModule
+    val predefinedModule: Module =
+      RunManagerEx.getInstanceEx(location.getProject).asInstanceOf[
+        RunManagerImpl].getConfigurationTemplate(
+        getConfigurationFactory).getConfiguration.asInstanceOf[
+        T].getConfigurationModule.getModule
     JavaExecutionUtil.getRuntimeQualifiedName(
       aClass) == configuration.MAIN_CLASS_NAME &&
     (location.getModule == configuration.getConfigurationModule.getModule || predefinedModule == configuration.getConfigurationModule.getModule)
@@ -212,9 +210,9 @@ object ScalaApplicationConfigurationProducer {
             f.containingClass match {
               case o: ScObject =>
                 for {
-                  wrapper <- f
-                    .getFunctionWrappers(isStatic = true, isInterface = false)
-                    .headOption
+                  wrapper <- f.getFunctionWrappers(
+                    isStatic = true,
+                    isInterface = false).headOption
                   if PsiMethodUtil.isMainMethod(wrapper)
                 } yield wrapper
               case _ => None

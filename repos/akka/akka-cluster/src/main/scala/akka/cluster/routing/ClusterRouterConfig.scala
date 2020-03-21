@@ -232,12 +232,10 @@ final case class ClusterRouterPool(
       routeeProps: Props,
       context: ActorContext): Routee = {
     val name = "c" + childNameCounter.incrementAndGet
-    val ref = context
-      .asInstanceOf[ActorCell]
-      .attachChild(
-        local.enrichWithPoolDispatcher(routeeProps, context),
-        name,
-        systemService = false)
+    val ref = context.asInstanceOf[ActorCell].attachChild(
+      local.enrichWithPoolDispatcher(routeeProps, context),
+      name,
+      systemService = false)
     ActorRefRoutee(ref)
   }
 
@@ -292,8 +290,8 @@ private[akka] trait ClusterRouterConfigBase extends RouterConfig {
 
   // Intercept ClusterDomainEvent and route them to the ClusterRouterActor
   override def isManagementMessage(msg: Any): Boolean =
-    (msg.isInstanceOf[ClusterDomainEvent]) || msg
-      .isInstanceOf[CurrentClusterState] || super.isManagementMessage(msg)
+    (msg.isInstanceOf[ClusterDomainEvent]) || msg.isInstanceOf[
+      CurrentClusterState] || super.isManagementMessage(msg)
 }
 
 /**
@@ -437,8 +435,8 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
 
   def settings: ClusterRouterSettingsBase
 
-  if (!cell.routerConfig.isInstanceOf[Pool] && !cell.routerConfig
-        .isInstanceOf[Group])
+  if (!cell.routerConfig.isInstanceOf[Pool] && !cell.routerConfig.isInstanceOf[
+        Group])
     throw ActorInitializationException(
       "Cluster router actor can only be used with Pool or Group, not with " +
         cell.routerConfig.getClass)

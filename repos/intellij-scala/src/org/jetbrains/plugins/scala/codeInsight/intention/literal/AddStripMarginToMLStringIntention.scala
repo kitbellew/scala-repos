@@ -40,9 +40,7 @@ class AddStripMarginToMLStringIntention extends PsiElementBaseIntentionAction {
   }
 
   private def getMarginChar(project: Project): String =
-    CodeStyleSettingsManager
-      .getInstance(project)
-      .getCurrentSettings
-      .getCustomSettings(classOf[ScalaCodeStyleSettings])
-      .MARGIN_CHAR + ""
+    CodeStyleSettingsManager.getInstance(
+      project).getCurrentSettings.getCustomSettings(
+      classOf[ScalaCodeStyleSettings]).MARGIN_CHAR + ""
 }

@@ -91,13 +91,12 @@ case class DataSource(
     val loader = Utils.getContextOrSparkClassLoader
     val serviceLoader = ServiceLoader.load(classOf[DataSourceRegister], loader)
 
-    serviceLoader.asScala
-      .filter(_.shortName().equalsIgnoreCase(provider))
-      .toList match {
+    serviceLoader.asScala.filter(
+      _.shortName().equalsIgnoreCase(provider)).toList match {
       // the provider format did not match any given registered aliases
       case Nil =>
-        Try(loader.loadClass(provider))
-          .orElse(Try(loader.loadClass(provider2))) match {
+        Try(loader.loadClass(provider)).orElse(
+          Try(loader.loadClass(provider2))) match {
           case Success(dataSource) =>
             // Found the data source using fully qualified path
             dataSource
@@ -159,17 +158,15 @@ case class DataSource(
 
         val fileCatalog: FileCatalog =
           new HDFSFileCatalog(sqlContext, options, globbedPaths, None)
-        val dataSchema = userSpecifiedSchema
-          .orElse {
-            format.inferSchema(
-              sqlContext,
-              caseInsensitiveOptions,
-              fileCatalog.allFiles())
-          }
-          .getOrElse {
-            throw new AnalysisException(
-              "Unable to infer schema.  It must be specified manually.")
-          }
+        val dataSchema = userSpecifiedSchema.orElse {
+          format.inferSchema(
+            sqlContext,
+            caseInsensitiveOptions,
+            fileCatalog.allFiles())
+        }.getOrElse {
+          throw new AnalysisException(
+            "Unable to infer schema.  It must be specified manually.")
+        }
 
         def dataFrameBuilder(files: Array[String]): DataFrame = {
           Dataset.newDataFrame(
@@ -254,18 +251,16 @@ case class DataSource(
             options,
             globbedPaths,
             partitionSchema)
-        val dataSchema = userSpecifiedSchema
-          .orElse {
-            format.inferSchema(
-              sqlContext,
-              caseInsensitiveOptions,
-              fileCatalog.allFiles())
-          }
-          .getOrElse {
-            throw new AnalysisException(
-              s"Unable to infer schema for $format at ${allPaths.take(2).mkString(",")}. " +
-                "It must be specified manually")
-          }
+        val dataSchema = userSpecifiedSchema.orElse {
+          format.inferSchema(
+            sqlContext,
+            caseInsensitiveOptions,
+            fileCatalog.allFiles())
+        }.getOrElse {
+          throw new AnalysisException(
+            s"Unable to infer schema for $format at ${allPaths.take(2).mkString(",")}. " +
+              "It must be specified manually")
+        }
 
         HadoopFsRelation(
           sqlContext,
@@ -287,9 +282,8 @@ case class DataSource(
 
   /** Writes the give [[DataFrame]] out to this [[DataSource]]. */
   def write(mode: SaveMode, data: DataFrame): BaseRelation = {
-    if (data.schema
-          .map(_.dataType)
-          .exists(_.isInstanceOf[CalendarIntervalType])) {
+    if (data.schema.map(_.dataType).exists(
+          _.isInstanceOf[CalendarIntervalType])) {
       throw new AnalysisException(
         "Cannot save interval data type into external storage.")
     }
@@ -349,9 +343,8 @@ case class DataSource(
             }
 
           existingPartitionColumnSet.foreach { ex =>
-            if (ex.map(_.toLowerCase) != partitionColumns
-                  .map(_.toLowerCase())
-                  .toSet) {
+            if (ex.map(_.toLowerCase) != partitionColumns.map(
+                  _.toLowerCase()).toSet) {
               throw new AnalysisException(
                 s"Requested partitioning does not equal existing partitioning: " +
                   s"$ex != ${partitionColumns.toSet}.")

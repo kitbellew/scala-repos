@@ -44,9 +44,8 @@ class DistributedSuite
     val numPartitions = 10
 
     sc = new SparkContext("local-cluster[%s,1,1024]".format(numSlaves), "test")
-    val data = sc
-      .parallelize(1 to 100, numPartitions)
-      .map(x => throw new NotSerializableExn(new NotSerializableClass))
+    val data = sc.parallelize(1 to 100, numPartitions).map(x =>
+      throw new NotSerializableExn(new NotSerializableClass))
     intercept[SparkException] {
       data.count()
     }
@@ -203,12 +202,14 @@ class DistributedSuite
     val blockManager = SparkEnv.get.blockManager
     val blockTransfer = SparkEnv.get.blockTransferService
     blockManager.master.getLocations(blockId).foreach { cmId =>
-      val bytes = blockTransfer
-        .fetchBlockSync(cmId.host, cmId.port, cmId.executorId, blockId.toString)
-      val deserialized = blockManager
-        .dataDeserialize(blockId, bytes.nioByteBuffer())
-        .asInstanceOf[Iterator[Int]]
-        .toList
+      val bytes = blockTransfer.fetchBlockSync(
+        cmId.host,
+        cmId.port,
+        cmId.executorId,
+        blockId.toString)
+      val deserialized =
+        blockManager.dataDeserialize(blockId, bytes.nioByteBuffer())
+          .asInstanceOf[Iterator[Int]].toList
       assert(deserialized === (1 to 100).toList)
     }
   }
@@ -297,13 +298,11 @@ class DistributedSuite
       assert(data.map(markNodeIfIdentity).collect.size === 2)
       // This relies on mergeCombiners being used to perform the actual reduce for this
       // test to actually be testing what it claims.
-      val grouped = data
-        .map(x => x -> x)
-        .combineByKey(
-          x => x,
-          (x: Boolean, y: Boolean) => x,
-          (x: Boolean, y: Boolean) => failOnMarkedIdentity(x)
-        )
+      val grouped = data.map(x => x -> x).combineByKey(
+        x => x,
+        (x: Boolean, y: Boolean) => x,
+        (x: Boolean, y: Boolean) => failOnMarkedIdentity(x)
+      )
       assert(grouped.collect.size === 1)
     }
   }

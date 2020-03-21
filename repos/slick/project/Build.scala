@@ -228,72 +228,70 @@ object SlickBuild extends Build {
   lazy val slickProject: Project = Project(
     id = "slick",
     base = file("slick"),
-    settings =
-      Defaults.coreDefaultSettings ++ sdlcSettings ++ inConfig(config("macro"))(
-        Defaults.configSettings) ++ sharedSettings ++ fmppSettings ++ site.settings ++ site
-        .sphinxSupport() ++ mimaDefaultSettings ++ extTarget(
-        "slick") ++ commonSdlcSettings ++ osgiSettings ++ Seq(
-        name := "Slick",
-        description := "Scala Language-Integrated Connection Kit",
-        libraryDependencies ++= Dependencies.mainDependencies,
-        scalacOptions in (Compile, doc) <++= version.map(v =>
-          Seq(
-            "-doc-source-url",
-            "https://github.com/slick/slick/blob/" + v + "/slick/src/main€{FILE_PATH}.scala",
-            "-doc-root-content",
-            "scaladoc-root.txt"
-          )),
-        (sphinxEnv in Sphinx) := (sphinxEnv in Sphinx).value +
-          ("version" -> version.value
-            .replaceFirst("""(\d*.\d*).*""", """$1""")) +
-          ("release" -> version.value),
-        (sphinxProperties in Sphinx) := Map.empty,
-        makeSite <<= makeSite dependsOn (buildCapabilitiesTable in slickTestkitProject),
-        site.addMappingsToSiteDir(
-          mappings in packageDoc in Compile in slickProject,
-          "api"),
-        site.addMappingsToSiteDir(
-          mappings in packageDoc in Compile in slickCodegenProject,
-          "codegen-api"),
-        site.addMappingsToSiteDir(
-          mappings in packageDoc in Compile in slickHikariCPProject,
-          "hikaricp-api"),
-        site.addMappingsToSiteDir(
-          mappings in packageDoc in Compile in slickTestkitProject,
-          "testkit-api"),
-        test := (),
-        testOnly := (), // suppress test status output
-        previousArtifact := Some(
-          "com.typesafe.slick" % ("slick_" + scalaBinaryVersion.value) % binaryCompatSlickVersion),
-        binaryIssueFilters ++= Seq(
-          ProblemFilters.exclude[MissingClassProblem](
-            "slick.util.MacroSupportInterpolationImpl$"),
-          ProblemFilters.exclude[MissingClassProblem](
-            "slick.util.MacroSupportInterpolationImpl")
-        ),
-        ivyConfigurations += config("macro").hide.extend(Compile),
-        unmanagedClasspath in Compile <++= products in config("macro"),
-        libraryDependencies <+= scalaVersion(
-          "org.scala-lang" % "scala-compiler" % _ % "provided"),
-        mappings in (Compile, packageSrc) <++= mappings in (config(
-          "macro"), packageSrc),
-        mappings in (Compile, packageBin) <++= mappings in (config(
-          "macro"), packageBin),
-        OsgiKeys.exportPackage := Seq(
-          "slick",
-          "slick.*",
-          "scala.slick",
-          "scala.slick.*"),
-        OsgiKeys.importPackage := Seq(
-          osgiImport("scala*", scalaVersion.value),
-          "*"
-        ),
-        OsgiKeys.privatePackage := Nil
-      ) ++ ifPublished(
+    settings = Defaults.coreDefaultSettings ++ sdlcSettings ++ inConfig(
+      config("macro"))(
+      Defaults.configSettings) ++ sharedSettings ++ fmppSettings ++ site.settings ++ site.sphinxSupport() ++ mimaDefaultSettings ++ extTarget(
+      "slick") ++ commonSdlcSettings ++ osgiSettings ++ Seq(
+      name := "Slick",
+      description := "Scala Language-Integrated Connection Kit",
+      libraryDependencies ++= Dependencies.mainDependencies,
+      scalacOptions in (Compile, doc) <++= version.map(v =>
         Seq(
-          libraryDependencies <+= scalaVersion(
-            "org.scala-lang" % "scala-compiler" % _ % "macro")
-        ))
+          "-doc-source-url",
+          "https://github.com/slick/slick/blob/" + v + "/slick/src/main€{FILE_PATH}.scala",
+          "-doc-root-content",
+          "scaladoc-root.txt"
+        )),
+      (sphinxEnv in Sphinx) := (sphinxEnv in Sphinx).value +
+        ("version" -> version.value.replaceFirst("""(\d*.\d*).*""", """$1""")) +
+        ("release" -> version.value),
+      (sphinxProperties in Sphinx) := Map.empty,
+      makeSite <<= makeSite dependsOn (buildCapabilitiesTable in slickTestkitProject),
+      site.addMappingsToSiteDir(
+        mappings in packageDoc in Compile in slickProject,
+        "api"),
+      site.addMappingsToSiteDir(
+        mappings in packageDoc in Compile in slickCodegenProject,
+        "codegen-api"),
+      site.addMappingsToSiteDir(
+        mappings in packageDoc in Compile in slickHikariCPProject,
+        "hikaricp-api"),
+      site.addMappingsToSiteDir(
+        mappings in packageDoc in Compile in slickTestkitProject,
+        "testkit-api"),
+      test := (),
+      testOnly := (), // suppress test status output
+      previousArtifact := Some(
+        "com.typesafe.slick" % ("slick_" + scalaBinaryVersion.value) % binaryCompatSlickVersion),
+      binaryIssueFilters ++= Seq(
+        ProblemFilters.exclude[MissingClassProblem](
+          "slick.util.MacroSupportInterpolationImpl$"),
+        ProblemFilters.exclude[MissingClassProblem](
+          "slick.util.MacroSupportInterpolationImpl")
+      ),
+      ivyConfigurations += config("macro").hide.extend(Compile),
+      unmanagedClasspath in Compile <++= products in config("macro"),
+      libraryDependencies <+= scalaVersion(
+        "org.scala-lang" % "scala-compiler" % _ % "provided"),
+      mappings in (Compile, packageSrc) <++= mappings in (config(
+        "macro"), packageSrc),
+      mappings in (Compile, packageBin) <++= mappings in (config(
+        "macro"), packageBin),
+      OsgiKeys.exportPackage := Seq(
+        "slick",
+        "slick.*",
+        "scala.slick",
+        "scala.slick.*"),
+      OsgiKeys.importPackage := Seq(
+        osgiImport("scala*", scalaVersion.value),
+        "*"
+      ),
+      OsgiKeys.privatePackage := Nil
+    ) ++ ifPublished(
+      Seq(
+        libraryDependencies <+= scalaVersion(
+          "org.scala-lang" % "scala-compiler" % _ % "macro")
+      ))
   )
 
   /** Create an OSGi version range for standard Scala / Typesafe versioning
@@ -367,12 +365,11 @@ object SlickBuild extends Build {
           libraryDependencies <+= scalaVersion(
             "org.scala-lang" % "scala-compiler" % _ % "provided")
         ))
-  ).configs(DocTest)
-    .settings(inConfig(DocTest)(Defaults.testSettings): _*)
-    .settings(
-      unmanagedSourceDirectories in DocTest += (baseDirectory in slickProject).value / "src/sphinx/code",
-      unmanagedResourceDirectories in DocTest += (baseDirectory in slickProject).value / "src/sphinx/resources"
-    ) dependsOn (slickProject, slickCodegenProject % "compile->compile", slickHikariCPProject % "test->compile")
+  ).configs(DocTest).settings(
+    inConfig(DocTest)(Defaults.testSettings): _*).settings(
+    unmanagedSourceDirectories in DocTest += (baseDirectory in slickProject).value / "src/sphinx/code",
+    unmanagedResourceDirectories in DocTest += (baseDirectory in slickProject).value / "src/sphinx/resources"
+  ) dependsOn (slickProject, slickCodegenProject % "compile->compile", slickHikariCPProject % "test->compile")
 
   lazy val slickCodegenProject = Project(
     id = "codegen",
@@ -427,8 +424,8 @@ object SlickBuild extends Build {
       unmanagedResourceDirectories in Test += (baseDirectory in aRootProject).value / "common-test-resources",
       resolvers += Resolver.sbtPluginRepo("releases"),
       libraryDependencies += Dependencies.scalaTestFor(scalaVersion.value),
-      libraryDependencies ++= (Dependencies.logback +: Dependencies.testDBs)
-        .map(_ % "test"),
+      libraryDependencies ++= (Dependencies.logback +: Dependencies.testDBs).map(
+        _ % "test"),
       libraryDependencies += Dependencies.reactiveStreamsTCK,
       parallelExecution in Test := false
     )
@@ -442,8 +439,8 @@ object SlickBuild extends Build {
       settings (sharedSettings: _*)
       settings (
         name := "Slick-OsgiTests",
-        libraryDependencies ++= (Dependencies.h2 +: Dependencies.logback +: Dependencies.junit ++: Dependencies.reactiveStreams +: Dependencies.paxExam)
-          .map(_ % "test"),
+        libraryDependencies ++= (Dependencies.h2 +: Dependencies.logback +: Dependencies.junit ++: Dependencies.reactiveStreams +: Dependencies.paxExam).map(
+          _ % "test"),
         unmanagedResourceDirectories in Test += (baseDirectory in aRootProject).value / "common-test-resources",
         fork in Test := true,
         testOptions += Tests.Argument(
@@ -453,18 +450,16 @@ object SlickBuild extends Build {
           "-s",
           "-a"),
         javaOptions in Test ++= Seq(
-          "-Dslick.osgi.bundlepath=" + osgiBundleFiles.value
-            .map(_.getCanonicalPath)
-            .mkString(":"),
+          "-Dslick.osgi.bundlepath=" + osgiBundleFiles.value.map(
+            _.getCanonicalPath).mkString(":"),
           "-Dorg.ops4j.pax.logging.DefaultServiceLog.level=WARN"
         ),
         osgiBundleFiles := Seq((OsgiKeys.bundle in slickProject).value),
-        osgiBundleFiles ++= (dependencyClasspath in Compile in slickProject).value
-          .map(_.data)
-          .filterNot(_.isDirectory),
-        osgiBundleFiles ++= (dependencyClasspath in Test).value
-          .map(_.data)
-          .filter(f => f.name.contains("logback-") || f.name.contains("h2")),
+        osgiBundleFiles ++= (dependencyClasspath in Compile in slickProject).value.map(
+          _.data).filterNot(_.isDirectory),
+        osgiBundleFiles ++= (dependencyClasspath in Test).value.map(
+          _.data).filter(f =>
+          f.name.contains("logback-") || f.name.contains("h2")),
         publishArtifact := false
     )
       dependsOn (slickProject % "test")

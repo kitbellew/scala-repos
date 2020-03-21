@@ -57,15 +57,13 @@ private[v1] class EventLogDownloadResource(
         }
       }
 
-      Response
-        .ok(stream)
+      Response.ok(stream)
         .header("Content-Disposition", s"attachment; filename=$fileName")
         .header("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
         .build()
     } catch {
       case NonFatal(e) =>
-        Response
-          .serverError()
+        Response.serverError()
           .entity(s"Event logs are not available for app: $appId.")
           .status(Response.Status.SERVICE_UNAVAILABLE)
           .build()

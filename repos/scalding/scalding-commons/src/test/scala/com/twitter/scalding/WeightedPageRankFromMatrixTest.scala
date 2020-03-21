@@ -88,10 +88,9 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
         outputBuffer should have size 1
 
         val expectedDiff =
-          expectedSolution
-            .zip(iterationZeroVector.map(_._2))
-            .map { case (a, b) => math.abs(a - b) }
-            .sum
+          expectedSolution.zip(iterationZeroVector.map(_._2)).map {
+            case (a, b) => math.abs(a - b)
+          }.sum
         outputBuffer.head shouldBe expectedDiff +- 0.00001
       }
       .run

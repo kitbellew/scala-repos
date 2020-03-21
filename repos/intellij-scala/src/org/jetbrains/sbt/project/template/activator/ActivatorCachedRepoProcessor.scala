@@ -63,9 +63,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
   }
 
   private def downloadIndex(): Option[File] = {
-    if (extractedHash
-          .flatMap(a => indexFile.map(b => (a, b._1)))
-          .exists(a => a._1 == a._2)) indexFile.map(_._2)
+    if (extractedHash.flatMap(a => indexFile.map(b => (a, b._1))).exists(a =>
+          a._1 == a._2)) indexFile.map(_._2)
     else {
       extractHash() flatMap {
         case hash =>

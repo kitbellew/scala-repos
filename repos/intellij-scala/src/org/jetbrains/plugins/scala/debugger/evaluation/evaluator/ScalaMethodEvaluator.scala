@@ -63,10 +63,8 @@ case class ScalaMethodEvaluator(
     val requiresSuperObject: Boolean =
       objectEvaluator.isInstanceOf[ScSuperEvaluator] ||
         (objectEvaluator.isInstanceOf[DisableGC] &&
-          objectEvaluator
-            .asInstanceOf[DisableGC]
-            .getDelegate
-            .isInstanceOf[ScSuperEvaluator])
+          objectEvaluator.asInstanceOf[DisableGC].getDelegate.isInstanceOf[
+            ScSuperEvaluator])
     val obj: AnyRef = DebuggerUtil.unwrapScalaRuntimeObjectRef {
       objectEvaluator.evaluate(context)
     }
@@ -75,8 +73,9 @@ case class ScalaMethodEvaluator(
     }
     if (!(obj.isInstanceOf[ObjectReference] || obj.isInstanceOf[ClassType])) {
       throw EvaluationException(
-        DebuggerBundle
-          .message("evaluation.error.evaluating.method", methodName))
+        DebuggerBundle.message(
+          "evaluation.error.evaluating.method",
+          methodName))
     }
     val args = argumentEvaluators.flatMap { ev =>
       val result = ev.evaluate(context)
@@ -107,33 +106,29 @@ case class ScalaMethodEvaluator(
         import scala.collection.JavaConversions._
         def sortedMethodCandidates: List[Method] = {
           val allMethods = referenceType.allMethods()
-          allMethods.toList
-            .collect {
-              case method if !localMethod && method.name() == methodName =>
-                (method, 1)
-              case method
-                  if !localMethod && method
-                    .name()
-                    .endsWith("$$" + methodName) =>
-                (method, 1) //private method, maybe from parent class
-              case method if localMethod && method.name() == localMethodName =>
-                (method, 1)
-              case method
-                  if localMethod && method.name.startsWith(methodName + "$") =>
-                (method, 2)
-              case method
-                  if localMethod && method.name.contains(methodName + "$") =>
-                (method, 3)
-            }
-            .sortBy(_._2)
-            .map(_._1)
+          allMethods.toList.collect {
+            case method if !localMethod && method.name() == methodName =>
+              (method, 1)
+            case method
+                if !localMethod && method.name().endsWith("$$" + methodName) =>
+              (method, 1) //private method, maybe from parent class
+            case method if localMethod && method.name() == localMethodName =>
+              (method, 1)
+            case method
+                if localMethod && method.name.startsWith(methodName + "$") =>
+              (method, 2)
+            case method
+                if localMethod && method.name.contains(methodName + "$") =>
+              (method, 3)
+          }.sortBy(_._2).map(_._1)
         }
         var jdiMethod: Method = null
         if (signature != null) {
           if (!localMethod) {
-            jdiMethod = referenceType
-              .asInstanceOf[ClassType]
-              .concreteMethodByName(methodName, signature.getName(debugProcess))
+            jdiMethod =
+              referenceType.asInstanceOf[ClassType].concreteMethodByName(
+                methodName,
+                signature.getName(debugProcess))
           }
           if (jdiMethod == null && localMethod) {
             for (method <- sortedMethodCandidates if jdiMethod == null) {
@@ -141,9 +136,10 @@ case class ScalaMethodEvaluator(
                 referenceType.name,
                 method.name(),
                 sign)
-              jdiMethod = referenceType
-                .asInstanceOf[ClassType]
-                .concreteMethodByName(mName, signature.getName(debugProcess))
+              jdiMethod =
+                referenceType.asInstanceOf[ClassType].concreteMethodByName(
+                  mName,
+                  signature.getName(debugProcess))
               if (jdiMethod != null) return jdiMethod
             }
           }
@@ -168,11 +164,9 @@ case class ScalaMethodEvaluator(
                   def run() {
                     try {
                       val lines = methodPosition.map(_.getLine)
-                      result = m
-                        .allLineLocations()
-                        .exists(l =>
-                          lines.contains(
-                            ScalaPositionManager.checkedLineNumber(l)))
+                      result = m.allLineLocations().exists(l =>
+                        lines.contains(
+                          ScalaPositionManager.checkedLineNumber(l)))
                     } catch {
                       case e: Exception => //ignore
                     }

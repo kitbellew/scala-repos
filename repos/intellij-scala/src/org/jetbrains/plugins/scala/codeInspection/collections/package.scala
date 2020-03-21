@@ -259,12 +259,14 @@ package object collections {
             case ScInfixExpr(left, oper, right) if oper.refName == operName =>
               (stripped(left), stripped(right)) match {
                 case (leftRef: ScReferenceExpression, rightExpr)
-                    if leftRef
-                      .resolve() == x && isIndependentOf(rightExpr, x) =>
+                    if leftRef.resolve() == x && isIndependentOf(
+                      rightExpr,
+                      x) =>
                   Some(rightExpr)
                 case (leftExpr: ScExpression, rightRef: ScReferenceExpression)
-                    if rightRef
-                      .resolve() == x && isIndependentOf(leftExpr, x) =>
+                    if rightRef.resolve() == x && isIndependentOf(
+                      leftExpr,
+                      x) =>
                   Some(leftExpr)
                 case _ => None
               }

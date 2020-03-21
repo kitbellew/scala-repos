@@ -56,8 +56,9 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
 
   test("Probability of N(0,1)(1) propto exp(-.5))") {
     assert(
-      new MultivariateGaussian(DenseVector(0.0), DenseMatrix.ones(1, 1))
-        .unnormalizedLogPdf(DenseVector(1.0)) === -0.5)
+      new MultivariateGaussian(
+        DenseVector(0.0),
+        DenseMatrix.ones(1, 1)).unnormalizedLogPdf(DenseVector(1.0)) === -0.5)
   }
 
   implicit def arbDistr =

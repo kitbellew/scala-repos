@@ -28,12 +28,10 @@ private[history] class HistoryPage(parent: HistoryServer)
 
   def render(request: HttpServletRequest): Seq[Node] = {
     val requestedIncomplete =
-      Option(request.getParameter("showIncomplete"))
-        .getOrElse("false")
-        .toBoolean
+      Option(request.getParameter("showIncomplete")).getOrElse(
+        "false").toBoolean
 
-    val allApps = parent
-      .getApplicationList()
+    val allApps = parent.getApplicationList()
       .filter(_.completed != requestedIncomplete)
     val allAppsSize = allApps.size
 

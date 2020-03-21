@@ -89,8 +89,9 @@ abstract class RemoteRestartedQuarantinedSpec
 
         val (uid, ref) = identifyWithUid(second, "subject")
 
-        RARP(system).provider.transport
-          .quarantine(node(second).address, Some(uid))
+        RARP(system).provider.transport.quarantine(
+          node(second).address,
+          Some(uid))
 
         enterBarrier("quarantined")
         enterBarrier("still-quarantined")
@@ -114,8 +115,9 @@ abstract class RemoteRestartedQuarantinedSpec
         val addr =
           system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
         val firstAddress = node(first).address
-        system.eventStream
-          .subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
+        system.eventStream.subscribe(
+          testActor,
+          classOf[ThisActorSystemQuarantinedEvent])
 
         val (_, ref) = identifyWithUid(first, "subject")
 
@@ -124,13 +126,11 @@ abstract class RemoteRestartedQuarantinedSpec
         // Check that quarantine is intact
         within(10.seconds) {
           awaitAssert {
-            EventFilter
-              .warning(
-                pattern = "The remote system has quarantined this system",
-                occurrences = 1)
-              .intercept {
-                ref ! "boo!"
-              }
+            EventFilter.warning(
+              pattern = "The remote system has quarantined this system",
+              occurrences = 1).intercept {
+              ref ! "boo!"
+            }
           }
         }
 
@@ -155,9 +155,10 @@ abstract class RemoteRestartedQuarantinedSpec
 
         val probe = TestProbe()(freshSystem)
 
-        freshSystem
-          .actorSelection(RootActorPath(firstAddress) / "user" / "subject")
-          .tell(Identify("subject"), probe.ref)
+        freshSystem.actorSelection(
+          RootActorPath(firstAddress) / "user" / "subject").tell(
+          Identify("subject"),
+          probe.ref)
         // TODO sometimes it takes long time until the new connection is established,
         //      It seems like there must first be a transport failure detector timeout, that triggers
         //      "No response from remote. Handshake timed out or transport failure detector triggered".

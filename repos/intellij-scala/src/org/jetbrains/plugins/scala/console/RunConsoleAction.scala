@@ -55,9 +55,9 @@ class RunConsoleAction extends AnAction {
             setting.getConfiguration.asInstanceOf[ScalaConsoleRunConfiguration]
           runManagerEx.setSelectedConfiguration(setting)
           val runExecutor = DefaultRunExecutor.getRunExecutorInstance
-          val runner = RunnerRegistry
-            .getInstance()
-            .getRunner(runExecutor.getId, configuration)
+          val runner = RunnerRegistry.getInstance().getRunner(
+            runExecutor.getId,
+            configuration)
           if (runner != null) {
             try {
               val builder: ExecutionEnvironmentBuilder =
@@ -88,12 +88,10 @@ class RunConsoleAction extends AnAction {
           new ActionRunner.InterruptibleRunnable {
             def run() {
               val factory: ScalaConsoleRunConfigurationFactory =
-                configurationType.getConfigurationFactories
-                  .apply(0)
-                  .asInstanceOf[ScalaConsoleRunConfigurationFactory]
-              val setting = RunManager
-                .getInstance(project)
-                .createRunConfiguration("Scala Console", factory)
+                configurationType.getConfigurationFactories.apply(
+                  0).asInstanceOf[ScalaConsoleRunConfigurationFactory]
+              val setting = RunManager.getInstance(
+                project).createRunConfiguration("Scala Console", factory)
 
               runManagerEx.setTemporaryConfiguration(setting)
               execute(setting)

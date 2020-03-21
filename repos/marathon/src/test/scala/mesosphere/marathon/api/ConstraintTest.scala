@@ -45,9 +45,8 @@ class ConstraintTest extends MarathonSpec with Matchers {
       empty)
     Json.parse("""["foo", "CLUSTER", "bla"]""").asOpt[Constraint] should be(
       defined)
-    Json
-      .parse("""["foo", "CLUSTER", "bla", "bla2"]""")
-      .asOpt[Constraint] should be(empty)
+    Json.parse("""["foo", "CLUSTER", "bla", "bla2"]""").asOpt[
+      Constraint] should be(empty)
     val ex = intercept[JsResultException](
       Json.parse("""["foo", "CLUSTER", "bla", "bla2"]""").as[Constraint])
     ex.errors should have size 1
@@ -71,37 +70,25 @@ class ConstraintTest extends MarathonSpec with Matchers {
   test("Serialize") {
     def shouldMatch(expected: String, constraint: Constraint) {
       import mesosphere.marathon.api.v2.json.Formats._
-      JsonTestHelper
-        .assertThatJsonOf(constraint)
-        .correspondsToJsonString(expected)
+      JsonTestHelper.assertThatJsonOf(constraint).correspondsToJsonString(
+        expected)
     }
 
     shouldMatch(
       """["hostname","UNIQUE"]""",
-      Constraint.newBuilder
-        .setField("hostname")
-        .setOperator(Constraint.Operator.UNIQUE)
-        .build)
+      Constraint.newBuilder.setField("hostname")
+        .setOperator(Constraint.Operator.UNIQUE).build)
     shouldMatch(
       """["rackid","GROUP_BY","1"]""",
-      Constraint.newBuilder
-        .setField("rackid")
-        .setOperator(Constraint.Operator.GROUP_BY)
-        .setValue("1")
-        .build)
+      Constraint.newBuilder.setField("rackid")
+        .setOperator(Constraint.Operator.GROUP_BY).setValue("1").build)
     shouldMatch(
       """["jdk","LIKE","7"]""",
-      Constraint.newBuilder
-        .setField("jdk")
-        .setOperator(Constraint.Operator.LIKE)
-        .setValue("7")
-        .build)
+      Constraint.newBuilder.setField("jdk")
+        .setOperator(Constraint.Operator.LIKE).setValue("7").build)
     shouldMatch(
       """["jdk","UNLIKE","7"]""",
-      Constraint.newBuilder
-        .setField("jdk")
-        .setOperator(Constraint.Operator.UNLIKE)
-        .setValue("7")
-        .build)
+      Constraint.newBuilder.setField("jdk")
+        .setOperator(Constraint.Operator.UNLIKE).setValue("7").build)
   }
 }

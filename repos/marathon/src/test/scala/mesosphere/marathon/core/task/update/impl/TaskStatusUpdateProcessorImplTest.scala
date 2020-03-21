@@ -49,9 +49,8 @@ class TaskStatusUpdateProcessorImplTest
     fOpt = Some(new Fixture)
     val origUpdate =
       TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
-    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder.setTaskId(
+      Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
@@ -79,9 +78,8 @@ class TaskStatusUpdateProcessorImplTest
     fOpt = Some(new Fixture)
     val origUpdate =
       TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
-    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder.setTaskId(
+      Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
@@ -115,9 +113,8 @@ class TaskStatusUpdateProcessorImplTest
     fOpt = Some(new Fixture)
 
     val origUpdate = TaskStatusUpdateTestHelper.lost
-    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder.setTaskId(
+      Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
@@ -142,18 +139,16 @@ class TaskStatusUpdateProcessorImplTest
     fOpt = Some(new Fixture)
 
     val origUpdate = TaskStatusUpdateTestHelper.finished
-    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+    val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder.setTaskId(
+      Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
     Given("a known task")
     import scala.concurrent.ExecutionContext.Implicits.global
     f.taskTracker.task(taskId) returns Future.successful(Some(taskState))
-    f.taskUpdater
-      .statusUpdate(appId, status)
-      .asInstanceOf[Future[Unit]] returns Future.successful(())
+    f.taskUpdater.statusUpdate(appId, status).asInstanceOf[
+      Future[Unit]] returns Future.successful(())
     f.appRepository.app(appId, version) returns Future.successful(Some(app))
     And("and a cooperative launchQueue")
     f.launchQueue.notifyOfTaskUpdate(any) returns Future.successful(None)
@@ -194,9 +189,8 @@ class TaskStatusUpdateProcessorImplTest
   lazy val appId = PathId("/app")
   lazy val app = AppDefinition(appId)
   lazy val version = Timestamp.now()
-  lazy val task = MarathonTestHelper
-    .makeOneCPUTask(Task.Id.forApp(appId).mesosTaskId.getValue)
-    .build()
+  lazy val task = MarathonTestHelper.makeOneCPUTask(
+    Task.Id.forApp(appId).mesosTaskId.getValue).build()
   lazy val taskState =
     MarathonTestHelper.stagedTask(task.getTaskId.getValue, appVersion = version)
   lazy val marathonTask = taskState.marathonTask

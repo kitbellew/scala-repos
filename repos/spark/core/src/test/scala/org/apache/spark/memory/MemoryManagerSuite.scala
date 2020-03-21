@@ -72,8 +72,8 @@ private[memory] trait MemoryManagerSuite
     */
   protected def makeMemoryStore(mm: MemoryManager): MemoryStore = {
     val ms = mock(classOf[MemoryStore], RETURNS_SMART_NULLS)
-    when(ms.evictBlocksToFreeSpace(any(), anyLong()))
-      .thenAnswer(evictBlocksToFreeSpaceAnswer(mm))
+    when(ms.evictBlocksToFreeSpace(any(), anyLong())).thenAnswer(
+      evictBlocksToFreeSpaceAnswer(mm))
     mm.setMemoryStore(ms)
     ms
   }
@@ -98,8 +98,7 @@ private[memory] trait MemoryManagerSuite
         val numBytesToFree = args(1).asInstanceOf[Long]
         assert(numBytesToFree > 0)
         require(
-          evictBlocksToFreeSpaceCalled
-            .get() === DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
+          evictBlocksToFreeSpaceCalled.get() === DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
           "bad test: evictBlocksToFreeSpace() variable was not reset")
         evictBlocksToFreeSpaceCalled.set(numBytesToFree)
         if (numBytesToFree <= mm.storageMemoryUsed) {
@@ -134,8 +133,7 @@ private[memory] trait MemoryManagerSuite
   protected def assertEvictBlocksToFreeSpaceNotCalled[T](
       ms: MemoryStore): Unit = {
     assert(
-      evictBlocksToFreeSpaceCalled
-        .get() === DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
+      evictBlocksToFreeSpaceCalled.get() === DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
       "evictBlocksToFreeSpace() should not have been called!")
     assert(evictedBlocks.isEmpty)
   }
@@ -157,39 +155,59 @@ private[memory] trait MemoryManagerSuite
     val taskMemoryManager = new TaskMemoryManager(manager, 0)
 
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(100L, MemoryMode.ON_HEAP, null) === 100L)
+      taskMemoryManager.acquireExecutionMemory(
+        100L,
+        MemoryMode.ON_HEAP,
+        null) === 100L)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(400L, MemoryMode.ON_HEAP, null) === 400L)
+      taskMemoryManager.acquireExecutionMemory(
+        400L,
+        MemoryMode.ON_HEAP,
+        null) === 400L)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(400L, MemoryMode.ON_HEAP, null) === 400L)
+      taskMemoryManager.acquireExecutionMemory(
+        400L,
+        MemoryMode.ON_HEAP,
+        null) === 400L)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(200L, MemoryMode.ON_HEAP, null) === 100L)
+      taskMemoryManager.acquireExecutionMemory(
+        200L,
+        MemoryMode.ON_HEAP,
+        null) === 100L)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(100L, MemoryMode.ON_HEAP, null) === 0L)
+      taskMemoryManager.acquireExecutionMemory(
+        100L,
+        MemoryMode.ON_HEAP,
+        null) === 0L)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(100L, MemoryMode.ON_HEAP, null) === 0L)
+      taskMemoryManager.acquireExecutionMemory(
+        100L,
+        MemoryMode.ON_HEAP,
+        null) === 0L)
 
     taskMemoryManager.releaseExecutionMemory(500L, MemoryMode.ON_HEAP, null)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(300L, MemoryMode.ON_HEAP, null) === 300L)
+      taskMemoryManager.acquireExecutionMemory(
+        300L,
+        MemoryMode.ON_HEAP,
+        null) === 300L)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(300L, MemoryMode.ON_HEAP, null) === 200L)
+      taskMemoryManager.acquireExecutionMemory(
+        300L,
+        MemoryMode.ON_HEAP,
+        null) === 200L)
 
     taskMemoryManager.cleanUpAllAllocatedMemory()
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(1000L, MemoryMode.ON_HEAP, null) === 1000L)
+      taskMemoryManager.acquireExecutionMemory(
+        1000L,
+        MemoryMode.ON_HEAP,
+        null) === 1000L)
     assert(
-      taskMemoryManager
-        .acquireExecutionMemory(100L, MemoryMode.ON_HEAP, null) === 0L)
+      taskMemoryManager.acquireExecutionMemory(
+        100L,
+        MemoryMode.ON_HEAP,
+        null) === 0L)
   }
 
   test("two tasks requesting full on-heap execution memory") {

@@ -102,9 +102,8 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
             defStringCandidates(matching, r.name)
           else if (matching.isEmpty) {
             // Lenient matching based on camel case and on eliding JavaBean "get" / "is" boilerplate
-            val camelMatches: List[Member] = r
-              .matchingResults(CompletionResult.camelMatch(_))
-              .filterNot(shouldHide)
+            val camelMatches: List[Member] = r.matchingResults(
+              CompletionResult.camelMatch(_)).filterNot(shouldHide)
             val memberCompletions =
               camelMatches.map(_.symNameDropLocal.decoded).distinct.sorted
             def allowCompletion =

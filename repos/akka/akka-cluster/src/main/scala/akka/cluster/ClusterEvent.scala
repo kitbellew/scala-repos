@@ -257,9 +257,8 @@ object ClusterEvent {
       * Java API
       */
     def getNodeMetrics: java.lang.Iterable[NodeMetrics] =
-      scala.collection.JavaConverters
-        .asJavaIterableConverter(nodeMetrics)
-        .asJava
+      scala.collection.JavaConverters.asJavaIterableConverter(
+        nodeMetrics).asJava
   }
 
   /**
@@ -316,8 +315,9 @@ object ClusterEvent {
     else {
       (oldGossip.overview.reachability.allUnreachable.collect {
         case node
-            if newGossip.hasMember(node) && newGossip.overview.reachability
-              .isReachable(node) && node != selfUniqueAddress ⇒
+            if newGossip.hasMember(
+              node) && newGossip.overview.reachability.isReachable(
+              node) && node != selfUniqueAddress ⇒
           ReachableMember(newGossip.member(node))
       })(collection.breakOut)
 
@@ -332,9 +332,9 @@ object ClusterEvent {
     if (newGossip eq oldGossip) Nil
     else {
       val newMembers = newGossip.members diff oldGossip.members
-      val membersGroupedByAddress =
-        List(newGossip.members, oldGossip.members).flatten
-          .groupBy(_.uniqueAddress)
+      val membersGroupedByAddress = List(
+        newGossip.members,
+        oldGossip.members).flatten.groupBy(_.uniqueAddress)
       val changedMembers = membersGroupedByAddress collect {
         case (_, newMember :: oldMember :: Nil)
             if newMember.status != oldMember.status || newMember.upNumber != oldMember.upNumber ⇒
@@ -353,8 +353,8 @@ object ClusterEvent {
       val removedEvents = removedMembers.map(m ⇒
         MemberRemoved(m.copy(status = Removed), m.status))
 
-      (new VectorBuilder[MemberEvent]() ++= memberEvents ++= removedEvents)
-        .result()
+      (new VectorBuilder[
+        MemberEvent]() ++= memberEvents ++= removedEvents).result()
     }
 
   /**
@@ -463,8 +463,7 @@ private[cluster] final class ClusterDomainEventPublisher
       seenBy = latestGossip.seenBy.map(_.address),
       leader = latestGossip.leader(selfUniqueAddress).map(_.address),
       roleLeaderMap = latestGossip.allRoles.map(r ⇒
-        r -> latestGossip
-          .roleLeader(r, selfUniqueAddress)
+        r -> latestGossip.roleLeader(r, selfUniqueAddress)
           .map(_.address))(collection.breakOut)
     )
     receiver ! state

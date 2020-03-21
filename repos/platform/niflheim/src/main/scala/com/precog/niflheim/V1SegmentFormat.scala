@@ -241,8 +241,9 @@ object V1SegmentFormat extends SegmentFormat {
   private def getCodecFor[A](ctype: CValueType[A]): Codec[A] =
     ctype match {
       case CPeriod =>
-        Codec.LongCodec
-          .as[Period](_.toStandardDuration.getMillis, new Period(_))
+        Codec.LongCodec.as[Period](
+          _.toStandardDuration.getMillis,
+          new Period(_))
       case CBoolean => Codec.BooleanCodec
       case CString  => Codec.Utf8Codec
       case CLong    => Codec.PackedLongCodec

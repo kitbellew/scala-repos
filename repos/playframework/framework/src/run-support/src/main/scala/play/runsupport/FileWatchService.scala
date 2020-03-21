@@ -63,17 +63,14 @@ object FileWatchService {
   private case object Other extends OS
 
   private val os: OS = {
-    sys.props
-      .get("os.name")
-      .map { name =>
-        name.toLowerCase(Locale.ENGLISH) match {
-          case osx if osx.contains("darwin") || osx.contains("mac") => OSX
-          case windows if windows.contains("windows")               => Windows
-          case linux if linux.contains("linux")                     => Linux
-          case _                                                    => Other
-        }
+    sys.props.get("os.name").map { name =>
+      name.toLowerCase(Locale.ENGLISH) match {
+        case osx if osx.contains("darwin") || osx.contains("mac") => OSX
+        case windows if windows.contains("windows")               => Windows
+        case linux if linux.contains("linux")                     => Linux
+        case _                                                    => Other
       }
-      .getOrElse(Other)
+    }.getOrElse(Other)
   }
 
   def defaultWatchService(
@@ -185,15 +182,13 @@ private object JNotifyFileWatchService {
       addWatchMethod: Method,
       removeWatchMethod: Method) {
     def addWatch(fileOrDirectory: String, listener: AnyRef): Int = {
-      addWatchMethod
-        .invoke(
-          null,
-          fileOrDirectory, // The file or directory to watch
-          15: java.lang.Integer, // flags to say watch for all events
-          true: java.lang.Boolean, // Watch subtree
-          listener
-        )
-        .asInstanceOf[Int]
+      addWatchMethod.invoke(
+        null,
+        fileOrDirectory, // The file or directory to watch
+        15: java.lang.Integer, // flags to say watch for all events
+        true: java.lang.Boolean, // Watch subtree
+        listener
+      ).asInstanceOf[Int]
     }
     def removeWatch(id: Int): Unit = {
       try {
@@ -233,55 +228,51 @@ private object JNotifyFileWatchService {
       case None =>
         val ws = scala.util.control.Exception.allCatch.withTry {
 
-          val classloader = GlobalStaticVar
-            .get[ClassLoader]("FileWatchServiceJNotifyHack")
-            .getOrElse {
-              val jnotifyJarFile = this.getClass.getClassLoader
-                .asInstanceOf[java.net.URLClassLoader]
-                .getURLs
-                .map(_.getFile)
-                .find(_.contains("/jnotify"))
-                .map(new File(_))
-                .getOrElse(sys.error("Missing JNotify?"))
+          val classloader = GlobalStaticVar.get[ClassLoader](
+            "FileWatchServiceJNotifyHack").getOrElse {
+            val jnotifyJarFile = this.getClass.getClassLoader.asInstanceOf[
+              java.net.URLClassLoader].getURLs
+              .map(_.getFile)
+              .find(_.contains("/jnotify"))
+              .map(new File(_))
+              .getOrElse(sys.error("Missing JNotify?"))
 
-              val nativeLibrariesDirectory =
-                new File(targetDirectory, "native_libraries")
+            val nativeLibrariesDirectory =
+              new File(targetDirectory, "native_libraries")
 
-              if (!nativeLibrariesDirectory.exists) {
-                // Unzip native libraries from the jnotify jar to target/native_libraries
-                IO.unzip(
-                  jnotifyJarFile,
-                  targetDirectory,
-                  (name: String) => name.startsWith("native_libraries"))
-              }
-
-              val libs = new File(
-                nativeLibrariesDirectory,
-                System.getProperty(
-                  "sun.arch.data.model") + "bits").getAbsolutePath
-
-              // Hack to set java.library.path
-              System.setProperty(
-                "java.library.path", {
-                  Option(System.getProperty("java.library.path"))
-                    .map { existing =>
-                      existing + java.io.File.pathSeparator + libs
-                    }
-                    .getOrElse(libs)
-                })
-              val fieldSysPath =
-                classOf[ClassLoader].getDeclaredField("sys_paths")
-              fieldSysPath.setAccessible(true)
-              fieldSysPath.set(null, null)
-
-              // Create classloader just for jnotify
-              val loader =
-                new URLClassLoader(Array(jnotifyJarFile.toURI.toURL), null)
-
-              GlobalStaticVar.set("FileWatchServiceJNotifyHack", loader)
-
-              loader
+            if (!nativeLibrariesDirectory.exists) {
+              // Unzip native libraries from the jnotify jar to target/native_libraries
+              IO.unzip(
+                jnotifyJarFile,
+                targetDirectory,
+                (name: String) => name.startsWith("native_libraries"))
             }
+
+            val libs = new File(
+              nativeLibrariesDirectory,
+              System.getProperty(
+                "sun.arch.data.model") + "bits").getAbsolutePath
+
+            // Hack to set java.library.path
+            System.setProperty(
+              "java.library.path", {
+                Option(System.getProperty("java.library.path")).map {
+                  existing => existing + java.io.File.pathSeparator + libs
+                }.getOrElse(libs)
+              })
+            val fieldSysPath =
+              classOf[ClassLoader].getDeclaredField("sys_paths")
+            fieldSysPath.setAccessible(true)
+            fieldSysPath.set(null, null)
+
+            // Create classloader just for jnotify
+            val loader =
+              new URLClassLoader(Array(jnotifyJarFile.toURI.toURL), null)
+
+            GlobalStaticVar.set("FileWatchServiceJNotifyHack", loader)
+
+            loader
+          }
 
           val jnotifyClass =
             classloader.loadClass("net.contentobjects.jnotify.JNotify")
@@ -365,10 +356,8 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
               // If a directory has been created, we must watch it and its sub directories
               events.foreach { event =>
                 if (event.kind == ENTRY_CREATE) {
-                  val file = watchKey.watchable
-                    .asInstanceOf[Path]
-                    .resolve(event.context.asInstanceOf[Path])
-                    .toFile
+                  val file = watchKey.watchable.asInstanceOf[Path].resolve(
+                    event.context.asInstanceOf[Path]).toFile
 
                   if (file.isDirectory) {
                     allSubDirectories(Seq(file)).foreach(watchDir)
@@ -456,8 +445,9 @@ private[runsupport] object GlobalStaticVar {
     mmb.setManagedResource(reference, "ObjectReference")
 
     // Register the Model MBean in the MBean Server
-    ManagementFactory.getPlatformMBeanServer
-      .registerMBean(mmb, objectName(name))
+    ManagementFactory.getPlatformMBeanServer.registerMBean(
+      mmb,
+      objectName(name))
   }
 
   /**

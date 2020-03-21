@@ -9,12 +9,8 @@ object TreeTestJVM extends SpecLite {
 
   "ScalazArbitrary.treeGenSized" ! forAll(Gen.choose(1, 200)) { size =>
     val gen = treeGenSized[Unit](size)
-    Stream
-      .continually(gen.sample)
-      .flatten
-      .take(10)
-      .map(Foldable[Tree].length(_))
-      .forall(_ == size)
+    Stream.continually(gen.sample).flatten.take(10).map(
+      Foldable[Tree].length(_)).forall(_ == size)
   }
 
   "deep Tree flatten should not cause a stack overflow" ! {

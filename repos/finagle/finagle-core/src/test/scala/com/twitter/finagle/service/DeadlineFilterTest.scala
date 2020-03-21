@@ -337,9 +337,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     when(underlying()) thenReturn Future.value(underlyingService)
 
     val s: Stack[ServiceFactory[String, String]] =
-      DeadlineFilter
-        .module[String, String]
-        .toStack(Stack.Leaf(Stack.Role("Service"), underlying))
+      DeadlineFilter.module[String, String].toStack(
+        Stack.Leaf(Stack.Role("Service"), underlying))
 
     val ps: Stack.Params = Stack.Params.empty + param.Stats(h.statsReceiver)
 

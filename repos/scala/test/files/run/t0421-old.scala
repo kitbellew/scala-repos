@@ -24,8 +24,10 @@ object Test extends App {
   println(transpose(a1).deep.mkString("[", ",", "]"))
 
   println(
-    matmul(Array(Array(2, 3)), Array(Array(5), Array(7))).deep
-      .mkString("[", ",", "]"))
+    matmul(Array(Array(2, 3)), Array(Array(5), Array(7))).deep.mkString(
+      "[",
+      ",",
+      "]"))
 
   println(
     matmul(Array(Array(4)), Array(Array(6, 8))).deep.mkString("[", ",", "]"))

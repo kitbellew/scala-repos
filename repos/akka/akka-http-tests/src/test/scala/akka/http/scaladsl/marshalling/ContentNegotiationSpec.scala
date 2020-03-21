@@ -187,12 +187,9 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
         }: _*)
 
       Await.result(
-        Marshal(X)
-          .toResponseFor(request)
-          .fast
-          .map(response ⇒ Some(response.entity.contentType))
-          .fast
-          .recover {
+        Marshal(X).toResponseFor(request)
+          .fast.map(response ⇒ Some(response.entity.contentType))
+          .fast.recover {
             case _: Marshal.UnacceptableResponseContentTypeException ⇒ None
           },
         1.second

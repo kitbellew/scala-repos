@@ -157,8 +157,8 @@ trait DerbyProfile extends JdbcProfile {
             else if (tn.startsWith("varchar")) (true, tn)
             else (false, tn)
           }
-          if (toVarchar && jdbcTypeFor(ch(0).nodeType)
-                .isInstanceOf[NumericTypedType])
+          if (toVarchar && jdbcTypeFor(ch(0).nodeType).isInstanceOf[
+                NumericTypedType])
             b"trim(cast(cast(${ch(0)} as char(30)) as $tn))"
           else b"cast(${ch(0)} as $tn)"
         case Library.IfNull(l, r) =>

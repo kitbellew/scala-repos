@@ -39,11 +39,9 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
   def render(request: HttpServletRequest): Seq[Node] = {
     val appId = request.getParameter("appId")
     val state = master.askWithRetry[MasterStateResponse](RequestMasterState)
-    val app = state.activeApps
-      .find(_.id == appId)
-      .getOrElse({
-        state.completedApps.find(_.id == appId).getOrElse(null)
-      })
+    val app = state.activeApps.find(_.id == appId).getOrElse({
+      state.completedApps.find(_.id == appId).getOrElse(null)
+    })
     if (app == null) {
       val msg = <div class="row-fluid">No running application with ID {
         appId

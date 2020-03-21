@@ -38,9 +38,8 @@ class RuntimeRefRenderer extends NodeRendererImpl {
   override def getUniqueId: String = "ScalaRuntimeRefRenderer"
 
   override def isApplicable(t: Type): Boolean = {
-    t != null && t.name() != null && t.name().startsWith("scala.runtime.") && t
-      .name()
-      .endsWith("Ref")
+    t != null && t.name() != null && t.name().startsWith(
+      "scala.runtime.") && t.name().endsWith("Ref")
   }
 
   override def buildChildren(
@@ -48,8 +47,10 @@ class RuntimeRefRenderer extends NodeRendererImpl {
       builder: ChildrenBuilder,
       context: EvaluationContext): Unit = {
     val descr = unwrappedDescriptor(value, context.getProject)
-    autoRenderer(context.getDebugProcess, descr)
-      .buildChildren(descr.getValue, builder, context)
+    autoRenderer(context.getDebugProcess, descr).buildChildren(
+      descr.getValue,
+      builder,
+      context)
   }
 
   override def isExpandable(
@@ -97,10 +98,8 @@ class RuntimeRefRenderer extends NodeRendererImpl {
   private def autoRenderer(
       debugProcess: DebugProcess,
       valueDescriptor: ValueDescriptor) = {
-    debugProcess
-      .asInstanceOf[DebugProcessImpl]
-      .getAutoRenderer(valueDescriptor)
-      .asInstanceOf[NodeRendererImpl]
+    debugProcess.asInstanceOf[DebugProcessImpl].getAutoRenderer(
+      valueDescriptor).asInstanceOf[NodeRendererImpl]
   }
 
   private def unwrappedDescriptor(ref: Value, project: Project) = {
@@ -129,9 +128,8 @@ class RuntimeRefRenderer extends NodeRendererImpl {
       value: Value,
       evaluationContext: EvaluationContext,
       labelListener: DescriptorLabelListener): String = {
-    BatchEvaluator
-      .getBatchEvaluator(evaluationContext.getDebugProcess)
-      .invoke(new ToStringCommand(evaluationContext, value) {
+    BatchEvaluator.getBatchEvaluator(evaluationContext.getDebugProcess).invoke(
+      new ToStringCommand(evaluationContext, value) {
         def evaluationResult(message: String) {
           valueDescriptor.setValueLabel(StringUtil.notNullize(message))
           labelListener.labelChanged()

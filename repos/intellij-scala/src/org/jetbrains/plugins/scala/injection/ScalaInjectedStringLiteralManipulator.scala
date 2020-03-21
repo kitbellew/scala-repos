@@ -26,9 +26,10 @@ class ScalaInjectedStringLiteralManipulator
       case ScalaTokenTypes.tMULTILINE_STRING => newContent
       case _                                 => StringUtil escapeStringCharacters newContent
     }
-    val newText =
-      oldText.substring(0, range.getStartOffset) + contentString + oldText
-        .substring(range.getEndOffset)
+    val newText = oldText.substring(
+      0,
+      range.getStartOffset) + contentString + oldText.substring(
+      range.getEndOffset)
 
     expr match {
       case inter: ScInterpolatedStringLiteral =>
@@ -71,8 +72,8 @@ class ScalaInjectedStringLiteralManipulator
           case Some(ref) => ref.getText.length
           case _         => 0
         }
-        getLiteralRange(element.getText.substring(prefixLength))
-          .shiftRight(prefixLength)
+        getLiteralRange(element.getText.substring(prefixLength)).shiftRight(
+          prefixLength)
       case _ =>
         getLiteralRange(element.getText)
     }

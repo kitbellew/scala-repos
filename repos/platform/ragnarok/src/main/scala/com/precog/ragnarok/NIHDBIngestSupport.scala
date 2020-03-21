@@ -80,23 +80,20 @@ trait NIHDBIngestSupport
         def next() = enum.nextElement()
         def hasNext = enum.hasMoreElements()
       }.map { zipEntry =>
-          new InputStreamReader(zippedData.getInputStream(zipEntry))
+        new InputStreamReader(zippedData.getInputStream(zipEntry))
+      }.flatMap { reader =>
+        val sb = new StringBuilder
+        val buf = new BufferedReader(reader)
+        var line = buf.readLine
+        while (line != null) {
+          sb.append(line)
+          line = buf.readLine
         }
-        .flatMap { reader =>
-          val sb = new StringBuilder
-          val buf = new BufferedReader(reader)
-          var line = buf.readLine
-          while (line != null) {
-            sb.append(line)
-            line = buf.readLine
-          }
-          val str = sb.toString
-          val rows =
-            JParser.parseManyFromString(str).valueOr(throw _).toIterator
-          reader.close()
-          rows
-        }
-        .toList
+        val str = sb.toString
+        val rows = JParser.parseManyFromString(str).valueOr(throw _).toIterator
+        reader.close()
+        rows
+      }.toList
     } getOrElse {
       JParser.parseManyFromFile(data).valueOr(throw _)
     }
@@ -124,31 +121,32 @@ trait NIHDBIngestSupport
       val projection = {
         for {
           _ <- M point {
-            vfs.unsecured
-              .writeAll(
-                Seq(
-                  (
-                    0,
-                    IngestMessage(
-                      apiKey,
-                      path,
-                      Authorities(accountId),
-                      records,
-                      None,
-                      clock.instant,
-                      StreamRef.Append))))
-              .unsafePerformIO
+            vfs.unsecured.writeAll(
+              Seq(
+                (
+                  0,
+                  IngestMessage(
+                    apiKey,
+                    path,
+                    Authorities(accountId),
+                    records,
+                    None,
+                    clock.instant,
+                    StreamRef.Append)))).unsafePerformIO
           }
           _ = logger.debug(
             "Insert complete on //%s, waiting for cook".format(db))
-          projection <- vfs
-            .readProjection(apiKey, path, Version.Current, AccessMode.Read)
-            .run
+          projection <- vfs.readProjection(
+            apiKey,
+            path,
+            Version.Current,
+            AccessMode.Read).run
         } yield {
           (projection valueOr { err =>
             sys.error(
-              "An error was encountered attempting to read projection at path %s: %s"
-                .format(path, err.toString))
+              "An error was encountered attempting to read projection at path %s: %s".format(
+                path,
+                err.toString))
           }).asInstanceOf[NIHDBResource]
         }
       }.copoint

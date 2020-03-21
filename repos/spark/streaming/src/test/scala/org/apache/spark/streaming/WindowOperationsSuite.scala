@@ -241,8 +241,8 @@ class WindowOperationsSuite extends TestSuiteBase {
     val slideDuration = Seconds(1)
     val numBatches = expectedOutput.size * (slideDuration / batchDuration).toInt
     val operation = (s: DStream[(String, Int)]) => {
-      s.groupByKeyAndWindow(windowDuration, slideDuration)
-        .map(x => (x._1, x._2.toSet))
+      s.groupByKeyAndWindow(windowDuration, slideDuration).map(x =>
+        (x._1, x._2.toSet))
     }
     testOperation(input, operation, expectedOutput, numBatches, true)
   }
@@ -267,8 +267,8 @@ class WindowOperationsSuite extends TestSuiteBase {
     val slideDuration = Seconds(1)
     val numBatches = expectedOutput.size * (slideDuration / batchDuration).toInt
     val operation = (s: DStream[String]) => {
-      s.countByValueAndWindow(windowDuration, slideDuration)
-        .map(x => (x._1, x._2.toInt))
+      s.countByValueAndWindow(windowDuration, slideDuration).map(x =>
+        (x._1, x._2.toInt))
     }
     testOperation(input, operation, expectedOutput, numBatches, true)
   }
@@ -348,11 +348,11 @@ class WindowOperationsSuite extends TestSuiteBase {
       val filterFunc = (p: (String, Int)) => p._2 != 0
       val operation = (s: DStream[(String, Int)]) => {
         s.reduceByKeyAndWindow(
-            _ + _,
-            _ - _,
-            windowDuration,
-            slideDuration,
-            filterFunc = filterFunc)
+          _ + _,
+          _ - _,
+          windowDuration,
+          slideDuration,
+          filterFunc = filterFunc)
           .persist()
           .checkpoint(
             Seconds(100)

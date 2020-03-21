@@ -106,10 +106,11 @@ class EndToEndTest
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
 
-      Contexts.broadcast
-        .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
-          assert(Await.result(client.query("ok")) == "hello context world")
-        }
+      Contexts.broadcast.let(
+        testContext,
+        TestContext(Buf.Utf8("hello context world"))) {
+        assert(Await.result(client.query("ok")) == "hello context world")
+      }
     }
   }
 
@@ -154,12 +155,12 @@ class EndToEndTest
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
 
-      Contexts.broadcast
-        .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
-          assert(
-            Await
-              .result(client.query("ok"), 5.seconds) == "hello context world")
-        }
+      Contexts.broadcast.let(
+        testContext,
+        TestContext(Buf.Utf8("hello context world"))) {
+        assert(
+          Await.result(client.query("ok"), 5.seconds) == "hello context world")
+      }
     }
   }
 
@@ -301,12 +302,12 @@ class EndToEndTest
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
 
-      Contexts.broadcast
-        .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
-          assert(
-            Await
-              .result(client.query("ok"), 5.seconds) == "hello context world")
-        }
+      Contexts.broadcast.let(
+        testContext,
+        TestContext(Buf.Utf8("hello context world"))) {
+        assert(
+          Await.result(client.query("ok"), 5.seconds) == "hello context world")
+      }
     }
   }
 
@@ -755,8 +756,7 @@ class EndToEndTest
       }
     )
 
-    val client = ThriftMux.client
-      .withClientId(ClientId("foo.bar"))
+    val client = ThriftMux.client.withClientId(ClientId("foo.bar"))
       .newIface[TestService.FutureIface](
         Name.bound(
           Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
@@ -865,16 +865,14 @@ class EndToEndTest
     // ThriftMux.server API
     {
       val pf = new TCompactProtocol.Factory
-      val server = ThriftMux.server
-        .withProtocolFactory(pf)
+      val server = ThriftMux.server.withProtocolFactory(pf)
         .serveIface(
           new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
           new TestService.FutureIface {
             def query(x: String) = Future.value(x + x)
           })
 
-      val tcompactClient = ThriftMux.client
-        .withProtocolFactory(pf)
+      val tcompactClient = ThriftMux.client.withProtocolFactory(pf)
         .newIface[TestService.FutureIface](
           Name.bound(
             Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
@@ -893,16 +891,14 @@ class EndToEndTest
     // ThriftMuxServer API
     {
       val pf = new TCompactProtocol.Factory
-      val server = ThriftMuxServer
-        .withProtocolFactory(pf)
+      val server = ThriftMuxServer.withProtocolFactory(pf)
         .serveIface(
           new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
           new TestService.FutureIface {
             def query(x: String) = Future.value(x + x)
           })
 
-      val tcompactClient = ThriftMux.client
-        .withProtocolFactory(pf)
+      val tcompactClient = ThriftMux.client.withProtocolFactory(pf)
         .newIface[TestService.FutureIface](
           Name.bound(
             Address(server.boundAddress.asInstanceOf[InetSocketAddress])),

@@ -75,9 +75,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: time") {
     val conf = new SparkConf()
-    val time = ConfigBuilder("spark.time")
-      .timeConf(TimeUnit.SECONDS)
-      .withDefaultString("1h")
+    val time = ConfigBuilder("spark.time").timeConf(
+      TimeUnit.SECONDS).withDefaultString("1h")
     assert(conf.get(time) === 3600L)
     conf.set(time.key, "1m")
     assert(conf.get(time) === 60L)
@@ -85,9 +84,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: bytes") {
     val conf = new SparkConf()
-    val bytes = ConfigBuilder("spark.bytes")
-      .bytesConf(ByteUnit.KiB)
-      .withDefaultString("1m")
+    val bytes = ConfigBuilder("spark.bytes").bytesConf(
+      ByteUnit.KiB).withDefaultString("1m")
     assert(conf.get(bytes) === 1024L)
     conf.set(bytes.key, "1k")
     assert(conf.get(bytes) === 1L)
@@ -114,7 +112,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: transformation") {
     val conf = new SparkConf()
-    val transformationConf = ConfigBuilder("spark.transformation").stringConf
+    val transformationConf = ConfigBuilder("spark.transformation")
+      .stringConf
       .transform(_.toLowerCase())
       .withDefault("FOO")
 
@@ -125,7 +124,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: valid values check") {
     val conf = new SparkConf()
-    val enum = ConfigBuilder("spark.enum").stringConf
+    val enum = ConfigBuilder("spark.enum")
+      .stringConf
       .checkValues(Set("a", "b", "c"))
       .withDefault("a")
     assert(conf.get(enum) === "a")

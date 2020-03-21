@@ -25,12 +25,8 @@ object Test extends ScaladocModelTest {
     // get the quick access implicit defs in scope (_package(s), _class(es), _trait(s), object(s) _method(s), _value(s))
     import access._
 
-    val a = rootPackage
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("T8857")
-      ._class("A")
+    val a = rootPackage._package("scala")._package("test")._package(
+      "scaladoc")._package("T8857")._class("A")
 
     val links = countLinks(a.comment.get, _.link.isInstanceOf[LinkToExternal])
     assert(links == 1, links + " ==  1 (the links to external in class A)")

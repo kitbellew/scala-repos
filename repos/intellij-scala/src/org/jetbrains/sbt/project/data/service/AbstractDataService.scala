@@ -50,8 +50,11 @@ abstract class AbstractDataService[E, I](key: Key[E])
       projectData: ProjectData,
       project: Project,
       modelsProvider: IdeModifiableModelsProvider): Unit =
-    createImporter(toImport.toSeq, projectData, project, modelsProvider)
-      .importData()
+    createImporter(
+      toImport.toSeq,
+      projectData,
+      project,
+      modelsProvider).importData()
 }
 
 /**
@@ -93,9 +96,8 @@ trait Importer[E] {
   // FIXME: should be implemented in External System
   def getModifiableLibraryModelEx(
       library: Library): LibraryEx.ModifiableModelEx =
-    modelsProvider
-      .getModifiableLibraryModel(library)
-      .asInstanceOf[LibraryEx.ModifiableModelEx]
+    modelsProvider.getModifiableLibraryModel(library).asInstanceOf[
+      LibraryEx.ModifiableModelEx]
 
   // Utility methods
 
@@ -106,16 +108,13 @@ trait Importer[E] {
     } yield module
 
   def getScalaLibraries: Set[Library] =
-    modelsProvider.getAllLibraries
-      .filter(l => Option(l.getName).exists(_.contains(ScalaLibraryName)))
-      .toSet
+    modelsProvider.getAllLibraries.filter(l =>
+      Option(l.getName).exists(_.contains(ScalaLibraryName))).toSet
 
   def getScalaLibraries(module: Module): Set[Library] = {
     val collector = new CollectProcessor[Library]()
-    getModifiableRootModel(module)
-      .orderEntries()
-      .librariesOnly()
-      .forEachLibrary(collector)
+    getModifiableRootModel(
+      module).orderEntries().librariesOnly().forEachLibrary(collector)
     collector.getResults.toSet.filter(l =>
       Option(l.getName).exists(_.contains(ScalaLibraryName)))
   }

@@ -96,28 +96,24 @@ class HttpEventActor(
     log.info("POSTing to all endpoints.")
     val me = self
     import context.dispatcher
-    (subscribersKeeper ? GetSubscribers)
-      .mapTo[EventSubscribers]
-      .map { subscribers => me ! Broadcast(event, subscribers) }
-      .onFailure {
-        case NonFatal(e) =>
-          log.error("While trying to resolve subscribers for event {}", event)
-      }
+    (subscribersKeeper ? GetSubscribers).mapTo[EventSubscribers].map {
+      subscribers => me ! Broadcast(event, subscribers)
+    }.onFailure {
+      case NonFatal(e) =>
+        log.error("While trying to resolve subscribers for event {}", event)
+    }
   }
 
   def broadcast(event: MarathonEvent, subscribers: EventSubscribers): Unit = {
     val (active, limited) = subscribers.urls.partition(limiter(_).notLimited)
     if (limited.nonEmpty) {
       log.info(
-        s"""Will not send event ${event.eventType} to unresponsive hosts: ${limited
-          .mkString(" ")}""")
+        s"""Will not send event ${event.eventType} to unresponsive hosts: ${limited.mkString(
+          " ")}""")
     }
     //remove all unsubscribed callback listener
-    limiter = limiter
-      .filterKeys(subscribers.urls)
-      .iterator
-      .toMap
-      .withDefaultValue(NoLimit)
+    limiter = limiter.filterKeys(
+      subscribers.urls).iterator.toMap.withDefaultValue(NoLimit)
     metrics.skippedCallbacks.mark(limited.size)
     active.foreach(post(_, event, self))
   }

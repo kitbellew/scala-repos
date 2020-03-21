@@ -48,17 +48,14 @@ object PovToEntry {
     else
       lila.game.Pov.ofUserId(game, userId) ?? { pov =>
         lila.game.GameRepo.initialFen(game) zip
-          (game.metadata.analysed ?? lila.analyse.AnalysisRepo
-            .byId(game.id)) map {
+          (game.metadata.analysed ?? lila.analyse.AnalysisRepo.byId(
+            game.id)) map {
           case (fen, an) =>
             for {
-              boards <- chess.Replay
-                .boards(
-                  moveStrs = game.pgnMoves,
-                  initialFen = fen,
-                  variant = game.variant)
-                .toOption
-                .flatMap(_.toNel)
+              boards <- chess.Replay.boards(
+                moveStrs = game.pgnMoves,
+                initialFen = fen,
+                variant = game.variant).toOption.flatMap(_.toNel)
               movetimes <- game.moveTimes(pov.color).toNel
             } yield RichPov(
               pov = pov,
@@ -135,8 +132,8 @@ object PovToEntry {
 
   private def queenTrade(from: RichPov) =
     QueenTrade {
-      from.division.end
-        .fold(from.boards.last.some)(from.boards.list.lift) match {
+      from.division.end.fold(from.boards.last.some)(
+        from.boards.list.lift) match {
         case Some(board) =>
           chess.Color.all.forall { color =>
             !board.hasPiece(chess.Piece(color, chess.Queen))

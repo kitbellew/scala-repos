@@ -50,6 +50,6 @@ object TypeDescriptor {
     * null handling.
     */
   implicit def typeDescriptor[T]: TypeDescriptor[T] =
-    macro com.twitter.scalding.macros.impl.TypeDescriptorProviderImpl
-      .caseClassTypeDescriptorImpl[T]
+    macro com.twitter.scalding.macros.impl.TypeDescriptorProviderImpl.caseClassTypeDescriptorImpl[
+      T]
 }

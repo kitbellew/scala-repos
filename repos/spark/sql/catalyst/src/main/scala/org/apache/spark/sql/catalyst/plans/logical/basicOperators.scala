@@ -93,11 +93,11 @@ case class Generate(
   override def producedAttributes: AttributeSet = AttributeSet(generatorOutput)
 
   def output: Seq[Attribute] = {
-    val qualified = qualifier
-      .map(q =>
+    val qualified =
+      qualifier.map(q =>
         // prepend the new qualifier to the existed one
-        generatorOutput.map(a => a.withQualifiers(q +: a.qualifiers)))
-      .getOrElse(generatorOutput)
+        generatorOutput.map(a =>
+          a.withQualifiers(q +: a.qualifiers))).getOrElse(generatorOutput)
 
     if (join) child.output ++ qualified else qualified
   }
@@ -212,10 +212,8 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
 
   // updating nullability to make all the children consistent
   override def output: Seq[Attribute] =
-    children
-      .map(_.output)
-      .transpose
-      .map(attrs => attrs.head.withNullability(attrs.exists(_.nullable)))
+    children.map(_.output).transpose.map(attrs =>
+      attrs.head.withNullability(attrs.exists(_.nullable)))
 
   override lazy val resolved: Boolean = {
     // allChildrenCompatible needs to be evaluated after childrenResolved

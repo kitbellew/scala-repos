@@ -100,8 +100,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     def visitInner(
         file: VirtualFile,
         scope: AnalysisScope,
-        acc: mutable.MutableList[VirtualFile] = mutable
-          .MutableList[VirtualFile]()): mutable.MutableList[VirtualFile] = {
+        acc: mutable.MutableList[VirtualFile] =
+          mutable.MutableList[VirtualFile]())
+        : mutable.MutableList[VirtualFile] = {
       if (file == null) return acc
       if (file.isDirectory) {
         for (c <- file.getChildren) {
@@ -197,11 +198,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
     val modules = ModuleManager.getInstance(project).getModules
 
-    val sourcePath = OrderEnumerator
-      .orderEntries(project)
-      .withoutLibraries()
-      .withoutSdk()
-      .getAllSourceRoots
+    val sourcePath = OrderEnumerator.orderEntries(
+      project).withoutLibraries().withoutSdk().getAllSourceRoots
     val documentableFilesList = ListBuffer.apply[String]()
     val allModules = MutableHashSet.apply(modules: _*)
     val modulesNeeded = MutableHashSet.apply[Module]()

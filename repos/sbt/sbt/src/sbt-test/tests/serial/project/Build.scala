@@ -11,8 +11,8 @@ object SomeBuild extends Build {
   )
 
   lazy val parent: Project =
-    Project("root", file("."), aggregate = Seq(sub1, sub2))
-      .settings(buildSettings: _*)
+    Project("root", file("."), aggregate = Seq(sub1, sub2)).settings(
+      buildSettings: _*)
 
   lazy val sub1: Project =
     Project("sub1", file("sub1")).settings(buildSettings: _*).dependsOn(parent)

@@ -142,8 +142,10 @@ class TestingUtilsSuite extends SparkFunSuite {
         Array(3.13, 0.0)) relTol 0.01)
 
     intercept[TestFailedException](
-      Vectors.dense(Array(3.1, 0.01)) ~== Vectors
-        .sparse(2, Array(0), Array(3.13)) relTol 0.01)
+      Vectors.dense(Array(3.1, 0.01)) ~== Vectors.sparse(
+        2,
+        Array(0),
+        Array(3.13)) relTol 0.01)
 
     // Comparisons of two sparse vectors
     assert(

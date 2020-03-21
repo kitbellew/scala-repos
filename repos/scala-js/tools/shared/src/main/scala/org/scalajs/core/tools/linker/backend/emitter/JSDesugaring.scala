@@ -138,8 +138,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       params: List[ParamDef],
       body: Tree,
       isStat: Boolean)(implicit pos: Position): js.Function = {
-    new JSDesugar(classEmitter, enclosingClassName, thisIdent)
-      .desugarToFunction(params, body, isStat)
+    new JSDesugar(
+      classEmitter,
+      enclosingClassName,
+      thisIdent).desugarToFunction(params, body, isStat)
   }
 
   /** Desugars a statement or an expression. */
@@ -1447,8 +1449,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 AnyType,
                 mutable = false,
                 JSObjectConstr(Nil))
-              val assignFields = fields
-                .foldRight((Set.empty[String], List.empty[Tree])) {
+              val assignFields =
+                fields.foldRight((Set.empty[String], List.empty[Tree])) {
                   case ((prop, value), (namesSeen, statsAcc)) =>
                     implicit val pos = value.pos
                     val name = prop.name
@@ -1464,8 +1466,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                         Assign(JSBracketSelect(objVarDef.ref, prop), value)
                     }
                     (namesSeen + name, stat :: statsAcc)
-                }
-                ._2
+                }._2
               redo {
                 Block(objVarDef :: assignFields ::: objVarDef.ref :: Nil)
               }

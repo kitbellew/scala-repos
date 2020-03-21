@@ -439,19 +439,16 @@ object ZMembers {
       size % 2 == 0 && size > 0,
       "Unexpected uneven pair of elements")
 
-    args
-      .grouped(2)
-      .map {
-        case score :: member :: Nil =>
-          ZMember(
-            RequireClientProtocol.safe {
-              NumberFormat.toDouble(BytesToString(score))
-            },
-            ChannelBuffers.wrappedBuffer(member))
-        case _ =>
-          throw ClientError("Unexpected uneven pair of elements in members")
-      }
-      .toSeq
+    args.grouped(2).map {
+      case score :: member :: Nil =>
+        ZMember(
+          RequireClientProtocol.safe {
+            NumberFormat.toDouble(BytesToString(score))
+          },
+          ChannelBuffers.wrappedBuffer(member))
+      case _ =>
+        throw ClientError("Unexpected uneven pair of elements in members")
+    }.toSeq
   }
 }
 

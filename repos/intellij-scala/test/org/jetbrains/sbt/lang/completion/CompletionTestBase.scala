@@ -37,8 +37,9 @@ abstract class CompletionTestBase
     val fileText =
       Sbt.DefaultImplicitImports.map("import " + _).mkString("\n") + "\n" +
         StringUtil.convertLineSeparators(
-          FileUtil
-            .loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
+          FileUtil.loadFile(
+            new File(file.getCanonicalPath),
+            CharsetToolkit.UTF8))
     val mockFile = new LightVirtualFile(fileName, fileText)
     assert(mockFile != null, "Mock file can not be created")
     (fileName, mockFile)
@@ -53,18 +54,17 @@ abstract class CompletionTestBase
   override def checkResult(got: Array[String], _expected: String) {
     import scala.collection.JavaConversions._
     val expected = _expected.split("\n")
-    UsefulTestCase
-      .assertContainsElements[String](got.toSet.toSeq, expected.toSeq)
+    UsefulTestCase.assertContainsElements[String](
+      got.toSet.toSeq,
+      expected.toSeq)
   }
 
   override def setUp() {
     super.setUpWithoutScalaLib()
     addSbtAsModuleDependency(getModuleAdapter)
     inWriteAction(
-      StartupManager
-        .getInstance(getProjectAdapter)
-        .asInstanceOf[StartupManagerImpl]
-        .startCacheUpdate())
+      StartupManager.getInstance(getProjectAdapter).asInstanceOf[
+        StartupManagerImpl].startCacheUpdate())
     FileUtil.delete(SbtResolverIndexesManager.DEFAULT_INDEXES_DIR)
   }
 

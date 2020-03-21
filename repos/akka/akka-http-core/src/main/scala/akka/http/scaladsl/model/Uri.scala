@@ -355,9 +355,10 @@ object Uri {
       uri: ParserInput,
       charset: Charset = UTF8,
       mode: Uri.ParsingMode = Uri.ParsingMode.Relaxed): String =
-    UriRendering
-      .renderUri(new StringRendering, apply(uri, charset, mode), charset)
-      .get
+    UriRendering.renderUri(
+      new StringRendering,
+      apply(uri, charset, mode),
+      charset).get
 
   /**
     * Converts a set of URI components to an "effective HTTP request URI" as defined by
@@ -523,10 +524,8 @@ object Uri {
       import CharUtils.{hexValue ⇒ hex}
       require(bytes.length == 32, "`bytes` must be a 32 character hex string")
       apply(
-        bytes.toCharArray
-          .grouped(2)
-          .map(s ⇒ (hex(s(0)) * 16 + hex(s(1))).toByte)
-          .toArray,
+        bytes.toCharArray.grouped(2).map(s ⇒
+          (hex(s(0)) * 16 + hex(s(1))).toByte).toArray,
         address)
     }
     private[http] def apply(bytes: Array[Byte], address: String): IPv6Host =
@@ -1147,8 +1146,8 @@ object UriRendering {
     val asciiCompatible = isAsciiCompatible(charset)
     @tailrec def rec(ix: Int): r.type = {
       def appendEncoded(byte: Byte): Unit =
-        r ~~ '%' ~~ CharUtils.upperHexDigit(byte >>> 4) ~~ CharUtils
-          .upperHexDigit(byte)
+        r ~~ '%' ~~ CharUtils.upperHexDigit(
+          byte >>> 4) ~~ CharUtils.upperHexDigit(byte)
       if (ix < string.length) {
         val charSize = string.charAt(ix) match {
           case c if keep(c) ⇒ { r ~~ c; 1 }

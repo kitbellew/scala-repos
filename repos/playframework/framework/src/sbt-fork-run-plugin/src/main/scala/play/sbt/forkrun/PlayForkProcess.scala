@@ -136,10 +136,8 @@ object PlayForkProcess {
     }
   }
 
-  val isWindows: Boolean = sys
-    .props("os.name")
-    .toLowerCase(java.util.Locale.ENGLISH)
-    .contains("windows")
+  val isWindows: Boolean = sys.props("os.name").toLowerCase(
+    java.util.Locale.ENGLISH).contains("windows")
 
   val MaxOptionsLength = 5000
 

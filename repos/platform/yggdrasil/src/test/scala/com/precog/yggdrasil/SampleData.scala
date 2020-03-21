@@ -48,9 +48,8 @@ case class SampleData(
     data: Stream[JValue],
     schema: Option[(Int, JSchema)] = None) {
   override def toString = {
-    "SampleData: \ndata = " + data
-      .map(_.toString.replaceAll("\n", "\n  "))
-      .mkString("[\n  ", ",\n  ", "]\n") +
+    "SampleData: \ndata = " + data.map(
+      _.toString.replaceAll("\n", "\n  ")).mkString("[\n  ", ",\n  ", "]\n") +
       "\nschema: " + schema
   }
 
@@ -59,9 +58,9 @@ case class SampleData(
 
 object SampleData extends CValueGenerators {
   def toRecord(ids: Array[Long], jv: JValue): JValue = {
-    JObject(Nil)
-      .set(JPath(".key"), JArray(ids.map(JNum(_)).toList))
-      .set(JPath(".value"), jv)
+    JObject(Nil).set(JPath(".key"), JArray(ids.map(JNum(_)).toList)).set(
+      JPath(".value"),
+      jv)
   }
 
   implicit def keyOrder[A]: scala.math.Ordering[(Identities, A)] =

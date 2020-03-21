@@ -70,13 +70,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
 
     // collect Item as Map and convert ID to Int index
-    val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
-      .collectAsMap
-      .toMap
+    val items: Map[Int, Item] = data.items.map {
+      case (id, item) =>
+        (itemStringIntMap(id), item)
+    }.collectAsMap.toMap
 
     val mllibRatings = data.rateEvents
       .map { r =>
@@ -93,8 +90,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
             + " to Int index.")
 
         ((uindex, iindex), (r.rating, r.t)) //MODIFIED
-      }
-      .filter {
+      }.filter {
         case ((u, i), v) =>
           // keep events with valid user and item index
           (u != -1) && (i != -1)
@@ -113,8 +109,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         case ((u, i), (rating, t)) => // MODIFIED
           // MLlibRating requires integer index for user and item
           MLlibRating(u, i, rating) // MODIFIED
-      }
-      .cache()
+      }.cache()
 
     // MLLib ALS cannot handle empty training data.
     require(
@@ -145,12 +140,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val productFeatures = model.productFeatures
 
     // convert items to Int index
-    val queryList: Set[Int] =
-      query.items.map(model.itemStringIntMap.get(_)).flatten.toSet
+    val queryList: Set[Int] = query.items.map(model.itemStringIntMap.get(_))
+      .flatten.toSet
 
     val queryFeatures: Vector[Array[Double]] = queryList.toVector
     // productFeatures may not contain the requested item
-    .map { item => productFeatures.get(item) }.flatten
+      .map { item => productFeatures.get(item) }
+      .flatten
 
     val whiteList: Option[Set[Int]] =
       query.whiteList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
@@ -246,16 +242,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // discard items in query as well
     (!queryList.contains(i)) &&
     // filter categories
-    categories
-      .map { cat =>
-        items(i).categories
-          .map { itemCat =>
-            // keep this item if has ovelap categories with the query
-            !(itemCat.toSet.intersect(cat).isEmpty)
-          }
-          .getOrElse(false) // discard this item if it has no categories
-      }
-      .getOrElse(true)
+    categories.map { cat =>
+      items(i).categories.map { itemCat =>
+        // keep this item if has ovelap categories with the query
+        !(itemCat.toSet.intersect(cat).isEmpty)
+      }.getOrElse(false) // discard this item if it has no categories
+    }.getOrElse(true)
   }
 
 }

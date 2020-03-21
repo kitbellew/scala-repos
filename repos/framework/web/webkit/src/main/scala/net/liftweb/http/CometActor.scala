@@ -1515,8 +1515,9 @@ private[http] class XmlOrJsCmd(
     val updateJs =
       (if (ignoreHtmlOnJs) Empty else xml, javaScript, displayAll) match {
         case (Full(xml), Full(js), false) =>
-          LiftRules.jsArtifacts.setHtml(id, Helpers.stripHead(xml)) & JsCmds
-            .JsTry(js, false)
+          LiftRules.jsArtifacts.setHtml(
+            id,
+            Helpers.stripHead(xml)) & JsCmds.JsTry(js, false)
         case (Full(xml), _, false) =>
           LiftRules.jsArtifacts.setHtml(id, Helpers.stripHead(xml))
         case (Full(xml), Full(js), true) =>
@@ -1549,9 +1550,8 @@ private[http] class XmlOrJsCmd(
       fullUpdateJs &
       JsCmds.JsTry(
         JsCmds.Run(
-          "destroy_" + id + " = function() {" + (destroy
-            .openOr(JsCmds.Noop)
-            .toJsCmd) + "};"),
+          "destroy_" + id + " = function() {" + (destroy.openOr(
+            JsCmds.Noop).toJsCmd) + "};"),
         false)
 
     S.appendNotices(notices)
@@ -1564,10 +1564,8 @@ private[http] class XmlOrJsCmd(
 
   def outSpan: NodeSeq =
     Script(
-      Run(
-        "var destroy_" + id + " = function() {" + (destroy
-          .openOr(JsCmds.Noop)
-          .toJsCmd) + "}")) ++
+      Run("var destroy_" + id + " = function() {" + (destroy.openOr(
+        JsCmds.Noop).toJsCmd) + "}")) ++
       fixedXhtml.openOr(Text(""))
 }
 

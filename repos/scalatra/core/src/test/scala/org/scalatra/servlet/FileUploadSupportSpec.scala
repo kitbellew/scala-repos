@@ -11,16 +11,16 @@ class FileUploadSupportSpecServlet
     extends ScalatraServlet
     with FileUploadSupport {
   def headersToHeaders() {
-    request.getHeaderNames
-      .filter(_.startsWith("X"))
-      .foreach(header => response.setHeader(header, request.getHeader(header)))
+    request.getHeaderNames.filter(_.startsWith("X")).foreach(header =>
+      response.setHeader(header, request.getHeader(header)))
   }
 
   def fileParamsToHeaders() {
     fileParams.foreach(fileParam => {
       response.setHeader("File-" + fileParam._1 + "-Name", fileParam._2.name)
-      response
-        .setHeader("File-" + fileParam._1 + "-Size", fileParam._2.size.toString)
+      response.setHeader(
+        "File-" + fileParam._1 + "-Size",
+        fileParam._2.size.toString)
       response.setHeader(
         "File-" + fileParam._1 + "-SHA",
         DigestUtils.shaHex(fileParam._2.get()))

@@ -66,8 +66,7 @@ private[ui] class HistoryNotFoundPage(parent: MasterWebUI)
             .map { e => URLDecoder.decode(e, "UTF-8") }
             .map { e => <pre>{e}</pre> }
             .getOrElse(Seq.empty)
-      }
-      .getOrElse(defaultContent)
+      }.getOrElse(defaultContent)
 
     UIUtils.basicSparkPage(content, title)
   }

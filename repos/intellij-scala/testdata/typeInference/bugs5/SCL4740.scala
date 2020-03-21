@@ -39,33 +39,32 @@ object PhoneCode {
       def format = original + ": " + translated.trim
       def ifFinished = if (remaining.isEmpty) Some(List(this)) else None
     }
-    val result = phoneEntries
-      .flatMap(phoneNumber => {
-        // 16 lines
-        def collectPossibleTranslations(current: Step): Seq[Step] = {
-          current.ifFinished.getOrElse({
-            def allMatches(matchAgainst: String) = {
-              //collect all possible next translation steps of the remaining numbers
-              val matchingWords = (for (len <- 1 to matchAgainst.length;
-                                        opt <- dictEntriesDigified2Words.get(
-                                          matchAgainst.take(len)))
-                yield opt).flatten
-              if (matchingWords.nonEmpty) //spead the tree
-                for ((translated, remaining) <- matchingWords.map(e =>
-                       e -> matchAgainst.drop(e.count(_.isLetter))))
-                  yield (current
-                    .copy(current.translated + " " + translated, remaining))
-              else current.asFallback(matchAgainst)
-            }
-            allMatches(current.remaining).flatMap(collectPossibleTranslations)
-          })
-        }
-        /*start*/
-        collectPossibleTranslations(
-          Step("", cleanString(phoneNumber), phoneNumber)
-        ) /*end*/
-      })
-      .toSet
+    val result = phoneEntries.flatMap(phoneNumber => {
+      // 16 lines
+      def collectPossibleTranslations(current: Step): Seq[Step] = {
+        current.ifFinished.getOrElse({
+          def allMatches(matchAgainst: String) = {
+            //collect all possible next translation steps of the remaining numbers
+            val matchingWords = (for (len <- 1 to matchAgainst.length;
+                                      opt <- dictEntriesDigified2Words.get(
+                                        matchAgainst.take(len)))
+              yield opt).flatten
+            if (matchingWords.nonEmpty) //spead the tree
+              for ((translated, remaining) <- matchingWords.map(e =>
+                     e -> matchAgainst.drop(e.count(_.isLetter))))
+                yield (current.copy(
+                  current.translated + " " + translated,
+                  remaining))
+            else current.asFallback(matchAgainst)
+          }
+          allMatches(current.remaining).flatMap(collectPossibleTranslations)
+        })
+      }
+      /*start*/
+      collectPossibleTranslations(
+        Step("", cleanString(phoneNumber), phoneNumber)
+      ) /*end*/
+    }).toSet
     //actual solution ends here, total non comment line code: 32 (+6 for package, import, main method)
     //result checking to prove it's working
     val resultFormatted = result.map(_.format)

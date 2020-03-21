@@ -36,8 +36,8 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
         }
         val classNames = classes.asScala.map(_.name())
         Assert.assertTrue(
-          s"Wrong classes are found at ${position.toString} (found: ${classNames
-            .mkString(", ")}, expected: $className",
+          s"Wrong classes are found at ${position.toString} (found: ${classNames.mkString(
+            ", ")}, expected: $className",
           classNames.contains(className))
       }
     }

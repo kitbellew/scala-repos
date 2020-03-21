@@ -90,11 +90,10 @@ trait RawJsonStorageModule[M[+_]] { self =>
 
       projections += (path -> json.elements)
 
-      val structure: Set[ColumnRef] = json.elements
-        .foldLeft(Map.empty[ColumnRef, ArrayColumn[_]]) { (acc, jv) =>
-          Slice.withIdsAndValues(jv, acc, 0, 1)
-        }
-        .keySet
+      val structure: Set[ColumnRef] =
+        json.elements.foldLeft(Map.empty[ColumnRef, ArrayColumn[_]]) {
+          (acc, jv) => Slice.withIdsAndValues(jv, acc, 0, 1)
+        }.keySet
       structures += (path -> structure)
     }
   }
@@ -105,9 +104,9 @@ trait RawJsonStorageModule[M[+_]] { self =>
   import java.util.regex.Pattern
 
   val reflections = new Reflections(
-    new ConfigurationBuilder()
-      .setUrls(ClasspathHelper.forPackage("test_data"))
-      .setScanners(new ResourcesScanner()))
+    new ConfigurationBuilder().setUrls(
+      ClasspathHelper.forPackage("test_data")).setScanners(
+      new ResourcesScanner()))
   val jsonFiles = reflections.getResources(Pattern.compile(".*\\.json"))
   for (resource <- jsonFiles.asScala)
     load(Path(resource.replaceAll("test_data/", "").replaceAll("\\.json", "")))
@@ -120,9 +119,8 @@ trait RawJsonStorageModule[M[+_]] { self =>
         path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
       EitherT.right {
         M.point(
-          projections.keySet
-            .filter(_.isDirectChildOf(path))
-            .map(PathMetadata(_, DataOnly(FileContent.XQuirrelData)))
+          projections.keySet.filter(_.isDirectChildOf(path)).map(
+            PathMetadata(_, DataOnly(FileContent.XQuirrelData)))
         )
       }
 
@@ -134,14 +132,13 @@ trait RawJsonStorageModule[M[+_]] { self =>
       EitherT.right {
         M.point {
           val structs = structures.getOrElse(path, Set.empty[ColumnRef])
-          val types: Map[CType, Long] = structs
-            .collect {
-              // FIXME: This should use real counts
-              case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
-                (ctype, 0L)
-            }
-            .groupBy(_._1)
-            .map { case (tpe, values) => (tpe, values.map(_._2).sum) }
+          val types: Map[CType, Long] = structs.collect {
+            // FIXME: This should use real counts
+            case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
+              (ctype, 0L)
+          }.groupBy(_._1).map {
+            case (tpe, values) => (tpe, values.map(_._2).sum)
+          }
 
           PathStructure(types, structs.map(_.selector))
         }

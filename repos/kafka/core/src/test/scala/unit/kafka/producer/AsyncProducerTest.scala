@@ -47,10 +47,10 @@ class AsyncProducerTest {
   // One of the few cases we can just set a fixed port because the producer is mocked out here since this uses mocks
   val props = Seq(createBrokerConfig(1, "127.0.0.1:1", port = 65534))
   val configs = props.map(KafkaConfig.fromProps)
-  val brokerList = configs
-    .map(c =>
-      org.apache.kafka.common.utils.Utils.formatAddress(c.hostName, c.port))
-    .mkString(",")
+  val brokerList = configs.map(c =>
+    org.apache.kafka.common.utils.Utils.formatAddress(
+      c.hostName,
+      c.port)).mkString(",")
 
   @Test
   def testProducerQueueSize() {
@@ -277,9 +277,8 @@ class AsyncProducerTest {
 
   @Test
   def testSerializeEvents() {
-    val produceData = TestUtils
-      .getMsgStrings(5)
-      .map(m => new KeyedMessage[String, String]("topic1", m))
+    val produceData = TestUtils.getMsgStrings(5).map(m =>
+      new KeyedMessage[String, String]("topic1", m))
     val props = new Properties()
     props.put("metadata.broker.list", brokerList)
     val config = new ProducerConfig(props)
@@ -521,22 +520,18 @@ class AsyncProducerTest {
           ProducerResponseStatus(Errors.NONE.code, 0L))))
     val mockSyncProducer = EasyMock.createMock(classOf[SyncProducer])
     // don't care about config mock
-    EasyMock
-      .expect(mockSyncProducer.config)
-      .andReturn(EasyMock.anyObject())
-      .anyTimes()
-    EasyMock
-      .expect(mockSyncProducer.send(request1))
-      .andThrow(new RuntimeException) // simulate SocketTimeoutException
+    EasyMock.expect(mockSyncProducer.config).andReturn(
+      EasyMock.anyObject()).anyTimes()
+    EasyMock.expect(mockSyncProducer.send(request1)).andThrow(
+      new RuntimeException
+    ) // simulate SocketTimeoutException
     EasyMock.expect(mockSyncProducer.send(request2)).andReturn(response1)
     EasyMock.expect(mockSyncProducer.send(request3)).andReturn(response2)
     EasyMock.replay(mockSyncProducer)
 
     val producerPool = EasyMock.createMock(classOf[ProducerPool])
-    EasyMock
-      .expect(producerPool.getProducer(0))
-      .andReturn(mockSyncProducer)
-      .times(4)
+    EasyMock.expect(producerPool.getProducer(0)).andReturn(
+      mockSyncProducer).times(4)
     EasyMock.expect(producerPool.close())
     EasyMock.replay(producerPool)
     val time = new Time {

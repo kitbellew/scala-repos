@@ -108,16 +108,11 @@ private[controllers] object AssetInfo {
   import ResponseHeader.basicDateFormatPattern
 
   val standardDateParserWithoutTZ: DateTimeFormatter =
-    DateTimeFormat
-      .forPattern(basicDateFormatPattern)
-      .withLocale(java.util.Locale.ENGLISH)
-      .withZone(DateTimeZone.UTC)
+    DateTimeFormat.forPattern(basicDateFormatPattern).withLocale(
+      java.util.Locale.ENGLISH).withZone(DateTimeZone.UTC)
   val alternativeDateFormatWithTZOffset: DateTimeFormatter =
-    DateTimeFormat
-      .forPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z")
-      .withLocale(java.util.Locale.ENGLISH)
-      .withZone(DateTimeZone.UTC)
-      .withOffsetParsed
+    DateTimeFormat.forPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z").withLocale(
+      java.util.Locale.ENGLISH).withZone(DateTimeZone.UTC).withOffsetParsed
 
   /**
     * A regex to find two types of date format. This regex silently ignores any
@@ -145,9 +140,8 @@ private[controllers] object AssetInfo {
           val alternativeDate =
             matcher.group(6) // Cannot be null otherwise match would have failed
           Some(
-            alternativeDateFormatWithTZOffset
-              .parseDateTime(alternativeDate)
-              .toDate)
+            alternativeDateFormatWithTZOffset.parseDateTime(
+              alternativeDate).toDate)
         }
       } catch {
         case e: IllegalArgumentException =>
@@ -194,17 +188,14 @@ private[controllers] class AssetInfo(
 
   val lastModified: Option[String] = {
     def getLastModified[T <: URLConnection](f: (T) => Long): Option[String] = {
-      Option(url.openConnection)
-        .map {
-          case urlConnection: T @unchecked =>
-            try {
-              f(urlConnection)
-            } finally {
-              Resources.closeUrlConnection(urlConnection)
-            }
-        }
-        .filterNot(_ == -1)
-        .map(httpDateFormat.print)
+      Option(url.openConnection).map {
+        case urlConnection: T @unchecked =>
+          try {
+            f(urlConnection)
+          } finally {
+            Resources.closeUrlConnection(urlConnection)
+          }
+      }.filterNot(_ == -1).map(httpDateFormat.print)
     }
 
     url.getProtocol match {
@@ -345,9 +336,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
   private[controllers] def assetInfoForRequest(
       request: RequestHeader,
       name: String): Future[Option[(AssetInfo, Boolean)]] = {
-    val gzipRequested = request.headers
-      .get(ACCEPT_ENCODING)
-      .exists(_.split(',').exists(_.trim == "gzip"))
+    val gzipRequested = request.headers.get(ACCEPT_ENCODING).exists(
+      _.split(',').exists(_.trim == "gzip"))
     assetInfo(name).map(_.map(_ -> gzipRequested))(Implicits.trampoline)
   }
 
@@ -364,12 +354,10 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     implicit def string2Asset(name: String) = new Asset(name)
 
     private def pathFromParams(rrc: ReverseRouteContext): String = {
-      rrc.fixedParams
-        .getOrElse(
-          "path",
-          throw new RuntimeException(
-            "Asset path bindable must be used in combination with an action that accepts a path parameter"))
-        .toString
+      rrc.fixedParams.getOrElse(
+        "path",
+        throw new RuntimeException(
+          "Asset path bindable must be used in combination with an action that accepts a path parameter")).toString
     }
 
     implicit def assetPathBindable(implicit rrc: ReverseRouteContext) =
@@ -381,13 +369,10 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
           val path = base + "/" + value.name
           blocking {
             val minPath = minifiedPath(path)
-            digest(minPath)
-              .fold(minPath) { dgst =>
-                val lastSep = minPath.lastIndexOf("/")
-                minPath.take(lastSep + 1) + dgst + "-" + minPath.drop(
-                  lastSep + 1)
-              }
-              .drop(base.size + 1)
+            digest(minPath).fold(minPath) { dgst =>
+              val lastSep = minPath.lastIndexOf("/")
+              minPath.take(lastSep + 1) + dgst + "-" + minPath.drop(lastSep + 1)
+            }.drop(base.size + 1)
           }
         }
       }
@@ -413,10 +398,9 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     // accordance with section 14.26 of RFC2616.
     request.headers.get(IF_NONE_MATCH) match {
       case Some(etags) =>
-        assetInfo.etag
-          .filter(someEtag => etags.split(',').exists(_.trim == someEtag))
-          .flatMap(_ =>
-            Some(cacheableResult(assetInfo, aggressiveCaching, NotModified)))
+        assetInfo.etag.filter(someEtag =>
+          etags.split(',').exists(_.trim == someEtag)).flatMap(_ =>
+          Some(cacheableResult(assetInfo, aggressiveCaching, NotModified)))
       case None =>
         for {
           ifModifiedSinceStr <- request.headers.get(IF_MODIFIED_SINCE)
@@ -458,9 +442,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     val response = if (length > 0) {
       Ok.sendEntity(
         HttpEntity.Streamed(
-          akka.stream.scaladsl.Source
-            .fromPublisher(Streams.enumeratorToPublisher(resourceData))
-            .map(ByteString.apply),
+          akka.stream.scaladsl.Source.fromPublisher(
+            Streams.enumeratorToPublisher(resourceData)).map(ByteString.apply),
           Some(length),
           Some(mimeType)
         ))

@@ -77,8 +77,8 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
         val rs: SparseVector[T] = result.toSparseVector(true, true)
         a.use(rs.index, rs.data, rs.activeSize)
       }
-      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]].register(
+        this)
     }
 
   @expand
@@ -112,8 +112,8 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
 
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
 
   }
@@ -169,8 +169,8 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
 
         result
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
 
   @expand
@@ -191,8 +191,8 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
         require(b.length == a.length, "Vectors must be the same length!")
         b dot a
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]].register(this)
     }
 
 }
@@ -246,10 +246,10 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
           aoff += astride
         }
       }
-      implicitly[BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type]]
-        .register(this)
-      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
-        .register(this)
+      implicitly[
+        BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type]].register(this)
+      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]].register(
+        this)
     }
 
   @expand
@@ -274,10 +274,10 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
           i += 1
         }
       }
-      implicitly[BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type]]
-        .register(this)
-      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
-        .register(this)
+      implicitly[
+        BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type]].register(this)
+      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]].register(
+        this)
     }
 
   @expand
@@ -304,8 +304,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
 
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
 
   }
@@ -344,8 +344,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
         }
         result
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]].register(this)
       //      implicitly[BinaryRegistry[DenseVector[T], Vector[T], OpMulInner.type, T]].register(this)
     }
 
@@ -429,8 +429,9 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
         }
 
       }
-      implicitly[TernaryUpdateRegistry[Vector[T], T, Vector[T], scaleAdd.type]]
-        .register(this)
+      implicitly[
+        TernaryUpdateRegistry[Vector[T], T, Vector[T], scaleAdd.type]].register(
+        this)
     }
 
   // this shouldn't be necessary but it is:
@@ -442,10 +443,11 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
       : Op.Impl2[DenseVector[T], SparseVector[T], DenseVector[T]] = {
     val op = DenseVector.pureFromUpdate(
       implicitly[Op.InPlaceImpl2[DenseVector[T], SparseVector[T]]])
-    implicitly[BinaryRegistry[DenseVector[T], Vector[T], Op.type, Vector[T]]]
-      .register(op)
-    implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-      .register(op)
+    implicitly[
+      BinaryRegistry[DenseVector[T], Vector[T], Op.type, Vector[T]]].register(
+      op)
+    implicitly[
+      BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(op)
     op
   }
 }
@@ -528,8 +530,8 @@ trait SparseVectorOps { this: SparseVector.type =>
           new SparseVector[T](resultI, resultV, resultOff, a.length)
         }
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
 
   implicit def implSubOp_SVT_SVT_eq_SVT[T: Ring: ClassTag]
@@ -744,9 +746,11 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
       }
 
-      implicitly[
-        BinaryRegistry[Vector[T], Vector[T], OpMulScalar.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Vector[T],
+        Vector[T],
+        OpMulScalar.type,
+        Vector[T]]].register(this)
     }
 
   @expand
@@ -771,8 +775,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
 
   @expand
@@ -797,8 +801,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
 
   @expand
@@ -845,8 +849,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]].register(
+        this)
     }
 
   @expand
@@ -874,8 +878,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]].register(
+        this)
     }
 
   @expand
@@ -907,8 +911,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]].register(
+        this)
     }
 
   @expand
@@ -929,8 +933,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
         result.toSparseVector(true, true)
       }
-      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]].register(
+        this)
     }
 
   protected def updateFromPure[T, Op <: OpType, Other](implicit
@@ -979,8 +983,8 @@ trait SparseVectorOps { this: SparseVector.type =>
       : Op.InPlaceImpl2[SparseVector[T], SparseVector[T]] = {
     val uop: Op.InPlaceImpl2[SparseVector[T], SparseVector[T]] = updateFromPure(
       implicitly[Op.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]]])
-    implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
-      .register(uop)
+    implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]].register(
+      uop)
     uop
   }
 
@@ -1116,8 +1120,8 @@ trait SparseVectorOps { this: SparseVector.type =>
 
         result
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]].register(this)
     }
 
   implicit def implOpMulInner_SVT_SVT_eq_T[T: ClassTag: Zero: Semiring]
@@ -1247,8 +1251,9 @@ trait SparseVectorOps { this: SparseVector.type =>
           }
         }
       }
-      implicitly[TernaryUpdateRegistry[Vector[T], T, Vector[T], scaleAdd.type]]
-        .register(this)
+      implicitly[
+        TernaryUpdateRegistry[Vector[T], T, Vector[T], scaleAdd.type]].register(
+        this)
     }
 
   @expand

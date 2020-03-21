@@ -38,9 +38,9 @@ class ScalaPsiBuilderImpl(builder: PsiBuilder)
     var i = 1
     while (i < getCurrentOffset && TokenSets.WHITESPACE_OR_COMMENT_SET.contains(
              rawLookup(-i))) i += 1
-    val textBefore = getOriginalText
-      .subSequence(rawTokenTypeStart(-i + 1), rawTokenTypeStart(0))
-      .toString
+    val textBefore = getOriginalText.subSequence(
+      rawTokenTypeStart(-i + 1),
+      rawTokenTypeStart(0)).toString
     if (!textBefore.contains('\n')) return 0
     val lines = s"start $textBefore end".split('\n')
     if (lines.exists(_.forall(StringUtil.isWhiteSpace))) 2

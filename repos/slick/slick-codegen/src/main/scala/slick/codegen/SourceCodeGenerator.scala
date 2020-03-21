@@ -72,11 +72,8 @@ object SourceCodeGenerator {
       password: Option[String],
       ignoreInvalidDefaults: Boolean): Unit = {
     val profileInstance: JdbcProfile =
-      Class
-        .forName(profile + "$")
-        .getField("MODULE$")
-        .get(null)
-        .asInstanceOf[JdbcProfile]
+      Class.forName(profile + "$").getField("MODULE$").get(null).asInstanceOf[
+        JdbcProfile]
     val dbFactory = profileInstance.api.Database
     val db = dbFactory.forURL(
       url,
@@ -87,9 +84,8 @@ object SourceCodeGenerator {
     try {
       val m = Await.result(
         db.run(
-          profileInstance
-            .createModel(None, ignoreInvalidDefaults)(ExecutionContext.global)
-            .withPinnedSession),
+          profileInstance.createModel(None, ignoreInvalidDefaults)(
+            ExecutionContext.global).withPinnedSession),
         Duration.Inf)
       new SourceCodeGenerator(m).writeToFile(profile, outputDir, pkg)
     } finally db.close
@@ -108,9 +104,8 @@ object SourceCodeGenerator {
     try {
       val m = Await.result(
         dc.db.run(
-          dc.profile
-            .createModel(None, ignoreInvalidDefaults)(ExecutionContext.global)
-            .withPinnedSession),
+          dc.profile.createModel(None, ignoreInvalidDefaults)(
+            ExecutionContext.global).withPinnedSession),
         Duration.Inf)
       new SourceCodeGenerator(m).writeToFile(profile, out, pkg)
     } finally dc.db.close

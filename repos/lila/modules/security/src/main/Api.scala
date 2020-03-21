@@ -85,24 +85,22 @@ final class Api(
 
   private def userIdsSharingField(field: String)(
       userId: String): Fu[List[String]] =
-    tube.storeColl
-      .distinct(
-        field,
-        BSONDocument(
-          "user" -> userId,
-          field -> BSONDocument("$exists" -> true)).some
-      )
-      .flatMap {
-        case Nil => fuccess(Nil)
-        case values =>
-          tube.storeColl.distinct(
-            "user",
-            BSONDocument(
-              field -> BSONDocument("$in" -> values),
-              "user" -> BSONDocument("$ne" -> userId)
-            ).some
-          ) map lila.db.BSON.asStrings
-      }
+    tube.storeColl.distinct(
+      field,
+      BSONDocument(
+        "user" -> userId,
+        field -> BSONDocument("$exists" -> true)).some
+    ).flatMap {
+      case Nil => fuccess(Nil)
+      case values =>
+        tube.storeColl.distinct(
+          "user",
+          BSONDocument(
+            field -> BSONDocument("$in" -> values),
+            "user" -> BSONDocument("$ne" -> userId)
+          ).some
+        ) map lila.db.BSON.asStrings
+    }
 
   def recentUserIdsByFingerprint = recentUserIdsByField("fp") _
 

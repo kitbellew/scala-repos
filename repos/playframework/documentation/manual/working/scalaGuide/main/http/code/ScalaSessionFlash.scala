@@ -20,12 +20,11 @@ package scalaguide.http.scalasessionflash {
         //#index-retrieve-incoming-session
         def index =
           Action { request =>
-            request.session
-              .get("connected")
-              .map { user => Ok("Hello " + user) }
-              .getOrElse {
-                Unauthorized("Oops, you are not connected")
-              }
+            request.session.get("connected").map { user =>
+              Ok("Hello " + user)
+            }.getOrElse {
+              Unauthorized("Oops, you are not connected")
+            }
           }
         //#index-retrieve-incoming-session
 

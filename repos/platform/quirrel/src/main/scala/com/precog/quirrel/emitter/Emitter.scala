@@ -143,17 +143,14 @@ trait Emitter
       }
 
     def operandStackSizes(is: Vector[Instruction]): Vector[Int] = {
-      (is
-        .foldLeft((Vector(0), 0)) {
-          case ((vector, cur), instr) =>
-            val delta =
-              (instr.operandStackDelta._2 - instr.operandStackDelta._1)
+      (is.foldLeft((Vector(0), 0)) {
+        case ((vector, cur), instr) =>
+          val delta = (instr.operandStackDelta._2 - instr.operandStackDelta._1)
 
-            val total = cur + delta
+          val total = cur + delta
 
-            (vector :+ total, total)
-        })
-        ._1
+          (vector :+ total, total)
+      })._1
     }
 
     // Emits the bytecode and marks it so it can be reused in DUPing operations.
@@ -260,9 +257,9 @@ trait Emitter
         assert(!leftResolved.isParametric)
         assert(!rightResolved.isParametric)
 
-        val itx = leftResolved.possibilities
-          .intersect(rightResolved.possibilities)
-          .filter(p => p != ValueProvenance && p != NullProvenance)
+        val itx = leftResolved.possibilities.intersect(
+          rightResolved.possibilities).filter(p =>
+          p != ValueProvenance && p != NullProvenance)
 
         val instr = emitInstr(if (itx.isEmpty) ifCross else ifMatch)
 
@@ -636,10 +633,9 @@ trait Emitter
                 t._2,
                 dispatches) >> emitInstr(Map2Cross(WrapObject))
 
-            val provToField = props
-              .groupBy(_._2.provenance)
-              .toList
-              .sortBy { case (p, _) => p }(Provenance.order.toScalaOrdering)
+            val provToField = props.groupBy(_._2.provenance).toList.sortBy {
+              case (p, _) => p
+            }(Provenance.order.toScalaOrdering)
             val provs = provToField map { case (p, _) => p } reverse
 
             val groups = provToField.foldLeft(Vector.empty[EmitterState]) {
@@ -670,10 +666,10 @@ trait Emitter
           case ast.ArrayDef(_, values) => {
             val indexedValues = values.zipWithIndex
 
-            val provToElements = indexedValues
-              .groupBy(_._1.provenance)
-              .toList
-              .sortBy { case (p, _) => p }(Provenance.order.toScalaOrdering)
+            val provToElements =
+              indexedValues.groupBy(_._1.provenance).toList.sortBy {
+                case (p, _) => p
+              }(Provenance.order.toScalaOrdering)
             val provs = provToElements map { case (p, _) => p } reverse
 
             val (groups, indices) = provToElements.foldLeft(

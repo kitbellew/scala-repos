@@ -69,8 +69,7 @@ trait JoinAlgorithms {
     */
   def crossWithTiny(tiny: Pipe) = {
     val tinyJoin = tiny.map(() -> '__joinTiny__) { (u: Unit) => 1 }
-    pipe
-      .map(() -> '__joinBig__) { (u: Unit) => 1 }
+    pipe.map(() -> '__joinBig__) { (u: Unit) => 1 }
       .joinWithTiny('__joinBig__ -> '__joinTiny__, tinyJoin)
       .discard('__joinBig__, '__joinTiny__)
   }
@@ -82,8 +81,7 @@ trait JoinAlgorithms {
     */
   def crossWithSmaller(p: Pipe, replication: Int = 20) = {
     val smallJoin = p.map(() -> '__joinSmall__) { (u: Unit) => 1 }
-    pipe
-      .map(() -> '__joinBig__) { (u: Unit) => 1 }
+    pipe.map(() -> '__joinBig__) { (u: Unit) => 1 }
       .blockJoinWithSmaller(
         '__joinBig__ -> '__joinSmall__,
         smallJoin,
@@ -176,7 +174,7 @@ trait JoinAlgorithms {
       // Common case: no intersection in names: just CoGroup, which duplicates the grouping fields:
       pipe.coGroupBy(fs._1, joiners._1) {
         _.coGroup(fs._2, that, joiners._2)
-          .reducers(reducers)
+        .reducers(reducers)
       }
     } else if (joiners._1 == InnerJoinMode && joiners._2 == InnerJoinMode) {
       /*
@@ -186,12 +184,10 @@ trait JoinAlgorithms {
        */
       val (renamedThat, newJoinFields, temp) =
         renameCollidingFields(that, fs._2, intersection)
-      pipe
-        .coGroupBy(fs._1, joiners._1) {
-          _.coGroup(newJoinFields, renamedThat, joiners._2)
-            .reducers(reducers)
-        }
-        .discard(temp)
+      pipe.coGroupBy(fs._1, joiners._1) {
+        _.coGroup(newJoinFields, renamedThat, joiners._2)
+        .reducers(reducers)
+      }.discard(temp)
     } else {
       throw new IllegalArgumentException(
         "join keys must be disjoint unless you are doing an InnerJoin.  Found: " +
@@ -475,17 +471,14 @@ trait JoinAlgorithms {
       * each task create a seed, a restart will change the computation,
       * and this could result in subtle bugs.
       */
-    val sampledLeft = pipe
-      .sample(sampleRate, Seed)
+    val sampledLeft = pipe.sample(sampleRate, Seed)
       .groupBy(fs._1) { _.size(leftSampledCountField) }
-    val sampledRight = rightPipe
-      .sample(sampleRate, Seed)
+    val sampledRight = rightPipe.sample(sampleRate, Seed)
       .groupBy(rightResolvedJoinFields) { _.size(rightSampledCountField) }
-    val sampledCounts = sampledLeft
-      .joinWithSmaller(
-        fs._1 -> rightResolvedJoinFields,
-        sampledRight,
-        joiner = new OuterJoin)
+    val sampledCounts = sampledLeft.joinWithSmaller(
+      fs._1 -> rightResolvedJoinFields,
+      sampledRight,
+      joiner = new OuterJoin)
       .project(Fields.join(mergedJoinKeys, sampledCountFields))
       .map(mergedJoinKeys -> mergedJoinKeys) { t: cascading.tuple.Tuple =>
         // Make the outer join look like an inner join so that we can join
@@ -590,8 +583,7 @@ trait JoinAlgorithms {
     val renamedFields = joinFields.iterator.asScala.toList.map { field =>
       "__RENAMED_" + field + "__"
     }
-    val renamedSampledCounts = sampledCounts
-      .rename(joinFields -> renamedFields)
+    val renamedSampledCounts = sampledCounts.rename(joinFields -> renamedFields)
       .project(Fields.join(renamedFields, countFields))
 
     /**

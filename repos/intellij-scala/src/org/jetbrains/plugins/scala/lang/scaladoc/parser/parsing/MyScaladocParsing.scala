@@ -115,8 +115,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     }
 
     while (!isEndOfComment) {
-      if (!(builder.getTokenType == DOC_WHITESPACE && builder.getTokenText
-            .contains("\n")) &&
+      if (!(builder.getTokenType == DOC_WHITESPACE && builder.getTokenText.contains(
+            "\n")) &&
           builder.getTokenType != DOC_COMMENT_LEADING_ASTERISKS) {
         hasClosingElementsInWikiSyntax = false
       }
@@ -185,8 +185,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
             return true
           }
           if (!hasClosingElementsInWikiSyntax &&
-              (builder.getTokenText.indexOf("\n") == builder.getTokenText
-                .lastIndexOf("\n"))) { //check is it single nl
+              (builder.getTokenText.indexOf(
+                "\n") == builder.getTokenText.lastIndexOf("\n"))) { //check is it single nl
             hasClosingElementsInWikiSyntax = true
             builder.advanceLexer()
           } else {

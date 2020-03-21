@@ -134,8 +134,10 @@ object H5Store {
       colInclusive: Boolean): Frame[RX, CX, T] =
     withMonitor {
       val fr = readPandasFrame[RX, CX, T](path, group)
-      fr.colSliceBy(colFrom, colTo, colInclusive)
-        .rowSliceBy(rowFrom, rowTo, rowInclusive)
+      fr.colSliceBy(colFrom, colTo, colInclusive).rowSliceBy(
+        rowFrom,
+        rowTo,
+        rowInclusive)
     }
 
   /**
@@ -215,8 +217,10 @@ object H5Store {
       colInclusive: Boolean): Frame[RX, CX, T] =
     withMonitor {
       val fr = readPandasFrame[RX, CX, T](fileid, group)
-      fr.colSliceBy(colFrom, colTo, colInclusive)
-        .rowSliceBy(rowFrom, rowTo, rowInclusive)
+      fr.colSliceBy(colFrom, colTo, colInclusive).rowSliceBy(
+        rowFrom,
+        rowTo,
+        rowInclusive)
     }
 
   // ** writing
@@ -411,8 +415,9 @@ object H5Store {
       """Exception: %s
         |------------- HDF5 Stack --------------
         |%s
-        |---------------------------------------""".stripMargin
-        .format(e.getMessage, e.getStackTraceString))
+        |---------------------------------------""".stripMargin.format(
+        e.getMessage,
+        e.getStackTraceString))
   }
 
   private def openNode(parent_id: Int, path: String): Int = {

@@ -36,9 +36,8 @@ class ScalaChangeSignatureRowEditor(
 
   val myNameEditor: EditorTextField =
     new EditorTextField(item.parameter.getName, project, fileType)
-  val defaultValueDoc = PsiDocumentManager
-    .getInstance(project)
-    .getDocument(item.defaultValueCodeFragment)
+  val defaultValueDoc = PsiDocumentManager.getInstance(project).getDocument(
+    item.defaultValueCodeFragment)
 
   val myDefaultValueEditor =
     new EditorTextField(defaultValueDoc, project, fileType)
@@ -76,8 +75,9 @@ class ScalaChangeSignatureRowEditor(
   }
 
   def getColumnWidth(letters: Int): Int = {
-    val editorFont: Font = EditorColorsManager.getInstance.getGlobalScheme
-      .getFont(EditorFontType.PLAIN)
+    val editorFont: Font =
+      EditorColorsManager.getInstance.getGlobalScheme.getFont(
+        EditorFontType.PLAIN)
     val font = new Font(editorFont.getFontName, editorFont.getStyle, 12)
     letters * Toolkit.getDefaultToolkit.getFontMetrics(font).stringWidth("W")
   }

@@ -56,8 +56,8 @@ class FunctionTests extends CatsSuite {
 
   checkAll(
     "Function1[String, Int]",
-    GroupLaws[Function1[String, Int]]
-      .semigroup(function1Semigroup[String, Int]))
+    GroupLaws[Function1[String, Int]].semigroup(
+      function1Semigroup[String, Int]))
 
   checkAll("Function1[String, Int]", GroupLaws[Function1[String, Int]].monoid)
 

@@ -93,9 +93,8 @@ private[deploy] object RPackageUtils extends Logging {
     */
   private[deploy] def checkManifestForR(jar: JarFile): Boolean = {
     val manifest = jar.getManifest.getMainAttributes
-    manifest.getValue(hasRPackage) != null && manifest
-      .getValue(hasRPackage)
-      .trim == "true"
+    manifest.getValue(hasRPackage) != null && manifest.getValue(
+      hasRPackage).trim == "true"
   }
 
   /**
@@ -124,8 +123,8 @@ private[deploy] object RPackageUtils extends Logging {
       env.put("SPARKR_PACKAGE_DIR", rPackageDir.mkString(","))
       env.put(
         "R_PROFILE_USER",
-        Seq(rPackageDir(0), "SparkR", "profile", "general.R")
-          .mkString(File.separator))
+        Seq(rPackageDir(0), "SparkR", "profile", "general.R").mkString(
+          File.separator))
 
       val process = builder.start()
       new RedirectThread(
@@ -234,9 +233,9 @@ private[deploy] object RPackageUtils extends Logging {
       if (dir.isDirectory) {
         val subDir = dir.listFiles(new FilenameFilter {
           override def accept(dir: File, name: String): Boolean = {
-            !excludePatterns
-              .map(name.contains)
-              .reduce(_ || _) // exclude files with given pattern
+            !excludePatterns.map(name.contains).reduce(
+              _ || _
+            ) // exclude files with given pattern
           }
         })
         subDir.flatMap(listFilesRecursively(_, excludePatterns)).toSet

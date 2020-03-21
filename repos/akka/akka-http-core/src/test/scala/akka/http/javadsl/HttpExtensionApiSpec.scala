@@ -79,8 +79,7 @@ class HttpExtensionApiSpec
     "properly bind a server (with three parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
       val probe = TestSubscriber.manualProbe[IncomingConnection]()
-      val binding = http
-        .bind(toHost(host, port), materializer)
+      val binding = http.bind(toHost(host, port), materializer)
         .toMat(Sink.fromSubscriber(probe), Keep.left)
         .run(materializer)
       val sub = probe.expectSubscription()
@@ -91,8 +90,7 @@ class HttpExtensionApiSpec
     "properly bind a server (with four parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
       val probe = TestSubscriber.manualProbe[IncomingConnection]()
-      val binding = http
-        .bind(toHost(host, port), materializer)
+      val binding = http.bind(toHost(host, port), materializer)
         .toMat(Sink.fromSubscriber(probe), Keep.left)
         .run(materializer)
       val sub = probe.expectSubscription()
@@ -103,8 +101,7 @@ class HttpExtensionApiSpec
     "properly bind a server (with five parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
       val probe = TestSubscriber.manualProbe[IncomingConnection]()
-      val binding = http
-        .bind(toHost(host, port), serverSettings, materializer)
+      val binding = http.bind(toHost(host, port), serverSettings, materializer)
         .toMat(Sink.fromSubscriber(probe), Keep.left)
         .run(materializer)
       val sub = probe.expectSubscription()
@@ -115,8 +112,11 @@ class HttpExtensionApiSpec
     "properly bind a server (with six parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
       val probe = TestSubscriber.manualProbe[IncomingConnection]()
-      val binding = http
-        .bind(toHost(host, port), serverSettings, loggingAdapter, materializer)
+      val binding = http.bind(
+        toHost(host, port),
+        serverSettings,
+        loggingAdapter,
+        materializer)
         .toMat(Sink.fromSubscriber(probe), Keep.left)
         .run(materializer)
       val sub = probe.expectSubscription()
@@ -127,19 +127,17 @@ class HttpExtensionApiSpec
     // this cover both bind and single request
     "properly bind and handle a server with a flow (with four parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
-      val flow: Flow[HttpRequest, HttpResponse, NotUsed] = akka.stream.scaladsl
-        .Flow[HttpRequest]
-        .map(req ⇒ HttpResponse.create())
-        .asJava
+      val flow: Flow[HttpRequest, HttpResponse, NotUsed] =
+        akka.stream.scaladsl.Flow[HttpRequest]
+          .map(req ⇒ HttpResponse.create())
+          .asJava
       val binding = http.bindAndHandle(flow, toHost(host, port), materializer)
 
-      val (_, completion) = http
-        .outgoingConnection(toHost(host, port))
+      val (_, completion) = http.outgoingConnection(toHost(host, port))
         .runWith(
           Source.single(HttpRequest.create("/abc")),
           Sink.head(),
-          materializer)
-        .toScala
+          materializer).toScala
 
       waitFor(completion)
       waitFor(binding).unbind()
@@ -147,19 +145,17 @@ class HttpExtensionApiSpec
 
     "properly bind and handle a server with a flow (with five parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
-      val flow: Flow[HttpRequest, HttpResponse, NotUsed] = akka.stream.scaladsl
-        .Flow[HttpRequest]
-        .map(req ⇒ HttpResponse.create())
-        .asJava
+      val flow: Flow[HttpRequest, HttpResponse, NotUsed] =
+        akka.stream.scaladsl.Flow[HttpRequest]
+          .map(req ⇒ HttpResponse.create())
+          .asJava
       val binding = http.bindAndHandle(flow, toHost(host, port), materializer)
 
-      val (_, completion) = http
-        .outgoingConnection(toHost(host, port))
+      val (_, completion) = http.outgoingConnection(toHost(host, port))
         .runWith(
           Source.single(HttpRequest.create("/abc")),
           Sink.head(),
-          materializer)
-        .toScala
+          materializer).toScala
 
       waitFor(completion)
       waitFor(binding).unbind()
@@ -167,10 +163,10 @@ class HttpExtensionApiSpec
 
     "properly bind and handle a server with a flow (with seven parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
-      val flow: Flow[HttpRequest, HttpResponse, NotUsed] = akka.stream.scaladsl
-        .Flow[HttpRequest]
-        .map(req ⇒ HttpResponse.create())
-        .asJava
+      val flow: Flow[HttpRequest, HttpResponse, NotUsed] =
+        akka.stream.scaladsl.Flow[HttpRequest]
+          .map(req ⇒ HttpResponse.create())
+          .asJava
       val binding = http.bindAndHandle(
         flow,
         toHost(host, port),
@@ -178,13 +174,11 @@ class HttpExtensionApiSpec
         loggingAdapter,
         materializer)
 
-      val (_, completion) = http
-        .outgoingConnection(toHost(host, port))
+      val (_, completion) = http.outgoingConnection(toHost(host, port))
         .runWith(
           Source.single(HttpRequest.create("/abc")),
           Sink.head(),
-          materializer)
-        .toScala
+          materializer).toScala
 
       waitFor(completion)
       waitFor(binding).unbind()
@@ -317,11 +311,10 @@ class HttpExtensionApiSpec
       val pair: Pair[
         HostConnectionPool,
         CompletionStage[Pair[Try[HttpResponse], NotUsed]]] =
-        Source
-          .single(
-            new Pair(
-              HttpRequest.GET(s"http://$host:$port/"),
-              NotUsed.getInstance()))
+        Source.single(
+          new Pair(
+            HttpRequest.GET(s"http://$host:$port/"),
+            NotUsed.getInstance()))
           .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
           .toMat(
             Sink.head(),
@@ -352,11 +345,10 @@ class HttpExtensionApiSpec
       val pair: Pair[
         HostConnectionPool,
         CompletionStage[Pair[Try[HttpResponse], NotUsed]]] =
-        Source
-          .single(
-            new Pair(
-              HttpRequest.GET(s"http://$host:$port/"),
-              NotUsed.getInstance()))
+        Source.single(
+          new Pair(
+            HttpRequest.GET(s"http://$host:$port/"),
+            NotUsed.getInstance()))
           .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
           .toMat(
             Sink.head(),
@@ -383,11 +375,10 @@ class HttpExtensionApiSpec
       val pair: Pair[
         HostConnectionPool,
         CompletionStage[Pair[Try[HttpResponse], NotUsed]]] =
-        Source
-          .single(
-            new Pair(
-              HttpRequest.GET(s"http://$host:$port/"),
-              NotUsed.getInstance()))
+        Source.single(
+          new Pair(
+            HttpRequest.GET(s"http://$host:$port/"),
+            NotUsed.getInstance()))
           .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
           .toMat(
             Sink.head(),
@@ -409,8 +400,7 @@ class HttpExtensionApiSpec
       val pair: Pair[
         HostConnectionPool,
         CompletionStage[Pair[Try[HttpResponse], NotUsed]]] =
-        Source
-          .single(new Pair(get(host, port), NotUsed.getInstance()))
+        Source.single(new Pair(get(host, port), NotUsed.getInstance()))
           .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
           .toMat(
             Sink.head(),
@@ -438,8 +428,7 @@ class HttpExtensionApiSpec
       val pair: Pair[
         HostConnectionPool,
         CompletionStage[Pair[Try[HttpResponse], NotUsed]]] =
-        Source
-          .single(new Pair(get(host, port), NotUsed.getInstance()))
+        Source.single(new Pair(get(host, port), NotUsed.getInstance()))
           .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
           .toMat(
             Sink.head(),
@@ -462,8 +451,7 @@ class HttpExtensionApiSpec
       val pair: Pair[
         HostConnectionPool,
         CompletionStage[Pair[Try[HttpResponse], NotUsed]]] =
-        Source
-          .single(new Pair(get(host, port), NotUsed.getInstance()))
+        Source.single(new Pair(get(host, port), NotUsed.getInstance()))
           .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
           .toMat(
             Sink.head(),
@@ -510,8 +498,7 @@ class HttpExtensionApiSpec
       val (host, port, binding) = runServer()
       val flow = http.outgoingConnection(toHost(host, port))
 
-      val response = Source
-        .single(get(host, port))
+      val response = Source.single(get(host, port))
         .via(flow)
         .toMat(Sink.head(), Keep.right[NotUsed, CompletionStage[HttpResponse]])
         .run(materializer)
@@ -529,8 +516,7 @@ class HttpExtensionApiSpec
         ClientConnectionSettings.create(system),
         NoLogging)
 
-      val response = Source
-        .single(get(host, port))
+      val response = Source.single(get(host, port))
         .via(flow)
         .toMat(Sink.head(), Keep.right[NotUsed, CompletionStage[HttpResponse]])
         .run(materializer)
@@ -577,8 +563,7 @@ class HttpExtensionApiSpec
       val (host, port, binding) = runWebsocketServer()
       val flow =
         http.webSocketClientFlow(WebSocketRequest.create(s"ws://$host:$port"))
-      val pair = Source
-        .single(TextMessage.create("hello"))
+      val pair = Source.single(TextMessage.create("hello"))
         .viaMat(
           flow,
           Keep.right[NotUsed, CompletionStage[WebSocketUpgradeResponse]])
@@ -603,8 +588,7 @@ class HttpExtensionApiSpec
         Optional.empty(),
         ClientConnectionSettings.create(system),
         loggingAdapter)
-      val pair = Source
-        .single(TextMessage.create("hello"))
+      val pair = Source.single(TextMessage.create("hello"))
         .viaMat(
           flow,
           Keep.right[NotUsed, CompletionStage[WebSocketUpgradeResponse]])

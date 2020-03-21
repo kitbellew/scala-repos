@@ -141,9 +141,9 @@ class FormattedStringParserTest extends SimpleTestCase {
     val manager = PsiManager.getInstance(fixture.getProject)
     val expressions = arguments.map(it =>
       ScalaPsiElementFactory.createExpressionFromText(it.toString, manager))
-    val literal = ScalaPsiElementFactory
-      .parseElement('"' + formatString + '"', manager)
-      .asInstanceOf[ScLiteral]
+    val literal = ScalaPsiElementFactory.parseElement(
+      '"' + formatString + '"',
+      manager).asInstanceOf[ScLiteral]
     FormattedStringParser.parseFormatCall(literal, expressions).toList
   }
 }

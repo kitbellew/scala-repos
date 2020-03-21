@@ -126,9 +126,8 @@ class WorksheetEditorPrinter(
             foldingOffsets += (
               (
                 start + insertedToOriginal + differ,
-                outputBuffer.length - outputBuffer.reverseIterator
-                  .takeWhile(_ == '\n')
-                  .length,
+                outputBuffer.length - outputBuffer.reverseIterator.takeWhile(
+                  _ == '\n').length,
                 end - start + 1,
                 end)
             )
@@ -221,16 +220,14 @@ class WorksheetEditorPrinter(
     }
 
     scala.extensions.inReadAction {
-      PsiDocumentManager
-        .getInstance(project)
-        .getPsiFile(originalEditor.getDocument) match {
+      PsiDocumentManager.getInstance(project).getPsiFile(
+        originalEditor.getDocument) match {
         case scalaFile: ScalaFile =>
           WorksheetEditorPrinter.saveWorksheetEvaluation(
             scalaFile,
             str,
-            worksheetViewer
-              .getUserData(WorksheetEditorPrinter.DIFF_SPLITTER_KEY)
-              .getProportion)
+            worksheetViewer.getUserData(
+              WorksheetEditorPrinter.DIFF_SPLITTER_KEY).getProportion)
         case _ =>
       }
     }
@@ -275,43 +272,42 @@ class WorksheetEditorPrinter(
         originalEditor.getScrollingModel.scrollVertically(scroll)
         worksheetViewer.getScrollingModel.scrollHorizontally(worksheetScroll)
 
-        CommandProcessor
-          .getInstance()
-          .executeCommand(
-            project,
-            new Runnable {
-              override def run() {
-                viewerFolding runBatchFoldingOperation (new Runnable {
-                  override def run() {
-                    foldingOffsetsCopy map {
-                      case (start, end, limit, originalEnd) =>
-                        val offset = originalDocument getLineEndOffset Math
-                          .min(originalEnd, originalDocument.getLineCount)
-                        val linesCount =
-                          viewerDocument.getLineNumber(end) - start - limit + 1
+        CommandProcessor.getInstance().executeCommand(
+          project,
+          new Runnable {
+            override def run() {
+              viewerFolding runBatchFoldingOperation (new Runnable {
+                override def run() {
+                  foldingOffsetsCopy map {
+                    case (start, end, limit, originalEnd) =>
+                      val offset = originalDocument getLineEndOffset Math.min(
+                        originalEnd,
+                        originalDocument.getLineCount)
+                      val linesCount =
+                        viewerDocument.getLineNumber(end) - start - limit + 1
 
-                        new WorksheetFoldRegionDelegate(
-                          ed,
-                          viewerDocument.getLineStartOffset(start + limit - 1),
-                          end,
-                          offset,
-                          linesCount,
-                          group,
-                          limit
-                        )
-                    } foreach {
-                      case region =>
-                        viewerFolding addFoldRegion region
-                    }
-
-                    WorksheetFoldGroup.save(file, group)
+                      new WorksheetFoldRegionDelegate(
+                        ed,
+                        viewerDocument.getLineStartOffset(start + limit - 1),
+                        end,
+                        offset,
+                        linesCount,
+                        group,
+                        limit
+                      )
+                  } foreach {
+                    case region =>
+                      viewerFolding addFoldRegion region
                   }
-                }, false)
-              }
-            },
-            null,
-            null
-          )
+
+                  WorksheetFoldGroup.save(file, group)
+                }
+              }, false)
+            }
+          },
+          null,
+          null
+        )
       }
     }
   }
@@ -339,27 +335,25 @@ class WorksheetEditorPrinter(
       document setText text
       commitDocument(document)
     } else {
-      CommandProcessor
-        .getInstance()
-        .executeCommand(
-          project,
-          new Runnable {
-            override def run() {
-              if (linesOld != viewerDocument.getLineCount) return
-              viewerDocument.deleteString(0, text.length)
-              viewerDocument.insertString(0, text)
+      CommandProcessor.getInstance().executeCommand(
+        project,
+        new Runnable {
+          override def run() {
+            if (linesOld != viewerDocument.getLineCount) return
+            viewerDocument.deleteString(0, text.length)
+            viewerDocument.insertString(0, text)
 
-              for (i <- total until viewerDocument.getLineCount)
-                getViewerEditor.getMarkupModel.addLineHighlighter(
-                  i,
-                  0,
-                  new TextAttributes(Color.gray, null, null, null, 0))
-              commitDocument(viewerDocument)
-            }
-          },
-          null,
-          null
-        )
+            for (i <- total until viewerDocument.getLineCount)
+              getViewerEditor.getMarkupModel.addLineHighlighter(
+                i,
+                0,
+                new TextAttributes(Color.gray, null, null, null, 0))
+            commitDocument(viewerDocument)
+          }
+        },
+        null,
+        null
+      )
     }
   }
 
@@ -409,10 +403,8 @@ object WorksheetEditorPrinter {
         case group =>
           new CaretAdapter {
             override def caretPositionChanged(e: CaretEvent) {
-              if (!e.getEditor
-                    .asInstanceOf[EditorImpl]
-                    .getContentComponent
-                    .hasFocus) return
+              if (!e.getEditor.asInstanceOf[
+                    EditorImpl].getContentComponent.hasFocus) return
               recipient.getCaretModel.moveToVisualPosition(
                 new VisualPosition(
                   Math.min(
@@ -423,10 +415,8 @@ object WorksheetEditorPrinter {
           }
       } getOrElse new CaretAdapter {
         override def caretPositionChanged(e: CaretEvent) {
-          if (!e.getEditor
-                .asInstanceOf[EditorImpl]
-                .getContentComponent
-                .hasFocus) return
+          if (!e.getEditor.asInstanceOf[
+                EditorImpl].getContentComponent.hasFocus) return
           recipient.getCaretModel.moveToVisualPosition(
             don.getCaretModel.getVisualPosition)
         }
@@ -469,8 +459,8 @@ object WorksheetEditorPrinter {
 
             diffSplitter foreach {
               case splitter =>
-                viewerImpl.getScrollPane.getVerticalScrollBar
-                  .addAdjustmentListener(new AdjustmentListener {
+                viewerImpl.getScrollPane.getVerticalScrollBar.addAdjustmentListener(
+                  new AdjustmentListener {
                     override def adjustmentValueChanged(
                         e: AdjustmentEvent): Unit = splitter.redrawDiffs()
                   })
@@ -513,9 +503,8 @@ object WorksheetEditorPrinter {
           }
       } getOrElse 0.5f
 
-    FileAttributeUtilCache
-      .readAttribute(LAST_WORKSHEET_RUN_RESULT, file)
-      .map(s => (s, ratio))
+    FileAttributeUtilCache.readAttribute(LAST_WORKSHEET_RUN_RESULT, file).map(
+      s => (s, ratio))
   }
 
   def deleteWorksheetEvaluation(file: ScalaFile) {
@@ -664,14 +653,17 @@ object WorksheetEditorPrinter {
       project: Project,
       lang: Language,
       fileType: LanguageFileType): Editor = {
-    val file = PsiFileFactory
-      .getInstance(project)
-      .createFileFromText("dummy_" + Random.nextString(10), lang, "")
+    val file = PsiFileFactory.getInstance(project).createFileFromText(
+      "dummy_" + Random.nextString(10),
+      lang,
+      "")
     val editor = EditorFactory.getInstance.createViewer(
       PsiDocumentManager.getInstance(project).getDocument(file),
       project)
-    val editorHighlighter = EditorHighlighterFactory.getInstance
-      .createEditorHighlighter(project, fileType)
+    val editorHighlighter =
+      EditorHighlighterFactory.getInstance.createEditorHighlighter(
+        project,
+        fileType)
 
     editor.asInstanceOf[EditorEx].setHighlighter(editorHighlighter)
     editor setBorder null

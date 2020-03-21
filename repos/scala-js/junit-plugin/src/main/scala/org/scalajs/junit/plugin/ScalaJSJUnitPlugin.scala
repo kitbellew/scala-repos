@@ -94,16 +94,14 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
       def registerModuleExports(
           sym: ScalaJSJUnitPluginComponent.global.Symbol): Unit
     }
-    global.plugins
-      .collectFirst {
-        case pl
-            if pl.getClass.getName == "org.scalajs.core.compiler.ScalaJSPlugin" =>
-          pl.asInstanceOf[ScalaJSPlugin]
-      }
-      .getOrElse {
-        throw new Exception(
-          "The Scala.js JUnit plugin only works with the Scala.js plugin enabled.")
-      }
+    global.plugins.collectFirst {
+      case pl
+          if pl.getClass.getName == "org.scalajs.core.compiler.ScalaJSPlugin" =>
+        pl.asInstanceOf[ScalaJSPlugin]
+    }.getOrElse {
+      throw new Exception(
+        "The Scala.js JUnit plugin only works with the Scala.js plugin enabled.")
+    }
   }
 
   object ScalaJSJUnitPluginComponent
@@ -163,19 +161,17 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                   }
                   if (hasAnnotationInClass) true
                   else
-                    sym.parentSymbols.headOption
-                      .fold(false)(isClassWithJUnitAnnotation)
+                    sym.parentSymbols.headOption.fold(false)(
+                      isClassWithJUnitAnnotation)
 
                 case _ => false
               }
 
-            val bootstrappers = tree.stats
-              .groupBy { // Group the class with its module
+            val bootstrappers =
+              tree.stats.groupBy { // Group the class with its module
                 case clDef: ClassDef => Some(clDef.name)
                 case _               => None
-              }
-              .iterator
-              .flatMap {
+              }.iterator.flatMap {
                 case (Some(_), xs)
                     if xs.exists(x => isClassWithJUnitAnnotation(x.symbol)) =>
                   def isModule(cDef: ClassDef): Boolean =
@@ -392,8 +388,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           // Find and report unsupported JUnit annotations
           annotations.foreach {
             case ann
-                if ann.atp.typeSymbol == TestClass && ann.original
-                  .isInstanceOf[Block] =>
+                if ann.atp.typeSymbol == TestClass && ann.original.isInstanceOf[
+                  Block] =>
               reporter.error(
                 ann.pos,
                 "@Test(timeout = ...) is not " +

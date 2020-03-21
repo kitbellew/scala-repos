@@ -65,8 +65,7 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
   // (incremental updates) will use the batch of the previous run as
   // the starting batch, rendering this unnecessary.
   def startDate: Option[Timestamp] =
-    args
-      .optional("start-time")
+    args.optional("start-time")
       .map(RichDate(_)(tz, DateParser.default).value)
 
   def initialBatch(b: Batcher): Option[BatchID] = startDate.map(b.batchOf(_))

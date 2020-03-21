@@ -80,9 +80,8 @@ class EventServiceSpec
 
   def chunk(strs: String*): ByteChunk =
     Right(
-      strs
-        .map(_.getBytes("UTF-8"))
-        .foldRight(StreamT.empty[Future, Array[Byte]])(_ :: _))
+      strs.map(_.getBytes("UTF-8")).foldRight(
+        StreamT.empty[Future, Array[Byte]])(_ :: _))
 
   "Ingest service" should {
     "track event with valid API key" in {

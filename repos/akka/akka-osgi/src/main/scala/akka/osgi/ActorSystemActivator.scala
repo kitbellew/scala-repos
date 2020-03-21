@@ -40,8 +40,10 @@ abstract class ActorSystemActivator extends BundleActivator {
     */
   def start(context: BundleContext): Unit = {
     system = Some(
-      OsgiActorSystemFactory(context, getActorSystemConfiguration(context))
-        .createActorSystem(Option(getActorSystemName(context))))
+      OsgiActorSystemFactory(
+        context,
+        getActorSystemConfiguration(context)).createActorSystem(
+        Option(getActorSystemName(context))))
     system foreach (addLogServiceListener(context, _))
     system foreach (configure(context, _))
   }

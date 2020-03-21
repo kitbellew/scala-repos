@@ -33,7 +33,9 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
     // Pick two cipher suites that the provider knows about
     val sslContext = SSLContext.getInstance("TLSv1.2")
     sslContext.init(null, null, null)
-    val algorithms = sslContext.getServerSocketFactory.getDefaultCipherSuites
+    val algorithms = sslContext
+      .getServerSocketFactory
+      .getDefaultCipherSuites
       .take(2)
       .toSet
 

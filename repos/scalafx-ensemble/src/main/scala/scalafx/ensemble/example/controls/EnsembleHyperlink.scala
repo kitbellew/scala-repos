@@ -56,8 +56,8 @@ class EnsembleHyperlink extends EnsembleExample {
           text = "Hyperlink with Image"
           graphic = new ImageView {
             image = new Image(
-              this.getClass
-                .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+              this.getClass.getResourceAsStream(
+                "/scalafx/ensemble/images/icon-48x48.png"))
             margin = Insets(0, 0, 0, 10)
           }
         }

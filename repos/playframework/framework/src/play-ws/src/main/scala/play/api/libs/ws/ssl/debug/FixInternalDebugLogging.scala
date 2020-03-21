@@ -15,8 +15,8 @@ import scala.util.control.NonFatal
   */
 object FixInternalDebugLogging {
 
-  private val logger = org.slf4j.LoggerFactory
-    .getLogger("play.api.libs.ws.ssl.debug.FixInternalDebugLogging")
+  private val logger = org.slf4j.LoggerFactory.getLogger(
+    "play.api.libs.ws.ssl.debug.FixInternalDebugLogging")
 
   class MonkeyPatchInternalSslDebugAction(val newOptions: String)
       extends FixLoggingAction {

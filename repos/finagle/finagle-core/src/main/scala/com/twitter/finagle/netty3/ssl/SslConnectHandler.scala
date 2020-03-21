@@ -32,16 +32,14 @@ private[netty3] class SslListenerConnectionHandler(
   override def channelConnected(
       ctx: ChannelHandlerContext,
       e: ChannelStateEvent): Unit = {
-    sslHandler
-      .handshake()
-      .addListener(new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
-            SslListenerConnectionHandler.super.channelConnected(ctx, e)
-          } else {
-            Channels.close(ctx.getChannel)
-          }
-      })
+    sslHandler.handshake().addListener(new ChannelFutureListener {
+      override def operationComplete(f: ChannelFuture): Unit =
+        if (f.isSuccess) {
+          SslListenerConnectionHandler.super.channelConnected(ctx, e)
+        } else {
+          Channels.close(ctx.getChannel)
+        }
+    })
   }
 
   override def exceptionCaught(
@@ -145,24 +143,22 @@ class SslConnectHandler(
         }
     })
 
-    sslHandler
-      .handshake()
-      .addListener(new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
-            sessionError(sslHandler.getEngine.getSession) match {
-              case Some(t) =>
-                fail(ctx.getChannel, t)
-              case None =>
-                connectFuture.get.setSuccess()
-                SslConnectHandler.super.channelConnected(ctx, e)
-            }
-          } else if (f.isCancelled) {
-            fail(ctx.getChannel, new InconsistentStateException(_))
-          } else {
-            fail(ctx.getChannel, new SslHandshakeException(f.getCause, _))
+    sslHandler.handshake().addListener(new ChannelFutureListener {
+      override def operationComplete(f: ChannelFuture): Unit =
+        if (f.isSuccess) {
+          sessionError(sslHandler.getEngine.getSession) match {
+            case Some(t) =>
+              fail(ctx.getChannel, t)
+            case None =>
+              connectFuture.get.setSuccess()
+              SslConnectHandler.super.channelConnected(ctx, e)
           }
-      })
+        } else if (f.isCancelled) {
+          fail(ctx.getChannel, new InconsistentStateException(_))
+        } else {
+          fail(ctx.getChannel, new SslHandshakeException(f.getCause, _))
+        }
+    })
   }
 }
 

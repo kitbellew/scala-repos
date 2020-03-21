@@ -339,10 +339,8 @@ object CustomSerializerExamples extends Specification {
         (
           {
             case JObject(List(JField("$dt", JString(s)))) =>
-              format.dateFormat
-                .parse(s)
-                .getOrElse(
-                  throw new MappingException("Can't parse " + s + " to Date"))
+              format.dateFormat.parse(s).getOrElse(
+                throw new MappingException("Can't parse " + s + " to Date"))
           },
           {
             case x: Date =>
@@ -360,12 +358,11 @@ object CustomSerializerExamples extends Specification {
             val t = ptype.getOrElse(
               throw new MappingException("parameterized type not known"))
             xs.map(x =>
-                Extraction.extract(
-                  x,
-                  TypeInfo(
-                    t.getActualTypeArguments()(0).asInstanceOf[Class[_]],
-                    None)))
-              .toIndexedSeq
+              Extraction.extract(
+                x,
+                TypeInfo(
+                  t.getActualTypeArguments()(0).asInstanceOf[Class[_]],
+                  None))).toIndexedSeq
           case x =>
             throw new MappingException("Can't convert " + x + " to IndexedSeq")
         }

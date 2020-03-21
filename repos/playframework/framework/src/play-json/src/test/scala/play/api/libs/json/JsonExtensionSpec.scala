@@ -433,9 +433,8 @@ object JsonExtensionSpec extends Specification {
 
       "reads should be able to read valid Json and ignore invalid Json" in {
         jsObj.as[VarArgsOnly](reads) must beEqualTo(obj)
-        Json
-          .fromJson[VarArgsOnly](Json.obj("hello" -> "world"))(reads)
-          .isError must beTrue
+        Json.fromJson[VarArgsOnly](Json.obj("hello" -> "world"))(
+          reads).isError must beTrue
       }
 
       "writes should be able to spit out valid json" in {
@@ -459,9 +458,8 @@ object JsonExtensionSpec extends Specification {
 
       "reads should be able to read valid Json and ignore invalid Json" in {
         jsObj.as[LastVarArg](reads) must beEqualTo(obj)
-        Json
-          .fromJson[LastVarArg](Json.obj("hello" -> "world"))(reads)
-          .isError must beTrue
+        Json.fromJson[LastVarArg](Json.obj("hello" -> "world"))(
+          reads).isError must beTrue
       }
 
       "writes should be able to spit out valid json" in {
@@ -596,9 +594,9 @@ object JsonExtensionSpec extends Specification {
     }
 
     "test case single-field in companion object" in {
-      Json
-        .fromJson[Person2](Json.toJson(Person2(List("bob", "bobby"))))
-        .get must beEqualTo(Person2(List("bob", "bobby")))
+      Json.fromJson[Person2](
+        Json.toJson(Person2(List("bob", "bobby")))).get must beEqualTo(
+        Person2(List("bob", "bobby")))
     }
 
     "test hygiene" in {

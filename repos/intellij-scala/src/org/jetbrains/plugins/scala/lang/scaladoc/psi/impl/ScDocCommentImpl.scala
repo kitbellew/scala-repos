@@ -34,11 +34,8 @@ class ScDocCommentImpl(text: CharSequence)
       text)
     with ScDocComment {
   def version: Int = {
-    val firstLineIsEmpty = getNode
-      .getChildren(null)
-      .lift(2)
-      .exists(
-        _.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)
+    val firstLineIsEmpty = getNode.getChildren(null).lift(2).exists(
+      _.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)
 
     if (firstLineIsEmpty) 1 else 2
   }
@@ -106,10 +103,9 @@ class ScDocCommentImpl(text: CharSequence)
       if (aClass.isInstance(cur)) result.add(cur.asInstanceOf[T])
       cur = cur.getNextSibling
     }
-    result.toArray[T](
-      java.lang.reflect.Array
-        .newInstance(aClass, result.size)
-        .asInstanceOf[Array[T]])
+    result.toArray[T](java.lang.reflect.Array.newInstance(
+      aClass,
+      result.size).asInstanceOf[Array[T]])
   }
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](

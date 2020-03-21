@@ -68,8 +68,10 @@ class Replica(
   private def logEndOffset_=(newLogEndOffset: LogOffsetMetadata) {
     if (isLocal) {
       throw new KafkaException(
-        "Should not set log end offset on partition [%s,%d]'s local replica %d"
-          .format(topic, partitionId, brokerId))
+        "Should not set log end offset on partition [%s,%d]'s local replica %d".format(
+          topic,
+          partitionId,
+          brokerId))
     } else {
       logEndOffsetMetadata = newLogEndOffset
       trace(
@@ -92,8 +94,10 @@ class Replica(
           .format(brokerId, topic, partitionId, brokerId, newHighWatermark))
     } else {
       throw new KafkaException(
-        "Should not set high watermark on partition [%s,%d]'s non-local replica %d"
-          .format(topic, partitionId, brokerId))
+        "Should not set high watermark on partition [%s,%d]'s non-local replica %d".format(
+          topic,
+          partitionId,
+          brokerId))
     }
   }
 
@@ -105,8 +109,10 @@ class Replica(
         log.get.convertToOffsetMetadata(highWatermarkMetadata.messageOffset)
     } else {
       throw new KafkaException(
-        "Should not construct complete high watermark on partition [%s,%d]'s non-local replica %d"
-          .format(topic, partitionId, brokerId))
+        "Should not construct complete high watermark on partition [%s,%d]'s non-local replica %d".format(
+          topic,
+          partitionId,
+          brokerId))
     }
   }
 
@@ -114,8 +120,9 @@ class Replica(
     if (!(that.isInstanceOf[Replica]))
       return false
     val other = that.asInstanceOf[Replica]
-    if (topic.equals(other.topic) && brokerId == other.brokerId && partition
-          .equals(other.partition))
+    if (topic.equals(
+          other.topic) && brokerId == other.brokerId && partition.equals(
+          other.partition))
       return true
     false
   }

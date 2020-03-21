@@ -29,11 +29,8 @@ class FlowExpandSpec extends AkkaSpec {
       val subscriber = TestSubscriber.probe[Int]()
 
       // Simply repeat the last element as an extrapolation step
-      Source
-        .fromPublisher(publisher)
-        .expand(Iterator.continually(_))
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(
+        Sink.fromSubscriber(subscriber)).run()
 
       for (i ← 1 to 100) {
         // Order is important here: If the request comes first it will be extrapolated!
@@ -49,11 +46,8 @@ class FlowExpandSpec extends AkkaSpec {
       val subscriber = TestSubscriber.probe[Int]()
 
       // Simply repeat the last element as an extrapolation step
-      Source
-        .fromPublisher(publisher)
-        .expand(Iterator.continually(_))
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(
+        Sink.fromSubscriber(subscriber)).run()
 
       publisher.sendNext(42)
 
@@ -75,11 +69,8 @@ class FlowExpandSpec extends AkkaSpec {
       val subscriber = TestSubscriber.probe[Int]()
 
       // Simply repeat the last element as an extrapolation step
-      Source
-        .fromPublisher(publisher)
-        .expand(Iterator.continually(_))
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(
+        Sink.fromSubscriber(subscriber)).run()
 
       publisher.sendNext(1)
       subscriber.requestNext(1)
@@ -111,11 +102,8 @@ class FlowExpandSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.probe[Int]()
 
-      Source
-        .fromPublisher(publisher)
-        .expand(Iterator.continually(_))
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(
+        Sink.fromSubscriber(subscriber)).run()
 
       publisher.sendNext(1)
       subscriber.requestNext(1)
@@ -149,8 +137,7 @@ class FlowExpandSpec extends AkkaSpec {
 
     "work properly with finite extrapolations" in {
       val (source, sink) =
-        TestSource
-          .probe[Int]
+        TestSource.probe[Int]
           .expand(i ⇒ Iterator.from(0).map(i -> _).take(3))
           .toMat(TestSink.probe)(Keep.both)
           .run()

@@ -25,10 +25,9 @@ object RestartNodeMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        "akka.cluster.auto-down-unreachable-after = 5s"))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      "akka.cluster.auto-down-unreachable-after = 5s")).withFallback(
+      MultiNodeClusterSpec.clusterConfig))
 }
 
 class RestartNodeMultiJvmNode1 extends RestartNodeSpec
@@ -52,10 +51,9 @@ abstract class RestartNodeSpec
 
   lazy val restartedSecondSystem = ActorSystem(
     system.name,
-    ConfigFactory
-      .parseString(
-        "akka.remote.netty.tcp.port=" + secondUniqueAddress.address.port.get)
-      .withFallback(system.settings.config))
+    ConfigFactory.parseString(
+      "akka.remote.netty.tcp.port=" + secondUniqueAddress.address.port.get).withFallback(
+      system.settings.config))
 
   override def afterAll(): Unit = {
     runOn(second) {
@@ -123,8 +121,8 @@ abstract class RestartNodeSpec
         awaitAssert(
           Cluster(restartedSecondSystem).readView.members.size should ===(3))
         awaitAssert(
-          Cluster(restartedSecondSystem).readView.members
-            .map(_.status) should ===(Set(Up)))
+          Cluster(restartedSecondSystem).readView.members.map(
+            _.status) should ===(Set(Up)))
       }
       runOn(first, third) {
         awaitAssert {

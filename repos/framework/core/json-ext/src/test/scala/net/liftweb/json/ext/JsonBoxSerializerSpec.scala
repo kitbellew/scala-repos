@@ -32,13 +32,15 @@ object JsonBoxSerializerSpec extends Specification {
   implicit val formats = net.liftweb.json.DefaultFormats + new JsonBoxSerializer
 
   "Extract empty age" in {
-    parse("""{"name":"joe"}""")
-      .extract[Person] mustEqual Person("joe", Empty, Empty)
+    parse("""{"name":"joe"}""").extract[Person] mustEqual Person(
+      "joe",
+      Empty,
+      Empty)
   }
 
   "Extract boxed thing" in {
-    parse("""{"name":"joe", "thing": "rog", "age":12}""")
-      .extract[Person] mustEqual Person("joe", Full(12), Empty, Full("rog"))
+    parse("""{"name":"joe", "thing": "rog", "age":12}""").extract[
+      Person] mustEqual Person("joe", Full(12), Empty, Full("rog"))
   }
 
   "Extract boxed mother" in {

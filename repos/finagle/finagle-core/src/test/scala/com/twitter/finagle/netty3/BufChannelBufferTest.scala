@@ -306,8 +306,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
   }
 
   test("random byte access") {
-    val buf = Buf.ByteArray.Owned(
-      0.until(CAPACITY).map(_ => random.nextInt().asInstanceOf[Byte]).toArray)
+    val buf = Buf.ByteArray.Owned(0.until(CAPACITY).map(_ =>
+      random.nextInt().asInstanceOf[Byte]).toArray)
     val bcb = new BufChannelBuffer(buf)
 
     random.setSeed(seed)
@@ -1390,14 +1390,12 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
         ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value, 0, 31)) > 0)
     assert(bcb.compareTo(
       ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value, 0, 31)) > 0)
-    assert(bcb
-      .slice(0, 31)
-      .compareTo(ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
     assert(
-      bcb
-        .slice(0, 31)
-        .compareTo(
-          ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value)) < 0)
+      bcb.slice(0, 31).compareTo(
+        ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
+    assert(
+      bcb.slice(0, 31).compareTo(
+        ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value)) < 0)
   }
 
   test("toString") {

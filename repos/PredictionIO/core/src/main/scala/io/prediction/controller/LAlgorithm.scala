@@ -118,8 +118,10 @@ abstract class LAlgorithm[PD, M: ClassTag, Q, P]
     // Check RDD[M].count == 1
     val m = bm.asInstanceOf[RDD[M]].first()
     if (m.isInstanceOf[PersistentModel[_]]) {
-      if (m.asInstanceOf[PersistentModel[Params]]
-            .save(modelId, algoParams, sc)) {
+      if (m.asInstanceOf[PersistentModel[Params]].save(
+            modelId,
+            algoParams,
+            sc)) {
         PersistentModelManifest(className = m.getClass.getName)
       } else {
         Unit

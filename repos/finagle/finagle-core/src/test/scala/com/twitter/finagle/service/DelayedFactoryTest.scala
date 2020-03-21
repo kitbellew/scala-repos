@@ -67,9 +67,10 @@ class DelayedFactoryTest extends FunSuite {
   }
 
   def numWaitersCheckFactory(factory: ServiceFactory[Int, Int], num: Int) {
-    factory.getClass.getDeclaredMethods
-      .find(_.getName == "numWaiters")
-      .foreach { meth => assert(meth.invoke(factory) == num) }
+    factory.getClass.getDeclaredMethods.find(
+      _.getName == "numWaiters").foreach { meth =>
+      assert(meth.invoke(factory) == num)
+    }
   }
 
   def testDelayedHelpers(helpers: Map[String, () => DelayedHelper]) {
@@ -234,8 +235,8 @@ class DelayedFactoryTest extends FunSuite {
       }
 
       test(
-        "%s: a factory that's closed prematurely should close the underlying on satisfaction"
-          .format(name)) {
+        "%s: a factory that's closed prematurely should close the underlying on satisfaction".format(
+          name)) {
         val ctx = helpFn()
         import ctx._
 

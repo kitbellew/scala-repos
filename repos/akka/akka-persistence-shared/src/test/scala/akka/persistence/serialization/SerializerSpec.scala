@@ -318,9 +318,10 @@ object MessageSerializerRemotingSpec {
   class LocalActor(port: Int) extends Actor {
     def receive = {
       case m ⇒
-        context
-          .actorSelection(s"akka.tcp://remote@127.0.0.1:${port}/user/remote")
-          .tell(m, Actor.noSender)
+        context.actorSelection(
+          s"akka.tcp://remote@127.0.0.1:${port}/user/remote").tell(
+          m,
+          Actor.noSender)
     }
   }
 
@@ -379,8 +380,8 @@ class MessageSerializerRemotingSpec
     }
 
     "serialize manifest provided by EventAdapter" in {
-      val p1 = PersistentRepr(MyPayload("a"), sender = testActor)
-        .withManifest("manifest")
+      val p1 = PersistentRepr(MyPayload("a"), sender = testActor).withManifest(
+        "manifest")
       val bytes = serialization.serialize(p1).get
       val back = serialization.deserialize(bytes, classOf[PersistentRepr]).get
       require(p1.manifest == back.manifest)

@@ -44,8 +44,7 @@ object ScroogeInternalOrderedSerializationImpl {
       ScroogeUnionOrderedBuf.dispatch(c)(buildDispatcher)
     val scroogeOuterOrderedBuf = ScroogeOuterOrderedBuf.dispatch(c)
 
-    OrderedSerializationProviderImpl
-      .normalizedDispatcher(c)(buildDispatcher)
+    OrderedSerializationProviderImpl.normalizedDispatcher(c)(buildDispatcher)
       .orElse(scroogeEnumDispatcher)
       .orElse(scroogeUnionDispatcher)
       .orElse(scroogeOuterOrderedBuf)
@@ -74,8 +73,8 @@ object ScroogeInternalOrderedSerializationImpl {
 
     val scroogeDispatcher = ScroogeOrderedBuf.dispatch(c)(buildDispatcher)
 
-    OrderedSerializationProviderImpl
-      .normalizedDispatcher(c)(buildOuterDispatcher)
+    OrderedSerializationProviderImpl.normalizedDispatcher(c)(
+      buildOuterDispatcher)
       .orElse(scroogeDispatcher)
       .orElse(innerDisp)
   }

@@ -434,8 +434,11 @@ object DistributedPubSubMediator {
       def business = {
         case SendToOneSubscriber(msg) ⇒
           if (subscribers.nonEmpty)
-            Router(routingLogic, (subscribers map ActorRefRoutee).toVector)
-              .route(wrapIfNeeded(msg), sender())
+            Router(
+              routingLogic,
+              (subscribers map ActorRefRoutee).toVector).route(
+              wrapIfNeeded(msg),
+              sender())
       }
     }
 
@@ -917,8 +920,8 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
       system.deadLetters
     else {
       val name = system.settings.config.getString("akka.cluster.pub-sub.name")
-      val dispatcher = system.settings.config
-        .getString("akka.cluster.pub-sub.use-dispatcher") match {
+      val dispatcher = system.settings.config.getString(
+        "akka.cluster.pub-sub.use-dispatcher") match {
         case "" ⇒ Dispatchers.DefaultDispatcherId
         case id ⇒ id
       }

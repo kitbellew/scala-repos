@@ -179,8 +179,9 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       assert(
         asMap.size == outputList.size,
         "Repeated pivot key fields: " + outputList.toString)
-      val values = fieldDef._2.iterator.asScala
-      // Look up this key:
+      val values = fieldDef._2
+        .iterator.asScala
+        // Look up this key:
         .map { fname =>
           asMap.getOrElse(
             fname.asInstanceOf[String],

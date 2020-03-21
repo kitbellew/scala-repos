@@ -241,9 +241,12 @@ class AccessControlSpec extends Specification {
         ReducePermission(Path("/other"), WrittenByAccount(otherAccountId))
       )
 
-      apiKeyManager
-        .deriveAndAddGrant(None, None, otherAPIKey, readReduceOther, userAPIKey)
-        .get
+      apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        otherAPIKey,
+        readReduceOther,
+        userAPIKey).get
 
       hasCapability(
         userAPIKey,
@@ -324,14 +327,12 @@ class AccessControlSpec extends Specification {
         DeletePermission(Path("/other"), WrittenByAccount(otherAccountId))
       )
 
-      apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          otherAPIKey,
-          writeDeleteOther,
-          userAPIKey)
-        .get
+      apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        otherAPIKey,
+        writeDeleteOther,
+        userAPIKey).get
 
       hasCapability(
         userAPIKey,
@@ -418,9 +419,12 @@ class AccessControlSpec extends Specification {
         DeletePermission(Path("/other"), WrittenByAny)
       )
 
-      val accessOtherGrant = apiKeyManager
-        .deriveAndAddGrant(None, None, otherAPIKey, accessOther, userAPIKey)
-        .get
+      val accessOtherGrant = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        otherAPIKey,
+        accessOther,
+        userAPIKey).get
 
       hasCapability(
         userAPIKey,
@@ -491,15 +495,13 @@ class AccessControlSpec extends Specification {
         DeletePermission(Path("/other"), WrittenByAny)
       )
 
-      val expiredAccessOtherGrant = apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          otherAPIKey,
-          accessOther,
-          userAPIKey,
-          Some(new DateTime().minusYears(1000)))
-        .get
+      val expiredAccessOtherGrant = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        otherAPIKey,
+        accessOther,
+        userAPIKey,
+        Some(new DateTime().minusYears(1000))).get
 
       hasCapability(
         userAPIKey,
@@ -550,12 +552,18 @@ class AccessControlSpec extends Specification {
         DeletePermission(Path("/other"), WrittenByAny)
       )
 
-      val user1AccessOtherGrant = apiKeyManager
-        .deriveAndAddGrant(None, None, otherAPIKey, accessOther, user1APIKey)
-        .get
-      val user2AccessOtherGrant = apiKeyManager
-        .deriveAndAddGrant(None, None, user1APIKey, accessOther, user2APIKey)
-        .get
+      val user1AccessOtherGrant = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        otherAPIKey,
+        accessOther,
+        user1APIKey).get
+      val user2AccessOtherGrant = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        user1APIKey,
+        accessOther,
+        user2APIKey).get
 
       hasCapability(
         user2APIKey,
@@ -649,22 +657,18 @@ class AccessControlSpec extends Specification {
       hasCapability(customer2APIKey, readCustomer2AddOn) must beFalse
       hasCapability(customer2APIKey, readCustomer1AddOn) must beFalse
 
-      val customer1CanRead = apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          addOnAPIKey,
-          readCustomer1AddOn,
-          customer1APIKey)
-        .get
-      val customer2CanRead = apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          addOnAPIKey,
-          readCustomer2AddOn,
-          customer2APIKey)
-        .get
+      val customer1CanRead = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        addOnAPIKey,
+        readCustomer1AddOn,
+        customer1APIKey).get
+      val customer2CanRead = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        addOnAPIKey,
+        readCustomer2AddOn,
+        customer2APIKey).get
 
       hasCapability(customer1APIKey, readCustomer1Customer1) must beTrue
       hasCapability(customer1APIKey, readCustomer1AddOn) must beTrue
@@ -706,9 +710,12 @@ class AccessControlSpec extends Specification {
       hasCapability(addOnAPIKey, readPerm) must beFalse
       hasCapability(addOnAPIKey, writePerm) must beFalse
 
-      val addOnCanWrite = apiKeyManager
-        .deriveAndAddGrant(None, None, providerAPIKey, writePerm, addOnAPIKey)
-        .get
+      val addOnCanWrite = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        providerAPIKey,
+        writePerm,
+        addOnAPIKey).get
 
       hasCapability(providerAPIKey, readPerm) must beFalse
       hasCapability(providerAPIKey, writePerm) must beTrue
@@ -746,9 +753,12 @@ class AccessControlSpec extends Specification {
       hasCapability(addOnAPIKey, addOnPerm) must beTrue
       hasCapability(customerAPIKey, addOnPerm) must beFalse
 
-      val derivedGrantId = apiKeyManager
-        .deriveAndAddGrant(None, None, addOnAPIKey, addOnPerm, customerAPIKey)
-        .get
+      val derivedGrantId = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        addOnAPIKey,
+        addOnPerm,
+        customerAPIKey).get
 
       hasCapability(addOnAPIKey, addOnPerm) must beTrue
       hasCapability(customerAPIKey, addOnPerm) must beTrue

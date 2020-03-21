@@ -287,12 +287,10 @@ private[akka] case class ActorMaterializerImpl(
           systemService = false)
       case ref: RepointableActorRef ⇒
         if (ref.isStarted)
-          ref.underlying
-            .asInstanceOf[ActorCell]
-            .attachChild(
-              props.withDispatcher(dispatcher),
-              name,
-              systemService = false)
+          ref.underlying.asInstanceOf[ActorCell].attachChild(
+            props.withDispatcher(dispatcher),
+            name,
+            systemService = false)
         else {
           implicit val timeout = ref.system.settings.CreationTimeout
           val f = (supervisor ? StreamSupervisor.Materialize(

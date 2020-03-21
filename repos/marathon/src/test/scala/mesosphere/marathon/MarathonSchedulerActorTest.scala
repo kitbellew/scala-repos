@@ -171,8 +171,8 @@ class MarathonSchedulerActorTest
       version = app.version.toString
     )
 
-    when(driver.killTask(taskA.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(taskA.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(statusUpdateEvent)
           Status.DRIVER_RUNNING
@@ -190,8 +190,9 @@ class MarathonSchedulerActorTest
         TaskFailure.FromMesosStatusUpdateEvent(statusUpdateEvent)
 
       awaitAssert(
-        verify(taskFailureEventRepository, times(1))
-          .store(app.id, taskFailureEvent),
+        verify(taskFailureEventRepository, times(1)).store(
+          app.id,
+          taskFailureEvent),
         5.seconds,
         10.millis)
 
@@ -232,8 +233,8 @@ class MarathonSchedulerActorTest
       timestamp = app.version.toString
     )
 
-    when(driver.killTask(taskA.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(taskA.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(statusUpdateEvent)
           Status.DRIVER_RUNNING
@@ -313,11 +314,11 @@ class MarathonSchedulerActorTest
       Timestamp.now())
 
     when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(Iterable(taskA))
-    when(taskTracker.appTasks(eq(app.id))(any[ExecutionContext]))
-      .thenReturn(Future.successful(Iterable(taskA)))
+    when(taskTracker.appTasks(eq(app.id))(any[ExecutionContext])).thenReturn(
+      Future.successful(Iterable(taskA)))
 
-    when(driver.killTask(taskA.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(taskA.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -368,8 +369,8 @@ class MarathonSchedulerActorTest
 
     when(repo.store(any)).thenReturn(Future.successful(app))
     when(repo.currentVersion(app.id)).thenReturn(Future.successful(None))
-    when(taskTracker.appTasksLaunchedSync(app.id))
-      .thenReturn(Iterable.empty[Task])
+    when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(
+      Iterable.empty[Task])
     when(taskTracker.appTasksSync(app.id)).thenReturn(Iterable.empty[Task])
     when(repo.expunge(app.id)).thenReturn(Future.successful(Nil))
 
@@ -451,8 +452,8 @@ class MarathonSchedulerActorTest
 
     when(repo.store(any)).thenReturn(Future.successful(app))
     when(repo.currentVersion(app.id)).thenReturn(Future.successful(None))
-    when(taskTracker.appTasksLaunchedSync(app.id))
-      .thenReturn(Iterable.empty[Task])
+    when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(
+      Iterable.empty[Task])
     when(repo.expunge(app.id)).thenReturn(Future.successful(Nil))
 
     val schedulerActor = createActor()
@@ -483,8 +484,8 @@ class MarathonSchedulerActorTest
 
     when(repo.store(any)).thenReturn(Future.successful(app))
     when(repo.currentVersion(app.id)).thenReturn(Future.successful(None))
-    when(taskTracker.appTasksLaunchedSync(app.id))
-      .thenReturn(Iterable.empty[Task])
+    when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(
+      Iterable.empty[Task])
     when(repo.expunge(app.id)).thenReturn(Future.successful(Nil))
 
     val schedulerActor = TestActorRef(
@@ -526,8 +527,8 @@ class MarathonSchedulerActorTest
     val schedulerActor = createActor()
 
     val reconciliationPromise = Promise[Unit]()
-    when(actions.reconcileTasks(any).asInstanceOf[Future[Unit]])
-      .thenReturn(reconciliationPromise.future)
+    when(actions.reconcileTasks(any).asInstanceOf[Future[Unit]]).thenReturn(
+      reconciliationPromise.future)
 
     schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
 
@@ -551,8 +552,8 @@ class MarathonSchedulerActorTest
     schedulerActions = _ => actions
     val schedulerActor = createActor()
 
-    when(actions.reconcileTasks(any).asInstanceOf[Future[Unit]])
-      .thenReturn(Future.successful(()))
+    when(actions.reconcileTasks(any).asInstanceOf[Future[Unit]]).thenReturn(
+      Future.successful(()))
 
     schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
 
@@ -624,8 +625,8 @@ class MarathonSchedulerActorTest
         ref,
         mock[MarathonConf])(system.dispatcher)
 
-    when(deploymentRepo.store(any))
-      .thenAnswer(new Answer[Future[DeploymentPlan]] {
+    when(deploymentRepo.store(any)).thenAnswer(
+      new Answer[Future[DeploymentPlan]] {
         override def answer(p1: InvocationOnMock): Future[DeploymentPlan] = {
           Future.successful(p1.getArguments()(0).asInstanceOf[DeploymentPlan])
         }

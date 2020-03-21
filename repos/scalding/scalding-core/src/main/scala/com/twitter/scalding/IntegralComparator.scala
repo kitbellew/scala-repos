@@ -60,7 +60,9 @@ class IntegralComparator
     if (null == obj) {
       0
     } else if (isIntegral(obj)) {
-      obj.asInstanceOf[Number].longValue.hashCode
+      obj.asInstanceOf[Number]
+        .longValue
+        .hashCode
     } else {
       //Use the default:
       obj.hashCode

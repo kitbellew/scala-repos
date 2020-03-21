@@ -52,8 +52,10 @@ class ScThisReferenceImpl(node: ASTNode)
           PsiTreeUtil.getContextOfType(this, false, classOf[ScTemplateBody])
         if (encl != null)
           Some(
-            PsiTreeUtil
-              .getContextOfType(encl, false, classOf[ScTemplateDefinition]))
+            PsiTreeUtil.getContextOfType(
+              encl,
+              false,
+              classOf[ScTemplateDefinition]))
         else None
       }
     }
@@ -74,13 +76,13 @@ object ScThisReferenceImpl {
   def getThisTypeForTypeDefinition(
       td: ScTemplateDefinition,
       expr: ScExpression): TypeResult[ScType] = {
-    lazy val selfTypeOfClass = td
-      .getTypeWithProjections(TypingContext.empty, thisProjections = true)
-      .map(tp =>
-        td.selfType match {
-          case Some(selfType) => Bounds.glb(tp, selfType)
-          case _              => tp
-        })
+    lazy val selfTypeOfClass = td.getTypeWithProjections(
+      TypingContext.empty,
+      thisProjections = true).map(tp =>
+      td.selfType match {
+        case Some(selfType) => Bounds.glb(tp, selfType)
+        case _              => tp
+      })
 
     // SLS 6.5:  If the expression’s expected type is a stable type,
     // or C .this occurs as the prefix of a selection, its type is C.this.type,

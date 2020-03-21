@@ -108,8 +108,9 @@ object UniqueKeyedService extends java.io.Serializable {
           } catch {
             case NonFatal(e) =>
               val msg =
-                "Requested range: %s for source %s was not fully satisfiable.\n"
-                  .format(requested, s)
+                "Requested range: %s for source %s was not fully satisfiable.\n".format(
+                  requested,
+                  s)
               toTry(e, msg)
           }
         } else {

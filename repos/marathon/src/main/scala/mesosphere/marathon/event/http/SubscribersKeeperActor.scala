@@ -45,9 +45,8 @@ class SubscribersKeeperActor(val store: EntityStore[EventSubscribers])
       subscription pipeTo sender()
 
     case GetSubscribers =>
-      val subscription = store
-        .fetch(Subscribers)
-        .map(_.getOrElse(EventSubscribers()))(context.dispatcher)
+      val subscription = store.fetch(Subscribers).map(
+        _.getOrElse(EventSubscribers()))(context.dispatcher)
 
       import context.dispatcher
       subscription pipeTo sender()

@@ -177,16 +177,14 @@ class EventAdapterSpec(
       name)
 
   def toJournal(in: Any, journalId: String = journalName) =
-    Persistence(system)
-      .adaptersFor("akka.persistence.journal." + journalId)
-      .get(in.getClass)
-      .toJournal(in)
+    Persistence(system).adaptersFor(
+      "akka.persistence.journal." + journalId).get(in.getClass).toJournal(in)
 
   def fromJournal(in: Any, journalId: String = journalName) =
-    Persistence(system)
-      .adaptersFor("akka.persistence.journal." + journalId)
-      .get(in.getClass)
-      .fromJournal(in, "")
+    Persistence(system).adaptersFor(
+      "akka.persistence.journal." + journalId).get(in.getClass).fromJournal(
+      in,
+      "")
 
   "EventAdapter" must {
 

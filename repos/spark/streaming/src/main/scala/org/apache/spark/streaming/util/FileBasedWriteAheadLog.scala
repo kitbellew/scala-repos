@@ -251,8 +251,10 @@ private[streaming] class FileBasedWriteAheadLog(
 
       if (fileSystem.exists(logDirectoryPath) &&
           fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
-        val logFileInfo = logFilesTologInfo(
-          fileSystem.listStatus(logDirectoryPath).map { _.getPath })
+        val logFileInfo =
+          logFilesTologInfo(fileSystem.listStatus(logDirectoryPath).map {
+            _.getPath
+          })
         pastLogs.clear()
         pastLogs ++= logFileInfo
         logInfo(
@@ -283,8 +285,7 @@ private[streaming] object FileBasedWriteAheadLog {
 
   def getCallerName(): Option[String] = {
     val blacklist = Seq("WriteAheadLog", "Logging", "java.lang", "scala.")
-    Thread.currentThread
-      .getStackTrace()
+    Thread.currentThread.getStackTrace()
       .map(_.getClassName)
       .find { c => !blacklist.exists(c.contains) }
       .flatMap(_.split("\\.").lastOption)
@@ -293,18 +294,16 @@ private[streaming] object FileBasedWriteAheadLog {
 
   /** Convert a sequence of files to a sequence of sorted LogInfo objects */
   def logFilesTologInfo(files: Seq[Path]): Seq[LogInfo] = {
-    files
-      .flatMap { file =>
-        logFileRegex.findFirstIn(file.getName()) match {
-          case Some(logFileRegex(startTimeStr, stopTimeStr)) =>
-            val startTime = startTimeStr.toLong
-            val stopTime = stopTimeStr.toLong
-            Some(LogInfo(startTime, stopTime, file.toString))
-          case None =>
-            None
-        }
+    files.flatMap { file =>
+      logFileRegex.findFirstIn(file.getName()) match {
+        case Some(logFileRegex(startTimeStr, stopTimeStr)) =>
+          val startTime = startTimeStr.toLong
+          val stopTime = stopTimeStr.toLong
+          Some(LogInfo(startTime, stopTime, file.toString))
+        case None =>
+          None
       }
-      .sortBy { _.startTime }
+    }.sortBy { _.startTime }
   }
 
   /**
@@ -320,13 +319,10 @@ private[streaming] object FileBasedWriteAheadLog {
       handler: I => Iterator[O]): Iterator[O] = {
     val taskSupport = new ExecutionContextTaskSupport(executionContext)
     val groupSize = taskSupport.parallelismLevel.max(8)
-    source
-      .grouped(groupSize)
-      .flatMap { group =>
-        val parallelCollection = group.par
-        parallelCollection.tasksupport = taskSupport
-        parallelCollection.map(handler)
-      }
-      .flatten
+    source.grouped(groupSize).flatMap { group =>
+      val parallelCollection = group.par
+      parallelCollection.tasksupport = taskSupport
+      parallelCollection.map(handler)
+    }.flatten
   }
 }

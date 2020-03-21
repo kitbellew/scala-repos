@@ -263,15 +263,13 @@ private[netty] abstract class ServerHandler(
     channel.setReadable(false)
     associationListenerFuture.onSuccess {
       case listener: AssociationEventListener ⇒
-        val remoteAddress = NettyTransport
-          .addressFromSocketAddress(
-            remoteSocketAddress,
-            transport.schemeIdentifier,
-            transport.system.name,
-            hostName = None,
-            port = None)
-          .getOrElse(throw new NettyTransportException(
-            s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
+        val remoteAddress = NettyTransport.addressFromSocketAddress(
+          remoteSocketAddress,
+          transport.schemeIdentifier,
+          transport.system.name,
+          hostName = None,
+          port = None).getOrElse(throw new NettyTransportException(
+          s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
         init(channel, remoteSocketAddress, remoteAddress, msg) {
           listener notify InboundAssociation(_)
         }
@@ -364,13 +362,11 @@ class NettyTransport(
   import settings._
 
   implicit val executionContext: ExecutionContext =
-    settings.UseDispatcherForIo
-      .orElse(RARP(system).provider.remoteSettings.Dispatcher match {
+    settings.UseDispatcherForIo.orElse(
+      RARP(system).provider.remoteSettings.Dispatcher match {
         case "" ⇒ None
         case dispatcherName ⇒ Some(dispatcherName)
-      })
-      .map(system.dispatchers.lookup)
-      .getOrElse(system.dispatcher)
+      }).map(system.dispatchers.lookup).getOrElse(system.dispatcher)
 
   override val schemeIdentifier: String =
     (if (EnableSsl) "ssl." else "") + TransportMode
@@ -391,8 +387,9 @@ class NettyTransport(
     new ConcurrentHashMap[SocketAddress, HandleEventListener]()
 
   private def createExecutorService() =
-    UseDispatcherForIo.map(system.dispatchers.lookup) getOrElse Executors
-      .newCachedThreadPool(system.threadFactory)
+    UseDispatcherForIo.map(
+      system.dispatchers.lookup) getOrElse Executors.newCachedThreadPool(
+      system.threadFactory)
 
   /*
    * Be aware, that the close() method of DefaultChannelGroup is racy, because it uses an iterator over a ConcurrentHashMap.
@@ -647,10 +644,8 @@ class NettyTransport(
           channel ⇒
             if (EnableSsl)
               blocking {
-                channel.getPipeline
-                  .get(classOf[SslHandler])
-                  .handshake()
-                  .awaitUninterruptibly()
+                channel.getPipeline.get(
+                  classOf[SslHandler]).handshake().awaitUninterruptibly()
               }
             if (!isDatagram) channel.setReadable(false)
             channel

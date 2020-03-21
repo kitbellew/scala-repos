@@ -463,8 +463,9 @@ class BehaviorSpec extends TypedSpec {
     }
 
     def `must send messages to itself and stop correctly`(): Unit = {
-      val Setup(ctx, _) = mkCtx(factory = behavior2)
-        .check[Command](AuxPing(42), Seq(42, 0, 1, 2, 3) map AuxPing: _*)
+      val Setup(ctx, _) = mkCtx(factory = behavior2).check[Command](
+        AuxPing(42),
+        Seq(42, 0, 1, 2, 3) map AuxPing: _*)
       ctx.run(AuxPing(4))
       inbox.receiveAll() should ===(AuxPing(4) :: Nil)
       ctx.currentBehavior should ===(Stopped[Command])

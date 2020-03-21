@@ -130,8 +130,7 @@ object Utils {
   final class TrieNode(strings: Seq[String]) {
 
     val (min, max, arr) = {
-      val children = strings
-        .filter(!_.isEmpty)
+      val children = strings.filter(!_.isEmpty)
         .groupBy(_(0))
         .map { case (k, ss) => k -> new TrieNode(ss.map(_.tail)) }
       if (children.size == 0) (0.toChar, 0.toChar, new Array[TrieNode](0))

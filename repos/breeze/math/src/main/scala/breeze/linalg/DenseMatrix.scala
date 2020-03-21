@@ -244,8 +244,11 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     val _cols = cols //if(cols < 0) size / rows else cols
     require(
       rows * _cols == size,
-      "Cannot reshape a (%d,%d) matrix to a (%d,%d) matrix!"
-        .format(this.rows, this.cols, rows, _cols))
+      "Cannot reshape a (%d,%d) matrix to a (%d,%d) matrix!".format(
+        this.rows,
+        this.cols,
+        rows,
+        _cols))
 
     view match {
       case View.Require =>
@@ -412,8 +415,9 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     }
 
   private def checkIsSpecialized(): Unit = {
-    if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseMatrix") throw new Exception("...")
+    if (data.isInstanceOf[
+          Array[Double]] && getClass.getName() == "breeze.linalg.DenseMatrix")
+      throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
 //  checkIsSpecialized()
@@ -480,17 +484,37 @@ object DenseMatrix
       isTranspose: Boolean = false): DenseMatrix[V] = {
     (data: Any) match {
       case d: Array[Double] =>
-        new DenseMatrix(rows, cols, d, offset, majorStride, isTranspose)
-          .asInstanceOf[DenseMatrix[V]]
+        new DenseMatrix(
+          rows,
+          cols,
+          d,
+          offset,
+          majorStride,
+          isTranspose).asInstanceOf[DenseMatrix[V]]
       case d: Array[Float] =>
-        new DenseMatrix(rows, cols, d, offset, majorStride, isTranspose)
-          .asInstanceOf[DenseMatrix[V]]
+        new DenseMatrix(
+          rows,
+          cols,
+          d,
+          offset,
+          majorStride,
+          isTranspose).asInstanceOf[DenseMatrix[V]]
       case d: Array[Long] =>
-        new DenseMatrix(rows, cols, d, offset, majorStride, isTranspose)
-          .asInstanceOf[DenseMatrix[V]]
+        new DenseMatrix(
+          rows,
+          cols,
+          d,
+          offset,
+          majorStride,
+          isTranspose).asInstanceOf[DenseMatrix[V]]
       case d: Array[Int] =>
-        new DenseMatrix(rows, cols, d, offset, majorStride, isTranspose)
-          .asInstanceOf[DenseMatrix[V]]
+        new DenseMatrix(
+          rows,
+          cols,
+          d,
+          offset,
+          majorStride,
+          isTranspose).asInstanceOf[DenseMatrix[V]]
       case _ =>
         new DenseMatrix(rows, cols, data, offset, majorStride, isTranspose)
     }

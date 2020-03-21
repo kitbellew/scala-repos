@@ -57,9 +57,9 @@ trait SecureFlagSpec
     val sslPort = 19943
 
     def test(connection: HttpsURLConnection, expect: Boolean) = {
-      Source
-        .fromInputStream(connection.getContent.asInstanceOf[InputStream])
-        .mkString must_== expect.toString
+      Source.fromInputStream(
+        connection.getContent.asInstanceOf[
+          InputStream]).mkString must_== expect.toString
     }
 
     "show that requests are secure in the absence of X_FORWARDED_PROTO" in withServer(
@@ -113,9 +113,9 @@ trait SecureFlagSpec
   // the following are adapted from SslSpec
 
   def createConn(sslPort: Int, forwardedProto: Option[String] = None) = {
-    val conn = new URL("https://localhost:" + sslPort + "/")
-      .openConnection()
-      .asInstanceOf[HttpsURLConnection]
+    val conn = new URL(
+      "https://localhost:" + sslPort + "/").openConnection().asInstanceOf[
+      HttpsURLConnection]
     forwardedProto.foreach { proto =>
       conn.setRequestProperty(X_FORWARDED_FOR, "127.0.0.1")
       conn.setRequestProperty(X_FORWARDED_PROTO, proto)

@@ -120,8 +120,8 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
         val neverCompleted = Promise[ByteString]()
         intercept[TimeoutException] {
           Await.result(
-            Default(tpe, 42, Source.fromFuture(neverCompleted.future))
-              .toStrict(100.millis),
+            Default(tpe, 42, Source.fromFuture(neverCompleted.future)).toStrict(
+              100.millis),
             150.millis)
         }.getMessage must be(
           "HttpEntity.toStrict timed out after 100 milliseconds while still waiting for outstanding data")
@@ -201,21 +201,18 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
         withReturnType[Default](
           Default(tpe, 11, source(abc, de, fgh, ijk)).withoutSizeLimit)
         withReturnType[RequestEntity](
-          Default(tpe, 11, source(abc, de, fgh, ijk))
-            .asInstanceOf[RequestEntity]
-            .withoutSizeLimit)
+          Default(tpe, 11, source(abc, de, fgh, ijk)).asInstanceOf[
+            RequestEntity].withoutSizeLimit)
         withReturnType[ResponseEntity](
-          Default(tpe, 11, source(abc, de, fgh, ijk))
-            .asInstanceOf[ResponseEntity]
-            .withoutSizeLimit)
+          Default(tpe, 11, source(abc, de, fgh, ijk)).asInstanceOf[
+            ResponseEntity].withoutSizeLimit)
       }
       "CloseDelimited" in {
         withReturnType[CloseDelimited](
           CloseDelimited(tpe, source(abc, de, fgh, ijk)).withoutSizeLimit)
         withReturnType[ResponseEntity](
-          CloseDelimited(tpe, source(abc, de, fgh, ijk))
-            .asInstanceOf[ResponseEntity]
-            .withoutSizeLimit)
+          CloseDelimited(tpe, source(abc, de, fgh, ijk)).asInstanceOf[
+            ResponseEntity].withoutSizeLimit)
       }
       "Chunked" in {
         withReturnType[Chunked](
@@ -227,13 +224,15 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
               Chunk(ijk),
               LastChunk)).withoutSizeLimit)
         withReturnType[RequestEntity](
-          Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk))
-            .asInstanceOf[RequestEntity]
-            .withoutSizeLimit)
+          Chunked(
+            tpe,
+            source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk)).asInstanceOf[
+            RequestEntity].withoutSizeLimit)
         withReturnType[ResponseEntity](
-          Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk))
-            .asInstanceOf[ResponseEntity]
-            .withoutSizeLimit)
+          Chunked(
+            tpe,
+            source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk)).asInstanceOf[
+            ResponseEntity].withoutSizeLimit)
       }
     }
   }
@@ -249,9 +248,8 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
   def withReturnType[T](expr: T) = expr
 
   def strictifyTo(strict: Strict): Matcher[HttpEntity] =
-    equal(strict)
-      .matcher[Strict]
-      .compose(x ⇒ Await.result(x.toStrict(250.millis), 250.millis))
+    equal(strict).matcher[Strict].compose(x ⇒
+      Await.result(x.toStrict(250.millis), 250.millis))
 
   def transformTo(strict: Strict): Matcher[HttpEntity] =
     equal(strict).matcher[Strict].compose { x ⇒

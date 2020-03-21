@@ -314,9 +314,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
             assert(log.getHandlers.length == 1)
             val h = log.getHandlers()(0).asInstanceOf[SyslogHandler]
             assert(
-              h.dest
-                .asInstanceOf[InetSocketAddress]
-                .getHostName == "example.com")
+              h.dest.asInstanceOf[
+                InetSocketAddress].getHostName == "example.com")
             assert(h.dest.asInstanceOf[InetSocketAddress].getPort == 212)
             val formatter = h.formatter.asInstanceOf[SyslogFormatter]
             assert(formatter.serverName == Some("elmo"))
@@ -374,12 +373,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
             case _: ClassCastException => fail("not a ThrottledHandler")
           }
           try {
-            Logger
-              .get("")
-              .getHandlers()(0)
-              .asInstanceOf[ThrottledHandler]
-              .handler
-              .asInstanceOf[FileHandler]
+            Logger.get("").getHandlers()(0).asInstanceOf[
+              ThrottledHandler].handler.asInstanceOf[FileHandler]
           } catch {
             case _: ClassCastException => fail("not a FileHandler")
           }

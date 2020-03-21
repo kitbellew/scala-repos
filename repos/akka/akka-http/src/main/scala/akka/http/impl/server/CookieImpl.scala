@@ -34,6 +34,8 @@ case class CookieImpl(
 
   def set(value: String): Directive =
     Directives.custom(
-      Directives
-        .setCookie(HttpCookie.create(name, value, domain, path), _, _: _*))
+      Directives.setCookie(
+        HttpCookie.create(name, value, domain, path),
+        _,
+        _: _*))
 }

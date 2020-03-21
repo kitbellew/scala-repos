@@ -81,14 +81,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       replicationFactor = 1,
       servers = Seq(server1))
 
-    val topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic),
-        brokerEndPoints,
-        "TopicMetadataTest-testBasicTopicMetadata",
-        2000,
-        0)
-      .topicsMetadata
+    val topicsMetadata = ClientUtils.fetchTopicMetadata(
+      Set(topic),
+      brokerEndPoints,
+      "TopicMetadataTest-testBasicTopicMetadata",
+      2000,
+      0).topicsMetadata
     assertEquals(Errors.NONE.code, topicsMetadata.head.errorCode)
     assertEquals(
       Errors.NONE.code,
@@ -129,14 +127,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       servers = Seq(server1))
 
     // issue metadata request with empty list of topics
-    val topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set.empty,
-        brokerEndPoints,
-        "TopicMetadataTest-testGetAllTopicMetadata",
-        2000,
-        0)
-      .topicsMetadata
+    val topicsMetadata = ClientUtils.fetchTopicMetadata(
+      Set.empty,
+      brokerEndPoints,
+      "TopicMetadataTest-testGetAllTopicMetadata",
+      2000,
+      0).topicsMetadata
     assertEquals(Errors.NONE.code, topicsMetadata.head.errorCode)
     assertEquals(2, topicsMetadata.size)
     assertEquals(
@@ -171,14 +167,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
   def testAutoCreateTopic {
     // auto create topic
     val topic = "testAutoCreateTopic"
-    var topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic),
-        brokerEndPoints,
-        "TopicMetadataTest-testAutoCreateTopic",
-        2000,
-        0)
-      .topicsMetadata
+    var topicsMetadata = ClientUtils.fetchTopicMetadata(
+      Set(topic),
+      brokerEndPoints,
+      "TopicMetadataTest-testAutoCreateTopic",
+      2000,
+      0).topicsMetadata
     assertEquals(
       Errors.LEADER_NOT_AVAILABLE.code,
       topicsMetadata.head.errorCode)
@@ -194,14 +188,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
     TestUtils.waitUntilMetadataIsPropagated(Seq(server1), topic, 0)
 
     // retry the metadata for the auto created topic
-    topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic),
-        brokerEndPoints,
-        "TopicMetadataTest-testBasicTopicMetadata",
-        2000,
-        0)
-      .topicsMetadata
+    topicsMetadata = ClientUtils.fetchTopicMetadata(
+      Set(topic),
+      brokerEndPoints,
+      "TopicMetadataTest-testBasicTopicMetadata",
+      2000,
+      0).topicsMetadata
     assertEquals(Errors.NONE.code, topicsMetadata.head.errorCode)
     assertEquals(
       Errors.NONE.code,
@@ -224,14 +216,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
     // auto create topic
     val topic1 = "testAutoCreate_Topic"
     val topic2 = "testAutoCreate.Topic"
-    var topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic1, topic2),
-        brokerEndPoints,
-        "TopicMetadataTest-testAutoCreateTopic",
-        2000,
-        0)
-      .topicsMetadata
+    var topicsMetadata = ClientUtils.fetchTopicMetadata(
+      Set(topic1, topic2),
+      brokerEndPoints,
+      "TopicMetadataTest-testAutoCreateTopic",
+      2000,
+      0).topicsMetadata
     assertEquals("Expecting metadata for 2 topics", 2, topicsMetadata.size)
     assertEquals(
       "Expecting metadata for topic1",
@@ -254,14 +244,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
     TestUtils.waitUntilMetadataIsPropagated(Seq(server1), topic1, 0)
 
     // retry the metadata for the first auto created topic
-    topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic1),
-        brokerEndPoints,
-        "TopicMetadataTest-testBasicTopicMetadata",
-        2000,
-        0)
-      .topicsMetadata
+    topicsMetadata = ClientUtils.fetchTopicMetadata(
+      Set(topic1),
+      brokerEndPoints,
+      "TopicMetadataTest-testBasicTopicMetadata",
+      2000,
+      0).topicsMetadata
     assertEquals(Errors.NONE.code, topicsMetadata.head.errorCode)
     assertEquals(
       Errors.NONE.code,
@@ -309,8 +297,8 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
           metadata.topicsMetadata.nonEmpty &&
           metadata.topicsMetadata.head.partitionsMetadata.nonEmpty &&
           expectedIsr.sortBy(
-            _.id) == metadata.topicsMetadata.head.partitionsMetadata.head.isr
-            .sortBy(_.id)
+            _.id) == metadata.topicsMetadata.head.partitionsMetadata.head.isr.sortBy(
+            _.id)
         },
         "Topic metadata is not correctly updated for broker " + x + ".\n" +
           "Expected ISR: " + expectedIsr + "\n" +
@@ -373,16 +361,17 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
     )
 
     // Assert that topic metadata at new brokers is updated correctly
-    servers
-      .filter(x => x.brokerState.currentState != NotRunning.state)
-      .foreach(x =>
+    servers.filter(x => x.brokerState.currentState != NotRunning.state).foreach(
+      x =>
         waitUntilTrue(
           () => {
             val foundMetadata = ClientUtils.fetchTopicMetadata(
               Set.empty,
               Seq(
-                new Broker(x.config.brokerId, x.config.hostName, x.boundPort())
-                  .getBrokerEndPoint(SecurityProtocol.PLAINTEXT)),
+                new Broker(
+                  x.config.brokerId,
+                  x.config.hostName,
+                  x.boundPort()).getBrokerEndPoint(SecurityProtocol.PLAINTEXT)),
               "TopicMetadataTest-testBasicTopicMetadata",
               2000,
               0

@@ -36,18 +36,14 @@ object LocalCluster {
 }
 
 class LocalCluster(mutex: Boolean = true) {
-  org.apache.log4j.Logger
-    .getLogger("org.apache.hadoop")
-    .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("org.mortbay")
-    .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("BlockStateChange")
-    .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("SecurityLogger")
-    .setLevel(org.apache.log4j.Level.ERROR)
+  org.apache.log4j.Logger.getLogger("org.apache.hadoop").setLevel(
+    org.apache.log4j.Level.ERROR)
+  org.apache.log4j.Logger.getLogger("org.mortbay").setLevel(
+    org.apache.log4j.Level.ERROR)
+  org.apache.log4j.Logger.getLogger("BlockStateChange").setLevel(
+    org.apache.log4j.Level.ERROR)
+  org.apache.log4j.Logger.getLogger("SecurityLogger").setLevel(
+    org.apache.log4j.Level.ERROR)
 
   private val LOG = LoggerFactory.getLogger(getClass)
 

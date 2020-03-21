@@ -14,11 +14,10 @@ class ScalaExpressionTypeMacro extends Macro {
       params: Array[Expression],
       context: ExpressionContext): Result = {
     if (params.length != 1) return null
-    MacroUtil
-      .resultToScExpr(params.head.calculateResult(context), context)
-      .flatMap(_.getType().toOption)
-      .map(myType => new ScalaTypeResult(myType))
-      .orNull
+    MacroUtil.resultToScExpr(
+      params.head.calculateResult(context),
+      context).flatMap(_.getType().toOption).map(myType =>
+      new ScalaTypeResult(myType)).orNull
   }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "expressionType"

@@ -108,14 +108,13 @@ object Comet extends DispatchSnippet with LazyLoggable {
       theType match {
         case Full(cometType) =>
           S.findOrCreateComet(
-              cometType,
-              cometName,
-              cometHtml,
-              S.attrsFlattenToMap,
-              true)
-            .map { foundComet =>
-              containerForCometActor(foundComet, Full(cometHtml))
-            } match {
+            cometType,
+            cometName,
+            cometHtml,
+            S.attrsFlattenToMap,
+            true).map { foundComet =>
+            containerForCometActor(foundComet, Full(cometHtml))
+          } match {
             case Full(cometContainer) => cometContainer
 
             case failedResult =>

@@ -82,14 +82,14 @@ object ParquetSchemaProvider {
     }
 
     def expandMethod(outerTpe: Type): List[Tree] = {
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect { case m: MethodSymbol if m.isCaseAccessor => m }
         .map { accessorMethod =>
           val fieldName = accessorMethod.name.toTermName.toString
           val fieldType = accessorMethod.returnType
           matchField(fieldType, fieldName, isOption = false)
-        }
-        .toList
+        }.toList
     }
 
     val expanded = expandMethod(T.tpe)

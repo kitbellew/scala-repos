@@ -130,10 +130,10 @@ class DistributedPubSubMediatorWithHashRouterSpec
       }
       "constructed by settings" in {
         intercept[IllegalArgumentException] {
-          val config = ConfigFactory
-            .parseString(DistributedPubSubMediatorRouterSpec.config("random"))
-            .withFallback(system.settings.config)
-            .getConfig("akka.cluster.pub-sub")
+          val config = ConfigFactory.parseString(
+            DistributedPubSubMediatorRouterSpec.config("random"))
+            .withFallback(system.settings.config).getConfig(
+              "akka.cluster.pub-sub")
           DistributedPubSubSettings(config).withRoutingLogic(
             ConsistentHashingRoutingLogic(system))
         }

@@ -23,10 +23,8 @@ class FlowLimitSpec extends AkkaSpec {
     "produce empty sequence when source is empty and n = 0" in {
       val input = Range(0, 0, 1)
       val n = input.length
-      val future = Source(input)
-        .limit(n)
-        .grouped(Integer.MAX_VALUE)
-        .runWith(Sink.headOption)
+      val future = Source(input).limit(n).grouped(Integer.MAX_VALUE).runWith(
+        Sink.headOption)
       val result = Await.result(future, 300.millis)
       result should be(None)
     }

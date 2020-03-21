@@ -165,9 +165,9 @@ class NettyServer(
   private def channelSink(secure: Boolean): Sink[Channel, Future[Done]] = {
     Sink.foreach[Channel] { (connChannel: Channel) =>
       // Setup the channel for explicit reads
-      connChannel
-        .config()
-        .setOption(ChannelOption.AUTO_READ, java.lang.Boolean.FALSE)
+      connChannel.config().setOption(
+        ChannelOption.AUTO_READ,
+        java.lang.Boolean.FALSE)
 
       setOptions(
         connChannel.config().setOption,
@@ -178,14 +178,12 @@ class NettyServer(
         sslEngineProvider.map { sslEngineProvider =>
           val sslEngine = sslEngineProvider.createSSLEngine()
           sslEngine.setUseClientMode(false)
-          if (config.configuration
-                .getBoolean("play.server.https.wantClientAuth")
-                .getOrElse(false)) {
+          if (config.configuration.getBoolean(
+                "play.server.https.wantClientAuth").getOrElse(false)) {
             sslEngine.setWantClientAuth(true)
           }
-          if (config.configuration
-                .getBoolean("play.server.https.needClientAuth")
-                .getOrElse(false)) {
+          if (config.configuration.getBoolean(
+                "play.server.https.needClientAuth").getOrElse(false)) {
             sslEngine.setNeedClientAuth(true)
           }
           pipeline.addLast("ssl", new SslHandler(sslEngine))
@@ -285,9 +283,8 @@ class NettyServer(
   }
 
   override lazy val mainAddress = {
-    (httpChannel orElse httpsChannel).get
-      .localAddress()
-      .asInstanceOf[InetSocketAddress]
+    (httpChannel orElse httpsChannel).get.localAddress().asInstanceOf[
+      InetSocketAddress]
   }
 
   def httpPort =

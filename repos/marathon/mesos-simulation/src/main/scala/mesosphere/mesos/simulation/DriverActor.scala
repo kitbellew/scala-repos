@@ -82,8 +82,7 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
   private[this] var tasks: Map[String, TaskStatus] = Map.empty.withDefault {
     taskId =>
-      TaskStatus
-        .newBuilder()
+      TaskStatus.newBuilder()
         .setSource(TaskStatus.Source.SOURCE_SLAVE)
         .setTaskId(TaskID.newBuilder().setValue(taskId).build())
         .setState(TaskState.TASK_LOST)
@@ -93,15 +92,13 @@ class DriverActor(schedulerProps: Props) extends Actor {
   //scalastyle:off magic.number
   private[this] def offer: Offer = {
     def resource(name: String, value: Double): Resource = {
-      Resource
-        .newBuilder()
+      Resource.newBuilder()
         .setName(name)
         .setType(Value.Type.SCALAR)
         .setScalar(Value.Scalar.newBuilder().setValue(value))
         .build()
     }
-    Offer
-      .newBuilder()
+    Offer.newBuilder()
       .setId(OfferID.newBuilder().setValue(UUID.randomUUID().toString))
       .setFrameworkId(FrameworkID.newBuilder().setValue("notanidframework"))
       .setSlaveId(SlaveID.newBuilder().setValue("notanidslave"))
@@ -110,8 +107,7 @@ class DriverActor(schedulerProps: Props) extends Actor {
         resource("cpus", 100),
         resource("mem", 500000),
         resource("disk", 1000000000),
-        Resource
-          .newBuilder()
+        Resource.newBuilder()
           .setName("ports")
           .setType(Value.Type.RANGES)
           .setRanges(Value.Ranges
@@ -181,10 +177,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
         if (taskStatuses.isEmpty) {
           tasks.values.foreach(scheduler ! _)
         } else {
-          taskStatuses.iterator
-            .map(_.getTaskId.getValue)
-            .map(tasks)
-            .foreach(scheduler ! _)
+          taskStatuses.iterator.map(_.getTaskId.getValue).map(tasks).foreach(
+            scheduler ! _)
         }
     }
   //scalastyle:on
@@ -254,15 +248,16 @@ class DriverActor(schedulerProps: Props) extends Actor {
       afterDuration: FiniteDuration,
       create: Boolean = false)(taskID: TaskID): Unit = {
 
-    val newStatus = TaskStatus
-      .newBuilder()
+    val newStatus = TaskStatus.newBuilder()
       .setSource(TaskStatus.Source.SOURCE_EXECUTOR)
       .setTaskId(taskID)
       .setState(toState)
       .build()
     import context.dispatcher
-    context.system.scheduler
-      .scheduleOnce(afterDuration, self, ChangeTaskStatus(newStatus, create))
+    context.system.scheduler.scheduleOnce(
+      afterDuration,
+      self,
+      ChangeTaskStatus(newStatus, create))
   }
 
 }

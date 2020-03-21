@@ -50,29 +50,21 @@ class BasicAuthenticationFilter
     val settings = loadSystemSettings()
 
     try {
-      PluginRegistry()
-        .getRepositoryRouting(request.gitRepositoryPath)
-        .map {
-          case GitRepositoryRouting(_, _, filter) =>
-            // served by plug-ins
-            pluginRepository(
-              request,
-              wrappedResponse,
-              chain,
-              settings,
-              isUpdating,
-              filter)
-
-        }
-        .getOrElse {
-          // default repositories
-          defaultRepository(
+      PluginRegistry().getRepositoryRouting(request.gitRepositoryPath).map {
+        case GitRepositoryRouting(_, _, filter) =>
+          // served by plug-ins
+          pluginRepository(
             request,
             wrappedResponse,
             chain,
             settings,
-            isUpdating)
-        }
+            isUpdating,
+            filter)
+
+      }.getOrElse {
+        // default repositories
+        defaultRepository(request, wrappedResponse, chain, settings, isUpdating)
+      }
     } catch {
       case ex: Exception => {
         logger.error("error", ex)

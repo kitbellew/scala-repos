@@ -162,8 +162,9 @@ object CharEncodingSpec extends Specification {
       )
       val result = Enumerator(input: _*) &> CharEncoding.encode(
         "US-ASCII") |>>> Iteratee.consume[Array[Byte]]()
-      Await.result(result, Duration.Inf) must be equalTo input.mkString
-        .getBytes("US-ASCII")
+      Await.result(
+        result,
+        Duration.Inf) must be equalTo input.mkString.getBytes("US-ASCII")
     }
 
     "encode UTF-8" in {
@@ -174,8 +175,9 @@ object CharEncodingSpec extends Specification {
       )
       val result = Enumerator(input: _*) &> CharEncoding.encode(
         "UTF-8") |>>> Iteratee.consume[Array[Byte]]()
-      Await.result(result, Duration.Inf) must be equalTo input.mkString
-        .getBytes("UTF-8")
+      Await.result(
+        result,
+        Duration.Inf) must be equalTo input.mkString.getBytes("UTF-8")
     }
 
     "encode UTF-8 with split characters" in {
@@ -186,8 +188,9 @@ object CharEncodingSpec extends Specification {
       )
       val result = Enumerator(input: _*) &> CharEncoding.encode(
         "UTF-8") |>>> Iteratee.consume[Array[Byte]]()
-      Await.result(result, Duration.Inf) must be equalTo input.mkString
-        .getBytes("UTF-8")
+      Await.result(
+        result,
+        Duration.Inf) must be equalTo input.mkString.getBytes("UTF-8")
     }
 
     "encode UTF-16" in {
@@ -198,8 +201,9 @@ object CharEncodingSpec extends Specification {
       )
       val result = Enumerator(input: _*) &> CharEncoding.encode(
         "UTF-16") |>>> Iteratee.consume[Array[Byte]]()
-      Await.result(result, Duration.Inf) must be equalTo input.mkString
-        .getBytes("UTF-16BE")
+      Await.result(
+        result,
+        Duration.Inf) must be equalTo input.mkString.getBytes("UTF-16BE")
     }
 
     "encode UTF-16 with split characters" in {
@@ -210,8 +214,9 @@ object CharEncodingSpec extends Specification {
       )
       val result = Enumerator(input: _*) &> CharEncoding.encode(
         "UTF-16") |>>> Iteratee.consume[Array[Byte]]()
-      Await.result(result, Duration.Inf) must be equalTo input.mkString
-        .getBytes("UTF-16BE")
+      Await.result(
+        result,
+        Duration.Inf) must be equalTo input.mkString.getBytes("UTF-16BE")
     }
 
     "encode UTF-32" in {
@@ -222,8 +227,9 @@ object CharEncodingSpec extends Specification {
       )
       val result = Enumerator(input: _*) &> CharEncoding.encode(
         "UTF-32") |>>> Iteratee.consume[Array[Byte]]()
-      Await.result(result, Duration.Inf) must be equalTo input.mkString
-        .getBytes("UTF-32")
+      Await.result(
+        result,
+        Duration.Inf) must be equalTo input.mkString.getBytes("UTF-32")
     }
 
     "encode UTF-32 with split characters" in {
@@ -234,8 +240,9 @@ object CharEncodingSpec extends Specification {
       )
       val result = Enumerator(input: _*) &> CharEncoding.encode(
         "UTF-32") |>>> Iteratee.consume[Array[Byte]]()
-      Await.result(result, Duration.Inf) must be equalTo input.mkString
-        .getBytes("UTF-32")
+      Await.result(
+        result,
+        Duration.Inf) must be equalTo input.mkString.getBytes("UTF-32")
     }
 
     "fail on unmappable ASCII" in {

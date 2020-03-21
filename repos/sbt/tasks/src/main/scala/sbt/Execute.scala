@@ -30,9 +30,8 @@ private[sbt] object Execute {
       val checkCycles: Boolean,
       val overwriteNode: Incomplete => Boolean)
 
-  final val checkPreAndPostConditions = sys.props
-    .get("sbt.execute.extrachecks")
-    .exists(java.lang.Boolean.parseBoolean)
+  final val checkPreAndPostConditions = sys.props.get(
+    "sbt.execute.extrachecks").exists(java.lang.Boolean.parseBoolean)
 }
 sealed trait Completed {
   def process(): Unit

@@ -108,10 +108,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     try {
       val parser = new OptionParser
 
-      val consumerConfigOpt = parser
-        .accepts(
-          "consumer.config",
-          "Embedded consumer config for consuming from the source cluster.")
+      val consumerConfigOpt = parser.accepts(
+        "consumer.config",
+        "Embedded consumer config for consuming from the source cluster.")
         .withRequiredArg()
         .describedAs("config file")
         .ofType(classOf[String])
@@ -119,79 +118,74 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       val useNewConsumerOpt =
         parser.accepts("new.consumer", "Use new consumer in mirror maker.")
 
-      val producerConfigOpt = parser
-        .accepts("producer.config", "Embedded producer config.")
-        .withRequiredArg()
-        .describedAs("config file")
-        .ofType(classOf[String])
+      val producerConfigOpt =
+        parser.accepts("producer.config", "Embedded producer config.")
+          .withRequiredArg()
+          .describedAs("config file")
+          .ofType(classOf[String])
 
-      val numStreamsOpt = parser
-        .accepts("num.streams", "Number of consumption streams.")
-        .withRequiredArg()
-        .describedAs("Number of threads")
-        .ofType(classOf[java.lang.Integer])
-        .defaultsTo(1)
+      val numStreamsOpt =
+        parser.accepts("num.streams", "Number of consumption streams.")
+          .withRequiredArg()
+          .describedAs("Number of threads")
+          .ofType(classOf[java.lang.Integer])
+          .defaultsTo(1)
 
-      val whitelistOpt = parser
-        .accepts("whitelist", "Whitelist of topics to mirror.")
+      val whitelistOpt =
+        parser.accepts("whitelist", "Whitelist of topics to mirror.")
+          .withRequiredArg()
+          .describedAs("Java regex (String)")
+          .ofType(classOf[String])
+
+      val blacklistOpt = parser.accepts(
+        "blacklist",
+        "Blacklist of topics to mirror. Only old consumer supports blacklist.")
         .withRequiredArg()
         .describedAs("Java regex (String)")
         .ofType(classOf[String])
 
-      val blacklistOpt = parser
-        .accepts(
-          "blacklist",
-          "Blacklist of topics to mirror. Only old consumer supports blacklist.")
-        .withRequiredArg()
-        .describedAs("Java regex (String)")
-        .ofType(classOf[String])
-
-      val offsetCommitIntervalMsOpt = parser
-        .accepts("offset.commit.interval.ms", "Offset commit interval in ms")
+      val offsetCommitIntervalMsOpt = parser.accepts(
+        "offset.commit.interval.ms",
+        "Offset commit interval in ms")
         .withRequiredArg()
         .describedAs("offset commit interval in millisecond")
         .ofType(classOf[java.lang.Integer])
         .defaultsTo(60000)
 
-      val consumerRebalanceListenerOpt = parser
-        .accepts(
-          "consumer.rebalance.listener",
-          "The consumer rebalance listener to use for mirror maker consumer.")
+      val consumerRebalanceListenerOpt = parser.accepts(
+        "consumer.rebalance.listener",
+        "The consumer rebalance listener to use for mirror maker consumer.")
         .withRequiredArg()
         .describedAs(
           "A custom rebalance listener of type ConsumerRebalanceListener")
         .ofType(classOf[String])
 
-      val rebalanceListenerArgsOpt = parser
-        .accepts(
-          "rebalance.listener.args",
-          "Arguments used by custom rebalance listener for mirror maker consumer")
+      val rebalanceListenerArgsOpt = parser.accepts(
+        "rebalance.listener.args",
+        "Arguments used by custom rebalance listener for mirror maker consumer")
         .withRequiredArg()
         .describedAs(
           "Arguments passed to custom rebalance listener constructor as a string.")
         .ofType(classOf[String])
 
-      val messageHandlerOpt = parser
-        .accepts(
-          "message.handler",
-          "Message handler which will process every record in-between consumer and producer.")
+      val messageHandlerOpt = parser.accepts(
+        "message.handler",
+        "Message handler which will process every record in-between consumer and producer.")
         .withRequiredArg()
         .describedAs(
           "A custom message handler of type MirrorMakerMessageHandler")
         .ofType(classOf[String])
 
-      val messageHandlerArgsOpt = parser
-        .accepts(
-          "message.handler.args",
-          "Arguments used by custom message handler for mirror maker.")
+      val messageHandlerArgsOpt = parser.accepts(
+        "message.handler.args",
+        "Arguments used by custom message handler for mirror maker.")
         .withRequiredArg()
         .describedAs("Arguments passed to message handler constructor.")
         .ofType(classOf[String])
 
-      val abortOnSendFailureOpt = parser
-        .accepts(
-          "abort.on.send.failure",
-          "Configure the mirror maker to exit on a failed send.")
+      val abortOnSendFailureOpt = parser.accepts(
+        "abort.on.send.failure",
+        "Configure the mirror maker to exit on a failed send.")
         .withRequiredArg()
         .describedAs("Stop the entire mirror maker when a send failure occurs")
         .ofType(classOf[String])
@@ -488,8 +482,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       Option(propertyValue).getOrElse(defaultValue))
     if (properties.getProperty(propertyName) != defaultValue)
       info(
-        "Property %s is overridden to %s - data loss or message reordering is possible."
-          .format(propertyName, propertyValue))
+        "Property %s is overridden to %s - data loss or message reordering is possible.".format(
+          propertyName,
+          propertyValue))
   }
 
   class MirrorMakerThread(
@@ -518,8 +513,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
             while (!exitingOnSendFailure && !shuttingDown && mirrorMakerConsumer.hasData) {
               val data = mirrorMakerConsumer.receive()
               trace(
-                "Sending message with value size %d and offset %d"
-                  .format(data.value.length, data.offset))
+                "Sending message with value size %d and offset %d".format(
+                  data.value.length,
+                  data.offset))
               val records = messageHandler.handle(data)
               records.foreach(producer.send)
               maybeFlushAndCommitOffsets()
@@ -555,8 +551,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     }
 
     def maybeFlushAndCommitOffsets() {
-      if (System
-            .currentTimeMillis() - lastOffsetCommitMs > offsetCommitIntervalMs) {
+      if (System.currentTimeMillis() - lastOffsetCommitMs > offsetCommitIntervalMs) {
         debug("Committing MirrorMaker state automatically.")
         producer.flush()
         commitOffsets(mirrorMakerConsumer)

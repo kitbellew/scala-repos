@@ -35,21 +35,18 @@ final class DataForm(
 
   object signup {
 
-    private val username = nonEmptyText
-      .verifying(
-        Constraints minLength 2,
-        Constraints maxLength 20,
-        Constraints.pattern(
-          regex = """^[\w-]+$""".r,
-          error =
-            "Invalid username. Please use only letters, numbers and dash"),
-        Constraints.pattern(
-          regex = """^[^\d].+$""".r,
-          error = "The username must not start with a number")
-      )
-      .verifying(
-        "This user already exists",
-        u => ! $count.exists(u.toLowerCase) awaitSeconds 2)
+    private val username = nonEmptyText.verifying(
+      Constraints minLength 2,
+      Constraints maxLength 20,
+      Constraints.pattern(
+        regex = """^[\w-]+$""".r,
+        error = "Invalid username. Please use only letters, numbers and dash"),
+      Constraints.pattern(
+        regex = """^[^\d].+$""".r,
+        error = "The username must not start with a number")
+    ).verifying(
+      "This user already exists",
+      u => ! $count.exists(u.toLowerCase) awaitSeconds 2)
       .verifying("This username is not acceptable", u => !LameName(u))
 
     val website = Form(

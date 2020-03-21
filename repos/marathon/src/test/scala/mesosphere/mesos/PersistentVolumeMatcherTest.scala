@@ -85,13 +85,13 @@ class PersistentVolumeMatcherTest
       f.offerWithVolumes(unknownTaskId, localVolumeId1)
         .toBuilder
         .addAllResources(
-          MarathonTestHelper
-            .persistentVolumeResources(tasks.head.taskId, localVolumeId2)
-            .asJava)
+          MarathonTestHelper.persistentVolumeResources(
+            tasks.head.taskId,
+            localVolumeId2).asJava)
         .addAllResources(
-          MarathonTestHelper
-            .persistentVolumeResources(tasks(1).taskId, localVolumeId3)
-            .asJava)
+          MarathonTestHelper.persistentVolumeResources(
+            tasks(1).taskId,
+            localVolumeId3).asJava)
         .build()
 
     When("We ask for a volume match")

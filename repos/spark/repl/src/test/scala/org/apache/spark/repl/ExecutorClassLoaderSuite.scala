@@ -143,9 +143,8 @@ class ExecutorClassLoaderSuite
     val resources: util.Enumeration[URL] =
       classLoader.getResources(resourceName)
     assert(resources.hasMoreElements, s"Resource $resourceName not found")
-    val fileReader = Source
-      .fromInputStream(resources.nextElement().openStream())
-      .bufferedReader()
+    val fileReader = Source.fromInputStream(
+      resources.nextElement().openStream()).bufferedReader()
     assert(
       fileReader.readLine().contains("resource"),
       "File doesn't contain 'resource'")
@@ -206,13 +205,14 @@ class ExecutorClassLoaderSuite
     val env = mock[SparkEnv]
     val rpcEnv = mock[RpcEnv]
     when(env.rpcEnv).thenReturn(rpcEnv)
-    when(rpcEnv.openChannel(anyString()))
-      .thenAnswer(new Answer[ReadableByteChannel]() {
+    when(rpcEnv.openChannel(anyString())).thenAnswer(
+      new Answer[ReadableByteChannel]() {
         override def answer(
             invocation: InvocationOnMock): ReadableByteChannel = {
           val uri = new URI(invocation.getArguments()(0).asInstanceOf[String])
-          val path = Paths
-            .get(tempDir1.getAbsolutePath(), uri.getPath().stripPrefix("/"))
+          val path = Paths.get(
+            tempDir1.getAbsolutePath(),
+            uri.getPath().stripPrefix("/"))
           FileChannel.open(path, StandardOpenOption.READ)
         }
       })

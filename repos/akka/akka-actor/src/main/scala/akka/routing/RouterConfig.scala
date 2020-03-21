@@ -111,9 +111,8 @@ private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
           val wssConf: PoolOverrideUnsetConfig[T] =
             if ((this.supervisorStrategy eq Pool.defaultSupervisorStrategy)
                 && (p.supervisorStrategy ne Pool.defaultSupervisorStrategy))
-              this
-                .withSupervisorStrategy(p.supervisorStrategy)
-                .asInstanceOf[PoolOverrideUnsetConfig[T]]
+              this.withSupervisorStrategy(p.supervisorStrategy).asInstanceOf[
+                PoolOverrideUnsetConfig[T]]
             else this
 
           if (wssConf.resizer.isEmpty && p.resizer.isDefined)
@@ -230,9 +229,10 @@ trait Pool extends RouterConfig {
       context: ActorContext): Props =
     if (usePoolDispatcher && routeeProps.dispatcher == Dispatchers.DefaultDispatcherId)
       routeeProps.withDispatcher(
-        "akka.actor.deployment." + context.self.path.elements
-          .drop(1)
-          .mkString("/", "/", "")
+        "akka.actor.deployment." + context.self.path.elements.drop(1).mkString(
+          "/",
+          "/",
+          "")
           + ".pool-dispatcher")
     else
       routeeProps

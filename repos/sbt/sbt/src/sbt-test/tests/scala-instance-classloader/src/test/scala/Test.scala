@@ -14,11 +14,8 @@ class BadTest {
     val mine = this.getClass.getClassLoader
     val system = ActorSystem()
     def evilGetThreadExectionContextName =
-      system
-        .asInstanceOf[ActorSystemImpl]
-        .internalCallingThreadExecutionContext
-        .getClass
-        .getName
+      system.asInstanceOf[
+        ActorSystemImpl].internalCallingThreadExecutionContext.getClass.getName
     val expected = "scala.concurrent.Future$InternalCallbackExecutor$"
     Assert.assertEquals(
       "Failed to grab appropriate Akka name",

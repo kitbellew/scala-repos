@@ -177,9 +177,8 @@ private[spark] class Executor(
 
   /** Returns the total amount of time this JVM process has spent in garbage collection. */
   private def computeTotalGcTime(): Long = {
-    ManagementFactory.getGarbageCollectorMXBeans.asScala
-      .map(_.getCollectionTime)
-      .sum
+    ManagementFactory.getGarbageCollectorMXBeans.asScala.map(
+      _.getCollectionTime).sum
   }
 
   class TaskRunner(
@@ -447,9 +446,9 @@ private[spark] class Executor(
       logInfo("Using REPL class URI: " + classUri)
       try {
         val _userClassPathFirst: java.lang.Boolean = userClassPathFirst
-        val klass = Utils
-          .classForName("org.apache.spark.repl.ExecutorClassLoader")
-          .asInstanceOf[Class[_ <: ClassLoader]]
+        val klass =
+          Utils.classForName("org.apache.spark.repl.ExecutorClassLoader")
+            .asInstanceOf[Class[_ <: ClassLoader]]
         val constructor = klass.getConstructor(
           classOf[SparkConf],
           classOf[SparkEnv],
@@ -500,8 +499,7 @@ private[spark] class Executor(
       }
       for ((name, timestamp) <- newJars) {
         val localName = name.split("/").last
-        val currentTimeStamp = currentJars
-          .get(name)
+        val currentTimeStamp = currentJars.get(name)
           .orElse(currentJars.get(localName))
           .getOrElse(-1L)
         if (currentTimeStamp < timestamp) {

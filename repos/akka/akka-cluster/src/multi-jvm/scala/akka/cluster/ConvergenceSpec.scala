@@ -20,10 +20,9 @@ final case class ConvergenceMultiNodeConfig(failureDetectorPuppet: Boolean)
   val fourth = role("fourth")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        "akka.cluster.failure-detector.threshold = 4"))
-      .withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      "akka.cluster.failure-detector.threshold = 4")).withFallback(
+      MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
 }
 
 class ConvergenceWithFailureDetectorPuppetMultiJvmNode1

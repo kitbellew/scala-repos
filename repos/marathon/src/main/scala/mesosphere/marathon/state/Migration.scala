@@ -76,19 +76,17 @@ class Migration @Inject() (
         s"Migration from versions < $minSupportedStorageVersion is not supported. Your version: $from"
       throw new MigrationFailedException(msg)
     }
-    migrations
-      .filter(_._1 > from)
-      .sortBy(_._1)
-      .foldLeft(Future.successful(List.empty[StorageVersion])) {
-        case (resultsFuture, (migrateVersion, change)) =>
-          resultsFuture.flatMap { res =>
-            log.info(
-              s"Migration for storage: ${from.str} to current: ${current.str}: " +
-                s"apply change for version: ${migrateVersion.str} "
-            )
-            change.apply().map(_ => res :+ migrateVersion)
-          }
-      }
+    migrations.filter(_._1 > from).sortBy(_._1).foldLeft(
+      Future.successful(List.empty[StorageVersion])) {
+      case (resultsFuture, (migrateVersion, change)) =>
+        resultsFuture.flatMap { res =>
+          log.info(
+            s"Migration for storage: ${from.str} to current: ${current.str}: " +
+              s"apply change for version: ${migrateVersion.str} "
+          )
+          change.apply().map(_ => res :+ migrateVersion)
+        }
+    }
   }
 
   def initializeStore(): Future[Unit] =
@@ -104,16 +102,14 @@ class Migration @Inject() (
       storedVersion <- storeCurrentVersion
     } yield storedVersion
 
-    val result = versionFuture
-      .map { version =>
-        log.info(s"Migration successfully applied for version ${version.str}")
-        version
-      }
-      .recover {
-        case ex: MigrationFailedException => throw ex
-        case NonFatal(ex) =>
-          throw new MigrationFailedException("MigrationFailed", ex)
-      }
+    val result = versionFuture.map { version =>
+      log.info(s"Migration successfully applied for version ${version.str}")
+      version
+    }.recover {
+      case ex: MigrationFailedException => throw ex
+      case NonFatal(ex) =>
+        throw new MigrationFailedException("MigrationFailed", ex)
+    }
 
     Await.result(result, Duration.Inf)
   }
@@ -129,13 +125,10 @@ class Migration @Inject() (
 
   def storeCurrentVersion: Future[StorageVersion] = {
     val bytes = StorageVersions.current.toByteArray
-    store
-      .load(storageVersionName)
-      .flatMap {
-        case Some(entity) => store.update(entity.withNewContent(bytes))
-        case None         => store.create(storageVersionName, bytes)
-      }
-      .map { _ => StorageVersions.current }
+    store.load(storageVersionName).flatMap {
+      case Some(entity) => store.update(entity.withNewContent(bytes))
+      case None         => store.create(storageVersionName, bytes)
+    }.map { _ => StorageVersions.current }
   }
 }
 
@@ -281,35 +274,30 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
       }
     }
 
-    store
-      .load("task:" + taskKey)
-      .map(_.flatMap { entity =>
-        val source =
-          new ObjectInputStream(new ByteArrayInputStream(entity.bytes.toArray))
-        deserialize(taskKey, source)
-      })
+    store.load("task:" + taskKey).map(_.flatMap { entity =>
+      val source =
+        new ObjectInputStream(new ByteArrayInputStream(entity.bytes.toArray))
+      deserialize(taskKey, source)
+    })
   }
 
   def migrateTasks(): Future[Unit] = {
     log.info("Start 0.13 migration")
 
-    entityStore
-      .names()
-      .flatMap { keys =>
-        log.info("Found {} tasks in store", keys.size)
-        // old format is appId:appId.taskId
-        val oldFormatRegex = """^.*:.*\..*$""".r
-        val namesInOldFormat =
-          keys.filter(key => oldFormatRegex.pattern.matcher(key).matches)
-        log.info(
-          "{} tasks in old format need to be migrated.",
-          namesInOldFormat.size)
+    entityStore.names().flatMap { keys =>
+      log.info("Found {} tasks in store", keys.size)
+      // old format is appId:appId.taskId
+      val oldFormatRegex = """^.*:.*\..*$""".r
+      val namesInOldFormat =
+        keys.filter(key => oldFormatRegex.pattern.matcher(key).matches)
+      log.info(
+        "{} tasks in old format need to be migrated.",
+        namesInOldFormat.size)
 
-        namesInOldFormat.foldLeft(Future.successful(())) { (f, nextKey) =>
-          f.flatMap(_ => migrateKey(nextKey))
-        }
+      namesInOldFormat.foldLeft(Future.successful(())) { (f, nextKey) =>
+        f.flatMap(_ => migrateKey(nextKey))
       }
-      .map { _ => log.info("Completed 0.13 migration") }
+    }.map { _ => log.info("Completed 0.13 migration") }
   }
 
   // including 0.12, task keys are in format task:appId:taskId – the appId is
@@ -428,8 +416,9 @@ class MigrationTo0_16(
             appRepository.app(appId, version).flatMap {
               case Some(app) => appRepository.store(app).map(_ => ())
               case None =>
-                Future.failed(new MigrationFailedException(
-                  s"App $appId:$version not found"))
+                Future.failed(
+                  new MigrationFailedException(
+                    s"App $appId:$version not found"))
             }
           }
         }

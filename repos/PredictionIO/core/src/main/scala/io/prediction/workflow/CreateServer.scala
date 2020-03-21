@@ -213,10 +213,8 @@ object CreateServer extends Logging {
     val kryo = KryoInstantiator.newKryoInjection
 
     val modelsFromEngineInstance =
-      kryo
-        .invert(modeldata.get(engineInstance.id).get.models)
-        .get
-        .asInstanceOf[Seq[Any]]
+      kryo.invert(modeldata.get(engineInstance.id).get.models).get.asInstanceOf[
+        Seq[Any]]
 
     val batch = if (engineInstance.batch.nonEmpty) {
       s"${engineInstance.engineFactory} (${engineInstance.batch})"
@@ -295,13 +293,10 @@ class MasterActor(
     val serverUrl = s"https://${ip}:${port}"
     log.info(s"Undeploying any existing engine instance at $serverUrl")
     try {
-      val code = scalaj.http
-        .Http(s"$serverUrl/stop")
+      val code = scalaj.http.Http(s"$serverUrl/stop")
         .option(HttpOptions.allowUnsafeSSL)
         .param(ServerKey.param, ServerKey.get)
-        .method("POST")
-        .asString
-        .code
+        .method("POST").asString.code
       code match {
         case 200 => Unit
         case 404 =>
@@ -467,11 +462,8 @@ class ServerActor[Q, P](
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
     implicit val formats = Utils.json4sDefaultFormats
     try {
-      scalaj.http
-        .Http(logUrl)
-        .postData(logPrefix + write(
-          Map("engineInstance" -> engineInstance, "message" -> message)))
-        .asString
+      scalaj.http.Http(logUrl).postData(logPrefix + write(
+        Map("engineInstance" -> engineInstance, "message" -> message))).asString
     } catch {
       case e: Throwable =>
         log.error(s"Unable to send remote log: ${e.getMessage}")
@@ -491,26 +483,24 @@ class ServerActor[Q, P](
         respondWithMediaType(`text/html`) {
           detach() {
             complete {
-              html
-                .index(
-                  args,
-                  manifest,
-                  engineInstance,
-                  algorithms.map(_.toString),
-                  algorithmsParams.map(_.toString),
-                  models.map(_.toString),
-                  dataSourceParams.toString,
-                  preparatorParams.toString,
-                  servingParams.toString,
-                  serverStartTime,
-                  feedbackEnabled,
-                  args.eventServerIp,
-                  args.eventServerPort,
-                  requestCount,
-                  avgServingSec,
-                  lastServingSec
-                )
-                .toString
+              html.index(
+                args,
+                manifest,
+                engineInstance,
+                algorithms.map(_.toString),
+                algorithmsParams.map(_.toString),
+                models.map(_.toString),
+                dataSourceParams.toString,
+                preparatorParams.toString,
+                servingParams.toString,
+                serverStartTime,
+                feedbackEnabled,
+                args.eventServerIp,
+                args.eventServerPort,
+                requestCount,
+                avgServingSec,
+                lastServingSec
+              ).toString
             }
           }
         }
@@ -600,14 +590,12 @@ class ServerActor[Q, P](
                   // At this point args.accessKey should be Some(String).
                   val accessKey = args.accessKey.getOrElse("")
                   val f: Future[Int] = future {
-                    scalaj.http
-                      .Http(
-                        s"http://${args.eventServerIp}:${args.eventServerPort}/" +
-                          s"events.json?accessKey=$accessKey")
-                      .postData(write(data))
-                      .header("content-type", "application/json")
-                      .asString
-                      .code
+                    scalaj.http.Http(
+                      s"http://${args.eventServerIp}:${args.eventServerPort}/" +
+                        s"events.json?accessKey=$accessKey").postData(
+                      write(data)).header(
+                      "content-type",
+                      "application/json").asString.code
                   }
                   f onComplete {
                     case Success(code) => {

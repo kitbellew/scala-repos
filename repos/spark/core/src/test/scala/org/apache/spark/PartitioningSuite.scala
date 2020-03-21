@@ -109,13 +109,10 @@ class PartitioningSuite
   }
 
   test("RangPartitioner.sketch") {
-    val rdd = sc
-      .makeRDD(0 until 20, 20)
-      .flatMap { i =>
-        val random = new java.util.Random(i)
-        Iterator.fill(i)(random.nextDouble())
-      }
-      .cache()
+    val rdd = sc.makeRDD(0 until 20, 20).flatMap { i =>
+      val random = new java.util.Random(i)
+      Iterator.fill(i)(random.nextDouble())
+    }.cache()
     val sampleSizePerPartition = 10
     val (count, sketched) = RangePartitioner.sketch(rdd, sampleSizePerPartition)
     assert(count === rdd.count())
@@ -128,9 +125,9 @@ class PartitioningSuite
 
   test("RangePartitioner.determineBounds") {
     assert(
-      RangePartitioner
-        .determineBounds(ArrayBuffer.empty[(Int, Float)], 10)
-        .isEmpty,
+      RangePartitioner.determineBounds(
+        ArrayBuffer.empty[(Int, Float)],
+        10).isEmpty,
       "Bounds on an empty candidates set should be empty.")
     val candidates = ArrayBuffer(
       (0.7, 2.0f),
@@ -144,13 +141,10 @@ class PartitioningSuite
   }
 
   test("RangePartitioner should run only one job if data is roughly balanced") {
-    val rdd = sc
-      .makeRDD(0 until 20, 20)
-      .flatMap { i =>
-        val random = new java.util.Random(i)
-        Iterator.fill(5000 * i)((random.nextDouble() + i, i))
-      }
-      .cache()
+    val rdd = sc.makeRDD(0 until 20, 20).flatMap { i =>
+      val random = new java.util.Random(i)
+      Iterator.fill(5000 * i)((random.nextDouble() + i, i))
+    }.cache()
     for (numPartitions <- Seq(10, 20, 40)) {
       val partitioner = new RangePartitioner(numPartitions, rdd)
       assert(partitioner.numPartitions === numPartitions)
@@ -161,13 +155,10 @@ class PartitioningSuite
   }
 
   test("RangePartitioner should work well on unbalanced data") {
-    val rdd = sc
-      .makeRDD(0 until 20, 20)
-      .flatMap { i =>
-        val random = new java.util.Random(i)
-        Iterator.fill(20 * i * i * i)((random.nextDouble() + i, i))
-      }
-      .cache()
+    val rdd = sc.makeRDD(0 until 20, 20).flatMap { i =>
+      val random = new java.util.Random(i)
+      Iterator.fill(20 * i * i * i)((random.nextDouble() + i, i))
+    }.cache()
     for (numPartitions <- Seq(2, 4, 8)) {
       val partitioner = new RangePartitioner(numPartitions, rdd)
       assert(partitioner.numPartitions === numPartitions)

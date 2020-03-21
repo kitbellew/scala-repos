@@ -276,9 +276,8 @@ private[sql] object PartitioningUtils {
     } else {
       // TODO: Selective case sensitivity.
       val distinctPartColNames =
-        pathsWithPartitionValues
-          .map(_._2.columnNames.map(_.toLowerCase()))
-          .distinct
+        pathsWithPartitionValues.map(
+          _._2.columnNames.map(_.toLowerCase())).distinct
       assert(
         distinctPartColNames.size == 1,
         listConflictingPartitionColumns(pathsWithPartitionValues))
@@ -304,9 +303,9 @@ private[sql] object PartitioningUtils {
       pathWithPartitionValues.map(_._2.columnNames).distinct
 
     def groupByKey[K, V](seq: Seq[(K, V)]): Map[K, Iterable[V]] =
-      seq
-        .groupBy { case (key, _) => key }
-        .mapValues(_.map { case (_, value) => value })
+      seq.groupBy { case (key, _) => key }.mapValues(_.map {
+        case (_, value) => value
+      })
 
     val partColNamesToPaths = groupByKey(pathWithPartitionValues.map {
       case (path, partValues) => partValues.columnNames -> path

@@ -290,11 +290,9 @@ case class StoreFile(
       storeFile: StoreFile => A): A = storeFile(this)
   def split(n: Int) = {
     val splitSize = content.data.length / n
-    content.data
-      .grouped(splitSize)
-      .map(d =>
-        this.copy(content = FileContent(d, content.mimeType, content.encoding)))
-      .toList
+    content.data.grouped(splitSize).map(d =>
+      this.copy(content =
+        FileContent(d, content.mimeType, content.encoding))).toList
   }
 
   def length = content.data.length

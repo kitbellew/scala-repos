@@ -177,16 +177,14 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
     form =>
       val (dag, id) = ExpressionDag(form, toLiteral)
       type BoolT[T] = Boolean // constant type function
-      dag.idToExp
-        .collect(
-          new GenPartial[HMap[Id, ExpressionDag[Formula]#E]#Pair, BoolT] {
-            def apply[T] = {
-              case (id, expr) =>
-                val node = expr.evaluate(dag.idToExp)
-                dag.idOf(node) == id
-            }
-          })
-        .forall(identity)
+      dag.idToExp.collect(
+        new GenPartial[HMap[Id, ExpressionDag[Formula]#E]#Pair, BoolT] {
+          def apply[T] = {
+            case (id, expr) =>
+              val node = expr.evaluate(dag.idToExp)
+              dag.idOf(node) == id
+          }
+        }).forall(identity)
   }
 
   // The normal Inc gen recursively calls the general dag Generator

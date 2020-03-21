@@ -264,8 +264,10 @@ class ProjectedQuasiNewtonTest
 
     val s = octaveL1.foldLeft(0.0) { case (agg, entry) => agg + abs(entry) }
     val projection = Projection(ProjectL1(s))
-    val pqnResult = new ProjectedQuasiNewton(projection = projection.project)
-      .minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
+    val pqnResult = new ProjectedQuasiNewton(
+      projection = projection.project).minimizeAndReturnState(
+      cost,
+      DenseVector.zeros[Double](25))
 
     println(s"L1 projection iter ${pqnResult.iter}")
     assert(norm(pqnResult.x - octaveL1, 2) < 1e-4)

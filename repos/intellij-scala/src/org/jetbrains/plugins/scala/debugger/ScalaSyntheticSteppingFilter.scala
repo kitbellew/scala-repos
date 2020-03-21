@@ -55,8 +55,9 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
       positionManager.findElementByReferenceType(
         location.declaringType()) match {
         case Some(td: ScTemplateDefinition) =>
-          td.functions
-            .forall(f => !nameMatches(name, f.name)) && !hasLocalFun(name, td)
+          td.functions.forall(f => !nameMatches(name, f.name)) && !hasLocalFun(
+            name,
+            td)
         case _ => false
       }
     }
@@ -64,11 +65,10 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
 
   private def hasLocalFun(name: String, td: PsiElement): Boolean = {
     td.depthFirst(elem =>
-        elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem))
-      .exists {
-        case fun: ScFunction if fun.isLocal => nameMatches(name, fun.name)
-        case _                              => false
-      }
+      elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem)).exists {
+      case fun: ScFunction if fun.isLocal => nameMatches(name, fun.name)
+      case _                              => false
+    }
   }
 
   private def nameMatches(jvmName: String, funName: String) = {

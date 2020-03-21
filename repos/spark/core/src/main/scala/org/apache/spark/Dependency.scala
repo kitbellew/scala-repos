@@ -88,8 +88,11 @@ class ShuffleDependency[K: ClassTag, V: ClassTag, C: ClassTag](
 
   val shuffleId: Int = _rdd.context.newShuffleId()
 
-  val shuffleHandle: ShuffleHandle = _rdd.context.env.shuffleManager
-    .registerShuffle(shuffleId, _rdd.partitions.length, this)
+  val shuffleHandle: ShuffleHandle =
+    _rdd.context.env.shuffleManager.registerShuffle(
+      shuffleId,
+      _rdd.partitions.length,
+      this)
 
   _rdd.sparkContext.cleaner.foreach(_.registerShuffleForCleanup(this))
 }

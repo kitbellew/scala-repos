@@ -86,8 +86,8 @@ class HeartbeatReceiverSuite
     heartbeatReceiver = new HeartbeatReceiver(sc, heartbeatReceiverClock)
     heartbeatReceiverRef =
       sc.env.rpcEnv.setupEndpoint("heartbeat", heartbeatReceiver)
-    when(scheduler.executorHeartbeatReceived(any(), any(), any()))
-      .thenReturn(true)
+    when(scheduler.executorHeartbeatReceived(any(), any(), any())).thenReturn(
+      true)
   }
 
   /**
@@ -261,9 +261,8 @@ class HeartbeatReceiverSuite
   private def getTrackedExecutors: Map[String, Long] = {
     // We may receive undesired SparkListenerExecutorAdded from LocalBackend, so exclude it from
     // the map. See SPARK-10800.
-    heartbeatReceiver
-      .invokePrivate(_executorLastSeen())
-      .filterKeys(_ != SparkContext.DRIVER_IDENTIFIER)
+    heartbeatReceiver.invokePrivate(_executorLastSeen()).filterKeys(
+      _ != SparkContext.DRIVER_IDENTIFIER)
   }
 }
 

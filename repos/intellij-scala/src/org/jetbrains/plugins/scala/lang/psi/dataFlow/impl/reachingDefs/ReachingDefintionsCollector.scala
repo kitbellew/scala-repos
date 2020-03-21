@@ -46,9 +46,10 @@ object ReachingDefintionsCollector {
       classOf[ScControlFlowOwner],
       false)
     if (cfowner == null) {
-      val message = "cfowner == null: " + fragment
-        .map(_.getText)
-        .mkString("(", ", ", ")") + "\n" + "files: " +
+      val message = "cfowner == null: " + fragment.map(_.getText).mkString(
+        "(",
+        ", ",
+        ")") + "\n" + "files: " +
         fragment.map(_.getContainingFile.getName).mkString("(", ", ", ")")
       throw new RuntimeException(message)
     }
@@ -79,9 +80,8 @@ object ReachingDefintionsCollector {
     def checkResolve(ref: PsiElement) =
       ref match {
         case r: ScReferenceElement =>
-          r.multiResolve(false)
-            .map(_.getElement)
-            .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
+          r.multiResolve(false).map(_.getElement).exists(
+            PsiEquivalenceUtil.areElementsEquivalent(_, element))
         case _ => false
       }
     val isInstanceMethod = element match {

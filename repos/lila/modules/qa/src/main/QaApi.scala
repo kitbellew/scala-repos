@@ -52,9 +52,10 @@ final class QaApi(
     def edit(data: QuestionData, id: QuestionId): Fu[Option[Question]] =
       findById(id) flatMap {
         _ ?? { q =>
-          val q2 = q
-            .copy(title = data.title, body = data.body, tags = data.tags)
-            .editNow
+          val q2 = q.copy(
+            title = data.title,
+            body = data.body,
+            tags = data.tags).editNow
           questionColl.update(BSONDocument("_id" -> q2.id), q2) >>
             tag.clearCache >>
             relation.clearCache inject q2.some
@@ -65,10 +66,8 @@ final class QaApi(
       questionColl.find(BSONDocument("_id" -> id)).one[Question]
 
     def findByIds(ids: List[QuestionId]): Fu[List[Question]] =
-      questionColl
-        .find(BSONDocument("_id" -> BSONDocument("$in" -> ids.distinct)))
-        .cursor[Question]()
-        .collect[List]()
+      questionColl.find(BSONDocument("_id" -> BSONDocument(
+        "$in" -> ids.distinct))).cursor[Question]().collect[List]()
 
     def accept(q: Question) =
       questionColl.update(
@@ -100,30 +99,23 @@ final class QaApi(
       mongoCache(
         prefix = "qa:popular",
         f = (nb: Int) =>
-          questionColl
-            .find(BSONDocument())
+          questionColl.find(BSONDocument())
             .sort(BSONDocument("vote.score" -> -1))
-            .cursor[Question]()
-            .collect[List](nb),
+            .cursor[Question]().collect[List](nb),
         timeToLive = 3 hour
       )
 
     def popular(max: Int): Fu[List[Question]] = popularCache(max)
 
     def byTag(tag: String, max: Int): Fu[List[Question]] =
-      questionColl
-        .find(BSONDocument("tags" -> tag.toLowerCase))
+      questionColl.find(BSONDocument("tags" -> tag.toLowerCase))
         .sort(BSONDocument("vote.score" -> -1))
-        .cursor[Question]()
-        .collect[List](max)
+        .cursor[Question]().collect[List](max)
 
     def byTags(tags: List[String], max: Int): Fu[List[Question]] =
-      questionColl
-        .find(
-          BSONDocument(
-            "tags" -> BSONDocument("$in" -> tags.map(_.toLowerCase))))
-        .cursor[Question]()
-        .collect[List](max)
+      questionColl.find(BSONDocument("tags" -> BSONDocument(
+        "$in" -> tags.map(_.toLowerCase)))).cursor[Question]().collect[List](
+        max)
 
     def addComment(c: Comment)(q: Question) =
       questionColl.update(
@@ -152,16 +144,14 @@ final class QaApi(
       }
 
     def setAnswers(id: QuestionId, nb: Int) =
-      questionColl
-        .update(
-          BSONDocument("_id" -> id),
-          BSONDocument(
-            "$set" -> BSONDocument(
-              "answers" -> BSONInteger(nb),
-              "updatedAt" -> DateTime.now
-            )
-          ))
-        .void
+      questionColl.update(
+        BSONDocument("_id" -> id),
+        BSONDocument(
+          "$set" -> BSONDocument(
+            "answers" -> BSONInteger(nb),
+            "updatedAt" -> DateTime.now
+          )
+        )).void
 
     def remove(id: QuestionId) =
       questionColl.remove(BSONDocument("_id" -> id)) >>
@@ -224,11 +214,9 @@ final class QaApi(
       )
 
     def popular(questionId: QuestionId): Fu[List[Answer]] =
-      answerColl
-        .find(BSONDocument("questionId" -> questionId))
+      answerColl.find(BSONDocument("questionId" -> questionId))
         .sort(BSONDocument("vote.score" -> -1))
-        .cursor[Answer]()
-        .collect[List]()
+        .cursor[Answer]().collect[List]()
 
     def zipWithQuestions(answers: List[Answer]): Fu[List[AnswerWithQuestion]] =
       question.findByIds(answers.map(_.questionId)) map { qs =>
@@ -339,18 +327,14 @@ final class QaApi(
           Unwind
         }
 
-        col
-          .aggregate(
-            Project(BSONDocument("tags" -> BSONBoolean(true))),
-            List(
-              Unwind("tags"),
-              Group(BSONBoolean(true))("tags" -> AddToSet("tags"))))
-          .map(
-            _.documents.headOption
-              .flatMap(_.getAs[List[String]]("tags"))
-              .getOrElse(List.empty[String])
-              .map(_.toLowerCase)
-              .distinct)
+        col.aggregate(
+          Project(BSONDocument("tags" -> BSONBoolean(true))),
+          List(
+            Unwind("tags"),
+            Group(BSONBoolean(true))("tags" -> AddToSet("tags")))).map(
+          _.documents.headOption.flatMap(
+            _.getAs[List[String]]("tags")).getOrElse(List.empty[String]).map(
+            _.toLowerCase).distinct)
       }
   }
 

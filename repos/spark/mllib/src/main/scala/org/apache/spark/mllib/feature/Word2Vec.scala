@@ -171,8 +171,7 @@ class Word2Vec extends Serializable with Logging {
   private def learnVocab[S <: Iterable[String]](dataset: RDD[S]): Unit = {
     val words = dataset.flatMap(x => x)
 
-    vocab = words
-      .map(w => (w, 1))
+    vocab = words.map(w => (w, 1))
       .reduceByKey(_ + _)
       .filter(_._2 >= minCount)
       .map(x =>
@@ -384,9 +383,8 @@ class Word2Vec extends Serializable with Logging {
                             val ind =
                               ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)).toInt
                             f = expTable.value(ind)
-                            val g = ((1 - bcVocab
-                              .value(word)
-                              .code(d) - f) * alpha).toFloat
+                            val g = ((1 - bcVocab.value(word).code(
+                              d) - f) * alpha).toFloat
                             blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
                             blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
                             syn1Modify(inner) += 1
@@ -406,39 +404,29 @@ class Word2Vec extends Serializable with Logging {
           val syn0Local = model._1
           val syn1Local = model._2
           // Only output modified vectors.
-          Iterator
-            .tabulate(vocabSize) { index =>
-              if (syn0Modify(index) > 0) {
-                Some(
-                  (
-                    index,
-                    syn0Local
-                      .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
-                None
-              }
+          Iterator.tabulate(vocabSize) { index =>
+            if (syn0Modify(index) > 0) {
+              Some((
+                index,
+                syn0Local.slice(index * vectorSize, (index + 1) * vectorSize)))
+            } else {
+              None
             }
-            .flatten ++ Iterator
-            .tabulate(vocabSize) { index =>
-              if (syn1Modify(index) > 0) {
-                Some(
-                  (
-                    index + vocabSize,
-                    syn1Local
-                      .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
-                None
-              }
+          }.flatten ++ Iterator.tabulate(vocabSize) { index =>
+            if (syn1Modify(index) > 0) {
+              Some((
+                index + vocabSize,
+                syn1Local.slice(index * vectorSize, (index + 1) * vectorSize)))
+            } else {
+              None
             }
-            .flatten
+          }.flatten
       }
-      val synAgg = partial
-        .reduceByKey {
-          case (v1, v2) =>
-            blas.saxpy(vectorSize, 1.0f, v2, 1, v1, 1)
-            v1
-        }
-        .collect()
+      val synAgg = partial.reduceByKey {
+        case (v1, v2) =>
+          blas.saxpy(vectorSize, 1.0f, v2, 1, v1, 1)
+          v1
+      }.collect()
       var i = 0
       while (i < synAgg.length) {
         val index = synAgg(i)._1
@@ -601,8 +589,7 @@ class Word2VecModel private[spark] (
       }
       ind += 1
     }
-    var topResults = wordList
-      .zip(cosVec)
+    var topResults = wordList.zip(cosVec)
       .toSeq
       .sortBy(-_._2)
       .take(num + 1)
@@ -699,10 +686,8 @@ object Word2VecModel extends Loader[Word2VecModel] {
       val approxSize = 4L * numWords * vectorSize
       val nPartitions = ((approxSize / partitionSize) + 1).toInt
       val dataArray = model.toSeq.map { case (w, v) => Data(w, v) }
-      sc.parallelize(dataArray.toSeq, nPartitions)
-        .toDF()
-        .write
-        .parquet(Loader.dataPath(path))
+      sc.parallelize(dataArray.toSeq, nPartitions).toDF().write.parquet(
+        Loader.dataPath(path))
     }
   }
 

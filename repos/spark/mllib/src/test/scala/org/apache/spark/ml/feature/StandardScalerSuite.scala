@@ -76,9 +76,9 @@ class StandardScalerSuite
   }
 
   test("Standardization with default parameter") {
-    val df0 = sqlContext
-      .createDataFrame(data.zip(resWithStd))
-      .toDF("features", "expected")
+    val df0 = sqlContext.createDataFrame(data.zip(resWithStd)).toDF(
+      "features",
+      "expected")
 
     val standardScaler0 = new StandardScaler()
       .setInputCol("features")
@@ -89,12 +89,12 @@ class StandardScalerSuite
   }
 
   test("Standardization with setter") {
-    val df1 = sqlContext
-      .createDataFrame(data.zip(resWithBoth))
-      .toDF("features", "expected")
-    val df2 = sqlContext
-      .createDataFrame(data.zip(resWithMean))
-      .toDF("features", "expected")
+    val df1 = sqlContext.createDataFrame(data.zip(resWithBoth)).toDF(
+      "features",
+      "expected")
+    val df2 = sqlContext.createDataFrame(data.zip(resWithMean)).toDF(
+      "features",
+      "expected")
     val df3 =
       sqlContext.createDataFrame(data.zip(data)).toDF("features", "expected")
 

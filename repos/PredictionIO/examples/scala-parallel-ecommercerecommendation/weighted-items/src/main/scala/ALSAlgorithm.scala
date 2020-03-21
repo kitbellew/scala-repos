@@ -104,8 +104,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
             + " to Int index.")
 
         ((uindex, iindex), 1)
-      }
-      .filter {
+      }.filter {
         case ((u, i), v) =>
           // keep events with valid user and item index
           (u != -1) && (i != -1)
@@ -115,8 +114,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         case ((u, i), v) =>
           // MLlibRating requires integer index for user and item
           MLlibRating(u, i, v)
-      }
-      .cache()
+      }.cache()
 
     // MLLib ALS cannot handle empty training data.
     require(
@@ -145,8 +143,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     }
 
     // join item with the trained productFeatures
-    val productFeatures =
-      items.leftOuterJoin(m.productFeatures).collectAsMap.toMap
+    val productFeatures = items.leftOuterJoin(m.productFeatures)
+      .collectAsMap.toMap
 
     new ALSModel(
       rank = m.rank,
@@ -250,21 +248,21 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       group <- groupedWeights
       item <- group.items
       index <- model.itemStringIntMap.get(item)
-    } yield (index, group.weight)).toMap
+    } yield (index, group.weight))
+      .toMap
       .withDefaultValue(1.0)
 
     // combine query's blackList,seenItems and unavailableItems
     // into final blackList.
     // convert seen Items list from String ID to integer Index
     val finalBlackList: Set[Int] = (blackList ++ seenItems ++ unavailableItems)
-      .map(x => model.itemStringIntMap.get(x))
-      .flatten
+      .map(x => model.itemStringIntMap.get(x)).flatten
 
     val userFeature =
-      model.userStringIntMap
-        .get(query.user)
-        .map { userIndex => userFeatures.get(userIndex) }
-        // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
+      model.userStringIntMap.get(query.user).map { userIndex =>
+        userFeatures.get(userIndex)
+      }
+      // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
         .flatten
 
     val topScores = if (userFeature.isDefined) {
@@ -370,9 +368,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     val recentFeatures: Vector[Array[Double]] = recentList.toVector
     // productFeatures may not contain the requested item
-    .map { i =>
-      productFeatures.get(i).map { case (item, f) => f }.flatten
-    }.flatten
+      .map { i =>
+        productFeatures.get(i).map { case (item, f) => f }.flatten
+      }.flatten
 
     val indexScores: Map[Int, Double] = if (recentFeatures.isEmpty) {
       logger.info(s"No productFeatures vector for recent items ${recentItems}.")
@@ -467,13 +465,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     whiteList.map(_.contains(i)).getOrElse(true) &&
     !blackList.contains(i) &&
     // filter categories
-    categories
-      .map { cat =>
-        item.categories.exists { itemCat =>
-          // keep this item if its categories overlap with the query categories
-          itemCat.toSet.intersect(cat).nonEmpty
-        } // discard this item if it has no categories
-      }
-      .getOrElse(true)
+    categories.map { cat =>
+      item.categories.exists { itemCat =>
+        // keep this item if its categories overlap with the query categories
+        itemCat.toSet.intersect(cat).nonEmpty
+      } // discard this item if it has no categories
+    }.getOrElse(true)
   }
 }

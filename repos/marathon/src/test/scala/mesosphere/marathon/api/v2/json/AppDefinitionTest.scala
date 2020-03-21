@@ -369,9 +369,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
   private[this] def fromJson(json: String): AppDefinition = {
     import Formats._
-    Json
-      .fromJson[AppDefinition](Json.parse(json))
-      .getOrElse(throw new RuntimeException(s"could not parse: $json"))
+    Json.fromJson[AppDefinition](Json.parse(json)).getOrElse(
+      throw new RuntimeException(s"could not parse: $json"))
   }
 
   test("Reading app definition with command health check") {

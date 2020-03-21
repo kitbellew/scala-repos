@@ -138,8 +138,7 @@ class OptimizeInSuite extends PlanTest {
         .select(
           In(
             Literal.create(null, StringType),
-            Seq(Literal(1), UnresolvedAttribute("b"))).as("a"))
-        .analyze
+            Seq(Literal(1), UnresolvedAttribute("b"))).as("a")).analyze
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =

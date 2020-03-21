@@ -46,11 +46,9 @@ object RouterExample extends App {
         adjoin: Adjoin[B :+: A :+: CNil]): Router[adjoin.Out] =
       new Router[adjoin.Out] {
         def apply(path: String) =
-          that(path)
-            .map(b => adjoin(Inl(b)))
-            .orElse(
-              self(path).map(a => adjoin(Inr(Inl(a))))
-            )
+          that(path).map(b => adjoin(Inl(b))).orElse(
+            self(path).map(a => adjoin(Inr(Inl(a))))
+          )
       }
   }
 

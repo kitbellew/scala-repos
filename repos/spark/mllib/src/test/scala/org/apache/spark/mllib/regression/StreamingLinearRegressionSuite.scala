@@ -205,9 +205,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
       runStreams(ssc, numBatches, numBatches)
 
     // assert that prediction error improves, ensuring that the updated model is being used
-    val error = output
-      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
-      .toList
+    val error = output.map(batch =>
+      batch.map(p => math.abs(p._1 - p._2)).sum / nPoints).toList
     assert((error.head - error.last) > 2)
   }
 

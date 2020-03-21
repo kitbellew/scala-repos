@@ -60,8 +60,9 @@ object Router {
   def load(
       env: Environment,
       configuration: Configuration): Option[Class[_ <: Router]] = {
-    val className = PlayConfig(configuration)
-      .getDeprecated[Option[String]]("play.http.router", "application.router")
+    val className = PlayConfig(configuration).getDeprecated[Option[String]](
+      "play.http.router",
+      "application.router")
 
     try {
       Some(

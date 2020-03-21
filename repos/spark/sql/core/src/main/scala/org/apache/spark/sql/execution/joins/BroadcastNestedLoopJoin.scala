@@ -36,8 +36,9 @@ case class BroadcastNestedLoopJoin(
     extends BinaryNode {
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   /** BuildRight means the right relation <=> the broadcast relation. */
   private val (streamed, broadcast) = buildSide match {

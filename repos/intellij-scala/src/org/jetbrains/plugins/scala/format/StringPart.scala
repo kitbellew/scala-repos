@@ -25,9 +25,8 @@ case class Text(s: String) extends StringPart {
     if (s == "%") List(Text(""), Injection(literal, None), Text(""))
     else {
       val splitted = s.split('%')
-      val list = splitted
-        .flatMap(text => List(Injection(literal, None), Text(text)))
-        .toList
+      val list = splitted.flatMap(text =>
+        List(Injection(literal, None), Text(text))).toList
       if (list.nonEmpty) list.tail else Nil
     }
   }

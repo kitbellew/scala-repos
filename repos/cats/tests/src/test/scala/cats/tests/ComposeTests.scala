@@ -80,8 +80,9 @@ class ComposeTests extends CatsSuite {
     // No Reducible-specific laws, so check the Foldable laws are satisfied
     checkAll(
       "Reducible[Lambda[A => List[Vector[A]]]]",
-      FoldableTests[Lambda[A => NonEmptyList[NonEmptyVector[A]]]]
-        .foldable[Int, Int])
+      FoldableTests[Lambda[A => NonEmptyList[NonEmptyVector[A]]]].foldable[
+        Int,
+        Int])
   }
 
   {

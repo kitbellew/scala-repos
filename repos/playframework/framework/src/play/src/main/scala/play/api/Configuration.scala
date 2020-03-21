@@ -498,8 +498,11 @@ case class Configuration(underlying: Config) {
     * The root key of this new configuration will be "engine", and you can access any sub-keys relatively.
     */
   def getConfigList(path: String): Option[java.util.List[Configuration]] =
-    readValue[java.util.List[_ <: Config]](path, underlying.getConfigList(path))
-      .map { configs => configs.asScala.map(Configuration(_)).asJava }
+    readValue[java.util.List[_ <: Config]](
+      path,
+      underlying.getConfigList(path)).map { configs =>
+      configs.asScala.map(Configuration(_)).asJava
+    }
 
   /**
     * Retrieves a Seq of sub-configurations, i.e. a configuration instance for each key that matches the path.
@@ -921,13 +924,10 @@ case class Configuration(underlying: Config) {
   private[play] def getDeprecatedStringOpt(
       key: String,
       deprecatedKey: String): Option[String] = {
-    getString(deprecatedKey)
-      .map { value =>
-        Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
-        value
-      }
-      .orElse(getString(key))
-      .filter(_.nonEmpty)
+    getString(deprecatedKey).map { value =>
+      Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
+      value
+    }.orElse(getString(key)).filter(_.nonEmpty)
   }
 
   /**
@@ -966,13 +966,12 @@ case class Configuration(underlying: Config) {
   private[play] def getDeprecatedDurationOpt(
       key: String,
       deprecatedKey: String): Option[FiniteDuration] = {
-    getNanoseconds(deprecatedKey)
-      .map { value =>
-        Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
-        value
-      }
-      .orElse(getNanoseconds(key))
-      .map { value => new FiniteDuration(value, TimeUnit.NANOSECONDS) }
+    getNanoseconds(deprecatedKey).map { value =>
+      Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
+      value
+    }.orElse(getNanoseconds(key)).map { value =>
+      new FiniteDuration(value, TimeUnit.NANOSECONDS)
+    }
   }
 
 }
@@ -1054,15 +1053,13 @@ private[play] class PlayConfig(val underlying: Config) {
   def getDeprecated[A: ConfigLoader](
       path: String,
       deprecatedPaths: String*): A = {
-    deprecatedPaths
-      .collectFirst {
-        case deprecated if underlying.hasPath(deprecated) =>
-          reportDeprecation(path, deprecated)
-          get[A](deprecated)
-      }
-      .getOrElse {
-        get[A](path)
-      }
+    deprecatedPaths.collectFirst {
+      case deprecated if underlying.hasPath(deprecated) =>
+        reportDeprecation(path, deprecated)
+        get[A](deprecated)
+    }.getOrElse {
+      get[A](path)
+    }
   }
 
   /**
@@ -1219,11 +1216,9 @@ private[play] object ConfigLoader {
       def load(config: Config, path: String): Map[String, A] = {
         val obj = config.getObject(path)
         val conf = obj.toConfig
-        obj
-          .keySet()
-          .asScala
-          .map { key => key -> valueLoader.load(conf, key) }
-          .toMap
+        obj.keySet().asScala.map { key =>
+          key -> valueLoader.load(conf, key)
+        }.toMap
       }
     }
 }

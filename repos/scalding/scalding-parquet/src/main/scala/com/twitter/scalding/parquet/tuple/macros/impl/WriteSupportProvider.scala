@@ -134,7 +134,8 @@ object WriteSupportProvider {
         outerTpe: Type,
         pValueTree: Tree,
         groupName: TermName): (Int, Tree) = {
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect { case m: MethodSymbol if m.isCaseAccessor => m }
         .foldLeft((0, q"")) {
           case ((idx, existingTree), getter) =>

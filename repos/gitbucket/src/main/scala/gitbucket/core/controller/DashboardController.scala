@@ -108,9 +108,8 @@ trait DashboardControllerBase extends ControllerBase {
           IssueSearchCondition(q, Map[String, Int]())
         }
       } else
-        session
-          .getAs[IssueSearchCondition](key)
-          .getOrElse(IssueSearchCondition())
+        session.getAs[IssueSearchCondition](key).getOrElse(
+          IssueSearchCondition())
     )
 
     filter match {

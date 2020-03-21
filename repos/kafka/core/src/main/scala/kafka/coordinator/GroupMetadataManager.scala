@@ -182,8 +182,9 @@ class GroupMetadataManager(
         } catch {
           case t: Throwable =>
             error(
-              "Failed to mark group %s as deleted in %s."
-                .format(group.groupId, appendPartition),
+              "Failed to mark group %s as deleted in %s.".format(
+                group.groupId,
+                appendPartition),
               t)
           // ignore and continue
         }
@@ -397,18 +398,15 @@ class GroupMetadataManager(
     if (isGroupLocal(group)) {
       if (topicPartitions.isEmpty) {
         // Return offsets for all partitions owned by this consumer group. (this only applies to consumers that commit offsets to Kafka.)
-        offsetsCache
-          .filter(_._1.group == group)
-          .map {
-            case (groupTopicPartition, offsetAndMetadata) =>
-              (
-                groupTopicPartition.topicPartition,
-                new OffsetFetchResponse.PartitionData(
-                  offsetAndMetadata.offset,
-                  offsetAndMetadata.metadata,
-                  Errors.NONE.code))
-          }
-          .toMap
+        offsetsCache.filter(_._1.group == group).map {
+          case (groupTopicPartition, offsetAndMetadata) =>
+            (
+              groupTopicPartition.topicPartition,
+              new OffsetFetchResponse.PartitionData(
+                offsetAndMetadata.offset,
+                offsetAndMetadata.metadata,
+                Errors.NONE.code))
+        }.toMap
       } else {
         topicPartitions.map { topicPartition =>
           val groupTopicPartition = GroupTopicPartition(group, topicPartition)
@@ -469,10 +467,9 @@ class GroupMetadataManager(
               while (currOffset < getHighWatermark(
                        offsetsPartition) && !shuttingDown.get()) {
                 buffer.clear()
-                val messages = log
-                  .read(currOffset, config.loadBufferSize)
-                  .messageSet
-                  .asInstanceOf[FileMessageSet]
+                val messages = log.read(
+                  currOffset,
+                  config.loadBufferSize).messageSet.asInstanceOf[FileMessageSet]
                 messages.readInto(buffer, 0)
                 val messageSet = new ByteBufferMessageSet(buffer)
                 messageSet.foreach { msgAndOffset =>
@@ -488,8 +485,8 @@ class GroupMetadataManager(
                     if (msgAndOffset.message.payload == null) {
                       if (offsetsCache.remove(key) != null)
                         trace(
-                          "Removed offset for %s due to tombstone entry."
-                            .format(key))
+                          "Removed offset for %s due to tombstone entry.".format(
+                            key))
                       else
                         trace(
                           "Ignoring redundant tombstone for %s.".format(key))
@@ -682,32 +679,31 @@ class GroupMetadataManager(
       debug("Found %d expired offsets.".format(expiredOffsets.size))
 
       // delete the expired offsets from the table and generate tombstone messages to remove them from the log
-      val tombstonesForPartition = expiredOffsets
-        .map {
-          case (groupTopicAndPartition, offsetAndMetadata) =>
-            val offsetsPartition = partitionFor(groupTopicAndPartition.group)
-            trace(
-              "Removing expired offset and metadata for %s: %s"
-                .format(groupTopicAndPartition, offsetAndMetadata))
+      val tombstonesForPartition = expiredOffsets.map {
+        case (groupTopicAndPartition, offsetAndMetadata) =>
+          val offsetsPartition = partitionFor(groupTopicAndPartition.group)
+          trace(
+            "Removing expired offset and metadata for %s: %s".format(
+              groupTopicAndPartition,
+              offsetAndMetadata))
 
-            offsetsCache.remove(groupTopicAndPartition)
+          offsetsCache.remove(groupTopicAndPartition)
 
-            val commitKey = GroupMetadataManager.offsetCommitKey(
-              groupTopicAndPartition.group,
-              groupTopicAndPartition.topicPartition.topic,
-              groupTopicAndPartition.topicPartition.partition)
+          val commitKey = GroupMetadataManager.offsetCommitKey(
+            groupTopicAndPartition.group,
+            groupTopicAndPartition.topicPartition.topic,
+            groupTopicAndPartition.topicPartition.partition)
 
-            val (magicValue, timestamp) =
-              getMessageFormatVersionAndTimestamp(offsetsPartition)
-            (
-              offsetsPartition,
-              new Message(
-                bytes = null,
-                key = commitKey,
-                timestamp = timestamp,
-                magicValue = magicValue))
-        }
-        .groupBy { case (partition, tombstone) => partition }
+          val (magicValue, timestamp) =
+            getMessageFormatVersionAndTimestamp(offsetsPartition)
+          (
+            offsetsPartition,
+            new Message(
+              bytes = null,
+              key = commitKey,
+              timestamp = timestamp,
+              magicValue = magicValue))
+      }.groupBy { case (partition, tombstone) => partition }
 
       // Append the tombstone messages to the offset partitions. It is okay if the replicas don't receive these (say,
       // if we crash or leaders move) since the new leaders will get rid of expired offsets during their own purge cycles.
@@ -723,8 +719,9 @@ class GroupMetadataManager(
             val messages = tombstones.map(_._2).toSeq
 
             trace(
-              "Marked %d offsets in %s for deletion."
-                .format(messages.size, appendPartition))
+              "Marked %d offsets in %s for deletion.".format(
+                messages.size,
+                appendPartition))
 
             try {
               // do not need to require acks since even if the tombstone is lost,
@@ -737,8 +734,9 @@ class GroupMetadataManager(
             } catch {
               case t: Throwable =>
                 error(
-                  "Failed to mark %d expired offsets for deletion in %s."
-                    .format(messages.size, appendPartition),
+                  "Failed to mark %d expired offsets for deletion in %s.".format(
+                    messages.size,
+                    appendPartition),
                   t)
                 // ignore and continue
                 0
@@ -748,8 +746,9 @@ class GroupMetadataManager(
     }
 
     info(
-      "Removed %d expired offsets in %d milliseconds."
-        .format(numExpiredOffsetsRemoved, time.milliseconds() - startMs))
+      "Removed %d expired offsets in %d milliseconds.".format(
+        numExpiredOffsetsRemoved,
+        time.milliseconds() - startMs))
   }
 
   private def getHighWatermark(partitionId: Int): Long = {
@@ -757,14 +756,10 @@ class GroupMetadataManager(
       TopicConstants.GROUP_METADATA_TOPIC_NAME,
       partitionId)
 
-    val hw = partitionOpt
-      .map { partition =>
-        partition
-          .leaderReplicaIfLocal()
-          .map(_.highWatermark.messageOffset)
-          .getOrElse(-1L)
-      }
-      .getOrElse(-1L)
+    val hw = partitionOpt.map { partition =>
+      partition.leaderReplicaIfLocal().map(
+        _.highWatermark.messageOffset).getOrElse(-1L)
+    }.getOrElse(-1L)
 
     hw
   }
@@ -800,12 +795,11 @@ class GroupMetadataManager(
       partition: Int): (Byte, Long) = {
     val groupMetadataTopicAndPartition =
       new TopicAndPartition(TopicConstants.GROUP_METADATA_TOPIC_NAME, partition)
-    val messageFormatVersion = replicaManager
-      .getMessageFormatVersion(groupMetadataTopicAndPartition)
-      .getOrElse {
-        throw new IllegalArgumentException(
-          s"Message format version for partition $groupMetadataTopicPartitionCount not found")
-      }
+    val messageFormatVersion = replicaManager.getMessageFormatVersion(
+      groupMetadataTopicAndPartition).getOrElse {
+      throw new IllegalArgumentException(
+        s"Message format version for partition $groupMetadataTopicPartitionCount not found")
+    }
     val timestamp =
       if (messageFormatVersion == Message.MagicValue_V0) Message.NoTimestamp
       else time.milliseconds()
@@ -1182,22 +1176,18 @@ object GroupMetadataManager {
         value.getArray(GROUP_METADATA_MEMBERS_V0).foreach {
           case memberMetadataObj =>
             val memberMetadata = memberMetadataObj.asInstanceOf[Struct]
-            val memberId = memberMetadata
-              .get(MEMBER_METADATA_MEMBER_ID_V0)
-              .asInstanceOf[String]
-            val clientId = memberMetadata
-              .get(MEMBER_METADATA_CLIENT_ID_V0)
-              .asInstanceOf[String]
-            val clientHost = memberMetadata
-              .get(MEMBER_METADATA_CLIENT_HOST_V0)
-              .asInstanceOf[String]
-            val sessionTimeout = memberMetadata
-              .get(MEMBER_METADATA_SESSION_TIMEOUT_V0)
-              .asInstanceOf[Int]
-            val subscription = Utils.toArray(
-              memberMetadata
-                .get(MEMBER_METADATA_SUBSCRIPTION_V0)
-                .asInstanceOf[ByteBuffer])
+            val memberId = memberMetadata.get(
+              MEMBER_METADATA_MEMBER_ID_V0).asInstanceOf[String]
+            val clientId = memberMetadata.get(
+              MEMBER_METADATA_CLIENT_ID_V0).asInstanceOf[String]
+            val clientHost = memberMetadata.get(
+              MEMBER_METADATA_CLIENT_HOST_V0).asInstanceOf[String]
+            val sessionTimeout = memberMetadata.get(
+              MEMBER_METADATA_SESSION_TIMEOUT_V0).asInstanceOf[Int]
+            val subscription =
+              Utils.toArray(
+                memberMetadata.get(
+                  MEMBER_METADATA_SUBSCRIPTION_V0).asInstanceOf[ByteBuffer])
 
             val member = new MemberMetadata(
               memberId,
@@ -1207,10 +1197,8 @@ object GroupMetadataManager {
               sessionTimeout,
               List((group.protocol, subscription)))
 
-            member.assignment = Utils.toArray(
-              memberMetadata
-                .get(MEMBER_METADATA_ASSIGNMENT_V0)
-                .asInstanceOf[ByteBuffer])
+            member.assignment = Utils.toArray(memberMetadata.get(
+              MEMBER_METADATA_ASSIGNMENT_V0).asInstanceOf[ByteBuffer])
 
             group.add(memberId, member)
         }
@@ -1229,26 +1217,24 @@ object GroupMetadataManager {
     def writeTo(
         consumerRecord: ConsumerRecord[Array[Byte], Array[Byte]],
         output: PrintStream) {
-      Option(consumerRecord.key)
-        .map(key => GroupMetadataManager.readMessageKey(ByteBuffer.wrap(key)))
-        .foreach {
-          // Only print if the message is an offset record.
-          // We ignore the timestamp of the message because GroupMetadataMessage has its own timestamp.
-          case offsetKey: OffsetKey =>
-            val groupTopicPartition = offsetKey.key
-            val value = consumerRecord.value
-            val formattedValue =
-              if (value == null) "NULL"
-              else
-                GroupMetadataManager
-                  .readOffsetMessageValue(ByteBuffer.wrap(value))
-                  .toString
-            output.write(groupTopicPartition.toString.getBytes)
-            output.write("::".getBytes)
-            output.write(formattedValue.getBytes)
-            output.write("\n".getBytes)
-          case _ => // no-op
-        }
+      Option(consumerRecord.key).map(key =>
+        GroupMetadataManager.readMessageKey(ByteBuffer.wrap(key))).foreach {
+        // Only print if the message is an offset record.
+        // We ignore the timestamp of the message because GroupMetadataMessage has its own timestamp.
+        case offsetKey: OffsetKey =>
+          val groupTopicPartition = offsetKey.key
+          val value = consumerRecord.value
+          val formattedValue =
+            if (value == null) "NULL"
+            else
+              GroupMetadataManager.readOffsetMessageValue(
+                ByteBuffer.wrap(value)).toString
+          output.write(groupTopicPartition.toString.getBytes)
+          output.write("::".getBytes)
+          output.write(formattedValue.getBytes)
+          output.write("\n".getBytes)
+        case _ => // no-op
+      }
     }
   }
 
@@ -1257,26 +1243,25 @@ object GroupMetadataManager {
     def writeTo(
         consumerRecord: ConsumerRecord[Array[Byte], Array[Byte]],
         output: PrintStream) {
-      Option(consumerRecord.key)
-        .map(key => GroupMetadataManager.readMessageKey(ByteBuffer.wrap(key)))
-        .foreach {
-          // Only print if the message is a group metadata record.
-          // We ignore the timestamp of the message because GroupMetadataMessage has its own timestamp.
-          case groupMetadataKey: GroupMetadataKey =>
-            val groupId = groupMetadataKey.key
-            val value = consumerRecord.value
-            val formattedValue =
-              if (value == null) "NULL"
-              else
-                GroupMetadataManager
-                  .readGroupMessageValue(groupId, ByteBuffer.wrap(value))
-                  .toString
-            output.write(groupId.getBytes)
-            output.write("::".getBytes)
-            output.write(formattedValue.getBytes)
-            output.write("\n".getBytes)
-          case _ => // no-op
-        }
+      Option(consumerRecord.key).map(key =>
+        GroupMetadataManager.readMessageKey(ByteBuffer.wrap(key))).foreach {
+        // Only print if the message is a group metadata record.
+        // We ignore the timestamp of the message because GroupMetadataMessage has its own timestamp.
+        case groupMetadataKey: GroupMetadataKey =>
+          val groupId = groupMetadataKey.key
+          val value = consumerRecord.value
+          val formattedValue =
+            if (value == null) "NULL"
+            else
+              GroupMetadataManager.readGroupMessageValue(
+                groupId,
+                ByteBuffer.wrap(value)).toString
+          output.write(groupId.getBytes)
+          output.write("::".getBytes)
+          output.write(formattedValue.getBytes)
+          output.write("\n".getBytes)
+        case _ => // no-op
+      }
     }
   }
 

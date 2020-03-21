@@ -96,8 +96,8 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
 
   private def insertTask(task: ScheduledTask \/ JObject, collection: String) =
     database(
-      insert(task.valueOr { st => st.serialize.asInstanceOf[JObject] })
-        .into(collection))
+      insert(task.valueOr { st => st.serialize.asInstanceOf[JObject] }).into(
+        collection))
 
   def deleteTask(id: UUID) =
     EitherT {
@@ -122,17 +122,17 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
 
   def reportRun(report: ScheduledRunReport) =
     database(
-      insert(report.serialize.asInstanceOf[JObject])
-        .into(settings.reports)) map { _ => PrecogUnit }
+      insert(report.serialize.asInstanceOf[JObject]).into(
+        settings.reports)) map { _ => PrecogUnit }
 
   def statusFor(id: UUID, limit: Option[Int]) = {
     database(
       selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
       taskOpt =>
         database(
-          selectAll
-            .from(settings.reports)
-            .where(".id" === id.toString) /* TODO: limit */ ) map { history =>
+          selectAll.from(settings.reports).where(
+            ".id" === id.toString
+          ) /* TODO: limit */ ) map { history =>
           taskOpt map { task =>
             (
               task.deserialize[ScheduledTask],

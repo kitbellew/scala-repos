@@ -33,8 +33,9 @@ object SealedClassInheritance extends AnnotatorPart[ScTemplateDefinition] {
             psiClass.getContainingFile.getNavigationElement != refElement.getContainingFile.getNavigationElement =>
         holder.createErrorAnnotation(
           refElement,
-          "Illegal inheritance from sealed %s %s"
-            .format(kindOf(psiClass).toLowerCase, psiClass.name))
+          "Illegal inheritance from sealed %s %s".format(
+            kindOf(psiClass).toLowerCase,
+            psiClass.name))
       case _ =>
     }
   }

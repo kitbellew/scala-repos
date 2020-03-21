@@ -198,16 +198,14 @@ object WebSocket {
         : MessageFlowTransformer[In, Out] = {
       jsonMessageFlowTransformer.map(
         json =>
-          Json
-            .fromJson[In](json)
-            .fold(
-              { errors =>
-                throw WebSocketCloseException(
-                  CloseMessage(
-                    Some(CloseCodes.Unacceptable),
-                    Json.stringify(JsError.toJson(errors))))
-              },
-              identity),
+          Json.fromJson[In](json).fold(
+            { errors =>
+              throw WebSocketCloseException(
+                CloseMessage(
+                  Some(CloseCodes.Unacceptable),
+                  Json.stringify(JsError.toJson(errors))))
+            },
+            identity),
         out => Json.toJson(out)
       )
     }

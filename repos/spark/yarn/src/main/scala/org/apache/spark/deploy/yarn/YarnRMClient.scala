@@ -114,15 +114,16 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
     // Figure out which scheme Yarn is using. Note the method seems to have been added after 2.2,
     // so not all stable releases have it.
     val prefix = Try(
-      classOf[WebAppUtils]
-        .getMethod("getHttpSchemePrefix", classOf[Configuration])
-        .invoke(null, conf)
-        .asInstanceOf[String]).getOrElse("http://")
+      classOf[WebAppUtils].getMethod(
+        "getHttpSchemePrefix",
+        classOf[Configuration])
+        .invoke(null, conf).asInstanceOf[String]).getOrElse("http://")
 
     // If running a new enough Yarn, use the HA-aware API for retrieving the RM addresses.
     try {
-      val method = classOf[WebAppUtils]
-        .getMethod("getProxyHostsAndPortsForAmFilter", classOf[Configuration])
+      val method = classOf[WebAppUtils].getMethod(
+        "getProxyHostsAndPortsForAmFilter",
+        classOf[Configuration])
       val proxies = method.invoke(null, conf).asInstanceOf[JList[String]]
       val hosts = proxies.asScala.map { proxy => proxy.split(":")(0) }
       val uriBases = proxies.asScala.map { proxy => prefix + proxy + proxyBase }

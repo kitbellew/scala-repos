@@ -116,12 +116,10 @@ class TaskTrackerImplTest
       TEST_APP_NAME / "a")
     testAppTasks.appTasksMap(TEST_APP_NAME / "b").appId should equal(
       TEST_APP_NAME / "b")
-    testAppTasks
-      .appTasksMap(TEST_APP_NAME / "a")
-      .marathonTasks should have size 1
-    testAppTasks
-      .appTasksMap(TEST_APP_NAME / "b")
-      .marathonTasks should have size 2
+    testAppTasks.appTasksMap(
+      TEST_APP_NAME / "a").marathonTasks should have size 1
+    testAppTasks.appTasksMap(
+      TEST_APP_NAME / "b").marathonTasks should have size 2
     testAppTasks.appTasksMap(TEST_APP_NAME / "a").taskMap.keySet should equal(
       Set(task1.taskId))
     testAppTasks.appTasksMap(TEST_APP_NAME / "b").taskMap.keySet should equal(
@@ -206,9 +204,8 @@ class TaskTrackerImplTest
 
     shouldContainTask(taskTracker.appTasksSync(TEST_APP_NAME), sampleTask)
     stateShouldContainKey(state, sampleTask.taskId)
-    taskTracker
-      .appTasksSync(TEST_APP_NAME)
-      .foreach(task => shouldHaveTaskStatus(task, startingTaskStatus))
+    taskTracker.appTasksSync(TEST_APP_NAME).foreach(task =>
+      shouldHaveTaskStatus(task, startingTaskStatus))
 
     // TASK RUNNING
     val runningTaskStatus: TaskStatus =
@@ -218,26 +215,19 @@ class TaskTrackerImplTest
 
     shouldContainTask(taskTracker.appTasksSync(TEST_APP_NAME), sampleTask)
     stateShouldContainKey(state, sampleTask.taskId)
-    taskTracker
-      .appTasksSync(TEST_APP_NAME)
-      .foreach(task => shouldHaveTaskStatus(task, runningTaskStatus))
+    taskTracker.appTasksSync(TEST_APP_NAME).foreach(task =>
+      shouldHaveTaskStatus(task, runningTaskStatus))
 
     // TASK STILL RUNNING
     val updatedRunningTaskStatus =
       runningTaskStatus.toBuilder.setTimestamp(123).build()
-    taskUpdater
-      .statusUpdate(TEST_APP_NAME, updatedRunningTaskStatus)
-      .futureValue
+    taskUpdater.statusUpdate(
+      TEST_APP_NAME,
+      updatedRunningTaskStatus).futureValue
     shouldContainTask(taskTracker.appTasksSync(TEST_APP_NAME), sampleTask)
     assert(
-      taskTracker
-        .appTasksSync(TEST_APP_NAME)
-        .head
-        .launched
-        .get
-        .status
-        .mesosStatus
-        .get == runningTaskStatus)
+      taskTracker.appTasksSync(
+        TEST_APP_NAME).head.launched.get.status.mesosStatus.get == runningTaskStatus)
 
     // TASK TERMINATED
     taskCreationHandler.terminated(sampleTask.taskId).futureValue
@@ -250,10 +240,9 @@ class TaskTrackerImplTest
     // ERRONEOUS MESSAGE, TASK DOES NOT EXIST ANYMORE
     val erroneousStatus = makeTaskStatus(sampleTask.taskId, TaskState.TASK_LOST)
 
-    val failure = taskUpdater
-      .statusUpdate(TEST_APP_NAME, erroneousStatus)
-      .failed
-      .futureValue
+    val failure = taskUpdater.statusUpdate(
+      TEST_APP_NAME,
+      erroneousStatus).failed.futureValue
     assert(failure.getCause != null)
     assert(
       failure.getCause.getMessage.contains("does not exist"),
@@ -320,34 +309,34 @@ class TaskTrackerImplTest
     val app3_task3 = makeSampleTask(appName3)
 
     taskCreationHandler.created(app1_task1).futureValue
-    taskUpdater
-      .statusUpdate(appName1, makeTaskStatus(app1_task1.taskId))
-      .futureValue
+    taskUpdater.statusUpdate(
+      appName1,
+      makeTaskStatus(app1_task1.taskId)).futureValue
 
     taskCreationHandler.created(app1_task2).futureValue
-    taskUpdater
-      .statusUpdate(appName1, makeTaskStatus(app1_task2.taskId))
-      .futureValue
+    taskUpdater.statusUpdate(
+      appName1,
+      makeTaskStatus(app1_task2.taskId)).futureValue
 
     taskCreationHandler.created(app2_task1).futureValue
-    taskUpdater
-      .statusUpdate(appName2, makeTaskStatus(app2_task1.taskId))
-      .futureValue
+    taskUpdater.statusUpdate(
+      appName2,
+      makeTaskStatus(app2_task1.taskId)).futureValue
 
     taskCreationHandler.created(app3_task1).futureValue
-    taskUpdater
-      .statusUpdate(appName3, makeTaskStatus(app3_task1.taskId))
-      .futureValue
+    taskUpdater.statusUpdate(
+      appName3,
+      makeTaskStatus(app3_task1.taskId)).futureValue
 
     taskCreationHandler.created(app3_task2).futureValue
-    taskUpdater
-      .statusUpdate(appName3, makeTaskStatus(app3_task2.taskId))
-      .futureValue
+    taskUpdater.statusUpdate(
+      appName3,
+      makeTaskStatus(app3_task2.taskId)).futureValue
 
     taskCreationHandler.created(app3_task3).futureValue
-    taskUpdater
-      .statusUpdate(appName3, makeTaskStatus(app3_task3.taskId))
-      .futureValue
+    taskUpdater.statusUpdate(
+      appName3,
+      makeTaskStatus(app3_task3.taskId)).futureValue
 
     assert(
       state.allIds().futureValue.size == 6,
@@ -374,7 +363,8 @@ class TaskTrackerImplTest
 
   test("Should not store if state did not change (no health present)") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = sampleTask.launched.get.status.mesosStatus.get.toBuilder
+    val status = sampleTask.launched.get.status.mesosStatus.get
+      .toBuilder
       .setTimestamp(123)
       .build()
 
@@ -392,7 +382,8 @@ class TaskTrackerImplTest
 
   test("Should not store if state and health did not change") {
     val sampleTask = MarathonTestHelper.healthyTask(TEST_APP_NAME)
-    val status = sampleTask.launched.get.status.mesosStatus.get.toBuilder
+    val status = sampleTask.launched.get.status.mesosStatus.get
+      .toBuilder
       .setTimestamp(123)
       .build()
 
@@ -454,7 +445,8 @@ class TaskTrackerImplTest
 
   test("Should store if state and health changed") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = Protos.TaskStatus.newBuilder
+    val status = Protos.TaskStatus
+      .newBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setTaskId(sampleTask.taskId.mesosTaskId)
       .setHealthy(true)
@@ -479,7 +471,8 @@ class TaskTrackerImplTest
 
   test("Should store if health changed (no health present at first)") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = Protos.TaskStatus.newBuilder
+    val status = Protos.TaskStatus
+      .newBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setTaskId(sampleTask.taskId.mesosTaskId)
       .build()
@@ -503,7 +496,8 @@ class TaskTrackerImplTest
   test(
     "Should store if state and health changed (no health present at first)") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = Protos.TaskStatus.newBuilder
+    val status = Protos.TaskStatus
+      .newBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setTaskId(sampleTask.taskId.mesosTaskId)
       .build()

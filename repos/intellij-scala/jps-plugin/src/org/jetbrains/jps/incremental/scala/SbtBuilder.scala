@@ -242,17 +242,13 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
           context.getProjectDescriptor.getBuildTargetIndex.getAllTargets
         new TargetOutputIndexImpl(targets, context)
       }
-      target
-        .computeDependencies(
-          context.getProjectDescriptor.getBuildTargetIndex,
-          targetOutputIndex)
-        .asScala
+      target.computeDependencies(
+        context.getProjectDescriptor.getBuildTargetIndex,
+        targetOutputIndex).asScala
     }
 
-    dependencies
-      .filter(_.isInstanceOf[ModuleBuildTarget])
-      .map(_.asInstanceOf[ModuleBuildTarget])
-      .toSeq
+    dependencies.filter(_.isInstanceOf[ModuleBuildTarget]).map(
+      _.asInstanceOf[ModuleBuildTarget]).toSeq
   }
 
   private def logCustomSbtIncOptions(

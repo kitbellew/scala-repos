@@ -155,10 +155,8 @@ object CompilerBenchmark {
       coffees.sortBy(_.price).take(3) join suppliers on (_.supID === _.id)
     def q1b =
       for {
-        (c, s) <- q1b_0
-          .sortBy(_._1.price)
-          .take(2)
-          .filter(_._1.name =!= "Colombian")
+        (c, s) <- q1b_0.sortBy(_._1.price).take(2).filter(
+          _._1.name =!= "Colombian")
         (c2, s2) <- q1b_0
       } yield (c.name, s.city, c2.name)
     val q2 = for {
@@ -184,11 +182,8 @@ object CompilerBenchmark {
     }
     def q4 =
       for {
-        c <- coffees
-          .map(c => (c.name, c.price, 42))
-          .sortBy(_._1)
-          .take(2)
-          .filter(_._2 < 800)
+        c <- coffees.map(c => (c.name, c.price, 42)).sortBy(_._1).take(
+          2).filter(_._2 < 800)
       } yield (c._1, c._3)
     def q4b_0 = coffees.map(c => (c.name, c.price, 42)).filter(_._2 < 800)
     def q4b =
@@ -209,9 +204,8 @@ object CompilerBenchmark {
       c <- coffees.filter(_.price < 800) union coffees.filter(_.price > 950)
     } yield (c.name, c.supID, c.total)
     val q7 = for {
-      c <- coffees.filter(_.price < 800).map((_, 1)) union coffees
-        .filter(_.price > 950)
-        .map((_, 2))
+      c <- coffees.filter(_.price < 800).map((_, 1)) union coffees.filter(
+        _.price > 950).map((_, 2))
     } yield (c._1.name, c._1.supID, c._2)
     val q71 = for {
       c <- coffees.filter(_.price < 800).map((_, 1))
@@ -222,11 +216,9 @@ object CompilerBenchmark {
         _.price < 800) on (_.name === _.name)
     } yield (c1.name, c2.map(_.name))
     val q8b = for {
-      t <- coffees.sortBy(_.sales).take(1) joinLeft coffees
-        .sortBy(_.sales)
-        .take(2) on (_.name === _.name) joinLeft coffees
-        .sortBy(_.sales)
-        .take(4) on (_._1.supID === _.supID)
+      t <- coffees.sortBy(_.sales).take(1) joinLeft coffees.sortBy(
+        _.sales).take(2) on (_.name === _.name) joinLeft coffees.sortBy(
+        _.sales).take(4) on (_._1.supID === _.supID)
     } yield (t._1, t._2)
 
     Vector(
@@ -349,12 +341,10 @@ object CompilerBenchmark {
     val q12 = as.filter(_.id <= as.map(_.id).max - 1).map(_.a)
     val q13 = (as.filter(_.id < 2) union as.filter(_.id > 2)).map(_.id)
     val q14 = q13.to[Set]
-    val q15 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.get).to[Set]
-    val q16 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
+    val q15 = (as.map(a => a.id.?).filter(_ < 2) unionAll as.map(a =>
+      a.id.?).filter(_ > 2)).map(_.get).to[Set]
+    val q16 = (as.map(a => a.id.?).filter(_ < 2) unionAll as.map(a =>
+      a.id.?).filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
     val q17 = as.sortBy(_.id).zipWithIndex.filter(_._2 < 2L).map {
       case (a, i) => (a.id, i)
     }

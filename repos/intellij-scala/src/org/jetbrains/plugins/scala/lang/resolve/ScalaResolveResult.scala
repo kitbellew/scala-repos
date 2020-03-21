@@ -163,8 +163,7 @@ class ScalaResolveResult(
     }
 
   override def hashCode: Int =
-    element.hashCode + innerResolveResult.hashCode() * 31 + nameShadow
-      .hashCode() * 31 * 31 + implicitFunction.hashCode() * 31 * 31
+    element.hashCode + innerResolveResult.hashCode() * 31 + nameShadow.hashCode() * 31 * 31 + implicitFunction.hashCode() * 31 * 31
 
   override def toString = {
     val name = element match {

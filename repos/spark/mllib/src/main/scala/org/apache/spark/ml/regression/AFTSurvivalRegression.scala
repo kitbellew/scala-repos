@@ -330,8 +330,7 @@ class AFTSurvivalRegressionModel private[ml] (
       predictQuantiles(features)
     }
     if (hasQuantilesCol) {
-      dataset
-        .withColumn($(predictionCol), predictUDF(col($(featuresCol))))
+      dataset.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
         .withColumn($(quantilesCol), predictQuantilesUDF(col($(featuresCol))))
     } else {
       dataset.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
@@ -384,11 +383,8 @@ object AFTSurvivalRegressionModel
       // Save model data: coefficients, intercept, scale
       val data = Data(instance.coefficients, instance.intercept, instance.scale)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -402,10 +398,8 @@ object AFTSurvivalRegressionModel
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("coefficients", "intercept", "scale")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("coefficients", "intercept", "scale").head()
       val coefficients = data.getAs[Vector](0)
       val intercept = data.getDouble(1)
       val scale = data.getDouble(2)

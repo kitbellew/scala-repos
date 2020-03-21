@@ -251,9 +251,8 @@ class FileMessageSet private[kafka] (
 
     // We use the offset seq to assign offsets so the offset of the messages does not change.
     new ByteBufferMessageSet(
-      compressionCodec = this.headOption
-        .map(_.message.compressionCodec)
-        .getOrElse(NoCompressionCodec),
+      compressionCodec = this.headOption.map(
+        _.message.compressionCodec).getOrElse(NoCompressionCodec),
       offsetSeq = offsets,
       newMessages: _*)
   }
@@ -291,8 +290,8 @@ class FileMessageSet private[kafka] (
           return allDone()
         if (size > maxMessageSize)
           throw new CorruptRecordException(
-            "Message size exceeds the largest allowable message size (%d)."
-              .format(maxMessageSize))
+            "Message size exceeds the largest allowable message size (%d).".format(
+              maxMessageSize))
 
         // read the item itself
         val buffer = ByteBuffer.allocate(size)

@@ -24,9 +24,9 @@ object ScalatraAtmosphereHandler {
   private class ScalatraResourceEventListener
       extends AtmosphereResourceEventListener {
     def client(resource: AtmosphereResource) =
-      Option(resource.session())
-        .flatMap(_.get(org.scalatra.atmosphere.AtmosphereClientKey))
-        .map(_.asInstanceOf[AtmosphereClient])
+      Option(resource.session()).flatMap(
+        _.get(org.scalatra.atmosphere.AtmosphereClientKey)).map(
+        _.asInstanceOf[AtmosphereClient])
 
     def onPreSuspend(event: AtmosphereResourceEvent) {}
 
@@ -50,8 +50,8 @@ object ScalatraAtmosphereHandler {
       //      if (!event.getResource.isResumed) {
       //        event.getResource.session.invalidate()
       //      } else {
-      event.getResource.session
-        .removeAttribute(org.scalatra.atmosphere.AtmosphereClientKey)
+      event.getResource.session.removeAttribute(
+        org.scalatra.atmosphere.AtmosphereClientKey)
       //      }
     }
 
@@ -81,8 +81,8 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
     implicit val req = resource.getRequest
     implicit val res = resource.getResponse
     val route =
-      Option(req.getAttribute(org.scalatra.atmosphere.AtmosphereRouteKey))
-        .map(_.asInstanceOf[MatchedRoute])
+      Option(req.getAttribute(org.scalatra.atmosphere.AtmosphereRouteKey)).map(
+        _.asInstanceOf[MatchedRoute])
     var session = resource.session()
     val isNew = !session.contains(org.scalatra.atmosphere.AtmosphereClientKey)
 
@@ -97,8 +97,9 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
                 AtmosphereResourceFactory.getDefault.find(resource.uuid).session
             }
 
-            client = session(org.scalatra.atmosphere.AtmosphereClientKey)
-              .asInstanceOf[AtmosphereClient]
+            client =
+              session(org.scalatra.atmosphere.AtmosphereClientKey).asInstanceOf[
+                AtmosphereClient]
             handleIncomingMessage(req, client)
           case (_, true) =>
             val cl = if (isNew) {

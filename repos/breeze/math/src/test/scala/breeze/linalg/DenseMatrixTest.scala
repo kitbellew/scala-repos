@@ -435,9 +435,10 @@ class DenseMatrixTest
     assert(b * c === DenseVector(62, -21, 87).mapValues(BigDecimal(_)))
     assert(b.t * c === DenseVector(72, -18, 65).mapValues(BigDecimal(_)))
     assert(
-      a.t * DenseVector(4, 3)
-        .mapValues(BigDecimal(_)) === DenseVector(16, 23, 30).mapValues(
-        BigDecimal(_)))
+      a.t * DenseVector(4, 3).mapValues(BigDecimal(_)) === DenseVector(
+        16,
+        23,
+        30).mapValues(BigDecimal(_)))
 
     // should be dense
     val x = a * a.t
@@ -446,14 +447,14 @@ class DenseMatrixTest
     // should be dense
     val y = a.t * a
     assert(
-      y === DenseMatrix((17, 22, 27), (22, 29, 36), (27, 36, 45))
-        .mapValues(BigDecimal(_)))
+      y === DenseMatrix((17, 22, 27), (22, 29, 36), (27, 36, 45)).mapValues(
+        BigDecimal(_)))
 
     val z: DenseMatrix[BigDecimal] =
       b * ((b + BigDecimal(1)): DenseMatrix[BigDecimal])
     assert(
-      z === DenseMatrix((164, 5, 107), (-5, 10, -27), (161, -7, 138))
-        .mapValues(BigDecimal(_)))
+      z === DenseMatrix((164, 5, 107), (-5, 10, -27), (161, -7, 138)).mapValues(
+        BigDecimal(_)))
   }
 
   test("toDenseVector") {
@@ -729,8 +730,9 @@ class DenseMatrixTest
 
     assert((dm(::, 0 until 0) * dm(0 until 0, ::)) === dm)
     assert(
-      (dm(0 until 0, ::) * dm(::, 0 until 0)) === DenseMatrix
-        .zeros[Double](0, 0))
+      (dm(0 until 0, ::) * dm(::, 0 until 0)) === DenseMatrix.zeros[Double](
+        0,
+        0))
 //    assert( (dm(::, 2 until 0 by -1) * dm(2 until 0 by -1, ::)) === dm)
   }
 

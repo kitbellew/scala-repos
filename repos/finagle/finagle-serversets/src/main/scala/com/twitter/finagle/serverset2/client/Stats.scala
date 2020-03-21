@@ -11,13 +11,12 @@ private[serverset2] trait StatsClient extends ZooKeeperClient {
     lazy val success = stats.counter(s"${name}_successes")
 
     def apply[T](result: Future[T]): Future[T] = {
-      Stat
-        .timeFuture(stats.stat(s"${name}_latency_ms"))(result)
-        .onSuccess { _ => success.incr() }
-        .onFailure {
-          case ke: KeeperException => stats.counter(ke.name).incr()
-          case _                   => failure.incr()
-        }
+      Stat.timeFuture(stats.stat(s"${name}_latency_ms"))(result).onSuccess {
+        _ => success.incr()
+      }.onFailure {
+        case ke: KeeperException => stats.counter(ke.name).incr()
+        case _                   => failure.incr()
+      }
       result
     }
   }

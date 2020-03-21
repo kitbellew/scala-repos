@@ -31,8 +31,9 @@ object DriverRegistrationSpec extends Specification {
     "be registered for both Acolyte & H2 when databases are connected" in {
       dbApi.connect()
 
-      (DriverManager.getDriver(jdbcUrl) aka "Acolyte driver" must not(beNull))
-        .and(DriverManager.getDriver("jdbc:h2:mem:").aka("H2 driver") must not(
+      (DriverManager.getDriver(jdbcUrl) aka "Acolyte driver" must not(
+        beNull)).and(
+        DriverManager.getDriver("jdbc:h2:mem:").aka("H2 driver") must not(
           beNull))
     }
 
@@ -50,20 +51,18 @@ object DriverRegistrationSpec extends Specification {
 
   lazy val dbApi: DefaultDBApi = {
     // Fake driver
-    acolyte.jdbc.Driver
-      .register("DriverRegistrationSpec", acolyte.jdbc.CompositeHandler.empty())
+    acolyte.jdbc.Driver.register(
+      "DriverRegistrationSpec",
+      acolyte.jdbc.CompositeHandler.empty())
 
     new DefaultDBApi(
       Map(
         "default" ->
-          Configuration
-            .from(
-              Map(
-                "driver" -> "acolyte.jdbc.Driver",
-                "url" -> jdbcUrl
-              ))
-            .underlying
-            .withFallback(
-              ConfigFactory.defaultReference.getConfig("play.db.prototype"))))
+          Configuration.from(
+            Map(
+              "driver" -> "acolyte.jdbc.Driver",
+              "url" -> jdbcUrl
+            )).underlying.withFallback(
+            ConfigFactory.defaultReference.getConfig("play.db.prototype"))))
   }
 }

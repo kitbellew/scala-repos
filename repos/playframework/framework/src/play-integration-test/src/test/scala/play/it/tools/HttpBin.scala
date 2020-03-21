@@ -50,20 +50,16 @@ object HttpBinApplication {
             Json.obj("json" -> e)
           // X-WWW-Form-Encoded
           case f: Map[String, Seq[String]] @unchecked =>
-            Json.obj(
-              "form" -> JsObject(
-                f.mapValues(x => JsString(x.mkString(", "))).toSeq))
+            Json.obj("form" -> JsObject(f.mapValues(x =>
+              JsString(x.mkString(", "))).toSeq))
           // Anything else
           case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
             Json.obj(
               "form" -> m.mdf.dataParts.map {
                 case (k, v) => k -> JsString(v.mkString)
               },
-              "file" -> JsString(
-                m.mdf
-                  .file("upload")
-                  .map(v => FileUtils.readFileToString(v.ref.file))
-                  .getOrElse(""))
+              "file" -> JsString(m.mdf.file("upload").map(v =>
+                FileUtils.readFileToString(v.ref.file)).getOrElse(""))
             )
           case b =>
             Json.obj("data" -> JsString(b.toString))
@@ -117,18 +113,18 @@ object HttpBinApplication {
   private def gzipFilter(mat: Materializer) = new GzipFilter()(mat)
 
   def gzip(implicit mat: Materializer) =
-    Seq("GET", "PATCH", "POST", "PUT", "DELETE")
-      .map { method =>
-        val route: Routes = {
-          case r @ p"/gzip" if r.method == method =>
-            gzipFilter(mat)(Action { request =>
-              Ok(requestHeaderWriter.writes(request).as[JsObject] ++ Json
-                .obj("gzipped" -> true, "method" -> method))
-            })
-        }
-        route
+    Seq("GET", "PATCH", "POST", "PUT", "DELETE").map { method =>
+      val route: Routes = {
+        case r @ p"/gzip" if r.method == method =>
+          gzipFilter(mat)(Action { request =>
+            Ok(
+              requestHeaderWriter.writes(request).as[JsObject] ++ Json.obj(
+                "gzipped" -> true,
+                "method" -> method))
+          })
       }
-      .reduceLeft((a, b) => a.orElse(b))
+      route
+    }.reduceLeft((a, b) => a.orElse(b))
 
   val status: Routes = {
     case GET(p"/status/$status<[0-9]+>") =>
@@ -195,26 +191,18 @@ object HttpBinApplication {
   val basicAuth: Routes = {
     case GET(p"/basic-auth/$username/$password") =>
       Action { request =>
-        request.headers
-          .get("Authorization")
-          .flatMap { authorization =>
-            authorization
-              .split(" ")
-              .drop(1)
-              .headOption
-              .filter { encoded =>
-                new String(org.apache.commons.codec.binary.Base64.decodeBase64(
-                  encoded.getBytes)).split(":").toList match {
-                  case u :: p :: Nil if u == username && password == p => true
-                  case _                                               => false
-                }
-              }
-              .map(_ => Ok(Json.obj("authenticated" -> true)))
-          }
-          .getOrElse {
-            Unauthorized.withHeaders(
-              "WWW-Authenticate" -> """Basic realm="Secured"""")
-          }
+        request.headers.get("Authorization").flatMap { authorization =>
+          authorization.split(" ").drop(1).headOption.filter { encoded =>
+            new String(org.apache.commons.codec.binary.Base64.decodeBase64(
+              encoded.getBytes)).split(":").toList match {
+              case u :: p :: Nil if u == username && password == p => true
+              case _                                               => false
+            }
+          }.map(_ => Ok(Json.obj("authenticated" -> true)))
+        }.getOrElse {
+          Unauthorized.withHeaders(
+            "WWW-Authenticate" -> """Basic realm="Secured"""")
+        }
       }
   }
 
@@ -223,8 +211,9 @@ object HttpBinApplication {
       Action { request =>
         val body = requestHeaderWriter.writes(request).as[JsObject]
 
-        val content =
-          0.to(param.toInt).map { index => body ++ Json.obj("id" -> index) }
+        val content = 0.to(param.toInt).map { index =>
+          body ++ Json.obj("id" -> index)
+        }
 
         Ok.chunked(Source(content)).as("application/json")
       }

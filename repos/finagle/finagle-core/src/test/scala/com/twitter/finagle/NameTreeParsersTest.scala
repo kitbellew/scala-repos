@@ -24,18 +24,22 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
   test("error messages") {
     assert(intercept[IllegalArgumentException] {
       NameTreeParsers.parsePath("/foo^bar")
-    }.getMessage contains "'/foo[^]bar'")
+    }
+      .getMessage contains "'/foo[^]bar'")
     assert(intercept[IllegalArgumentException] {
       NameTreeParsers.parsePath("/foo/bar/")
-    }.getMessage contains "'/foo/bar/[]'")
+    }
+      .getMessage contains "'/foo/bar/[]'")
   }
 
   test("parseNameTree") {
     val defaultWeight = NameTree.Weighted.defaultWeight
 
     assert(
-      NameTreeParsers.parseNameTree("! | ~ | $") == NameTree
-        .Alt(NameTree.Fail, NameTree.Neg, NameTree.Empty))
+      NameTreeParsers.parseNameTree("! | ~ | $") == NameTree.Alt(
+        NameTree.Fail,
+        NameTree.Neg,
+        NameTree.Empty))
     assert(
       NameTreeParsers.parseNameTree("/foo/bar") == NameTree.Leaf(
         Path.Utf8("foo", "bar")))
@@ -89,8 +93,9 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
     assert(
       NameTreeParsers.parseDentry("/=>!") == Dentry(Path.empty, NameTree.Fail))
     assert(
-      NameTreeParsers
-        .parseDentry("/ => !") == Dentry(Path.empty, NameTree.Fail))
+      NameTreeParsers.parseDentry("/ => !") == Dentry(
+        Path.empty,
+        NameTree.Fail))
 
     intercept[IllegalArgumentException] { NameTreeParsers.parseDentry("/&!") }
   }

@@ -113,8 +113,12 @@ object Auth extends LilaController {
       ctx: Context): Fu[(UserModel, Option[String])] = {
     val email =
       rawEmail.map(e => env.emailAddress.validate(e) err s"Invalid email $e")
-    UserRepo
-      .create(username, password, email, ctx.blindMode, ctx.mobileApiVersion)
+    UserRepo.create(
+      username,
+      password,
+      email,
+      ctx.blindMode,
+      ctx.mobileApiVersion)
       .flatten(s"No user could be created for ${username}")
       .map(_ -> email)
   }
@@ -145,16 +149,14 @@ object Auth extends LilaController {
                   lila.mon.user.register.website()
                   val email = env.emailAddress.validate(
                     data.email) err s"Invalid email ${data.email}"
-                  UserRepo
-                    .create(
-                      data.username,
-                      data.password,
-                      email.some,
-                      ctx.blindMode,
-                      none)
+                  UserRepo.create(
+                    data.username,
+                    data.password,
+                    email.some,
+                    ctx.blindMode,
+                    none)
                     .flatten(s"No user could be created for ${data.username}")
-                    .map(_ -> email)
-                    .flatMap {
+                    .map(_ -> email).flatMap {
                       case (user, email) =>
                         env.emailConfirm.send(user, email) >> {
                           if (env.emailConfirm.effective)
@@ -171,13 +173,12 @@ object Auth extends LilaController {
               data => {
                 lila.mon.user.register.mobile()
                 val email = data.email flatMap env.emailAddress.validate
-                UserRepo
-                  .create(
-                    data.username,
-                    data.password,
-                    email,
-                    false,
-                    apiVersion.some)
+                UserRepo.create(
+                  data.username,
+                  data.password,
+                  email,
+                  false,
+                  apiVersion.some)
                   .flatten(
                     s"No user could be created for ${data.username}") flatMap mobileUserOk
               }
@@ -218,9 +219,8 @@ object Auth extends LilaController {
       api.setFingerprint(ctx.req, fp) flatMap {
         _ ?? { hash =>
           !me.lame ?? {
-            api
-              .recentUserIdsByFingerprint(hash)
-              .map(_.filter(me.id !=)) flatMap {
+            api.recentUserIdsByFingerprint(hash).map(
+              _.filter(me.id !=)) flatMap {
               case otherIds if otherIds.size >= 2 =>
                 UserRepo countEngines otherIds flatMap {
                   case nb if nb >= 2 && nb >= otherIds.size / 2 =>
@@ -277,8 +277,11 @@ object Auth extends LilaController {
       Env.security.passwordReset confirm token flatMap {
         case Some(user) =>
           fuccess(
-            html.auth
-              .passwordResetConfirm(user, token, forms.passwdReset, none))
+            html.auth.passwordResetConfirm(
+              user,
+              token,
+              forms.passwdReset,
+              none))
         case _ => notFound
       }
     }

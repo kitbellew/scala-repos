@@ -72,15 +72,17 @@ class EventSpec
 
   "Archive serialization" should {
     "Handle V0 format" in {
-      JObject("tokenId" -> JString("1234"), "path" -> JString("/test/"))
-        .validated[Archive] must beLike {
+      JObject(
+        "tokenId" -> JString("1234"),
+        "path" -> JString("/test/")).validated[Archive] must beLike {
         case Success(_) => ok
       }
     }
 
     "Handle V1 format" in {
-      JObject("apiKey" -> JString("1234"), "path" -> JString("/test/"))
-        .validated[Archive] must beLike {
+      JObject(
+        "apiKey" -> JString("1234"),
+        "path" -> JString("/test/")).validated[Archive] must beLike {
         case Success(_) => ok
       }
     }

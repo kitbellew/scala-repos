@@ -215,8 +215,9 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
       case mbox: CallingThreadMailbox ⇒
         val queue = mbox.queue
         val switched = mbox.suspendSwitch.switchOff {
-          CallingThreadDispatcherQueues(actor.system)
-            .gatherFromAllOtherQueues(mbox, queue)
+          CallingThreadDispatcherQueues(actor.system).gatherFromAllOtherQueues(
+            mbox,
+            queue)
           mbox.resume()
         }
         if (switched)
@@ -281,8 +282,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
     def throwInterruptionIfExistsOrSet(intEx: InterruptedException): Unit = {
       val ie = checkThreadInterruption(intEx)
       if (ie ne null) {
-        Thread
-          .interrupted() // clear interrupted flag before throwing according to java convention
+        Thread.interrupted() // clear interrupted flag before throwing according to java convention
         throw ie
       }
     }
@@ -305,8 +305,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
           } catch {
             case ie: InterruptedException ⇒
               log.error(ie, "Interrupted during message processing")
-              Thread
-                .interrupted() // clear interrupted flag before we continue, exception will be thrown later
+              Thread.interrupted() // clear interrupted flag before we continue, exception will be thrown later
               intex = ie
               true
             case NonFatal(e) ⇒
@@ -328,8 +327,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
           mbox.ctdLock.tryLock(50, TimeUnit.MILLISECONDS)
         } catch {
           case ie: InterruptedException ⇒
-            Thread
-              .interrupted() // clear interrupted flag before we continue, exception will be thrown later
+            Thread.interrupted() // clear interrupted flag before we continue, exception will be thrown later
             intex = ie
             false
         }
@@ -375,8 +373,9 @@ class CallingThreadMailbox(
   private val q = new ThreadLocal[MessageQueue]() {
     override def initialValue = {
       val queue = mailboxType.create(Some(self), Some(system))
-      CallingThreadDispatcherQueues(system)
-        .registerQueue(CallingThreadMailbox.this, queue)
+      CallingThreadDispatcherQueues(system).registerQueue(
+        CallingThreadMailbox.this,
+        queue)
       queue
     }
   }
@@ -408,8 +407,9 @@ class CallingThreadMailbox(
      */
     suspendSwitch.locked {
       val qq = queue
-      CallingThreadDispatcherQueues(actor.system)
-        .gatherFromAllOtherQueues(this, qq)
+      CallingThreadDispatcherQueues(actor.system).gatherFromAllOtherQueues(
+        this,
+        qq)
       super.cleanUp()
       qq.cleanUp(
         actor.self,

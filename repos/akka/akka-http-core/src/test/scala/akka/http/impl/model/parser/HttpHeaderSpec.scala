@@ -32,16 +32,16 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         Accept(
           `text/plain` withQValue 0.5,
           `text/html`,
-          `text/css` withQValue 0.8)
-          .renderedTo("text/plain;q=0.5, text/html, text/css;q=0.8")
+          `text/css` withQValue 0.8).renderedTo(
+          "text/plain;q=0.5, text/html, text/css;q=0.8")
       "Accept: text/html, image/gif, image/jpeg, *;q=.2, */*;q=.2" =!=
         Accept(
           `text/html`,
           `image/gif`,
           `image/jpeg`,
           `*/*` withQValue 0.2,
-          `*/*` withQValue 0.2)
-          .renderedTo("text/html, image/gif, image/jpeg, */*;q=0.2, */*;q=0.2")
+          `*/*` withQValue 0.2).renderedTo(
+          "text/html, image/gif, image/jpeg, */*;q=0.2, */*;q=0.2")
       "Accept: application/vnd.spray" =!=
         Accept(`application/vnd.spray`)
       "Accept: */*, text/*; foo=bar, custom/custom; bar=\"b>az\"" =!=
@@ -74,8 +74,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         `Accept-Charset`(
           `ISO-8859-1`,
           `UTF-16` withQValue 0,
-          HttpCharsetRange.`*` withQValue 0.8)
-          .renderedTo("ISO-8859-1, UTF-16;q=0.0, *;q=0.8")
+          HttpCharsetRange.`*` withQValue 0.8).renderedTo(
+          "ISO-8859-1, UTF-16;q=0.0, *;q=0.8")
       `Accept-Charset`(
         `UTF-16` withQValue 0.234567).toString shouldEqual "Accept-Charset: UTF-16;q=0.235"
       "Accept-Charset: UTF-16, unsupported42" =!= `Accept-Charset`(
@@ -189,12 +189,15 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==" =!=
         Authorization(BasicHttpCredentials("Aladdin", "open sesame"))
       "Authorization: bAsIc QWxhZGRpbjpvcGVuIHNlc2FtZQ==" =!=
-        Authorization(BasicHttpCredentials("Aladdin", "open sesame"))
-          .renderedTo("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==")
+        Authorization(
+          BasicHttpCredentials("Aladdin", "open sesame")).renderedTo(
+          "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==")
       """Authorization: Fancy yes="n:o", nonce=42""" =!=
         Authorization(
-          GenericHttpCredentials("Fancy", Map("yes" -> "n:o", "nonce" -> "42")))
-          .renderedTo("""Fancy yes="n:o",nonce=42""")
+          GenericHttpCredentials(
+            "Fancy",
+            Map("yes" -> "n:o", "nonce" -> "42"))).renderedTo(
+          """Fancy yes="n:o",nonce=42""")
       """Authorization: Fancy yes=no,nonce="4\\2"""" =!=
         Authorization(
           GenericHttpCredentials(
@@ -227,8 +230,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           `private`(),
           CacheDirective.custom("community", Some("<UCI>")))
       "Cache-Control: max-age=1234567890123456789" =!=
-        `Cache-Control`(`max-age`(Int.MaxValue))
-          .renderedTo("max-age=2147483647")
+        `Cache-Control`(`max-age`(Int.MaxValue)).renderedTo(
+          "max-age=2147483647")
       "Cache-Control: private, no-cache, no-cache=Set-Cookie, proxy-revalidate" =!=
         `Cache-Control`(
           `private`(),
@@ -237,8 +240,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           `proxy-revalidate`).renderedTo(
           "private, no-cache, no-cache=\"Set-Cookie\", proxy-revalidate")
       "Cache-Control: no-cache=Set-Cookie" =!=
-        `Cache-Control`(`no-cache`("Set-Cookie"))
-          .renderedTo("no-cache=\"Set-Cookie\"")
+        `Cache-Control`(`no-cache`("Set-Cookie")).renderedTo(
+          "no-cache=\"Set-Cookie\"")
       "Cache-Control: private=\"a,b\", no-cache" =!=
         `Cache-Control`(`private`("a", "b"), `no-cache`)
     }
@@ -277,12 +280,15 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       "Content-Type: application/json" =!=
         `Content-Type`(`application/json`)
       "Content-Type: text/plain; charset=utf8" =!=
-        `Content-Type`(ContentType(`text/plain`, `UTF-8`))
-          .renderedTo("text/plain; charset=UTF-8")
+        `Content-Type`(ContentType(`text/plain`, `UTF-8`)).renderedTo(
+          "text/plain; charset=UTF-8")
       "Content-Type: text/xml2; version=3; charset=windows-1252" =!=
-        `Content-Type`(MediaType
-          .customWithOpenCharset("text", "xml2", params = Map("version" -> "3"))
-          withCharset HttpCharsets.getForKey("windows-1252").get)
+        `Content-Type`(
+          MediaType.customWithOpenCharset(
+            "text",
+            "xml2",
+            params = Map("version" -> "3"))
+            withCharset HttpCharsets.getForKey("windows-1252").get)
       "Content-Type: text/plain; charset=fancy-pants" =!=
         `Content-Type`(
           `text/plain` withCharset HttpCharset.custom("fancy-pants"))
@@ -321,19 +327,21 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         "SID" -> "31d4d96e407aad42",
         "lang" -> "en>US")
       "Cookie: a=1; b=2" =!= Cookie("a" -> "1", "b" -> "2")
-      "Cookie: a=1;b=2" =!= Cookie("a" -> "1", "b" -> "2")
-        .renderedTo("a=1; b=2")
-      "Cookie: a=1 ;b=2" =!= Cookie("a" -> "1", "b" -> "2")
-        .renderedTo("a=1; b=2")
+      "Cookie: a=1;b=2" =!= Cookie("a" -> "1", "b" -> "2").renderedTo(
+        "a=1; b=2")
+      "Cookie: a=1 ;b=2" =!= Cookie("a" -> "1", "b" -> "2").renderedTo(
+        "a=1; b=2")
 
       "Cookie: z=0;a=1,b=2" =!= Cookie("z" -> "0").renderedTo("z=0")
-      """Cookie: a=1;b="test"""" =!= Cookie("a" -> "1", "b" -> "test")
-        .renderedTo("a=1; b=test")
+      """Cookie: a=1;b="test"""" =!= Cookie(
+        "a" -> "1",
+        "b" -> "test").renderedTo("a=1; b=test")
 
-      "Cookie: a=1; b=f\"d\"c\"; c=xyz" =!= Cookie("a" -> "1", "c" -> "xyz")
-        .renderedTo("a=1; c=xyz")
-      "Cookie: a=1; b=ä; c=d" =!= Cookie("a" -> "1", "c" -> "d")
-        .renderedTo("a=1; c=d")
+      "Cookie: a=1; b=f\"d\"c\"; c=xyz" =!= Cookie(
+        "a" -> "1",
+        "c" -> "xyz").renderedTo("a=1; c=xyz")
+      "Cookie: a=1; b=ä; c=d" =!= Cookie("a" -> "1", "c" -> "d").renderedTo(
+        "a=1; c=d")
 
       "Cookie: a=1,2" =!=
         ErrorInfo(
@@ -342,57 +350,62 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     }
 
     "Cookie (Raw)" in {
-      "Cookie: SID=31d4d96e407aad42" =!= Cookie("SID" -> "31d4d96e407aad42")
-        .withCookieParsingMode(CookieParsingMode.Raw)
+      "Cookie: SID=31d4d96e407aad42" =!= Cookie(
+        "SID" -> "31d4d96e407aad42").withCookieParsingMode(
+        CookieParsingMode.Raw)
       "Cookie: SID=31d4d96e407aad42; lang=en>US" =!= Cookie(
         "SID" -> "31d4d96e407aad42",
         "lang" -> "en>US").withCookieParsingMode(CookieParsingMode.Raw)
-      "Cookie: a=1; b=2" =!= Cookie("a" -> "1", "b" -> "2")
-        .withCookieParsingMode(CookieParsingMode.Raw)
-      "Cookie: a=1;b=2" =!= Cookie("a" -> "1", "b" -> "2")
-        .renderedTo("a=1; b=2")
-        .withCookieParsingMode(CookieParsingMode.Raw)
+      "Cookie: a=1; b=2" =!= Cookie(
+        "a" -> "1",
+        "b" -> "2").withCookieParsingMode(CookieParsingMode.Raw)
+      "Cookie: a=1;b=2" =!= Cookie("a" -> "1", "b" -> "2").renderedTo(
+        "a=1; b=2").withCookieParsingMode(CookieParsingMode.Raw)
       "Cookie: a=1 ;b=2" =!= Cookie(
-        List(HttpCookiePair.raw("a" -> "1 "), HttpCookiePair("b" -> "2")))
-        .renderedTo("a=1 ; b=2")
-        .withCookieParsingMode(CookieParsingMode.Raw)
+        List(
+          HttpCookiePair.raw("a" -> "1 "),
+          HttpCookiePair("b" -> "2"))).renderedTo(
+        "a=1 ; b=2").withCookieParsingMode(CookieParsingMode.Raw)
 
       "Cookie: z=0; a=1,b=2" =!= Cookie(
-        List(HttpCookiePair("z" -> "0"), HttpCookiePair.raw("a" -> "1,b=2")))
-        .withCookieParsingMode(CookieParsingMode.Raw)
+        List(
+          HttpCookiePair("z" -> "0"),
+          HttpCookiePair.raw("a" -> "1,b=2"))).withCookieParsingMode(
+        CookieParsingMode.Raw)
       """Cookie: a=1;b="test"""" =!= Cookie(
-        List(HttpCookiePair("a" -> "1"), HttpCookiePair.raw("b" -> "\"test\"")))
-        .renderedTo("a=1; b=\"test\"")
-        .withCookieParsingMode(CookieParsingMode.Raw)
+        List(
+          HttpCookiePair("a" -> "1"),
+          HttpCookiePair.raw("b" -> "\"test\""))).renderedTo(
+        "a=1; b=\"test\"").withCookieParsingMode(CookieParsingMode.Raw)
       "Cookie: a=1; b=f\"d\"c\"; c=xyz" =!= Cookie(
         List(
           HttpCookiePair("a" -> "1"),
           HttpCookiePair.raw("b" -> "f\"d\"c\""),
-          HttpCookiePair("c" -> "xyz")))
-        .withCookieParsingMode(CookieParsingMode.Raw)
+          HttpCookiePair("c" -> "xyz"))).withCookieParsingMode(
+        CookieParsingMode.Raw)
       "Cookie: a=1; b=ä; c=d" =!= Cookie(
         List(
           HttpCookiePair("a" -> "1"),
           HttpCookiePair.raw("b" -> "ä"),
-          HttpCookiePair("c" -> "d")))
-        .withCookieParsingMode(CookieParsingMode.Raw)
+          HttpCookiePair("c" -> "d"))).withCookieParsingMode(
+        CookieParsingMode.Raw)
     }
 
     "Date" in {
       "Date: Wed, 13 Jul 2011 08:12:31 GMT" =!= Date(
         DateTime(2011, 7, 13, 8, 12, 31))
       "Date: Wed, 13-Jul-2011 08:12:31 GMT" =!= Date(
-        DateTime(2011, 7, 13, 8, 12, 31))
-        .renderedTo("Wed, 13 Jul 2011 08:12:31 GMT")
+        DateTime(2011, 7, 13, 8, 12, 31)).renderedTo(
+        "Wed, 13 Jul 2011 08:12:31 GMT")
       "Date: Wed, 13-Jul-11 08:12:31 GMT" =!= Date(
-        DateTime(2011, 7, 13, 8, 12, 31))
-        .renderedTo("Wed, 13 Jul 2011 08:12:31 GMT")
+        DateTime(2011, 7, 13, 8, 12, 31)).renderedTo(
+        "Wed, 13 Jul 2011 08:12:31 GMT")
       "Date: Mon, 13-Jul-70 08:12:31 GMT" =!= Date(
-        DateTime(1970, 7, 13, 8, 12, 31))
-        .renderedTo("Mon, 13 Jul 1970 08:12:31 GMT")
+        DateTime(1970, 7, 13, 8, 12, 31)).renderedTo(
+        "Mon, 13 Jul 1970 08:12:31 GMT")
       "Date: Fri, 23 Mar 1804 12:11:10 UTC" =!= Date(
-        DateTime(1804, 3, 23, 12, 11, 10))
-        .renderedTo("Fri, 23 Mar 1804 12:11:10 GMT")
+        DateTime(1804, 3, 23, 12, 11, 10)).renderedTo(
+        "Fri, 23 Mar 1804 12:11:10 GMT")
     }
 
     "ETag" in {
@@ -407,8 +420,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     "Expires" in {
       "Expires: Wed, 13 Jul 2011 08:12:31 GMT" =!= Expires(
         DateTime(2011, 7, 13, 8, 12, 31))
-      "Expires: 0" =!= Expires(DateTime.MinValue)
-        .renderedTo("Wed, 01 Jan 1800 00:00:00 GMT")
+      "Expires: 0" =!= Expires(DateTime.MinValue).renderedTo(
+        "Wed, 01 Jan 1800 00:00:00 GMT")
     }
 
     "Host" in {
@@ -433,8 +446,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     "If-Modified-Since" in {
       "If-Modified-Since: Wed, 13 Jul 2011 08:12:31 GMT" =!= `If-Modified-Since`(
         DateTime(2011, 7, 13, 8, 12, 31))
-      "If-Modified-Since: 0" =!= `If-Modified-Since`(DateTime.MinValue)
-        .renderedTo("Wed, 01 Jan 1800 00:00:00 GMT")
+      "If-Modified-Since: 0" =!= `If-Modified-Since`(
+        DateTime.MinValue).renderedTo("Wed, 01 Jan 1800 00:00:00 GMT")
     }
 
     "If-None-Match" in {
@@ -486,8 +499,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       """Link: </>; rel=prev, </page/2>; rel="next"""" =!=
         Link(
           LinkValue(Uri("/"), LinkParams.prev),
-          LinkValue(Uri("/page/2"), LinkParams.next))
-          .renderedTo("</>; rel=prev, </page/2>; rel=next")
+          LinkValue(Uri("/page/2"), LinkParams.next)).renderedTo(
+          "</>; rel=prev, </page/2>; rel=next")
 
       """Link: </>; rel="x.y-z http://spray.io"""" =!= Link(
         Uri("/"),
@@ -661,8 +674,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
 
     "Set-Cookie" in {
       "Set-Cookie: SID=\"31d4d96e407aad42\"" =!=
-        `Set-Cookie`(HttpCookie("SID", "31d4d96e407aad42"))
-          .renderedTo("SID=31d4d96e407aad42")
+        `Set-Cookie`(HttpCookie("SID", "31d4d96e407aad42")).renderedTo(
+          "SID=31d4d96e407aad42")
       "Set-Cookie: SID=31d4d96e407aad42; Domain=example.com; Path=/" =!=
         `Set-Cookie`(
           HttpCookie(
@@ -872,16 +885,16 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       "WWW-Authenticate: Basic realm=\"WallyWorld\"" =!=
         `WWW-Authenticate`(HttpChallenge("Basic", "WallyWorld"))
       "WWW-Authenticate: BaSiC rEaLm=WallyWorld" =!=
-        `WWW-Authenticate`(HttpChallenge("BaSiC", "WallyWorld"))
-          .renderedTo("BaSiC realm=\"WallyWorld\"")
+        `WWW-Authenticate`(HttpChallenge("BaSiC", "WallyWorld")).renderedTo(
+          "BaSiC realm=\"WallyWorld\"")
       "WWW-Authenticate: Basic realm=\"foo<bar\"" =!= `WWW-Authenticate`(
         HttpChallenge("Basic", "foo<bar"))
       """WWW-Authenticate: Digest
                            realm="testrealm@host.com",
                            qop="auth,auth-int",
                            nonce=dcd98b7102dd2f0e8b11d0f600bfb0c093,
-                           opaque=5ccc069c403ebaf9f0171e9517f40e41"""
-        .stripMarginWithNewline("\r\n") =!=
+                           opaque=5ccc069c403ebaf9f0171e9517f40e41""".stripMarginWithNewline(
+        "\r\n") =!=
         `WWW-Authenticate`(
           HttpChallenge(
             "Digest",
@@ -1039,9 +1052,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       val Array(name, value) = line.split(": ", 2)
       val HttpHeader.ParsingResult.Ok(header, Nil) =
         HttpHeader.parse(name, value)
-      header.toString shouldEqual header
-        .renderedTo(expectedRendering)
-        .rendering("")
+      header.toString shouldEqual header.renderedTo(
+        expectedRendering).rendering("")
     }
   }
   sealed trait TestExample extends (String ⇒ Unit)

@@ -116,8 +116,13 @@ object TestOffsetManager {
         case e1: ClosedByInterruptException =>
           offsetsChannel.disconnect()
         case e2: IOException =>
-          println("Commit thread %d: Error while committing offsets to %s:%d for group %s due to %s."
-            .format(id, offsetsChannel.host, offsetsChannel.port, groupId, e2))
+          println(
+            "Commit thread %d: Error while committing offsets to %s:%d for group %s due to %s.".format(
+              id,
+              offsetsChannel.host,
+              offsetsChannel.port,
+              groupId,
+              e2))
           offsetsChannel.disconnect()
       } finally {
         Thread.sleep(commitIntervalMs)
@@ -163,11 +168,9 @@ object TestOffsetManager {
       val group = "group-" + id
       try {
         metadataChannel.send(GroupCoordinatorRequest(group))
-        val coordinatorId = GroupCoordinatorResponse
-          .readFrom(metadataChannel.receive().payload())
-          .coordinatorOpt
-          .map(_.id)
-          .getOrElse(-1)
+        val coordinatorId = GroupCoordinatorResponse.readFrom(
+          metadataChannel.receive().payload()).coordinatorOpt.map(
+          _.id).getOrElse(-1)
 
         val channel =
           if (channels.contains(coordinatorId))
@@ -200,16 +203,19 @@ object TestOffsetManager {
             channels.remove(coordinatorId)
           case e2: IOException =>
             println(
-              "Error while fetching offset from %s:%d due to %s."
-                .format(channel.host, channel.port, e2))
+              "Error while fetching offset from %s:%d due to %s.".format(
+                channel.host,
+                channel.port,
+                e2))
             channel.disconnect()
             channels.remove(coordinatorId)
         }
       } catch {
         case e: IOException =>
           println(
-            "Error while querying %s:%d - shutting down query channel."
-              .format(metadataChannel.host, metadataChannel.port))
+            "Error while querying %s:%d - shutting down query channel.".format(
+              metadataChannel.host,
+              metadataChannel.port))
           metadataChannel.disconnect()
           println("Creating new query channel.")
           metadataChannel =
@@ -240,43 +246,44 @@ object TestOffsetManager {
 
   def main(args: Array[String]) {
     val parser = new OptionParser
-    val zookeeperOpt = parser
-      .accepts("zookeeper", "The ZooKeeper connection URL.")
-      .withRequiredArg
-      .describedAs("ZooKeeper URL")
-      .ofType(classOf[java.lang.String])
-      .defaultsTo("localhost:2181")
+    val zookeeperOpt =
+      parser.accepts("zookeeper", "The ZooKeeper connection URL.")
+        .withRequiredArg
+        .describedAs("ZooKeeper URL")
+        .ofType(classOf[java.lang.String])
+        .defaultsTo("localhost:2181")
 
-    val commitIntervalOpt = parser
-      .accepts("commit-interval-ms", "Offset commit interval.")
-      .withRequiredArg
-      .describedAs("interval")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(100)
+    val commitIntervalOpt =
+      parser.accepts("commit-interval-ms", "Offset commit interval.")
+        .withRequiredArg
+        .describedAs("interval")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(100)
 
-    val fetchIntervalOpt = parser
-      .accepts("fetch-interval-ms", "Offset fetch interval.")
-      .withRequiredArg
-      .describedAs("interval")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1000)
+    val fetchIntervalOpt =
+      parser.accepts("fetch-interval-ms", "Offset fetch interval.")
+        .withRequiredArg
+        .describedAs("interval")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(1000)
 
-    val numPartitionsOpt = parser
-      .accepts("partition-count", "Number of partitions per commit.")
-      .withRequiredArg
-      .describedAs("interval")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
+    val numPartitionsOpt =
+      parser.accepts("partition-count", "Number of partitions per commit.")
+        .withRequiredArg
+        .describedAs("interval")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(1)
 
-    val numThreadsOpt = parser
-      .accepts("thread-count", "Number of commit threads.")
-      .withRequiredArg
-      .describedAs("threads")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
+    val numThreadsOpt =
+      parser.accepts("thread-count", "Number of commit threads.")
+        .withRequiredArg
+        .describedAs("threads")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(1)
 
-    val reportingIntervalOpt = parser
-      .accepts("reporting-interval-ms", "Interval at which stats are reported.")
+    val reportingIntervalOpt = parser.accepts(
+      "reporting-interval-ms",
+      "Interval at which stats are reported.")
       .withRequiredArg
       .describedAs("interval (ms)")
       .ofType(classOf[java.lang.Integer])

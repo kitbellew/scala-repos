@@ -69,18 +69,16 @@ class ResidentTaskIntegrationTest
     And("a new task is started that checks for the previously written file")
     // deploy a new version that checks for the data written the above step
 
-    marathon
-      .updateApp(
-        app.id,
-        AppUpdate(
-          instances = Some(1),
-          cmd = Some(s"""test -e $containerPath/data"""),
-          // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
-          // probably related to our recycling of the task ID (but unconfirmed)
-          backoff = Some(300.milliseconds)
-        )
+    marathon.updateApp(
+      app.id,
+      AppUpdate(
+        instances = Some(1),
+        cmd = Some(s"""test -e $containerPath/data"""),
+        // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
+        // probably related to our recycling of the task ID (but unconfirmed)
+        backoff = Some(300.milliseconds)
       )
-      .code shouldBe 200
+    ).code shouldBe 200
     // we do not wait for the deployment to finish here to get the task events
 
     Then("the new task verifies that the persistent volume file is still there")

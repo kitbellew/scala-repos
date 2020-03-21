@@ -119,13 +119,10 @@ class GoToImplicitConversionAction
       JListCompatibility.GoToImplicitConversionAction.setList(list)
 
       val builder = JBPopupFactory.getInstance.createListPopupBuilder(list)
-      val popup = builder
-        .setTitle("Choose implicit conversion method:")
-        .setAdText("Press Alt+Enter")
-        .setMovable(false)
-        .setResizable(false)
-        .setRequestFocus(true)
-        .setItemChoosenCallback(new Runnable {
+      val popup =
+        builder.setTitle("Choose implicit conversion method:").setAdText(
+          "Press Alt+Enter").setMovable(false).setResizable(
+          false).setRequestFocus(true).setItemChoosenCallback(new Runnable {
           def run() {
             val entity = list.getSelectedValue.asInstanceOf[Parameters]
             entity.getNewExpression match {
@@ -138,8 +135,7 @@ class GoToImplicitConversionAction
               case _                        => //do nothing
             }
           }
-        })
-        .createPopup
+        }).createPopup
       popup.showInBestPositionFor(editor)
 
       if (actualIndex >= 0 && actualIndex < list.getModel.getSize) {
@@ -191,22 +187,16 @@ class GoToImplicitConversionAction
                 case _                                               => res += expr
               }
             case expr: ScExpression
-                if guard || expr
-                  .getImplicitConversions(fromUnder = false)
-                  ._2
-                  .isDefined ||
+                if guard || expr.getImplicitConversions(fromUnder =
+                  false)._2.isDefined ||
                   (ScUnderScoreSectionUtil.isUnderscoreFunction(expr) &&
-                    expr
-                      .getImplicitConversions(fromUnder = true)
-                      ._2
-                      .isDefined) || (expr.getAdditionalExpression.isDefined &&
-                  expr.getAdditionalExpression.get._1
-                    .getImplicitConversions(
-                      fromUnder = false,
-                      expectedOption =
-                        Some(expr.getAdditionalExpression.get._2))
-                    ._2
-                    .isDefined) =>
+                    expr.getImplicitConversions(fromUnder =
+                      true)._2.isDefined) || (expr.getAdditionalExpression.isDefined &&
+                  expr.getAdditionalExpression.get._1.getImplicitConversions(
+                    fromUnder = false,
+                    expectedOption =
+                      Some(
+                        expr.getAdditionalExpression.get._2))._2.isDefined) =>
               res += expr
             case _ =>
           }
@@ -306,8 +296,9 @@ class GoToImplicitConversionAction
 
         override def mousePressed(e: MouseEvent) {
           if (!e.isPopupTrigger && e.getButton == MouseEvent.BUTTON1) {
-            val tuple = GoToImplicitConversionAction.getList.getSelectedValue
-              .asInstanceOf[Parameters]
+            val tuple =
+              GoToImplicitConversionAction.getList.getSelectedValue.asInstanceOf[
+                Parameters]
             val function: ScFunction =
               tuple.getNewExpression match {
                 case fun: ScFunction => fun
@@ -337,9 +328,8 @@ class GoToImplicitConversionAction
     }
 
     def getCurrentItem: PsiNamedElement =
-      GoToImplicitConversionAction.getList.getSelectedValue
-        .asInstanceOf[Parameters]
-        .getNewExpression
+      GoToImplicitConversionAction.getList.getSelectedValue.asInstanceOf[
+        Parameters].getNewExpression
 
     def getCurrentItemBounds: Rectangle = {
       val index: Int = GoToImplicitConversionAction.getList.getSelectedIndex

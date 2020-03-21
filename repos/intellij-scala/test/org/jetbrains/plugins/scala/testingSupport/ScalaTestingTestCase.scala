@@ -163,10 +163,8 @@ abstract class ScalaTestingTestCase(
         val psiFile =
           myManager.findViewProvider(file).getPsi(ScalaFileType.SCALA_LANGUAGE)
         psiElement = psiFile.findElementAt(
-          FileDocumentManager
-            .getInstance()
-            .getDocument(file)
-            .getLineStartOffset(lineNumber) + offset)
+          FileDocumentManager.getInstance().getDocument(
+            file).getLineStartOffset(lineNumber) + offset)
       }
     })
 
@@ -189,10 +187,8 @@ abstract class ScalaTestingTestCase(
     var res: RunnerAndConfigurationSettings = null
     UsefulTestCase.edt(new Runnable {
       override def run(): Unit = {
-        res = configurationProducer
-          .createConfigurationByLocation(
-            createLocation(lineNumber, offset, fileName))
-          .map(_._2) match {
+        res = configurationProducer.createConfigurationByLocation(
+          createLocation(lineNumber, offset, fileName)).map(_._2) match {
           case Some(testConfig) => testConfig
           case _ =>
             throw new RuntimeException(
@@ -217,21 +213,17 @@ abstract class ScalaTestingTestCase(
     var module: Module = null
     UsefulTestCase.edt(new Runnable() {
       override def run(): Unit =
-        module = ModuleManager
-          .getInstance(ScalaTestingTestCase.this.getProject)
-          .findModuleByName(moduleName)
+        module = ModuleManager.getInstance(
+          ScalaTestingTestCase.this.getProject).findModuleByName(moduleName)
     })
     createTestFromDirectory(
-      PsiDirectoryFactory
-        .getInstance(getProject)
-        .createDirectory(
-          ModuleRootManager.getInstance(module).getContentRoots.head))
+      PsiDirectoryFactory.getInstance(getProject).createDirectory(
+        ModuleRootManager.getInstance(module).getContentRoots.head))
   }
 
   private def createTestFromDirectory(directory: PsiDirectory) =
-    configurationProducer
-      .createConfigurationByLocation(new PsiLocation(getProject, directory))
-      .map(_._2) match {
+    configurationProducer.createConfigurationByLocation(
+      new PsiLocation(getProject, directory)).map(_._2) match {
       case Some(testConfig) => testConfig
       case _ =>
         throw new RuntimeException(failedConfigMessage(directory.getName))
@@ -246,9 +238,8 @@ abstract class ScalaTestingTestCase(
     assert(configurationCheck(runConfig))
     assert(
       runConfig.getConfiguration.isInstanceOf[AbstractTestRunConfiguration])
-    runConfig.getConfiguration
-      .asInstanceOf[AbstractTestRunConfiguration]
-      .setupIntegrationTestClassPath()
+    runConfig.getConfiguration.asInstanceOf[
+      AbstractTestRunConfiguration].setupIntegrationTestClassPath()
     val testResultListener = new TestResultListener(runConfig.getName)
     var testTreeRoot: Option[AbstractTestProxy] = None
     UsefulTestCase.edt(new Runnable {
@@ -308,8 +299,9 @@ abstract class ScalaTestingTestCase(
       executionEnvironmentBuilder.build,
       new ProgramRunner.Callback {
         def processStarted(descriptor: RunContentDescriptor) {
-          System
-            .setProperty("idea.dynamic.classpath", useDynamicClassPath.toString)
+          System.setProperty(
+            "idea.dynamic.classpath",
+            useDynamicClassPath.toString)
           disposeOnTearDown(new Disposable {
             def dispose() {
               descriptor.dispose()

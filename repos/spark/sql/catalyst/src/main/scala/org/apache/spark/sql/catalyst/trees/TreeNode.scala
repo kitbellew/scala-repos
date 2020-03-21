@@ -216,20 +216,18 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
         }
       case m: Map[_, _] =>
         m.mapValues {
-            case arg: TreeNode[_] if containsChild(arg) =>
-              val newChild = remainingNewChildren.remove(0)
-              val oldChild = remainingOldChildren.remove(0)
-              if (newChild fastEquals oldChild) {
-                oldChild
-              } else {
-                changed = true
-                newChild
-              }
-            case nonChild: AnyRef => nonChild
-            case null             => null
-          }
-          .view
-          .force // `mapValues` is lazy and we need to force it to materialize
+          case arg: TreeNode[_] if containsChild(arg) =>
+            val newChild = remainingNewChildren.remove(0)
+            val oldChild = remainingOldChildren.remove(0)
+            if (newChild fastEquals oldChild) {
+              oldChild
+            } else {
+              changed = true
+              newChild
+            }
+          case nonChild: AnyRef => nonChild
+          case null             => null
+        }.view.force // `mapValues` is lazy and we need to force it to materialize
       case arg: TreeNode[_] if containsChild(arg) =>
         val newChild = remainingNewChildren.remove(0)
         val oldChild = remainingOldChildren.remove(0)
@@ -328,18 +326,16 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
         }
       case m: Map[_, _] =>
         m.mapValues {
-            case arg: TreeNode[_] if containsChild(arg) =>
-              val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
-              if (!(newChild fastEquals arg)) {
-                changed = true
-                newChild
-              } else {
-                arg
-              }
-            case other => other
-          }
-          .view
-          .force // `mapValues` is lazy and we need to force it to materialize
+          case arg: TreeNode[_] if containsChild(arg) =>
+            val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
+            if (!(newChild fastEquals arg)) {
+              changed = true
+              newChild
+            } else {
+              arg
+            }
+          case other => other
+        }.view.force // `mapValues` is lazy and we need to force it to materialize
       case d: DataType => d // Avoid unpacking Structs
       case args: Traversable[_] =>
         args.map {
@@ -395,9 +391,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           if (otherCopyArgs.isEmpty) {
             defaultCtor.newInstance(newArgs: _*).asInstanceOf[BaseType]
           } else {
-            defaultCtor
-              .newInstance((newArgs ++ otherCopyArgs).toArray: _*)
-              .asInstanceOf[BaseType]
+            defaultCtor.newInstance(
+              (newArgs ++ otherCopyArgs).toArray: _*).asInstanceOf[BaseType]
           }
         }
       } catch {
@@ -425,16 +420,14 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
 
   /** Returns a string representing the arguments to this node, minus any children */
   def argString: String =
-    productIterator
-      .flatMap {
-        case tn: TreeNode[_] if containsChild(tn)                     => Nil
-        case tn: TreeNode[_]                                          => s"${tn.simpleString}" :: Nil
-        case seq: Seq[BaseType] if seq.toSet.subsetOf(children.toSet) => Nil
-        case seq: Seq[_]                                              => seq.mkString("[", ",", "]") :: Nil
-        case set: Set[_]                                              => set.mkString("{", ",", "}") :: Nil
-        case other                                                    => other :: Nil
-      }
-      .mkString(", ")
+    productIterator.flatMap {
+      case tn: TreeNode[_] if containsChild(tn)                     => Nil
+      case tn: TreeNode[_]                                          => s"${tn.simpleString}" :: Nil
+      case seq: Seq[BaseType] if seq.toSet.subsetOf(children.toSet) => Nil
+      case seq: Seq[_]                                              => seq.mkString("[", ",", "]") :: Nil
+      case set: Set[_]                                              => set.mkString("{", ",", "}") :: Nil
+      case other                                                    => other :: Nil
+    }.mkString(", ")
 
   /** String representation of this node without any children */
   def simpleString: String = s"$nodeName $argString".trim
@@ -450,11 +443,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     * The numbers can be used with [[trees.TreeNode.apply apply]] to easily access specific subtrees.
     */
   def numberedTreeString: String =
-    treeString
-      .split("\n")
-      .zipWithIndex
-      .map { case (line, i) => f"$i%02d $line" }
-      .mkString("\n")
+    treeString.split("\n").zipWithIndex.map {
+      case (line, i) => f"$i%02d $line"
+    }.mkString("\n")
 
   /**
     * Returns the tree node at the specified number.
@@ -469,10 +460,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       this
     } else {
       number.i -= 1
-      children
-        .map(_.getNodeNumbered(number))
-        .find(_ != null)
-        .getOrElse(null.asInstanceOf[BaseType])
+      children.map(_.getNodeNumbered(number)).find(_ != null).getOrElse(
+        null.asInstanceOf[BaseType])
     }
   }
 
@@ -611,28 +600,23 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     assert(
       fieldNames.length == fieldValues.length,
       s"${getClass.getSimpleName} fields: " +
-        fieldNames.mkString(", ") + s", values: " + fieldValues
-        .map(_.toString)
-        .mkString(", ")
+        fieldNames.mkString(", ") + s", values: " + fieldValues.map(
+        _.toString).mkString(", ")
     )
 
-    fieldNames
-      .zip(fieldValues)
-      .map {
-        // If the field value is a child, then use an int to encode it, represents the index of
-        // this child in all children.
-        case (name, value: TreeNode[_]) if containsChild(value) =>
-          name -> JInt(children.indexOf(value))
-        case (name, value: Seq[BaseType])
-            if value.toSet.subsetOf(containsChild) =>
-          name -> JArray(
-            value
-              .map(v => JInt(children.indexOf(v.asInstanceOf[TreeNode[_]])))
-              .toList
-          )
-        case (name, value) => name -> parseToJson(value)
-      }
-      .toList
+    fieldNames.zip(fieldValues).map {
+      // If the field value is a child, then use an int to encode it, represents the index of
+      // this child in all children.
+      case (name, value: TreeNode[_]) if containsChild(value) =>
+        name -> JInt(children.indexOf(value))
+      case (name, value: Seq[BaseType])
+          if value.toSet.subsetOf(containsChild) =>
+        name -> JArray(
+          value.map(v =>
+            JInt(children.indexOf(v.asInstanceOf[TreeNode[_]]))).toList
+        )
+      case (name, value) => name -> parseToJson(value)
+    }.toList
   }
 
   private def parseToJson(obj: Any): JValue =
@@ -671,12 +655,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           val fieldNames = getConstructorParameterNames(p.getClass)
           val fieldValues = p.productIterator.toSeq
           assert(fieldNames.length == fieldValues.length)
-          ("product-class" -> JString(p.getClass.getName)) :: fieldNames
-            .zip(fieldValues)
-            .map {
-              case (name, value) => name -> parseToJson(value)
-            }
-            .toList
+          ("product-class" -> JString(p.getClass.getName)) :: fieldNames.zip(
+            fieldValues).map {
+            case (name, value) => name -> parseToJson(value)
+          }.toList
         } catch {
           case _: RuntimeException => null
         }
@@ -722,11 +704,10 @@ object TreeNode {
 
         val maybeCtor = cls.getConstructors.find { p =>
           val expectedTypes = p.getParameterTypes
-          expectedTypes.length == fields.length && expectedTypes
-            .zip(fields.map(_._2))
-            .forall {
-              case (cls, tpe) => cls == getClassFromType(tpe)
-            }
+          expectedTypes.length == fields.length && expectedTypes.zip(
+            fields.map(_._2)).forall {
+            case (cls, tpe) => cls == getClassFromType(tpe)
+          }
         }
         if (maybeCtor.isEmpty) {
           sys.error(s"No valid constructor for ${cls.getName}")
@@ -856,10 +837,8 @@ object TreeNode {
       case (fieldName, fieldType) =>
         parseFromJson(value \ fieldName, fieldType, children, sc)
     }.toArray
-    val ctor = Utils
-      .classForName(clsName)
-      .getConstructors
-      .maxBy(_.getParameterTypes.size)
+    val ctor = Utils.classForName(clsName).getConstructors.maxBy(
+      _.getParameterTypes.size)
     ctor.newInstance(parameters: _*).asInstanceOf[AnyRef]
   }
 

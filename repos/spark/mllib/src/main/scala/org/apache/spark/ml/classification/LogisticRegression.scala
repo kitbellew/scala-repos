@@ -97,8 +97,8 @@ private[classification] trait LogisticRegressionParams
       require(
         ts.length == 2,
         "Logistic Regression getThreshold only applies to" +
-          " binary classification, but thresholds has length != 2.  thresholds: " + ts
-          .mkString(",")
+          " binary classification, but thresholds has length != 2.  thresholds: " + ts.mkString(
+          ",")
       )
       1.0 / (1.0 + ts(0) / ts(1))
     } else {
@@ -737,11 +737,8 @@ object LogisticRegressionModel extends MLReadable[LogisticRegressionModel] {
         instance.intercept,
         instance.coefficients)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -755,11 +752,8 @@ object LogisticRegressionModel extends MLReadable[LogisticRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .format("parquet")
-        .load(dataPath)
-        .select("numClasses", "numFeatures", "intercept", "coefficients")
-        .head()
+      val data = sqlContext.read.format("parquet").load(dataPath)
+        .select("numClasses", "numFeatures", "intercept", "coefficients").head()
       // We will need numClasses, numFeatures in the future for multinomial logreg support.
       // val numClasses = data.getInt(0)
       // val numFeatures = data.getInt(1)

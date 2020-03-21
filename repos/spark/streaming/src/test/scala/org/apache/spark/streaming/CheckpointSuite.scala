@@ -322,8 +322,8 @@ class CheckpointSuite
     stateStream =
       ssc.graph.getOutputStreams().head.dependencies.head.dependencies.head
     logInfo(
-      "Restored data of state stream = \n[" + stateStream.generatedRDDs
-        .mkString("\n") + "]")
+      "Restored data of state stream = \n[" + stateStream.generatedRDDs.mkString(
+        "\n") + "]")
     assert(
       !stateStream.generatedRDDs.isEmpty,
       "No restored RDDs in state stream after recovery from first failure")
@@ -351,8 +351,8 @@ class CheckpointSuite
     stateStream =
       ssc.graph.getOutputStreams().head.dependencies.head.dependencies.head
     logInfo(
-      "Restored data of state stream = \n[" + stateStream.generatedRDDs
-        .mkString("\n") + "]")
+      "Restored data of state stream = \n[" + stateStream.generatedRDDs.mkString(
+        "\n") + "]")
     assert(
       !stateStream.generatedRDDs.isEmpty,
       "No restored RDDs in state stream after recovery from second failure")
@@ -494,9 +494,10 @@ class CheckpointSuite
     val n = 10
     val w = 4
     val input = (1 to n).map(_ => Seq("a")).toSeq
-    val output =
-      Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 3))) ++ (1 to (n - w + 1))
-        .map(x => Seq(("a", 4)))
+    val output = Seq(
+      Seq(("a", 1)),
+      Seq(("a", 2)),
+      Seq(("a", 3))) ++ (1 to (n - w + 1)).map(x => Seq(("a", 4)))
     val operation = (st: DStream[String]) => {
       st.map(x => (x, 1))
         .reduceByKeyAndWindow(_ + _, _ - _, batchDuration * w, batchDuration)
@@ -669,10 +670,7 @@ class CheckpointSuite
 
     eventually(timeout(10.seconds)) {
       assert(
-        RateTestReceiver
-          .getActive()
-          .get
-          .getDefaultBlockGeneratorRateLimit() === 200)
+        RateTestReceiver.getActive().get.getDefaultBlockGeneratorRateLimit() === 200)
     }
     ssc.stop()
   }
@@ -829,8 +827,10 @@ class CheckpointSuite
           }
         }
         logInfo(
-          "Output after restart = " + outputStream.output.asScala
-            .mkString("[", ", ", "]"))
+          "Output after restart = " + outputStream.output.asScala.mkString(
+            "[",
+            ", ",
+            "]"))
         assert(outputStream.output.size > 0, "No files processed after restart")
         ssc.stop()
 
@@ -873,11 +873,8 @@ class CheckpointSuite
     logInfo("*********** RESTARTING ************")
     withStreamingContext(new StreamingContext(checkpointDir)) { ssc =>
       val checkpointData =
-        ssc.graph
-          .getInputStreams()
-          .head
-          .asInstanceOf[CheckpointInputDStream]
-          .checkpointData
+        ssc.graph.getInputStreams().head.asInstanceOf[
+          CheckpointInputDStream].checkpointData
       assert(checkpointData.restoredTimes === 1)
       ssc.start()
       ssc.stop()
@@ -987,12 +984,9 @@ class CheckpointSuite
     }
     @volatile var shouldCheckpointAllMarkedRDDs = false
     @volatile var rddsCheckpointed = false
-    inputDStream
-      .map(i => (i, i))
-      .updateStateByKey(updateFunc)
-      .checkpoint(batchDuration)
-      .updateStateByKey(updateFunc)
-      .checkpoint(batchDuration)
+    inputDStream.map(i => (i, i))
+      .updateStateByKey(updateFunc).checkpoint(batchDuration)
+      .updateStateByKey(updateFunc).checkpoint(batchDuration)
       .foreachRDD { rdd =>
         /**
           * Find all RDDs that are marked for checkpointing in the specified RDD and its ancestors.
@@ -1008,10 +1002,10 @@ class CheckpointSuite
         }
 
         shouldCheckpointAllMarkedRDDs =
-          Option(rdd.sparkContext.getLocalProperty(
-            RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
-            .map(_.toBoolean)
-            .getOrElse(false)
+          Option(
+            rdd.sparkContext.getLocalProperty(
+              RDD.CHECKPOINT_ALL_MARKED_ANCESTORS)).map(_.toBoolean).getOrElse(
+            false)
 
         val stateRDDs = findAllMarkedRDDs(rdd)
         rdd.count()

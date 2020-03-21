@@ -131,29 +131,25 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
               TCP.EnterBarrier.newBuilder.setName(name).setOp(BarrierOp.Fail))
           case ThrottleMsg(target, dir, rate) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setAddress(target)
-                .setFailure(TCP.FailType.Throttle)
-                .setDirection(dir)
-                .setRateMBit(rate))
+              TCP.InjectFailure.newBuilder.setAddress(target)
+                .setFailure(TCP.FailType.Throttle).setDirection(
+                  dir).setRateMBit(rate))
           case DisconnectMsg(target, abort) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setAddress(target)
+              TCP.InjectFailure.newBuilder.setAddress(target)
                 .setFailure(
                   if (abort) TCP.FailType.Abort else TCP.FailType.Disconnect))
           case TerminateMsg(Right(exitValue)) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setFailure(TCP.FailType.Exit)
-                .setExitValue(exitValue))
+              TCP.InjectFailure.newBuilder.setFailure(
+                TCP.FailType.Exit).setExitValue(exitValue))
           case TerminateMsg(Left(false)) ⇒
             w.setFailure(
               TCP.InjectFailure.newBuilder.setFailure(TCP.FailType.Shutdown))
           case TerminateMsg(Left(true)) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setFailure(TCP.FailType.ShutdownAbrupt))
+              TCP.InjectFailure.newBuilder.setFailure(
+                TCP.FailType.ShutdownAbrupt))
           case GetAddress(node) ⇒
             w.setAddr(TCP.AddressRequest.newBuilder.setNode(node.name))
           case AddressReply(node, addr) ⇒

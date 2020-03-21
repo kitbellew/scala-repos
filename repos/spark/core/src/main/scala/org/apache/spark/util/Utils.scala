@@ -167,8 +167,8 @@ private[spark] object Utils extends Logging {
     * active loader when setting up ClassLoader delegation chains.
     */
   def getContextOrSparkClassLoader: ClassLoader =
-    Option(Thread.currentThread().getContextClassLoader)
-      .getOrElse(getSparkClassLoader)
+    Option(Thread.currentThread().getContextClassLoader).getOrElse(
+      getSparkClassLoader)
 
   /** Determines whether the provided class is loadable in the current thread. */
   def classIsLoadable(clazz: String): Boolean = {
@@ -529,11 +529,10 @@ private[spark] object Utils extends Logging {
           )
           if (!destFile.delete()) {
             throw new SparkException(
-              "Failed to delete %s while attempting to overwrite it with %s"
-                .format(
-                  destFile.getAbsolutePath,
-                  sourceFile.getAbsolutePath
-                )
+              "Failed to delete %s while attempting to overwrite it with %s".format(
+                destFile.getAbsolutePath,
+                sourceFile.getAbsolutePath
+              )
             )
           }
         } else {
@@ -774,9 +773,8 @@ private[spark] object Utils extends Logging {
       // In non-Yarn mode (or for the driver in yarn-client mode), we cannot trust the user
       // configuration to point to a secure directory. So create a subdirectory with restricted
       // permissions under each listed directory.
-      conf
-        .get("spark.local.dir", System.getProperty("java.io.tmpdir"))
-        .split(",")
+      conf.get("spark.local.dir", System.getProperty("java.io.tmpdir")).split(
+        ",")
     }
   }
 
@@ -867,12 +865,10 @@ private[spark] object Utils extends Logging {
         for (ni <- reOrderedNetworkIFs) {
           val addresses = ni.getInetAddresses.asScala
             .filterNot(addr =>
-              addr.isLinkLocalAddress || addr.isLoopbackAddress)
-            .toSeq
+              addr.isLinkLocalAddress || addr.isLoopbackAddress).toSeq
           if (addresses.nonEmpty) {
-            val addr = addresses
-              .find(_.isInstanceOf[Inet4Address])
-              .getOrElse(addresses.head)
+            val addr = addresses.find(_.isInstanceOf[Inet4Address]).getOrElse(
+              addresses.head)
             // because of Inet6Address.toHostName may add interface at the end if it knows about it
             val strippedAddress = InetAddress.getByAddress(addr.getAddress)
             // We've found an address that looks reasonable!
@@ -1024,9 +1020,8 @@ private[spark] object Utils extends Logging {
       new File(file.getParentFile().getCanonicalFile(), file.getName())
     }
 
-    !fileInCanonicalDir
-      .getCanonicalFile()
-      .equals(fileInCanonicalDir.getAbsoluteFile())
+    !fileInCanonicalDir.getCanonicalFile().equals(
+      fileInCanonicalDir.getAbsoluteFile())
   }
 
   /**
@@ -1044,9 +1039,8 @@ private[spark] object Utils extends Logging {
     val cutoffTimeInMillis = System.currentTimeMillis - (cutoff * 1000)
 
     filesAndDirs.exists(_.lastModified() > cutoffTimeInMillis) ||
-    filesAndDirs
-      .filter(_.isDirectory)
-      .exists(subdir => doesDirectoryContainAnyNewFiles(subdir, cutoff))
+    filesAndDirs.filter(_.isDirectory).exists(subdir =>
+      doesDirectoryContainAnyNewFiles(subdir, cutoff))
   }
 
   /**
@@ -1674,11 +1668,8 @@ private[spark] object Utils extends Logging {
     * properties which have been set explicitly, as well as those for which only a default value
     * has been defined. */
   def getSystemProperties: Map[String, String] = {
-    System.getProperties
-      .stringPropertyNames()
-      .asScala
-      .map(key => (key, System.getProperty(key)))
-      .toMap
+    System.getProperties.stringPropertyNames().asScala
+      .map(key => (key, System.getProperty(key))).toMap
   }
 
   /**
@@ -1873,10 +1864,8 @@ private[spark] object Utils extends Logging {
     val terminated = Utils.waitForProcess(process, timeoutMs)
     if (terminated) {
       Some(
-        Source
-          .fromInputStream(process.getErrorStream)
-          .getLines()
-          .mkString("\n"))
+        Source.fromInputStream(process.getErrorStream).getLines().mkString(
+          "\n"))
     } else {
       None
     }
@@ -1995,16 +1984,14 @@ private[spark] object Utils extends Logging {
       filePath: String = null): String = {
     val path = Option(filePath).getOrElse(getDefaultPropertiesFile())
     Option(path).foreach { confFile =>
-      getPropertiesFromFile(confFile)
-        .filter {
-          case (k, v) =>
-            k.startsWith("spark.")
-        }
-        .foreach {
-          case (k, v) =>
-            conf.setIfMissing(k, v)
-            sys.props.getOrElseUpdate(k, v)
-        }
+      getPropertiesFromFile(confFile).filter {
+        case (k, v) =>
+          k.startsWith("spark.")
+      }.foreach {
+        case (k, v) =>
+          conf.setIfMissing(k, v)
+          sys.props.getOrElseUpdate(k, v)
+      }
     }
     path
   }
@@ -2020,11 +2007,8 @@ private[spark] object Utils extends Logging {
     try {
       val properties = new Properties()
       properties.load(inReader)
-      properties
-        .stringPropertyNames()
-        .asScala
-        .map(k => (k, properties.getProperty(k).trim))
-        .toMap
+      properties.stringPropertyNames().asScala.map(k =>
+        (k, properties.getProperty(k).trim)).toMap
     } catch {
       case e: IOException =>
         throw new SparkException(
@@ -2037,8 +2021,7 @@ private[spark] object Utils extends Logging {
 
   /** Return the path of the default Spark properties file. */
   def getDefaultPropertiesFile(env: Map[String, String] = sys.env): String = {
-    env
-      .get("SPARK_CONF_DIR")
+    env.get("SPARK_CONF_DIR")
       .orElse(env.get("SPARK_HOME").map { t => s"$t${File.separator}conf" })
       .map { t => new File(s"$t${File.separator}spark-defaults.conf") }
       .filter(_.isFile)
@@ -2065,9 +2048,9 @@ private[spark] object Utils extends Logging {
   def getThreadDump(): Array[ThreadStackTrace] = {
     // We need to filter out null values here because dumpAllThreads() may return null array
     // elements for threads that are dead / don't exist.
-    val threadInfos = ManagementFactory.getThreadMXBean
-      .dumpAllThreads(true, true)
-      .filter(_ != null)
+    val threadInfos =
+      ManagementFactory.getThreadMXBean.dumpAllThreads(true, true).filter(
+        _ != null)
     threadInfos.sortBy(_.getThreadId).map {
       case threadInfo =>
         val stackTrace = threadInfo.getStackTrace.map(_.toString).mkString("\n")

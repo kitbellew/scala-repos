@@ -6,8 +6,8 @@ package pickler
   */
 trait TypeTagPicklers extends PrimitivePicklers {
   implicit def typeTagPickler[T]: AbstractPicklerUnpickler[FastTypeTag[T]] =
-    FastTypeTagPicklerUnpickler
-      .asInstanceOf[AbstractPicklerUnpickler[FastTypeTag[T]]]
+    FastTypeTagPicklerUnpickler.asInstanceOf[AbstractPicklerUnpickler[
+      FastTypeTag[T]]]
 
   private[pickler] object FastTypeTagPicklerUnpickler
       extends AbstractPicklerUnpickler[FastTypeTag[_]] {
@@ -40,9 +40,10 @@ trait TypeTagPicklers extends PrimitivePicklers {
       val key = stringPickler.unpickleEntry(rk).toString
       FastTypeTag.apply(internal.currentMirror, key)
     }
-    override val tag: FastTypeTag[FastTypeTag[_]] = FastTypeTag
-      .apply(internal.currentMirror, "scala.pickling.pickler.FastTypeTag")
-      .asInstanceOf[FastTypeTag[FastTypeTag[_]]]
+    override val tag: FastTypeTag[FastTypeTag[_]] = FastTypeTag.apply(
+      internal.currentMirror,
+      "scala.pickling.pickler.FastTypeTag").asInstanceOf[FastTypeTag[
+      FastTypeTag[_]]]
 
     // Ensure we register for runtime deserialization.
     internal.currentRuntime.picklers.registerPickler(tag.key, this)

@@ -329,15 +329,14 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
       message: AnyRef,
       timeout: Long,
       sender: ActorRef): AnyRef = {
-    !!(message, timeout)(Option(sender))
-      .getOrElse(
-        throw new ActorTimeoutException(
-          "Message [" + message +
-            "]\n\tsent to [" + actorClassName +
-            "]\n\tfrom [" + (if (sender ne null) sender.actorClassName
-                             else "nowhere") +
-            "]\n\twith timeout [" + timeout +
-            "]\n\ttimed out."))
+    !!(message, timeout)(Option(sender)).getOrElse(
+      throw new ActorTimeoutException(
+        "Message [" + message +
+          "]\n\tsent to [" + actorClassName +
+          "]\n\tfrom [" + (if (sender ne null) sender.actorClassName
+                           else "nowhere") +
+          "]\n\twith timeout [" + timeout +
+          "]\n\ttimed out."))
       .asInstanceOf[AnyRef]
   }
 
@@ -1267,8 +1266,7 @@ class LocalActorRef private[akka] (
 
   protected[akka] def checkReceiveTimeout = {
     cancelReceiveTimeout
-    if (receiveTimeout.isDefined && dispatcher
-          .mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
+    if (receiveTimeout.isDefined && dispatcher.mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
       _futureTimeout = Some(
         Scheduler.scheduleOnce(
           this,

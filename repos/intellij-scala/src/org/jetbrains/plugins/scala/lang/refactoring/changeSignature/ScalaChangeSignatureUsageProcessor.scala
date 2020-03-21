@@ -64,8 +64,8 @@ class ScalaChangeSignatureUsageProcessor
         val synthetics = method match {
           case ScPrimaryConstructor.ofClass(clazz) if clazz.isCase =>
             val inExistingClasses =
-              (clazz +: ScalaPsiUtil.getBaseCompanionModule(clazz).toSeq)
-                .flatMap(_.allSynthetics)
+              (clazz +: ScalaPsiUtil.getBaseCompanionModule(
+                clazz).toSeq).flatMap(_.allSynthetics)
             val inFakeCompanion =
               clazz.fakeCompanionModule.toSeq.flatMap(_.members)
             inExistingClasses ++ inFakeCompanion
@@ -139,8 +139,11 @@ class ScalaChangeSignatureUsageProcessor
           val text = element.getText
           element match {
             case _: ScVariableDefinition | _: ScPatternDefinition =>
-              val newElement = ScalaPsiElementFactory
-                .createDefinitionWithContext(text, element.getContext, element)
+              val newElement =
+                ScalaPsiElementFactory.createDefinitionWithContext(
+                  text,
+                  element.getContext,
+                  element)
               element.getParent.addAfter(newElement, element)
               element.delete()
             case _: ScVariableDeclaration | _: ScValueDeclaration =>
@@ -171,19 +174,17 @@ class ScalaChangeSignatureUsageProcessor
 
       for {
         jc @ (_u: JavaCallUsageInfo) <- usages
-        call @ (_c: PsiMethodCallExpression) <- jc.getElement.toOption
-          .map(_.getParent)
+        call @ (_c: PsiMethodCallExpression) <- jc.getElement.toOption.map(
+          _.getParent)
         exprs = call.getArgumentList.getExpressions
         (defaultArg @ (_d: PsiMethodCallExpression), idx) <- exprs.zipWithIndex
         if defaultArg.getText.contains("$default$")
       } {
         val exprsToAdd = exprs.take(numberOfParamsToAdd(idx))
-        val text = defaultArg.getMethodExpression.getText + exprsToAdd
-          .map(_.getText)
-          .mkString("(", ", ", ")")
-        val newDefaultArg = JavaPsiFacade
-          .getElementFactory(call.getProject)
-          .createExpressionFromText(text, defaultArg.getContext)
+        val text = defaultArg.getMethodExpression.getText + exprsToAdd.map(
+          _.getText).mkString("(", ", ", ")")
+        val newDefaultArg = JavaPsiFacade.getElementFactory(
+          call.getProject).createExpressionFromText(text, defaultArg.getContext)
         defaultArg.replace(newDefaultArg)
       }
     }

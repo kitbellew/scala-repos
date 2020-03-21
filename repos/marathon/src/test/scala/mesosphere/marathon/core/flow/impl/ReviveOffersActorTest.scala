@@ -113,9 +113,9 @@ class ReviveOffersActorTest
     Mockito.verify(f.driver, Mockito.timeout(1000)).reviveOffers()
 
     And("any scheduled timers are canceled")
-    Mockito
-      .verify(f.actorRef.underlyingActor.cancellable, Mockito.timeout(1000))
-      .cancel()
+    Mockito.verify(
+      f.actorRef.underlyingActor.cancellable,
+      Mockito.timeout(1000)).cancel()
 
     f.verifyNoMoreInteractions()
   }
@@ -190,9 +190,9 @@ class ReviveOffersActorTest
     f.offersWanted.onNext(false)
 
     Then("we cancel the timer")
-    Mockito
-      .verify(f.actorRef.underlyingActor.cancellable, Mockito.timeout(1000))
-      .cancel()
+    Mockito.verify(
+      f.actorRef.underlyingActor.cancellable,
+      Mockito.timeout(1000)).cancel()
     f.verifyNoMoreInteractions()
   }
 
@@ -215,9 +215,9 @@ class ReviveOffersActorTest
     f.actorRef ! ReviveOffersActor.TimedCheck
 
     Then("we cancel our now unnecessary timer (which has send this message)")
-    Mockito
-      .verify(f.actorRef.underlyingActor.cancellable, Mockito.timeout(1000))
-      .cancel()
+    Mockito.verify(
+      f.actorRef.underlyingActor.cancellable,
+      Mockito.timeout(1000)).cancel()
     And("we revive the offers")
     Mockito.verify(f.driver, Mockito.timeout(1000)).reviveOffers()
     f.verifyNoMoreInteractions()

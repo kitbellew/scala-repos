@@ -930,11 +930,13 @@ class CoproductTests {
       val r12_2 = Prepend[I :+: CNil, I :+: S :+: CNil].apply(Right(in2))
       assertTypedEquals(Inr(Inl(1)), r12_2)
 
-      val r34_3 = Prepend[I :+: S :+: D :+: CNil, I :+: S :+: D :+: C :+: CNil]
-        .apply(Left(in3))
+      val r34_3 =
+        Prepend[I :+: S :+: D :+: CNil, I :+: S :+: D :+: C :+: CNil].apply(
+          Left(in3))
       assertTypedEquals(Inl(1), r34_3)
-      val r34_4 = Prepend[I :+: S :+: D :+: CNil, I :+: S :+: D :+: C :+: CNil]
-        .apply(Right(in4))
+      val r34_4 =
+        Prepend[I :+: S :+: D :+: CNil, I :+: S :+: D :+: C :+: CNil].apply(
+          Right(in4))
       assertTypedEquals(Inr(Inr(Inr(Inl(1)))), r34_4)
     }
   }

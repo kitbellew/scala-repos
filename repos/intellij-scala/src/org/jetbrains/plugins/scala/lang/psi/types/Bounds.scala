@@ -92,13 +92,11 @@ object Bounds {
       }
       getNamedElement match {
         case t: ScTemplateDefinition =>
-          t.superTypes
-            .map(tp => new Options(subst.subst(tp)))
-            .filter(!_.isEmpty)
+          t.superTypes.map(tp => new Options(subst.subst(tp))).filter(
+            !_.isEmpty)
         case p: PsiClass =>
-          p.getSupers.toSeq
-            .map(cl => new Options(ScType.designator(cl)))
-            .filter(!_.isEmpty)
+          p.getSupers.toSeq.map(cl =>
+            new Options(ScType.designator(cl))).filter(!_.isEmpty)
         case a: ScTypeAlias =>
           val upperType: ScType = tp.isAliasType.get.upper.getOrAny
           val options: Seq[Options] = {
@@ -115,9 +113,9 @@ object Bounds {
       (getNamedElement, bClass.getNamedElement) match {
         case (base: PsiClass, inheritor: PsiClass) =>
           ScEquivalenceUtil.smartEquivalence(base, inheritor) ||
-            ScalaPsiManager
-              .instance(base.getProject)
-              .cachedDeepIsInheritor(inheritor, base)
+            ScalaPsiManager.instance(base.getProject).cachedDeepIsInheritor(
+              inheritor,
+              base)
         case (base, inheritor: ScTypeAlias) =>
           if (ScEquivalenceUtil.smartEquivalence(base, inheritor)) return true
           for (opt <- bClass.getSuperOptions) {
@@ -188,14 +186,13 @@ object Bounds {
             bClass.tp match {
               case ScParameterizedType(_, typeArgs) =>
                 return Some(
-                  bClass.getTypeParameters
-                    .zip(typeArgs)
-                    .foldLeft(ScSubstitutor.empty) {
-                      case (subst: ScSubstitutor, (ptp, typez)) =>
-                        subst.bindT(
-                          (ptp.name, ScalaPsiUtil.getPsiElementId(ptp)),
-                          typez)
-                    })
+                  bClass.getTypeParameters.zip(typeArgs).foldLeft(
+                    ScSubstitutor.empty) {
+                    case (subst: ScSubstitutor, (ptp, typez)) =>
+                      subst.bindT(
+                        (ptp.name, ScalaPsiUtil.getPsiElementId(ptp)),
+                        typez)
+                  })
               case _ => return None
             }
           }
@@ -461,9 +458,8 @@ object Bounds {
               def getTypesForLubEvaluation(t: ScType) = Seq(t)
               val typesToCover = getTypesForLubEvaluation(
                 substed1) ++ getTypesForLubEvaluation(substed2)
-              val newLub = Bounds
-                .lub(typesToCover, checkWeak = false)(stopAddingUpperBound =
-                  true)
+              val newLub = Bounds.lub(typesToCover, checkWeak = false)(
+                stopAddingUpperBound = true)
               (
                 ScTypeVariable("_$" + count),
                 Some(
@@ -503,9 +499,8 @@ object Bounds {
         val tp = ScParameterizedType(
           baseClassDesignator,
           baseClass.getTypeParameters.map(tp =>
-            ScalaPsiManager
-              .instance(baseClass.getNamedElement.getProject)
-              .typeVariable(tp)))
+            ScalaPsiManager.instance(
+              baseClass.getNamedElement.getProject).typeVariable(tp)))
         val tp1 = superSubst1.subst(tp).asInstanceOf[ScParameterizedType]
         val tp2 = superSubst2.subst(tp).asInstanceOf[ScParameterizedType]
         val resTypeArgs = new ArrayBuffer[ScType]

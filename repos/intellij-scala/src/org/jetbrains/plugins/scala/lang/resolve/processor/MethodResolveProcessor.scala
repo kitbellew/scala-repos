@@ -114,8 +114,8 @@ class MethodResolveProcessor(
         case cc: ScClass                      =>
         case o: ScObject if o.isPackageObject => // do not resolve to package object
         case obj: ScObject
-            if ref.getParent.isInstanceOf[ScMethodCall] || ref.getParent
-              .isInstanceOf[ScGenericCall] =>
+            if ref.getParent.isInstanceOf[
+              ScMethodCall] || ref.getParent.isInstanceOf[ScGenericCall] =>
           val functionName = if (isUpdate) "update" else "apply"
           val typeResult = getFromType(state) match {
             case Some(tp) =>
@@ -131,26 +131,24 @@ class MethodResolveProcessor(
               Some((meth, subst))
             case _ => None
           }.toSeq
-          val seq = sigs
-            .map {
-              case (m, subst) =>
-                new ScalaResolveResult(
-                  m,
-                  subst,
-                  getImports(state),
-                  nameShadow,
-                  implicitConversionClass,
-                  implicitFunction = implFunction,
-                  implicitType = implType,
-                  fromType = fromType,
-                  parentElement = Some(obj),
-                  isAccessible = accessible && isAccessible(m, ref),
-                  isForwardReference = forwardReference,
-                  unresolvedTypeParameters = unresolvedTypeParameters)
-            }
-            .filter {
-              case r => !accessibility || r.isAccessible
-            }
+          val seq = sigs.map {
+            case (m, subst) =>
+              new ScalaResolveResult(
+                m,
+                subst,
+                getImports(state),
+                nameShadow,
+                implicitConversionClass,
+                implicitFunction = implFunction,
+                implicitType = implType,
+                fromType = fromType,
+                parentElement = Some(obj),
+                isAccessible = accessible && isAccessible(m, ref),
+                isForwardReference = forwardReference,
+                unresolvedTypeParameters = unresolvedTypeParameters)
+          }.filter {
+            case r => !accessibility || r.isAccessible
+          }
           if (seq.nonEmpty) addResults(seq)
           else
             addResult(
@@ -217,8 +215,8 @@ class MethodResolveProcessor(
 
   override def candidatesS: Set[ScalaResolveResult] = {
     if (isDynamic) {
-      collectCandidates(super.candidatesS.map(_.copy(isDynamic = true)))
-        .filter(_.isApplicable())
+      collectCandidates(super.candidatesS.map(_.copy(isDynamic = true))).filter(
+        _.isApplicable())
     } else {
       collectCandidates(super.candidatesS)
     }
@@ -302,12 +300,10 @@ object MethodResolveProcessor {
           case f: ScFunction => substitutor.subst(f.returnType.getOrNothing)
           case f: ScFun      => substitutor.subst(f.retType)
           case m: PsiMethod =>
-            Option(m.getReturnType)
-              .map { rt =>
-                substitutor.subst(
-                  ScType.create(rt, ref.getProject, getResolveScope))
-              }
-              .getOrElse(Nothing)
+            Option(m.getReturnType).map { rt =>
+              substitutor.subst(
+                ScType.create(rt, ref.getProject, getResolveScope))
+            }.getOrElse(Nothing)
           case _ => Nothing
         }
         if (!retType.conforms(expected) && !expected.equiv(Unit)) {
@@ -473,13 +469,11 @@ object MethodResolveProcessor {
           if (typeParamCount == 0) {
             problems += DoesNotTakeTypeParameters
           } else if (typeParamCount < typeArgCount) {
-            problems ++= typeArgElements
-              .drop(typeParamCount)
-              .map(ExcessTypeArgument)
+            problems ++= typeArgElements.drop(typeParamCount).map(
+              ExcessTypeArgument)
           } else {
-            problems ++= tp.typeParameters
-              .drop(typeArgCount)
-              .map(ptp => MissedTypeParameter(new TypeParameter(ptp)))
+            problems ++= tp.typeParameters.drop(typeArgCount).map(ptp =>
+              MissedTypeParameter(new TypeParameter(ptp)))
           }
           addExpectedTypeProblems()
           new ConformanceExtResult(problems)
@@ -503,13 +497,11 @@ object MethodResolveProcessor {
           if (typeParamCount == 0) {
             problems += DoesNotTakeTypeParameters
           } else if (typeParamCount < typeArgCount) {
-            problems ++= typeArgElements
-              .drop(typeParamCount)
-              .map(ExcessTypeArgument)
+            problems ++= typeArgElements.drop(typeParamCount).map(
+              ExcessTypeArgument)
           } else {
-            problems ++= tp.getTypeParameters
-              .drop(typeArgCount)
-              .map(ptp => MissedTypeParameter(new TypeParameter(ptp)))
+            problems ++= tp.getTypeParameters.drop(typeArgCount).map(ptp =>
+              MissedTypeParameter(new TypeParameter(ptp)))
           }
           addExpectedTypeProblems()
           new ConformanceExtResult(problems)
@@ -813,22 +805,19 @@ object MethodResolveProcessor {
     if (isShapeResolve) {
       if (filtered.isEmpty) {
         if (enableTupling) {
-          val filtered2 = input
-            .filter(r => {
-              r.element match {
-                case fun: ScFun if fun.paramClauses.nonEmpty =>
-                  fun.paramClauses.head.length == 1
-                case fun: ScFunction if fun.paramClauses.clauses.nonEmpty =>
-                  fun.paramClauses.clauses.head.parameters.length == 1
-                case p: ScPrimaryConstructor
-                    if p.parameterList.clauses.nonEmpty =>
-                  p.parameterList.clauses.head.parameters.length == 1
-                case m: PsiMethod =>
-                  m.getParameterList.getParameters.length == 1
-                case _ => false
-              }
-            })
-            .map(r => r.copy(tuplingUsed = true))
+          val filtered2 = input.filter(r => {
+            r.element match {
+              case fun: ScFun if fun.paramClauses.nonEmpty =>
+                fun.paramClauses.head.length == 1
+              case fun: ScFunction if fun.paramClauses.clauses.nonEmpty =>
+                fun.paramClauses.clauses.head.parameters.length == 1
+              case p: ScPrimaryConstructor
+                  if p.parameterList.clauses.nonEmpty =>
+                p.parameterList.clauses.head.parameters.length == 1
+              case m: PsiMethod => m.getParameterList.getParameters.length == 1
+              case _            => false
+            }
+          }).map(r => r.copy(tuplingUsed = true))
           if (filtered2.isEmpty)
             return input.map(r => r.copy(notCheckedResolveResult = true))
           return filtered2

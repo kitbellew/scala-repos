@@ -45,11 +45,11 @@ object OptionMapper2 {
   @inline implicit def getOptionMapper2TT[B1, B2: BaseTypedType, BR] =
     OptionMapper2.plain.asInstanceOf[OptionMapper2[B1, B2, BR, B1, B2, BR]]
   @inline implicit def getOptionMapper2TO[B1, B2: BaseTypedType, BR] =
-    OptionMapper2.option
-      .asInstanceOf[OptionMapper2[B1, B2, BR, B1, Option[B2], Option[BR]]]
+    OptionMapper2.option.asInstanceOf[
+      OptionMapper2[B1, B2, BR, B1, Option[B2], Option[BR]]]
   @inline implicit def getOptionMapper2OT[B1, B2: BaseTypedType, BR] =
-    OptionMapper2.option
-      .asInstanceOf[OptionMapper2[B1, B2, BR, Option[B1], B2, Option[BR]]]
+    OptionMapper2.option.asInstanceOf[
+      OptionMapper2[B1, B2, BR, Option[B1], B2, Option[BR]]]
   @inline implicit def getOptionMapper2OO[B1, B2: BaseTypedType, BR] =
     OptionMapper2.option.asInstanceOf[
       OptionMapper2[B1, B2, BR, Option[B1], Option[B2], Option[BR]]]
@@ -80,8 +80,8 @@ object OptionMapper3 {
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
-    OptionMapper3.plain
-      .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, B2, B3, BR]]
+    OptionMapper3.plain.asInstanceOf[
+      OptionMapper3[B1, B2, B3, BR, B1, B2, B3, BR]]
   @inline implicit def getOptionMapper3TTO[
       B1,
       B2: BaseTypedType,
@@ -194,13 +194,8 @@ sealed trait OptionLiftLowPriority {
       case RepOption(base, _) =>
         base.asInstanceOf[ShapedValue[M, _]].encodeRef(path).value
       case r: Rep.TypedRep[_] /* An Option column */ =>
-        Rep
-          .columnPlaceholder[Any](
-            r.tpe
-              .asInstanceOf[OptionType]
-              .elementType
-              .asInstanceOf[TypedType[Any]])
-          .encodeRef(path)
-          .asInstanceOf[M]
+        Rep.columnPlaceholder[Any](
+          r.tpe.asInstanceOf[OptionType].elementType.asInstanceOf[TypedType[
+            Any]]).encodeRef(path).asInstanceOf[M]
     }
 }

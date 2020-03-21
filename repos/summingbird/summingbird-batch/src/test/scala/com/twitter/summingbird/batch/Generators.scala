@@ -30,16 +30,14 @@ object Generators {
 
   implicit val arbTimestamp: Arbitrary[Timestamp] = Arbitrary {
     // a relevant 200 or so year range
-    Gen
-      .choose(-137878042589500L, 137878042589500L)
+    Gen.choose(-137878042589500L, 137878042589500L)
       .map { Timestamp(_) }
   }
 
   implicit val dateArb: Arbitrary[java.util.Date] =
     Arbitrary {
       // a relevant 200 or so year range
-      Gen
-        .choose(-137878042589500L, 137878042589500L)
+      Gen.choose(-137878042589500L, 137878042589500L)
         .map { new java.util.Date(_) }
     }
 

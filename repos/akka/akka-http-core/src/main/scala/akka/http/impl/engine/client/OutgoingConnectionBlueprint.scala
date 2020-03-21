@@ -87,9 +87,8 @@ private[http] object OutgoingConnectionBlueprint {
           userAgentHeader,
           requestHeaderSizeHint,
           log)
-        Flow[RequestRenderingContext]
-          .flatMapConcat(requestRendererFactory.renderToSource)
-          .named("renderer")
+        Flow[RequestRenderingContext].flatMapConcat(
+          requestRendererFactory.renderToSource).named("renderer")
       }
 
       val bypass = Flow[RequestRenderingContext] map { ctx ⇒

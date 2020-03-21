@@ -265,14 +265,14 @@ class JavapClass(
 
     // DisassemblerTool.getStandardFileManager(reporter,locale,charset)
     val defaultFileManager: JavaFileManager =
-      (loader
-        .tryToLoadClass[JavaFileManager]("com.sun.tools.javap.JavapFileManager")
-        .get getMethod (
+      (loader.tryToLoadClass[JavaFileManager](
+        "com.sun.tools.javap.JavapFileManager").get getMethod (
         "create",
         classOf[DiagnosticListener[_]],
         classOf[PrintWriter]
-      ) invoke (null, reporter, new PrintWriter(System.err, true)))
-        .asInstanceOf[JavaFileManager] orFailed null
+      ) invoke (null, reporter, new PrintWriter(
+        System.err,
+        true))).asInstanceOf[JavaFileManager] orFailed null
 
     // manages named arrays of bytes, which might have failed to load
     class JavapFileManager(val managed: Seq[Input])(
@@ -347,13 +347,12 @@ class JavapClass(
       //ServiceLoader.load(classOf[javax.tools.DisassemblerTool]).
       //getTask(writer, fileManager, reporter, options.asJava, classes.asJava)
       val toolopts = options filter (_ != "-filter")
-      TaskCtor
-        .newInstance(
-          writer,
-          fileManager(inputs),
-          reporter,
-          toolopts.asJava,
-          classes.asJava)
+      TaskCtor.newInstance(
+        writer,
+        fileManager(inputs),
+        reporter,
+        toolopts.asJava,
+        classes.asJava)
         .orFailed(throw new IllegalStateException)
     }
     // a result per input

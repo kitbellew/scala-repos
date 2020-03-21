@@ -59,8 +59,7 @@ object PersistenceQueryDocSpec {
         tag: String,
         offset: Long = 0L): Source[EventEnvelope, NotUsed] = {
       val props = MyEventsByTagPublisher.props(tag, offset, refreshInterval)
-      Source
-        .actorPublisher[EventEnvelope](props)
+      Source.actorPublisher[EventEnvelope](props)
         .mapMaterializedValue(_ ⇒ NotUsed)
     }
 
@@ -110,9 +109,10 @@ object PersistenceQueryDocSpec {
         fromSequenceNr: Long = 0L,
         toSequenceNr: Long = Long.MaxValue)
         : javadsl.Source[EventEnvelope, NotUsed] =
-      scaladslReadJournal
-        .eventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr)
-        .asJava
+      scaladslReadJournal.eventsByPersistenceId(
+        persistenceId,
+        fromSequenceNr,
+        toSequenceNr).asJava
 
     override def allPersistenceIds(): javadsl.Source[String, NotUsed] =
       scaladslReadJournal.allPersistenceIds().asJava

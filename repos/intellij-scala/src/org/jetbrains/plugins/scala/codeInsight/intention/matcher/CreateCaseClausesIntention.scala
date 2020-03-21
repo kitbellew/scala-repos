@@ -52,9 +52,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         if (!FileModificationService.getInstance.prepareFileForWrite(
               element.getContainingFile)) return
-        IdeDocumentHistory
-          .getInstance(project)
-          .includeCurrentPlaceAsChangePlace()
+        IdeDocumentHistory.getInstance(
+          project).includeCurrentPlaceAsChangePlace()
         action(project, editor, element)
       case None =>
     }
@@ -135,10 +134,9 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
   }
 
   private def inheritorsOf(cls: PsiClass): Seq[ScTypeDefinition] = {
-    val found: Array[ScTypeDefinition] = ClassInheritorsSearch
-      .search(cls, cls.getResolveScope, false)
-      .toArray(PsiClass.EMPTY_ARRAY)
-      .collect {
+    val found: Array[ScTypeDefinition] =
+      ClassInheritorsSearch.search(cls, cls.getResolveScope, false).toArray(
+        PsiClass.EMPTY_ARRAY).collect {
         case x: ScTypeDefinition => x
       }
     found.sortBy(_.getNavigationElement.getTextRange.getStartOffset)
@@ -178,9 +176,9 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       : Option[((Project, Editor, PsiElement) => Unit, String)] = {
     element.getParent match {
       case x: ScMatchStmt if x.caseClauses.isEmpty =>
-        val classType: Option[(PsiClass, ScSubstitutor)] = x.expr
-          .flatMap(_.getType(TypingContext.empty).toOption)
-          .flatMap(t => ScType.extractClassType(t, Some(element.getProject)))
+        val classType: Option[(PsiClass, ScSubstitutor)] =
+          x.expr.flatMap(_.getType(TypingContext.empty).toOption).flatMap(t =>
+            ScType.extractClassType(t, Some(element.getProject)))
 
         classType match {
           case Some((cls: ScTypeDefinition, _))

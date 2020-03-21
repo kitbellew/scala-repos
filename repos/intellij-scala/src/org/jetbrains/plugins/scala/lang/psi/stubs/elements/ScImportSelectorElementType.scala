@@ -26,11 +26,8 @@ class ScImportSelectorElementType[Func <: ScImportSelector]
   def serialize(
       stub: ScImportSelectorStub,
       dataStream: StubOutputStream): Unit = {
-    dataStream.writeName(
-      stub
-        .asInstanceOf[ScImportSelectorStubImpl[_ <: PsiElement]]
-        .referenceText
-        .toString)
+    dataStream.writeName(stub.asInstanceOf[ScImportSelectorStubImpl[
+      _ <: PsiElement]].referenceText.toString)
     dataStream.writeName(stub.importedName)
     dataStream.writeBoolean(stub.isAliasedImport)
   }

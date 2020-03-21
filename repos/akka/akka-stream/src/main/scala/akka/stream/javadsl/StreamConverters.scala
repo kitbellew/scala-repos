@@ -55,9 +55,9 @@ object StreamConverters {
       f: function.Creator[OutputStream],
       autoFlush: Boolean): javadsl.Sink[ByteString, CompletionStage[IOResult]] =
     new Sink(
-      scaladsl.StreamConverters
-        .fromOutputStream(() ⇒ f.create(), autoFlush)
-        .toCompletionStage())
+      scaladsl.StreamConverters.fromOutputStream(
+        () ⇒ f.create(),
+        autoFlush).toCompletionStage())
 
   /**
     * Creates a Sink which when materialized will return an [[java.io.InputStream]] which it is possible
@@ -111,9 +111,9 @@ object StreamConverters {
       in: function.Creator[InputStream],
       chunkSize: Int): javadsl.Source[ByteString, CompletionStage[IOResult]] =
     new Source(
-      scaladsl.StreamConverters
-        .fromInputStream(() ⇒ in.create(), chunkSize)
-        .toCompletionStage())
+      scaladsl.StreamConverters.fromInputStream(
+        () ⇒ in.create(),
+        chunkSize).toCompletionStage())
 
   /**
     * Creates a Source from an [[java.io.InputStream]] created by the given function.

@@ -341,8 +341,7 @@ private[akka] class TLSActor(
         nextPhase(inboundClosed)
       } else {
         if (tracing) log.debug("closing inbound due to UserOut cancellation")
-        engine
-          .closeOutbound() // this is the correct way of shutting down the engine
+        engine.closeOutbound() // this is the correct way of shutting down the engine
         lastHandshakeStatus = engine.getHandshakeStatus
         nextPhase(flushingOutbound)
       }

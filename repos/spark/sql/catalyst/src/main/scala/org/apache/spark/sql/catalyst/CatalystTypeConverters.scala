@@ -354,9 +354,10 @@ object CatalystTypeConverters {
       else catalystValue.toJavaBigDecimal
     }
     override def toScalaImpl(row: InternalRow, column: Int): JavaBigDecimal =
-      row
-        .getDecimal(column, dataType.precision, dataType.scale)
-        .toJavaBigDecimal
+      row.getDecimal(
+        column,
+        dataType.precision,
+        dataType.scale).toJavaBigDecimal
   }
 
   private abstract class PrimitiveConverter[T]

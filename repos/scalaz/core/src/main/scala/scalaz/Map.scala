@@ -992,12 +992,10 @@ sealed abstract class MapInstances0 {
         case (a, Tip())     => a.map(aa => f(This(aa)))
         case (Tip(), b)     => b.map(bb => f(That(bb)))
         case (a, b) =>
-          a.map(This(_): A \&/ B)
-            .unionWith(b.map(That(_): A \&/ B)) {
-              case (This(aa), That(bb)) => Both(aa, bb)
-              case _                    => sys.error("==>> alignWith")
-            }
-            .map(f)
+          a.map(This(_): A \&/ B).unionWith(b.map(That(_): A \&/ B)) {
+            case (This(aa), That(bb)) => Both(aa, bb)
+            case _                    => sys.error("==>> alignWith")
+          }.map(f)
       }
 
       def zip[A, B](a: => (S ==>> A), b: => (S ==>> B)) = {
@@ -1160,8 +1158,9 @@ private[scalaz] sealed trait MapEqual[A, B] extends Equal[A ==>> B] {
   implicit def A: Equal[A]
   implicit def B: Equal[B]
   final override def equal(a1: A ==>> B, a2: A ==>> B) =
-    Equal[Int].equal(a1.size, a2.size) && Equal[List[(A, B)]]
-      .equal(a1.toAscList, a2.toAscList)
+    Equal[Int].equal(a1.size, a2.size) && Equal[List[(A, B)]].equal(
+      a1.toAscList,
+      a2.toAscList)
 }
 
 object ==>> extends MapInstances {

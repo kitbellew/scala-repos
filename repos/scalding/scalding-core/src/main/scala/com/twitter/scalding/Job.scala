@@ -55,8 +55,7 @@ object Job {
     * jars included via -libjar can be found.
     */
   def apply(jobName: String, args: Args): Job = {
-    Class
-      .forName(jobName, true, Thread.currentThread().getContextClassLoader)
+    Class.forName(jobName, true, Thread.currentThread().getContextClassLoader)
       .getConstructor(classOf[Args])
       .newInstance(args)
       .asInstanceOf[Job]
@@ -135,10 +134,9 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
 
   // Override this if you want to change how the mapred.job.name is written in Hadoop
   def name: String =
-    Config
-      .defaultFrom(mode)
-      .toMap
-      .getOrElse("mapred.job.name", getClass.getName)
+    Config.defaultFrom(mode).toMap.getOrElse(
+      "mapred.job.name",
+      getClass.getName)
 
   //This is the FlowDef used by all Sources this job creates
   @transient
@@ -212,8 +210,7 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
 
     val init = base ++ modeConf
 
-    defaultComparator
-      .map(init.setDefaultComparator)
+    defaultComparator.map(init.setDefaultComparator)
       .getOrElse(init)
       .setSerialization(
         Right(classOf[serialization.KryoHadoop]),
@@ -223,10 +220,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
       .setCascadingAppId(name)
       .setScaldingFlowClass(getClass)
       .setArgs(args)
-      .maybeSetSubmittedTimestamp()
-      ._2
-      .toMap
-      .toMap // the second one is to lift from String -> AnyRef
+      .maybeSetSubmittedTimestamp()._2
+      .toMap.toMap // the second one is to lift from String -> AnyRef
   }
 
   /**
@@ -501,8 +496,7 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
       "You cannot print the graph as it may be dynamically built or recurrent")
 
   final override def run = {
-    val r = Config
-      .tryFrom(config)
+    val r = Config.tryFrom(config)
       .map { conf =>
         Await.result(
           execution.run(conf, mode)(concurrentExecutionContext),
@@ -530,9 +524,10 @@ class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
       cmds.dropWhile {
         cmd: String =>
           {
-            new java.lang.ProcessBuilder("bash", "-c", cmd)
-              .start()
-              .waitFor() match {
+            new java.lang.ProcessBuilder(
+              "bash",
+              "-c",
+              cmd).start().waitFor() match {
               case x if x != 0 =>
                 println(cmd + " failed, exitStatus: " + x)
                 false

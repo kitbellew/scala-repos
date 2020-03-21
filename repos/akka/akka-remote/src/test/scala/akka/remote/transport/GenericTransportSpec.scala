@@ -41,10 +41,8 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
   def freshTransport(testTransport: TestTransport): Transport
   def wrapTransport(transport: Transport): Transport =
     if (withAkkaProtocol) {
-      val provider = system
-        .asInstanceOf[ExtendedActorSystem]
-        .provider
-        .asInstanceOf[RemoteActorRefProvider]
+      val provider = system.asInstanceOf[
+        ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider]
       new AkkaProtocolTransport(
         transport,
         system,
@@ -80,14 +78,10 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val transportB = newTransportB(registry)
 
       // Must complete the returned promise to receive events
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
+      Await.result(transportB.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressATest, addressBTest))
 
@@ -105,10 +99,8 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val registry = new AssociationRegistry
       val transportA = newTransportA(registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
       awaitCond(registry.transportsReady(addressATest))
 
       // TestTransport throws InvalidAssociationException when trying to associate with non-existing system
@@ -122,14 +114,10 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val transportA = newTransportA(registry)
       val transportB = newTransportB(registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
+      Await.result(transportB.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressATest, addressBTest))
 
@@ -170,14 +158,10 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val transportA = newTransportA(registry)
       val transportB = newTransportB(registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
+      Await.result(transportB.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressATest, addressBTest))
 

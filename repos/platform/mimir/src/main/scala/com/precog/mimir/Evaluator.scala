@@ -699,9 +699,8 @@ trait EvaluatorModule[M[+_]]
                   Map(
                     paths.Key -> trans.WrapArray(
                       Scan(Leaf(Source), freshIdScanner))))
-                tableM2 = pendingTable.table
-                  .transform(liftToValues(pendingTable.trans))
-                  .transform(idSpec)
+                tableM2 = pendingTable.table.transform(
+                  liftToValues(pendingTable.trans)).transform(idSpec)
               } yield PendingTable(
                 tableM2,
                 graph,
@@ -713,28 +712,27 @@ trait EvaluatorModule[M[+_]]
               for {
                 pendingTable <- prepareEval(parent, splits)
                 Path(prefixStr) = ctx.basePath
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(prefixStr.replaceAll("([^/])$", "$1/")))
+                f1 = concatString(MorphContext(ctx, graph)).applyl(
+                  CString(prefixStr.replaceAll("([^/])$", "$1/")))
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)
-                loaded = pendingTable.table
-                  .transform(trans2)
-                  .load(ctx.apiKey, jtpe)
-                  .fold(
-                    {
-                      case ResourceError.NotFound(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case ResourceError.PermissionsError(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case fatal =>
-                        report.error(
-                          graph.loc,
-                          "Fatal error while loading dataset") >> report
-                          .die() >> Table.empty.point[N]
-                    },
-                    table => table.point[N]
-                  )
+                loaded = pendingTable.table.transform(trans2).load(
+                  ctx.apiKey,
+                  jtpe).fold(
+                  {
+                    case ResourceError.NotFound(message) =>
+                      report.warn(graph.loc, message) >> Table.empty.point[N]
+                    case ResourceError.PermissionsError(message) =>
+                      report.warn(graph.loc, message) >> Table.empty.point[N]
+                    case fatal =>
+                      report.error(
+                        graph.loc,
+                        "Fatal error while loading dataset") >> report.die() >> Table.empty.point[
+                        N]
+                  },
+                  table => table.point[N]
+                )
                 back <- transState liftM mn(loaded).join
               } yield PendingTable(
                 back,
@@ -748,31 +746,31 @@ trait EvaluatorModule[M[+_]]
 
                 Path(prefixStr) = ctx.basePath
                 Path(midStr) = ctx.scriptPath
-                fullPrefix = prefixStr.replaceAll("([^/])$", "$1/") + midStr
-                  .replaceAll("([^/])$", "$1/")
+                fullPrefix = prefixStr.replaceAll(
+                  "([^/])$",
+                  "$1/") + midStr.replaceAll("([^/])$", "$1/")
 
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(fullPrefix))
+                f1 = concatString(MorphContext(ctx, graph)).applyl(
+                  CString(fullPrefix))
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)
-                loaded = pendingTable.table
-                  .transform(trans2)
-                  .load(ctx.apiKey, jtpe)
-                  .fold(
-                    {
-                      case ResourceError.NotFound(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case ResourceError.PermissionsError(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case fatal =>
-                        report.error(
-                          graph.loc,
-                          "Fatal error while loading dataset") >> report
-                          .die() >> Table.empty.point[N]
-                    },
-                    table => table.point[N]
-                  )
+                loaded = pendingTable.table.transform(trans2).load(
+                  ctx.apiKey,
+                  jtpe).fold(
+                  {
+                    case ResourceError.NotFound(message) =>
+                      report.warn(graph.loc, message) >> Table.empty.point[N]
+                    case ResourceError.PermissionsError(message) =>
+                      report.warn(graph.loc, message) >> Table.empty.point[N]
+                    case fatal =>
+                      report.error(
+                        graph.loc,
+                        "Fatal error while loading dataset") >> report.die() >> Table.empty.point[
+                        N]
+                  },
+                  table => table.point[N]
+                )
                 back <- transState liftM mn(loaded).join
               } yield PendingTable(
                 back,
@@ -1037,8 +1035,7 @@ trait EvaluatorModule[M[+_]]
                 } else {
                   for {
                     _ <- report.error(graph.loc, "Assertion failed")
-                    _ <- report
-                      .die() // Arrrrrrrgggghhhhhhhhhhhhhh........ *gurgle*
+                    _ <- report.die() // Arrrrrrrgggghhhhhhhhhhhhhh........ *gurgle*
                   } yield ()
                 }
                 _ <- transState liftM assertion
@@ -1382,9 +1379,8 @@ trait EvaluatorModule[M[+_]]
         case s: dag.SplitGroup => Set(s.parentId)
       }
 
-      val currentIsReferenced = parentSplits.headOption
-        .map(referencedSplits.contains(_))
-        .getOrElse(true)
+      val currentIsReferenced = parentSplits.headOption.map(
+        referencedSplits.contains(_)).getOrElse(true)
 
       currentIsReferenced && (referencedSplits -- parentSplits).isEmpty
     }

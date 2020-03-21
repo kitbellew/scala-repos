@@ -37,9 +37,9 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
           expr match {
             case lit @ ScBooleanLiteral(_)
                 if isArgForBooleanParam(expr, argList) &&
-                  IntentionUtils
-                    .addNameToArgumentsFix(expr, onlyBoolean = true)
-                    .isDefined =>
+                  IntentionUtils.addNameToArgumentsFix(
+                    expr,
+                    onlyBoolean = true).isDefined =>
               val descriptor = holder.getManager.createProblemDescriptor(
                 expr,
                 InspectionBundle.message("name.boolean"),
@@ -70,9 +70,8 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
         mc.getInvokedExpr match {
           case ref: ScReferenceExpression =>
             ref.bind().exists { srr =>
-              val targets =
-                (Seq(srr.element) ++ srr.innerResolveResult.map(_.getElement))
-                  .filterBy(classOf[ScFunction])
+              val targets = (Seq(srr.element) ++ srr.innerResolveResult.map(
+                _.getElement)).filterBy(classOf[ScFunction])
               targets.exists(_.parameters.size == 1)
             }
           case _ => false

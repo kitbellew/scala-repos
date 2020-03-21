@@ -124,8 +124,9 @@ trait ModelFactoryImplicitSupport {
       // Filter out non-sensical conversions from value types
       if (isPrimitiveValueType(sym.tpe_*))
         conversions = conversions.filter((ic: ImplicitConversionImpl) =>
-          hardcoded
-            .valueClassFilter(sym.nameString, ic.conversionQualifiedName))
+          hardcoded.valueClassFilter(
+            sym.nameString,
+            ic.conversionQualifiedName))
 
       // Put the visible conversions in front
       val (ownConversions, commonConversions) =
@@ -273,9 +274,9 @@ trait ModelFactoryImplicitSupport {
       if (implType.isTrivial) {
         try {
           // TODO: Not sure if `owner = sym.owner` is the right thing to do -- seems similar to what scalac should be doing
-          val silentContext = context
-            .make(owner = sym.owner)
-            .makeSilent(reportAmbiguousErrors = false)
+          val silentContext =
+            context.make(owner = sym.owner).makeSilent(reportAmbiguousErrors =
+              false)
           val search =
             inferImplicit(EmptyTree, tpe, false, false, silentContext, false)
           available = Some(search.tree != EmptyTree)

@@ -79,8 +79,9 @@ class UserDefinedTypeSuite
     MyLabeledPoint(0.0, new MyDenseVector(Array(0.2, 2.0)))).toDF()
 
   test("register user type: MyDenseVector for MyLabeledPoint") {
-    val labels: RDD[Double] =
-      pointsRDD.select('label).rdd.map { case Row(v: Double) => v }
+    val labels: RDD[Double] = pointsRDD.select('label).rdd.map {
+      case Row(v: Double) => v
+    }
     val labelsArrays: Array[Double] = labels.collect()
     assert(labelsArrays.size === 2)
     assert(labelsArrays.contains(1.0))
@@ -95,8 +96,9 @@ class UserDefinedTypeSuite
   }
 
   test("UDTs and UDFs") {
-    sqlContext.udf
-      .register("testType", (d: MyDenseVector) => d.isInstanceOf[MyDenseVector])
+    sqlContext.udf.register(
+      "testType",
+      (d: MyDenseVector) => d.isInstanceOf[MyDenseVector])
     pointsRDD.registerTempTable("points")
     checkAnswer(
       sql("SELECT testType(features) from points"),
@@ -132,17 +134,10 @@ class UserDefinedTypeSuite
     val df = Seq((1, new MyDenseVector(Array(0.1, 1.0)))).toDF("int", "vec")
     df.collect()(0).getAs[MyDenseVector](1)
     df.take(1)(0).getAs[MyDenseVector](1)
-    df.limit(1)
-      .groupBy('int)
-      .agg(first('vec))
-      .collect()(0)
-      .getAs[MyDenseVector](0)
-    df.orderBy('int)
-      .limit(1)
-      .groupBy('int)
-      .agg(first('vec))
-      .collect()(0)
-      .getAs[MyDenseVector](0)
+    df.limit(1).groupBy('int).agg(first('vec)).collect()(0).getAs[
+      MyDenseVector](0)
+    df.orderBy('int).limit(1).groupBy('int).agg(first('vec)).collect()(0).getAs[
+      MyDenseVector](0)
   }
 
   test("UDTs with JSON") {

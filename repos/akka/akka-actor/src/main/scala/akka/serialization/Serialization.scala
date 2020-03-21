@@ -77,9 +77,8 @@ object Serialization {
         else {
           val provider = originalSystem.provider
           path.toSerializationFormatWithAddress(
-            provider
-              .getExternalAddressFor(address)
-              .getOrElse(provider.getDefaultAddress))
+            provider.getExternalAddressFor(address).getOrElse(
+              provider.getDefaultAddress))
         }
     }
   }
@@ -251,17 +250,18 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     sort(
       for ((k: String, v: String) ← settings.SerializationBindings
            if v != "none" && checkGoogleProtobuf(k))
-        yield (system.dynamicAccess.getClassFor[Any](k).get, serializers(v)))
-      .to[immutable.Seq]
+        yield (
+          system.dynamicAccess.getClassFor[Any](k).get,
+          serializers(v))).to[immutable.Seq]
 
   // com.google.protobuf serialization binding is only used if the class can be loaded,
   // i.e. com.google.protobuf dependency has been added in the application project.
   // The reason for this special case is for backwards compatibility so that we still can
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean =
-    (!className.startsWith("com.google.protobuf") || system.dynamicAccess
-      .getClassFor[Any](className)
-      .isSuccess)
+    (!className.startsWith(
+      "com.google.protobuf") || system.dynamicAccess.getClassFor[Any](
+      className).isSuccess)
 
   /**
     * Sort so that subtypes always precede their supertypes, but without

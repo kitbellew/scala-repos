@@ -57,9 +57,8 @@ package scalaguide.http.scalaactions {
             }
           //#json-parser-action
           ,
-          request = FakeRequest()
-            .withBody(Json.obj())
-            .withHeaders(CONTENT_TYPE -> "application/json")
+          request = FakeRequest().withBody(Json.obj()).withHeaders(
+            CONTENT_TYPE -> "application/json")
         )
       }
 
@@ -88,8 +87,9 @@ package scalaguide.http.scalaactions {
           Action {
             Result(
               header = ResponseHeader(200, Map.empty),
-              body = HttpEntity
-                .Strict(ByteString("Hello world!"), Some("text/plain"))
+              body = HttpEntity.Strict(
+                ByteString("Hello world!"),
+                Some("text/plain"))
             )
           }
         //#simple-result-action

@@ -92,13 +92,13 @@ object ScalaProjectSettingsUtil {
       JListCompatibility.add(listModel, index, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
       ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, index, 0)
-      IdeFocusManager.getGlobalInstance
-        .requestFocus(patternJBList.getList, false)
+      IdeFocusManager.getGlobalInstance.requestFocus(
+        patternJBList.getList,
+        false)
     }
 
-    ToolbarDecorator
-      .createDecorator(patternJBList.getList)
-      .setAddAction(new AnActionButtonRunnable {
+    ToolbarDecorator.createDecorator(patternJBList.getList).setAddAction(
+      new AnActionButtonRunnable {
         def run(button: AnActionButton) {
           val validator: InputValidator =
             ScalaProjectSettingsUtil.getPatternValidator
@@ -111,9 +111,7 @@ object ScalaProjectSettingsUtil {
             validator)
           addPattern(pattern, patternJBList)
         }
-      })
-      .disableUpDownActions
-      .createPanel
+      }).disableUpDownActions.createPanel
   }
 
   def getUnsortedPatternListPanel(
@@ -134,13 +132,13 @@ object ScalaProjectSettingsUtil {
       JListCompatibility.add(listModel, index + 1, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
       ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, index, 0)
-      IdeFocusManager.getGlobalInstance
-        .requestFocus(patternJBList.getList, false)
+      IdeFocusManager.getGlobalInstance.requestFocus(
+        patternJBList.getList,
+        false)
     }
 
-    ToolbarDecorator
-      .createDecorator(patternJBList.getList)
-      .setAddAction(new AnActionButtonRunnable {
+    ToolbarDecorator.createDecorator(patternJBList.getList).setAddAction(
+      new AnActionButtonRunnable {
         def run(button: AnActionButton) {
           val validator: InputValidator =
             ScalaProjectSettingsUtil.getPackageValidator
@@ -153,35 +151,34 @@ object ScalaProjectSettingsUtil {
             validator)
           addPattern(pattern, patternJBList)
         }
-      })
-      .addExtraAction(new AnActionButton(
+      }).addExtraAction(
+      new AnActionButton(
         ApplicationBundle.message("button.add.blank"),
         IconUtil.getAddBlankLineIcon) {
         def actionPerformed(e: AnActionEvent) {
           addPattern(ScalaCodeStyleSettings.BLANK_LINE, patternJBList)
         }
-      })
-      .setRemoveAction(new AnActionButtonRunnable {
-        override def run(t: AnActionButton): Unit = {
-          val listModel = JListCompatibility.getDefaultListModel(
-            patternJBList.getList.getModel) match {
-            case null    => return
-            case default => default
-          }
-          val index = patternJBList.getList.getSelectedIndex
-          if (index != -1) {
-            if (listModel.get(
-                  index) == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS) return
-            val size = listModel.size()
-            listModel.remove(index)
-            val to = if (index == size - 1) index - 1 else index
-            patternJBList.getList.setSelectedIndex(to)
-            ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, to, 0)
-            IdeFocusManager.getGlobalInstance
-              .requestFocus(patternJBList.getList, false)
-          }
+      }).setRemoveAction(new AnActionButtonRunnable {
+      override def run(t: AnActionButton): Unit = {
+        val listModel = JListCompatibility.getDefaultListModel(
+          patternJBList.getList.getModel) match {
+          case null    => return
+          case default => default
         }
-      })
-      .createPanel
+        val index = patternJBList.getList.getSelectedIndex
+        if (index != -1) {
+          if (listModel.get(index) == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+            return
+          val size = listModel.size()
+          listModel.remove(index)
+          val to = if (index == size - 1) index - 1 else index
+          patternJBList.getList.setSelectedIndex(to)
+          ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, to, 0)
+          IdeFocusManager.getGlobalInstance.requestFocus(
+            patternJBList.getList,
+            false)
+        }
+      }
+    }).createPanel
   }
 }

@@ -75,15 +75,13 @@ object DeveloperApiExample {
         LabeledPoint(1.0, Vectors.dense(0.0, 2.2, -1.5))))
 
     // Make predictions on test data.
-    val sumPredictions: Double = model
-      .transform(test.toDF())
+    val sumPredictions: Double = model.transform(test.toDF())
       .select("features", "label", "prediction")
       .collect()
       .map {
         case Row(features: Vector, label: Double, prediction: Double) =>
           prediction
-      }
-      .sum
+      }.sum
     assert(
       sumPredictions == 0.0,
       "MyLogisticRegression predicted something other than 0, even though all coefficients are 0!")
@@ -195,8 +193,9 @@ private class MyLogisticRegressionModel(
     * This is used for the default implementation of [[transform()]].
     */
   override def copy(extra: ParamMap): MyLogisticRegressionModel = {
-    copyValues(new MyLogisticRegressionModel(uid, coefficients), extra)
-      .setParent(parent)
+    copyValues(
+      new MyLogisticRegressionModel(uid, coefficients),
+      extra).setParent(parent)
   }
 }
 // scalastyle:on println

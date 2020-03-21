@@ -65,15 +65,10 @@ class ByteCodeRepository[BT <: BTypes](
   private def limitCacheSize(): Unit = {
     if (parsedClasses.size > maxCacheSize) {
       // OK if multiple threads get here
-      val minimalLRU = parsedClasses.valuesIterator
-        .collect({
-          case Right((_, lru)) => lru
-        })
-        .toList
-        .sorted(Ordering.Long.reverse)
-        .drop(targetSize)
-        .headOption
-        .getOrElse(Long.MaxValue)
+      val minimalLRU = parsedClasses.valuesIterator.collect({
+        case Right((_, lru)) => lru
+      }).toList.sorted(Ordering.Long.reverse).drop(
+        targetSize).headOption.getOrElse(Long.MaxValue)
       parsedClasses retain {
         case (_, Right((_, lru))) => lru > minimalLRU
         case _                    => false

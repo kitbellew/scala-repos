@@ -35,8 +35,8 @@ abstract class HoconFileSetTestCase(subpath: String)
   }
 
   protected def runTest(file: File): Unit = {
-    val fileContents = new String(FileUtil.loadFileText(file, "UTF-8"))
-      .replaceAllLiterally("\r", "")
+    val fileContents = new String(
+      FileUtil.loadFileText(file, "UTF-8")).replaceAllLiterally("\r", "")
     val allParts = preprocessData(
       fileContents.split("-{5,}").map(trimNewLines).toSeq)
     Assert.assertTrue(allParts.nonEmpty)
@@ -48,10 +48,8 @@ abstract class HoconFileSetTestCase(subpath: String)
   }
 
   protected def settings =
-    CodeStyleSettingsManager
-      .getInstance(getProject)
-      .getCurrentSettings
-      .getCommonSettings(HoconLanguage)
+    CodeStyleSettingsManager.getInstance(
+      getProject).getCurrentSettings.getCommonSettings(HoconLanguage)
 
   protected def adjustSettings(): Unit = {
     val indentOptions = settings.getIndentOptions

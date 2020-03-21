@@ -28,8 +28,7 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("Word2Vec") {
     val sentence = "a b " * 100 + "a c " * 10
     val localDoc = Seq(sentence, sentence)
-    val doc = sc
-      .parallelize(localDoc)
+    val doc = sc.parallelize(localDoc)
       .map(line => line.split(" ").toSeq)
     val model = new Word2Vec().setVectorSize(10).setSeed(42L).fit(doc)
     val syms = model.findSynonyms("a", 2)
@@ -49,8 +48,7 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
     intercept[IllegalArgumentException] {
       val sentence = "a b c"
       val localDoc = Seq(sentence, sentence)
-      val doc = sc
-        .parallelize(localDoc)
+      val doc = sc.parallelize(localDoc)
         .map(line => line.split(" ").toSeq)
       new Word2Vec().setMinCount(10).fit(doc)
     }

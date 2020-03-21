@@ -530,7 +530,8 @@ class DeploymentPlanRevertTest
     }
 
     test(
-      s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(_.name).mkString(", ")}") {
+      s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(
+        _.name).mkString(", ")}") {
       Given("an existing group with apps")
       val original =
         performDeployments(originalBeforeChanges, changesBeforeTest)

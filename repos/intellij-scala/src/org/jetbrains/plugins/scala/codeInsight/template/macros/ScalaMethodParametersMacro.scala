@@ -19,11 +19,9 @@ class ScalaMethodParametersMacro extends Macro {
     Option(
       PsiTreeUtil.getParentOfType(
         context.getPsiElementAtStartOffset,
-        classOf[ScFunction]))
-      .flatMap(fun => Option(fun.getParameterList))
-      .map(_.getParameters.map(param => new TextResult(param.getName)))
-      .map(resArr => new ListResult(resArr.toList))
-      .orNull
+        classOf[ScFunction])).flatMap(fun => Option(fun.getParameterList)).map(
+      _.getParameters.map(param => new TextResult(param.getName))).map(resArr =>
+      new ListResult(resArr.toList)).orNull
   }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "methodParameters"

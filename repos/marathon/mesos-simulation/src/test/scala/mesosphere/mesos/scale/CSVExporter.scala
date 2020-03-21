@@ -16,12 +16,10 @@ object CSVExporter {
   case class Row(name: String, values: Seq[Option[Double]])
 
   def toRows(directory: File): Seq[Row] = {
-    val metrics = directory
-      .listFiles()
-      .toSeq
-      .filter(_.getName.endsWith("json"))
-      .sortBy(_.getName)
-      .map { f => MetricsFormat.readMetric(f.toURI.toURL) }
+    val metrics = directory.listFiles().toSeq.filter(
+      _.getName.endsWith("json")).sortBy(_.getName).map { f =>
+      MetricsFormat.readMetric(f.toURI.toURL)
+    }
     val countr = metrics.flatMap(_.counters.map(_.name)).distinct.sorted
     val gauges = metrics.flatMap(_.gauges.map(_.name)).distinct.sorted
     val histos = metrics.flatMap(_.histograms.map(_.name)).distinct.sorted
@@ -200,9 +198,8 @@ object CSVExporter {
   def writeCSV(directory: File, csv: File, sep: String = ";") = {
     IO.using(new FileWriter(csv)) { writer =>
       toRows(directory).sortBy(_.name).foreach { row =>
-        val values = row.values
-          .map(_.map(_.toString.replace(".", ",")).getOrElse("n/a"))
-          .mkString(sep)
+        val values = row.values.map(
+          _.map(_.toString.replace(".", ",")).getOrElse("n/a")).mkString(sep)
         writer.write(s"${row.name}$sep$values\n")
       }
     }

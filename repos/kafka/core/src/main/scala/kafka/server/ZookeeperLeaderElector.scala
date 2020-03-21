@@ -49,8 +49,9 @@ class ZookeeperLeaderElector(
 
   def startup {
     inLock(controllerContext.controllerLock) {
-      controllerContext.zkUtils.zkClient
-        .subscribeDataChanges(electionPath, leaderChangeListener)
+      controllerContext.zkUtils.zkClient.subscribeDataChanges(
+        electionPath,
+        leaderChangeListener)
       elect
     }
   }
@@ -75,8 +76,8 @@ class ZookeeperLeaderElector(
      */
     if (leaderId != -1) {
       debug(
-        "Broker %d has been elected as leader, so stopping the election process."
-          .format(leaderId))
+        "Broker %d has been elected as leader, so stopping the election process.".format(
+          leaderId))
       return amILeader
     }
 
@@ -97,8 +98,9 @@ class ZookeeperLeaderElector(
 
         if (leaderId != -1)
           debug(
-            "Broker %d was elected as leader instead of broker %d"
-              .format(leaderId, brokerId))
+            "Broker %d was elected as leader instead of broker %d".format(
+              leaderId,
+              brokerId))
         else
           warn(
             "A leader has been elected but just resigned, this will result in another round of election")

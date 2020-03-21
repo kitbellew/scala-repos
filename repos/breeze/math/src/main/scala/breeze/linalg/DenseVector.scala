@@ -100,8 +100,9 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     if (noOffsetOrStride) data(i) = v else data(offset + i * stride) = v
 
   private def checkIfSpecialized(): Unit = {
-    if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseVector") throw new Exception("...")
+    if (data.isInstanceOf[
+          Array[Double]] && getClass.getName() == "breeze.linalg.DenseVector")
+      throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
   //  checkIfSpecialized()
@@ -310,17 +311,29 @@ object DenseVector
       length: Int): DenseVector[V] = {
     (data: AnyRef) match {
       case v: Array[Double] =>
-        new DenseVector(v, offset = offset, stride = stride, length = length)
-          .asInstanceOf[DenseVector[V]]
+        new DenseVector(
+          v,
+          offset = offset,
+          stride = stride,
+          length = length).asInstanceOf[DenseVector[V]]
       case v: Array[Float] =>
-        new DenseVector(v, offset = offset, stride = stride, length = length)
-          .asInstanceOf[DenseVector[V]]
+        new DenseVector(
+          v,
+          offset = offset,
+          stride = stride,
+          length = length).asInstanceOf[DenseVector[V]]
       case v: Array[Int] =>
-        new DenseVector(v, offset = offset, stride = stride, length = length)
-          .asInstanceOf[DenseVector[V]]
+        new DenseVector(
+          v,
+          offset = offset,
+          stride = stride,
+          length = length).asInstanceOf[DenseVector[V]]
       case v: Array[Long] =>
-        new DenseVector(v, offset = offset, stride = stride, length = length)
-          .asInstanceOf[DenseVector[V]]
+        new DenseVector(
+          v,
+          offset = offset,
+          stride = stride,
+          length = length).asInstanceOf[DenseVector[V]]
       case _ =>
         new DenseVector(data, offset = offset, stride = stride, length = length)
     }
@@ -670,9 +683,10 @@ object DenseVector
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
         canDaxpy(a, 1.0, b)
       }
-      implicitly[
-        BinaryUpdateRegistry[Vector[Double], Vector[Double], OpAdd.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[
+        Vector[Double],
+        Vector[Double],
+        OpAdd.type]].register(this)
     }
   }
 
@@ -707,9 +721,11 @@ object DenseVector
     DenseVector[Double]] = {
     pureFromUpdate_Double(canAddIntoD)
   }
-  implicitly[
-    BinaryRegistry[Vector[Double], Vector[Double], OpAdd.type, Vector[Double]]]
-    .register(canAddD)
+  implicitly[BinaryRegistry[
+    Vector[Double],
+    Vector[Double],
+    OpAdd.type,
+    Vector[Double]]].register(canAddD)
 
   implicit val canSubIntoD
       : OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
@@ -717,9 +733,10 @@ object DenseVector
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
         canDaxpy(a, -1.0, b)
       }
-      implicitly[
-        BinaryUpdateRegistry[Vector[Double], Vector[Double], OpSub.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[
+        Vector[Double],
+        Vector[Double],
+        OpSub.type]].register(this)
     }
 
   }
@@ -729,9 +746,11 @@ object DenseVector
     DenseVector[Double]] = {
     pureFromUpdate_Double(canSubIntoD)
   }
-  implicitly[
-    BinaryRegistry[Vector[Double], Vector[Double], OpSub.type, Vector[Double]]]
-    .register(canSubD)
+  implicitly[BinaryRegistry[
+    Vector[Double],
+    Vector[Double],
+    OpSub.type,
+    Vector[Double]]].register(canSubD)
 
   implicit object canDotD
       extends OpMulInner.Impl2[
@@ -774,9 +793,11 @@ object DenseVector
     }
 
   }
-  implicitly[
-    BinaryRegistry[Vector[Double], Vector[Double], OpMulInner.type, Double]]
-    .register(canDotD)
+  implicitly[BinaryRegistry[
+    Vector[Double],
+    Vector[Double],
+    OpMulInner.type,
+    Double]].register(canDotD)
 
   /*
   TODO: scaladoc crashes on this. I don't know why. It makes me want to die a little.

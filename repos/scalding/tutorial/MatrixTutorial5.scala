@@ -17,7 +17,8 @@ class ComputeJaccardJob(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel)).read
+  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel))
+    .read
     .toMatrix[Long, Long, Double]('user1, 'user2, 'rel)
 
   val aBinary = adjacencyMatrix.binarizeAs[Double]
@@ -34,8 +35,7 @@ class ComputeJaccardJob(args: Args) extends Job(args) {
 
   val unionMat = xMat + yMat - intersectMat
   //We are guaranteed to have Double both in the intersection and in the union matrix
-  intersectMat
-    .zip(unionMat)
+  intersectMat.zip(unionMat)
     .mapValues(pair => pair._1 / pair._2)
     .write(Tsv(args("output")))
 

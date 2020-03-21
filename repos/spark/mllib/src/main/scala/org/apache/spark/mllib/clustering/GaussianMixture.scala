@@ -223,14 +223,10 @@ class GaussianMixture private (
         val numPartitions = math.min(k, 1024)
         val tuples =
           Seq.tabulate(k)(i => (sums.means(i), sums.sigmas(i), sums.weights(i)))
-        val (ws, gs) = sc
-          .parallelize(tuples, numPartitions)
-          .map {
-            case (mean, sigma, weight) =>
-              updateWeightsAndGaussians(mean, sigma, weight, sumWeights)
-          }
-          .collect()
-          .unzip
+        val (ws, gs) = sc.parallelize(tuples, numPartitions).map {
+          case (mean, sigma, weight) =>
+            updateWeightsAndGaussians(mean, sigma, weight, sumWeights)
+        }.collect().unzip
         Array.copy(ws.toArray, 0, weights, 0, ws.length)
         Array.copy(gs.toArray, 0, gaussians, 0, gs.length)
       } else {

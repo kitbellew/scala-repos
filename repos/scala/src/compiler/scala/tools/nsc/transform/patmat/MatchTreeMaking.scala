@@ -705,9 +705,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           matchFailGenOverride orElse Some(Throw(MatchErrorClass.tpe, _: Tree))
 
         debug.patmat(
-          "combining cases: " + (casesNoSubstOnly
-            .map(_.mkString(" >> "))
-            .mkString("{", "\n", "}")))
+          "combining cases: " + (casesNoSubstOnly.map(
+            _.mkString(" >> ")).mkString("{", "\n", "}")))
 
         val (suppression, requireSwitch): (Suppression, Boolean) =
           if (settings.XnoPatmatAnalysis) (Suppression.FullSuppression, false)
@@ -732,13 +731,11 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                     l match {
                       case a :: b :: c :: _ => 3
                       case cases =>
-                        cases
-                          .map({
-                            case AlternativesTreeMaker(_, alts, _) :: _ =>
-                              lengthMax3(alts)
-                            case c => 1
-                          })
-                          .sum
+                        cases.map({
+                          case AlternativesTreeMaker(_, alts, _) :: _ =>
+                            lengthMax3(alts)
+                          case c => 1
+                        }).sum
                     }
                   lengthMax3(casesNoSubstOnly) > 2
                 }
@@ -770,8 +767,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             val synthCatchAll =
               if (casesNoSubstOnly.nonEmpty && {
                     val nonTrivLast = casesNoSubstOnly.last
-                    nonTrivLast.nonEmpty && nonTrivLast.head
-                      .isInstanceOf[BodyTreeMaker]
+                    nonTrivLast.nonEmpty && nonTrivLast.head.isInstanceOf[
+                      BodyTreeMaker]
                   }) None
               else matchFailGen
 

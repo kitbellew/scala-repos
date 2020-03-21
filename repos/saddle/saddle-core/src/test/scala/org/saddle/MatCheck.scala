@@ -234,9 +234,8 @@ class MatCheck extends Specification with ScalaCheck {
 
     "roundTo works" in {
       forAll { (ma: Mat[Double]) =>
-        ma.contents.map((v: Double) => math.round(v * 100) / 100d) must_== ma
-          .roundTo(2)
-          .contents
+        ma.contents.map((v: Double) =>
+          math.round(v * 100) / 100d) must_== ma.roundTo(2).contents
       }
     }
 

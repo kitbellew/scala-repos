@@ -17,8 +17,9 @@ class RewriteDistinct extends Phase {
           {
 
             case n @ Bind(s1, dist1: Distinct, Pure(sel1, ts1)) =>
-              logger
-                .debug("Rewriting Distinct in Bind:", Ellipsis(n, List(0, 0)))
+              logger.debug(
+                "Rewriting Distinct in Bind:",
+                Ellipsis(n, List(0, 0)))
               val (inner, sel2) = rewrite(s1, dist1, sel1)
               Bind(s1, inner, Pure(sel2, ts1)).infer()
 
@@ -40,30 +41,24 @@ class RewriteDistinct extends Phase {
     }
 
   def rewrite(s1: TermSymbol, dist1: Distinct, sel1: Node): (Node, Node) = {
-    val refFields = sel1
-      .collect[TermSymbol] {
-        case Select(Ref(s), f) if s == s1 => f
-      }
-      .toSet
+    val refFields = sel1.collect[TermSymbol] {
+      case Select(Ref(s), f) if s == s1 => f
+    }.toSet
     logger.debug("Referenced fields: " + refFields.mkString(", "))
     val onFlat = ProductNode(ConstArray(dist1.on)).flatten
     val onNodes = onFlat.children.toSet
-    val onFieldPos = onNodes.iterator.zipWithIndex
-      .collect[(TermSymbol, Int)] {
-        case (Select(Ref(s), f), idx) if s == dist1.generator => (f, idx)
-      }
-      .toMap
+    val onFieldPos = onNodes.iterator.zipWithIndex.collect[(TermSymbol, Int)] {
+      case (Select(Ref(s), f), idx) if s == dist1.generator => (f, idx)
+    }.toMap
     logger.debug(
       "Fields used directly in 'on' clause: " + onFieldPos.keySet.mkString(
         ", "))
     if ((refFields -- onFieldPos.keys).isEmpty) {
       // Only distinct fields referenced -> Create subquery and remove 'on' clause
       val onDefs = ConstArray.from(onNodes).map((new AnonSymbol, _))
-      val onLookup = onDefs.iterator
-        .collect[(TermSymbol, AnonSymbol)] {
-          case (a, Select(Ref(s), f)) if s == dist1.generator => (f, a)
-        }
-        .toMap
+      val onLookup = onDefs.iterator.collect[(TermSymbol, AnonSymbol)] {
+        case (a, Select(Ref(s), f)) if s == dist1.generator => (f, a)
+      }.toMap
       val inner = Bind(
         dist1.generator,
         Distinct(new AnonSymbol, dist1.from, ProductNode(ConstArray.empty)),

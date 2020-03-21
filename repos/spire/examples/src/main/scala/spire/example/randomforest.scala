@@ -363,13 +363,10 @@ class RandomForestClassification[V, @sp(Double) F, K](implicit
   }
 
   protected def fromForest(forest: Forest): V => K = { v =>
-    forest.trees
-      .foldLeft(Map.empty[K, Int]) { (acc, classify) =>
-        val k = classify(v)
-        acc + (k -> (acc.getOrElse(k, 0) + 1))
-      }
-      .maxBy(_._2)
-      ._1
+    forest.trees.foldLeft(Map.empty[K, Int]) { (acc, classify) =>
+      val k = classify(v)
+      acc + (k -> (acc.getOrElse(k, 0) + 1))
+    }.maxBy(_._2)._1
   }
 }
 

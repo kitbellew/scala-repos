@@ -37,9 +37,9 @@ object AlgorithmCheckerSpec extends Specification {
     "fail a weak key algorithm (RSA < 512)" in {
       val certificate: Certificate =
         CertificateGenerator.generateRSAWithSHA256(512)
-      checker(Nil, Seq("RSA keySize < 1024"))
-        .check(certificate, emptySet())
-        .must(throwA[CertPathValidatorException])
+      checker(Nil, Seq("RSA keySize < 1024")).check(
+        certificate,
+        emptySet()).must(throwA[CertPathValidatorException])
     }
 
     "pass a good signature algorithm (SHA256)" in {
@@ -52,9 +52,8 @@ object AlgorithmCheckerSpec extends Specification {
     "fail a bad signature algorithm (MD5)" in {
       val intermediateCert: Certificate =
         CertificateGenerator.generateRSAWithMD5(2048)
-      checker(Seq("MD5"), Nil)
-        .check(intermediateCert, emptySet())
-        .must(throwA[CertPathValidatorException])
+      checker(Seq("MD5"), Nil).check(intermediateCert, emptySet()).must(
+        throwA[CertPathValidatorException])
     }
 
     "neither info nor warning on a signature containing sha-1 that expires before 1 June 2016" in {

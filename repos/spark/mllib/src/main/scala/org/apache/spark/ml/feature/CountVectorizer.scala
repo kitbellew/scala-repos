@@ -155,26 +155,21 @@ class CountVectorizer(override val uid: String)
     } else {
       $(minDF) * input.cache().count()
     }
-    val wordCounts: RDD[(String, Long)] = input
-      .flatMap {
-        case (tokens) =>
-          val wc = new OpenHashMap[String, Long]
-          tokens.foreach { w => wc.changeValue(w, 1L, _ + 1L) }
-          wc.map { case (word, count) => (word, (count, 1)) }
-      }
-      .reduceByKey {
-        case ((wc1, df1), (wc2, df2)) =>
-          (wc1 + wc2, df1 + df2)
-      }
-      .filter {
-        case (word, (wc, df)) =>
-          df >= minDf
-      }
-      .map {
-        case (word, (count, dfCount)) =>
-          (word, count)
-      }
-      .cache()
+    val wordCounts: RDD[(String, Long)] = input.flatMap {
+      case (tokens) =>
+        val wc = new OpenHashMap[String, Long]
+        tokens.foreach { w => wc.changeValue(w, 1L, _ + 1L) }
+        wc.map { case (word, count) => (word, (count, 1)) }
+    }.reduceByKey {
+      case ((wc1, df1), (wc2, df2)) =>
+        (wc1 + wc2, df1 + df2)
+    }.filter {
+      case (word, (wc, df)) =>
+        df >= minDf
+    }.map {
+      case (word, (count, dfCount)) =>
+        (word, count)
+    }.cache()
     val fullVocabSize = wordCounts.count()
     val vocab: Array[String] = {
       val tmpSortedWC: Array[(String, Long)] = if (fullVocabSize <= vocSize) {
@@ -318,11 +313,8 @@ object CountVectorizerModel extends MLReadable[CountVectorizerModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.vocabulary)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -334,8 +326,7 @@ object CountVectorizerModel extends MLReadable[CountVectorizerModel] {
     override def load(path: String): CountVectorizerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
+      val data = sqlContext.read.parquet(dataPath)
         .select("vocabulary")
         .head()
       val vocabulary = data.getAs[Seq[String]](0).toArray

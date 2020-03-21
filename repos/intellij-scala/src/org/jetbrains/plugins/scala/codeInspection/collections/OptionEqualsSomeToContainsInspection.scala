@@ -27,14 +27,12 @@ object OptionEqualsSomeToContains extends SimplificationType {
         None
       case qual `==` `scalaSome`(elem) if isOption(qual) =>
         Some(
-          replace(expr)
-            .withText(s"${qual.getText}.contains(${elem.getText})")
-            .highlightAll)
+          replace(expr).withText(
+            s"${qual.getText}.contains(${elem.getText})").highlightAll)
       case `scalaSome`(elem) `==` qual if isOption(qual) =>
         Some(
-          replace(expr)
-            .withText(s"${qual.getText}.contains(${elem.getText})")
-            .highlightAll)
+          replace(expr).withText(
+            s"${qual.getText}.contains(${elem.getText})").highlightAll)
       case _ => None
     }
 }
@@ -51,14 +49,12 @@ object OptionNotEqualsSomeToNotContains extends SimplificationType {
         None
       case qual `!=` `scalaSome`(elem) if isOption(qual) =>
         Some(
-          replace(expr)
-            .withText(s"!${qual.getText}.contains(${elem.getText})")
-            .highlightAll)
+          replace(expr).withText(
+            s"!${qual.getText}.contains(${elem.getText})").highlightAll)
       case `scalaSome`(elem) `!=` qual if isOption(qual) =>
         Some(
-          replace(expr)
-            .withText(s"!${qual.getText}.contains(${elem.getText})")
-            .highlightAll)
+          replace(expr).withText(
+            s"!${qual.getText}.contains(${elem.getText})").highlightAll)
       case _ => None
     }
 }

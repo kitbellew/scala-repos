@@ -114,9 +114,8 @@ object Challenge extends LilaController {
   def rematchOf(gameId: String) =
     Auth { implicit ctx => me =>
       OptionFuResult(GameRepo game gameId) { g =>
-        Pov
-          .opponentOfUserId(g, me.id)
-          .flatMap(_.userId) ?? UserRepo.byId flatMap {
+        Pov.opponentOfUserId(g, me.id).flatMap(
+          _.userId) ?? UserRepo.byId flatMap {
           _ ?? { opponent =>
             restriction(opponent) flatMap {
               case Some(r) =>
@@ -144,8 +143,9 @@ object Challenge extends LilaController {
           case true =>
             fuccess(s"{{user}} doesn't accept challenges from you.".some)
           case false =>
-            Env.pref.api getPref user zip Env.relation.api
-              .fetchFollows(user.id, me.id) map {
+            Env.pref.api getPref user zip Env.relation.api.fetchFollows(
+              user.id,
+              me.id) map {
               case (pref, follow) =>
                 lila.pref.Pref.Challenge.block(
                   me,

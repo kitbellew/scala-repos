@@ -103,9 +103,10 @@ trait JsObj extends JsExp {
   def props: List[(String, JsExp)]
 
   def toJsCmd =
-    props
-      .map { case (n, v) => n.encJs + ": " + v.toJsCmd }
-      .mkString("{", ", ", "}")
+    props.map { case (n, v) => n.encJs + ": " + v.toJsCmd }.mkString(
+      "{",
+      ", ",
+      "}")
 
   override def toString(): String = toJsCmd
 
@@ -214,12 +215,10 @@ trait JsExp extends HtmlFixer with ToJsCmd {
     val ran = "v" + Helpers.nextFuncName
     JsCmds.JsCrVar(ran, this) &
       JE.JsRaw(
-          "if (" + ran + ".parentNode) " + ran + " = " + ran + ".cloneNode(true)")
-        .cmd &
+        "if (" + ran + ".parentNode) " + ran + " = " + ran + ".cloneNode(true)").cmd &
       JE.JsRaw(
-          "if (" + ran + ".nodeType) {" + parentName + ".appendChild(" + ran + ");} else {" +
-            parentName + ".appendChild(document.createTextNode(" + ran + "));}")
-        .cmd
+        "if (" + ran + ".nodeType) {" + parentName + ".appendChild(" + ran + ");} else {" +
+          parentName + ".appendChild(document.createTextNode(" + ran + "));}").cmd
   }
 
   /**
@@ -363,9 +362,9 @@ object JE {
             (if (tables.isEmpty) ""
              else
                ", " +
-                 tables
-                   .map { case (l, r) => "[" + l.encJs + ", " + r.encJs + "]" }
-                   .mkString(", ")) +
+                 tables.map {
+                   case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                 }.mkString(", ")) +
             ")"
       }
 
@@ -376,9 +375,9 @@ object JE {
             (if (tables.isEmpty) ""
              else
                ", " +
-                 tables
-                   .map { case (l, r) => "[" + l.encJs + ", " + r.encJs + "]" }
-                   .mkString(", ")) +
+                 tables.map {
+                   case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                 }.mkString(", ")) +
             ")"
       }
   }
@@ -716,12 +715,10 @@ trait HtmlFixer {
     def unapply(in: NodeSeq): Option[Elem] =
       in match {
         case e: Elem => {
-          e.attribute("type")
-            .map(_.text)
-            .filter(_ == "text/javascript")
-            .flatMap {
-              a => if (e.attribute("src").isEmpty) Some(e) else None
-            }
+          e.attribute("type").map(_.text).filter(
+            _ == "text/javascript").flatMap {
+            a => if (e.attribute("src").isEmpty) Some(e) else None
+          }
         }
         case _ => None
       }
@@ -1010,16 +1007,14 @@ object JsCmds {
     while (x.length > 0) {x.remove(0);}
     var y = null;
     """ +
-        opts
-          .map {
-            case (value, text) =>
-              "y=document.createElement('option'); " +
-                "y.text = " + text.encJs + "; " +
-                "y.value = " + value.encJs + "; " +
-                (if (Full(value) == dflt) "y.selected = true; " else "") +
-                " try {x.add(y, null);} catch(e) {if (typeof(e) == 'object' && typeof(e.number) == 'number' && (e.number & 0xFFFF) == 5){ x.add(y,x.options.length); } } "
-          }
-          .mkString("\n") + "};"
+        opts.map {
+          case (value, text) =>
+            "y=document.createElement('option'); " +
+              "y.text = " + text.encJs + "; " +
+              "y.value = " + value.encJs + "; " +
+              (if (Full(value) == dflt) "y.selected = true; " else "") +
+              " try {x.add(y, null);} catch(e) {if (typeof(e) == 'object' && typeof(e.number) == 'number' && (e.number & 0xFFFF) == 5){ x.add(y,x.options.length); } } "
+        }.mkString("\n") + "};"
   }
 
   case object JsIf {

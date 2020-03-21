@@ -141,8 +141,8 @@ object MongoAPIKeyManager extends Logging {
       _ <- db(
         insert(rootGrant.serialize.asInstanceOf[JObject]).into(grantCollection))
       _ <- db(
-        insert(rootAPIKeyRecord.serialize.asInstanceOf[JObject])
-          .into(keyCollection))
+        insert(rootAPIKeyRecord.serialize.asInstanceOf[JObject]).into(
+          keyCollection))
     } yield rootAPIKeyRecord
   }
 
@@ -201,8 +201,8 @@ class MongoAPIKeyManager(
       grants,
       false)
     database(
-      insert(apiKey.serialize.asInstanceOf[JObject])
-        .into(settings.apiKeys)) map {
+      insert(apiKey.serialize.asInstanceOf[JObject]).into(
+        settings.apiKeys)) map {
       _ => apiKey
     }
   }
@@ -258,9 +258,8 @@ class MongoAPIKeyManager(
       keyValue: MongoPrimitive,
       collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] = {
     database {
-      selectAll
-        .from(collection)
-        .where(stringToMongoFilterBuilder(keyName) contains keyValue)
+      selectAll.from(collection).where(
+        stringToMongoFilterBuilder(keyName) contains keyValue)
     } map {
       _.map(_.deserialize[A]).toSet
     }
@@ -345,8 +344,8 @@ class MongoAPIKeyManager(
       case ot @ Some(t) =>
         for {
           _ <- database(
-            insert(t.serialize.asInstanceOf[JObject])
-              .into(settings.deletedAPIKeys))
+            insert(t.serialize.asInstanceOf[JObject]).into(
+              settings.deletedAPIKeys))
           _ <- database(
             remove.from(settings.apiKeys).where("apiKey" === apiKey))
         } yield { ot }
@@ -363,8 +362,8 @@ class MongoAPIKeyManager(
       result <- leafOpt map { leafGrant =>
         for {
           _ <- database(
-            insert(leafGrant.serialize.asInstanceOf[JObject])
-              .into(settings.deletedGrants))
+            insert(leafGrant.serialize.asInstanceOf[JObject]).into(
+              settings.deletedGrants))
           _ <- database(remove.from(settings.grants).where("grantId" === gid))
         } yield { deletedChildren + leafGrant }
       } getOrElse {

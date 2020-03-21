@@ -24,30 +24,25 @@ class ScalaDocNewlinedPreFormatProcessor
     extends ScalaRecursiveElementVisitor
     with PreFormatProcessor {
   override def process(element: ASTNode, range: TextRange): TextRange =
-    Option(element.getPsi)
-      .map { psiElem =>
-        val oldRange = psiElem.getTextRange
-        psiElem.accept(this)
-        val diff = psiElem.getTextRange.getEndOffset - oldRange.getEndOffset
-        //range can be overshrinked only for small elements that can't be formatted on their own, so it's ok to return whole range
-        if (range.getLength + diff <= 0) 0 else diff
-      }
-      .map(range.grown)
-      .getOrElse(range)
+    Option(element.getPsi).map { psiElem =>
+      val oldRange = psiElem.getTextRange
+      psiElem.accept(this)
+      val diff = psiElem.getTextRange.getEndOffset - oldRange.getEndOffset
+      //range can be overshrinked only for small elements that can't be formatted on their own, so it's ok to return whole range
+      if (range.getLength + diff <= 0) 0 else diff
+    }.map(range.grown).getOrElse(range)
 
   override def visitDocComment(s: ScDocComment) {
-    val scalaSettings = CodeStyleSettingsManager
-      .getSettings(s.getProject)
-      .getCustomSettings(classOf[ScalaCodeStyleSettings])
+    val scalaSettings = CodeStyleSettingsManager.getSettings(
+      s.getProject).getCustomSettings(classOf[ScalaCodeStyleSettings])
     s.getChildren.foreach { fixNewlines(_, scalaSettings) }
   }
 
   override def visitTag(s: ScDocTag): Unit =
     fixNewlines(
       s,
-      CodeStyleSettingsManager
-        .getSettings(s.getProject)
-        .getCustomSettings(classOf[ScalaCodeStyleSettings]))
+      CodeStyleSettingsManager.getSettings(s.getProject).getCustomSettings(
+        classOf[ScalaCodeStyleSettings]))
 
   private def fixNewlines(
       element: PsiElement,
@@ -122,11 +117,8 @@ class ScalaDocNewlinedPreFormatProcessor
     } else {
       //since siblings can be replaced, first make a list of children and only then process them
       def getSiblings(current: PsiElement): List[PsiElement] =
-        Option(current)
-          .map(_.getNextSibling)
-          .filter(_ != null)
-          .map(other => other :: getSiblings(other))
-          .getOrElse(List())
+        Option(current).map(_.getNextSibling).filter(_ != null).map(other =>
+          other :: getSiblings(other)).getOrElse(List())
 
       for (child <- getSiblings(element.getFirstChild)) fixAsterisk(child)
     }
@@ -206,9 +198,8 @@ object ScalaDocNewlinedPreFormatProcessor {
     isWhiteSpace(element) && element.getText.contains("\n")
 
   def getTagName(element: ScDocTag): Option[String] =
-    Option(element.getNameElement)
-      .filter(_.getNode.getElementType == ScalaDocTokenType.DOC_TAG_NAME)
-      .map(_.getText)
+    Option(element.getNameElement).filter(
+      _.getNode.getElementType == ScalaDocTokenType.DOC_TAG_NAME).map(_.getText)
 
   def isTag(element: PsiElement): Boolean =
     element.getNode.getElementType == ScalaDocElementTypes.DOC_TAG

@@ -203,9 +203,7 @@ object GenerateColumnAccessor
 
     logDebug(s"Generated ColumnarIterator: ${CodeFormatter.format(code)}")
 
-    CodeGenerator
-      .compile(code)
-      .generate(Array.empty)
-      .asInstanceOf[ColumnarIterator]
+    CodeGenerator.compile(code).generate(Array.empty).asInstanceOf[
+      ColumnarIterator]
   }
 }

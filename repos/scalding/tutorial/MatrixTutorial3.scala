@@ -17,10 +17,12 @@ class ComputeMatrixIntersectionJob(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val adjacencyMatrix1 = Tsv(args("input1"), ('user1, 'user2, 'rel)).read
+  val adjacencyMatrix1 = Tsv(args("input1"), ('user1, 'user2, 'rel))
+    .read
     .toMatrix[Long, Long, Double]('user1, 'user2, 'rel)
 
-  val adjacencyMatrix2 = Tsv(args("input2"), ('user1, 'user2, 'rel)).read
+  val adjacencyMatrix2 = Tsv(args("input2"), ('user1, 'user2, 'rel))
+    .read
     .toMatrix[Long, Long, Double]('user1, 'user2, 'rel)
 
   //zip puts creates a pair element out of corresponding elements in the two matrices

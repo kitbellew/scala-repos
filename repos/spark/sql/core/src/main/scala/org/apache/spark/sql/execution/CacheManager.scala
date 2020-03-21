@@ -132,8 +132,9 @@ private[sql] class CacheManager extends Logging {
         cachedData.indexWhere(cd => planToCache.sameResult(cd.plan))
       val found = dataIndex >= 0
       if (found) {
-        cachedData(dataIndex).cachedRepresentation.cachedColumnBuffers
-          .unpersist(blocking)
+        cachedData(
+          dataIndex).cachedRepresentation.cachedColumnBuffers.unpersist(
+          blocking)
         cachedData.remove(dataIndex)
       }
       found

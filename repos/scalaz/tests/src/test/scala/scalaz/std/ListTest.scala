@@ -27,10 +27,8 @@ object ListTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: List[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
-        .zipWithIndex
-        .filter(p => isEven(p._2))
-        .map(_._1) must_=== (a)
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2)).map(
+        _._1) must_=== (a)
   }
 
   "intercalate is same as a.intersperse(b).flatten" ! forAll {
@@ -121,13 +119,12 @@ object ListTest extends SpecLite {
   "takeWhileM example" in {
     def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
       as.takeWhileM[State[Int, ?]](a =>
-          State {
-            i =>
-              val j = i + (if (f(a)) 0 else 1)
-              val done = j >= n
-              (j, !done)
-          })
-        .evalZero[Int]
+        State {
+          i =>
+            val j = i + (if (f(a)) 0 else 1)
+            val done = j >= n
+            (j, !done)
+        }).evalZero[Int]
 
     val actual = takeWhileN("/abc/def/hij/klm".toList, 4)(_ != '/').mkString
     actual must_=== ("/abc/def/hij")

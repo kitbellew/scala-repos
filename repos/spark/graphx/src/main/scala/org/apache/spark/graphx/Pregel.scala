@@ -139,13 +139,11 @@ object Pregel extends Logging {
       // Send new messages, skipping edges where neither side received a message. We must cache
       // messages so it can be materialized on the next line, allowing us to uncache the previous
       // iteration.
-      messages = GraphXUtils
-        .mapReduceTriplets(
-          g,
-          sendMsg,
-          mergeMsg,
-          Some((oldMessages, activeDirection)))
-        .cache()
+      messages = GraphXUtils.mapReduceTriplets(
+        g,
+        sendMsg,
+        mergeMsg,
+        Some((oldMessages, activeDirection))).cache()
       // The call to count() materializes `messages` and the vertices of `g`. This hides oldMessages
       // (depended on by the vertices of g) and the vertices of prevG (depended on by oldMessages
       // and the vertices of g).

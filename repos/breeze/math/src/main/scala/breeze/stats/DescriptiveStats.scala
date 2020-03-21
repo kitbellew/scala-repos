@@ -228,41 +228,39 @@ trait DescriptiveStats {
          * However, we also use Bessel's correction, in order to agree with the rest of breeze.
          */
         def apply(data: Seq[DenseVector[Double]]): DenseMatrix[Double] = {
-          data.headOption
-            .map(firstRow => {
-              val result = new DenseMatrix[Double](firstRow.size, firstRow.size)
-              val dataSize = firstRow.size
-              //First compute the mean
-              var mean = firstRow.copy
-              var numRows: Long = 1
-              data.tail.foreach(x => {
-                numRows += 1
-                if (mean.size != x.size) {
-                  throw new IllegalArgumentException(
-                    "Attempting to compute covariance of dataset where elements have different sizes")
-                }
-                cfor(0)(i => i < firstRow.size, i => i + 1)(i => {
-                  mean(i) = mean(i) + x(i)
-                })
-
-              })
-              val numRowsD = numRows.toDouble
-              mean = mean / numRowsD
-
-              //Second compute the covariance
-              data.foreach { x =>
-                cfor(0)(i => i < dataSize, i => i + 1)(i => {
-                  val a = x(i) - mean(i)
-                  cfor(0)(j => j < dataSize, j => j + 1)(j => {
-                    val b = x(j) - mean(j)
-                    result(i, j) = result(i, j) + (a * b / (numRowsD - 1)) //Use
-                  })
-                })
+          data.headOption.map(firstRow => {
+            val result = new DenseMatrix[Double](firstRow.size, firstRow.size)
+            val dataSize = firstRow.size
+            //First compute the mean
+            var mean = firstRow.copy
+            var numRows: Long = 1
+            data.tail.foreach(x => {
+              numRows += 1
+              if (mean.size != x.size) {
+                throw new IllegalArgumentException(
+                  "Attempting to compute covariance of dataset where elements have different sizes")
               }
+              cfor(0)(i => i < firstRow.size, i => i + 1)(i => {
+                mean(i) = mean(i) + x(i)
+              })
 
-              result
             })
-            .getOrElse(new DenseMatrix[Double](0, 0))
+            val numRowsD = numRows.toDouble
+            mean = mean / numRowsD
+
+            //Second compute the covariance
+            data.foreach { x =>
+              cfor(0)(i => i < dataSize, i => i + 1)(i => {
+                val a = x(i) - mean(i)
+                cfor(0)(j => j < dataSize, j => j + 1)(j => {
+                  val b = x(j) - mean(j)
+                  result(i, j) = result(i, j) + (a * b / (numRowsD - 1)) //Use
+                })
+              })
+            }
+
+            result
+          }).getOrElse(new DenseMatrix[Double](0, 0))
         }
       }
   }

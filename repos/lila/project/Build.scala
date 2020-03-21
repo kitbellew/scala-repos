@@ -229,18 +229,26 @@ object ApplicationBuild extends Build {
       libraryDependencies ++= provided(play.api, RM, PRM)
     )
 
-  lazy val timeline =
-    project("timeline", Seq(common, db, game, user, hub, security, relation))
-      .settings(
-        libraryDependencies ++= provided(play.api, play.test, RM, PRM)
-      )
+  lazy val timeline = project(
+    "timeline",
+    Seq(common, db, game, user, hub, security, relation)).settings(
+    libraryDependencies ++= provided(play.api, play.test, RM, PRM)
+  )
 
   lazy val mod = project(
     "mod",
-    Seq(common, db, user, hub, security, game, analyse, evaluation, report))
-    .settings(
-      libraryDependencies ++= provided(play.api, play.test, RM, PRM)
-    )
+    Seq(
+      common,
+      db,
+      user,
+      hub,
+      security,
+      game,
+      analyse,
+      evaluation,
+      report)).settings(
+    libraryDependencies ++= provided(play.api, play.test, RM, PRM)
+  )
 
   lazy val user =
     project("user", Seq(common, memo, db, hub, chess, rating)).settings(
@@ -346,10 +354,19 @@ object ApplicationBuild extends Build {
 
   lazy val tournament = project(
     "tournament",
-    Seq(common, hub, socket, chess, game, round, security, chat, memo, quote))
-    .settings(
-      libraryDependencies ++= provided(play.api, RM, PRM)
-    )
+    Seq(
+      common,
+      hub,
+      socket,
+      chess,
+      game,
+      round,
+      security,
+      chat,
+      memo,
+      quote)).settings(
+    libraryDependencies ++= provided(play.api, RM, PRM)
+  )
 
   lazy val simul = project(
     "simul",

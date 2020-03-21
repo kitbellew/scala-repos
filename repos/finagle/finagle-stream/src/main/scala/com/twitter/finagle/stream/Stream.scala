@@ -84,8 +84,8 @@ class Stream[Req: RequestType] extends CodecFactory[Req, StreamResponse] {
         ): Service[Req, StreamResponse] =
           new StreamClientDispatcher(
             trans,
-            params[param.Stats].statsReceiver
-              .scope(GenSerialClientDispatcher.StatsScope)
+            params[param.Stats].statsReceiver.scope(
+              GenSerialClientDispatcher.StatsScope)
           )
 
         // TODO: remove when the Meta[_] patch lands.

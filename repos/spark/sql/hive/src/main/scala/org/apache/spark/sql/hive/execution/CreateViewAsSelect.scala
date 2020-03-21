@@ -58,8 +58,8 @@ private[hive] case class CreateViewAsSelect(
 
       case true if orReplace =>
         // Handles `CREATE OR REPLACE VIEW v0 AS SELECT ...`
-        hiveContext.sessionState.catalog.client
-          .alertView(prepareTable(sqlContext))
+        hiveContext.sessionState.catalog.client.alertView(
+          prepareTable(sqlContext))
 
       case true =>
         // Handles `CREATE VIEW v0 AS SELECT ...`. Throws exception when the target view already
@@ -70,8 +70,8 @@ private[hive] case class CreateViewAsSelect(
             "CREATE OR REPLACE VIEW AS")
 
       case false =>
-        hiveContext.sessionState.catalog.client
-          .createView(prepareTable(sqlContext))
+        hiveContext.sessionState.catalog.client.createView(
+          prepareTable(sqlContext))
     }
 
     Seq.empty[Row]
@@ -116,12 +116,9 @@ private[hive] case class CreateViewAsSelect(
       if (tableDesc.schema.isEmpty) {
         columnNames.mkString(", ")
       } else {
-        columnNames
-          .zip(tableDesc.schema.map(f => quote(f.name)))
-          .map {
-            case (name, alias) => s"$name AS $alias"
-          }
-          .mkString(", ")
+        columnNames.zip(tableDesc.schema.map(f => quote(f.name))).map {
+          case (name, alias) => s"$name AS $alias"
+        }.mkString(", ")
       }
     }
 

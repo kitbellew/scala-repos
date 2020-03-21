@@ -63,11 +63,9 @@ object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
     new ALSModel(
       productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"),
       itemStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
-        .first,
+        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap").first,
       items = sc.get
-        .objectFile[Map[Int, Item]](s"/tmp/${id}/items")
-        .first)
+        .objectFile[Map[Int, Item]](s"/tmp/${id}/items").first)
   }
 }
 
@@ -103,13 +101,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
 
     // collect Item as Map and convert ID to Int index
-    val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
-      .collectAsMap
-      .toMap
+    val items: Map[Int, Item] = data.items.map {
+      case (id, item) =>
+        (itemStringIntMap(id), item)
+    }.collectAsMap.toMap
 
     val mllibRatings = data.viewEvents
       .map { r =>
@@ -126,13 +121,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
             + " to Int index.")
 
         ((uindex, iindex), 1)
-      }
-      .filter {
+      }.filter {
         case ((u, i), v) =>
           // keep events with valid user and item index
           (u != -1) && (i != -1)
-      }
-      .reduceByKey(_ + _) // aggregate all view events of same user-item pair
+      }.reduceByKey(_ + _) // aggregate all view events of same user-item pair
       .map {
         case ((u, i), v) =>
           // MLlibRating requires integer index for user and item
@@ -168,19 +161,16 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
   def predict(model: ALSModel, query: Query): PredictedResult = {
 
     // convert items to Int index
-    val queryList: Set[Int] =
-      query.items.map(model.itemStringIntMap.get(_)).flatten.toSet
+    val queryList: Set[Int] = query.items.map(model.itemStringIntMap.get(_))
+      .flatten.toSet
 
     val queryFeatures: Vector[Array[Double]] = queryList.toVector.par
       .map { item =>
         // productFeatures may not contain the requested item
         val qf: Option[Array[Double]] = model.productFeatures
-          .lookup(item)
-          .headOption
+          .lookup(item).headOption
         qf
-      }
-      .seq
-      .flatten
+      }.seq.flatten
 
     val whiteList: Option[Set[Int]] =
       query.whiteList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
@@ -275,16 +265,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // discard items in query as well
     (!queryList.contains(i)) &&
     // filter categories
-    categories
-      .map { cat =>
-        items(i).categories
-          .map { itemCat =>
-            // keep this item if has ovelap categories with the query
-            !(itemCat.toSet.intersect(cat).isEmpty)
-          }
-          .getOrElse(false) // discard this item if it has no categories
-      }
-      .getOrElse(true)
+    categories.map { cat =>
+      items(i).categories.map { itemCat =>
+        // keep this item if has ovelap categories with the query
+        !(itemCat.toSet.intersect(cat).isEmpty)
+      }.getOrElse(false) // discard this item if it has no categories
+    }.getOrElse(true)
   }
 
 }

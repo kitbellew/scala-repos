@@ -98,9 +98,8 @@ class QuantileDiscretizerSuite
 
     val datasetSize = QuantileDiscretizer.minSamplesRequired + 1
     val numBuckets = 5
-    val df = sc
-      .parallelize((1.0 to datasetSize by 1.0).map(Tuple1.apply))
-      .toDF("input")
+    val df = sc.parallelize((1.0 to datasetSize by 1.0).map(Tuple1.apply)).toDF(
+      "input")
     val discretizer = new QuantileDiscretizer()
       .setInputCol("input")
       .setOutputCol("result")
@@ -136,24 +135,17 @@ private object QuantileDiscretizerSuite extends SparkFunSuite {
     import sqlCtx.implicits._
 
     val df = sc.parallelize(data.map(Tuple1.apply)).toDF("input")
-    val discretizer = new QuantileDiscretizer()
-      .setInputCol("input")
-      .setOutputCol("result")
-      .setNumBuckets(numBucket)
-      .setSeed(1)
+    val discretizer =
+      new QuantileDiscretizer().setInputCol("input").setOutputCol("result")
+        .setNumBuckets(numBucket).setSeed(1)
     val model = discretizer.fit(df)
     assert(model.hasParent)
     val result = model.transform(df)
 
-    val transformedFeatures = result
-      .select("result")
-      .collect()
+    val transformedFeatures = result.select("result").collect()
       .map { case Row(transformedFeature: Double) => transformedFeature }
-    val transformedAttrs = Attribute
-      .fromStructField(result.schema("result"))
-      .asInstanceOf[NominalAttribute]
-      .values
-      .get
+    val transformedAttrs = Attribute.fromStructField(result.schema("result"))
+      .asInstanceOf[NominalAttribute].values.get
 
     assert(
       transformedFeatures === expectedResult,

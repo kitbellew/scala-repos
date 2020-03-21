@@ -108,9 +108,9 @@ class Jetty6AsyncProvider(req: HTTPRequest)
     try {
       val cont = getContinuation.invoke(contSupport, servletReq, LiftRules)
       logger.trace("About to suspend continuation")
-      val b = suspendMeth
-        .invoke(cont, new java.lang.Long(timeout))
-        .asInstanceOf[Boolean]
+      val b = suspendMeth.invoke(
+        cont,
+        new java.lang.Long(timeout)).asInstanceOf[Boolean]
       if (!b) RetryState.TIMED_OUT else RetryState.RESUMED
     } catch {
       case e: java.lang.reflect.InvocationTargetException

@@ -78,11 +78,10 @@ class CamelMessage(
       t: ClassTag[T],
       camelContext: CamelContext): Try[T] =
     Try(
-      headers
-        .get(name)
-        .map(camelContext.getTypeConverter
-          .mandatoryConvertTo[T](t.runtimeClass.asInstanceOf[Class[T]], _))
-        .getOrElse(throw new NoSuchElementException(name)))
+      headers.get(name).map(
+        camelContext.getTypeConverter.mandatoryConvertTo[T](
+          t.runtimeClass.asInstanceOf[Class[T]],
+          _)).getOrElse(throw new NoSuchElementException(name)))
 
   /**
     * Java API: Returns the header by given <code>name</code> parameter. The header is  converted to type <code>T</code> as defined by the <code>clazz</code> parameter.

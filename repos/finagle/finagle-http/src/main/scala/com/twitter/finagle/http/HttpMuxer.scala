@@ -112,8 +112,10 @@ object HttpMuxer extends Service[Request, Response] {
 
   for (handler <- LoadService[HttpMuxHandler]()) {
     log.info(
-      "HttpMuxer[%s] = %s(%s)"
-        .format(handler.pattern, handler.getClass.getName, handler))
+      "HttpMuxer[%s] = %s(%s)".format(
+        handler.pattern,
+        handler.getClass.getName,
+        handler))
     addHandler(handler.pattern, handler)
   }
 }

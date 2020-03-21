@@ -261,8 +261,7 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   test("kryo with collect") {
     val control = 1 :: 2 :: Nil
-    val result = sc
-      .parallelize(control, 2)
+    val result = sc.parallelize(control, 2)
       .map(new ClassWithoutNoArgConstructor(_))
       .collect()
       .map(_.x)
@@ -271,10 +270,8 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   test("kryo with parallelize") {
     val control = 1 :: 2 :: Nil
-    val result = sc
-      .parallelize(control.map(new ClassWithoutNoArgConstructor(_)))
-      .map(_.x)
-      .collect()
+    val result = sc.parallelize(
+      control.map(new ClassWithoutNoArgConstructor(_))).map(_.x).collect()
     assert(control === result.toSeq)
   }
 
@@ -288,24 +285,21 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   test("kryo with collect for specialized tuples") {
     assert(
-      sc.parallelize(Array((1, 11), (2, 22), (3, 33)))
-        .collect()
-        .head === (1, 11))
+      sc.parallelize(
+        Array((1, 11), (2, 22), (3, 33))).collect().head === (1, 11))
   }
 
   test("kryo with SerializableHyperLogLog") {
     assert(
-      sc.parallelize(Array(1, 2, 3, 2, 3, 3, 2, 3, 1))
-        .countApproxDistinct(0.01) === 3)
+      sc.parallelize(Array(1, 2, 3, 2, 3, 3, 2, 3, 1)).countApproxDistinct(
+        0.01) === 3)
   }
 
   test("kryo with reduce") {
     val control = 1 :: 2 :: Nil
-    val result = sc
-      .parallelize(control, 2)
-      .map(new ClassWithoutNoArgConstructor(_))
-      .reduce((t1, t2) => new ClassWithoutNoArgConstructor(t1.x + t2.x))
-      .x
+    val result =
+      sc.parallelize(control, 2).map(new ClassWithoutNoArgConstructor(_))
+        .reduce((t1, t2) => new ClassWithoutNoArgConstructor(t1.x + t2.x)).x
     assert(control.sum === result)
   }
 
@@ -313,14 +307,12 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     val control = 1 :: 2 :: Nil
     // zeroValue must not be a ClassWithoutNoArgConstructor instance because it will be
     // serialized by the Java serializer.
-    val result = sc
-      .parallelize(control, 2)
-      .map(new ClassWithoutNoArgConstructor(_))
-      .fold(null)((t1, t2) => {
-        val t1x = if (t1 == null) 0 else t1.x
-        new ClassWithoutNoArgConstructor(t1x + t2.x)
-      })
-      .x
+    val result =
+      sc.parallelize(control, 2).map(new ClassWithoutNoArgConstructor(_))
+        .fold(null)((t1, t2) => {
+          val t1x = if (t1 == null) 0 else t1.x
+          new ClassWithoutNoArgConstructor(t1x + t2.x)
+        }).x
     assert(control.sum === result)
   }
 
@@ -433,16 +425,14 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("getAutoReset") {
-    val ser = new KryoSerializer(new SparkConf)
-      .newInstance()
-      .asInstanceOf[KryoSerializerInstance]
+    val ser = new KryoSerializer(new SparkConf).newInstance().asInstanceOf[
+      KryoSerializerInstance]
     assert(ser.getAutoReset)
     val conf = new SparkConf().set(
       "spark.kryo.registrator",
       classOf[RegistratorWithoutAutoReset].getName)
-    val ser2 = new KryoSerializer(conf)
-      .newInstance()
-      .asInstanceOf[KryoSerializerInstance]
+    val ser2 = new KryoSerializer(conf).newInstance().asInstanceOf[
+      KryoSerializerInstance]
     assert(!ser2.getAutoReset)
   }
 
@@ -499,16 +489,13 @@ class KryoSerializerAutoResetDisabledSuite
   test("sort-shuffle with bypassMergeSort (SPARK-7873)") {
     val myObject = ("Hello", "World")
     assert(
-      sc.parallelize(Seq.fill(100)(myObject))
-        .repartition(2)
-        .collect()
-        .toSet === Set(myObject))
+      sc.parallelize(Seq.fill(100)(myObject)).repartition(
+        2).collect().toSet === Set(myObject))
   }
 
   test("calling deserialize() after deserializeStream()") {
-    val serInstance = new KryoSerializer(conf)
-      .newInstance()
-      .asInstanceOf[KryoSerializerInstance]
+    val serInstance = new KryoSerializer(conf).newInstance().asInstanceOf[
+      KryoSerializerInstance]
     assert(!serInstance.getAutoReset())
     val hello = "Hello"
     val world = "World"

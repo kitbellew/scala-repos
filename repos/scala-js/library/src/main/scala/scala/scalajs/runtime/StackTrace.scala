@@ -40,8 +40,8 @@ object StackTrace {
        * important so that Node.js will show stack traces if the exception
        * is never caught and reaches the global event queue.
        */
-      js.constructorOf[js.Error]
-        .captureStackTrace(throwable.asInstanceOf[js.Any])
+      js.constructorOf[js.Error].captureStackTrace(
+        throwable.asInstanceOf[js.Any])
       captureState(throwable, throwable)
     }
   }
@@ -249,21 +249,19 @@ object StackTrace {
   }
 
   private lazy val decompressedClasses: js.Dictionary[String] = {
-    val dict = js.Dynamic
-      .literal(
-        O = "java_lang_Object",
-        T = "java_lang_String",
-        V = "scala_Unit",
-        Z = "scala_Boolean",
-        C = "scala_Char",
-        B = "scala_Byte",
-        S = "scala_Short",
-        I = "scala_Int",
-        J = "scala_Long",
-        F = "scala_Float",
-        D = "scala_Double"
-      )
-      .asInstanceOf[js.Dictionary[String]]
+    val dict = js.Dynamic.literal(
+      O = "java_lang_Object",
+      T = "java_lang_String",
+      V = "scala_Unit",
+      Z = "scala_Boolean",
+      C = "scala_Char",
+      B = "scala_Byte",
+      S = "scala_Short",
+      I = "scala_Int",
+      J = "scala_Long",
+      F = "scala_Float",
+      D = "scala_Double"
+    ).asInstanceOf[js.Dictionary[String]]
 
     var index = 0
     while (index <= 22) {
@@ -276,20 +274,18 @@ object StackTrace {
     dict
   }
 
-  private lazy val decompressedPrefixes = js.Dynamic
-    .literal(
-      sjsr_ = "scala_scalajs_runtime_",
-      sjs_ = "scala_scalajs_",
-      sci_ = "scala_collection_immutable_",
-      scm_ = "scala_collection_mutable_",
-      scg_ = "scala_collection_generic_",
-      sc_ = "scala_collection_",
-      sr_ = "scala_runtime_",
-      s_ = "scala_",
-      jl_ = "java_lang_",
-      ju_ = "java_util_"
-    )
-    .asInstanceOf[js.Dictionary[String]]
+  private lazy val decompressedPrefixes = js.Dynamic.literal(
+    sjsr_ = "scala_scalajs_runtime_",
+    sjs_ = "scala_scalajs_",
+    sci_ = "scala_collection_immutable_",
+    scm_ = "scala_collection_mutable_",
+    scg_ = "scala_collection_generic_",
+    sc_ = "scala_collection_",
+    sr_ = "scala_runtime_",
+    s_ = "scala_",
+    jl_ = "java_lang_",
+    ju_ = "java_util_"
+  ).asInstanceOf[js.Dictionary[String]]
 
   private lazy val compressedPrefixes =
     js.Object.keys(decompressedPrefixes.asInstanceOf[js.Object])
@@ -389,9 +385,7 @@ object StackTrace {
   }
 
   private def extractRhino(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[js.UndefOr[String]])
-      .getOrElse("")
+    (e.stack.asInstanceOf[js.UndefOr[String]]).getOrElse("")
       .jsReplace("""^\s+at\s+""".re("gm"), "") // remove 'at' and indentation
       .jsReplace("""^(.+?)(?: \((.+)\))?$""".re("gm"), "$2@$1")
       .jsReplace(
@@ -425,16 +419,14 @@ object StackTrace {
   }
 
   private def extractFirefox(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[String])
+    (e.stack.asInstanceOf[String])
       .jsReplace("""(?:\n@:0)?\s+$""".re("m"), "")
       .jsReplace("""^(?:\((\S*)\))?@""".re("gm"), "{anonymous}($1)@")
       .jsSplit("\n")
   }
 
   private def extractIE(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[String])
+    (e.stack.asInstanceOf[String])
       .jsReplace("""^\s*at\s+(.*)$""".re("gm"), "$1")
       .jsReplace("""^Anonymous function\s+""".re("gm"), "{anonymous}() ")
       .jsReplace(
@@ -445,8 +437,7 @@ object StackTrace {
   }
 
   private def extractSafari(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[String])
+    (e.stack.asInstanceOf[String])
       .jsReplace("""\[native code\]\n""".re("m"), "")
       .jsReplace("""^(?=\w+Error\:).*$\n""".re("m"), "")
       .jsReplace("""^@""".re("gm"), "{anonymous}()@")
@@ -575,15 +566,13 @@ object StackTrace {
         fileName: String,
         lineNumber: Int,
         columnNumber: js.UndefOr[Int] = js.undefined): JSStackTraceElem = {
-      js.Dynamic
-        .literal(
-          declaringClass = declaringClass,
-          methodName = methodName,
-          fileName = fileName,
-          lineNumber = lineNumber,
-          columnNumber = columnNumber
-        )
-        .asInstanceOf[JSStackTraceElem]
+      js.Dynamic.literal(
+        declaringClass = declaringClass,
+        methodName = methodName,
+        fileName = fileName,
+        lineNumber = lineNumber,
+        columnNumber = columnNumber
+      ).asInstanceOf[JSStackTraceElem]
     }
   }
 

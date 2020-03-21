@@ -43,9 +43,8 @@ object RoutesCompiler {
       if (lines.contains("// @GENERATOR:play-routes-compiler")) {
         Some(new GeneratedSource {
           val source: Option[File] =
-            lines
-              .find(_.startsWith("// @SOURCE:"))
-              .map(m => new File(m.trim.drop(11)))
+            lines.find(_.startsWith("// @SOURCE:")).map(m =>
+              new File(m.trim.drop(11)))
 
           def mapLine(generatedLine: Int): Option[Int] = {
             lines.view.take(generatedLine).reverse.collectFirst {
@@ -89,9 +88,8 @@ object RoutesCompiler {
       generator: RoutesGenerator,
       generatedDir: File): Either[Seq[RoutesCompilationError], Seq[File]] = {
 
-    val namespace = Option(task.file.getName)
-      .filter(_.endsWith(".routes"))
-      .map(_.dropRight(".routes".size))
+    val namespace = Option(task.file.getName).filter(_.endsWith(".routes")).map(
+      _.dropRight(".routes".size))
       .orElse(Some("router"))
 
     val routeFile = task.file.getAbsoluteFile

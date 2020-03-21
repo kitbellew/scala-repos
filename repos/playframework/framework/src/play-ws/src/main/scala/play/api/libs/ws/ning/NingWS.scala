@@ -97,9 +97,10 @@ trait NingWSComponents {
 
   lazy val wsClientConfig: WSClientConfig =
     new WSConfigParser(configuration, environment).parse()
-  private lazy val ahcWsClientConfig =
-    new AhcWSClientConfigParser(wsClientConfig, configuration, environment)
-      .parse()
+  private lazy val ahcWsClientConfig = new AhcWSClientConfigParser(
+    wsClientConfig,
+    configuration,
+    environment).parse()
   lazy val ningWsClientConfig: NingWSClientConfig =
     NingWSClientConfig(
       wsClientConfig = wsClientConfig,

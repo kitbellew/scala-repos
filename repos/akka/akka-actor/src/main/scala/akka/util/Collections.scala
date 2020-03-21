@@ -43,8 +43,7 @@ private[akka] object Collections {
           if (hasNext) {
             val ret = _next
             _next =
-              null
-                .asInstanceOf[To] // Mark as consumed (nice to the GC, don't leak the last returned value)
+              null.asInstanceOf[To] // Mark as consumed (nice to the GC, don't leak the last returned value)
             _hasNext =
               false // Mark as consumed (we need to look for the next value)
             ret

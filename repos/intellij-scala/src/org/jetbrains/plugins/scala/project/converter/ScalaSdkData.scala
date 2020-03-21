@@ -65,9 +65,9 @@ private case class ScalaSdkData(
       context: ConversionContext) {
     val libraryTableElement = {
       val rootElement = context.getProjectSettings.getRootElement
-      XPath
-        .selectSingleNode(rootElement, "component[@name='libraryTable']")
-        .asInstanceOf[Element]
+      XPath.selectSingleNode(
+        rootElement,
+        "component[@name='libraryTable']").asInstanceOf[Element]
     }
     val libraryElement = parseXml(formatXml(library))
     libraryTableElement.addContent(libraryElement)
@@ -105,18 +105,16 @@ private object ScalaSdkData {
   def findAllIn(context: ConversionContext): Seq[ScalaSdkData] = {
     val elements =
       context.getProjectLibrariesSettings.getProjectLibraries.asScala
-    elements
-      .filter(_.getAttributeValue("type") == "Scala")
-      .map(ScalaSdkData(_))
-      .toSeq
+    elements.filter(_.getAttributeValue("type") == "Scala").map(
+      ScalaSdkData(_)).toSeq
   }
 
   def apply(element: Element): ScalaSdkData = {
     val standardLibrary = LibraryData(element)
 
-    val compilerClasspath = XPath
-      .selectNodes(element, "properties/compiler-classpath/root/@url")
-      .asScala
+    val compilerClasspath = XPath.selectNodes(
+      element,
+      "properties/compiler-classpath/root/@url").asScala
       .map(_.asInstanceOf[Attribute].getValue)
 
     val languageLevel = languageLevelFrom(compilerClasspath)
@@ -132,9 +130,8 @@ private object ScalaSdkData {
     val compilerJarVersions =
       compilerClasspath.flatMap(path => versionOf(new File(path)).toSeq)
 
-    compilerJarVersions.headOption
-      .flatMap(languageLevelFrom)
-      .getOrElse("Scala_2_11")
+    compilerJarVersions.headOption.flatMap(languageLevelFrom).getOrElse(
+      "Scala_2_11")
   }
 
   private def versionOf(file: File): Option[String] = {
@@ -176,9 +173,7 @@ private object ScalaSdkData {
         new File(new File(base, "libraries"), s"$name$suffix.xml"))
     }
 
-    candidates
-      .find(!_.exists)
-      .getOrElse(
-        throw new IllegalStateException("Run out of integer numbers :)"))
+    candidates.find(!_.exists).getOrElse(
+      throw new IllegalStateException("Run out of integer numbers :)"))
   }
 }

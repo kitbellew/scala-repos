@@ -186,8 +186,8 @@ class SparkHadoopUtil extends Logging {
   }
 
   private def getFileSystemThreadStatistics(): Seq[AnyRef] = {
-    FileSystem.getAllStatistics.asScala
-      .map(Utils.invoke(classOf[Statistics], _, "getThreadStatistics"))
+    FileSystem.getAllStatistics.asScala.map(
+      Utils.invoke(classOf[Statistics], _, "getThreadStatistics"))
   }
 
   private def getFileSystemThreadStatisticsMethod(
@@ -245,13 +245,10 @@ class SparkHadoopUtil extends Logging {
 
   def globPath(pattern: Path): Seq[Path] = {
     val fs = pattern.getFileSystem(conf)
-    Option(fs.globStatus(pattern))
-      .map { statuses =>
-        statuses
-          .map(_.getPath.makeQualified(fs.getUri, fs.getWorkingDirectory))
-          .toSeq
-      }
-      .getOrElse(Seq.empty[Path])
+    Option(fs.globStatus(pattern)).map { statuses =>
+      statuses.map(
+        _.getPath.makeQualified(fs.getUri, fs.getWorkingDirectory)).toSeq
+    }.getOrElse(Seq.empty[Path])
   }
 
   def globPathIfNecessary(pattern: Path): Seq[Path] = {
@@ -322,17 +319,14 @@ class SparkHadoopUtil extends Logging {
         identifier.readFields(
           new DataInputStream(new ByteArrayInputStream(t.getIdentifier)))
         (identifier.getIssueDate + fraction * renewalInterval).toLong - now
-      }
-      .foldLeft(0L)(math.max)
+      }.foldLeft(0L)(math.max)
   }
 
   private[spark] def getSuffixForCredentialsPath(credentialsPath: Path): Int = {
     val fileName = credentialsPath.getName
-    fileName
-      .substring(
-        fileName.lastIndexOf(
-          SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
-      .toInt
+    fileName.substring(
+      fileName.lastIndexOf(
+        SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1).toInt
   }
 
   private val HADOOP_CONF_PATTERN =
@@ -403,8 +397,7 @@ object SparkHadoopUtil {
   private lazy val hadoop = new SparkHadoopUtil
   private lazy val yarn =
     try {
-      Utils
-        .classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
+      Utils.classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
         .newInstance()
         .asInstanceOf[SparkHadoopUtil]
     } catch {

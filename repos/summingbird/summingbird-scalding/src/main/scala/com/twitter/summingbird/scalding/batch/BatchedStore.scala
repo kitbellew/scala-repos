@@ -248,17 +248,19 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
           grouped.sortBy { case (_, (t, _)) => t }(
             BinaryOrdering.ordSer[com.twitter.summingbird.batch.Timestamp])
         case Commutative =>
-          grouped
-            .sortBy { case (b, (_, _)) => b }(BinaryOrdering.ordSer[BatchID])
+          grouped.sortBy { case (b, (_, _)) => b }(
+            BinaryOrdering.ordSer[BatchID])
       }
 
-      sorted.mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>
-        // each BatchID appears at most once, so it fits in RAM
-        val batched: Map[BatchID, (Timestamp, V)] = groupedSum(it).toMap
-        partials((inBatch :: batches).iterator.map { bid =>
-          (bid, batched.get(bid))
-        })
-      }.toTypedPipe
+      sorted
+        .mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>
+          // each BatchID appears at most once, so it fits in RAM
+          val batched: Map[BatchID, (Timestamp, V)] = groupedSum(it).toMap
+          partials((inBatch :: batches).iterator.map { bid =>
+            (bid, batched.get(bid))
+          })
+        }
+        .toTypedPipe
     }
 
     /**
@@ -315,8 +317,10 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       (batchOps.coverIt(timeSpan).toList match {
         case Nil =>
           Left(
-            List("Timespan is covered by Nil: %s batcher: %s"
-              .format(timeSpan, batcher)))
+            List(
+              "Timespan is covered by Nil: %s batcher: %s".format(
+                timeSpan,
+                batcher)))
         case list => Right((in, list))
       })
     })

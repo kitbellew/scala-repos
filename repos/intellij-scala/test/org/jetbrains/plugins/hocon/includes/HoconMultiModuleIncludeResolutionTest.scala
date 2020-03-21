@@ -54,8 +54,7 @@ class HoconMultiModuleIncludeResolutionTest
         Map(
           OrderRootType.CLASSES -> lib,
           OrderRootType.SOURCES -> (lib + "src"))
-          .mapValues(s => Array(subpath(s)))
-          .asJava
+          .mapValues(s => Array(subpath(s))).asJava
 
       builder.addLibrary(dir.getName + "lib", libMapping("lib"))
       builder.addLibrary(dir.getName + "testlib", libMapping("testlib"))

@@ -160,14 +160,10 @@ class ErrorPositionSuite
       assert(!error.getMessage.contains("Seq("))
       assert(!error.getMessage.contains("List("))
 
-      val (line, expectedLineNum) = query
-        .split("\n")
-        .zipWithIndex
-        .collect {
-          case (l, i) if l.contains(token) => (l, i + 1)
-        }
-        .headOption
-        .getOrElse(sys.error(s"Invalid test. Token $token not in $query"))
+      val (line, expectedLineNum) = query.split("\n").zipWithIndex.collect {
+        case (l, i) if l.contains(token) => (l, i + 1)
+      }.headOption.getOrElse(
+        sys.error(s"Invalid test. Token $token not in $query"))
       val actualLine = error.line.getOrElse {
         fail(
           s"line not returned for error '${error.getMessage}' on token $token\n$parseTree"

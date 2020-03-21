@@ -16,10 +16,9 @@ final class JsonView {
       "name" -> D.Opening.name,
       "position" -> D.Opening.position,
       "description" -> D.Opening.description.body,
-      "values" -> Dimension
-        .valuesOf(D.Opening)
-        .filter { o => ecos contains o.eco }
-        .map(Dimension.valueToJson(D.Opening))
+      "values" -> Dimension.valuesOf(D.Opening).filter { o =>
+        ecos contains o.eco
+      }.map(Dimension.valueToJson(D.Opening))
     )
 
     Json.obj(
@@ -136,13 +135,9 @@ final class JsonView {
     Json.obj(
       "metric" -> metric,
       "dimension" -> dimension,
-      "filters" -> (filters
-        .split('/')
-        .map(_ split ':')
-        .collect {
-          case Array(key, values) =>
-            key -> JsArray(values.split(',').map(JsString.apply))
-        }
-        .toMap: Map[String, JsArray])
+      "filters" -> (filters.split('/').map(_ split ':').collect {
+        case Array(key, values) =>
+          key -> JsArray(values.split(',').map(JsString.apply))
+      }.toMap: Map[String, JsArray])
     )
 }

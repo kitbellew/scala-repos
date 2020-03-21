@@ -117,13 +117,18 @@ class EventLoggingListenerSuite
   test("Event log name") {
     // without compression
     assert(
-      s"file:/base-dir/app1" === EventLoggingListener
-        .getLogPath(Utils.resolveURI("/base-dir"), "app1", None))
+      s"file:/base-dir/app1" === EventLoggingListener.getLogPath(
+        Utils.resolveURI("/base-dir"),
+        "app1",
+        None))
     // with compression
     assert(
       s"file:/base-dir/app1.lzf" ===
-        EventLoggingListener
-          .getLogPath(Utils.resolveURI("/base-dir"), "app1", None, Some("lzf")))
+        EventLoggingListener.getLogPath(
+          Utils.resolveURI("/base-dir"),
+          "app1",
+          None,
+          Some("lzf")))
     // illegal characters in app ID
     assert(
       s"file:/base-dir/a-fine-mind_dollar_bills__1" ===
@@ -238,21 +243,19 @@ class EventLoggingListenerSuite
       fileSystem)
     val logStart = SparkListenerLogStart(SPARK_VERSION)
     val lines = readLines(logData)
-    val eventSet = mutable
-      .Set(
-        SparkListenerApplicationStart,
-        SparkListenerBlockManagerAdded,
-        SparkListenerExecutorAdded,
-        SparkListenerEnvironmentUpdate,
-        SparkListenerJobStart,
-        SparkListenerJobEnd,
-        SparkListenerStageSubmitted,
-        SparkListenerStageCompleted,
-        SparkListenerTaskStart,
-        SparkListenerTaskEnd,
-        SparkListenerApplicationEnd
-      )
-      .map(Utils.getFormattedClassName)
+    val eventSet = mutable.Set(
+      SparkListenerApplicationStart,
+      SparkListenerBlockManagerAdded,
+      SparkListenerExecutorAdded,
+      SparkListenerEnvironmentUpdate,
+      SparkListenerJobStart,
+      SparkListenerJobEnd,
+      SparkListenerStageSubmitted,
+      SparkListenerStageCompleted,
+      SparkListenerTaskStart,
+      SparkListenerTaskEnd,
+      SparkListenerApplicationEnd
+    ).map(Utils.getFormattedClassName)
     lines.foreach { line =>
       eventSet.foreach { event =>
         if (line.contains(event)) {

@@ -1093,8 +1093,12 @@ trait Types
         requiredFlags: Long,
         stableOnly: Boolean): Symbol = {
       def findMemberInternal =
-        new FindMember(this, name, excludedFlags, requiredFlags, stableOnly)
-          .apply()
+        new FindMember(
+          this,
+          name,
+          excludedFlags,
+          requiredFlags,
+          stableOnly).apply()
 
       if (this.isGround) findMemberInternal
       else suspendingTypeVars(typeVarsInType(this))(findMemberInternal)
@@ -2084,8 +2088,9 @@ trait Types
           copyTypeRef(this, pre, sym, actuals)
         // partial application (needed in infer when bunching type arguments from classes and methods together)
         else
-          copyTypeRef(this, pre, sym, dummyArgs)
-            .instantiateTypeParams(formals, actuals)
+          copyTypeRef(this, pre, sym, dummyArgs).instantiateTypeParams(
+            formals,
+            actuals)
       } else
         super.instantiateTypeParams(formals, actuals)
 
@@ -2354,8 +2359,9 @@ trait Types
         //      other type, which has to be related to this type for that to make sense).
         //
         def seenFromOwnerInstantiated(tp: Type): Type =
-          tp.asSeenFrom(pre, sym.owner)
-            .instantiateTypeParams(formals, argsOrDummies)
+          tp.asSeenFrom(pre, sym.owner).instantiateTypeParams(
+            formals,
+            argsOrDummies)
 
         tp match {
           case PolyType(`formals`, result) =>
@@ -4223,8 +4229,8 @@ trait Types
         case tp @ NullaryMethodType(resultType) =>
           tp.copy(resultType = loop(resultType))
         case tp =>
-          elementTransform(container, tp)(el => appliedType(container, f(el)))
-            .orElse(f(tp))
+          elementTransform(container, tp)(el =>
+            appliedType(container, f(el))).orElse(f(tp))
       }
     loop(tp)
   }
@@ -4895,10 +4901,9 @@ trait Types
       tparams: List[Symbol],
       targs: List[Type]): List[TypeBounds] =
     mapList(tparams)(
-      _.info
-        .asSeenFrom(pre, owner)
-        .instantiateTypeParams(tparams, targs)
-        .bounds)
+      _.info.asSeenFrom(pre, owner).instantiateTypeParams(
+        tparams,
+        targs).bounds)
 
   def elimAnonymousClass(t: Type) =
     t match {
@@ -4980,8 +4985,9 @@ trait Types
                   if (as.size == 1) as.head
                   else if (depth.isZero) {
                     log(
-                      "Giving up merging args: can't unify %s under %s"
-                        .format(as.mkString(", "), tparam.fullLocationString))
+                      "Giving up merging args: can't unify %s under %s".format(
+                        as.mkString(", "),
+                        tparam.fullLocationString))
                     // Don't return "Any" (or "Nothing") when we have to give up due to
                     // recursion depth. Return NoType, which prevents us from poisoning
                     // lublist's results. It can recognize the recursion and deal with it, but

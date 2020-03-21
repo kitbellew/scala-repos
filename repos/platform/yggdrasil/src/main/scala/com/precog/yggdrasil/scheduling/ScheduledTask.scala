@@ -50,9 +50,8 @@ object CronExpressionSerialization {
     def validated(jv: JValue) =
       jv match {
         case JString(expr) =>
-          Validation
-            .fromTryCatch(new CronExpression(expr))
-            .leftMap(Extractor.Error.thrown)
+          Validation.fromTryCatch(new CronExpression(expr)).leftMap(
+            Extractor.Error.thrown)
         case invalid =>
           Failure(
             Extractor.Error.invalid(

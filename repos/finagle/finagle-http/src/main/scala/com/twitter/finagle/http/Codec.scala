@@ -213,8 +213,8 @@ case class Http(
           params: Stack.Params) =
         new HttpClientDispatcher(
           transport,
-          params[param.Stats].statsReceiver
-            .scope(GenSerialClientDispatcher.StatsScope)
+          params[param.Stats].statsReceiver.scope(
+            GenSerialClientDispatcher.StatsScope)
         )
 
       override def newTraceInitializer =

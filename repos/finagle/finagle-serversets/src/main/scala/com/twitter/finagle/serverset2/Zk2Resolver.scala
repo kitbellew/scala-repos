@@ -142,12 +142,10 @@ class Zk2Resolver(
       case (discoverer, path, endpointOption) =>
         val scoped = {
           val sr =
-            path
-              .split("/")
-              .filter(_.nonEmpty)
-              .foldLeft(discoverer.statsReceiver) {
-                case (sr, ns) => sr.scope(ns)
-              }
+            path.split("/").filter(_.nonEmpty).foldLeft(
+              discoverer.statsReceiver) {
+              case (sr, ns) => sr.scope(ns)
+            }
           sr.scope(s"endpoint=${endpointOption.getOrElse("default")}")
         }
 

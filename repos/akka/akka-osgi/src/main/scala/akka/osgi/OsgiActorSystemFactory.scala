@@ -43,9 +43,8 @@ class OsgiActorSystemFactory(
     */
   def actorSystemConfig(context: BundleContext): Config = {
     config.withFallback(
-      ConfigFactory
-        .load(classloader)
-        .withFallback(ConfigFactory.defaultReference(
+      ConfigFactory.load(classloader).withFallback(
+        ConfigFactory.defaultReference(
           OsgiActorSystemFactory.akkaActorClassLoader)))
   }
 

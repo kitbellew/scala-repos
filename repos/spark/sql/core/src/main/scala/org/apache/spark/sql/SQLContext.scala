@@ -877,12 +877,9 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   def tableNames(): Array[String] = {
-    sessionState.catalog
-      .getTables(None)
-      .map {
-        case (tableName, _) => tableName
-      }
-      .toArray
+    sessionState.catalog.getTables(None).map {
+      case (tableName, _) => tableName
+    }.toArray
   }
 
   /**
@@ -892,12 +889,9 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   def tableNames(databaseName: String): Array[String] = {
-    sessionState.catalog
-      .getTables(Some(databaseName))
-      .map {
-        case (tableName, _) => tableName
-      }
-      .toArray
+    sessionState.catalog.getTables(Some(databaseName)).map {
+      case (tableName, _) => tableName
+    }.toArray
   }
 
   @transient
@@ -1065,18 +1059,17 @@ object SQLContext {
       beanInfo: BeanInfo,
       attrs: Seq[AttributeReference]): Iterator[InternalRow] = {
     val extractors =
-      beanInfo.getPropertyDescriptors
-        .filterNot(_.getName == "class")
-        .map(_.getReadMethod)
+      beanInfo.getPropertyDescriptors.filterNot(_.getName == "class").map(
+        _.getReadMethod)
     val methodsToConverts = extractors.zip(attrs).map {
       case (e, attr) =>
         (e, CatalystTypeConverters.createToCatalystConverter(attr.dataType))
     }
     data.map { element =>
       new GenericInternalRow(
-        methodsToConverts
-          .map { case (e, convert) => convert(e.invoke(element)) }
-          .toArray[Any]
+        methodsToConverts.map {
+          case (e, convert) => convert(e.invoke(element))
+        }.toArray[Any]
       ): InternalRow
     }
   }

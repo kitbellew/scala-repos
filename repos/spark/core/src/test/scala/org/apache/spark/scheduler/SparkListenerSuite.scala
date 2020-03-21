@@ -311,8 +311,7 @@ class SparkListenerSuite
     // Make a task whose result is larger than the RPC message size
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
     assert(maxRpcMessageSize === 1024 * 1024)
-    val result = sc
-      .parallelize(Seq(1), 1)
+    val result = sc.parallelize(Seq(1), 1)
       .map { x => 1.to(maxRpcMessageSize).toArray }
       .reduce { case (x, y) => x }
     assert(result === 1.to(maxRpcMessageSize).toArray)
@@ -330,8 +329,9 @@ class SparkListenerSuite
     sc.addSparkListener(listener)
 
     // Make a task whose result is larger than the RPC message size
-    val result =
-      sc.parallelize(Seq(1), 1).map(2 * _).reduce { case (x, y) => x }
+    val result = sc.parallelize(Seq(1), 1).map(2 * _).reduce {
+      case (x, y) => x
+    }
     assert(result === 2)
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
@@ -349,10 +349,9 @@ class SparkListenerSuite
     sc.addSparkListener(listener)
 
     val numTasks = 10
-    val f = sc
-      .parallelize(1 to 10000, numTasks)
-      .map { i => Thread.sleep(10); i }
-      .countAsync()
+    val f = sc.parallelize(1 to 10000, numTasks).map { i =>
+      Thread.sleep(10); i
+    }.countAsync()
     // Wait until one task has started (because we want to make sure that any tasks that are started
     // have corresponding end events sent to the listener).
     var finishTime = System.currentTimeMillis + WAIT_TIMEOUT_MILLIS
@@ -404,16 +403,14 @@ class SparkListenerSuite
   }
 
   test("registering listeners via spark.extraListeners") {
-    val conf = new SparkConf()
-      .setMaster("local")
-      .setAppName("test")
+    val conf = new SparkConf().setMaster("local").setAppName("test")
       .set(
         "spark.extraListeners",
         classOf[ListenerThatAcceptsSparkConf].getName + "," +
           classOf[BasicJobCounter].getName)
     sc = new SparkContext(conf)
-    sc.listenerBus.listeners.asScala
-      .count(_.isInstanceOf[BasicJobCounter]) should be(1)
+    sc.listenerBus.listeners.asScala.count(
+      _.isInstanceOf[BasicJobCounter]) should be(1)
     sc.listenerBus.listeners.asScala
       .count(_.isInstanceOf[ListenerThatAcceptsSparkConf]) should be(1)
   }

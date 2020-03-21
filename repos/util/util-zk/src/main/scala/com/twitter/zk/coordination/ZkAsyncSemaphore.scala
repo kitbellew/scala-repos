@@ -83,8 +83,9 @@ class ZkAsyncSemaphore(
           getConsensusNumPermits(permits) flatMap { consensusNumPermits =>
             if (consensusNumPermits != numPermits) {
               throw ZkAsyncSemaphore.PermitMismatchException(
-                "Attempted to create semaphore of %d permits when consensus is %d"
-                  .format(numPermits, consensusNumPermits))
+                "Attempted to create semaphore of %d permits when consensus is %d".format(
+                  numPermits,
+                  consensusNumPermits))
             }
             if (permits.size < numPermits) {
               Future.value(new ZkSemaphorePermit(permitNode))
@@ -259,8 +260,9 @@ class ZkAsyncSemaphore(
       val (numPermitsInMax, numBelieversOfMax) = permitsToBelievers.maxBy {
         case (_, believers) => believers
       }
-      val cardinalityOfMax =
-        permitsToBelievers.values.filter({ _ == numBelieversOfMax }).size
+      val cardinalityOfMax = permitsToBelievers.values.filter({
+        _ == numBelieversOfMax
+      }).size
 
       if (cardinalityOfMax == 1) {
         // Consensus
@@ -268,8 +270,9 @@ class ZkAsyncSemaphore(
       } else {
         // No consensus or this vote breaks consensus (two votes in discord)
         throw LackOfConsensusException(
-          "Cannot create semaphore with %d permits. Loss of consensus on %d permits."
-            .format(numPermits, numPermitsInMax))
+          "Cannot create semaphore with %d permits. Loss of consensus on %d permits.".format(
+            numPermits,
+            numPermitsInMax))
       }
     }
   }

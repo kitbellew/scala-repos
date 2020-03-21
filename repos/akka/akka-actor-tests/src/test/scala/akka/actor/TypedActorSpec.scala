@@ -243,14 +243,14 @@ class TypedActorSpec
 
   def newFooBar(dispatcher: String, d: FiniteDuration): Foo =
     TypedActor(system).typedActorOf(
-      TypedProps[Bar](classOf[Foo], classOf[Bar])
-        .withTimeout(Timeout(d))
-        .withDispatcher(dispatcher))
+      TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(
+        Timeout(d)).withDispatcher(dispatcher))
 
   def newStacked(): Stacked =
     TypedActor(system).typedActorOf(
-      TypedProps[StackedImpl](classOf[Stacked], classOf[StackedImpl])
-        .withTimeout(timeout))
+      TypedProps[StackedImpl](
+        classOf[Stacked],
+        classOf[StackedImpl]).withTimeout(timeout))
 
   def mustStop(typedActor: AnyRef) =
     TypedActor(system).stop(typedActor) should ===(true)

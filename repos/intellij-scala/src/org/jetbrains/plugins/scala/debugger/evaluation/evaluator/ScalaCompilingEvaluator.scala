@@ -111,8 +111,10 @@ class ScalaCompilingEvaluator(
           val callCode = new TextWithImportsImpl(
             CodeFragmentKind.CODE_BLOCK,
             generatedClass.callText)
-          val codeFragment = new ScalaCodeFragmentFactory()
-            .createCodeFragment(callCode, generatedClass.getAnchor, project)
+          val codeFragment = new ScalaCodeFragmentFactory().createCodeFragment(
+            callCode,
+            generatedClass.getAnchor,
+            project)
           ScalaEvaluatorBuilder.build(
             codeFragment,
             SourcePosition.createFromElement(generatedClass.getAnchor))
@@ -155,9 +157,10 @@ class ScalaCompilingEvaluator(
   private def getClassLoader(
       context: EvaluationContext): ClassLoaderReference = {
     val process = context.getDebugProcess
-    val loaderClass = process
-      .findClass(context, "java.net.URLClassLoader", context.getClassLoader)
-      .asInstanceOf[ClassType]
+    val loaderClass = process.findClass(
+      context,
+      "java.net.URLClassLoader",
+      context.getClassLoader).asInstanceOf[ClassType]
     val ctorMethod = loaderClass.concreteMethodByName(
       "<init>",
       "([Ljava/net/URL;Ljava/lang/ClassLoader;)V")
@@ -165,12 +168,11 @@ class ScalaCompilingEvaluator(
       context.getSuspendContext.getThread.getThreadReference
     val args =
       util.Arrays.asList(createURLArray(context), context.getClassLoader)
-    val reference = loaderClass
-      .newInstance(
-        threadReference,
-        ctorMethod,
-        args,
-        ClassType.INVOKE_SINGLE_THREADED)
+    val reference = loaderClass.newInstance(
+      threadReference,
+      ctorMethod,
+      args,
+      ClassType.INVOKE_SINGLE_THREADED)
       .asInstanceOf[ClassLoaderReference]
     keep(reference, context)
     reference
@@ -189,14 +191,16 @@ object ScalaCompilingEvaluator {
 
   private def createURLArray(context: EvaluationContext): ArrayReference = {
     val process = context.getDebugProcess
-    val arrayType = process
-      .findClass(context, "java.net.URL[]", context.getClassLoader)
-      .asInstanceOf[ArrayType]
+    val arrayType = process.findClass(
+      context,
+      "java.net.URL[]",
+      context.getClassLoader).asInstanceOf[ArrayType]
     val arrayRef = arrayType.newInstance(1)
     keep(arrayRef, context)
-    val classType = process
-      .findClass(context, "java.net.URL", context.getClassLoader)
-      .asInstanceOf[ClassType]
+    val classType = process.findClass(
+      context,
+      "java.net.URL",
+      context.getClassLoader).asInstanceOf[ClassType]
     val proxy: VirtualMachineProxyImpl =
       process.getVirtualMachineProxy.asInstanceOf[VirtualMachineProxyImpl]
     val threadReference: ThreadReference =
@@ -219,9 +223,10 @@ object ScalaCompilingEvaluator {
       bytes: Array[Byte],
       context: EvaluationContext,
       process: DebugProcess): ArrayReference = {
-    val arrayClass: ArrayType = process
-      .findClass(context, "byte[]", context.getClassLoader)
-      .asInstanceOf[ArrayType]
+    val arrayClass: ArrayType = process.findClass(
+      context,
+      "byte[]",
+      context.getClassLoader).asInstanceOf[ArrayType]
     val reference: ArrayReference =
       process.newInstance(arrayClass, bytes.length)
     keep(reference, context)
@@ -229,9 +234,8 @@ object ScalaCompilingEvaluator {
       case (b, i) =>
         reference.setValue(
           i,
-          process.getVirtualMachineProxy
-            .asInstanceOf[VirtualMachineProxyImpl]
-            .mirrorOf(bytes(i)))
+          process.getVirtualMachineProxy.asInstanceOf[
+            VirtualMachineProxyImpl].mirrorOf(bytes(i)))
       case _ =>
     }
     reference
@@ -272,14 +276,12 @@ private class GeneratedClass(
     //create and modify non-physical copy first to avoid write action
     val textWithLocalClass = createFileTextWithLocalClass(context)
     //create physical file to work with source positions
-    val copy = PsiFileFactory
-      .getInstance(project)
-      .createFileFromText(
-        file.getName,
-        file.getFileType,
-        textWithLocalClass,
-        file.getModificationStamp,
-        true)
+    val copy = PsiFileFactory.getInstance(project).createFileFromText(
+      file.getName,
+      file.getFileType,
+      textWithLocalClass,
+      file.getModificationStamp,
+      true)
     copy.putUserData(ScalaCompilingEvaluator.classNameKey, generatedClassName)
     copy.putUserData(ScalaCompilingEvaluator.originalFileKey, file)
     anchor = CodeInsightUtilCore.findElementInRange(
@@ -311,14 +313,12 @@ private class GeneratedClass(
 
   private def createFileTextWithLocalClass(context: PsiElement): String = {
     val file = context.getContainingFile
-    val copy = PsiFileFactory
-      .getInstance(project)
-      .createFileFromText(
-        file.getName,
-        file.getFileType,
-        file.getText,
-        file.getModificationStamp,
-        false)
+    val copy = PsiFileFactory.getInstance(project).createFileFromText(
+      file.getName,
+      file.getFileType,
+      file.getText,
+      file.getModificationStamp,
+      false)
     val range = context.getTextRange
     val copyContext: PsiElement = CodeInsightUtilCore.findElementInRange(
       copy,
@@ -397,11 +397,8 @@ private class GeneratedClass(
   }
 
   private def localClass(fragment: ScalaCodeFragment, context: PsiElement) = {
-    val fragmentImports = fragment
-      .importsToString()
-      .split(",")
-      .filter(!_.isEmpty)
-      .map("import _root_." + _)
+    val fragmentImports = fragment.importsToString().split(",").filter(
+      !_.isEmpty).map("import _root_." + _)
     val importsText = fragmentImports.mkString("\n")
     //todo type parameters?
     val text =
@@ -412,9 +409,10 @@ private class GeneratedClass(
          |    ${fragment.getText}
          |  }
          |}""".stripMargin
-    ScalaPsiElementFactory
-      .createTemplateDefinitionFromText(text, context.getContext, context)
-      .asInstanceOf[ScClass]
+    ScalaPsiElementFactory.createTemplateDefinitionFromText(
+      text,
+      context.getContext,
+      context).asInstanceOf[ScClass]
   }
 }
 

@@ -41,8 +41,8 @@ class ChannelRequestStatsHandlerTest extends FunSuite with MockitoSugar {
 
     val ctx = mock[ChannelHandlerContext]
     val reqAttr = mkAttr(new AtomicInteger(0))
-    when(ctx.attr(ChannelRequestStatsHandler.ConnectionRequestsKey))
-      .thenReturn(reqAttr)
+    when(ctx.attr(ChannelRequestStatsHandler.ConnectionRequestsKey)).thenReturn(
+      reqAttr)
 
     val msg = new Object
 

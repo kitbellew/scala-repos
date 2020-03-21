@@ -528,11 +528,17 @@ class SparkSubmitSuite
   ignore("correctly builds R packages included in a jar with --packages") {
     assume(RUtils.isRInstalled, "R isn't installed on this machine.")
     val main = MavenCoordinate("my.great.lib", "mylib", "0.1")
-    val sparkHome = sys.props
-      .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
+    val sparkHome = sys.props.getOrElse(
+      "spark.test.home",
+      fail("spark.test.home is not set!"))
     val rScriptDir =
-      Seq(sparkHome, "R", "pkg", "inst", "tests", "packageInAJarTest.R")
-        .mkString(File.separator)
+      Seq(
+        sparkHome,
+        "R",
+        "pkg",
+        "inst",
+        "tests",
+        "packageInAJarTest.R").mkString(File.separator)
     assert(new File(rScriptDir).exists)
     IvyTestUtils.withRepository(main, None, None, withR = true) { repo =>
       val args = Seq(
@@ -723,8 +729,9 @@ class SparkSubmitSuite
 
   // NOTE: This is an expensive operation in terms of time (10 seconds+). Use sparingly.
   private def runSparkSubmit(args: Seq[String]): Unit = {
-    val sparkHome = sys.props
-      .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
+    val sparkHome = sys.props.getOrElse(
+      "spark.test.home",
+      fail("spark.test.home is not set!"))
     val process = Utils.executeCommand(
       Seq("./bin/spark-submit") ++ args,
       new File(sparkHome),
@@ -766,21 +773,18 @@ object JarCreationTest extends Logging {
     Utils.configTestLog4j("INFO")
     val conf = new SparkConf()
     val sc = new SparkContext(conf)
-    val result = sc
-      .makeRDD(1 to 100, 10)
-      .mapPartitions { x =>
-        var exception: String = null
-        try {
-          Utils.classForName(args(0))
-          Utils.classForName(args(1))
-        } catch {
-          case t: Throwable =>
-            exception = t + "\n" + Utils.exceptionString(t)
-            exception = exception.replaceAll("\n", "\n\t")
-        }
-        Option(exception).toSeq.iterator
+    val result = sc.makeRDD(1 to 100, 10).mapPartitions { x =>
+      var exception: String = null
+      try {
+        Utils.classForName(args(0))
+        Utils.classForName(args(1))
+      } catch {
+        case t: Throwable =>
+          exception = t + "\n" + Utils.exceptionString(t)
+          exception = exception.replaceAll("\n", "\n\t")
       }
-      .collect()
+      Option(exception).toSeq.iterator
+    }.collect()
     if (result.nonEmpty) {
       throw new Exception("Could not load user class from jar:\n" + result(0))
     }

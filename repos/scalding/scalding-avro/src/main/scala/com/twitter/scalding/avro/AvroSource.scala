@@ -44,8 +44,12 @@ trait UnpackedAvroFileScheme extends FileSource {
       _]]
 
   override def localScheme =
-    (new LAvroScheme(schema.getOrElse(null)))
-      .asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
+    (new LAvroScheme(schema.getOrElse(null))).asInstanceOf[Scheme[
+      Properties,
+      InputStream,
+      OutputStream,
+      _,
+      _]]
 
 }
 
@@ -62,8 +66,12 @@ trait PackedAvroFileScheme[T] extends FileSource {
       _]]
 
   override def localScheme =
-    (new LPackedAvroScheme[T](schema))
-      .asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
+    (new LPackedAvroScheme[T](schema)).asInstanceOf[Scheme[
+      Properties,
+      InputStream,
+      OutputStream,
+      _,
+      _]]
 }
 
 object UnpackedAvroSource {

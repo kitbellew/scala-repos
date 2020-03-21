@@ -95,10 +95,9 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("with unmanaged regular zk serverset") {
-      val client = Memcached.client
-        .newTwemcacheClient(
-          "zk!localhost:" + zookeeperServerPort + "!" + zkPath)
-        .asInstanceOf[PartitionedClient]
+      val client = Memcached.client.newTwemcacheClient(
+        "zk!localhost:" + zookeeperServerPort + "!" + zkPath).asInstanceOf[
+        PartitionedClient]
 
       // Wait for group to contain members
       Thread.sleep(5000)
@@ -124,10 +123,9 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("with managed cache pool") {
-      val client = Memcached.client
-        .newTwemcacheClient(
-          "twcache!localhost:" + zookeeperServerPort + "!" + zkPath)
-        .asInstanceOf[PartitionedClient]
+      val client = Memcached.client.newTwemcacheClient(
+        "twcache!localhost:" + zookeeperServerPort + "!" + zkPath).asInstanceOf[
+        PartitionedClient]
 
       // Wait for group to contain members
       Thread.sleep(5000)
@@ -159,8 +157,9 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
   test("with static servers list") {
     val client = Memcached.client.newRichClient(
-      "twcache!localhost:%d,localhost:%d"
-        .format(testServers(0).address.getPort, testServers(1).address.getPort))
+      "twcache!localhost:%d,localhost:%d".format(
+        testServers(0).address.getPort,
+        testServers(1).address.getPort))
 
     Await.result(client.delete("foo"))
     assert(Await.result(client.get("foo")) == None)

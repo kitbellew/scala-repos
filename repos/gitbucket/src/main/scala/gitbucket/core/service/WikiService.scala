@@ -95,18 +95,16 @@ trait WikiService {
       pageName: String): Option[WikiPageInfo] = {
     using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) { git =>
       if (!JGitUtil.isEmpty(git)) {
-        JGitUtil
-          .getFileList(git, "master", ".")
-          .find(_.name == pageName + ".md")
-          .map { file =>
-            WikiPageInfo(
-              file.name,
-              StringUtil.convertFromByteArray(
-                git.getRepository.open(file.id).getBytes),
-              file.author,
-              file.time,
-              file.commitId)
-          }
+        JGitUtil.getFileList(git, "master", ".").find(
+          _.name == pageName + ".md").map { file =>
+          WikiPageInfo(
+            file.name,
+            StringUtil.convertFromByteArray(
+              git.getRepository.open(file.id).getBytes),
+            file.author,
+            file.time,
+            file.commitId)
+        }
       } else None
     }
   }
@@ -124,10 +122,10 @@ trait WikiService {
         val parentPath = if (index < 0) "." else path.substring(0, index)
         val fileName = if (index < 0) path else path.substring(index + 1)
 
-        JGitUtil
-          .getFileList(git, "master", parentPath)
-          .find(_.name == fileName)
-          .map { file => git.getRepository.open(file.id).getBytes }
+        JGitUtil.getFileList(git, "master", parentPath).find(
+          _.name == fileName).map { file =>
+          git.getRepository.open(file.id).getBytes
+        }
       } else None
     }
 
@@ -136,10 +134,8 @@ trait WikiService {
     */
   def getWikiPageList(owner: String, repository: String): List[String] = {
     using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) { git =>
-      JGitUtil
-        .getFileList(git, "master", ".")
-        .filter(_.name.endsWith(".md"))
-        .filterNot(_.name.startsWith("_"))
+      JGitUtil.getFileList(git, "master", ".")
+        .filter(_.name.endsWith(".md")).filterNot(_.name.startsWith("_"))
         .map(_.name.stripSuffix(".md"))
         .sortBy(x => x)
     }
@@ -171,17 +167,13 @@ trait WikiService {
             val newTreeIter = new CanonicalTreeParser
             newTreeIter.reset(reader, git.getRepository.resolve(to + "^{tree}"))
 
-            val diffs = git.diff
-              .setNewTree(oldTreeIter)
-              .setOldTree(newTreeIter)
-              .call
-              .asScala
-              .filter { diff =>
-                pageName match {
-                  case Some(x) => diff.getNewPath == x + ".md"
-                  case None    => true
-                }
+            val diffs = git.diff.setNewTree(oldTreeIter).setOldTree(
+              newTreeIter).call.asScala.filter { diff =>
+              pageName match {
+                case Some(x) => diff.getNewPath == x + ".md"
+                case None    => true
               }
+            }
 
             val patch = using(new java.io.ByteArrayOutputStream()) { out =>
               val formatter = new DiffFormatter(out)
@@ -201,8 +193,8 @@ trait WikiService {
                   val source = getWikiPage(
                     owner,
                     repository,
-                    fh.getNewPath
-                      .stripSuffix(".md")).map(_.content).getOrElse("")
+                    fh.getNewPath.stripSuffix(".md")).map(_.content).getOrElse(
+                    "")
                   val applied = PatchUtil.apply(source, patch, fh)
                   if (applied != null) {
                     Seq(RevertInfo("ADD", fh.getNewPath, applied))
@@ -252,8 +244,9 @@ trait WikiService {
                   JGitUtil.createDirCacheEntry(
                     x.filePath,
                     FileMode.REGULAR_FILE,
-                    inserter
-                      .insert(Constants.OBJ_BLOB, x.source.getBytes("UTF-8"))))
+                    inserter.insert(
+                      Constants.OBJ_BLOB,
+                      x.source.getBytes("UTF-8"))))
               }
               builder.finish()
 
@@ -316,10 +309,10 @@ trait WikiService {
                     tree.getEntryObjectId))
               } else {
                 created = false
-                updated = JGitUtil
-                  .getContentFromId(git, tree.getEntryObjectId, true)
-                  .map(new String(_, "UTF-8") != content)
-                  .getOrElse(false)
+                updated = JGitUtil.getContentFromId(
+                  git,
+                  tree.getEntryObjectId,
+                  true).map(new String(_, "UTF-8") != content).getOrElse(false)
               }
             }
           }

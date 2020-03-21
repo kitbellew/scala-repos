@@ -84,9 +84,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
 
     if (element == null) Collections.emptySet()
     else
-      getVisibleVariables(element, evaluationContext, alreadyCollected)
-        .map(toTextWithImports)
-        .asJava
+      getVisibleVariables(element, evaluationContext, alreadyCollected).map(
+        toTextWithImports).asJava
   }
 
   private def getVisibleVariables(
@@ -102,9 +101,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         ResolveState.initial)
       completionProcessor.candidates
         .filter(srr =>
-          !alreadyCollected.asScala
-            .map(ScalaParameterNameAdjuster.fixName)
-            .contains(srr.name))
+          !alreadyCollected.asScala.map(
+            ScalaParameterNameAdjuster.fixName).contains(srr.name))
         .filter(canEvaluate(_, elem))
     }
     val candidates =
@@ -179,12 +177,13 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
     Try {
       val evaluator = inReadAction {
         val twi = toTextWithImports(name)
-        val codeFragment = new ScalaCodeFragmentFactory()
-          .createCodeFragment(twi, place, evaluationContext.getProject)
+        val codeFragment = new ScalaCodeFragmentFactory().createCodeFragment(
+          twi,
+          place,
+          evaluationContext.getProject)
         val location = evaluationContext.getFrameProxy.location()
-        val sourcePosition = ScalaPositionManager
-          .instance(evaluationContext.getDebugProcess)
-          .map(_.getSourcePosition(location))
+        val sourcePosition = ScalaPositionManager.instance(
+          evaluationContext.getDebugProcess).map(_.getSourcePosition(location))
         if (sourcePosition.isEmpty)
           throw EvaluationException("Debug process is detached.")
         ScalaEvaluatorBuilder.build(codeFragment, sourcePosition.get) match {
@@ -255,9 +254,9 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
           Option(PsiTreeUtil.getParentOfType(nc, classOf[ScForStatement]))
         case _ => None
       }
-      forStmt.flatMap(_.enumerators).exists(_.isAncestorOf(named)) && forStmt
-        .flatMap(_.body)
-        .exists(!_.isAncestorOf(place))
+      forStmt.flatMap(_.enumerators).exists(
+        _.isAncestorOf(named)) && forStmt.flatMap(_.body).exists(
+        !_.isAncestorOf(place))
     }
   }
 }

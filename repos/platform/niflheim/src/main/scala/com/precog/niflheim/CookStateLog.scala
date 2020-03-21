@@ -58,8 +58,10 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
   def close = {
     if (pendingCookIds0.size > 0) {
       logger.warn(
-        "Closing txLog with pending cooks: " + pendingCookIds0.keys
-          .mkString("[", ", ", "]"))
+        "Closing txLog with pending cooks: " + pendingCookIds0.keys.mkString(
+          "[",
+          ", ",
+          "]"))
     }
     txLog.close()
     workLock.release
@@ -152,12 +154,11 @@ object TXLogEntry extends Logging {
       case 0x2 => CompleteCook(buffer.getLong)
       case other =>
         logger.error(
-          "Unknown TX log record type = %d, isCTRL = %s, isEOB = %s from %s"
-            .format(
-              other,
-              record.isCTRL,
-              record.isEOB,
-              record.data.mkString("[", ", ", "]")))
+          "Unknown TX log record type = %d, isCTRL = %s, isEOB = %s from %s".format(
+            other,
+            record.isCTRL,
+            record.isEOB,
+            record.data.mkString("[", ", ", "]")))
     }
   }
 

@@ -19,9 +19,8 @@ abstract class ScalaCodeInsightTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   protected override def setUp() {
     super.setUp()
-    StatisticsManager.getInstance
-      .asInstanceOf[StatisticsManagerImpl]
-      .enableStatistics(getTestRootDisposable)
+    StatisticsManager.getInstance.asInstanceOf[
+      StatisticsManagerImpl].enableStatistics(getTestRootDisposable)
   }
 
   protected def getActiveLookup: LookupImpl = {
@@ -31,8 +30,16 @@ abstract class ScalaCodeInsightTestBase
   protected def complete(
       time: Int = 1,
       completionType: CompletionType = CompletionType.BASIC) = {
-    new CodeCompletionHandlerBase(completionType, false, false, true)
-      .invokeCompletion(getProjectAdapter, getEditorAdapter, time, false, false)
+    new CodeCompletionHandlerBase(
+      completionType,
+      false,
+      false,
+      true).invokeCompletion(
+      getProjectAdapter,
+      getEditorAdapter,
+      time,
+      false,
+      false)
     val lookup: LookupImpl = getActiveLookup
     (
       if (lookup == null) null

@@ -56,9 +56,8 @@ class ScPackageImpl private (val pack: PsiPackage)
           case r: ResolveProcessor => r.getResolveScope
           case _                   => place.getResolveScope
         }
-        val namesSet = ScalaShortNamesCacheManager
-          .getInstance(getProject)
-          .getClassNames(pack, scope)
+        val namesSet = ScalaShortNamesCacheManager.getInstance(
+          getProject).getClassNames(pack, scope)
 
         //Process synthetic classes for scala._ package
         /**
@@ -210,9 +209,8 @@ object ScPackageImpl {
       manager: PsiManager,
       scope: GlobalSearchScope,
       fqn: String): Option[PsiClass] = {
-    ScalaPsiManager
-      .instance(manager.getProject)
-      .getCachedClasses(scope, fqn)
-      .headOption
+    ScalaPsiManager.instance(manager.getProject).getCachedClasses(
+      scope,
+      fqn).headOption
   }
 }

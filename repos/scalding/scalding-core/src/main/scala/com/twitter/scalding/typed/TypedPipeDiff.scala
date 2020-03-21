@@ -89,7 +89,9 @@ object TypedPipeDiff {
     val lefts = left.map { t => (groupByFn(t), Map(t -> (1L, 0L))) }
     val rights = right.map { t => (groupByFn(t), Map(t -> (0L, 1L))) }
 
-    val diff = (lefts ++ rights).sumByKey.flattenValues
+    val diff = (lefts ++ rights)
+      .sumByKey
+      .flattenValues
       .filter { case (k, (t, (lCount, rCount))) => lCount != rCount }
 
     reducers.map(diff.withReducers).getOrElse(diff).values

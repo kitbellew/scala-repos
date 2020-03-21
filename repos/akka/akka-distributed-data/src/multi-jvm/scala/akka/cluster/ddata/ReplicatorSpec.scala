@@ -46,9 +46,8 @@ class ReplicatorSpec
   implicit val cluster = Cluster(system)
   val replicator = system.actorOf(
     Replicator.props(
-      ReplicatorSettings(system)
-        .withGossipInterval(1.second)
-        .withMaxDeltaElements(10)),
+      ReplicatorSettings(system).withGossipInterval(
+        1.second).withMaxDeltaElements(10)),
     "replicator")
   val timeout = 2.seconds.dilated
   val writeTwo = WriteTo(2, timeout)

@@ -134,9 +134,8 @@ class ClusterSingletonManagerLeaveSpec
         p.within(10.seconds) {
           p.awaitAssert {
             echoProxy.tell("hello2", p.ref)
-            p.expectMsgType[ActorRef](1.seconds)
-              .path
-              .address should not be (firstAddress)
+            p.expectMsgType[ActorRef](
+              1.seconds).path.address should not be (firstAddress)
 
           }
         }

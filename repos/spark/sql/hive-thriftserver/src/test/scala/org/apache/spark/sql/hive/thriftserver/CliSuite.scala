@@ -131,10 +131,12 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
     stdinWriter.flush()
     stdinWriter.close()
 
-    new ProcessOutputCapturer(process.getInputStream, captureOutput("stdout"))
-      .start()
-    new ProcessOutputCapturer(process.getErrorStream, captureOutput("stderr"))
-      .start()
+    new ProcessOutputCapturer(
+      process.getInputStream,
+      captureOutput("stdout")).start()
+    new ProcessOutputCapturer(
+      process.getErrorStream,
+      captureOutput("stderr")).start()
 
     try {
       Await.result(foundAllExpectedAnswers.future, timeout)
@@ -164,10 +166,8 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
 
   test("Simple commands") {
     val dataFilePath =
-      Thread
-        .currentThread()
-        .getContextClassLoader
-        .getResource("data/files/small_kv.txt")
+      Thread.currentThread().getContextClassLoader.getResource(
+        "data/files/small_kv.txt")
 
     runCliWithin(3.minute)(
       "CREATE TABLE hive_test(key INT, val STRING);"
@@ -218,10 +218,8 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
         .mkString(File.separator)
 
     val dataFilePath =
-      Thread
-        .currentThread()
-        .getContextClassLoader
-        .getResource("data/files/small_kv.txt")
+      Thread.currentThread().getContextClassLoader.getResource(
+        "data/files/small_kv.txt")
 
     runCliWithin(3.minute, Seq("--jars", s"$jarFile"))(
       """CREATE TABLE t1(key string, val string)

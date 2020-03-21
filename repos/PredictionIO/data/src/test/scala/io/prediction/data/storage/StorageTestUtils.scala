@@ -22,8 +22,7 @@ object StorageTestUtils {
   val jdbcSourceName = "PGSQL"
 
   def dropHBaseNamespace(namespace: String): Unit = {
-    val eventDb = Storage
-      .getDataObject[LEvents](hbaseSourceName, namespace)
+    val eventDb = Storage.getDataObject[LEvents](hbaseSourceName, namespace)
       .asInstanceOf[HBLEvents]
     val admin = eventDb.client.admin
     val tableNames = admin.listTableNamesByNamespace(namespace)

@@ -122,20 +122,18 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       ifCap(jcap.forceInsert)(
         seq(
           ts.forceInsert(104, "A", 1, false, "S1", "S2", 0),
-          ts.map(_.ins)
-            .forceInsertAll(Seq(
+          ts.map(_.ins).forceInsertAll(
+            Seq(
               (105, "B", 1, false, "S1", "S2", 0),
               (106, "C", 1, false, "S1", "S2", 0))),
           ts.filter(_.id > 100).length.result.map(_ shouldBe 3),
-          ts.map(_.ins)
-            .forceInsertAll(Seq((111, "D", 1, false, "S1", "S2", 0))),
+          ts.map(_.ins).forceInsertAll(
+            Seq((111, "D", 1, false, "S1", "S2", 0))),
           ts.filter(_.id > 100).length.result.map(_ shouldBe 4),
           src.forceInsert(90, "X", 1, false, "S1", "S2", 0),
           mark("forceInsertQuery", ts.forceInsertQuery(src)).map(_ shouldBe 1),
-          ts.filter(_.id.between(90, 99))
-            .result
-            .headOption
-            .map(_ shouldBe Some((90, "X", 1, false, "S1", "S2", 0)))
+          ts.filter(_.id.between(90, 99)).result.headOption.map(
+            _ shouldBe Some((90, "X", 1, false, "S1", "S2", 0)))
         ))
     )
   }
@@ -154,10 +152,8 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       _ <- ts ++= Seq((1, "a"), (2, "b"))
       _ <- ts.insertOrUpdate((3, "c")).map(_ shouldBe 1)
       _ <- ts.insertOrUpdate((1, "d")).map(_ shouldBe 1)
-      _ <- ts
-        .sortBy(_.id)
-        .result
-        .map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
+      _ <- ts.sortBy(_.id).result.map(
+        _ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
     } yield ()
   }
 
@@ -175,19 +171,15 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       _ <- ts ++= Seq((1, "a"), (2, "b"))
       _ <- ts.insertOrUpdate((0, "c")).map(_ shouldBe 1)
       _ <- ts.insertOrUpdate((1, "d")).map(_ shouldBe 1)
-      _ <- ts
-        .sortBy(_.id)
-        .result
-        .map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
+      _ <- ts.sortBy(_.id).result.map(
+        _ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
       _ <- ifCap(jcap.returnInsertKey) {
         val q = ts returning ts.map(_.id)
         for {
           _ <- q.insertOrUpdate((0, "e")).map(_ shouldBe Some(4))
           _ <- q.insertOrUpdate((1, "f")).map(_ shouldBe None)
-          _ <- ts
-            .sortBy(_.id)
-            .result
-            .map(_ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
+          _ <- ts.sortBy(_.id).result.map(
+            _ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
         } yield ()
       }
     } yield ()).withPinnedSession

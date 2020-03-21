@@ -185,8 +185,10 @@ class MatrixFactorizationModel @Since("0.8.0") (
     */
   @Since("1.1.0")
   def recommendProducts(user: Int, num: Int): Array[Rating] =
-    MatrixFactorizationModel
-      .recommend(userFeatures.lookup(user).head, productFeatures, num)
+    MatrixFactorizationModel.recommend(
+      userFeatures.lookup(user).head,
+      productFeatures,
+      num)
       .map(t => Rating(user, t._1, t._2))
 
   /**
@@ -203,8 +205,10 @@ class MatrixFactorizationModel @Since("0.8.0") (
     */
   @Since("1.1.0")
   def recommendUsers(product: Int, num: Int): Array[Rating] =
-    MatrixFactorizationModel
-      .recommend(productFeatures.lookup(product).head, userFeatures, num)
+    MatrixFactorizationModel.recommend(
+      productFeatures.lookup(product).head,
+      userFeatures,
+      num)
       .map(t => Rating(t._1, product, t._2))
 
   protected override val formatVersion: String = "1.0"
@@ -237,15 +241,17 @@ class MatrixFactorizationModel @Since("0.8.0") (
     */
   @Since("1.4.0")
   def recommendProductsForUsers(num: Int): RDD[(Int, Array[Rating])] = {
-    MatrixFactorizationModel
-      .recommendForAll(rank, userFeatures, productFeatures, num)
-      .map {
-        case (user, top) =>
-          val ratings = top.map {
-            case (product, rating) => Rating(user, product, rating)
-          }
-          (user, ratings)
-      }
+    MatrixFactorizationModel.recommendForAll(
+      rank,
+      userFeatures,
+      productFeatures,
+      num).map {
+      case (user, top) =>
+        val ratings = top.map {
+          case (product, rating) => Rating(user, product, rating)
+        }
+        (user, ratings)
+    }
   }
 
   /**
@@ -258,15 +264,17 @@ class MatrixFactorizationModel @Since("0.8.0") (
     */
   @Since("1.4.0")
   def recommendUsersForProducts(num: Int): RDD[(Int, Array[Rating])] = {
-    MatrixFactorizationModel
-      .recommendForAll(rank, productFeatures, userFeatures, num)
-      .map {
-        case (product, top) =>
-          val ratings = top.map {
-            case (user, rating) => Rating(user, product, rating)
-          }
-          (product, ratings)
-      }
+    MatrixFactorizationModel.recommendForAll(
+      rank,
+      productFeatures,
+      userFeatures,
+      num).map {
+      case (product, top) =>
+        val ratings = top.map {
+          case (user, rating) => Rating(user, product, rating)
+        }
+        (product, ratings)
+    }
   }
 }
 
@@ -392,10 +400,8 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
         ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~ ("rank" -> model.rank)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
       model.userFeatures.toDF("id", "features").write.parquet(userPath(path))
-      model.productFeatures
-        .toDF("id", "features")
-        .write
-        .parquet(productPath(path))
+      model.productFeatures.toDF("id", "features").write.parquet(
+        productPath(path))
     }
 
     def load(sc: SparkContext, path: String): MatrixFactorizationModel = {

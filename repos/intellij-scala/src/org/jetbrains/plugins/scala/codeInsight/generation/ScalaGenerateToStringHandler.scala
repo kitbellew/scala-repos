@@ -33,23 +33,21 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
         FileDocumentManager.getInstance.requestWriting(
           editor.getDocument,
           project)) {
-      GenerationUtil
-        .elementOfTypeAtCaret(
-          editor,
-          psiFile,
-          classOf[ScClass],
-          classOf[ScObject],
-          classOf[ScTrait])
-        .foreach { aType =>
-          val toStringMethod = createToString(aType, project)
+      GenerationUtil.elementOfTypeAtCaret(
+        editor,
+        psiFile,
+        classOf[ScClass],
+        classOf[ScObject],
+        classOf[ScTrait]).foreach { aType =>
+        val toStringMethod = createToString(aType, project)
 
-          extensions.inWriteAction {
-            GenerationUtil.addMembers(
-              aType,
-              toStringMethod.toList,
-              editor.getDocument)
-          }
+        extensions.inWriteAction {
+          GenerationUtil.addMembers(
+            aType,
+            toStringMethod.toList,
+            editor.getDocument)
         }
+      }
     }
   }
 
@@ -123,6 +121,6 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
 
   private def getAllSuitableMembers(
       aType: ScTypeDefinition): Seq[ScNamedElement] =
-    GenerationUtil.getAllFields(aType) ++ GenerationUtil
-      .getAllParameterlessMethods(aType)
+    GenerationUtil.getAllFields(
+      aType) ++ GenerationUtil.getAllParameterlessMethods(aType)
 }

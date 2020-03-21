@@ -31,14 +31,12 @@ object TokenizerExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val sentenceDataFrame = sqlContext
-      .createDataFrame(
-        Seq(
-          (0, "Hi I heard about Spark"),
-          (1, "I wish Java could use case classes"),
-          (2, "Logistic,regression,models,are,neat")
-        ))
-      .toDF("label", "sentence")
+    val sentenceDataFrame = sqlContext.createDataFrame(
+      Seq(
+        (0, "Hi I heard about Spark"),
+        (1, "I wish Java could use case classes"),
+        (2, "Logistic,regression,models,are,neat")
+      )).toDF("label", "sentence")
 
     val tokenizer =
       new Tokenizer().setInputCol("sentence").setOutputCol("words")

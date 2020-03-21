@@ -17,8 +17,7 @@ import com.twitter.util.Time
 @RunWith(classOf[JUnitRunner])
 class InterpreterTest extends FunSuite {
   trait InterpreterHelper {
-    val queues = CacheBuilder
-      .newBuilder()
+    val queues = CacheBuilder.newBuilder()
       .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
         def load(k: Buf) = new LinkedBlockingDeque[Buf]
       })

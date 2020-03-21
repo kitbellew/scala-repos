@@ -59,13 +59,10 @@ class TaskLabelsTest extends FunSuite with GivenWhenThen with Matchers {
 
     def labelResourcesFor(
         frameworkId: FrameworkId): Iterable[MesosProtos.Resource] = {
-      MarathonTestHelper
-        .makeBasicOffer(
-          reservation = Some(TaskLabels.labelsForTask(frameworkId, taskId)),
-          role = "test"
-        )
-        .getResourcesList
-        .asScala
+      MarathonTestHelper.makeBasicOffer(
+        reservation = Some(TaskLabels.labelsForTask(frameworkId, taskId)),
+        role = "test"
+      ).getResourcesList.asScala
     }
 
     val labeledResources = labelResourcesFor(frameworkId)

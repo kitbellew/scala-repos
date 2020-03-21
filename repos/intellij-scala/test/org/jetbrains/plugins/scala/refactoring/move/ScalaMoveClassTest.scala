@@ -117,9 +117,8 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       getModuleAdapter,
       rootBefore,
       new util.HashSet[File]())
-    VirtualFilePointerManager.getInstance
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance.asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
     val settings = ScalaApplicationSettings.getInstance()
     val moveCompanionOld = settings.MOVE_COMPANION
     settings.MOVE_COMPANION = moveCompanion
@@ -132,12 +131,10 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     val rootAfter: String = root + "/after"
     val rootDir2: VirtualFile = LocalFileSystem.getInstance.findFileByPath(
       rootAfter.replace(File.separatorChar, '/'))
-    VirtualFilePointerManager.getInstance
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
-    getProjectAdapter
-      .getComponent(classOf[PostprocessReformattingAspect])
-      .doPostponedFormatting()
+    VirtualFilePointerManager.getInstance.asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
+    getProjectAdapter.getComponent(
+      classOf[PostprocessReformattingAspect]).doPostponedFormatting()
     PlatformTestUtil.assertDirectoriesEqual(rootDir2, rootDir)
   }
 
@@ -147,15 +144,14 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       mode: Kinds.Value) {
     val classes = new ArrayBuffer[PsiClass]()
     for (name <- classNames) {
-      classes ++= ScalaPsiManager
-        .instance(getProjectAdapter)
-        .getCachedClasses(GlobalSearchScope.allScope(getProjectAdapter), name)
-        .filter {
-          case o: ScObject if o.isSyntheticObject       => false
-          case c: ScClass if mode == Kinds.onlyObjects  => false
-          case o: ScObject if mode == Kinds.onlyClasses => false
-          case _                                        => true
-        }
+      classes ++= ScalaPsiManager.instance(getProjectAdapter).getCachedClasses(
+        GlobalSearchScope.allScope(getProjectAdapter),
+        name).filter {
+        case o: ScObject if o.isSyntheticObject       => false
+        case c: ScClass if mode == Kinds.onlyObjects  => false
+        case o: ScObject if mode == Kinds.onlyClasses => false
+        case _                                        => true
+      }
     }
     val aPackage: PsiPackage =
       JavaPsiFacade.getInstance(getProjectAdapter).findPackage(newPackageName)

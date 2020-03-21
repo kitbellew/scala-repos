@@ -34,13 +34,12 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
     addBreakpoint(b.line, mainFileName, b.ordinal)
 
   protected def checkVariants(lineNumber: Int, variants: String*) = {
-    val xSourcePosition = XDebuggerUtil
-      .getInstance()
-      .createPosition(getVirtualFile(getFileInSrc(mainFileName)), lineNumber)
-    val foundVariants = scalaLineBreakpointType
-      .computeVariants(getProject, xSourcePosition)
-      .asScala
-      .map(_.getText)
+    val xSourcePosition = XDebuggerUtil.getInstance().createPosition(
+      getVirtualFile(getFileInSrc(mainFileName)),
+      lineNumber)
+    val foundVariants = scalaLineBreakpointType.computeVariants(
+      getProject,
+      xSourcePosition).asScala.map(_.getText)
     Assert.assertEquals(
       "Wrong set of variants found: ",
       variants,
@@ -65,10 +64,8 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
         managed {
           val location = suspendContext.getFrameProxy.getStackFrame.location
           inReadAction {
-            val sourcePosition = ScalaPositionManager
-              .instance(getDebugProcess)
-              .get
-              .getSourcePosition(location)
+            val sourcePosition = ScalaPositionManager.instance(
+              getDebugProcess).get.getSourcePosition(location)
             val text: String = highlightedText(sourcePosition)
             Assert.assertTrue(
               message(expected, text),
@@ -83,9 +80,8 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
   private def highlightedText(sourcePosition: SourcePosition): String = {
     val elemRange =
       SourcePositionHighlighter.getHighlightRangeFor(sourcePosition)
-    val document = PsiDocumentManager
-      .getInstance(getProject)
-      .getDocument(sourcePosition.getFile)
+    val document = PsiDocumentManager.getInstance(getProject).getDocument(
+      sourcePosition.getFile)
     val lineRange =
       DocumentUtil.getLineTextRange(document, sourcePosition.getLine)
     val textRange =

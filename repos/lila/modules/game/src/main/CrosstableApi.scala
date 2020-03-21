@@ -26,12 +26,10 @@ final class CrosstableApi(coll: Coll) {
         coll.find(select(u1, u2)).one[Crosstable])
 
   def nbGames(u1: String, u2: String): Fu[Int] =
-    coll
-      .find(
-        select(u1, u2),
-        BSONDocument("n" -> true)
-      )
-      .one[BSONDocument] map {
+    coll.find(
+      select(u1, u2),
+      BSONDocument("n" -> true)
+    ).one[BSONDocument] map {
       ~_.flatMap(_.getAs[Int]("n"))
     }
 
@@ -86,13 +84,13 @@ final class CrosstableApi(coll: Coll) {
         import reactivemongo.api.ReadPreference
 
         for {
-          localResults <- gameColl
-            .find(selector, BSONDocument(Game.BSONFields.winnerId -> true))
-            .sort(BSONDocument(Game.BSONFields.createdAt -> -1))
+          localResults <- gameColl.find(
+            selector,
+            BSONDocument(Game.BSONFields.winnerId -> true)).sort(
+            BSONDocument(Game.BSONFields.createdAt -> -1))
             .cursor[BSONDocument](readPreference =
               ReadPreference.secondaryPreferred)
-            .collect[List](maxGames)
-            .map {
+            .collect[List](maxGames).map {
               _.flatMap { doc =>
                 doc.getAs[String](Game.BSONFields.id).map { id =>
                   Result(id, doc.getAs[String](Game.BSONFields.winnerId))
@@ -106,18 +104,17 @@ final class CrosstableApi(coll: Coll) {
             localResults,
             nbGames)
 
-          crosstable <- gameColl
-            .aggregate(
-              Match(selector),
-              List(GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1))))
-            .map(
-              _.documents.foldLeft(ctDraft) {
-                case (ct, obj) =>
-                  obj.getAs[Int]("nb").fold(ct) { nb =>
-                    ct.addWins(obj.getAs[String]("_id"), nb)
-                  }
-              }
-            )
+          crosstable <- gameColl.aggregate(
+            Match(selector),
+            List(
+              GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1)))).map(
+            _.documents.foldLeft(ctDraft) {
+              case (ct, obj) =>
+                obj.getAs[Int]("nb").fold(ct) { nb =>
+                  ct.addWins(obj.getAs[String]("_id"), nb)
+                }
+            }
+          )
 
           _ <- coll insert crosstable
         } yield crosstable.some

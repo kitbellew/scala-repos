@@ -25,8 +25,12 @@ private[akka] object FileSubscriber {
       bufSize: Int,
       openOptions: Set[StandardOpenOption]) = {
     require(bufSize > 0, "buffer size must be > 0")
-    Props(classOf[FileSubscriber], f, completionPromise, bufSize, openOptions)
-      .withDeploy(Deploy.local)
+    Props(
+      classOf[FileSubscriber],
+      f,
+      completionPromise,
+      bufSize,
+      openOptions).withDeploy(Deploy.local)
   }
 }
 

@@ -245,18 +245,15 @@ private[spark] class MesosClusterScheduler(
         s.success = true
         s.driverState = "FINISHED"
         finishedDrivers
-          .find(d => d.driverDescription.submissionId.equals(submissionId))
-          .get
-          .mesosTaskStatus
+          .find(d =>
+            d.driverDescription.submissionId.equals(
+              submissionId)).get.mesosTaskStatus
           .foreach(state => s.message = state.toString)
       } else if (pendingRetryDrivers.exists(
                    _.submissionId.equals(submissionId))) {
-        val status = pendingRetryDrivers
-          .find(_.submissionId.equals(submissionId))
-          .get
-          .retryState
-          .get
-          .lastFailureStatus
+        val status =
+          pendingRetryDrivers.find(_.submissionId.equals(submissionId))
+            .get.retryState.get.lastFailureStatus
         s.success = true
         s.driverState = "RETRYING"
         s.message = status.toString
@@ -273,19 +270,17 @@ private[spark] class MesosClusterScheduler(
     */
   def getDriverState(submissionId: String): Option[MesosDriverState] = {
     stateLock.synchronized {
-      queuedDrivers
-        .find(_.submissionId.equals(submissionId))
+      queuedDrivers.find(_.submissionId.equals(submissionId))
         .map(d => new MesosDriverState("QUEUED", d))
-        .orElse(launchedDrivers
-          .get(submissionId)
+        .orElse(launchedDrivers.get(submissionId)
           .map(d =>
             new MesosDriverState("RUNNING", d.driverDescription, Some(d))))
-        .orElse(finishedDrivers
-          .find(_.driverDescription.submissionId.equals(submissionId))
-          .map(d =>
-            new MesosDriverState("FINISHED", d.driverDescription, Some(d))))
-        .orElse(pendingRetryDrivers
-          .find(_.submissionId.equals(submissionId))
+        .orElse(
+          finishedDrivers.find(
+            _.driverDescription.submissionId.equals(submissionId))
+            .map(d =>
+              new MesosDriverState("FINISHED", d.driverDescription, Some(d))))
+        .orElse(pendingRetryDrivers.find(_.submissionId.equals(submissionId))
           .map(d => new MesosDriverState("RETRYING", d)))
     }
   }
@@ -304,9 +299,8 @@ private[spark] class MesosClusterScheduler(
           launchedDrivers(state.taskId.getValue) = state
           pendingRecover(state.taskId.getValue) = state.slaveId
       }
-      queuedDriversState
-        .fetchAll[MesosDriverDescription]()
-        .foreach(d => queuedDrivers += d)
+      queuedDriversState.fetchAll[MesosDriverDescription]().foreach(d =>
+        queuedDrivers += d)
       // There is potential timing issue where a queued driver might have been launched
       // but the scheduler shuts down before the queued driver was able to be removed
       // from the queue. We try to mitigate this issue by walking through all queued drivers
@@ -314,8 +308,7 @@ private[spark] class MesosClusterScheduler(
       queuedDrivers
         .filter(d => launchedDrivers.contains(d.submissionId))
         .foreach(d => removeFromQueuedDrivers(d.submissionId))
-      pendingRetryDriversState
-        .fetchAll[MesosDriverDescription]()
+      pendingRetryDriversState.fetchAll[MesosDriverDescription]()
         .foreach(s => pendingRetryDrivers += s)
       // TODO: Consider storing finished drivers so we can show them on the UI after
       // failover. For now we clear the history on each recovery.
@@ -373,15 +366,13 @@ private[spark] class MesosClusterScheduler(
         // Start task reconciliation if we need to recover.
         val statuses = pendingRecover.collect {
           case (taskId, slaveId) =>
-            val newStatus = TaskStatus
-              .newBuilder()
+            val newStatus = TaskStatus.newBuilder()
               .setTaskId(TaskID.newBuilder().setValue(taskId).build())
               .setSlaveId(slaveId)
               .setState(MesosTaskState.TASK_STAGING)
               .build()
-            launchedDrivers
-              .get(taskId)
-              .map(_.mesosTaskStatus.getOrElse(newStatus))
+            launchedDrivers.get(taskId).map(
+              _.mesosTaskStatus.getOrElse(newStatus))
               .getOrElse(newStatus)
         }
         // TODO: Page the status updates to avoid trying to reconcile
@@ -392,13 +383,10 @@ private[spark] class MesosClusterScheduler(
   }
 
   private def buildDriverCommand(desc: MesosDriverDescription): CommandInfo = {
-    val appJar = CommandInfo.URI
-      .newBuilder()
-      .setValue(desc.jarUrl.stripPrefix("file:").stripPrefix("local:"))
-      .build()
+    val appJar = CommandInfo.URI.newBuilder()
+      .setValue(desc.jarUrl.stripPrefix("file:").stripPrefix("local:")).build()
     val builder = CommandInfo.newBuilder().addUris(appJar)
-    val entries = conf
-      .getOption("spark.executor.extraLibraryPath")
+    val entries = conf.getOption("spark.executor.extraLibraryPath")
       .map(path => Seq(path) ++ desc.command.libraryPathEntries)
       .getOrElse(desc.command.libraryPathEntries)
 
@@ -414,17 +402,15 @@ private[spark] class MesosClusterScheduler(
           Variable.newBuilder().setName(k).setValue(v).build())
     }
     // Pass all spark properties to executor.
-    val executorOpts =
-      desc.schedulerProperties.map { case (k, v) => s"-D$k=$v" }.mkString(" ")
+    val executorOpts = desc.schedulerProperties.map {
+      case (k, v) => s"-D$k=$v"
+    }.mkString(" ")
     envBuilder.addVariables(
-      Variable
-        .newBuilder()
-        .setName("SPARK_EXECUTOR_OPTS")
-        .setValue(executorOpts))
+      Variable.newBuilder().setName("SPARK_EXECUTOR_OPTS").setValue(
+        executorOpts))
     val dockerDefined =
       desc.schedulerProperties.contains("spark.mesos.executor.docker.image")
-    val executorUri = desc.schedulerProperties
-      .get("spark.executor.uri")
+    val executorUri = desc.schedulerProperties.get("spark.executor.uri")
       .orElse(desc.command.environment.get("SPARK_EXECUTOR_URI"))
     // Gets the path to run spark-submit, and the path to the Mesos sandbox.
     val (executable, sandboxPath) = if (dockerDefined) {
@@ -439,14 +425,14 @@ private[spark] class MesosClusterScheduler(
       // Sandbox path points to the parent folder as we chdir into the folderBasename.
       (cmdExecutable, "..")
     } else {
-      val executorSparkHome = desc.schedulerProperties
-        .get("spark.mesos.executor.home")
-        .orElse(conf.getOption("spark.home"))
-        .orElse(Option(System.getenv("SPARK_HOME")))
-        .getOrElse {
-          throw new SparkException(
-            "Executor Spark home `spark.mesos.executor.home` is not set!")
-        }
+      val executorSparkHome =
+        desc.schedulerProperties.get("spark.mesos.executor.home")
+          .orElse(conf.getOption("spark.home"))
+          .orElse(Option(System.getenv("SPARK_HOME")))
+          .getOrElse {
+            throw new SparkException(
+              "Executor Spark home `spark.mesos.executor.home` is not set!")
+          }
       val cmdExecutable =
         new File(executorSparkHome, "./bin/spark-submit").getPath
       // Sandbox points to the current directory by default with Mesos.
@@ -494,8 +480,7 @@ private[spark] class MesosClusterScheduler(
       options ++= Seq("--total-executor-cores", v)
     }
     desc.schedulerProperties.get("spark.submit.pyFiles").map { pyFiles =>
-      val formattedFiles = pyFiles
-        .split(",")
+      val formattedFiles = pyFiles.split(",")
         .map { path => new File(sandboxPath, path.split("/").last).toString() }
         .mkString(",")
       options ++= Seq("--py-files", formattedFiles)
@@ -545,8 +530,7 @@ private[spark] class MesosClusterScheduler(
           partitionResources(remainingResources.asJava, "mem", driverMem)
         val commandInfo = buildDriverCommand(submission)
         val appName = submission.schedulerProperties("spark.app.name")
-        val taskInfo = TaskInfo
-          .newBuilder()
+        val taskInfo = TaskInfo.newBuilder()
           .setTaskId(taskId)
           .setName(s"Driver for $appName")
           .setSlaveId(offer.slaveId)
@@ -554,23 +538,22 @@ private[spark] class MesosClusterScheduler(
           .addAllResources(cpuResourcesToUse.asJava)
           .addAllResources(memResourcesToUse.asJava)
         offer.resources = finalResources.asJava
-        submission.schedulerProperties
-          .get("spark.mesos.executor.docker.image")
-          .foreach { image =>
-            val container = taskInfo.getContainerBuilder()
-            val volumes = submission.schedulerProperties
-              .get("spark.mesos.executor.docker.volumes")
-              .map(MesosSchedulerBackendUtil.parseVolumesSpec)
-            val portmaps = submission.schedulerProperties
-              .get("spark.mesos.executor.docker.portmaps")
-              .map(MesosSchedulerBackendUtil.parsePortMappingsSpec)
-            MesosSchedulerBackendUtil.addDockerInfo(
-              container,
-              image,
-              volumes = volumes,
-              portmaps = portmaps)
-            taskInfo.setContainer(container.build())
-          }
+        submission.schedulerProperties.get(
+          "spark.mesos.executor.docker.image").foreach { image =>
+          val container = taskInfo.getContainerBuilder()
+          val volumes = submission.schedulerProperties
+            .get("spark.mesos.executor.docker.volumes")
+            .map(MesosSchedulerBackendUtil.parseVolumesSpec)
+          val portmaps = submission.schedulerProperties
+            .get("spark.mesos.executor.docker.portmaps")
+            .map(MesosSchedulerBackendUtil.parsePortMappingsSpec)
+          MesosSchedulerBackendUtil.addDockerInfo(
+            container,
+            image,
+            volumes = volumes,
+            portmaps = portmaps)
+          taskInfo.setContainer(container.build())
+        }
         val queuedTasks =
           tasks.getOrElseUpdate(offer.offerId, new ArrayBuffer[TaskInfo])
         queuedTasks += taskInfo.build()

@@ -228,8 +228,7 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
       None
     )
     assert(
-      pipeline
-        .get("socketAddressResolver")
-        .isInstanceOf[SocketAddressResolveHandler])
+      pipeline.get("socketAddressResolver").isInstanceOf[
+        SocketAddressResolveHandler])
   }
 }

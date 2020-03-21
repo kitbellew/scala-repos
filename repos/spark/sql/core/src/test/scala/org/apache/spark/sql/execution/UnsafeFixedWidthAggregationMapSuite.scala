@@ -89,11 +89,9 @@ class UnsafeFixedWidthAggregationMapSuite
 
   private def randomStrings(n: Int): Seq[String] = {
     val rand = new Random(42)
-    Seq
-      .fill(512) {
-        Seq.fill(rand.nextInt(100))(rand.nextPrintableChar()).mkString
-      }
-      .distinct
+    Seq.fill(512) {
+      Seq.fill(rand.nextInt(100))(rand.nextPrintableChar()).mkString
+    }.distinct
   }
 
   testWithMemoryLeakDetection("supported schemas") {

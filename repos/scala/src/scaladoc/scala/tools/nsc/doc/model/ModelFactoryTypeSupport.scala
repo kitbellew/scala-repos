@@ -201,12 +201,10 @@ trait ModelFactoryTypeSupport {
               def typeParamsToString(tps: List[Symbol]): String =
                 if (tps.isEmpty) ""
                 else
-                  tps
-                    .map { tparam =>
-                      tparam.varianceString + tparam.name + typeParamsToString(
-                        tparam.typeParams)
-                    }
-                    .mkString("[", ", ", "]")
+                  tps.map { tparam =>
+                    tparam.varianceString + tparam.name + typeParamsToString(
+                      tparam.typeParams)
+                  }.mkString("[", ", ", "]")
               nameBuffer append typeParamsToString(tparams)
               appendType0(result)
 

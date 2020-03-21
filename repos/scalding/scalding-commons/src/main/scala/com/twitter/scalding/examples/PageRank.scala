@@ -51,8 +51,7 @@ class PageRank(args: Args) extends Job(args) {
     * Here is where we check for convergence and then run the next job if we're not converged
     */
   override def next: Option[Job] = {
-    args
-      .optional("convergence")
+    args.optional("convergence")
       .flatMap { convErr =>
         /*
          * It's easy for this to seem broken, so think about it twice:
@@ -114,8 +113,8 @@ class PageRank(args: Args) extends Job(args) {
       //compute the incremental rank due to the random jump:
       val randomJump = nodeRows.map('rank -> 'rank) { (rank: Double) => ALPHA }
       //expand the neighbor list inte an edge list and out-degree of the src
-      val edges = nodeRows
-        .flatMap(('dst, 'd_src) -> ('dst, 'd_src)) { args: (String, Long) =>
+      val edges = nodeRows.flatMap(('dst, 'd_src) -> ('dst, 'd_src)) {
+        args: (String, Long) =>
           if (args._1.length > 0) {
             val dsts = args._1.split(",")
             //Ignore the old degree:
@@ -125,9 +124,9 @@ class PageRank(args: Args) extends Job(args) {
             //Here is a node that points to no other nodes (dangling)
             Nil
           }
-        }
-        //Here we make a false row that we use to tell dst how much incoming
-        //Page rank it needs to add to itself:
+      }
+      //Here we make a false row that we use to tell dst how much incoming
+      //Page rank it needs to add to itself:
         .map(
           (
             'src,
@@ -158,9 +157,9 @@ class PageRank(args: Args) extends Job(args) {
          * filter the result to keep only NODESET rows.
          */
         _.min('rowtype, 'dst, 'd_src)
-          .sum[Double](
-            'rank
-          ) //Sum the page-rank from both the nodeset and edge rows
+        .sum[Double](
+          'rank
+        ) //Sum the page-rank from both the nodeset and edge rows
       }
       //Must call ourselves in the tail position:
       doPageRank(steps - 1)(nextPr)
@@ -178,8 +177,7 @@ class PageRank(args: Args) extends Job(args) {
     args.optional("errorOut").map { errOut =>
       Tsv(args("input")).read
         .mapTo((0, 1, 2) -> ('src0, 'dst0, 'rank0)) {
-          tup: (Long, String, Double) =>
-            tup
+          tup: (Long, String, Double) => tup
         }
         .joinWithSmaller('src0 -> 'src, pr)
         .mapTo(('rank0, 'rank) -> 'err) { ranks: (Double, Double) =>

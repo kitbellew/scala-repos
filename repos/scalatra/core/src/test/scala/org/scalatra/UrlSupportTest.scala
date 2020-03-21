@@ -13,8 +13,10 @@ class UrlSupportTest extends ScalatraFunSuite {
       }
 
       get("/option") {
-        this
-          .url(params("url"), Seq("id" -> params.get("id")), absolutize = false)
+        this.url(
+          params("url"),
+          Seq("id" -> params.get("id")),
+          absolutize = false)
       }
 
       get("/strip-context") {

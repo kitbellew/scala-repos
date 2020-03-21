@@ -302,16 +302,14 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until data.length)
       builder.putLongPart(data(i), nBytes)(byteOrder)
 
-    reference.zipWithIndex
-      .collect({ // Since there is no partial put on LongBuffer, we need to collect only the interesting bytes
-        case (r, i)
-            if byteOrder == ByteOrder.LITTLE_ENDIAN && i % elemSize < nBytes ⇒
-          r
-        case (r, i)
-            if byteOrder == ByteOrder.BIG_ENDIAN && i % elemSize >= (elemSize - nBytes) ⇒
-          r
-      })
-      .toSeq == builder.result
+    reference.zipWithIndex.collect({ // Since there is no partial put on LongBuffer, we need to collect only the interesting bytes
+      case (r, i)
+          if byteOrder == ByteOrder.LITTLE_ENDIAN && i % elemSize < nBytes ⇒
+        r
+      case (r, i)
+          if byteOrder == ByteOrder.BIG_ENDIAN && i % elemSize >= (elemSize - nBytes) ⇒
+        r
+    }).toSeq == builder.result
   }
 
   def testFloatEncoding(
@@ -407,9 +405,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { (a: ByteString) ⇒ a.asByteBuffers.forall(_.isReadOnly) }
         check { (a: ByteString) ⇒
           import scala.collection.JavaConverters.iterableAsScalaIterableConverter;
-          a.asByteBuffers
-            .zip(a.getByteBuffers().asScala)
-            .forall(x ⇒ x._1 == x._2)
+          a.asByteBuffers.zip(a.getByteBuffers().asScala).forall(x ⇒
+            x._1 == x._2)
         }
       }
     }

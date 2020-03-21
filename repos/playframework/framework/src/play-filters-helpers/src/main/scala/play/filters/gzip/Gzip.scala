@@ -185,9 +185,9 @@ object Gzip {
           writeTrailer(trailer, 0)
           Seq(buffer, trailer)
         }
-        Iteratee
-          .flatten(Enumerator.enumerate(finalIn) >>> Enumerator.eof |>> Cont(k))
-          .map(it => Done(it, Input.EOF))
+        Iteratee.flatten(
+          Enumerator.enumerate(finalIn) >>> Enumerator.eof |>> Cont(k)).map(
+          it => Done(it, Input.EOF))
       }
     }
   }
@@ -337,10 +337,8 @@ object Gzip {
               headerBytes(3)))
           _ <- if (header.magic != GzipMagic.asInstanceOf[Short])
             Error(
-              "Not a gzip file, found header" + headerBytes
-                .take(2)
-                .map(b => "%02X".format(b))
-                .mkString("(", ", ", ")"),
+              "Not a gzip file, found header" + headerBytes.take(2).map(b =>
+                "%02X".format(b)).mkString("(", ", ", ")"),
               Input.El(headerBytes))
           else done()
           _ <- if (header.compressionMethod != Deflater.DEFLATED)
@@ -375,8 +373,9 @@ object Gzip {
           crc <- readInt("Premature EOF before gzip CRC", dummy)
           _ <- if (crc != state.crc.getValue.asInstanceOf[Int])
             Error(
-              "CRC failed, was %X, expected %X"
-                .format(state.crc.getValue.asInstanceOf[Int], crc),
+              "CRC failed, was %X, expected %X".format(
+                state.crc.getValue.asInstanceOf[Int],
+                crc),
               Input.El(intToLittleEndian(crc)))
           else done()
           length <- readInt("Premature EOF before gzip total length", dummy)

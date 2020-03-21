@@ -91,8 +91,7 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       labels = Map("resource" -> "ports"))
 
     val offer =
-      MarathonTestHelper
-        .makeBasicOffer(role = "marathon")
+      MarathonTestHelper.makeBasicOffer(role = "marathon")
         .clearResources()
         .addResources(
           MarathonTestHelper.scalarResource(
@@ -112,10 +111,17 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
             128.0,
             "*",
             reservation = Some(memReservation)))
-        .addResources(MarathonTestHelper
-          .scalarResource("disk", 2, "*", reservation = Some(diskReservation)))
-        .addResources(MarathonTestHelper
-          .portsResource(80, 80, reservation = Some(portsReservation)))
+        .addResources(
+          MarathonTestHelper.scalarResource(
+            "disk",
+            2,
+            "*",
+            reservation = Some(diskReservation)))
+        .addResources(
+          MarathonTestHelper.portsResource(
+            80,
+            80,
+            reservation = Some(portsReservation)))
         .build()
 
     val app = AppDefinition(
@@ -138,10 +144,14 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
     res.scalarMatches should have size (3)
     res.scalarMatch(Resource.CPUS).get.consumed.toSet should be(
       Set(
-        ScalarMatch
-          .Consumption(1.0, "marathon", reservation = Some(cpuReservation)),
-        ScalarMatch
-          .Consumption(1.0, "marathon", reservation = Some(cpuReservation2))
+        ScalarMatch.Consumption(
+          1.0,
+          "marathon",
+          reservation = Some(cpuReservation)),
+        ScalarMatch.Consumption(
+          1.0,
+          "marathon",
+          reservation = Some(cpuReservation2))
       )
     )
 
@@ -158,8 +168,10 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
 
     res.portsMatch.hostPortsWithRole.toSet should be(
       Set(
-        PortsMatcher
-          .PortWithRole("*", 80, reservation = Some(portsReservation)))
+        PortsMatcher.PortWithRole(
+          "*",
+          80,
+          reservation = Some(portsReservation)))
     )
 
     // reserved resources should not be matched by selector with reserved = false
@@ -179,8 +191,7 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       labels = Map("resource" -> "mem"))
 
     val offer =
-      MarathonTestHelper
-        .makeBasicOffer(role = "marathon")
+      MarathonTestHelper.makeBasicOffer(role = "marathon")
         .clearResources()
         .addResources(
           MarathonTestHelper.scalarResource(
@@ -260,10 +271,9 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources success with constraints") {
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 0, endPort = 0)
-      .setHostname("host1")
-      .build()
+    val offer =
+      MarathonTestHelper.makeBasicOffer(beginPort = 0, endPort = 0).setHostname(
+        "host1").build()
     val app = AppDefinition(
       id = "/test".toRootPath,
       cpus = 1.0,
@@ -288,10 +298,9 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources fails on constraints") {
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 0, endPort = 0)
-      .setHostname("host1")
-      .build()
+    val offer =
+      MarathonTestHelper.makeBasicOffer(beginPort = 0, endPort = 0).setHostname(
+        "host1").build()
     val app = AppDefinition(
       id = "/test".toRootPath,
       cpus = 1.0,

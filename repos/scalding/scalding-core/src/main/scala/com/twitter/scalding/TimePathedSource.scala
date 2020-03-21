@@ -44,8 +44,7 @@ object TimePathedSource {
       dateRange: DateRange,
       tz: TimeZone): Iterable[String] =
     // This method is exhaustive, but too expensive for Cascading's JobConf writing.
-    dateRange
-      .each(duration)
+    dateRange.each(duration)
       .map { dr: DateRange => toPath(pattern, dr.start, tz) }
 
   /**
@@ -169,7 +168,9 @@ abstract class MostRecentGoodSource(p: String, dr: DateRange, t: TimeZone)
     "MostRecentGoodSource(" + p + ", " + dr + ", " + t + ")"
 
   override protected def goodHdfsPaths(hdfsMode: Hdfs) =
-    getPathStatuses(hdfsMode.jobConf).toList.reverse
+    getPathStatuses(hdfsMode.jobConf)
+      .toList
+      .reverse
       .find(_._2)
       .map(_._1)
 

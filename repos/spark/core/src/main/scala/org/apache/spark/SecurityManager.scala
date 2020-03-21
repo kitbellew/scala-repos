@@ -396,8 +396,9 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
         rnd.nextBytes(secret)
 
         val cookie = HashCodes.fromBytes(secret).toString()
-        SparkHadoopUtil.get
-          .addSecretKeyToUserCredentials(SECRET_LOOKUP_KEY, cookie)
+        SparkHadoopUtil.get.addSecretKeyToUserCredentials(
+          SECRET_LOOKUP_KEY,
+          cookie)
         cookie
       } else {
         new Text(secretKey).toString
@@ -436,8 +437,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     logDebug(
       "user=" + user + " aclsEnabled=" + aclsEnabled() + " viewAcls=" +
         viewAcls.mkString(","))
-    !aclsEnabled || user == null || viewAcls.contains(user) || viewAcls
-      .contains("*")
+    !aclsEnabled || user == null || viewAcls.contains(
+      user) || viewAcls.contains("*")
   }
 
   /**
@@ -453,8 +454,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     logDebug(
       "user=" + user + " aclsEnabled=" + aclsEnabled() + " modifyAcls=" +
         modifyAcls.mkString(","))
-    !aclsEnabled || user == null || modifyAcls.contains(user) || modifyAcls
-      .contains("*")
+    !aclsEnabled || user == null || modifyAcls.contains(
+      user) || modifyAcls.contains("*")
   }
 
   /**

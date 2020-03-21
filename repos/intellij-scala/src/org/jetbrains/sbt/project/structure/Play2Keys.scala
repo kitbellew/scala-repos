@@ -42,9 +42,8 @@ object Play2Keys {
         Some(
           new StringXmlKey(
             keyName,
-            children
-              .map(projectKey => (projectKey.label, projectKey.text))
-              .toMap))
+            children.map(projectKey =>
+              (projectKey.label, projectKey.text)).toMap))
       } else if (children.forall(_.child.forall(node =>
                    node.label == ENTRY_SEQ_NAME || node.isInstanceOf[Text]))) {
         val values = children.flatMap {

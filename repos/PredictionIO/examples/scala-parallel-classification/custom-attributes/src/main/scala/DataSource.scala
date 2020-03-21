@@ -31,14 +31,13 @@ class DataSource(val dsp: DataSourceParams)
     val gendersMap = Map("Male" -> 0.0, "Female" -> 1.0)
     val educationMap =
       Map("No School" -> 0.0, "High School" -> 1.0, "College" -> 2.0)
-    val labeledPoints: RDD[LabeledPoint] = eventsDb
-      .aggregateProperties(
-        appId = dsp.appId,
-        entityType = "user",
-        // only keep entities with these required properties defined
-        required = Some(List("plan", "gender", "age", "education")))(sc)
-      // aggregateProperties() returns RDD pair of
-      // entity ID and its aggregated properties
+    val labeledPoints: RDD[LabeledPoint] = eventsDb.aggregateProperties(
+      appId = dsp.appId,
+      entityType = "user",
+      // only keep entities with these required properties defined
+      required = Some(List("plan", "gender", "age", "education")))(sc)
+    // aggregateProperties() returns RDD pair of
+    // entity ID and its aggregated properties
       .map {
         case (entityId, properties) =>
           try {
@@ -59,8 +58,7 @@ class DataSource(val dsp: DataSourceParams)
               throw e
             }
           }
-      }
-      .cache()
+      }.cache()
 
     new TrainingData(labeledPoints, gendersMap, educationMap)
   }

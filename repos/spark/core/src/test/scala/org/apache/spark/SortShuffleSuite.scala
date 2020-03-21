@@ -86,10 +86,10 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
   private def ensureFilesAreCleanedUp(
       shuffledRdd: ShuffledRDD[_, _, _]): Unit = {
     def getAllFiles: Set[File] =
-      FileUtils
-        .listFiles(tempDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)
-        .asScala
-        .toSet
+      FileUtils.listFiles(
+        tempDir,
+        TrueFileFilter.INSTANCE,
+        TrueFileFilter.INSTANCE).asScala.toSet
     val filesBeforeShuffle = getAllFiles
     // Force the shuffle to be performed
     shuffledRdd.count()

@@ -301,34 +301,31 @@ class KMeans private (
       val bcActiveCenters = sc.broadcast(activeCenters)
 
       // Find the sum and count of points mapping to each center
-      val totalContribs = data
-        .mapPartitions { points =>
-          val thisActiveCenters = bcActiveCenters.value
-          val runs = thisActiveCenters.length
-          val k = thisActiveCenters(0).length
-          val dims = thisActiveCenters(0)(0).vector.size
+      val totalContribs = data.mapPartitions { points =>
+        val thisActiveCenters = bcActiveCenters.value
+        val runs = thisActiveCenters.length
+        val k = thisActiveCenters(0).length
+        val dims = thisActiveCenters(0)(0).vector.size
 
-          val sums = Array.fill(runs, k)(Vectors.zeros(dims))
-          val counts = Array.fill(runs, k)(0L)
+        val sums = Array.fill(runs, k)(Vectors.zeros(dims))
+        val counts = Array.fill(runs, k)(0L)
 
-          points.foreach { point =>
-            (0 until runs).foreach { i =>
-              val (bestCenter, cost) =
-                KMeans.findClosest(thisActiveCenters(i), point)
-              costAccums(i) += cost
-              val sum = sums(i)(bestCenter)
-              axpy(1.0, point.vector, sum)
-              counts(i)(bestCenter) += 1
-            }
+        points.foreach { point =>
+          (0 until runs).foreach { i =>
+            val (bestCenter, cost) =
+              KMeans.findClosest(thisActiveCenters(i), point)
+            costAccums(i) += cost
+            val sum = sums(i)(bestCenter)
+            axpy(1.0, point.vector, sum)
+            counts(i)(bestCenter) += 1
           }
-
-          val contribs = for (i <- 0 until runs; j <- 0 until k) yield {
-            ((i, j), (sums(i)(j), counts(i)(j)))
-          }
-          contribs.iterator
         }
-        .reduceByKey(mergeContribs)
-        .collectAsMap()
+
+        val contribs = for (i <- 0 until runs; j <- 0 until k) yield {
+          ((i, j), (sums(i)(j), counts(i)(j)))
+        }
+        contribs.iterator
+      }.reduceByKey(mergeContribs).collectAsMap()
 
       bcActiveCenters.unpersist(blocking = false)
 
@@ -385,16 +382,14 @@ class KMeans private (
   private def initRandom(
       data: RDD[VectorWithNorm]): Array[Array[VectorWithNorm]] = {
     // Sample all the cluster centers in one pass to avoid repeated scans
-    val sample = data
-      .takeSample(true, runs * k, new XORShiftRandom(this.seed).nextInt())
-      .toSeq
+    val sample = data.takeSample(
+      true,
+      runs * k,
+      new XORShiftRandom(this.seed).nextInt()).toSeq
     Array.tabulate(runs)(r =>
-      sample
-        .slice(r * k, (r + 1) * k)
-        .map { v =>
-          new VectorWithNorm(Vectors.dense(v.vector.toArray), v.norm)
-        }
-        .toArray)
+      sample.slice(r * k, (r + 1) * k).map { v =>
+        new VectorWithNorm(Vectors.dense(v.vector.toArray), v.norm)
+      }.toArray)
   }
 
   /**
@@ -434,15 +429,12 @@ class KMeans private (
     while (step < initializationSteps) {
       val bcNewCenters = data.context.broadcast(newCenters)
       val preCosts = costs
-      costs = data
-        .zip(preCosts)
-        .map {
-          case (point, cost) =>
-            Array.tabulate(runs) { r =>
-              math.min(KMeans.pointCost(bcNewCenters.value(r), point), cost(r))
-            }
-        }
-        .persist(StorageLevel.MEMORY_AND_DISK)
+      costs = data.zip(preCosts).map {
+        case (point, cost) =>
+          Array.tabulate(runs) { r =>
+            math.min(KMeans.pointCost(bcNewCenters.value(r), point), cost(r))
+          }
+      }.persist(StorageLevel.MEMORY_AND_DISK)
       val sumCosts = costs
         .aggregate(new Array[Double](runs))(
           seqOp = (s, v) => {
@@ -468,9 +460,8 @@ class KMeans private (
       bcNewCenters.unpersist(blocking = false)
       preCosts.unpersist(blocking = false)
 
-      val chosen = data
-        .zip(costs)
-        .mapPartitionsWithIndex { (index, pointsWithCosts) =>
+      val chosen = data.zip(costs).mapPartitionsWithIndex {
+        (index, pointsWithCosts) =>
           val rand = new XORShiftRandom(seed ^ (step << 16) ^ index)
           pointsWithCosts.flatMap {
             case (p, c) =>
@@ -479,8 +470,7 @@ class KMeans private (
               }
               if (rs.length > 0) Some((p, rs)) else None
           }
-        }
-        .collect()
+      }.collect()
       mergeNewCenters()
       chosen.foreach {
         case (p, rs) =>
@@ -496,22 +486,18 @@ class KMeans private (
     // candidate by the number of points in the dataset mapping to it and run a local k-means++
     // on the weighted centers to pick just k of them
     val bcCenters = data.context.broadcast(centers)
-    val weightMap = data
-      .flatMap { p =>
-        Iterator.tabulate(runs) { r =>
-          ((r, KMeans.findClosest(bcCenters.value(r), p)._1), 1.0)
-        }
+    val weightMap = data.flatMap { p =>
+      Iterator.tabulate(runs) { r =>
+        ((r, KMeans.findClosest(bcCenters.value(r), p)._1), 1.0)
       }
-      .reduceByKey(_ + _)
-      .collectAsMap()
+    }.reduceByKey(_ + _).collectAsMap()
 
     bcCenters.unpersist(blocking = false)
 
     val finalCenters = (0 until runs).par.map { r =>
       val myCenters = centers(r).toArray
-      val myWeights = (0 until myCenters.length)
-        .map(i => weightMap.getOrElse((r, i), 0.0))
-        .toArray
+      val myWeights = (0 until myCenters.length).map(i =>
+        weightMap.getOrElse((r, i), 0.0)).toArray
       LocalKMeans.kMeansPlusPlus(r, myCenters, myWeights, k, 30)
     }
 
@@ -552,8 +538,7 @@ object KMeans {
       runs: Int,
       initializationMode: String,
       seed: Long): KMeansModel = {
-    new KMeans()
-      .setK(k)
+    new KMeans().setK(k)
       .setMaxIterations(maxIterations)
       .internalSetRuns(runs)
       .setInitializationMode(initializationMode)
@@ -579,8 +564,7 @@ object KMeans {
       maxIterations: Int,
       runs: Int,
       initializationMode: String): KMeansModel = {
-    new KMeans()
-      .setK(k)
+    new KMeans().setK(k)
       .setMaxIterations(maxIterations)
       .internalSetRuns(runs)
       .setInitializationMode(initializationMode)

@@ -31,8 +31,7 @@ trait ProtectedBranchService {
             true,
             contexts,
             t1.statusCheckAdmin)
-      }
-      .headOption
+      }.headOption
 
   def getProtectedBranchInfo(owner: String, repository: String, branch: String)(
       implicit session: Session): ProtectedBranchInfo =
@@ -41,10 +40,8 @@ trait ProtectedBranchService {
 
   def getProtectedBranchList(owner: String, repository: String)(implicit
       session: Session): List[String] =
-    ProtectedBranches
-      .filter(_.byRepository(owner, repository))
-      .map(_.branch)
-      .list
+    ProtectedBranches.filter(_.byRepository(owner, repository)).map(
+      _.branch).list
 
   def enableBranchProtection(
       owner: String,
@@ -116,9 +113,8 @@ object ProtectedBranchService {
       with CommitStatusService {
 
     def isAdministrator(pusher: String)(implicit session: Session): Boolean =
-      pusher == owner || getGroupMembers(owner)
-        .filter(gm => gm.userName == pusher && gm.isManager)
-        .nonEmpty
+      pusher == owner || getGroupMembers(owner).filter(gm =>
+        gm.userName == pusher && gm.isManager).nonEmpty
 
     /**
       * Can't be force pushed
@@ -159,10 +155,8 @@ object ProtectedBranchService {
       if (contexts.isEmpty) {
         Set.empty
       } else {
-        contexts.toSet -- getCommitStatues(owner, repository, sha1)
-          .filter(_.state == CommitState.SUCCESS)
-          .map(_.context)
-          .toSet
+        contexts.toSet -- getCommitStatues(owner, repository, sha1).filter(
+          _.state == CommitState.SUCCESS).map(_.context).toSet
       }
     def needStatusCheck(pusher: String)(implicit session: Session): Boolean =
       pusher match {

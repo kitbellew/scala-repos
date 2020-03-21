@@ -1,10 +1,6 @@
 object Test extends App {
-  classOf[Foo]
-    .getDeclaredMethods()
-    .sortBy(_.getName)
-    .map(_.getExceptionTypes.sortBy(_.getName).toList)
-    .toList
-    .foreach(println)
+  classOf[Foo].getDeclaredMethods().sortBy(_.getName).map(
+    _.getExceptionTypes.sortBy(_.getName).toList).toList.foreach(println)
 }
 
 class Foo {

@@ -429,10 +429,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       Some(new HashPartitioner(7)),
       Some(ord))
     sorter.insertAll(elements.iterator)
-    assert(
-      sorter.partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+    assert(sorter.partitionedIterator.map(p =>
+      (p._1, p._2.toSet)).toSet === expected)
     sorter.stop()
 
     // Only aggregator
@@ -442,10 +440,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       Some(new HashPartitioner(7)),
       None)
     sorter2.insertAll(elements.iterator)
-    assert(
-      sorter2.partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+    assert(sorter2.partitionedIterator.map(p =>
+      (p._1, p._2.toSet)).toSet === expected)
     sorter2.stop()
 
     // Only ordering
@@ -455,10 +451,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       Some(new HashPartitioner(7)),
       Some(ord))
     sorter3.insertAll(elements.iterator)
-    assert(
-      sorter3.partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+    assert(sorter3.partitionedIterator.map(p =>
+      (p._1, p._2.toSet)).toSet === expected)
     sorter3.stop()
 
     // Neither aggregator nor ordering
@@ -468,10 +462,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       Some(new HashPartitioner(7)),
       None)
     sorter4.insertAll(elements.iterator)
-    assert(
-      sorter4.partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+    assert(sorter4.partitionedIterator.map(p =>
+      (p._1, p._2.toSet)).toSet === expected)
     sorter4.stop()
   }
 
@@ -515,8 +507,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local-cluster[1,1,1024]", "test", conf)
 
     assertSpilled(sc, "reduceByKey") {
-      val result = sc
-        .parallelize(0 until size)
+      val result = sc.parallelize(0 until size)
         .map { i => (i / 2, i) }
         .reduceByKey(math.max _, numReduceTasks)
         .collect()
@@ -531,8 +522,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     }
 
     assertSpilled(sc, "groupByKey") {
-      val result = sc
-        .parallelize(0 until size)
+      val result = sc.parallelize(0 until size)
         .map { i => (i / 2, i) }
         .groupByKey(numReduceTasks)
         .collect()
@@ -567,8 +557,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     }
 
     assertSpilled(sc, "sortByKey") {
-      val result = sc
-        .parallelize(0 until size)
+      val result = sc.parallelize(0 until size)
         .map { i => (i / 2, i) }
         .sortByKey(numPartitions = numReduceTasks)
         .collect()
@@ -696,10 +685,9 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       case (p, vs) => (p, vs.toSet)
     }.toSet
     val expected = (0 until 3).map { p =>
-      var v = (0 until size)
-        .map { i => (i / 4, i) }
-        .filter { case (k, _) => k % 3 == p }
-        .toSet
+      var v = (0 until size).map { i => (i / 4, i) }.filter {
+        case (k, _) => k % 3 == p
+      }.toSet
       if (withPartialAgg) {
         v = v.groupBy(_._1).mapValues { s => s.map(_._2).sum }.toSet
       }

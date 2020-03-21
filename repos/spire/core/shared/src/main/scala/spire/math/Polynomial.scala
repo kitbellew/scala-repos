@@ -113,9 +113,8 @@ object Polynomial extends PolynomialInstances {
             if (ts.isEmpty) ("+", s) else throw new IllegalArgumentException(s)
         }
 
-        val m2 = termRe
-          .findPrefixMatchOf(s2)
-          .getOrElse(throw new IllegalArgumentException(s2))
+        val m2 = termRe.findPrefixMatchOf(s2).getOrElse(
+          throw new IllegalArgumentException(s2))
         val c0 = Option(m2.group(1)).getOrElse("1")
         val c = if (op == "-") "-" + c0 else c0
         val v = Option(m2.group(2)).getOrElse("")

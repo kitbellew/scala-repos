@@ -77,18 +77,15 @@ trait IntegrationTest {
           root.getValue.asInstanceOf[TreeElement].getPresentation
         presentation.isInstanceOf[
           TestItemRepresentation] && presentation.getPresentableText == nodeName &&
-        presentation
-          .asInstanceOf[TestItemRepresentation]
-          .testStatus == status &&
+        presentation.asInstanceOf[
+          TestItemRepresentation].testStatus == status &&
         parentName.map(currentParentName == _).getOrElse(true)
       } ||
       root.getChildren.toList.exists(
         helper(
           _,
-          root.getValue
-            .asInstanceOf[TreeElement]
-            .getPresentation
-            .getPresentableText))
+          root.getValue.asInstanceOf[
+            TreeElement].getPresentation.getPresentableText))
     }
 
     var res = false
@@ -155,8 +152,8 @@ trait IntegrationTest {
     import scala.collection.JavaConversions._
     if (root.isLeaf && !names.contains(root.getName)) true
     else
-      !names.contains(root.getName) && root.getChildren.toList
-        .forall(checkResultTreeDoesNotHaveNodes(_, names))
+      !names.contains(root.getName) && root.getChildren.toList.forall(
+        checkResultTreeDoesNotHaveNodes(_, names))
   }
 
   protected def getExactNamePathFromResultTree(
@@ -194,11 +191,9 @@ trait IntegrationTest {
       val children = root.getChildren
       if (children.isEmpty && conditions.size == 1) Some(List(root))
       else
-        children.toList
-          .map(getPathFromResultTree(_, conditions.tail, allowTail))
-          .find(_.isDefined)
-          .flatten
-          .map(tail => root :: tail)
+        children.toList.map(
+          getPathFromResultTree(_, conditions.tail, allowTail)).find(
+          _.isDefined).flatten.map(tail => root :: tail)
     } else {
       None
     }

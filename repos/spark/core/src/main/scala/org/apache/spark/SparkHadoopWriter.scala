@@ -127,8 +127,7 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
 
   private def getOutputFormat(): OutputFormat[AnyRef, AnyRef] = {
     if (format == null) {
-      format = conf.value
-        .getOutputFormat()
+      format = conf.value.getOutputFormat()
         .asInstanceOf[OutputFormat[AnyRef, AnyRef]]
     }
     format

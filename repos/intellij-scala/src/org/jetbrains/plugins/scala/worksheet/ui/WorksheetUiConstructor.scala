@@ -66,9 +66,8 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
           panel,
           createSelectClassPathList(
             Option(
-              RunWorksheetAction
-                .getModuleFor(PsiManager getInstance project findFile file)
-                .getName),
+              RunWorksheetAction.getModuleFor(
+                PsiManager getInstance project findFile file).getName),
             file))
         addChild(panel, new JLabel("Use class path of module:  "))
       }

@@ -161,20 +161,14 @@ object InferUtil {
         val dependentSubst = new ScSubstitutor(() => {
           val level = element.scalaLanguageLevelOrDefault
           if (level >= Scala_2_10) {
-            paramsForInferBuffer
-              .zip(exprsBuffer)
-              .map {
-                case (param: Parameter, expr: Expression) =>
-                  val paramType: ScType = expr
-                    .getTypeAfterImplicitConversion(
-                      checkImplicits = true,
-                      isShape = false,
-                      Some(param.expectedType))
-                    ._1
-                    .getOrAny
-                  (param, paramType)
-              }
-              .toMap
+            paramsForInferBuffer.zip(exprsBuffer).map {
+              case (param: Parameter, expr: Expression) =>
+                val paramType: ScType = expr.getTypeAfterImplicitConversion(
+                  checkImplicits = true,
+                  isShape = false,
+                  Some(param.expectedType))._1.getOrAny
+                (param, paramType)
+            }.toMap
           } else Map.empty
         })
         resInner = dependentSubst.subst(resInner)
@@ -202,20 +196,14 @@ object InferUtil {
         val dependentSubst = new ScSubstitutor(() => {
           val level = element.scalaLanguageLevelOrDefault
           if (level >= Scala_2_10) {
-            paramsForInfer
-              .zip(exprs)
-              .map {
-                case (param: Parameter, expr: Expression) =>
-                  val paramType: ScType = expr
-                    .getTypeAfterImplicitConversion(
-                      checkImplicits = true,
-                      isShape = false,
-                      Some(param.expectedType))
-                    ._1
-                    .getOrAny
-                  (param, paramType)
-              }
-              .toMap
+            paramsForInfer.zip(exprs).map {
+              case (param: Parameter, expr: Expression) =>
+                val paramType: ScType = expr.getTypeAfterImplicitConversion(
+                  checkImplicits = true,
+                  isShape = false,
+                  Some(param.expectedType))._1.getOrAny
+                (param, paramType)
+            }.toMap
           } else Map.empty
         })
         resInner = dependentSubst.subst(resInner)
@@ -421,17 +409,19 @@ object InferUtil {
                   fromSAM))(mt.project, mt.scope)
             case _ =>
           }
-          val dummyExpr = ScalaPsiElementFactory
-            .createExpressionWithContextFromText("null", expr.getContext, expr)
-          dummyExpr
-            .asInstanceOf[ScLiteral]
-            .setTypeWithoutImplicits(Some(mt.returnType))
-          val updatedResultType = dummyExpr
-            .getTypeAfterImplicitConversion(expectedOption = Some(expectedRet))
+          val dummyExpr =
+            ScalaPsiElementFactory.createExpressionWithContextFromText(
+              "null",
+              expr.getContext,
+              expr)
+          dummyExpr.asInstanceOf[ScLiteral].setTypeWithoutImplicits(
+            Some(mt.returnType))
+          val updatedResultType =
+            dummyExpr.getTypeAfterImplicitConversion(expectedOption =
+              Some(expectedRet))
 
-          expr
-            .asInstanceOf[ScExpression]
-            .setAdditionalExpression(Some(dummyExpr, expectedRet))
+          expr.asInstanceOf[ScExpression].setAdditionalExpression(
+            Some(dummyExpr, expectedRet))
 
           new ScMethodType(
             updatedResultType.tr.getOrElse(mt.returnType),
@@ -559,18 +549,14 @@ object InferUtil {
         case Some(unSubst) =>
           if (!filterTypeParams) {
             val undefiningSubstitutor = new ScSubstitutor(
-              typeParams
-                .map(typeParam => {
-                  (
-                    (
-                      typeParam.name,
-                      ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
-                    new ScUndefinedType(
-                      new ScTypeParameterType(
-                        typeParam.ptp,
-                        ScSubstitutor.empty)))
-                })
-                .toMap,
+              typeParams.map(typeParam => {
+                (
+                  (typeParam.name, ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
+                  new ScUndefinedType(
+                    new ScTypeParameterType(
+                      typeParam.ptp,
+                      ScSubstitutor.empty)))
+              }).toMap,
               Map.empty,
               None)
             ScTypePolymorphicType(
@@ -601,8 +587,8 @@ object InferUtil {
                   case Some(_addLower) =>
                     val substedLowerType = unSubst.subst(lower)
                     val addLower =
-                      if (tp.typeParams.nonEmpty && !_addLower
-                            .isInstanceOf[ScParameterizedType] &&
+                      if (tp.typeParams.nonEmpty && !_addLower.isInstanceOf[
+                            ScParameterizedType] &&
                           !tp.typeParams.exists(_.name == "_"))
                         ScParameterizedType(
                           _addLower,
@@ -620,8 +606,8 @@ object InferUtil {
                   case Some(_addUpper) =>
                     val substedUpperType = unSubst.subst(upper)
                     val addUpper =
-                      if (tp.typeParams.nonEmpty && !_addUpper
-                            .isInstanceOf[ScParameterizedType] &&
+                      if (tp.typeParams.nonEmpty && !_addUpper.isInstanceOf[
+                            ScParameterizedType] &&
                           !tp.typeParams.exists(_.name == "_"))
                         ScParameterizedType(
                           _addUpper,
@@ -635,11 +621,9 @@ object InferUtil {
                     upper = unSubst.subst(upper)
                 }
 
-                if (safeCheck && !undefiningSubstitutor
-                      .subst(lower)
-                      .conforms(
-                        undefiningSubstitutor.subst(upper),
-                        checkWeak = true))
+                if (safeCheck && !undefiningSubstitutor.subst(lower).conforms(
+                      undefiningSubstitutor.subst(upper),
+                      checkWeak = true))
                   throw new SafeCheckException
                 TypeParameter(
                   tp.name,
@@ -693,82 +677,80 @@ object InferUtil {
             def updateWithSubst(sub: ScSubstitutor): ScTypePolymorphicType = {
               ScTypePolymorphicType(
                 sub.subst(retType),
-                typeParams
-                  .filter {
-                    case tp =>
-                      val name = (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp))
-                      val removeMe: Boolean = un.names.contains(name)
-                      if (removeMe && safeCheck) {
-                        //let's check type parameter kinds
-                        def checkTypeParam(
-                            typeParam: ScTypeParam,
-                            tp: => ScType): Boolean = {
-                          val typeParams: Seq[ScTypeParam] =
-                            typeParam.typeParameters
-                          if (typeParams.isEmpty) return true
-                          tp match {
-                            case ScParameterizedType(_, typeArgs) =>
-                              if (typeArgs.length != typeParams.length)
-                                return false
-                              typeArgs.zip(typeParams).forall {
-                                case (tp: ScType, typeParam: ScTypeParam) =>
-                                  checkTypeParam(typeParam, tp)
+                typeParams.filter {
+                  case tp =>
+                    val name = (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp))
+                    val removeMe: Boolean = un.names.contains(name)
+                    if (removeMe && safeCheck) {
+                      //let's check type parameter kinds
+                      def checkTypeParam(
+                          typeParam: ScTypeParam,
+                          tp: => ScType): Boolean = {
+                        val typeParams: Seq[ScTypeParam] =
+                          typeParam.typeParameters
+                        if (typeParams.isEmpty) return true
+                        tp match {
+                          case ScParameterizedType(_, typeArgs) =>
+                            if (typeArgs.length != typeParams.length)
+                              return false
+                            typeArgs.zip(typeParams).forall {
+                              case (tp: ScType, typeParam: ScTypeParam) =>
+                                checkTypeParam(typeParam, tp)
+                            }
+                          case _ =>
+                            def checkNamed(
+                                named: PsiNamedElement,
+                                typeParams: Seq[ScTypeParam]): Boolean = {
+                              named match {
+                                case t: ScTypeParametersOwner =>
+                                  if (typeParams.length != t.typeParameters.length)
+                                    return false
+                                  typeParams.zip(t.typeParameters).forall {
+                                    case (p1: ScTypeParam, p2: ScTypeParam) =>
+                                      if (p1.typeParameters.nonEmpty)
+                                        checkNamed(p2, p1.typeParameters)
+                                      else true
+                                  }
+                                case p: PsiTypeParameterListOwner =>
+                                  if (typeParams.length != p.getTypeParameters.length)
+                                    return false
+                                  typeParams.forall(_.typeParameters.isEmpty)
+                                case _ => false
                               }
-                            case _ =>
-                              def checkNamed(
-                                  named: PsiNamedElement,
-                                  typeParams: Seq[ScTypeParam]): Boolean = {
-                                named match {
-                                  case t: ScTypeParametersOwner =>
-                                    if (typeParams.length != t.typeParameters.length)
-                                      return false
-                                    typeParams.zip(t.typeParameters).forall {
-                                      case (p1: ScTypeParam, p2: ScTypeParam) =>
-                                        if (p1.typeParameters.nonEmpty)
-                                          checkNamed(p2, p1.typeParameters)
-                                        else true
-                                    }
-                                  case p: PsiTypeParameterListOwner =>
-                                    if (typeParams.length != p.getTypeParameters.length)
-                                      return false
-                                    typeParams.forall(_.typeParameters.isEmpty)
+                            }
+                            ScType.extractDesignated(
+                              tp,
+                              withoutAliases = false) match {
+                              case Some((named, _)) =>
+                                checkNamed(named, typeParams)
+                              case _ =>
+                                tp match {
+                                  case tpt: ScTypeParameterType =>
+                                    checkNamed(tpt.param, typeParams)
                                   case _ => false
                                 }
-                              }
-                              ScType.extractDesignated(
-                                tp,
-                                withoutAliases = false) match {
-                                case Some((named, _)) =>
-                                  checkNamed(named, typeParams)
-                                case _ =>
-                                  tp match {
-                                    case tpt: ScTypeParameterType =>
-                                      checkNamed(tpt.param, typeParams)
-                                    case _ => false
-                                  }
-                              }
-                          }
-                        }
-                        tp.ptp match {
-                          case typeParam: ScTypeParam =>
-                            if (!checkTypeParam(
-                                  typeParam,
-                                  sub.subst(new ScTypeParameterType(
-                                    tp.ptp,
-                                    ScSubstitutor.empty))))
-                              throw new SafeCheckException
-                          case _ =>
+                            }
                         }
                       }
-                      !removeMe
-                  }
-                  .map(tp =>
-                    TypeParameter(
-                      tp.name,
-                      tp.typeParams /* doesn't important here */,
-                      () => sub.subst(tp.lowerType()),
-                      () => sub.subst(tp.upperType()),
-                      tp.ptp))
+                      tp.ptp match {
+                        case typeParam: ScTypeParam =>
+                          if (!checkTypeParam(
+                                typeParam,
+                                sub.subst(new ScTypeParameterType(
+                                  tp.ptp,
+                                  ScSubstitutor.empty))))
+                            throw new SafeCheckException
+                        case _ =>
+                      }
+                    }
+                    !removeMe
+                }.map(tp =>
+                  TypeParameter(
+                    tp.name,
+                    tp.typeParams /* doesn't important here */,
+                    () => sub.subst(tp.lowerType()),
+                    () => sub.subst(tp.upperType()),
+                    tp.ptp))
               )
             }
 

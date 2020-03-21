@@ -118,8 +118,9 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
         output.writeBytes(compressedSchema)
     }
 
-    writerCache
-      .getOrElseUpdate(schema, GenericData.get.createDatumWriter(schema))
+    writerCache.getOrElseUpdate(
+      schema,
+      GenericData.get.createDatumWriter(schema))
       .asInstanceOf[DatumWriter[R]]
       .write(datum, encoder)
     encoder.flush()
@@ -151,8 +152,9 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
       }
     }
     val decoder = DecoderFactory.get.directBinaryDecoder(input, null)
-    readerCache
-      .getOrElseUpdate(schema, GenericData.get.createDatumReader(schema))
+    readerCache.getOrElseUpdate(
+      schema,
+      GenericData.get.createDatumReader(schema))
       .asInstanceOf[DatumReader[GenericRecord]]
       .read(null, decoder)
   }

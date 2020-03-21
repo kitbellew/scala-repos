@@ -46,9 +46,8 @@ trait TopComponentAction extends TopComponentDisplayable {
 
     val text = shortcutId flatMap {
       case id =>
-        KeymapManager.getInstance.getActiveKeymap
-          .getShortcuts(id)
-          .headOption map {
+        KeymapManager.getInstance.getActiveKeymap.getShortcuts(
+          id).headOption map {
           case shortcut =>
             genericText + (" (" + KeymapUtil.getShortcutText(shortcut) + ")")
         }
@@ -86,9 +85,8 @@ trait TopComponentAction extends TopComponentDisplayable {
       val editor = FileEditorManager.getInstance(project).getSelectedTextEditor
 
       extensions.inReadAction {
-        PsiDocumentManager
-          .getInstance(project)
-          .getPsiFile(editor.getDocument) match {
+        PsiDocumentManager.getInstance(project).getPsiFile(
+          editor.getDocument) match {
           case sf: ScalaFile if sf.isWorksheetFile => enable()
           case _                                   => disable()
         }

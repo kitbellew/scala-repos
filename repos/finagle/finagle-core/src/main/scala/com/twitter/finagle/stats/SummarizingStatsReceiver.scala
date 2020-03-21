@@ -15,8 +15,7 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
   private[this] val counters = AtomicLongMap.create[Seq[String]]()
 
   // Just keep all the samples.
-  private[this] val stats = CacheBuilder
-    .newBuilder()
+  private[this] val stats = CacheBuilder.newBuilder()
     .build(new CacheLoader[Seq[String], ArrayBuffer[Float]] {
       def load(k: Seq[String]) = new ArrayBuffer[Float]
     })
@@ -80,17 +79,16 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
           def idx(ptile: Double) = math.floor(ptile * n).toInt
           (
             variableName(k),
-            "n=%d min=%.1f med=%.1f p90=%.1f p95=%.1f p99=%.1f p999=%.1f p9999=%.1f max=%.1f"
-              .format(
-                n,
-                xs(0),
-                xs(n / 2),
-                xs(idx(.9d)),
-                xs(idx(.95d)),
-                xs(idx(.99d)),
-                xs(idx(.999d)),
-                xs(idx(.9999d)),
-                xs(n - 1)))
+            "n=%d min=%.1f med=%.1f p90=%.1f p95=%.1f p99=%.1f p999=%.1f p9999=%.1f max=%.1f".format(
+              n,
+              xs(0),
+              xs(n / 2),
+              xs(idx(.9d)),
+              xs(idx(.95d)),
+              xs(idx(.99d)),
+              xs(idx(.999d)),
+              xs(idx(.9999d)),
+              xs(n - 1)))
       }).toSeq
 
       lazy val tailValues = (statValues map {

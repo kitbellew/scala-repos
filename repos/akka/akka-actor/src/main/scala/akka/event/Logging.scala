@@ -124,19 +124,15 @@ trait LoggingBus extends ActorEventBus {
           loggerName ← defaultLoggers
           if loggerName != StandardOutLogger.getClass.getName
         } yield {
-          system.dynamicAccess
-            .getClassFor[Actor](loggerName)
-            .map({
-              case actorClass ⇒ addLogger(system, actorClass, level, logName)
-            })
-            .recover({
-              case e ⇒
-                throw new ConfigurationException(
-                  "Logger specified in config can't be loaded [" + loggerName +
-                    "] due to [" + e.toString + "]",
-                  e)
-            })
-            .get
+          system.dynamicAccess.getClassFor[Actor](loggerName).map({
+            case actorClass ⇒ addLogger(system, actorClass, level, logName)
+          }).recover({
+            case e ⇒
+              throw new ConfigurationException(
+                "Logger specified in config can't be loaded [" + loggerName +
+                  "] due to [" + e.toString + "]",
+                e)
+          }).get
         }
       guard.withGuard {
         loggers = myloggers
@@ -1347,9 +1343,8 @@ trait LoggingAdapter {
     while (p < arg.length) {
       val index = rest.indexOf("{}")
       if (index == -1) {
-        sb.append(rest)
-          .append(" WARNING arguments left: ")
-          .append(arg.length - p)
+        sb.append(rest).append(" WARNING arguments left: ").append(
+          arg.length - p)
         rest = ""
         p = arg.length
       } else {

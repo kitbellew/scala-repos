@@ -56,8 +56,11 @@ object FindDeterioratedMetrics {
       val header = Vector("Metric", "Base", "Sample", "Increase in %")
       val rows: Iterable[Vector[String]] = metrics.map {
         case (a, b) =>
-          Vector(a.name, a.mean, b.mean, (b.mean / a.mean * 100).toInt - 100)
-            .map(_.toString)
+          Vector(
+            a.name,
+            a.mean,
+            b.mean,
+            (b.mean / a.mean * 100).toInt - 100).map(_.toString)
       }
       printTable(
         Seq(left, right, right, right),

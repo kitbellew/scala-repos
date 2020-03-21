@@ -528,9 +528,8 @@ abstract class TransientRequestVar[T](dflt: => T)
   }
 
   protected override def testWasSet(name: String, bn: String): Boolean = {
-    TransientRequestVarHandler
-      .get(name)
-      .isDefined || (TransientRequestVarHandler.get(bn) openOr false)
+    TransientRequestVarHandler.get(
+      name).isDefined || (TransientRequestVarHandler.get(bn) openOr false)
   }
 
   /**
@@ -676,8 +675,8 @@ private[http] trait CoreRequestVarHandler {
                 Helpers.tryo(clean(sessionThing.value)))
 
               if (Props.devMode && LiftRules.logUnreadRequestVars) {
-                vals.value.keys
-                  .filter(!_.startsWith(VarConstants.varPrefix + "net.liftweb"))
+                vals.value.keys.filter(
+                  !_.startsWith(VarConstants.varPrefix + "net.liftweb"))
                   .filter(!_.endsWith(VarConstants.initedSuffix))
                   .foreach(key =>
                     vals.value(key) match {

@@ -163,8 +163,7 @@ class RandomForestClassifierSuite
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
 
-    val predictions = model
-      .transform(df)
+    val predictions = model.transform(df)
       .select(rf.getPredictionCol, rf.getRawPredictionCol, rf.getProbabilityCol)
       .collect()
 
@@ -270,9 +269,8 @@ private object RandomForestClassifierSuite extends SparkFunSuite {
     TreeTests.checkEqual(oldModelAsNew, newModel)
     assert(newModel.hasParent)
     assert(
-      !newModel.trees.head
-        .asInstanceOf[DecisionTreeClassificationModel]
-        .hasParent)
+      !newModel.trees.head.asInstanceOf[
+        DecisionTreeClassificationModel].hasParent)
     assert(newModel.numClasses === numClasses)
     assert(newModel.numFeatures === numFeatures)
   }

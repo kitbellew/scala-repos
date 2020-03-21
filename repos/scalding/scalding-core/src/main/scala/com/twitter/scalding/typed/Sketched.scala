@@ -90,10 +90,8 @@ case class SketchJoined[K: Ordering, V, V2, R](
       case ((k, w), cms) =>
         val maxPerReducer =
           (cms.totalCount / numReducers) * maxReducerFraction + 1
-        val maxReplicas = (cms
-          .frequency(Bytes(left.serialize(k)))
-          .estimate
-          .toDouble / maxPerReducer)
+        val maxReplicas = (cms.frequency(
+          Bytes(left.serialize(k))).estimate.toDouble / maxPerReducer)
         //if the frequency is 0, maxReplicas.ceil will be 0 so we will filter out this key entirely
         //if it's < maxPerReducer, the ceil will round maxReplicas up to 1 to ensure we still see it
         val replicas = fn(maxReplicas.ceil.toInt.min(numReducers))
@@ -105,7 +103,8 @@ case class SketchJoined[K: Ordering, V, V2, R](
     val lhs = flatMapWithReplicas(left.pipe) { n => Some(rand.nextInt(n) + 1) }
     val rhs = flatMapWithReplicas(right) { n => 1.to(n) }
 
-    lhs.group
+    lhs
+      .group
       .cogroup(rhs.group) { (k, itv, itu) =>
         itv.flatMap { v => joiner(k._2, v, itu) }
       }

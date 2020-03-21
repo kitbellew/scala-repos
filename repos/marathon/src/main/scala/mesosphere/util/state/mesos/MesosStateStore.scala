@@ -39,8 +39,8 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
           throw new StoreCommandFailedException(
             s"Entity with id $key already exists!")
         else
-          futureToFuture(state.store(variable.mutate(content.toArray)))
-            .map(MesosStateEntity(key, _))
+          futureToFuture(state.store(variable.mutate(content.toArray))).map(
+            MesosStateEntity(key, _))
       }
       .recover(mapException(s"Can not create entity with key $key"))
   }

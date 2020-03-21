@@ -446,18 +446,15 @@ private[streaming] class ReceiverTracker(
           blockManagerId.host,
           blockManagerId.executorId))
     } else {
-      ssc.sparkContext.env.blockManager.master.getMemoryStatus
-        .filter {
-          case (blockManagerId, _) =>
-            blockManagerId.executorId != SparkContext.DRIVER_IDENTIFIER // Ignore the driver location
-        }
-        .map {
-          case (blockManagerId, _) =>
-            ExecutorCacheTaskLocation(
-              blockManagerId.host,
-              blockManagerId.executorId)
-        }
-        .toSeq
+      ssc.sparkContext.env.blockManager.master.getMemoryStatus.filter {
+        case (blockManagerId, _) =>
+          blockManagerId.executorId != SparkContext.DRIVER_IDENTIFIER // Ignore the driver location
+      }.map {
+        case (blockManagerId, _) =>
+          ExecutorCacheTaskLocation(
+            blockManagerId.host,
+            blockManagerId.executorId)
+      }.toSeq
     }
   }
 
@@ -471,11 +468,9 @@ private[streaming] class ReceiverTracker(
     */
   private def runDummySparkJob(): Unit = {
     if (!ssc.sparkContext.isLocal) {
-      ssc.sparkContext
-        .makeRDD(1 to 50, 50)
-        .map(x => (x, 1))
-        .reduceByKey(_ + _, 20)
-        .collect()
+      ssc.sparkContext.makeRDD(1 to 50, 50).map(x => (x, 1)).reduceByKey(
+        _ + _,
+        20).collect()
     }
     assert(getExecutors.nonEmpty)
   }
@@ -602,10 +597,8 @@ private[streaming] class ReceiverTracker(
       // Local messages
       case AllReceiverIds =>
         context.reply(
-          receiverTrackingInfos
-            .filter(_._2.state != ReceiverState.INACTIVE)
-            .keys
-            .toSeq)
+          receiverTrackingInfos.filter(
+            _._2.state != ReceiverState.INACTIVE).keys.toSeq)
       case StopAllReceivers =>
         assert(isTrackerStopping || isTrackerStopped)
         stopReceivers()

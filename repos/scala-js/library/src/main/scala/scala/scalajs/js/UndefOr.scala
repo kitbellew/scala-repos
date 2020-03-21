@@ -198,8 +198,8 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
   @inline final def collect[B](pf: PartialFunction[A, B]): UndefOr[B] =
     if (isEmpty) undefined
     else
-      pf.applyOrElse(this.forceGet, (_: A) => undefined)
-        .asInstanceOf[UndefOr[B]]
+      pf.applyOrElse(this.forceGet, (_: A) => undefined).asInstanceOf[UndefOr[
+        B]]
 
   /** Returns this $option if it is nonempty,
     *  otherwise return the result of evaluating `alternative`.

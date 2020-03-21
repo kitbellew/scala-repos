@@ -84,13 +84,13 @@ class ScalaAttachSourcesNotificationProvider(
       import scala.collection.JavaConversions._
       for (action <- each.getActions(libraries, psiFile)) {
         if (hasNonLightAction) {
-          if (!action
-                .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
+          if (!action.isInstanceOf[
+                AttachSourcesProvider.LightAttachSourcesAction]) {
             actions.add(action)
           }
         } else {
-          if (!action
-                .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
+          if (!action.isInstanceOf[
+                AttachSourcesProvider.LightAttachSourcesAction]) {
             actions.clear()
             hasNonLightAction = true
           }
@@ -118,8 +118,9 @@ class ScalaAttachSourcesNotificationProvider(
         GuiUtils.getTextWithoutMnemonicEscaping(each.getName),
         new Runnable {
           def run() {
-            if (!Comparing
-                  .equal(libraries, findOrderEntriesContainingFile(file))) {
+            if (!Comparing.equal(
+                  libraries,
+                  findOrderEntriesContainingFile(file))) {
               Messages.showErrorDialog(
                 myProject,
                 "Cannot find library for " + StringUtil.getShortName(fqn),
@@ -152,10 +153,8 @@ class ScalaAttachSourcesNotificationProvider(
       file: VirtualFile): util.List[LibraryOrderEntry] = {
     val libs: util.List[LibraryOrderEntry] =
       new util.ArrayList[LibraryOrderEntry]
-    val entries: util.List[OrderEntry] = ProjectRootManager
-      .getInstance(myProject)
-      .getFileIndex
-      .getOrderEntriesForFile(file)
+    val entries: util.List[OrderEntry] = ProjectRootManager.getInstance(
+      myProject).getFileIndex.getOrderEntriesForFile(file)
     import scala.collection.JavaConversions._
     for (entry <- entries) {
       entry match {

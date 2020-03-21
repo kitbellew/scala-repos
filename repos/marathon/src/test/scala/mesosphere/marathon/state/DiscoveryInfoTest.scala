@@ -45,8 +45,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
     val proto = f.discoveryInfoWithPort.toProto
 
     val portProto =
-      MesosProtos.Port
-        .newBuilder()
+      MesosProtos.Port.newBuilder()
         .setName("http")
         .setNumber(80)
         .setProtocol("tcp")
@@ -67,8 +66,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
     val f = fixture()
 
     val portProto =
-      MesosProtos.Port
-        .newBuilder()
+      MesosProtos.Port.newBuilder()
         .setName("http")
         .setNumber(80)
         .setProtocol("tcp")

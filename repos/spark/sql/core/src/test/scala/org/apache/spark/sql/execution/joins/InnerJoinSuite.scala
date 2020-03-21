@@ -127,9 +127,8 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
           leftPlan,
           rightPlan)
       val filteredJoin =
-        boundCondition
-          .map(Filter(_, shuffledHashJoin))
-          .getOrElse(shuffledHashJoin)
+        boundCondition.map(Filter(_, shuffledHashJoin)).getOrElse(
+          shuffledHashJoin)
       EnsureRequirements(sqlContext.sessionState.conf).apply(filteredJoin)
     }
 

@@ -149,11 +149,10 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
         val result = makeGzipRequest
         checkGzipped(result)
         header(VARY, result) must beSome.which(header =>
-          header
-            .split(",")
-            .filter(_.toLowerCase(java.util.Locale.ENGLISH) == ACCEPT_ENCODING
-              .toLowerCase(java.util.Locale.ENGLISH))
-            .size == 1)
+          header.split(",").filter(
+            _.toLowerCase(
+              java.util.Locale.ENGLISH) == ACCEPT_ENCODING.toLowerCase(
+              java.util.Locale.ENGLISH)).size == 1)
     }
   }
 
@@ -167,14 +166,12 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       .configure(
         "play.filters.gzip.chunkedThreshold" -> chunkedThreshold,
         "play.filters.gzip.bufferSize" -> 512
-      )
-      .overrides(
+      ).overrides(
         bind[Router].to(Router.from {
           case _ => Action(result)
         }),
         bind[HttpFilters].to[Filters]
-      )
-      .build
+      ).build
     running(application)(block(application.materializer))
   }
 

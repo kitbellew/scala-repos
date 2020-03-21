@@ -71,9 +71,8 @@ object LambdaDeserializer {
         val to = withReceiver.parameterCount()
 
         // 3. Drop the lambda return type and replace with the functional interface.
-        withReceiver
-          .dropParameterTypes(from, to)
-          .changeReturnType(functionalInterfaceClass)
+        withReceiver.dropParameterTypes(from, to).changeReturnType(
+          functionalInterfaceClass)
       }
 
       // Lookup the implementation method

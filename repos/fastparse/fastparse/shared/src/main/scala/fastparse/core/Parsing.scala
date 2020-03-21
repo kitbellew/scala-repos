@@ -35,8 +35,10 @@ sealed trait Parsed[+T] {
 
 case class ParseError(failure: Parsed.Failure)
     extends Exception(
-      ParseError
-        .msg0(failure.extra.input, failure.extra.traced.expected, failure.index)
+      ParseError.msg0(
+        failure.extra.input,
+        failure.extra.traced.expected,
+        failure.index)
     )
 
 object ParseError {
@@ -223,18 +225,16 @@ object Parsed {
         traceData: (Int, Parser[_])) = {
       val (originalIndex, originalParser) = traceData
 
-      val mutFailure = originalParser
-        .parseRec(
-          new ParseCtx(
-            input,
-            0,
-            index,
-            originalParser,
-            originalIndex,
-            (_, _, _) => ()),
-          originalIndex
-        )
-        .asInstanceOf[Mutable.Failure]
+      val mutFailure = originalParser.parseRec(
+        new ParseCtx(
+          input,
+          0,
+          index,
+          originalParser,
+          originalIndex,
+          (_, _, _) => ()),
+        originalIndex
+      ).asInstanceOf[Mutable.Failure]
 
       new TracedFailure(
         input,

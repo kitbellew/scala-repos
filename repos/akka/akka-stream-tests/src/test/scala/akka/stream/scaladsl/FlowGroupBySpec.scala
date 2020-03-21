@@ -25,9 +25,8 @@ object FlowGroupBySpec {
       val f: SubFlow[Int, M, Source[Int, M]#Repr, RunnableGraph[M]])
       extends AnyVal {
     def lift(key: Int ⇒ Int) =
-      f.prefixAndTail(1)
-        .map(p ⇒ key(p._1.head) -> (Source.single(p._1.head) ++ p._2))
-        .concatSubstreams
+      f.prefixAndTail(1).map(p ⇒
+        key(p._1.head) -> (Source.single(p._1.head) ++ p._2)).concatSubstreams
   }
 
 }
@@ -59,11 +58,9 @@ class FlowGroupBySpec extends AkkaSpec {
       maxSubstreams: Int = -1) {
     val source = Source(1 to elementCount).runWith(Sink.asPublisher(false))
     val max = if (maxSubstreams > 0) maxSubstreams else groupCount
-    val groupStream = Source
-      .fromPublisher(source)
-      .groupBy(max, _ % groupCount)
-      .lift(_ % groupCount)
-      .runWith(Sink.asPublisher(false))
+    val groupStream =
+      Source.fromPublisher(source).groupBy(max, _ % groupCount).lift(
+        _ % groupCount).runWith(Sink.asPublisher(false))
     val masterSubscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
 
     groupStream.subscribe(masterSubscriber)
@@ -155,11 +152,9 @@ class FlowGroupBySpec extends AkkaSpec {
 
     "accept cancellation of master stream when not consumed anything" in assertAllStagesStopped {
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
-      val publisher = Source
-        .fromPublisher(publisherProbeProbe)
-        .groupBy(2, _ % 2)
-        .lift(_ % 2)
-        .runWith(Sink.asPublisher(false))
+      val publisher =
+        Source.fromPublisher(publisherProbeProbe).groupBy(2, _ % 2).lift(
+          _ % 2).runWith(Sink.asPublisher(false))
       val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
       publisher.subscribe(subscriber)
 
@@ -170,10 +165,8 @@ class FlowGroupBySpec extends AkkaSpec {
     }
 
     "work with empty input stream" in assertAllStagesStopped {
-      val publisher = Source(List.empty[Int])
-        .groupBy(2, _ % 2)
-        .lift(_ % 2)
-        .runWith(Sink.asPublisher(false))
+      val publisher = Source(List.empty[Int]).groupBy(2, _ % 2).lift(
+        _ % 2).runWith(Sink.asPublisher(false))
       val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
       publisher.subscribe(subscriber)
 
@@ -182,11 +175,9 @@ class FlowGroupBySpec extends AkkaSpec {
 
     "abort on onError from upstream" in assertAllStagesStopped {
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
-      val publisher = Source
-        .fromPublisher(publisherProbeProbe)
-        .groupBy(2, _ % 2)
-        .lift(_ % 2)
-        .runWith(Sink.asPublisher(false))
+      val publisher =
+        Source.fromPublisher(publisherProbeProbe).groupBy(2, _ % 2).lift(
+          _ % 2).runWith(Sink.asPublisher(false))
       val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
       publisher.subscribe(subscriber)
 
@@ -203,11 +194,9 @@ class FlowGroupBySpec extends AkkaSpec {
 
     "abort on onError from upstream when substreams are running" in assertAllStagesStopped {
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
-      val publisher = Source
-        .fromPublisher(publisherProbeProbe)
-        .groupBy(2, _ % 2)
-        .lift(_ % 2)
-        .runWith(Sink.asPublisher(false))
+      val publisher =
+        Source.fromPublisher(publisherProbeProbe).groupBy(2, _ % 2).lift(
+          _ % 2).runWith(Sink.asPublisher(false))
       val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
       publisher.subscribe(subscriber)
 
@@ -236,8 +225,7 @@ class FlowGroupBySpec extends AkkaSpec {
     "fail stream when groupBy function throws" in assertAllStagesStopped {
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val exc = TE("test")
-      val publisher = Source
-        .fromPublisher(publisherProbeProbe)
+      val publisher = Source.fromPublisher(publisherProbeProbe)
         .groupBy(2, elem ⇒ if (elem == 2) throw exc else elem % 2)
         .lift(_ % 2)
         .runWith(Sink.asPublisher(false))
@@ -268,8 +256,7 @@ class FlowGroupBySpec extends AkkaSpec {
     "resume stream when groupBy function throws" in {
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val exc = TE("test")
-      val publisher = Source
-        .fromPublisher(publisherProbeProbe)
+      val publisher = Source.fromPublisher(publisherProbeProbe)
         .groupBy(2, elem ⇒ if (elem == 2) throw exc else elem % 2)
         .lift(_ % 2)
         .withAttributes(ActorAttributes.supervisionStrategy(resumingDecider))
@@ -315,12 +302,8 @@ class FlowGroupBySpec extends AkkaSpec {
       val up = TestPublisher.manualProbe[Int]()
       val down = TestSubscriber.manualProbe[(Int, Source[Int, NotUsed])]()
 
-      val flowSubscriber = Source
-        .asSubscriber[Int]
-        .groupBy(2, _ % 2)
-        .lift(_ % 2)
-        .to(Sink.fromSubscriber(down))
-        .run()
+      val flowSubscriber = Source.asSubscriber[Int].groupBy(2, _ % 2).lift(
+        _ % 2).to(Sink.fromSubscriber(down)).run()
 
       val downstream = down.expectSubscription()
       downstream.cancel()
@@ -331,9 +314,7 @@ class FlowGroupBySpec extends AkkaSpec {
 
     "fail when exceeding maxSubstreams" in assertAllStagesStopped {
       val (up, down) = Flow[Int]
-        .groupBy(1, _ % 2)
-        .prefixAndTail(0)
-        .mergeSubstreams
+        .groupBy(1, _ % 2).prefixAndTail(0).mergeSubstreams
         .runWith(TestSource.probe[Int], TestSink.probe)
 
       down.request(2)

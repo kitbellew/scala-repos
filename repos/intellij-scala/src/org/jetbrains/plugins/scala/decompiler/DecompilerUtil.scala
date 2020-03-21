@@ -41,11 +41,9 @@ object DecompilerUtil {
   private def openedNotDisposedProjects: Array[Project] = {
     val manager = ProjectManager.getInstance
     if (ApplicationManager.getApplication.isUnitTestMode) {
-      val testProject = manager
-        .asInstanceOf[ProjectManagerEx]
-        .getOpenProjects
-        .find(!_.isDisposed)
-        .orNull
+      val testProject =
+        manager.asInstanceOf[ProjectManagerEx].getOpenProjects.find(
+          !_.isDisposed).orNull
       if (testProject != null) Array(testProject)
       else Array.empty
     } else {

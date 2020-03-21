@@ -132,8 +132,10 @@ object CachesUtil {
                       } finally set.foreach(_.setProbablyRecursive(false))
                     case t @ ProbablyRecursionException(ee, data, k, set)
                         if k == key =>
-                      val fun = PsiTreeUtil
-                        .getContextOfType(e, true, classOf[ScFunction])
+                      val fun = PsiTreeUtil.getContextOfType(
+                        e,
+                        true,
+                        classOf[ScFunction])
                       if (fun == null || fun.isProbablyRecursive) throw t
                       else {
                         fun.setProbablyRecursive(true)
@@ -295,10 +297,9 @@ object CachesUtil {
       dep_item: Object = enclosingModificationOwner(element)): Object = {
     element.getContainingFile match {
       case file: ScalaFile if file.isCompiled =>
-        if (!ProjectRootManager
-              .getInstance(element.getProject)
-              .getFileIndex
-              .isInContent(file.getVirtualFile)) {
+        if (!ProjectRootManager.getInstance(
+              element.getProject).getFileIndex.isInContent(
+              file.getVirtualFile)) {
           return dep_item
         }
         var dir = file.getParent

@@ -391,10 +391,8 @@ class JsonFormatSpec extends FunSuite {
 
   def assertJson(resultJson: String, expectJson: String) = {
     import java.util.regex.Pattern
-    val json2 = Pattern
-      .compile("""^\s*//.*$""", Pattern.MULTILINE)
-      .matcher(expectJson)
-      .replaceAll("")
+    val json2 = Pattern.compile("""^\s*//.*$""", Pattern.MULTILINE).matcher(
+      expectJson).replaceAll("")
     val js2 =
       try {
         parse(json2)

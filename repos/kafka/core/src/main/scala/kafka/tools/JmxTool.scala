@@ -34,47 +34,42 @@ object JmxTool extends Logging {
     // Parse command line
     val parser = new OptionParser
     val objectNameOpt =
-      parser
-        .accepts(
-          "object-name",
-          "A JMX object name to use as a query. This can contain wild cards, and this option " +
-            "can be given multiple times to specify more than one query. If no objects are specified " +
-            "all objects will be queried."
-        )
+      parser.accepts(
+        "object-name",
+        "A JMX object name to use as a query. This can contain wild cards, and this option " +
+          "can be given multiple times to specify more than one query. If no objects are specified " +
+          "all objects will be queried."
+      )
         .withRequiredArg
         .describedAs("name")
         .ofType(classOf[String])
     val attributesOpt =
-      parser
-        .accepts(
-          "attributes",
-          "The whitelist of attributes to query. This is a comma-separated list. If no " +
-            "attributes are specified all objects will be queried.")
+      parser.accepts(
+        "attributes",
+        "The whitelist of attributes to query. This is a comma-separated list. If no " +
+          "attributes are specified all objects will be queried.")
         .withRequiredArg
         .describedAs("name")
         .ofType(classOf[String])
-    val reportingIntervalOpt = parser
-      .accepts(
-        "reporting-interval",
-        "Interval in MS with which to poll jmx stats.")
+    val reportingIntervalOpt = parser.accepts(
+      "reporting-interval",
+      "Interval in MS with which to poll jmx stats.")
       .withRequiredArg
       .describedAs("ms")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(2000)
     val helpOpt = parser.accepts("help", "Print usage information.")
-    val dateFormatOpt = parser
-      .accepts(
-        "date-format",
-        "The date format to use for formatting the time field. " +
-          "See java.text.SimpleDateFormat for options.")
+    val dateFormatOpt = parser.accepts(
+      "date-format",
+      "The date format to use for formatting the time field. " +
+        "See java.text.SimpleDateFormat for options.")
       .withRequiredArg
       .describedAs("format")
       .ofType(classOf[String])
     val jmxServiceUrlOpt =
-      parser
-        .accepts(
-          "jmx-url",
-          "The url to connect to to poll JMX data. See Oracle javadoc for JMXServiceURL for details.")
+      parser.accepts(
+        "jmx-url",
+        "The url to connect to to poll JMX data. See Oracle javadoc for JMXServiceURL for details.")
         .withRequiredArg
         .describedAs("service-url")
         .ofType(classOf[String])
@@ -113,10 +108,8 @@ object JmxTool extends Logging {
       else
         List(null)
 
-    val names = queries
-      .map((name: ObjectName) =>
-        mbsc.queryNames(name, null): mutable.Set[ObjectName])
-      .flatten
+    val names = queries.map((name: ObjectName) =>
+      mbsc.queryNames(name, null): mutable.Set[ObjectName]).flatten
 
     val numExpectedAttributes: Map[ObjectName, Int] =
       attributesWhitelistExists match {

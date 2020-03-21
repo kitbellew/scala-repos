@@ -149,9 +149,9 @@ class IsotonicRegressionSuite
   }
 
   test("isotonic regression with unordered input") {
-    val trainRDD = sc
-      .parallelize(generateIsotonicInput(Seq(1, 2, 3, 4, 5)).reverse, 2)
-      .cache()
+    val trainRDD = sc.parallelize(
+      generateIsotonicInput(Seq(1, 2, 3, 4, 5)).reverse,
+      2).cache()
 
     val model = new IsotonicRegression().run(trainRDD)
     assert(model.predictions === Array(1, 2, 3, 4, 5))
@@ -204,17 +204,15 @@ class IsotonicRegressionSuite
   }
 
   test("isotonic regression prediction with duplicate features") {
-    val trainRDD = sc
-      .parallelize(
-        Seq[(Double, Double, Double)](
-          (2, 1, 1),
-          (1, 1, 1),
-          (4, 2, 1),
-          (2, 2, 1),
-          (6, 3, 1),
-          (5, 3, 1)),
-        2)
-      .cache()
+    val trainRDD = sc.parallelize(
+      Seq[(Double, Double, Double)](
+        (2, 1, 1),
+        (1, 1, 1),
+        (4, 2, 1),
+        (2, 2, 1),
+        (6, 3, 1),
+        (5, 3, 1)),
+      2).cache()
     val model = new IsotonicRegression().run(trainRDD)
 
     assert(model.predict(0) === 1)
@@ -224,17 +222,15 @@ class IsotonicRegressionSuite
   }
 
   test("antitonic regression prediction with duplicate features") {
-    val trainRDD = sc
-      .parallelize(
-        Seq[(Double, Double, Double)](
-          (5, 1, 1),
-          (6, 1, 1),
-          (2, 2, 1),
-          (4, 2, 1),
-          (1, 3, 1),
-          (2, 3, 1)),
-        2)
-      .cache()
+    val trainRDD = sc.parallelize(
+      Seq[(Double, Double, Double)](
+        (5, 1, 1),
+        (6, 1, 1),
+        (2, 2, 1),
+        (4, 2, 1),
+        (1, 3, 1),
+        (2, 3, 1)),
+      2).cache()
     val model = new IsotonicRegression().setIsotonic(false).run(trainRDD)
 
     assert(model.predict(0) === 6)

@@ -47,9 +47,8 @@ object FingerTreeUsage extends App {
     streamToTree(intStream.take(10)).traverseTree[Option, Int, Int](i =>
       Some(i * 2))
   assert(
-    traversedTree.map(_.toStream).getOrElse(Stream.empty) == intStream
-      .map(_ * 2)
-      .take(10))
+    traversedTree.map(_.toStream).getOrElse(Stream.empty) == intStream.map(
+      _ * 2).take(10))
 
   println(streamToTree(intStream.take(10)).traverseTree[Option, Int, Int](i =>
     Some(i + 1)))

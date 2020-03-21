@@ -75,8 +75,9 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
   def validate {
     //We can't touch setters because that shouldn't be accessed until map/reduce side, not
     //on submitter.
-    val missing =
-      Dsl.asList(fields).find { f => !getSetters.contains(f.toString) }
+    val missing = Dsl.asList(fields).find { f =>
+      !getSetters.contains(f.toString)
+    }
 
     assert(
       missing.isEmpty,
@@ -85,7 +86,8 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
   validate
 
   def getSetters =
-    m.runtimeClass.getDeclaredMethods
+    m.runtimeClass
+      .getDeclaredMethods
       .filter { _.getName.startsWith("set") }
       .groupBy { setterToFieldName(_) }
       .mapValues { _.head }
@@ -121,10 +123,10 @@ class OrderedConstructorConverter[T](fields: Fields)(implicit mf: Manifest[T])
   // Keep this as a method, so we can validate by calling, but don't serialize it, and keep it lazy
   // below
   def getConstructor =
-    mf.runtimeClass.getConstructors
+    mf.runtimeClass
+      .getConstructors
       .filter { _.getParameterTypes.size == fields.size }
-      .head
-      .asInstanceOf[Constructor[T]]
+      .head.asInstanceOf[Constructor[T]]
 
   //Make sure we can actually get a constructor:
   getConstructor

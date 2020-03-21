@@ -483,9 +483,8 @@ class LogisticRegressionSuite
 
     val lrA = new LogisticRegressionWithLBFGS().setIntercept(true)
     lrA.optimizer.setNumIterations(numIteration)
-    val lrB = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setFeatureScaling(false)
+    val lrB = new LogisticRegressionWithLBFGS().setIntercept(
+      true).setFeatureScaling(false)
     lrB.optimizer.setNumIterations(numIteration)
 
     val modelA1 = lrA.run(testRDD1, initialWeights)
@@ -667,12 +666,10 @@ class LogisticRegressionSuite
     * they produce the same result.
     */
   test("binary logistic regression with intercept without regularization") {
-    val trainer1 = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setFeatureScaling(true)
-    val trainer2 = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setFeatureScaling(false)
+    val trainer1 = new LogisticRegressionWithLBFGS().setIntercept(
+      true).setFeatureScaling(true)
+    val trainer2 = new LogisticRegressionWithLBFGS().setIntercept(
+      true).setFeatureScaling(false)
 
     val model1 = trainer1.run(binaryDataset)
     val model2 = trainer2.run(binaryDataset)
@@ -708,12 +705,10 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression without intercept without regularization") {
-    val trainer1 = new LogisticRegressionWithLBFGS()
-      .setIntercept(false)
-      .setFeatureScaling(true)
-    val trainer2 = new LogisticRegressionWithLBFGS()
-      .setIntercept(false)
-      .setFeatureScaling(false)
+    val trainer1 = new LogisticRegressionWithLBFGS().setIntercept(
+      false).setFeatureScaling(true)
+    val trainer2 = new LogisticRegressionWithLBFGS().setIntercept(
+      false).setFeatureScaling(false)
 
     val model1 = trainer1.run(binaryDataset)
     val model2 = trainer2.run(binaryDataset)
@@ -750,13 +745,11 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression with intercept with L1 regularization") {
-    val trainer1 = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setFeatureScaling(true)
+    val trainer1 = new LogisticRegressionWithLBFGS().setIntercept(
+      true).setFeatureScaling(true)
     trainer1.optimizer.setUpdater(new L1Updater).setRegParam(0.12)
-    val trainer2 = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setFeatureScaling(false)
+    val trainer2 = new LogisticRegressionWithLBFGS().setIntercept(
+      true).setFeatureScaling(false)
     trainer2.optimizer.setUpdater(new L1Updater).setRegParam(0.12)
 
     val model1 = trainer1.run(binaryDataset)
@@ -813,13 +806,11 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression without intercept with L1 regularization") {
-    val trainer1 = new LogisticRegressionWithLBFGS()
-      .setIntercept(false)
-      .setFeatureScaling(true)
+    val trainer1 = new LogisticRegressionWithLBFGS().setIntercept(
+      false).setFeatureScaling(true)
     trainer1.optimizer.setUpdater(new L1Updater).setRegParam(0.12)
-    val trainer2 = new LogisticRegressionWithLBFGS()
-      .setIntercept(false)
-      .setFeatureScaling(false)
+    val trainer2 = new LogisticRegressionWithLBFGS().setIntercept(
+      false).setFeatureScaling(false)
     trainer2.optimizer.setUpdater(new L1Updater).setRegParam(0.12)
 
     val model1 = trainer1.run(binaryDataset)
@@ -877,13 +868,11 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression with intercept with L2 regularization") {
-    val trainer1 = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setFeatureScaling(true)
+    val trainer1 = new LogisticRegressionWithLBFGS().setIntercept(
+      true).setFeatureScaling(true)
     trainer1.optimizer.setUpdater(new SquaredL2Updater).setRegParam(1.37)
-    val trainer2 = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setFeatureScaling(false)
+    val trainer2 = new LogisticRegressionWithLBFGS().setIntercept(
+      true).setFeatureScaling(false)
     trainer2.optimizer.setUpdater(new SquaredL2Updater).setRegParam(1.37)
 
     val model1 = trainer1.run(binaryDataset)
@@ -942,13 +931,11 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression without intercept with L2 regularization") {
-    val trainer1 = new LogisticRegressionWithLBFGS()
-      .setIntercept(false)
-      .setFeatureScaling(true)
+    val trainer1 = new LogisticRegressionWithLBFGS().setIntercept(
+      false).setFeatureScaling(true)
     trainer1.optimizer.setUpdater(new SquaredL2Updater).setRegParam(1.37)
-    val trainer2 = new LogisticRegressionWithLBFGS()
-      .setIntercept(false)
-      .setFeatureScaling(false)
+    val trainer2 = new LogisticRegressionWithLBFGS().setIntercept(
+      false).setFeatureScaling(false)
     trainer2.optimizer.setUpdater(new SquaredL2Updater).setRegParam(1.37)
 
     val model1 = trainer1.run(binaryDataset)
@@ -1017,14 +1004,12 @@ class LogisticRegressionClusterSuite
     "task size should be small in both training and prediction using SGD optimizer") {
     val m = 4
     val n = 200000
-    val points = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val points = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i =>
           LabeledPoint(1.0, Vectors.dense(Array.fill(n)(random.nextDouble()))))
-      }
-      .cache()
+    }.cache()
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
     val model = LogisticRegressionWithSGD.train(points, 2)
@@ -1039,14 +1024,12 @@ class LogisticRegressionClusterSuite
     "task size should be small in both training and prediction using LBFGS optimizer") {
     val m = 4
     val n = 200000
-    val points = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val points = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i =>
           LabeledPoint(1.0, Vectors.dense(Array.fill(n)(random.nextDouble()))))
-      }
-      .cache()
+    }.cache()
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
     val lr = new LogisticRegressionWithLBFGS().setIntercept(true)

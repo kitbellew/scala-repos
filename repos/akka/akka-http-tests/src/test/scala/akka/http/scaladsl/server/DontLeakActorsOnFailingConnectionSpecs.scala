@@ -29,14 +29,13 @@ class DontLeakActorsOnFailingConnectionSpecs
     with Matchers
     with BeforeAndAfterAll {
 
-  val config = ConfigFactory
-    .parseString("""
+  val config = ConfigFactory.parseString(
+    """
     akka {
       # disable logs (very noisy tests - 100 exepected errors)
       loglevel = OFF
       stdout-loglevel = OFF
-    }""")
-    .withFallback(ConfigFactory.load())
+    }""").withFallback(ConfigFactory.load())
   implicit val system =
     ActorSystem("DontLeakActorsOnFailingConnectionSpecs", config)
   import system.dispatcher

@@ -65,42 +65,37 @@ class HttpClientDispatcher(
       if (len > 0) req.headerMap.set(Fields.ContentLength, len.toString)
     }
 
-    trans
-      .write(from[Request, HttpRequest](req))
-      .rescue(wrapWriteException)
-      .before {
-        // Do these concurrently:
-        Future
-          .join(
-            // 1. Drain the Request body into the Transport.
-            if (req.isChunked) streamChunks(trans, req.reader)
-            else Future.Done,
-            // 2. Drain the Transport into Response body.
-            trans.read() flatMap {
-              case res: HttpResponse if HttpNackFilter.isNack(res) =>
-                p.updateIfEmpty(Throw(NackFailure))
-                Future.Done
+    trans.write(from[Request, HttpRequest](req)).rescue(
+      wrapWriteException).before {
+      // Do these concurrently:
+      Future.join(
+        // 1. Drain the Request body into the Transport.
+        if (req.isChunked) streamChunks(trans, req.reader)
+        else Future.Done,
+        // 2. Drain the Transport into Response body.
+        trans.read() flatMap {
+          case res: HttpResponse if HttpNackFilter.isNack(res) =>
+            p.updateIfEmpty(Throw(NackFailure))
+            Future.Done
 
-              case res: HttpResponse if !res.isChunked =>
-                val response = Response(
-                  res,
-                  BufReader(ChannelBufferBuf.Owned(res.getContent)))
-                p.updateIfEmpty(Return(response))
-                Future.Done
+          case res: HttpResponse if !res.isChunked =>
+            val response =
+              Response(res, BufReader(ChannelBufferBuf.Owned(res.getContent)))
+            p.updateIfEmpty(Return(response))
+            Future.Done
 
-              case res: HttpResponse =>
-                val coll = Transport.collate(trans, readChunk)
-                p.updateIfEmpty(Return(Response(res, coll)))
-                coll
+          case res: HttpResponse =>
+            val coll = Transport.collate(trans, readChunk)
+            p.updateIfEmpty(Return(Response(res, coll)))
+            coll
 
-              case invalid =>
-                // We rely on the base class to satisfy p.
-                Future.exception(
-                  new IllegalArgumentException(s"invalid message '$invalid'"))
-            }
-          )
-          .unit
-      } onFailure { _ =>
+          case invalid =>
+            // We rely on the base class to satisfy p.
+            Future.exception(
+              new IllegalArgumentException(s"invalid message '$invalid'"))
+        }
+      ).unit
+    } onFailure { _ =>
       // This Future represents the totality of the exchange;
       // thus failure represents *any* failure that can happen
       // during the exchange.

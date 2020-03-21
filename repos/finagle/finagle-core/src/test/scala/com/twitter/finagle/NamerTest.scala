@@ -148,17 +148,13 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   test("NameTree.bind: Alt with Fail/Empty")(new Ctx {
     assert(
-      namer
-        .bind(NameTree.read("(! | /test/1 | /test/2)"))
-        .sample() == NameTree.Fail)
+      namer.bind(
+        NameTree.read("(! | /test/1 | /test/2)")).sample() == NameTree.Fail)
     assert(
-      namer
-        .bind(NameTree.read("(~ | /$/fail | /test/1)"))
-        .sample() == NameTree.Fail)
-    assert(
-      namer
-        .bind(NameTree.read("(/$/nil | /$/fail | /test/1)"))
-        .sample() == NameTree.Empty)
+      namer.bind(
+        NameTree.read("(~ | /$/fail | /test/1)")).sample() == NameTree.Fail)
+    assert(namer.bind(
+      NameTree.read("(/$/nil | /$/fail | /test/1)")).sample() == NameTree.Empty)
   })
 
   def assertLookup(path: String, addrs: Address*) {
@@ -177,9 +173,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
       Namer.global.lookup(Path.read("/$/inet")).sample()
     }
 
-    Namer.global
-      .lookup(Path.read("/$/inet/127.0.0.1/1234/foobar"))
-      .sample() match {
+    Namer.global.lookup(
+      Path.read("/$/inet/127.0.0.1/1234/foobar")).sample() match {
       case NameTree.Leaf(bound: Name.Bound) =>
         assert(bound.addr.sample() == Addr.Bound(Address("127.0.0.1", 1234)))
         assert(bound.id == Path.Utf8("$", "inet", "127.0.0.1", "1234"))
@@ -218,9 +213,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   test("Namer.global: /$/{className}") {
     assert(
-      Namer.global
-        .lookup(Path.read("/$/com.twitter.finagle.TestNamer/foo"))
-        .sample()
+      Namer.global.lookup(
+        Path.read("/$/com.twitter.finagle.TestNamer/foo")).sample()
         == NameTree.Leaf(Name.Path(Path.Utf8("bar"))))
   }
 
@@ -233,8 +227,9 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
           case bound: Addr.Bound =>
             assert(bound.addrs.size == 1)
             bound.addrs.head match {
-              case exp.Address
-                    .ServiceFactory(sf: ServiceFactory[Path, Path], _) =>
+              case exp.Address.ServiceFactory(
+                    sf: ServiceFactory[Path, Path],
+                    _) =>
                 val svc = Await.result(sf())
                 val rsp = Await.result(svc(Path.Utf8("yodles")))
                 assert(rsp == Path.Utf8("foo", "yodles"))
@@ -259,8 +254,9 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
           case bound: Addr.Bound =>
             assert(bound.addrs.size == 1)
             bound.addrs.head match {
-              case exp.Address
-                    .ServiceFactory(sf: ServiceFactory[Int, Int], _) =>
+              case exp.Address.ServiceFactory(
+                    sf: ServiceFactory[Int, Int],
+                    _) =>
                 val svc = Await.result(sf())
                 intercept[ClassCastException] {
                   val rsp = Await.result(svc(3))

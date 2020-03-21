@@ -70,9 +70,7 @@ class ScalaUnusedImportPass(
         annotations foreach (annotation =>
           list add (HighlightInfo fromAnnotation annotation))
 
-        if (ScalaApplicationSettings
-              .getInstance()
-              .OPTIMIZE_IMPORTS_ON_THE_FLY) {
+        if (ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY) {
           myOptimizeImportsRunnable =
             new ScalaImportOptimizer().processFile(file, progress)
         }
@@ -140,17 +138,15 @@ object ScalaUnusedImportPass {
 
   private[codeInspection] def isUpToDate(file: PsiFile): Boolean = {
     val lastStamp = file.getUserData(SCALA_LAST_POST_PASS_TIMESTAMP)
-    val currentStamp: Long = PsiModificationTracker.SERVICE
-      .getInstance(file.getProject)
-      .getModificationCount
-    lastStamp != null && lastStamp == currentStamp || !ProblemHighlightFilter
-      .shouldHighlightFile(file)
+    val currentStamp: Long = PsiModificationTracker.SERVICE.getInstance(
+      file.getProject).getModificationCount
+    lastStamp != null && lastStamp == currentStamp || !ProblemHighlightFilter.shouldHighlightFile(
+      file)
   }
 
   private def markFileUpToDate(file: PsiFile) {
-    val lastStamp: java.lang.Long = PsiModificationTracker.SERVICE
-      .getInstance(file.getProject)
-      .getModificationCount
+    val lastStamp: java.lang.Long = PsiModificationTracker.SERVICE.getInstance(
+      file.getProject).getModificationCount
     file.putUserData(SCALA_LAST_POST_PASS_TIMESTAMP, lastStamp)
   }
 
@@ -159,8 +155,8 @@ object ScalaUnusedImportPass {
       return false
     val codeAnalyzer: DaemonCodeAnalyzerEx =
       DaemonCodeAnalyzerEx.getInstanceEx(file.getProject)
-    if (file == null || !codeAnalyzer.isHighlightingAvailable(file) || !file
-          .isInstanceOf[ScalaFile]) return false
+    if (file == null || !codeAnalyzer.isHighlightingAvailable(
+          file) || !file.isInstanceOf[ScalaFile]) return false
     if (!codeAnalyzer.isErrorAnalyzingFinished(file)) return false
     val errors: Boolean = containsErrorsPreventingOptimize(file)
     !errors && DaemonListeners.canChangeFileSilently(file)

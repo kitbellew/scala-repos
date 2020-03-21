@@ -43,8 +43,10 @@ class CompileServerLauncher extends ApplicationComponent {
     if (!running) {
       val started = start(project)
       if (started) {
-        try new RemoteServerRunner(project)
-          .send("addDisconnectListener", Seq.empty, null)
+        try new RemoteServerRunner(project).send(
+          "addDisconnectListener",
+          Seq.empty,
+          null)
         catch {
           case e: Exception =>
         }
@@ -60,9 +62,8 @@ class CompileServerLauncher extends ApplicationComponent {
       // Try to find a suitable JDK
       val choice =
         Option(ProjectRootManager.getInstance(project).getProjectSdk).orElse {
-          val all = ProjectJdkTable.getInstance
-            .getSdksOfType(JavaSdk.getInstance())
-            .asScala
+          val all = ProjectJdkTable.getInstance.getSdksOfType(
+            JavaSdk.getInstance()).asScala
           all.headOption
         }
 
@@ -75,10 +76,10 @@ class CompileServerLauncher extends ApplicationComponent {
 //         message, NotificationType.INFORMATION))
     }
 
-    findJdkByName(applicationSettings.COMPILE_SERVER_SDK).left
-      .map(_ + "\nPlease either disable Scala compile server or configure a valid JVM SDK for it.")
-      .right
-      .flatMap(start(project, _)) match {
+    findJdkByName(applicationSettings.COMPILE_SERVER_SDK)
+      .left.map(
+        _ + "\nPlease either disable Scala compile server or configure a valid JVM SDK for it.")
+      .right.flatMap(start(project, _)) match {
       case Left(error) =>
         val title = "Cannot start Scala compile server"
         val content =
@@ -118,9 +119,8 @@ class CompileServerLauncher extends ApplicationComponent {
             Seq(
               "-Xbootclasspath/a:" + bootClassPathLibs.mkString(
                 File.pathSeparator))
-        val classpath = (jdk.tools +: presentFiles)
-          .map(_.canonicalPath)
-          .mkString(File.pathSeparator)
+        val classpath = (jdk.tools +: presentFiles).map(
+          _.canonicalPath).mkString(File.pathSeparator)
         val settings = ScalaCompileServerSettings.getInstance
 
         val freePort = CompileServerLauncher.findFreePort
@@ -149,12 +149,9 @@ class CompileServerLauncher extends ApplicationComponent {
           projectHome(project).foreach(dir => builder.directory(dir))
         }
 
-        catching(classOf[IOException])
-          .either(builder.start())
-          .left
-          .map(_.getMessage)
-          .right
-          .map { process =>
+        catching(classOf[IOException]).either(builder.start())
+          .left.map(_.getMessage)
+          .right.map { process =>
             val watcher = new ProcessWatcher(process, "scalaCompileServer")
             serverInstance = Some(
               ServerInstance(
@@ -252,9 +249,9 @@ object CompileServerLauncher {
       if (size.isEmpty) Nil else List("-Xmx%sm".format(size))
     }
 
-    val (userMaxPermSize, otherParams) = settings.COMPILE_SERVER_JVM_PARAMETERS
-      .split(" ")
-      .partition(_.contains("-XX:MaxPermSize"))
+    val (userMaxPermSize, otherParams) =
+      settings.COMPILE_SERVER_JVM_PARAMETERS.split(" ").partition(
+        _.contains("-XX:MaxPermSize"))
 
     val defaultMaxPermSize = Some("-XX:MaxPermSize=256m")
     val needMaxPermSize = settings.COMPILE_SERVER_SDK < "1.8"
@@ -278,9 +275,8 @@ object CompileServerLauncher {
     serverInstance match {
       case None => true
       case Some(instance) =>
-        val useProjectHome = ScalaCompileServerSettings
-          .getInstance()
-          .USE_PROJECT_HOME_AS_WORKING_DIR
+        val useProjectHome =
+          ScalaCompileServerSettings.getInstance().USE_PROJECT_HOME_AS_WORKING_DIR
         val workingDirChanged = useProjectHome && projectHome(
           project) != serverInstance.map(_.workingDir)
         workingDirChanged || instance.bootClasspath != withTimestamps(

@@ -267,9 +267,8 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val denseBM = new BlockMatrix(sc.makeRDD(denseBlocks, 4), 4, 4, 8, 8)
 
     assert(
-      sparseBM.subtract(sparseBM).toBreeze() === sparseBM
-        .subtract(denseBM)
-        .toBreeze())
+      sparseBM.subtract(sparseBM).toBreeze() === sparseBM.subtract(
+        denseBM).toBreeze())
   }
 
   test("multiply") {
@@ -318,9 +317,8 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val largeB = new BlockMatrix(sc.parallelize(largerBblocks, 8), 4, 4)
     val largeC = largeA.multiply(largeB)
     val localC = largeC.toLocalMatrix()
-    val result = largeA
-      .toLocalMatrix()
-      .multiply(largeB.toLocalMatrix().asInstanceOf[DenseMatrix])
+    val result = largeA.toLocalMatrix().multiply(
+      largeB.toLocalMatrix().asInstanceOf[DenseMatrix])
     assert(largeC.numRows() === largeA.numRows())
     assert(largeC.numCols() === largeB.numCols())
     assert(localC ~== result absTol 1e-8)

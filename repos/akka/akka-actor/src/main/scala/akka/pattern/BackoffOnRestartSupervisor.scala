@@ -59,8 +59,10 @@ private class BackoffOnRestartSupervisor(
         minBackoff,
         maxBackoff,
         randomFactor)
-      context.system.scheduler
-        .scheduleOnce(restartDelay, self, BackoffSupervisor.StartChild)
+      context.system.scheduler.scheduleOnce(
+        restartDelay,
+        self,
+        BackoffSupervisor.StartChild)
       restartCount += 1
 
     case StartChild ⇒ // Ignore it, we will schedule a new one once current child terminated.

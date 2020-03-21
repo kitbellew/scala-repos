@@ -95,9 +95,8 @@ class NIHDBFileStoreSpec
         case UpdateSuccess(_) => ok
       }
 
-      (projectionsActor ? Read(testPath, Version.Current))
-        .mapTo[ReadResult]
-        .copoint must beLike {
+      (projectionsActor ? Read(testPath, Version.Current)).mapTo[
+        ReadResult].copoint must beLike {
         case ReadSuccess(_, blob: BlobResource) =>
           blob.asString.run.copoint must beSome(loremIpsum)
       }
@@ -126,9 +125,8 @@ class NIHDBFileStoreSpec
       }
 
       // We haven't terminated the stream yet, so it shouldn't find anything
-      (projectionsActor ? Read(testPath, Version.Current))
-        .mapTo[ReadResult]
-        .copoint must beLike {
+      (projectionsActor ? Read(testPath, Version.Current)).mapTo[
+        ReadResult].copoint must beLike {
         case PathOpFailure(_, NotFound(_)) => ok
       }
 
@@ -148,9 +146,8 @@ class NIHDBFileStoreSpec
         case UpdateSuccess(_) => ok
       }
 
-      (projectionsActor ? Read(testPath, Version.Current))
-        .mapTo[ReadResult]
-        .copoint must beLike {
+      (projectionsActor ? Read(testPath, Version.Current)).mapTo[
+        ReadResult].copoint must beLike {
         case ReadSuccess(_, proj: NIHDBResource) =>
           proj.db.length.copoint mustEqual 2
       }

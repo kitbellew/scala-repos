@@ -17,8 +17,7 @@ object JoinInProgressMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory
-          .parseString("""
+        ConfigFactory.parseString("""
           akka.cluster {
             # simulate delay in gossip by turning it off
             gossip-interval = 300 s

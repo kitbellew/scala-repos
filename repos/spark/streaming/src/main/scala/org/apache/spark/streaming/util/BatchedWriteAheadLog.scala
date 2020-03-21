@@ -219,9 +219,8 @@ private[util] object BatchedWriteAheadLog {
 
   /** Aggregate multiple serialized ReceivedBlockTrackerLogEvents in a single ByteBuffer. */
   def aggregate(records: Seq[Record]): ByteBuffer = {
-    ByteBuffer.wrap(
-      Utils.serialize[Array[Array[Byte]]](
-        records.map(record => JavaUtils.bufferToArray(record.data)).toArray))
+    ByteBuffer.wrap(Utils.serialize[Array[Array[Byte]]](records.map(record =>
+      JavaUtils.bufferToArray(record.data)).toArray))
   }
 
   /**
@@ -232,9 +231,8 @@ private[util] object BatchedWriteAheadLog {
   def deaggregate(buffer: ByteBuffer): Array[ByteBuffer] = {
     val prevPosition = buffer.position()
     try {
-      Utils
-        .deserialize[Array[Array[Byte]]](JavaUtils.bufferToArray(buffer))
-        .map(ByteBuffer.wrap)
+      Utils.deserialize[Array[Array[Byte]]](
+        JavaUtils.bufferToArray(buffer)).map(ByteBuffer.wrap)
     } catch {
       case _: ClassCastException => // users may restart a stream with batching enabled
         // Restore `position` so that the user can read `buffer` later

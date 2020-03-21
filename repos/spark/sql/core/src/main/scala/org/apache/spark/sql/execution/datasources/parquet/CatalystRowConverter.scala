@@ -199,18 +199,14 @@ private[parquet] class CatalystRowConverter(
   // Converters for each field.
   private val fieldConverters
       : Array[Converter with HasParentContainerUpdater] = {
-    parquetType.getFields.asScala
-      .zip(catalystType)
-      .zipWithIndex
-      .map {
-        case ((parquetFieldType, catalystField), ordinal) =>
-          // Converted field value should be set to the `ordinal`-th cell of `currentRow`
-          newConverter(
-            parquetFieldType,
-            catalystField.dataType,
-            new RowUpdater(currentRow, ordinal))
-      }
-      .toArray
+    parquetType.getFields.asScala.zip(catalystType).zipWithIndex.map {
+      case ((parquetFieldType, catalystField), ordinal) =>
+        // Converted field value should be set to the `ordinal`-th cell of `currentRow`
+        newConverter(
+          parquetFieldType,
+          catalystField.dataType,
+          new RowUpdater(currentRow, ordinal))
+    }.toArray
   }
 
   override def getConverter(fieldIndex: Int): Converter =
@@ -279,9 +275,7 @@ private[parquet] class CatalystRowConverter(
 
       // For BINARY and FIXED_LEN_BYTE_ARRAY backed decimals
       case t: DecimalType
-          if parquetType
-            .asPrimitiveType()
-            .getPrimitiveTypeName == FIXED_LEN_BYTE_ARRAY ||
+          if parquetType.asPrimitiveType().getPrimitiveTypeName == FIXED_LEN_BYTE_ARRAY ||
             parquetType.asPrimitiveType().getPrimitiveTypeName == BINARY =>
         new CatalystBinaryDictionaryAwareDecimalConverter(
           t.precision,

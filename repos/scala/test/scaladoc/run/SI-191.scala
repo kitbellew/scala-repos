@@ -33,10 +33,8 @@ object Test extends ScaladocModelTest {
   def scalaURL = "http://bog.us"
 
   override def scaladocSettings = {
-    val scalaLibUri = getClass.getClassLoader
-      .getResource("scala/Function1.class")
-      .getPath
-      .split("!")(0)
+    val scalaLibUri = getClass.getClassLoader.getResource(
+      "scala/Function1.class").getPath.split("!")(0)
     val scalaLibPath = new URI(scalaLibUri).getPath
     val externalArg = s"$scalaLibPath#$scalaURL"
     "-no-link-warnings -doc-external-doc " + externalArg
@@ -59,18 +57,16 @@ object Test extends ScaladocModelTest {
     check(test._method("barr"), 2)
     check(test._method("baz"), 0)
 
-    val expectedUrls = collection.mutable
-      .Set[String](
-        "scala.collection.Map",
-        "scala.collection.immutable.::",
-        "scala.Int",
-        "scala.Predef$",
-        "scala.Int@toLong:Long",
-        "scala.package",
-        "scala.package@AbstractMethodError=AbstractMethodError",
-        "scala.Predef$@String=String"
-      )
-      .map(scalaURL + "/index.html#" + _)
+    val expectedUrls = collection.mutable.Set[String](
+      "scala.collection.Map",
+      "scala.collection.immutable.::",
+      "scala.Int",
+      "scala.Predef$",
+      "scala.Int@toLong:Long",
+      "scala.package",
+      "scala.package@AbstractMethodError=AbstractMethodError",
+      "scala.Predef$@String=String"
+    ).map(scalaURL + "/index.html#" + _)
 
     def isExpectedExternalLink(l: EntityLink) =
       l.link match {

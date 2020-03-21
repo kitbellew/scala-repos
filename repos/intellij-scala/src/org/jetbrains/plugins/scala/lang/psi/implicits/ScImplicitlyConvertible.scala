@@ -300,13 +300,11 @@ class ScImplicitlyConvertible(
       ProgressManager.checkCanceled()
 
       lazy val funType = Option(
-        ScalaPsiManager
-          .instance(place.getProject)
-          .getCachedClass(
-            "scala.Function1",
-            place.getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE
-          )
+        ScalaPsiManager.instance(place.getProject).getCachedClass(
+          "scala.Function1",
+          place.getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE
+        )
       ) collect {
         case cl: ScTrait =>
           ScParameterizedType(
@@ -332,11 +330,10 @@ class ScImplicitlyConvertible(
             subst.subst(params.head.getType(TypingContext.empty).getOrNothing),
             subst.subst(f.returnType.getOrNothing))
         case f: ScFunction =>
-          Conformance
-            .undefinedSubst(
-              funType.getOrElse(return default),
-              subst.subst(f.returnType.getOrElse(return default)))
-            .getSubstitutor match {
+          Conformance.undefinedSubst(
+            funType.getOrElse(return default),
+            subst.subst(
+              f.returnType.getOrElse(return default))).getSubstitutor match {
             case Some(innerSubst) =>
               (
                 innerSubst.subst(firstArgType.getOrElse(return default)),
@@ -344,12 +341,11 @@ class ScImplicitlyConvertible(
             case _ => (types.Nothing, types.Nothing)
           }
         case b: ScBindingPattern =>
-          Conformance
-            .undefinedSubst(
-              funType.getOrElse(return default),
-              subst.subst(
-                b.getType(TypingContext.empty).getOrElse(return default)))
-            .getSubstitutor match {
+          Conformance.undefinedSubst(
+            funType.getOrElse(return default),
+            subst.subst(
+              b.getType(TypingContext.empty).getOrElse(
+                return default))).getSubstitutor match {
             case Some(innerSubst) =>
               (
                 innerSubst.subst(firstArgType.getOrElse(return default)),
@@ -358,12 +354,11 @@ class ScImplicitlyConvertible(
           }
         case param: ScParameter =>
           // View Bounds and Context Bounds are processed as parameters.
-          Conformance
-            .undefinedSubst(
-              funType.getOrElse(return default),
-              subst.subst(
-                param.getType(TypingContext.empty).getOrElse(return default)))
-            .getSubstitutor match {
+          Conformance.undefinedSubst(
+            funType.getOrElse(return default),
+            subst.subst(
+              param.getType(TypingContext.empty).getOrElse(
+                return default))).getSubstitutor match {
             case Some(innerSubst) =>
               (
                 innerSubst.subst(firstArgType.getOrElse(return default)),
@@ -371,12 +366,11 @@ class ScImplicitlyConvertible(
             case _ => (types.Nothing, types.Nothing)
           }
         case obj: ScObject =>
-          Conformance
-            .undefinedSubst(
-              funType.getOrElse(return default),
-              subst.subst(
-                obj.getType(TypingContext.empty).getOrElse(return default)))
-            .getSubstitutor match {
+          Conformance.undefinedSubst(
+            funType.getOrElse(return default),
+            subst.subst(
+              obj.getType(TypingContext.empty).getOrElse(
+                return default))).getSubstitutor match {
             case Some(innerSubst) =>
               (
                 innerSubst.subst(firstArgType.getOrElse(return default)),
@@ -449,15 +443,11 @@ class ScImplicitlyConvertible(
                     val dependentSubst = new ScSubstitutor(() => {
                       val level = place.scalaLanguageLevelOrDefault
                       if (level >= Scala_2_10) {
-                        f.paramClauses.clauses.headOption
-                          .map(_.parameters)
-                          .toSeq
-                          .flatten
-                          .map {
-                            case (param: ScParameter) =>
-                              (new Parameter(param), typez)
-                          }
-                          .toMap
+                        f.paramClauses.clauses.headOption.map(
+                          _.parameters).toSeq.flatten.map {
+                          case (param: ScParameter) =>
+                            (new Parameter(param), typez)
+                        }.toMap
                       } else Map.empty
                     })
 
@@ -493,21 +483,15 @@ class ScImplicitlyConvertible(
                               check = false,
                               abstractSubstitutor =
                                 subst followed dependentSubst followed unSubst)
-                          inferredParams
-                            .zip(expr)
-                            .map {
-                              case (param: Parameter, expr: Expression) =>
-                                (
-                                  param,
-                                  expr
-                                    .getTypeAfterImplicitConversion(
-                                      checkImplicits = true,
-                                      isShape = false,
-                                      None)
-                                    ._1
-                                    .get)
-                            }
-                            .toMap
+                          inferredParams.zip(expr).map {
+                            case (param: Parameter, expr: Expression) =>
+                              (
+                                param,
+                                expr.getTypeAfterImplicitConversion(
+                                  checkImplicits = true,
+                                  isShape = false,
+                                  None)._1.get)
+                          }.toMap
                         } else Map.empty
                       } else Map.empty
                     })
@@ -569,10 +553,10 @@ class ScImplicitlyConvertible(
       extends ImplicitProcessor(StdKinds.refExprLastRef, withoutPrecedence) {
     //can be null (in Unit tests or without library)
     private val funType: ScType = {
-      val funClass: PsiClass = ScalaPsiManager
-        .instance(place.getProject)
-        .getCachedClass(place.getResolveScope, "scala.Function1")
-        .orNull
+      val funClass: PsiClass =
+        ScalaPsiManager.instance(place.getProject).getCachedClass(
+          place.getResolveScope,
+          "scala.Function1").orNull
       funClass match {
         case cl: ScTrait =>
           ScParameterizedType(
@@ -638,10 +622,10 @@ class ScImplicitlyConvertible(
             case b: ScBindingPattern =>
               ScalaPsiUtil.nameContext(b) match {
                 case d: ScDeclaredElementsHolder
-                    if (d.isInstanceOf[ScValue] || d
-                      .isInstanceOf[ScVariable]) &&
-                      d.asInstanceOf[ScModifierListOwner]
-                        .hasModifierProperty("implicit") =>
+                    if (d.isInstanceOf[ScValue] || d.isInstanceOf[
+                      ScVariable]) &&
+                      d.asInstanceOf[ScModifierListOwner].hasModifierProperty(
+                        "implicit") =>
                   if (!ResolveUtils.isAccessible(
                         d.asInstanceOf[ScMember],
                         getPlace)) return true
@@ -677,9 +661,8 @@ class ScImplicitlyConvertible(
 
   private def isConformsMethod(f: ScFunction): Boolean = {
     (f.name == "conforms" || f.name == "$conforms") &&
-    Option(f.containingClass)
-      .flatMap(cls => Option(cls.qualifiedName))
-      .contains("scala.Predef")
+    Option(f.containingClass).flatMap(cls =>
+      Option(cls.qualifiedName)).contains("scala.Predef")
   }
 }
 

@@ -91,10 +91,12 @@ class KinesisReceiverSuite
     recordProcessor.processRecords(batch, checkpointerMock)
 
     verify(receiverMock, times(1)).isStopped()
-    verify(receiverMock, never)
-      .addRecords(anyString, anyListOf(classOf[Record]))
-    verify(receiverMock, never)
-      .setCheckpointer(anyString, meq(checkpointerMock))
+    verify(receiverMock, never).addRecords(
+      anyString,
+      anyListOf(classOf[Record]))
+    verify(receiverMock, never).setCheckpointer(
+      anyString,
+      meq(checkpointerMock))
   }
 
   test("shouldn't update checkpointer when exception occurs during store") {
@@ -111,34 +113,37 @@ class KinesisReceiverSuite
 
     verify(receiverMock, times(1)).isStopped()
     verify(receiverMock, times(1)).addRecords(shardId, batch)
-    verify(receiverMock, never)
-      .setCheckpointer(anyString, meq(checkpointerMock))
+    verify(receiverMock, never).setCheckpointer(
+      anyString,
+      meq(checkpointerMock))
   }
 
   test("shutdown should checkpoint if the reason is TERMINATE") {
-    when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
-      .thenReturn(someSeqNum)
+    when(receiverMock.getLatestSeqNumToCheckpoint(shardId)).thenReturn(
+      someSeqNum)
 
     val recordProcessor = new KinesisRecordProcessor(receiverMock, workerId)
     recordProcessor.initialize(shardId)
     recordProcessor.shutdown(checkpointerMock, ShutdownReason.TERMINATE)
 
-    verify(receiverMock, times(1))
-      .removeCheckpointer(meq(shardId), meq(checkpointerMock))
+    verify(receiverMock, times(1)).removeCheckpointer(
+      meq(shardId),
+      meq(checkpointerMock))
   }
 
   test(
     "shutdown should not checkpoint if the reason is something other than TERMINATE") {
-    when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
-      .thenReturn(someSeqNum)
+    when(receiverMock.getLatestSeqNumToCheckpoint(shardId)).thenReturn(
+      someSeqNum)
 
     val recordProcessor = new KinesisRecordProcessor(receiverMock, workerId)
     recordProcessor.initialize(shardId)
     recordProcessor.shutdown(checkpointerMock, ShutdownReason.ZOMBIE)
     recordProcessor.shutdown(checkpointerMock, null)
 
-    verify(receiverMock, times(2))
-      .removeCheckpointer(meq(shardId), meq[IRecordProcessorCheckpointer](null))
+    verify(receiverMock, times(2)).removeCheckpointer(
+      meq(shardId),
+      meq[IRecordProcessorCheckpointer](null))
   }
 
   test("retry success on first attempt") {
@@ -179,8 +184,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after a shutdown exception") {
-    when(checkpointerMock.checkpoint())
-      .thenThrow(new ShutdownException("error message"))
+    when(checkpointerMock.checkpoint()).thenThrow(
+      new ShutdownException("error message"))
 
     intercept[ShutdownException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)
@@ -190,8 +195,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after an invalid state exception") {
-    when(checkpointerMock.checkpoint())
-      .thenThrow(new InvalidStateException("error message"))
+    when(checkpointerMock.checkpoint()).thenThrow(
+      new InvalidStateException("error message"))
 
     intercept[InvalidStateException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)
@@ -201,8 +206,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after unexpected exception") {
-    when(checkpointerMock.checkpoint())
-      .thenThrow(new RuntimeException("error message"))
+    when(checkpointerMock.checkpoint()).thenThrow(
+      new RuntimeException("error message"))
 
     intercept[RuntimeException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)

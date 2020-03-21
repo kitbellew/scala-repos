@@ -199,13 +199,11 @@ class StoragePageSuite extends SparkFunSuite {
         Seq("input-0-0", "2", "localhost:10000", "Memory", "100.0 B"))
     // Check "rowspan=2" for the first 2 columns
     assert(
-      ((blockTable \\ "tr")(0) \\ "td")(0)
-        .attribute("rowspan")
-        .map(_.text) === Some("2"))
+      ((blockTable \\ "tr")(0) \\ "td")(0).attribute("rowspan").map(
+        _.text) === Some("2"))
     assert(
-      ((blockTable \\ "tr")(0) \\ "td")(1)
-        .attribute("rowspan")
-        .map(_.text) === Some("2"))
+      ((blockTable \\ "tr")(0) \\ "td")(1).attribute("rowspan").map(
+        _.text) === Some("2"))
 
     assert(
       ((blockTable \\ "tr")(1) \\ "td").map(_.text.trim) ===
@@ -216,13 +214,11 @@ class StoragePageSuite extends SparkFunSuite {
         Seq("input-1-1", "2", "localhost:10000", "Disk", "100.0 B"))
     // Check "rowspan=2" for the first 2 columns
     assert(
-      ((blockTable \\ "tr")(2) \\ "td")(0)
-        .attribute("rowspan")
-        .map(_.text) === Some("2"))
+      ((blockTable \\ "tr")(2) \\ "td")(0).attribute("rowspan").map(
+        _.text) === Some("2"))
     assert(
-      ((blockTable \\ "tr")(2) \\ "td")(1)
-        .attribute("rowspan")
-        .map(_.text) === Some("2"))
+      ((blockTable \\ "tr")(2) \\ "td")(1).attribute("rowspan").map(
+        _.text) === Some("2"))
 
     assert(
       ((blockTable \\ "tr")(3) \\ "td").map(_.text.trim) ===

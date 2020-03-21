@@ -133,10 +133,10 @@ abstract class Transform(override val delegate: jfxst.Transform)
     delegate.onTransformChangedProperty
   def onTransformChanged_=(
       v: jfxe.EventHandler[_ >: jfxst.TransformChangedEvent]) {
-    ObjectProperty
-      .fillProperty[jfxe.EventHandler[_ >: jfxst.TransformChangedEvent]](
-        this.onTransformChanged,
-        v)
+    ObjectProperty.fillProperty[
+      jfxe.EventHandler[_ >: jfxst.TransformChangedEvent]](
+      this.onTransformChanged,
+      v)
   }
 
   /** Determines if this is currently a 2D transform. */

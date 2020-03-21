@@ -62,9 +62,9 @@ class CodecSource[T] private (
   override def converter[U >: T] =
     TupleConverter.asSuperConverter[T, U](TupleConverter.singleConverter[T])
   override def hdfsScheme =
-    HadoopSchemeInstance(
-      new WritableSequenceFile(field, classOf[BytesWritable])
-        .asInstanceOf[Scheme[_, _, _, _, _]])
+    HadoopSchemeInstance(new WritableSequenceFile(
+      field,
+      classOf[BytesWritable]).asInstanceOf[Scheme[_, _, _, _, _]])
 
   protected lazy val checkedInversion =
     new MaxFailuresCheck[T, BytesWritable](maxFailures)(injectionBox.get)
@@ -78,8 +78,7 @@ class CodecSource[T] private (
 
   override def toIterator(implicit config: Config, mode: Mode): Iterator[T] = {
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(config, tap)
+    mode.openForRead(config, tap)
       .asScala
       .flatMap { te =>
         checkedInversion(

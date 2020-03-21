@@ -36,20 +36,16 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
     // Convert String ID to Int index for Mllib
-    model.users
-      .get(query.user)
-      .map { userInt =>
-        // recommendProducts() returns Array[MLlibRating], which uses item Int
-        // index. Convert it to String ID for returning PredictedResult
-        val itemScores = model
-          .recommendProducts(userInt.toInt, query.num)
-          .map(r => ItemScore(model.items(r.product.toLong), r.rating))
-        new PredictedResult(itemScores)
-      }
-      .getOrElse {
-        logger.info(s"No prediction for unknown user ${query.user}.")
-        new PredictedResult(Array.empty)
-      }
+    model.users.get(query.user).map { userInt =>
+      // recommendProducts() returns Array[MLlibRating], which uses item Int
+      // index. Convert it to String ID for returning PredictedResult
+      val itemScores = model.recommendProducts(userInt.toInt, query.num)
+        .map(r => ItemScore(model.items(r.product.toLong), r.rating))
+      new PredictedResult(itemScores)
+    }.getOrElse {
+      logger.info(s"No prediction for unknown user ${query.user}.")
+      new PredictedResult(Array.empty)
+    }
   }
 
 }

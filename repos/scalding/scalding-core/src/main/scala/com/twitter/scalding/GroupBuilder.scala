@@ -444,8 +444,7 @@ class ScanLeftIterator[T, U](it: Iterator[T], init: U, fn: (U, T) => U)
   // Don't use pattern matching in a performance-critical section
   @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
   def next = {
-    prev = prev
-      .map { fn(_, it.next) }
+    prev = prev.map { fn(_, it.next) }
       .orElse(Some(init))
     prev.get
   }

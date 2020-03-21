@@ -69,11 +69,8 @@ class ESEngineInstances(
             ("servingParams" ->
               ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
             ("status" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
-    indices
-      .preparePutMapping(index)
-      .setType(estype)
-      .setSource(compact(render(json)))
-      .get
+    indices.preparePutMapping(index).setType(estype).setSource(
+      compact(render(json))).get
   }
 
   def insert(i: EngineInstance): String = {
@@ -118,16 +115,14 @@ class ESEngineInstances(
       engineVersion: String,
       engineVariant: String): Seq[EngineInstance] = {
     try {
-      val builder = client
-        .prepareSearch(index)
-        .setTypes(estype)
-        .setPostFilter(
-          andFilter(
-            termFilter("status", "COMPLETED"),
-            termFilter("engineId", engineId),
-            termFilter("engineVersion", engineVersion),
-            termFilter("engineVariant", engineVariant)))
-        .addSort("startTime", SortOrder.DESC)
+      val builder = client.prepareSearch(index).setTypes(estype).setPostFilter(
+        andFilter(
+          termFilter("status", "COMPLETED"),
+          termFilter("engineId", engineId),
+          termFilter("engineVersion", engineVersion),
+          termFilter("engineVariant", engineVariant))).addSort(
+        "startTime",
+        SortOrder.DESC)
       ESUtils.getAll[EngineInstance](client, builder)
     } catch {
       case e: ElasticsearchException =>

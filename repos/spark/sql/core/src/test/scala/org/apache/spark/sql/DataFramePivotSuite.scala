@@ -26,9 +26,7 @@ class DataFramePivotSuite extends QueryTest with SharedSQLContext {
 
   test("pivot courses with literals") {
     checkAnswer(
-      courseSales
-        .groupBy("year")
-        .pivot("course", Seq("dotNET", "Java"))
+      courseSales.groupBy("year").pivot("course", Seq("dotNET", "Java"))
         .agg(sum($"earnings")),
       Row(2012, 15000.0, 20000.0) :: Row(2013, 48000.0, 30000.0) :: Nil
     )
@@ -36,18 +34,15 @@ class DataFramePivotSuite extends QueryTest with SharedSQLContext {
 
   test("pivot year with literals") {
     checkAnswer(
-      courseSales
-        .groupBy("course")
-        .pivot("year", Seq(2012, 2013))
-        .agg(sum($"earnings")),
+      courseSales.groupBy("course").pivot("year", Seq(2012, 2013)).agg(
+        sum($"earnings")),
       Row("dotNET", 15000.0, 48000.0) :: Row("Java", 20000.0, 30000.0) :: Nil
     )
   }
 
   test("pivot courses with literals and multiple aggregations") {
     checkAnswer(
-      courseSales
-        .groupBy($"year")
+      courseSales.groupBy($"year")
         .pivot("course", Seq("dotNET", "Java"))
         .agg(sum($"earnings"), avg($"earnings")),
       Row(2012, 15000.0, 7500.0, 20000.0, 20000.0) ::
@@ -57,20 +52,16 @@ class DataFramePivotSuite extends QueryTest with SharedSQLContext {
 
   test("pivot year with string values (cast)") {
     checkAnswer(
-      courseSales
-        .groupBy("course")
-        .pivot("year", Seq("2012", "2013"))
-        .sum("earnings"),
+      courseSales.groupBy("course").pivot("year", Seq("2012", "2013")).sum(
+        "earnings"),
       Row("dotNET", 15000.0, 48000.0) :: Row("Java", 20000.0, 30000.0) :: Nil
     )
   }
 
   test("pivot year with int values") {
     checkAnswer(
-      courseSales
-        .groupBy("course")
-        .pivot("year", Seq(2012, 2013))
-        .sum("earnings"),
+      courseSales.groupBy("course").pivot("year", Seq(2012, 2013)).sum(
+        "earnings"),
       Row("dotNET", 15000.0, 48000.0) :: Row("Java", 20000.0, 30000.0) :: Nil
     )
   }
@@ -102,9 +93,7 @@ class DataFramePivotSuite extends QueryTest with SharedSQLContext {
 
   test("pivot with UnresolvedFunction") {
     checkAnswer(
-      courseSales
-        .groupBy("year")
-        .pivot("course", Seq("dotNET", "Java"))
+      courseSales.groupBy("year").pivot("course", Seq("dotNET", "Java"))
         .agg("earnings" -> "sum"),
       Row(2012, 15000.0, 20000.0) :: Row(2013, 48000.0, 30000.0) :: Nil
     )

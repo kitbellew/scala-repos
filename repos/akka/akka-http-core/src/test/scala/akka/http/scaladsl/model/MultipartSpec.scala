@@ -33,14 +33,16 @@ class MultipartSpec
       val streamed = Multipart.General(
         MediaTypes.`multipart/mixed`,
         Source(
-          Multipart.General
-            .BodyPart(defaultEntity("data"), List(ETag("xzy"))) :: Nil))
+          Multipart.General.BodyPart(
+            defaultEntity("data"),
+            List(ETag("xzy"))) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
       strict shouldEqual Multipart.General(
         MediaTypes.`multipart/mixed`,
-        Multipart.General.BodyPart
-          .Strict(HttpEntity("data"), List(ETag("xzy"))))
+        Multipart.General.BodyPart.Strict(
+          HttpEntity("data"),
+          List(ETag("xzy"))))
     }
   }
 

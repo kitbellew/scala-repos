@@ -183,8 +183,8 @@ class TcpListenerSpec extends AkkaSpec("""
           Tcp(system),
           this,
           bindCommander.ref,
-          Bind(handler.ref, endpoint, 100, Nil, pullMode))
-          .withDeploy(Deploy.local),
+          Bind(handler.ref, endpoint, 100, Nil, pullMode)).withDeploy(
+          Deploy.local),
         name = "test-listener-" + counter.next()
       )
       parent.watch(listener)

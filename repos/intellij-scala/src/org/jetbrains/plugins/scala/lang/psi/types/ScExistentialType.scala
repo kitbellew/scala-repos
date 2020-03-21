@@ -147,8 +147,10 @@ case class ScExistentialType(
       case (_, _, newData) =>
         try {
           ScExistentialType(
-            quantified
-              .recursiveVarianceUpdateModifiable(newData, update, variance),
+            quantified.recursiveVarianceUpdateModifiable(
+              newData,
+              update,
+              variance),
             wildcards.map(
               _.recursiveVarianceUpdateModifiable(newData, update, variance)))
         } catch {
@@ -442,8 +444,8 @@ case class ScExistentialType(
             ScExistentialArgument(
               arg.name,
               arg.args.map(arg =>
-                updateRecursive(arg, newSet, -variance)
-                  .asInstanceOf[ScTypeParameterType]),
+                updateRecursive(arg, newSet, -variance).asInstanceOf[
+                  ScTypeParameterType]),
               updateRecursive(arg.lowerBound, newSet, -variance),
               updateRecursive(arg.upperBound, newSet, variance)
             ))
@@ -478,15 +480,15 @@ case class ScExistentialType(
         ScSkolemizedType(
           name,
           args.map(arg =>
-            updateRecursive(arg, rejected, -variance)
-              .asInstanceOf[ScTypeParameterType]),
+            updateRecursive(arg, rejected, -variance).asInstanceOf[
+              ScTypeParameterType]),
           updateRecursive(lower, rejected, -variance),
           updateRecursive(upper, rejected, variance)
         )
       case ScUndefinedType(tpt) =>
         ScUndefinedType(
-          updateRecursive(tpt, rejected, variance)
-            .asInstanceOf[ScTypeParameterType]
+          updateRecursive(tpt, rejected, variance).asInstanceOf[
+            ScTypeParameterType]
         )
       case m @ ScMethodType(returnType, params, isImplicit) =>
         ScMethodType(
@@ -497,8 +499,8 @@ case class ScExistentialType(
           isImplicit)(m.project, m.scope)
       case ScAbstractType(tpt, lower, upper) =>
         ScAbstractType(
-          updateRecursive(tpt, rejected, variance)
-            .asInstanceOf[ScTypeParameterType],
+          updateRecursive(tpt, rejected, variance).asInstanceOf[
+            ScTypeParameterType],
           updateRecursive(lower, rejected, -variance),
           updateRecursive(upper, rejected, variance)
         )
@@ -543,8 +545,9 @@ case class ScExistentialType(
     //first rule
     quantified match {
       case ScExistentialType(_quantified, _wildcards) =>
-        return ScExistentialType(_quantified, _wildcards ++ this.wildcards)
-          .simplify()
+        return ScExistentialType(
+          _quantified,
+          _wildcards ++ this.wildcards).simplify()
       case _ =>
     }
 

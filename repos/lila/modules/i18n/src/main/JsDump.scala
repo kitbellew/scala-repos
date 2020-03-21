@@ -68,26 +68,21 @@ private[i18n] final class JsDump(path: String, pool: I18nPool, keys: I18nKeys) {
   }
 
   private def dumpFromDefault(messages: List[I18nKey], lang: Lang): String =
-    messages
-      .map { key =>
-        """"%s":"%s"""".format(
-          escape(key.to(pool.default)()),
-          escape(key.to(lang)()))
-      }
-      .mkString("{", ",", "}")
+    messages.map { key =>
+      """"%s":"%s"""".format(
+        escape(key.to(pool.default)()),
+        escape(key.to(lang)()))
+    }.mkString("{", ",", "}")
 
   private def dumpFromKey(messages: List[I18nKey], lang: Lang): String =
-    messages
-      .map { key => """"%s":"%s"""".format(key.key, escape(key.to(lang)())) }
-      .mkString("{", ",", "}")
+    messages.map { key =>
+      """"%s":"%s"""".format(key.key, escape(key.to(lang)()))
+    }.mkString("{", ",", "}")
 
   private def writeRefs {
-    val code = pool.names.toList
-      .sortBy(_._1)
-      .map {
-        case (code, name) => s"""["$code","$name"]"""
-      }
-      .mkString("[", ",", "]")
+    val code = pool.names.toList.sortBy(_._1).map {
+      case (code, name) => s"""["$code","$name"]"""
+    }.mkString("[", ",", "]")
     val file = new File("%s/refs.json".format(pathFile.getCanonicalPath))
     val out = new PrintWriter(file)
     try { out.print(code) }

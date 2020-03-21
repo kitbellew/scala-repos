@@ -170,9 +170,8 @@ private[netty4] class ChannelExceptionHandler(
     }
 
     val remoteAddr =
-      Option(ctx.channel.remoteAddress)
-        .map(_.toString)
-        .getOrElse("unknown remote address")
+      Option(ctx.channel.remoteAddress).map(_.toString).getOrElse(
+        "unknown remote address")
     val msg =
       s"Unhandled exception in connection with $remoteAddr, shutting down connection"
 

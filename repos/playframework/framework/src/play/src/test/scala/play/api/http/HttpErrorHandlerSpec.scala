@@ -23,23 +23,27 @@ object HttpErrorHandlerSpec extends Specification {
     def sharedSpecs(errorHandler: HttpErrorHandler) = {
       "render a bad request" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 400)).header.status must_== 400
+          errorHandler.onClientError(
+            FakeRequest(),
+            400)).header.status must_== 400
       }
       "render forbidden" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 403)).header.status must_== 403
+          errorHandler.onClientError(
+            FakeRequest(),
+            403)).header.status must_== 403
       }
       "render not found" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 404)).header.status must_== 404
+          errorHandler.onClientError(
+            FakeRequest(),
+            404)).header.status must_== 404
       }
       "render a generic client error" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 418)).header.status must_== 418
+          errorHandler.onClientError(
+            FakeRequest(),
+            418)).header.status must_== 418
       }
       "refuse to render something that isn't a client error" in {
         await(
@@ -74,14 +78,16 @@ object HttpErrorHandlerSpec extends Specification {
     }
 
     "work with a custom scala handler" in {
-      val result = handler(classOf[CustomScalaErrorHandler].getName, Mode.Prod)
-        .onClientError(FakeRequest(), 400)
+      val result = handler(
+        classOf[CustomScalaErrorHandler].getName,
+        Mode.Prod).onClientError(FakeRequest(), 400)
       await(result).header.status must_== 200
     }
 
     "work with a custom java handler" in {
-      val result = handler(classOf[CustomJavaErrorHandler].getName, Mode.Prod)
-        .onClientError(FakeRequest(), 400)
+      val result = handler(
+        classOf[CustomJavaErrorHandler].getName,
+        Mode.Prod).onClientError(FakeRequest(), 400)
       await(result).header.status must_== 200
     }
 
@@ -91,17 +97,15 @@ object HttpErrorHandlerSpec extends Specification {
     val config =
       Configuration.from(Map("play.http.errorHandler" -> handlerClass))
     val env = Environment.simple(mode = mode)
-    Fakes
-      .injectorFromBindings(
-        HttpErrorHandler.bindingsFromConfiguration(env, config)
-          ++ Seq(
-            BindingKey(classOf[Router]).to(Router.empty),
-            BindingKey(classOf[OptionalSourceMapper]).to(
-              new OptionalSourceMapper(None)),
-            BindingKey(classOf[Configuration]).to(config),
-            BindingKey(classOf[Environment]).to(env)
-          ))
-      .instanceOf[HttpErrorHandler]
+    Fakes.injectorFromBindings(
+      HttpErrorHandler.bindingsFromConfiguration(env, config)
+        ++ Seq(
+          BindingKey(classOf[Router]).to(Router.empty),
+          BindingKey(classOf[OptionalSourceMapper]).to(
+            new OptionalSourceMapper(None)),
+          BindingKey(classOf[Configuration]).to(config),
+          BindingKey(classOf[Environment]).to(env)
+        )).instanceOf[HttpErrorHandler]
   }
 
   class CustomScalaErrorHandler extends HttpErrorHandler {

@@ -88,12 +88,8 @@ class ScForStatementImpl(node: ASTNode)
     if (guards.isEmpty && enums.isEmpty && gens.length == 1) {
       val gen = gens.head
       if (gen.rvalue == null) return None
-      exprText
-        .append("(")
-        .append(gen.rvalue.getText)
-        .append(")")
-        .append(".")
-        .append(if (isYield) "map" else "foreach")
+      exprText.append("(").append(gen.rvalue.getText).append(")").append(
+        ".").append(if (isYield) "map" else "foreach")
         .append(" { case ")
       gen.pattern.desugarizedPatternIndex = exprText.length
       exprText.append(gen.pattern.getText).append(s" $arrow ")
@@ -132,20 +128,17 @@ class ScForStatementImpl(node: ASTNode)
             }
           processor.processType(tp, this)
           if (!filterFound) filterText = "filter"
-          exprText
-            .append(gen.pattern.getText)
-            .append(" <- ((")
-            .append(gen.rvalue.getText)
-            .append(s").$filterText { case ")
-            .append(
-              gen.pattern.bindings.map(b => b.name).mkString("(", ", ", ")"))
-            .append(s" $arrow ")
+          exprText.append(gen.pattern.getText).append(" <- ((").append(
+            gen.rvalue.getText).append(s").$filterText { case ").append(
+            gen.pattern.bindings.map(b => b.name).mkString(
+              "(",
+              ", ",
+              ")")).append(s" $arrow ")
           if (forDisplay) {
             exprText.append(guard.expr.map(_.getText).getOrElse("true"))
           } else {
-            exprText
-              .append(guard.expr.map(_.getText).getOrElse("true"))
-              .append(";true")
+            exprText.append(guard.expr.map(_.getText).getOrElse("true")).append(
+              ";true")
           }
           exprText.append("})")
 
@@ -167,18 +160,12 @@ class ScForStatementImpl(node: ASTNode)
             case _       => exprText append "{}"
           }
         case gen2: ScGenerator =>
-          exprText
-            .append("(")
-            .append(gen.rvalue.getText)
-            .append(")")
-            .append(".")
-            .append(if (isYield) "flatMap " else "foreach ")
-            .append("{ case ")
+          exprText.append("(").append(gen.rvalue.getText).append(")").append(
+            ".").append(if (isYield) "flatMap " else "foreach ").append(
+            "{ case ")
           gen.pattern.desugarizedPatternIndex = exprText.length
-          exprText
-            .append(gen.pattern.getText)
-            .append(s" $arrow ")
-            .append("for {")
+          exprText.append(gen.pattern.getText).append(s" $arrow ").append(
+            "for {")
           while (next != null) {
             next match {
               case gen: ScGenerator =>
@@ -207,24 +194,12 @@ class ScForStatementImpl(node: ASTNode)
             ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2")
           }
 
-          exprText
-            .append(") <- (for (")
-            .append(freshName1)
-            .append("@(")
-            .append(gen.pattern.getText)
-            .append(") <- ")
-            .append(gen.rvalue.getText)
-            .append(") yield {val ")
-            .append(freshName2)
-            .append("@(")
-            .append(enum.pattern.getText)
-            .append(") = ")
-            .append(enum.rvalue.getText)
-            .append("; (")
-            .append(freshName2)
-            .append(", ")
-            .append(freshName1)
-            .append(")})")
+          exprText.append(") <- (for (").append(freshName1).append("@(").append(
+            gen.pattern.getText).append(") <- ").append(
+            gen.rvalue.getText).append(") yield {val ").append(
+            freshName2).append("@(").append(enum.pattern.getText).append(
+            ") = ").append(enum.rvalue.getText).append("; (").append(
+            freshName2).append(", ").append(freshName1).append(")})")
           next = nextEnumerator(next)
           if (next != null) exprText.append(" ; ")
           while (next != null) {
@@ -255,8 +230,11 @@ class ScForStatementImpl(node: ASTNode)
         if (text == "") None
         else {
           try {
-            Option(ScalaPsiElementFactory
-              .createExpressionWithContextFromText(text, this.getContext, this))
+            Option(
+              ScalaPsiElementFactory.createExpressionWithContextFromText(
+                text,
+                this.getContext,
+                this))
           } catch {
             case e: Throwable => None
           }
@@ -268,26 +246,24 @@ class ScForStatementImpl(node: ASTNode)
 
     res match {
       case Some(expr: ScExpression) =>
-        enumerators
-          .map(e => e.generators.map(g => g.pattern))
-          .foreach(patts =>
-            patts.foreach(patt => {
-              if (patt != null && patt.desugarizedPatternIndex != -1) {
-                var element = expr.findElementAt(patt.desugarizedPatternIndex)
-                while (element != null && (element.getTextLength < patt.getTextLength ||
-                       (!element.isInstanceOf[
-                         ScPattern] && element.getTextLength == patt.getTextLength)))
-                  element = element.getParent
-                if (element != null && element.getText == patt.getText) {
-                  element match {
-                    case p: ScPattern =>
-                      analogMap.put(p, patt)
-                      patt.analog = p
-                    case _ =>
-                  }
+        enumerators.map(e => e.generators.map(g => g.pattern)).foreach(patts =>
+          patts.foreach(patt => {
+            if (patt != null && patt.desugarizedPatternIndex != -1) {
+              var element = expr.findElementAt(patt.desugarizedPatternIndex)
+              while (element != null && (element.getTextLength < patt.getTextLength ||
+                     (!element.isInstanceOf[
+                       ScPattern] && element.getTextLength == patt.getTextLength)))
+                element = element.getParent
+              if (element != null && element.getText == patt.getText) {
+                element match {
+                  case p: ScPattern =>
+                    analogMap.put(p, patt)
+                    patt.analog = p
+                  case _ =>
                 }
               }
-            }))
+            }
+          }))
       case _ =>
     }
 

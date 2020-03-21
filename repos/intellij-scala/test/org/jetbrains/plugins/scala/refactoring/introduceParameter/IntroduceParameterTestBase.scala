@@ -105,10 +105,10 @@ abstract class IntroduceParameterTestBase
               val (methodLike: ScMethodLike, returnType) =
                 if (toPrimaryConstructor)
                   (
-                    PsiTreeUtil
-                      .getContextOfType(elems.head, true, classOf[ScClass])
-                      .constructor
-                      .get,
+                    PsiTreeUtil.getContextOfType(
+                      elems.head,
+                      true,
+                      classOf[ScClass]).constructor.get,
                     StdType.ANY)
                 else {
                   val fun = PsiTreeUtil.getContextOfType(
@@ -122,8 +122,9 @@ abstract class IntroduceParameterTestBase
               assert(
                 collectedData.isDefined,
                 "Could not collect data for introduce parameter")
-              val data = collectedData.get
-                .copy(paramName = paramName, replaceAll = replaceAllOccurrences)
+              val data = collectedData.get.copy(
+                paramName = paramName,
+                replaceAll = replaceAllOccurrences)
 
               val paramInfo = new ScalaParameterInfo(
                 data.paramName,
@@ -134,8 +135,10 @@ abstract class IntroduceParameterTestBase
                 false,
                 data.defaultArg,
                 isIntroducedParameter = true)
-              val descriptor: ScalaMethodDescriptor = handler
-                .createMethodDescriptor(data.methodToSearchFor, paramInfo)
+              val descriptor: ScalaMethodDescriptor =
+                handler.createMethodDescriptor(
+                  data.methodToSearchFor,
+                  paramInfo)
               val changeInfo = new ScalaChangeInfo(
                 descriptor.getVisibility,
                 data.methodToSearchFor,

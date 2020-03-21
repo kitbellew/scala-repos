@@ -40,8 +40,9 @@ abstract class RehighlightingPerformanceTypingTestBase
 
       override def tearDown(): Unit = ()
     }
-    myCodeInsightTestFixture = IdeaTestFixtureFactory.getFixtureFactory
-      .createCodeInsightFixture(fakeFixture)
+    myCodeInsightTestFixture =
+      IdeaTestFixtureFactory.getFixtureFactory.createCodeInsightFixture(
+        fakeFixture)
     myCodeInsightTestFixture.setUp()
 
     libLoader = ScalaLibraryLoader.withMockJdk(
@@ -66,40 +67,35 @@ abstract class RehighlightingPerformanceTypingTestBase
       pos: LogicalPosition,
       typeInSetup: Option[String]): Unit = {
     val file = findFile(filename)
-    val fileManager: FileManager = PsiManager
-      .getInstance(myProject)
-      .asInstanceOf[PsiManagerEx]
-      .getFileManager
+    val fileManager: FileManager = PsiManager.getInstance(
+      myProject).asInstanceOf[PsiManagerEx].getFileManager
 
     myCodeInsightTestFixture.openFileInEditor(file)
     val editor = myCodeInsightTestFixture.getEditor
     val initialText = editor.getDocument.getText
-    PlatformTestUtil
-      .startPerformanceTest(
-        s"Performance test $filename",
-        timeoutInMillis,
-        new ThrowableRunnable[Nothing] {
-          override def run(): Unit = {
-            stringsToType.foreach { s =>
-              myCodeInsightTestFixture.`type`(s)
-              myCodeInsightTestFixture.doHighlighting()
-            }
-            fileManager.cleanupForNextTest()
-          }
-        }
-      )
-      .setup(new ThrowableRunnable[Nothing] {
+    PlatformTestUtil.startPerformanceTest(
+      s"Performance test $filename",
+      timeoutInMillis,
+      new ThrowableRunnable[Nothing] {
         override def run(): Unit = {
-          //file.refresh(false, false)
-          inWriteCommandAction(myProject) {
-            editor.getDocument.setText(initialText)
+          stringsToType.foreach { s =>
+            myCodeInsightTestFixture.`type`(s)
+            myCodeInsightTestFixture.doHighlighting()
           }
-          editor.getCaretModel.moveToLogicalPosition(pos)
-          typeInSetup.foreach(myCodeInsightTestFixture.`type`)
-          myCodeInsightTestFixture.doHighlighting()
+          fileManager.cleanupForNextTest()
         }
-      })
-      .assertTiming()
+      }
+    ).setup(new ThrowableRunnable[Nothing] {
+      override def run(): Unit = {
+        //file.refresh(false, false)
+        inWriteCommandAction(myProject) {
+          editor.getDocument.setText(initialText)
+        }
+        editor.getCaretModel.moveToLogicalPosition(pos)
+        typeInSetup.foreach(myCodeInsightTestFixture.`type`)
+        myCodeInsightTestFixture.doHighlighting()
+      }
+    }).assertTiming()
     inWriteCommandAction(myProject) {
       editor.getDocument.setText(initialText)
     }

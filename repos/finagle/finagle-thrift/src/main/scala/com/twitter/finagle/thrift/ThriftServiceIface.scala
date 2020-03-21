@@ -102,9 +102,8 @@ case class ThriftMethodStats(
   * Service interfaces can be modified and composed with Finagle [[Filter Filters]].
   */
 object ThriftServiceIface {
-  private val resetCounter = ClientStatsReceiver
-    .scope("thrift_service_iface")
-    .counter("reusable_buffer_resets")
+  private val resetCounter = ClientStatsReceiver.scope(
+    "thrift_service_iface").counter("reusable_buffer_resets")
 
   /**
     * Build a Service from a given Thrift method.
@@ -142,9 +141,8 @@ object ThriftServiceIface {
           } else {
             result.firstException.map { ex =>
               methodStats.failuresCounter.incr()
-              methodStats.failuresScope
-                .counter(Throwables.mkString(ex): _*)
-                .incr()
+              methodStats.failuresScope.counter(
+                Throwables.mkString(ex): _*).incr()
             }
           }
         }

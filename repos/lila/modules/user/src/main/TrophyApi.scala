@@ -25,8 +25,6 @@ final class TrophyApi(coll: lila.db.Types.Coll) {
     award(userId, Trophy.Kind.MarathonWinner)
 
   def findByUser(user: User, max: Int = 12): Fu[List[Trophy]] =
-    coll
-      .find(BSONDocument("user" -> user.id))
-      .cursor[Trophy]()
-      .collect[List](max)
+    coll.find(BSONDocument("user" -> user.id)).cursor[Trophy]().collect[List](
+      max)
 }

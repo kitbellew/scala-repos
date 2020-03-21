@@ -20,11 +20,8 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   }
 
   def randomLongValues(num: Int): List[Long] = {
-    Stream
-      .continually(Random.nextLong)
-      .filter(_.toHexString.length > 8)
-      .take(num)
-      .toList
+    Stream.continually(Random.nextLong).filter(_.toHexString.length > 8).take(
+      num).toList
   }
 
   // how should I bound T to Int and Long only?
@@ -54,19 +51,14 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   val numOfGenInteger = 10
 
   def testFine() {
-    val intStrings = (intValues ++ randomIntValues(numOfGenInteger))
-      .flatMap(expandIntegerLiteral)
-      .flatMap(prependSign)
-      .distinct
+    val intStrings = (intValues ++ randomIntValues(numOfGenInteger)).flatMap(
+      expandIntegerLiteral).flatMap(prependSign).distinct
     for (s <- intStrings) {
       assertNothing(messages(s"val a = $s"))
     }
     val longStrings = (intStrings flatMap appendL) ++
-      (longValues ++ randomLongValues(numOfGenInteger))
-        .flatMap(expandIntegerLiteral)
-        .flatMap(prependSign)
-        .flatMap(appendL)
-        .distinct
+      (longValues ++ randomLongValues(numOfGenInteger)).flatMap(
+        expandIntegerLiteral).flatMap(prependSign).flatMap(appendL).distinct
     for (s <- longStrings) {
       assertNothing(messages(s"val a = $s"))
     }

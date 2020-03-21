@@ -229,9 +229,10 @@ class Function(val i: Int) extends Group("Function") with Arity {
   // (x1: T1) => (x2: T2) => (x3: T3) => (x4: T4) => apply(x1,x2,x3,x4)
   def shortCurry = {
     val body = "apply" + commaXs
-    (xdefs, targs).zipped
-      .map("(%s: %s) => ".format(_, _))
-      .mkString("", "", body)
+    (xdefs, targs).zipped.map("(%s: %s) => ".format(_, _)).mkString(
+      "",
+      "",
+      body)
   }
 
   // (x1: T1) => ((x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7) => self.apply(x1,x2,x3,x4,x5,x6,x7)).curried
@@ -260,19 +261,20 @@ class Function(val i: Int) extends Group("Function") with Arity {
 """.format(i, i, commaXs, i, commaXs, commaXs)
     def body = "case Tuple%d%s => apply%s".format(i, commaXs, commaXs)
 
-    comment + "\n  @annotation.unspecialized def tupled: Tuple%d%s => R = {\n    %s\n  }"
-      .format(i, invariantArgs, body)
+    comment + "\n  @annotation.unspecialized def tupled: Tuple%d%s => R = {\n    %s\n  }".format(
+      i,
+      invariantArgs,
+      body)
   }
 
   def curryMethod = {
     val body = if (i < 5) shortCurry else longCurry
 
     curryComment +
-      "\n  @annotation.unspecialized def curried: %s => R = {\n    %s\n  }\n"
-        .format(
-          targs mkString " => ",
-          body
-        )
+      "\n  @annotation.unspecialized def curried: %s => R = {\n    %s\n  }\n".format(
+        targs mkString " => ",
+        body
+      )
   }
 
   override def moreMethods = curryMethod + tupleMethod
@@ -404,12 +406,9 @@ class Product(val i: Int) extends Group("Product") with Arity {
     "\n" + ((xs ::: List(default)) map ("    " + _ + "\n") mkString)
   }
   def proj = {
-    (mdefs, targs).zipped
-      .map((_, _))
-      .zipWithIndex
-      .map {
-        case ((method, typeName), index) =>
-          """|  /** A projection of element %d of this Product.
+    (mdefs, targs).zipped.map((_, _)).zipWithIndex.map {
+      case ((method, typeName), index) =>
+        """|  /** A projection of element %d of this Product.
          |   *  @return   A projection of element %d.
          |   */
          |  def %s: %s

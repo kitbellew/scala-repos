@@ -16,7 +16,8 @@ object $primitive {
       hint: BSONDocument = BSONDocument())(
       extract: JsValue => Option[B]): Fu[List[B]] =
     modifier {
-      implicitly[InColl[A]].coll.genericQueryBuilder
+      implicitly[InColl[A]].coll
+        .genericQueryBuilder
         .query(query)
         .hint(hint)
         .projection(Json.obj(field -> true))
@@ -30,7 +31,8 @@ object $primitive {
       modifier: QueryBuilder => QueryBuilder = identity)(
       extract: JsValue => Option[B]): Fu[Option[B]] =
     modifier {
-      implicitly[InColl[A]].coll.genericQueryBuilder
+      implicitly[InColl[A]].coll
+        .genericQueryBuilder
         .query(query)
         .projection(Json.obj(field -> true))
     }.one[BSONDocument] map2 { (obj: BSONDocument) =>

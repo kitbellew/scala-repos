@@ -161,11 +161,9 @@ class ALSSuite
       .merge(builder0.build())
     assert(builder1.size === 3)
     val block = builder1.build()
-    val ratings = Seq
-      .tabulate(block.size) { i =>
-        (block.srcIds(i), block.dstIds(i), block.ratings(i))
-      }
-      .toSet
+    val ratings = Seq.tabulate(block.size) { i =>
+      (block.srcIds(i), block.dstIds(i), block.ratings(i))
+    }.toSet
     assert(ratings === Set((0, 1, 2.0f), (3, 4, 5.0f), (6, 7, 8.0f)))
   }
 
@@ -176,18 +174,16 @@ class ALSSuite
       .add(1, Array(3, 0), Array(2, 5), Array(4.0f, 5.0f))
       .build()
     assert(uncompressed.length === 5)
-    val records = Seq
-      .tabulate(uncompressed.length) { i =>
-        val dstEncodedIndex = uncompressed.dstEncodedIndices(i)
-        val dstBlockId = encoder.blockId(dstEncodedIndex)
-        val dstLocalIndex = encoder.localIndex(dstEncodedIndex)
-        (
-          uncompressed.srcIds(i),
-          dstBlockId,
-          dstLocalIndex,
-          uncompressed.ratings(i))
-      }
-      .toSet
+    val records = Seq.tabulate(uncompressed.length) { i =>
+      val dstEncodedIndex = uncompressed.dstEncodedIndices(i)
+      val dstBlockId = encoder.blockId(dstEncodedIndex)
+      val dstLocalIndex = encoder.localIndex(dstEncodedIndex)
+      (
+        uncompressed.srcIds(i),
+        dstBlockId,
+        dstLocalIndex,
+        uncompressed.ratings(i))
+    }.toSet
     val expected =
       Set(
         (1, 0, 0, 1.0f),
@@ -383,28 +379,24 @@ class ALSSuite
         // TODO: Use a better (rank-based?) evaluation metric for implicit feedback.
         // We limit the ratings and the predictions to interval [0, 1] and compute the weighted RMSE
         // with the confidence scores as weights.
-        val (totalWeight, weightedSumSq) = predictions
-          .map {
-            case (rating, prediction) =>
-              val confidence = 1.0 + alpha * math.abs(rating)
-              val rating01 = math.max(math.min(rating, 1.0), 0.0)
-              val prediction01 = math.max(math.min(prediction, 1.0), 0.0)
-              val err = prediction01 - rating01
-              (confidence, confidence * err * err)
-          }
-          .reduce {
-            case ((c0, e0), (c1, e1)) =>
-              (c0 + c1, e0 + e1)
-          }
+        val (totalWeight, weightedSumSq) = predictions.map {
+          case (rating, prediction) =>
+            val confidence = 1.0 + alpha * math.abs(rating)
+            val rating01 = math.max(math.min(rating, 1.0), 0.0)
+            val prediction01 = math.max(math.min(prediction, 1.0), 0.0)
+            val err = prediction01 - rating01
+            (confidence, confidence * err * err)
+        }.reduce {
+          case ((c0, e0), (c1, e1)) =>
+            (c0 + c1, e0 + e1)
+        }
         math.sqrt(weightedSumSq / totalWeight)
       } else {
-        val mse = predictions
-          .map {
-            case (rating, prediction) =>
-              val err = rating - prediction
-              err * err
-          }
-          .mean()
+        val mse = predictions.map {
+          case (rating, prediction) =>
+            val err = rating - prediction
+            err * err
+        }.mean()
         math.sqrt(mse)
       }
     logInfo(s"Test RMSE is $rmse.")
@@ -600,18 +592,16 @@ class ALSSuite
         userFactors.partitioner.isDefined,
         s"$tpe factors should have partitioner.")
       val part = userFactors.partitioner.get
-      userFactors
-        .mapPartitionsWithIndex { (idx, items) =>
-          items.foreach {
-            case (id, _) =>
-              if (part.getPartition(id) != idx) {
-                throw new SparkException(
-                  s"$tpe with ID $id should not be in partition $idx.")
-              }
-          }
-          Iterator.empty
+      userFactors.mapPartitionsWithIndex { (idx, items) =>
+        items.foreach {
+          case (id, _) =>
+            if (part.getPartition(id) != idx) {
+              throw new SparkException(
+                s"$tpe with ID $id should not be in partition $idx.")
+            }
         }
-        .count()
+        Iterator.empty
+      }.count()
     }
   }
 
@@ -663,13 +653,10 @@ class ALSSuite
     }
     assert(model.rank === model2.rank)
     def getFactors(df: DataFrame): Set[(Int, Array[Float])] = {
-      df.select("id", "features")
-        .collect()
-        .map {
-          case r =>
-            (r.getInt(0), r.getAs[Array[Float]](1))
-        }
-        .toSet
+      df.select("id", "features").collect().map {
+        case r =>
+          (r.getInt(0), r.getAs[Array[Float]](1))
+      }.toSet
     }
     assert(getFactors(model.userFactors) === getFactors(model2.userFactors))
     assert(getFactors(model.itemFactors) === getFactors(model2.itemFactors))

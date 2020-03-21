@@ -70,10 +70,8 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
     val key2 = 3
     val name =
       s"twcache!localhost:${address1.getPort}:1:$key1,localhost:${address2.getPort}:1:$key2"
-    val client = KetamaClientBuilder()
-      .dest(name)
-      .build()
-      .asInstanceOf[KetamaPartitionedClient]
+    val client = KetamaClientBuilder().dest(name).build().asInstanceOf[
+      KetamaPartitionedClient]
 
     assert(client.ketamaNodeGrp().size == 2)
     assert(
@@ -105,8 +103,10 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
 
   test("using custom keys doesn't blow up") {
     val client = KetamaClientBuilder()
-      .nodes("localhost:%d:1:key1,localhost:%d:1:key2"
-        .format(address1.getPort, address2.getPort))
+      .nodes(
+        "localhost:%d:1:key1,localhost:%d:1:key2".format(
+          address1.getPort,
+          address2.getPort))
       .build()
 
     Await.result(client.delete("foo"))

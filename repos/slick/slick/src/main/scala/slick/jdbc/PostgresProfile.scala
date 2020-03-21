@@ -73,28 +73,24 @@ trait PostgresProfile extends JdbcProfile {
         val VarCharPattern = "^'(.*)'::character varying$".r
         val IntPattern = "^\\((-?[0-9]*)\\)$".r
         override def default =
-          meta.columnDef
-            .map((_, tpe))
-            .collect {
-              case ("true", "Boolean")                   => Some(Some(true))
-              case ("false", "Boolean")                  => Some(Some(false))
-              case (VarCharPattern(str), "String")       => Some(Some(str))
-              case (IntPattern(v), "Int")                => Some(Some(v.toInt))
-              case (IntPattern(v), "Long")               => Some(Some(v.toLong))
-              case ("NULL::character varying", "String") => Some(None)
-              case (v, "java.util.UUID") => {
-                val uuid = v
-                  .replaceAll("[\'\"]", "") //strip quotes
-                  .stripSuffix("::uuid") //strip suffix
-                Some(Some(java.util.UUID.fromString(uuid)))
-              }
+          meta.columnDef.map((_, tpe)).collect {
+            case ("true", "Boolean")                   => Some(Some(true))
+            case ("false", "Boolean")                  => Some(Some(false))
+            case (VarCharPattern(str), "String")       => Some(Some(str))
+            case (IntPattern(v), "Int")                => Some(Some(v.toInt))
+            case (IntPattern(v), "Long")               => Some(Some(v.toLong))
+            case ("NULL::character varying", "String") => Some(None)
+            case (v, "java.util.UUID") => {
+              val uuid = v.replaceAll("[\'\"]", "") //strip quotes
+                .stripSuffix("::uuid") //strip suffix
+              Some(Some(java.util.UUID.fromString(uuid)))
             }
-            .getOrElse {
-              val d = super.default
-              if (meta.nullable == Some(true) && d == None) {
-                Some(None)
-              } else d
-            }
+          }.getOrElse {
+            val d = super.default
+            if (meta.nullable == Some(true) && d == None) {
+              Some(None)
+            } else d
+          }
         override def length: Option[Int] = {
           val l = super.length
           if (tpe == "String" && varying && l == Some(2147483647)) None
@@ -178,12 +174,12 @@ trait PostgresProfile extends JdbcProfile {
               case _                 => false
             }
           if (eligible(onNodes) && eligible(selNodes) &&
-              onNodes.iterator
-                .collect[List[TermSymbol]] { case FwdPath(ss) => ss }
-                .toSet ==
-                selNodes.iterator
-                  .collect[List[TermSymbol]] { case FwdPath(ss) => ss }
-                  .toSet) b"distinct "
+              onNodes.iterator.collect[List[TermSymbol]] {
+                case FwdPath(ss) => ss
+              }.toSet ==
+                selNodes.iterator.collect[List[TermSymbol]] {
+                  case FwdPath(ss) => ss
+                }.toSet) b"distinct "
           else super.buildSelectModifiers(c)
         case _ => super.buildSelectModifiers(c)
       }
@@ -213,9 +209,9 @@ trait PostgresProfile extends JdbcProfile {
 
   class UpsertBuilder(ins: Insert) extends super.UpsertBuilder(ins) {
     override def buildInsert: InsertBuilderResult = {
-      val update = "update " + tableName + " set " + softNames
-        .map(n => s"$n=?")
-        .mkString(",") + " where " + pkNames.map(n => s"$n=?").mkString(" and ")
+      val update =
+        "update " + tableName + " set " + softNames.map(n => s"$n=?").mkString(
+          ",") + " where " + pkNames.map(n => s"$n=?").mkString(" and ")
       val nonAutoIncNames =
         nonAutoIncSyms.map(fs => quoteIdentifier(fs.name)).mkString(",")
       val nonAutoIncVars = nonAutoIncSyms.map(_ => "?").mkString(",")

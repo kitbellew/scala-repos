@@ -104,8 +104,11 @@ private[play] class GlobalSettingsHttpErrorHandler @Inject() (
       case NOT_FOUND => global.get.onHandlerNotFound(request)
       case clientError if statusCode >= 400 && statusCode < 500 =>
         Future.successful(
-          Results.Status(clientError)(views.html.defaultpages
-            .badRequest(request.method, request.uri, message)))
+          Results.Status(clientError)(
+            views.html.defaultpages.badRequest(
+              request.method,
+              request.uri,
+              message)))
       case nonClientError =>
         throw new IllegalArgumentException(
           s"onClientError invoked with non client error status code $statusCode: $message")
@@ -281,8 +284,10 @@ class DefaultHttpErrorHandler(
       """
                     |
                     |! @%s - Internal server error, for (%s) [%s] ->
-                    | """.stripMargin
-        .format(usefulException.id, request.method, request.uri),
+                    | """.stripMargin.format(
+        usefulException.id,
+        request.method,
+        request.uri),
       usefulException
     )
   }
@@ -370,8 +375,8 @@ object DefaultHttpErrorHandler
 object LazyHttpErrorHandler extends HttpErrorHandler {
 
   private def errorHandler =
-    Play.privateMaybeApplication
-      .fold[HttpErrorHandler](DefaultHttpErrorHandler)(_.errorHandler)
+    Play.privateMaybeApplication.fold[HttpErrorHandler](
+      DefaultHttpErrorHandler)(_.errorHandler)
 
   def onClientError(request: RequestHeader, statusCode: Int, message: String) =
     errorHandler.onClientError(request, statusCode, message)
@@ -394,13 +399,13 @@ private[play] class JavaHttpErrorHandlerDelegate @Inject() (
       statusCode: Int,
       message: String) =
     FutureConverters.toJava(
-      delegate
-        .onClientError(request._underlyingHeader(), statusCode, message)
-        .map(_.asJava))
+      delegate.onClientError(
+        request._underlyingHeader(),
+        statusCode,
+        message).map(_.asJava))
 
   def onServerError(request: Http.RequestHeader, exception: Throwable) =
     FutureConverters.toJava(
-      delegate
-        .onServerError(request._underlyingHeader(), exception)
-        .map(_.asJava))
+      delegate.onServerError(request._underlyingHeader(), exception).map(
+        _.asJava))
 }

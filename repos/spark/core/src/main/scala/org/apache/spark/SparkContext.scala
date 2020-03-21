@@ -452,24 +452,17 @@ class SparkContext(config: SparkConf)
 
     _conf.set("spark.executor.id", SparkContext.DRIVER_IDENTIFIER)
 
-    _jars = _conf
-      .getOption("spark.jars")
-      .map(_.split(","))
-      .map(_.filter(_.nonEmpty))
-      .toSeq
-      .flatten
-    _files = _conf
-      .getOption("spark.files")
-      .map(_.split(","))
-      .map(_.filter(_.nonEmpty))
-      .toSeq
-      .flatten
+    _jars = _conf.getOption("spark.jars").map(_.split(",")).map(
+      _.filter(_.nonEmpty)).toSeq.flatten
+    _files =
+      _conf.getOption("spark.files").map(_.split(",")).map(_.filter(_.nonEmpty))
+        .toSeq.flatten
 
     _eventLogDir =
       if (isEventLogEnabled) {
-        val unresolvedDir = conf
-          .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
-          .stripSuffix("/")
+        val unresolvedDir =
+          conf.get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
+            .stripSuffix("/")
         Some(Utils.resolveURI(unresolvedDir))
       } else {
         None
@@ -478,8 +471,8 @@ class SparkContext(config: SparkConf)
     _eventLogCodec = {
       val compress = _conf.getBoolean("spark.eventLog.compress", false)
       if (compress && isEventLogEnabled) {
-        Some(CompressionCodec.getCodecName(_conf))
-          .map(CompressionCodec.getShortName)
+        Some(CompressionCodec.getCodecName(_conf)).map(
+          CompressionCodec.getShortName)
       } else {
         None
       }
@@ -545,8 +538,7 @@ class SparkContext(config: SparkConf)
       files.foreach(addFile)
     }
 
-    _executorMemory = _conf
-      .getOption("spark.executor.memory")
+    _executorMemory = _conf.getOption("spark.executor.memory")
       .orElse(Option(System.getenv("SPARK_EXECUTOR_MEMORY")))
       .orElse(Option(System.getenv("SPARK_MEM"))
         .map(warnSparkMem))
@@ -557,8 +549,8 @@ class SparkContext(config: SparkConf)
     // since we can't set env vars directly in sbt.
     for {
       (envKey, propKey) <- Seq(("SPARK_TESTING", "spark.testing"))
-      value <- Option(System.getenv(envKey))
-        .orElse(Option(System.getProperty(propKey)))
+      value <- Option(System.getenv(envKey)).orElse(
+        Option(System.getProperty(propKey)))
     } {
       executorEnvs(envKey) = value
     }
@@ -959,9 +951,8 @@ class SparkContext(config: SparkConf)
         classOf[Text],
         classOf[Text],
         updateConf,
-        minPartitions)
-        .map(record => (record._1.toString, record._2.toString))
-        .setName(path)
+        minPartitions).map(record =>
+        (record._1.toString, record._2.toString)).setName(path)
     }
 
   /**
@@ -1937,8 +1928,8 @@ class SparkContext(config: SparkConf)
   private[spark] def getCallSite(): CallSite = {
     val callSite = Utils.getCallSite()
     CallSite(
-      Option(getLocalProperty(CallSite.SHORT_FORM))
-        .getOrElse(callSite.shortForm),
+      Option(getLocalProperty(CallSite.SHORT_FORM)).getOrElse(
+        callSite.shortForm),
       Option(getLocalProperty(CallSite.LONG_FORM)).getOrElse(callSite.longForm)
     )
   }
@@ -2210,17 +2201,14 @@ class SparkContext(config: SparkConf)
     // Use reflection to instantiate listeners specified via `spark.extraListeners`
     try {
       val listenerClassNames: Seq[String] =
-        conf
-          .get("spark.extraListeners", "")
-          .split(',')
-          .map(_.trim)
-          .filter(_ != "")
+        conf.get("spark.extraListeners", "").split(',').map(_.trim).filter(
+          _ != "")
       for (className <- listenerClassNames) {
         // Use reflection to find the right constructor
         val constructors = {
           val listenerClass = Utils.classForName(className)
-          listenerClass.getConstructors
-            .asInstanceOf[Array[Constructor[_ <: SparkListener]]]
+          listenerClass.getConstructors.asInstanceOf[Array[
+            Constructor[_ <: SparkListener]]]
         }
         val constructorTakingSparkConf = constructors.find { c =>
           c.getParameterTypes.sameElements(Array(classOf[SparkConf]))
@@ -2346,9 +2334,8 @@ object SparkContext extends Logging {
           // Since otherContext might point to a partially-constructed context, guard against
           // its creationSite field being null:
           val otherContextCreationSite =
-            Option(otherContext.creationSite)
-              .map(_.longForm)
-              .getOrElse("unknown location")
+            Option(otherContext.creationSite).map(_.longForm).getOrElse(
+              "unknown location")
           val warnMsg = "Another SparkContext is being constructed (or threw an exception in its" +
             " constructor).  This may indicate an error, since only one SparkContext may be" +
             " running in this JVM (see SPARK-2243)." +
@@ -2608,8 +2595,9 @@ object SparkContext extends Logging {
         val memoryPerSlaveInt = memoryPerSlave.toInt
         if (sc.executorMemory > memoryPerSlaveInt) {
           throw new SparkException(
-            "Asked to launch cluster with %d MB RAM / worker but requested %d MB/worker"
-              .format(memoryPerSlaveInt, sc.executorMemory))
+            "Asked to launch cluster with %d MB RAM / worker but requested %d MB/worker".format(
+              memoryPerSlaveInt,
+              sc.executorMemory))
         }
 
         val scheduler = new TaskSchedulerImpl(sc)
@@ -2648,9 +2636,8 @@ object SparkContext extends Logging {
             val cons = clazz.getConstructor(
               classOf[TaskSchedulerImpl],
               classOf[SparkContext])
-            cons
-              .newInstance(scheduler, sc)
-              .asInstanceOf[CoarseGrainedSchedulerBackend]
+            cons.newInstance(scheduler, sc).asInstanceOf[
+              CoarseGrainedSchedulerBackend]
           } catch {
             case e: Exception => {
               throw new SparkException("YARN mode not available ?", e)
@@ -2681,9 +2668,8 @@ object SparkContext extends Logging {
             val cons = clazz.getConstructor(
               classOf[TaskSchedulerImpl],
               classOf[SparkContext])
-            cons
-              .newInstance(scheduler, sc)
-              .asInstanceOf[CoarseGrainedSchedulerBackend]
+            cons.newInstance(scheduler, sc).asInstanceOf[
+              CoarseGrainedSchedulerBackend]
           } catch {
             case e: Exception => {
               throw new SparkException("YARN mode not available ?", e)

@@ -140,8 +140,10 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
     } catch {
       case ex: syntaxAnalyzer.MalformedInput =>
         println(
-          "[%s] caught malformed input exception at offset %d: %s"
-            .format(src, ex.offset, ex.msg))
+          "[%s] caught malformed input exception at offset %d: %s".format(
+            src,
+            ex.offset,
+            ex.msg))
         super.enterToplevelsFromSource(root, name, src)
     }
   }

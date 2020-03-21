@@ -91,8 +91,7 @@ trait AssetsSpec
 
     "serve a gzipped asset" in withServer { client =>
       val result = await(
-        client
-          .url("/foo.txt")
+        client.url("/foo.txt")
           .withHeaders(ACCEPT_ENCODING -> "gzip")
           .get())
 
@@ -110,8 +109,7 @@ trait AssetsSpec
     "return not modified when etag matches" in withServer { client =>
       val Some(etag) = await(client.url("/foo.txt").get()).header(ETAG)
       val result = await(
-        client
-          .url("/foo.txt")
+        client.url("/foo.txt")
           .withHeaders(IF_NONE_MATCH -> etag)
           get ())
 
@@ -126,8 +124,7 @@ trait AssetsSpec
       client =>
         val Some(etag) = await(client.url("/foo.txt").get()).header(ETAG)
         val result = await(
-          client
-            .url("/foo.txt")
+          client.url("/foo.txt")
             .withHeaders(IF_NONE_MATCH -> ("\"foo\", " + etag + ", \"bar\""))
             .get())
 
@@ -137,8 +134,7 @@ trait AssetsSpec
 
     "return asset when etag doesn't match" in withServer { client =>
       val result = await(
-        client
-          .url("/foo.txt")
+        client.url("/foo.txt")
           .withHeaders(IF_NONE_MATCH -> "\"foobar\"")
           .get())
 
@@ -150,8 +146,7 @@ trait AssetsSpec
       val Some(timestamp) =
         await(client.url("/foo.txt").get()).header(LAST_MODIFIED)
       val result = await(
-        client
-          .url("/foo.txt")
+        client.url("/foo.txt")
           .withHeaders(IF_MODIFIED_SINCE -> timestamp)
           .get())
 
@@ -166,8 +161,7 @@ trait AssetsSpec
 
     "return asset when modified since" in withServer { client =>
       val result = await(
-        client
-          .url("/foo.txt")
+        client.url("/foo.txt")
           .withHeaders(IF_MODIFIED_SINCE -> "Tue, 13 Mar 2012 13:08:36 GMT")
           .get())
 
@@ -178,13 +172,11 @@ trait AssetsSpec
     "ignore if modified since header if if none match header is set" in withServer {
       client =>
         val result = await(
-          client
-            .url("/foo.txt")
+          client.url("/foo.txt")
             .withHeaders(
               IF_NONE_MATCH -> "\"foobar\"",
               IF_MODIFIED_SINCE -> "Wed, 01 Jan 2113 00:00:00 GMT" // might break in 100 years, but I won't be alive, so :P
-            )
-            .get())
+            ).get())
 
         result.status must_== OK
         result.body must_== "This is a test asset."
@@ -193,8 +185,7 @@ trait AssetsSpec
     "return the asset if the if modified since header can't be parsed" in withServer {
       client =>
         val result = await(
-          client
-            .url("/foo.txt")
+          client.url("/foo.txt")
             .withHeaders(IF_MODIFIED_SINCE -> "Not a date")
             .get())
 
@@ -218,9 +209,8 @@ trait AssetsSpec
 
     "serve a versioned asset" in withServer { client =>
       val result = await(
-        client
-          .url("/versioned/sub/12345678901234567890123456789012-foo.txt")
-          .get())
+        client.url(
+          "/versioned/sub/12345678901234567890123456789012-foo.txt").get())
 
       result.status must_== OK
       result.body must_== "This is a test asset."

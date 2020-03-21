@@ -90,16 +90,13 @@ class ImmutableLRU[K, V] private (
     * Else, returns None and the unmodified cache.
     */
   def remove(k: K): (Option[V], ImmutableLRU[K, V]) =
-    map
-      .get(k)
-      .map {
-        case (kidx, v) =>
-          val newMap = map - k
-          val newOrd = ord - kidx
-          // Note we don't increase the idx on a remove, only on put:
-          (Some(v), new ImmutableLRU[K, V](maxSize, idx, newMap, newOrd))
-      }
-      .getOrElse((None, this))
+    map.get(k).map {
+      case (kidx, v) =>
+        val newMap = map - k
+        val newOrd = ord - kidx
+        // Note we don't increase the idx on a remove, only on put:
+        (Some(v), new ImmutableLRU[K, V](maxSize, idx, newMap, newOrd))
+    }.getOrElse((None, this))
 
   override def toString = { "ImmutableLRU(" + map.toList.mkString(",") + ")" }
 }

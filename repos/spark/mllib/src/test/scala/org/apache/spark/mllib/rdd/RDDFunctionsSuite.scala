@@ -31,11 +31,8 @@ class RDDFunctionsSuite extends SparkFunSuite with MLlibTestSparkContext {
         for (step <- 1 to 3) {
           val sliding =
             rdd.sliding(windowSize, step).collect().map(_.toList).toList
-          val expected = data
-            .sliding(windowSize, step)
-            .map(_.toList)
-            .toList
-            .filter(l => l.size == windowSize)
+          val expected = data.sliding(windowSize, step)
+            .map(_.toList).toList.filter(l => l.size == windowSize)
           assert(sliding === expected)
         }
       }

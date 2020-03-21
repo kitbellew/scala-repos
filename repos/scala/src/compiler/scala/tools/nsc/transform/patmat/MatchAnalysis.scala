@@ -485,10 +485,8 @@ trait MatchApproximation
     // turns a case (represented as a list of abstract tests)
     // into a proposition that is satisfiable if the case may match
     protected final def caseWithoutBodyToProp(tests: List[Test]): Prop =
-      /\(
-        tests
-          .takeWhile(t => !t.treeMaker.isInstanceOf[BodyTreeMaker])
-          .map(t => t.prop))
+      /\(tests.takeWhile(t => !t.treeMaker.isInstanceOf[BodyTreeMaker]).map(t =>
+        t.prop))
 
     def showTreeMakers(cases: List[List[TreeMaker]]) = {
       debug.patmat("treeMakers:")
@@ -675,9 +673,8 @@ trait MatchAnalysis extends MatchApproximation {
             // sorting before pruning is important here in order to
             // keep neg/t7020.scala stable
             // since e.g. List(_, _) would cover List(1, _)
-            val pruned = CounterExample
-              .prune(counterExamples.sortBy(_.toString))
-              .map(_.toString)
+            val pruned = CounterExample.prune(
+              counterExamples.sortBy(_.toString)).map(_.toString)
 
             if (Statistics.canEnable)
               Statistics.stopTimer(patmatAnaExhaust, start)
@@ -739,8 +736,9 @@ trait MatchAnalysis extends MatchApproximation {
       override def coveredBy(other: CounterExample): Boolean =
         other match {
           case other @ ListExample(_) =>
-            this == other || ((elems.length == other.elems.length) && (elems zip other.elems)
-              .forall { case (a, b) => a coveredBy b })
+            this == other || ((elems.length == other.elems.length) && (elems zip other.elems).forall {
+              case (a, b) => a coveredBy b
+            })
           case _ => super.coveredBy(other)
         }
 
@@ -753,8 +751,9 @@ trait MatchAnalysis extends MatchApproximation {
       override def coveredBy(other: CounterExample): Boolean =
         other match {
           case TupleExample(otherArgs) =>
-            this == other || ((ctorArgs.length == otherArgs.length) && (ctorArgs zip otherArgs)
-              .forall { case (a, b) => a coveredBy b })
+            this == other || ((ctorArgs.length == otherArgs.length) && (ctorArgs zip otherArgs).forall {
+              case (a, b) => a coveredBy b
+            })
           case _ => super.coveredBy(other)
         }
     }
@@ -775,24 +774,21 @@ trait MatchAnalysis extends MatchApproximation {
     // returns a mapping from variable to
     // equal and notEqual symbols
     def modelToVarAssignment(model: Model): Map[Var, (Seq[Const], Seq[Const])] =
-      model.toSeq
-        .groupBy { f => f match { case (sym, value) => sym.variable } }
-        .mapValues { xs =>
-          val (trues, falses) = xs.partition(_._2)
-          (trues map (_._1.const), falses map (_._1.const))
-        // should never be more than one value in trues...
-        }
+      model.toSeq.groupBy { f =>
+        f match { case (sym, value) => sym.variable }
+      }.mapValues { xs =>
+        val (trues, falses) = xs.partition(_._2)
+        (trues map (_._1.const), falses map (_._1.const))
+      // should never be more than one value in trues...
+      }
 
     def varAssignmentString(varAssignment: Map[Var, (Seq[Const], Seq[Const])]) =
-      varAssignment.toSeq
-        .sortBy(_._1.toString)
-        .map {
-          case (v, (trues, falses)) =>
-            val assignment =
-              "== " + (trues mkString ("(", ", ", ")")) + "  != (" + (falses mkString (", ")) + ")"
-            v + "(=" + v.path + ": " + v.staticTpCheckable + ") " + assignment
-        }
-        .mkString("\n")
+      varAssignment.toSeq.sortBy(_._1.toString).map {
+        case (v, (trues, falses)) =>
+          val assignment =
+            "== " + (trues mkString ("(", ", ", ")")) + "  != (" + (falses mkString (", ")) + ")"
+          v + "(=" + v.path + ": " + v.staticTpCheckable + ") " + assignment
+      }.mkString("\n")
 
     /**
       * The models we get from the DPLL solver need to be mapped back to counter examples.
@@ -923,9 +919,8 @@ trait MatchAnalysis extends MatchApproximation {
           path match {
             case List(root) if root == scrutVar.path.symbol => Some(scrutVar)
             case _ =>
-              varAssignment
-                .find { case (v, a) => chop(v.path) == path }
-                .map(_._1)
+              varAssignment.find { case (v, a) => chop(v.path) == path }.map(
+                _._1)
           }
 
         private val uniques = new mutable.HashMap[Var, VariableAssignment]
@@ -1027,28 +1022,23 @@ trait MatchAnalysis extends MatchApproximation {
                   // figure out the constructor arguments from the field assignment
                   val argLen = (caseFieldAccs.length min ctorParams.length)
 
-                  val examples = (0 until argLen)
-                    .map(i =>
-                      fields
-                        .get(caseFieldAccs(i))
-                        .map(_.toCounterExample(brevity)) getOrElse Some(
-                        WildcardExample))
-                    .toList
+                  val examples = (0 until argLen).map(i =>
+                    fields.get(caseFieldAccs(i)).map(
+                      _.toCounterExample(brevity)) getOrElse Some(
+                      WildcardExample)).toList
                   sequence(examples)
                 }
 
                 cls match {
                   case ConsClass =>
-                    args()
-                      .map {
-                        case List(NoExample, l: ListExample) =>
-                          // special case for neg/t7020.scala:
-                          // if we find a counter example `??::*` we report `*::*` instead
-                          // since the `??` originates from uniqueEqualTo containing several instanced of the same type
-                          List(WildcardExample, l)
-                        case args => args
-                      }
-                      .map(ListExample)
+                    args().map {
+                      case List(NoExample, l: ListExample) =>
+                        // special case for neg/t7020.scala:
+                        // if we find a counter example `??::*` we report `*::*` instead
+                        // since the `??` originates from uniqueEqualTo containing several instanced of the same type
+                        List(WildcardExample, l)
+                      case args => args
+                    }.map(ListExample)
                   case _ if isTupleSymbol(cls) =>
                     args(brevity = true).map(TupleExample)
                   case _ if cls.isSealed && cls.isAbstractClass =>

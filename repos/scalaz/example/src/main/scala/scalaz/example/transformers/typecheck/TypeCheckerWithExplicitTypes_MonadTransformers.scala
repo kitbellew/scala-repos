@@ -13,10 +13,8 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
   def typeError(msg: String): String \/ Type = -\/(msg)
 
   def find(s: String, env: TypeEnv): String \/ Type =
-    env
-      .find(_._1 == s)
-      .map(p => success(p._2))
-      .getOrElse(typeError("not found: " + s))
+    env.find(_._1 == s).map(p => success(p._2)).getOrElse(
+      typeError("not found: " + s))
 
   def compare(
       t1: Type,

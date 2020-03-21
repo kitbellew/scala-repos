@@ -49,8 +49,8 @@ class EnsembleFlowPane extends EnsembleExample {
 
   def getContent = {
     val image = new Image(
-      this.getClass
-        .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+      this.getClass.getResourceAsStream(
+        "/scalafx/ensemble/images/icon-48x48.png"))
 
     val flowPane = new FlowPane(2, 4) {
       prefWrapLength = 200

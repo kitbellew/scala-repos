@@ -58,10 +58,11 @@ object Test extends Properties("HtmlFactory") {
 
     createFactory.makeUniverse(Left(List(RESOURCES + basename))) match {
       case Some(universe) => {
-        new HtmlFactory(universe, new ScalaDocReporter(universe.settings))
-          .writeTemplates((page) => {
-            result += (page.absoluteLinkTo(page.path) -> page.body)
-          })
+        new HtmlFactory(
+          universe,
+          new ScalaDocReporter(universe.settings)).writeTemplates((page) => {
+          result += (page.absoluteLinkTo(page.path) -> page.body)
+        })
       }
       case _ =>
     }

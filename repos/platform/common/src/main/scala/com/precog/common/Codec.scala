@@ -237,15 +237,15 @@ object Codec {
 
     def writeInit(c: C, buf: ByteBuffer): Option[S] = {
       val (a, b) = from(c)
-      (codecA.writeInit(a, buf) map (s => Left((s, b)))) orElse (codecB
-        .writeInit(b, buf) map (Right(_)))
+      (codecA.writeInit(a, buf) map (s =>
+        Left((s, b)))) orElse (codecB.writeInit(b, buf) map (Right(_)))
     }
 
     def writeMore(more: S, buf: ByteBuffer) =
       more match {
         case Left((s, b)) =>
-          (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse (codecB
-            .writeInit(b, buf) map (Right(_)))
+          (codecA.writeMore(s, buf) map (s =>
+            Left((s, b)))) orElse (codecB.writeInit(b, buf) map (Right(_)))
         case Right(s) => codecB.writeMore(s, buf) map (Right(_))
       }
 
@@ -504,8 +504,9 @@ object Codec {
     x => (x.unscaledValue.toByteArray, x.scale.toLong),
     (u, s) => new BigDec(new java.math.BigInteger(u), s.toInt))
 
-  implicit val BigDecimalCodec = JBigDecimalCodec
-    .as[BigDecimal](_.underlying, BigDecimal(_, MathContext.UNLIMITED))
+  implicit val BigDecimalCodec = JBigDecimalCodec.as[BigDecimal](
+    _.underlying,
+    BigDecimal(_, MathContext.UNLIMITED))
 
   final class IndexedSeqCodec[A](val elemCodec: Codec[A])
       extends Codec[IndexedSeq[A]] {
@@ -684,8 +685,9 @@ object Codec {
       val codec = _codec
     }).init(a, sink)
 
-  implicit val BitSetCodec = ArrayCodec[Long](LongCodec)(implicitly)
-    .as[BitSet](_.getBits, BitSetUtil.fromArray)
+  implicit val BitSetCodec = ArrayCodec[Long](LongCodec)(implicitly).as[BitSet](
+    _.getBits,
+    BitSetUtil.fromArray)
 
   case class SparseBitSetCodec(size: Int) extends Codec[BitSet] {
 
@@ -775,8 +777,10 @@ object Codec {
       }
 
       val len = rec(bs.toList, 0, size, 0)
-      java.util.Arrays
-        .copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
+      java.util.Arrays.copyOf(
+        bytes,
+        (len >>> 3) + 1
+      ) // The +1 covers the extra 2 '0' bits.
     }
 
     def readBitSet(src: ByteBuffer): BitSet = {
@@ -932,8 +936,10 @@ object Codec {
       }
 
       val len = rec(RawBitSet.toList(bs), 0, size, 0)
-      java.util.Arrays
-        .copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
+      java.util.Arrays.copyOf(
+        bytes,
+        (len >>> 3) + 1
+      ) // The +1 covers the extra 2 '0' bits.
     }
 
     def readBitSet(src: ByteBuffer): RawBitSet = {

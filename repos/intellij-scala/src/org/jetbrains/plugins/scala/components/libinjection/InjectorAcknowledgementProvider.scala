@@ -50,13 +50,11 @@ class UIAcknowledgementProvider(
           acceptCallback
       }
     }
-    GROUP
-      .createNotification(
-        "IDEA Extensions",
-        message,
-        NotificationType.INFORMATION,
-        listener)
-      .notify(project)
+    GROUP.createNotification(
+      "IDEA Extensions",
+      message,
+      NotificationType.INFORMATION,
+      listener).notify(project)
   }
 
   override def showReviewDialogAndFilter(candidates: ManifestToDescriptors) = {

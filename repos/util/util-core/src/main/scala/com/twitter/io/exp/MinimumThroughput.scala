@@ -44,9 +44,8 @@ object MinimumThroughput {
       if (minBps == 0)
         Duration.Top
       else
-        Duration
-          .fromSeconds(((bytes + numBytes) / minBps).toInt)
-          .max(MinDeadline)
+        Duration.fromSeconds(((bytes + numBytes) / minBps).toInt).max(
+          MinDeadline)
 
     /** Verify if we are over the min bps requirements. */
     def throughputOk: Boolean = {
@@ -69,9 +68,10 @@ object MinimumThroughput {
 
       val start = Time.now
       val read: Future[Option[Buf]] =
-        reader
-          .read(n)
-          .raiseWithin(timer, deadline, MinThroughputTimeoutException)
+        reader.read(n).raiseWithin(
+          timer,
+          deadline,
+          MinThroughputTimeoutException)
 
       read.transform { res =>
         elapsed += Time.now - start
@@ -108,9 +108,10 @@ object MinimumThroughput {
 
       val start = Time.now
       val write: Future[Unit] =
-        writer
-          .write(buf)
-          .raiseWithin(timer, deadline, MinThroughputTimeoutException)
+        writer.write(buf).raiseWithin(
+          timer,
+          deadline,
+          MinThroughputTimeoutException)
 
       write.transform { res =>
         elapsed += Time.now - start

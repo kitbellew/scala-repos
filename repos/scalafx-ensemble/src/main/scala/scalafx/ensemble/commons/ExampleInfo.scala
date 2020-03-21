@@ -47,8 +47,8 @@ object ExampleInfo {
       exampleName) + ".scala"
 
   def className(exampleName: String, groupName: String): String =
-    "scalafx.ensemble.example." + groupName.toLowerCase + ".Ensemble" + ExampleInfo
-      .formatNoSpaces(exampleName)
+    "scalafx.ensemble.example." + groupName.toLowerCase + ".Ensemble" + ExampleInfo.formatNoSpaces(
+      exampleName)
 }
 
 /** Creates stand alone example source code. */
@@ -82,9 +82,8 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       val resources =
         for (pattern(resourcePath) <- pattern findAllIn sourceCode)
           yield resourcePath
-      resources
-        .map(r => if (r.startsWith("/")) r else "/" + packagePath + "/" + r)
-        .toSeq
+      resources.map(r =>
+        if (r.startsWith("/")) r else "/" + packagePath + "/" + r).toSeq
     }
 
     extract("""@resource\s*(\S*)""".r).toSet

@@ -71,8 +71,7 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     */
   protected override def getPartitions: Array[Partition] = {
     // listStatus can throw exception if path does not exist.
-    val inputFiles = fs
-      .listStatus(cpath)
+    val inputFiles = fs.listStatus(cpath)
       .map(_.getPath)
       .filter(_.getName.startsWith("part-"))
       .sortBy(_.toString)

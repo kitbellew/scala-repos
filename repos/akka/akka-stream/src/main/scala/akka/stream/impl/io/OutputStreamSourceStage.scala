@@ -44,9 +44,9 @@ final private[stream] class OutputStreamSourceStage(
 
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes): (GraphStageLogic, OutputStream) = {
-    val maxBuffer = inheritedAttributes
-      .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-      .max
+    val maxBuffer = inheritedAttributes.getAttribute(
+      classOf[InputBuffer],
+      InputBuffer(16, 16)).max
     require(maxBuffer > 0, "Buffer size must be greater than 0")
 
     val dataQueue = new LinkedBlockingQueue[ByteString](maxBuffer)

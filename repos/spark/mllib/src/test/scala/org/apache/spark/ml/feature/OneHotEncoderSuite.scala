@@ -60,15 +60,10 @@ class OneHotEncoderSuite
       .setDropLast(false)
     val encoded = encoder.transform(transformed)
 
-    val output = encoded
-      .select("id", "labelVec")
-      .rdd
-      .map { r =>
-        val vec = r.getAs[Vector](1)
-        (r.getInt(0), vec(0), vec(1), vec(2))
-      }
-      .collect()
-      .toSet
+    val output = encoded.select("id", "labelVec").rdd.map { r =>
+      val vec = r.getAs[Vector](1)
+      (r.getInt(0), vec(0), vec(1), vec(2))
+    }.collect().toSet
     // a -> 0, b -> 2, c -> 1
     val expected = Set(
       (0, 1.0, 0.0, 0.0),
@@ -87,15 +82,10 @@ class OneHotEncoderSuite
       .setOutputCol("labelVec")
     val encoded = encoder.transform(transformed)
 
-    val output = encoded
-      .select("id", "labelVec")
-      .rdd
-      .map { r =>
-        val vec = r.getAs[Vector](1)
-        (r.getInt(0), vec(0), vec(1))
-      }
-      .collect()
-      .toSet
+    val output = encoded.select("id", "labelVec").rdd.map { r =>
+      val vec = r.getAs[Vector](1)
+      (r.getInt(0), vec(0), vec(1))
+    }.collect().toSet
     // a -> 0, b -> 2, c -> 1
     val expected = Set(
       (0, 1.0, 0.0),
@@ -110,9 +100,8 @@ class OneHotEncoderSuite
   test("input column with ML attribute") {
     val attr =
       NominalAttribute.defaultAttr.withValues("small", "medium", "large")
-    val df = sqlContext
-      .createDataFrame(Seq(0.0, 1.0, 2.0, 1.0).map(Tuple1.apply))
-      .toDF("size")
+    val df = sqlContext.createDataFrame(
+      Seq(0.0, 1.0, 2.0, 1.0).map(Tuple1.apply)).toDF("size")
       .select(col("size").as("size", attr.toMetadata()))
     val encoder = new OneHotEncoder()
       .setInputCol("size")
@@ -121,19 +110,16 @@ class OneHotEncoderSuite
     val group = AttributeGroup.fromStructField(output.schema("encoded"))
     assert(group.size === 2)
     assert(
-      group.getAttr(0) === BinaryAttribute.defaultAttr
-        .withName("small")
-        .withIndex(0))
+      group.getAttr(0) === BinaryAttribute.defaultAttr.withName(
+        "small").withIndex(0))
     assert(
-      group.getAttr(1) === BinaryAttribute.defaultAttr
-        .withName("medium")
-        .withIndex(1))
+      group.getAttr(1) === BinaryAttribute.defaultAttr.withName(
+        "medium").withIndex(1))
   }
 
   test("input column without ML attribute") {
-    val df = sqlContext
-      .createDataFrame(Seq(0.0, 1.0, 2.0, 1.0).map(Tuple1.apply))
-      .toDF("index")
+    val df = sqlContext.createDataFrame(
+      Seq(0.0, 1.0, 2.0, 1.0).map(Tuple1.apply)).toDF("index")
     val encoder = new OneHotEncoder()
       .setInputCol("index")
       .setOutputCol("encoded")
@@ -141,11 +127,11 @@ class OneHotEncoderSuite
     val group = AttributeGroup.fromStructField(output.schema("encoded"))
     assert(group.size === 2)
     assert(
-      group
-        .getAttr(0) === BinaryAttribute.defaultAttr.withName("0").withIndex(0))
+      group.getAttr(0) === BinaryAttribute.defaultAttr.withName("0").withIndex(
+        0))
     assert(
-      group
-        .getAttr(1) === BinaryAttribute.defaultAttr.withName("1").withIndex(1))
+      group.getAttr(1) === BinaryAttribute.defaultAttr.withName("1").withIndex(
+        1))
   }
 
   test("read/write") {
@@ -178,15 +164,10 @@ class OneHotEncoderSuite
         .setDropLast(false)
       val encoded = encoder.transform(dfWithTypes)
 
-      val output = encoded
-        .select("id", "labelVec")
-        .rdd
-        .map { r =>
-          val vec = r.getAs[Vector](1)
-          (r.getInt(0), vec(0), vec(1), vec(2))
-        }
-        .collect()
-        .toSet
+      val output = encoded.select("id", "labelVec").rdd.map { r =>
+        val vec = r.getAs[Vector](1)
+        (r.getInt(0), vec(0), vec(1), vec(2))
+      }.collect().toSet
       // a -> 0, b -> 2, c -> 1
       val expected = Set(
         (0, 1.0, 0.0, 0.0),

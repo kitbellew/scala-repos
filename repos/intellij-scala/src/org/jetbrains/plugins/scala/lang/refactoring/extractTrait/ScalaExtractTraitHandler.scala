@@ -160,8 +160,11 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       case None =>
       case Some(selfTpe) =>
         val traitText = s"trait ${trt.name} {\n$selfTpe\n}"
-        val dummyTrait = ScalaPsiElementFactory
-          .createTemplateDefinitionFromText(traitText, trt.getParent, trt)
+        val dummyTrait =
+          ScalaPsiElementFactory.createTemplateDefinitionFromText(
+            traitText,
+            trt.getParent,
+            trt)
         val selfTypeElem = dummyTrait.extendsBlock.selfTypeElement.get
         val extendsBlock = trt.extendsBlock
         val templateBody = extendsBlock.templateBody match {
@@ -206,13 +209,11 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
             "Cannot find directory for new trait")
         else pckg.getDirectories()(0)
       }
-    ScalaDirectoryService
-      .createClassFromTemplate(
-        dir,
-        name,
-        "Scala Trait",
-        askToDefineVariables = false)
-      .asInstanceOf[ScTrait]
+    ScalaDirectoryService.createClassFromTemplate(
+      dir,
+      name,
+      "Scala Trait",
+      askToDefineVariables = false).asInstanceOf[ScTrait]
   }
 
   private class ExtractInfo(
@@ -295,8 +296,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
               conflicts.putValue(m, message)
             case m: ScMember
                 if clazz.isInstanceOf[
-                  ScNewTemplateDefinition] && m.containingClass == clazz && !selected
-                  .contains(m) =>
+                  ScNewTemplateDefinition] && m.containingClass == clazz && !selected.contains(
+                  m) =>
               val message = ScalaBundle.message(
                 "member.of.anonymous.class.cannot.be.used.in.extracted.member",
                 named.name,
@@ -370,13 +371,11 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     def selfTypeText: Option[String] = {
       val alias = clazz.extendsBlock.selfTypeElement.fold("this")(_.name)
 
-      val typeText = classesForSelfType
-        .map {
-          case obj: ScObject        => s"${obj.qualifiedName}.type"
-          case cl: ScTypeDefinition => cl.qualifiedName
-          case cl: PsiClass         => cl.getQualifiedName
-        }
-        .mkString(" with ")
+      val typeText = classesForSelfType.map {
+        case obj: ScObject        => s"${obj.qualifiedName}.type"
+        case cl: ScTypeDefinition => cl.qualifiedName
+        case cl: PsiClass         => cl.getQualifiedName
+      }.mkString(" with ")
 
       if (classesForSelfType.nonEmpty) {
         val arrow = ScalaPsiUtil.functionArrow(clazz.getProject)

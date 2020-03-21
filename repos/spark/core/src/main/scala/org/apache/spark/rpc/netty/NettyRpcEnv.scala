@@ -122,8 +122,8 @@ private[netty] class NettyRpcEnv(
   def startServer(port: Int): Unit = {
     val bootstraps: java.util.List[TransportServerBootstrap] =
       if (securityManager.isAuthenticationEnabled()) {
-        java.util.Arrays
-          .asList(new SaslServerBootstrap(transportConf, securityManager))
+        java.util.Arrays.asList(
+          new SaslServerBootstrap(transportConf, securityManager))
       } else {
         java.util.Collections.emptyList()
       }
@@ -151,15 +151,14 @@ private[netty] class NettyRpcEnv(
       conf,
       RpcEndpointAddress(addr.rpcAddress, RpcEndpointVerifier.NAME),
       this)
-    verifier
-      .ask[Boolean](RpcEndpointVerifier.CheckExistence(endpointRef.name))
-      .flatMap { find =>
-        if (find) {
-          Future.successful(endpointRef)
-        } else {
-          Future.failed(new RpcEndpointNotFoundException(uri))
-        }
-      }(ThreadUtils.sameThread)
+    verifier.ask[Boolean](
+      RpcEndpointVerifier.CheckExistence(endpointRef.name)).flatMap { find =>
+      if (find) {
+        Future.successful(endpointRef)
+      } else {
+        Future.failed(new RpcEndpointNotFoundException(uri))
+      }
+    }(ThreadUtils.sameThread)
   }
 
   override def stop(endpointRef: RpcEndpointRef): Unit = {
@@ -277,9 +276,8 @@ private[netty] class NettyRpcEnv(
       case NonFatal(e) =>
         onFailure(e)
     }
-    promise.future
-      .mapTo[T]
-      .recover(timeout.addMessageIfTimeout)(ThreadUtils.sameThread)
+    promise.future.mapTo[T].recover(timeout.addMessageIfTimeout)(
+      ThreadUtils.sameThread)
   }
 
   private[netty] def serialize(content: Any): ByteBuffer = {
@@ -480,9 +478,8 @@ private[rpc] class NettyRpcEnvFactory extends RpcEnvFactory with Logging {
     // Use JavaSerializerInstance in multiple threads is safe. However, if we plan to support
     // KryoSerializer in future, we have to use ThreadLocal to store SerializerInstance
     val javaSerializerInstance =
-      new JavaSerializer(sparkConf)
-        .newInstance()
-        .asInstanceOf[JavaSerializerInstance]
+      new JavaSerializer(sparkConf).newInstance().asInstanceOf[
+        JavaSerializerInstance]
     val nettyEnv =
       new NettyRpcEnv(
         sparkConf,
@@ -495,13 +492,11 @@ private[rpc] class NettyRpcEnvFactory extends RpcEnvFactory with Logging {
         (nettyEnv, nettyEnv.address.port)
       }
       try {
-        Utils
-          .startServiceOnPort(
-            config.port,
-            startNettyRpcEnv,
-            sparkConf,
-            config.name)
-          ._1
+        Utils.startServiceOnPort(
+          config.port,
+          startNettyRpcEnv,
+          sparkConf,
+          config.name)._1
       } catch {
         case NonFatal(e) =>
           nettyEnv.shutdown()

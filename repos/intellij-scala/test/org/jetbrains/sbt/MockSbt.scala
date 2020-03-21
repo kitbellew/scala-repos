@@ -48,8 +48,6 @@ trait MockSbt {
   }
 
   def preventLeakageOfVfsPointers(): Unit =
-    VirtualFilePointerManager
-      .getInstance()
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance().asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
 }

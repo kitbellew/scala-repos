@@ -145,10 +145,9 @@ private[streaming] class ReceivedBlockTracker(
   /** Get the blocks allocated to the given batch. */
   def getBlocksOfBatch(batchTime: Time): Map[Int, Seq[ReceivedBlockInfo]] =
     synchronized {
-      timeToAllocatedBlocks
-        .get(batchTime)
-        .map { _.streamIdToAllocatedBlocks }
-        .getOrElse(Map.empty)
+      timeToAllocatedBlocks.get(batchTime).map {
+        _.streamIdToAllocatedBlocks
+      }.getOrElse(Map.empty)
     }
 
   /** Get the blocks allocated to the given batch and stream. */
@@ -156,12 +155,9 @@ private[streaming] class ReceivedBlockTracker(
       batchTime: Time,
       streamId: Int): Seq[ReceivedBlockInfo] = {
     synchronized {
-      timeToAllocatedBlocks
-        .get(batchTime)
-        .map {
-          _.getBlocksOfStream(streamId)
-        }
-        .getOrElse(Seq.empty)
+      timeToAllocatedBlocks.get(batchTime).map {
+        _.getBlocksOfStream(streamId)
+      }.getOrElse(Seq.empty)
     }
   }
 

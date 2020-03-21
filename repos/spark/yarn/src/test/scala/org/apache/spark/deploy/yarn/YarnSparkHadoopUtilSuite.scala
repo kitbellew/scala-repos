@@ -188,9 +188,8 @@ class YarnSparkHadoopUtilSuite
   }
 
   test("test getClassPathSeparator result") {
-    if (classOf[ApplicationConstants]
-          .getFields()
-          .exists(_.getName == "CLASS_PATH_SEPARATOR")) {
+    if (classOf[ApplicationConstants].getFields().exists(
+          _.getName == "CLASS_PATH_SEPARATOR")) {
       YarnSparkHadoopUtil.getClassPathSeparator() should be("<CPS>")
     } else if (Utils.isWindows) {
       YarnSparkHadoopUtil.getClassPathSeparator() should be(";")
@@ -332,8 +331,9 @@ class YarnSparkHadoopUtilSuite
     } finally {
       // removeSecretKey() was only added in Hadoop 2.6, so instead we just set the secret
       // to an empty string.
-      SparkHadoopUtil.get
-        .addSecretKeyToUserCredentials(SecurityManager.SECRET_LOOKUP_KEY, "")
+      SparkHadoopUtil.get.addSecretKeyToUserCredentials(
+        SecurityManager.SECRET_LOOKUP_KEY,
+        "")
       System.clearProperty("SPARK_YARN_MODE")
     }
   }

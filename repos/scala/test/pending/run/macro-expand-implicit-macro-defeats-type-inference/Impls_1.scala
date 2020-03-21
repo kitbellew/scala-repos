@@ -6,9 +6,8 @@ object Impls {
       println(
         "openImplicits are: " + c.literal(c.openImplicits.toString).splice)
       println(
-        "enclosingImplicits are: " + c
-          .literal(c.enclosingImplicits.toString)
-          .splice)
+        "enclosingImplicits are: " + c.literal(
+          c.enclosingImplicits.toString).splice)
       println("typetag is: " + c.literal(c.tag[T].toString).splice)
       null
     }

@@ -53,9 +53,8 @@ abstract class ControllerBase
       val path = httpRequest.getRequestURI.substring(context.length)
 
       if (path.startsWith("/console/")) {
-        val account = httpRequest.getSession
-          .getAttribute(Keys.Session.LoginAccount)
-          .asInstanceOf[Account]
+        val account = httpRequest.getSession.getAttribute(
+          Keys.Session.LoginAccount).asInstanceOf[Account]
         val baseUrl = this.baseUrl(httpRequest)
         if (account == null) {
           // Redirect to login form
@@ -99,9 +98,8 @@ abstract class ControllerBase
   }
 
   private def LoginAccount: Option[Account] =
-    request
-      .getAs[Account](Keys.Session.LoginAccount)
-      .orElse(session.getAs[Account](Keys.Session.LoginAccount))
+    request.getAs[Account](Keys.Session.LoginAccount).orElse(
+      session.getAs[Account](Keys.Session.LoginAccount))
 
   def ajaxGet(path: String)(action: => Any): Route =
     super.get(path) {

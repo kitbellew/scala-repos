@@ -86,8 +86,7 @@ abstract class CreateTypeDefinitionQuickFix(
         throw new IllegalStateException(
           s"Cannot find directory for the package `${psiPackage.getName}`")
       case dirs =>
-        val currentDir = dirs
-          .find(PsiTreeUtil.isAncestor(_, ref, true))
+        val currentDir = dirs.find(PsiTreeUtil.isAncestor(_, ref, true))
           .orElse(
             dirs.find(ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
         currentDir.getOrElse(dirs(0))
@@ -159,13 +158,12 @@ abstract class CreateTypeDefinitionQuickFix(
             false
           }
         }
-        NavigationUtil
-          .getPsiElementPopup(
-            siblings.toArray,
-            renderer,
-            "Choose level",
-            processor,
-            selection)
+        NavigationUtil.getPsiElementPopup(
+          siblings.toArray,
+          renderer,
+          "Choose level",
+          processor,
+          selection)
           .showInBestPositionFor(editor)
     }
   }
@@ -224,11 +222,12 @@ abstract class CreateTypeDefinitionQuickFix(
       val newEditor = positionCursor(clazz.nameId)
       if (template.getSegmentsCount != 0) {
         val range = clazz.getTextRange
-        newEditor.getDocument
-          .deleteString(range.getStartOffset, range.getEndOffset)
-        TemplateManager
-          .getInstance(clazz.getProject)
-          .startTemplate(newEditor, template)
+        newEditor.getDocument.deleteString(
+          range.getStartOffset,
+          range.getEndOffset)
+        TemplateManager.getInstance(clazz.getProject).startTemplate(
+          newEditor,
+          template)
       }
     }
   }

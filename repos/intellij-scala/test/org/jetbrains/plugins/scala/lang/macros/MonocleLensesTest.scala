@@ -47,9 +47,8 @@ class MonocleLensesTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       "monocle-generic",
       "com.github.julien-truffaut/monocle-generic_2.11/jars",
       "monocle-generic_2.11-1.2.0.jar")
-    VirtualFilePointerManager.getInstance
-      .asInstanceOf[VirtualFilePointerManagerImpl]
-      .storePointers()
+    VirtualFilePointerManager.getInstance.asInstanceOf[
+      VirtualFilePointerManagerImpl].storePointers()
   }
 
   protected def folderPath: String = TestUtils.getTestDataPath
@@ -71,13 +70,11 @@ class MonocleLensesTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   def doTest(text: String, methodName: String, expectedType: String) = {
     val caretPos = text.indexOf("<caret>")
     configureFromFileTextAdapter("dummy.scala", text.replace("<caret>", ""))
-    val exp = PsiTreeUtil
-      .findElementOfClassAtOffset(
-        getFileAdapter,
-        caretPos,
-        classOf[ScalaPsiElement],
-        false)
-      .asInstanceOf[ScObject]
+    val exp = PsiTreeUtil.findElementOfClassAtOffset(
+      getFileAdapter,
+      caretPos,
+      classOf[ScalaPsiElement],
+      false).asInstanceOf[ScObject]
     exp.allMethods.find(_.name == methodName) match {
       case Some(x) =>
         x.method.asInstanceOf[ScFunctionDefinition].returnType match {

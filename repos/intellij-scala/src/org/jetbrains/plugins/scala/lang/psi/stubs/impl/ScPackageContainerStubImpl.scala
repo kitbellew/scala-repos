@@ -34,8 +34,8 @@ class ScPackageContainerStubImpl[ParentPsi <: PsiElement](
       explicit: Boolean) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     myPrefix = StringRef.fromString(prefix)
     myOwnNamePart = StringRef.fromString(ownNamePart)
     myExplicit = explicit
@@ -51,8 +51,8 @@ class ScPackageContainerStubImpl[ParentPsi <: PsiElement](
       explicit: Boolean) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     myPrefix = prefix
     myOwnNamePart = ownNamePart
     myExplicit = explicit

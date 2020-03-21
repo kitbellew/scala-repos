@@ -52,10 +52,8 @@ private[sql] class JSONOptions(
   val allowNonNumericNumbers =
     parameters.get("allowNonNumericNumbers").map(_.toBoolean).getOrElse(true)
   val allowBackslashEscapingAnyCharacter =
-    parameters
-      .get("allowBackslashEscapingAnyCharacter")
-      .map(_.toBoolean)
-      .getOrElse(false)
+    parameters.get("allowBackslashEscapingAnyCharacter").map(
+      _.toBoolean).getOrElse(false)
   val compressionCodec =
     parameters.get("compression").map(CompressionCodecs.getCodecClassName)
   private val parseMode = parameters.getOrElse("mode", "PERMISSIVE")

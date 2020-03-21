@@ -145,11 +145,10 @@ object GraphGenerators extends Logging {
     // let N = requestedNumVertices
     // the number of vertices is 2^n where n=ceil(log2[N])
     // This ensures that the 4 quadrants are the same size at all recursion levels
-    val numVertices = math
-      .round(
-        math
-          .pow(2.0, math.ceil(math.log(requestedNumVertices) / math.log(2.0))))
-      .toInt
+    val numVertices = math.round(
+      math.pow(
+        2.0,
+        math.ceil(math.log(requestedNumVertices) / math.log(2.0)))).toInt
     val numEdgesUpperBound =
       math.pow(2.0, 2 * ((math.log(numVertices) / math.log(2.0)) - 1)).toInt
     if (numEdgesUpperBound < numEdges) {
@@ -168,8 +167,7 @@ object GraphGenerators extends Logging {
 
   private def outDegreeFromEdges[ED: ClassTag](
       edges: RDD[Edge[ED]]): Graph[Int, ED] = {
-    val vertices = edges
-      .flatMap { edge => List((edge.srcId, 1)) }
+    val vertices = edges.flatMap { edge => List((edge.srcId, 1)) }
       .reduceByKey(_ + _)
       .map { case (vid, degree) => (vid, degree) }
     Graph(vertices, edges, 0)
@@ -275,15 +273,13 @@ object GraphGenerators extends Logging {
         (0 until cols).map(c => (sub2ind(r, c), (r, c)))
       }
     val edges: RDD[Edge[Double]] =
-      vertices
-        .flatMap {
-          case (vid, (r, c)) =>
-            (if (r + 1 < rows) { Seq((sub2ind(r, c), sub2ind(r + 1, c))) }
-             else { Seq.empty }) ++
-              (if (c + 1 < cols) { Seq((sub2ind(r, c), sub2ind(r, c + 1))) }
-               else { Seq.empty })
-        }
-        .map { case (src, dst) => Edge(src, dst, 1.0) }
+      vertices.flatMap {
+        case (vid, (r, c)) =>
+          (if (r + 1 < rows) { Seq((sub2ind(r, c), sub2ind(r + 1, c))) }
+           else { Seq.empty }) ++
+            (if (c + 1 < cols) { Seq((sub2ind(r, c), sub2ind(r, c + 1))) }
+             else { Seq.empty })
+      }.map { case (src, dst) => Edge(src, dst, 1.0) }
     Graph(vertices, edges)
   } // end of gridGraph
 

@@ -25,9 +25,8 @@ object ToSetAndBackToDistinct extends SimplificationType {
           if sameCollectionType(qualType, expr.getType().getOrAny) && (isSeq(
             qual) || isArray(qual)) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "distinct"))
-            .highlightFrom(qual))
+          replace(expr).withText(
+            invocationText(qual, "distinct")).highlightFrom(qual))
       case _ => None
     }
   }

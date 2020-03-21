@@ -31,12 +31,11 @@ class StarJoinJob(args: Args) extends Job(args) {
     input
   }
 
-  in0
-    .coGroupBy('x0) {
-      _.coGroup('x1, in1, OuterJoinMode)
-        .coGroup('x2, in2, OuterJoinMode)
-        .coGroup('x3, in3, OuterJoinMode)
-    }
+  in0.coGroupBy('x0) {
+    _.coGroup('x1, in1, OuterJoinMode)
+    .coGroup('x2, in2, OuterJoinMode)
+    .coGroup('x3, in3, OuterJoinMode)
+  }
     .project('x0, 'a, 'b, 'c, 'd)
     .write(Tsv("output"))
 }

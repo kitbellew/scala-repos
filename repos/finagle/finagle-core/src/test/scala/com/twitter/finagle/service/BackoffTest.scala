@@ -32,25 +32,17 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("exponentialJittered") {
     forAll { seed: Long =>
       val rng = Rng(seed)
-      val backoffs = Backoff
-        .exponentialJittered(5.millis, 120.millis, rng)
-        .take(10)
-        .force
-        .toSeq
-        .map(_.inMillis)
+      val backoffs = Backoff.exponentialJittered(5.millis, 120.millis, rng)
+        .take(10).force.toSeq.map(_.inMillis)
 
       // 5, then randos up to: 10, 20, 40, 80, 120, 120, 120...
       assert(5 == backoffs.head)
       val maxBackoffs = Seq(10, 20, 40, 80, 120, 120, 120, 120, 120)
-      backoffs.tail
-        .zip(maxBackoffs)
+      backoffs.tail.zip(maxBackoffs)
         .foreach { case (b, m) => assert(b <= m) }
 
-      val manyBackoffs = Backoff
-        .exponentialJittered(5.millis, 120.millis, rng)
-        .take(100)
-        .force
-        .toSeq
+      val manyBackoffs = Backoff.exponentialJittered(5.millis, 120.millis, rng)
+        .take(100).force.toSeq
       assert(100 == manyBackoffs.size)
     }
   }
@@ -65,11 +57,9 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(decorrelatedGen) {
       case (startMs: Long, maxMs: Long, seed: Long) =>
         val rng = Rng(seed)
-        val backoffs = Backoff
-          .decorrelatedJittered(startMs.millis, maxMs.millis, rng)
-          .take(10)
-          .force
-          .toSeq
+        val backoffs =
+          Backoff.decorrelatedJittered(startMs.millis, maxMs.millis, rng)
+            .take(10).force.toSeq
 
         // 5ms and then randos between 5ms and 3x the previous value (capped at `maximum`)
         assert(startMs.millis == backoffs.head)
@@ -87,12 +77,8 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll { seed: Long =>
       val rng = Rng(seed)
       val maximum = 120.millis
-      val backoffs = Backoff
-        .equalJittered(5.millis, maximum, rng)
-        .take(10)
-        .force
-        .toSeq
-        .map(_.inMillis)
+      val backoffs = Backoff.equalJittered(5.millis, maximum, rng)
+        .take(10).force.toSeq.map(_.inMillis)
 
       assert(5 == backoffs.head)
 

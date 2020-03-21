@@ -235,12 +235,10 @@ object RejectionHandler {
       }
       .handleAll[UnacceptedResponseContentTypeRejection] { rejections ⇒
         val supported = rejections.flatMap(_.supported)
-        val msg = supported
-          .map(_.format)
-          .mkString(
-            "Resource representation is only available with these types:\n",
-            "\n",
-            "")
+        val msg = supported.map(_.format).mkString(
+          "Resource representation is only available with these types:\n",
+          "\n",
+          "")
         complete((NotAcceptable, msg))
       }
       .handleAll[UnacceptedResponseEncodingRejection] { rejections ⇒
@@ -269,14 +267,14 @@ object RejectionHandler {
       }
       .handleAll[UnsupportedWebSocketSubprotocolRejection] { rejections ⇒
         val supported = rejections.map(_.supportedProtocol)
-        complete(HttpResponse(
-          BadRequest,
-          entity =
-            s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported
-              .map("'" + _ + "'")
-              .mkString(",")}.",
-          headers = `Sec-WebSocket-Protocol`(supported) :: Nil
-        ))
+        complete(
+          HttpResponse(
+            BadRequest,
+            entity =
+              s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported.map(
+                "'" + _ + "'").mkString(",")}.",
+            headers = `Sec-WebSocket-Protocol`(supported) :: Nil
+          ))
       }
       .handle { case ValidationRejection(msg, _) ⇒ complete((BadRequest, msg)) }
       .handle { case x ⇒ sys.error("Unhandled rejection: " + x) }
@@ -293,8 +291,8 @@ object RejectionHandler {
       rejections: immutable.Seq[Rejection]): immutable.Seq[Rejection] = {
     val (transformations, rest) =
       rejections.partition(_.isInstanceOf[TransformationRejection])
-    (rest.distinct /: transformations
-      .asInstanceOf[Seq[TransformationRejection]]) {
+    (rest.distinct /: transformations.asInstanceOf[
+      Seq[TransformationRejection]]) {
       case (remaining, transformation) ⇒ transformation.transform(remaining)
     }
   }

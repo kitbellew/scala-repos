@@ -12,19 +12,17 @@ final class CoordinateApi(scoreColl: Coll) {
       userId))
 
   def addScore(userId: String, white: Boolean, hits: Int): Funit =
-    scoreColl
-      .update(
-        BSONDocument("_id" -> userId),
-        BSONDocument(
-          "$push" -> BSONDocument(
-            "white" -> BSONDocument(
-              "$each" -> (white ?? List(BSONInteger(hits))),
-              "$slice" -> -20),
-            "black" -> BSONDocument(
-              "$each" -> (!white ?? List(BSONInteger(hits))),
-              "$slice" -> -20)
-          )),
-        upsert = true
-      )
-      .void
+    scoreColl.update(
+      BSONDocument("_id" -> userId),
+      BSONDocument(
+        "$push" -> BSONDocument(
+          "white" -> BSONDocument(
+            "$each" -> (white ?? List(BSONInteger(hits))),
+            "$slice" -> -20),
+          "black" -> BSONDocument(
+            "$each" -> (!white ?? List(BSONInteger(hits))),
+            "$slice" -> -20)
+        )),
+      upsert = true
+    ).void
 }

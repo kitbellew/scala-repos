@@ -82,15 +82,12 @@ object Message extends LilaController {
     AuthBody { implicit ctx => implicit me =>
       NotForKids {
         implicit val req = ctx.body
-        forms
-          .thread(me)
-          .bindFromRequest
-          .fold(
-            err => renderForm(me, none, _ => err) map { BadRequest(_) },
-            data =>
-              api.makeThread(data, me) map { thread =>
-                Redirect(routes.Message.thread(thread.id))
-              })
+        forms.thread(me).bindFromRequest.fold(
+          err => renderForm(me, none, _ => err) map { BadRequest(_) },
+          data =>
+            api.makeThread(data, me) map { thread =>
+              Redirect(routes.Message.thread(thread.id))
+            })
       }
     }
 

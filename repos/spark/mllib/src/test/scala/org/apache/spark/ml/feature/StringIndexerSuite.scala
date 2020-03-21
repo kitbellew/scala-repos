@@ -58,16 +58,12 @@ class StringIndexerSuite
     MLTestingUtils.checkCopy(indexer)
 
     val transformed = indexer.transform(df)
-    val attr = Attribute
-      .fromStructField(transformed.schema("labelIndex"))
+    val attr = Attribute.fromStructField(transformed.schema("labelIndex"))
       .asInstanceOf[NominalAttribute]
     assert(attr.values.get === Array("a", "c", "b"))
-    val output = transformed
-      .select("id", "labelIndex")
-      .rdd
-      .map { r => (r.getInt(0), r.getDouble(1)) }
-      .collect()
-      .toSet
+    val output = transformed.select("id", "labelIndex").rdd.map { r =>
+      (r.getInt(0), r.getDouble(1))
+    }.collect().toSet
     // a -> 0, b -> 2, c -> 1
     val expected =
       Set((0, 0.0), (1, 2.0), (2, 1.0), (3, 0.0), (4, 0.0), (5, 1.0))
@@ -94,16 +90,12 @@ class StringIndexerSuite
       .fit(df)
     // Verify that we skip the c record
     val transformed = indexerSkipInvalid.transform(df2)
-    val attr = Attribute
-      .fromStructField(transformed.schema("labelIndex"))
+    val attr = Attribute.fromStructField(transformed.schema("labelIndex"))
       .asInstanceOf[NominalAttribute]
     assert(attr.values.get === Array("b", "a"))
-    val output = transformed
-      .select("id", "labelIndex")
-      .rdd
-      .map { r => (r.getInt(0), r.getDouble(1)) }
-      .collect()
-      .toSet
+    val output = transformed.select("id", "labelIndex").rdd.map { r =>
+      (r.getInt(0), r.getDouble(1))
+    }.collect().toSet
     // a -> 1, b -> 0
     val expected = Set((0, 1.0), (1, 0.0))
     assert(output === expected)
@@ -119,16 +111,12 @@ class StringIndexerSuite
       .setOutputCol("labelIndex")
       .fit(df)
     val transformed = indexer.transform(df)
-    val attr = Attribute
-      .fromStructField(transformed.schema("labelIndex"))
+    val attr = Attribute.fromStructField(transformed.schema("labelIndex"))
       .asInstanceOf[NominalAttribute]
     assert(attr.values.get === Array("100", "300", "200"))
-    val output = transformed
-      .select("id", "labelIndex")
-      .rdd
-      .map { r => (r.getInt(0), r.getDouble(1)) }
-      .collect()
-      .toSet
+    val output = transformed.select("id", "labelIndex").rdd.map { r =>
+      (r.getInt(0), r.getDouble(1))
+    }.collect().toSet
     // 100 -> 0, 200 -> 2, 300 -> 1
     val expected =
       Set((0, 0.0), (1, 2.0), (2, 1.0), (3, 0.0), (4, 0.0), (5, 1.0))
@@ -181,15 +169,13 @@ class StringIndexerSuite
 
   test("IndexToString.transform") {
     val labels = Array("a", "b", "c")
-    val df0 = sqlContext
-      .createDataFrame(
-        Seq(
-          (0, "a"),
-          (1, "b"),
-          (2, "c"),
-          (0, "a")
-        ))
-      .toDF("index", "expected")
+    val df0 = sqlContext.createDataFrame(
+      Seq(
+        (0, "a"),
+        (1, "b"),
+        (2, "c"),
+        (0, "a")
+      )).toDF("index", "expected")
 
     val idxToStr0 = new IndexToString()
       .setInputCol("index")
@@ -228,14 +214,12 @@ class StringIndexerSuite
       .setInputCol("labelIndex")
       .setOutputCol("sameLabel")
       .setLabels(indexer.labels)
-    idx2str
-      .transform(transformed)
-      .select("label", "sameLabel")
-      .collect()
-      .foreach {
-        case Row(a: String, b: String) =>
-          assert(a === b)
-      }
+    idx2str.transform(transformed).select(
+      "label",
+      "sameLabel").collect().foreach {
+      case Row(a: String, b: String) =>
+        assert(a === b)
+    }
   }
 
   test("IndexToString.transformSchema (SPARK-10573)") {

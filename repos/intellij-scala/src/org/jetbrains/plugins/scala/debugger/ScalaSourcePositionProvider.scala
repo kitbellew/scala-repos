@@ -53,9 +53,10 @@ class ScalaSourcePositionProvider extends SourcePositionProvider {
     if (!ScalaNamesUtil.isIdentifier(name)) return null
     if (name == "$outer" || name.startsWith("x$")) return null
 
-    val ref = ScalaPsiElementFactory
-      .createExpressionWithContextFromText(name, context, context)
-      .asInstanceOf[ScReferenceExpression]
+    val ref = ScalaPsiElementFactory.createExpressionWithContextFromText(
+      name,
+      context,
+      context).asInstanceOf[ScReferenceExpression]
 
     ref.resolve() match {
       case null if name.contains("$") =>

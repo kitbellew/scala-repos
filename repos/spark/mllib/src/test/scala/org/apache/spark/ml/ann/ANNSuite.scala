@@ -48,12 +48,10 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
     trainer.setWeights(initialWeights)
     trainer.LBFGSOptimizer.setNumIterations(20)
     val model = trainer.train(rddData)
-    val predictionAndLabels = rddData
-      .map {
-        case (input, label) =>
-          (model.predict(input)(0), label(0))
-      }
-      .collect()
+    val predictionAndLabels = rddData.map {
+      case (input, label) =>
+        (model.predict(input)(0), label(0))
+    }.collect()
     predictionAndLabels.foreach {
       case (p, l) =>
         assert(math.round(p) === l)
@@ -89,12 +87,10 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
     trainer.SGDOptimizer.setNumIterations(2000)
     trainer.setWeights(initialWeights)
     val model = trainer.train(rddData)
-    val predictionAndLabels = rddData
-      .map {
-        case (input, label) =>
-          (model.predict(input), label)
-      }
-      .collect()
+    val predictionAndLabels = rddData.map {
+      case (input, label) =>
+        (model.predict(input), label)
+    }.collect()
     predictionAndLabels.foreach {
       case (p, l) =>
         assert(p ~== l absTol 0.5)

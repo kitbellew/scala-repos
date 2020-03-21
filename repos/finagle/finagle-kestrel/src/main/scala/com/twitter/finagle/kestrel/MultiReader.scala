@@ -107,43 +107,40 @@ private[finagle] object MultiReaderHelper {
       }.toSeq
 
       // We sequence here to ensure that `close` gets priority over reads.
-      Offer
-        .prioritize(
-          close.recv { _ => onClose(handles) },
-          Offer.choose(queues: _*) { m =>
-            messages ! trackMessage(m)
-            loop(handles)
-          },
-          Offer.choose(errors: _*) { h =>
+      Offer.prioritize(
+        close.recv { _ => onClose(handles) },
+        Offer.choose(queues: _*) { m =>
+          messages ! trackMessage(m)
+          loop(handles)
+        },
+        Offer.choose(errors: _*) { h =>
+          logger.info(
+            s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due to " +
+              s"it encountered error")
+          h.close()
+          val newHandles = handles - h
+          exposeNumReadHandles(newHandles)
+          loop(newHandles)
+        },
+        clusterUpdate.recv { newHandles =>
+          // Close any handles that exist in old set but not the new one.
+          (handles &~ newHandles) foreach { h =>
             logger.info(
-              s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due to " +
-                s"it encountered error")
+              s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due " +
+                s"to its host disappeared")
             h.close()
-            val newHandles = handles - h
-            exposeNumReadHandles(newHandles)
-            loop(newHandles)
-          },
-          clusterUpdate.recv { newHandles =>
-            // Close any handles that exist in old set but not the new one.
-            (handles &~ newHandles) foreach { h =>
-              logger.info(
-                s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due " +
-                  s"to its host disappeared")
-              h.close()
-            }
-            exposeNumReadHandles(newHandles)
-            loop(newHandles)
           }
-        )
-        .sync()
+          exposeNumReadHandles(newHandles)
+          loop(newHandles)
+        }
+      ).sync()
     }
 
     // Wait until the ReadHandles set is populated before initializing.
-    val readHandlesPopulatedFuture = readHandles.changes
-      .collect[Try[Set[ReadHandle]]] {
+    val readHandlesPopulatedFuture =
+      readHandles.changes.collect[Try[Set[ReadHandle]]] {
         case r @ Return(x) if x.nonEmpty => r
-      }
-      .toFuture()
+      }.toFuture()
 
     val closeWitness: Future[Closable] = readHandlesPopulatedFuture flatMap {
       // Flatten the Future[Try[T]] to Future[T].

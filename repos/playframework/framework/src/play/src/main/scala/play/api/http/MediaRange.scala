@@ -21,24 +21,17 @@ case class MediaType(
     mediaSubType: String,
     parameters: Seq[(String, Option[String])]) {
   override def toString = {
-    mediaType + "/" + mediaSubType + parameters
-      .map { param =>
-        "; " + param._1 + param._2
-          .map { value =>
-            if (MediaRangeParser
-                  .token(new CharSequenceReader(value))
-                  .next
-                  .atEnd) {
-              "=" + value
-            } else {
-              "=\"" + value
-                .replaceAll("\\\\", "\\\\\\\\")
-                .replaceAll("\"", "\\\\\"") + "\""
-            }
-          }
-          .getOrElse("")
-      }
-      .mkString("")
+    mediaType + "/" + mediaSubType + parameters.map { param =>
+      "; " + param._1 + param._2.map { value =>
+        if (MediaRangeParser.token(new CharSequenceReader(value)).next.atEnd) {
+          "=" + value
+        } else {
+          "=\"" + value.replaceAll("\\\\", "\\\\\\\\").replaceAll(
+            "\"",
+            "\\\\\"") + "\""
+        }
+      }.getOrElse("")
+    }.mkString("")
   }
 }
 
@@ -72,9 +65,8 @@ class MediaRange(
     new MediaType(
       mediaType,
       mediaSubType,
-      parameters ++ qValue
-        .map(q => ("q", Some(q.toString())))
-        .toSeq ++ acceptExtensions).toString
+      parameters ++ qValue.map(q =>
+        ("q", Some(q.toString()))).toSeq ++ acceptExtensions).toString
   }
 }
 

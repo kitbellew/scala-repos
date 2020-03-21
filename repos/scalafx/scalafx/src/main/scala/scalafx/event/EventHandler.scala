@@ -109,12 +109,14 @@ trait EventHandlerDelegate {
     protected val eventHandler: jfxe.EventHandler[J]
 
     def apply(eventType: EventType[J]): Subscription = {
-      EventHandlerDelegate.this
-        .addEventHandler(eventType.delegate, eventHandler)
+      EventHandlerDelegate.this.addEventHandler(
+        eventType.delegate,
+        eventHandler)
       new Subscription {
         def cancel() {
-          EventHandlerDelegate.this
-            .removeEventHandler(eventType.delegate, eventHandler)
+          EventHandlerDelegate.this.removeEventHandler(
+            eventType.delegate,
+            eventHandler)
         }
       }
     }
@@ -219,8 +221,9 @@ trait EventHandlerDelegate {
       EventHandlerDelegate.this.addEventFilter(eventType.delegate, eventFilter)
       new Subscription {
         def cancel() {
-          EventHandlerDelegate.this
-            .removeEventFilter(eventType.delegate, eventFilter)
+          EventHandlerDelegate.this.removeEventFilter(
+            eventType.delegate,
+            eventFilter)
         }
       }
     }

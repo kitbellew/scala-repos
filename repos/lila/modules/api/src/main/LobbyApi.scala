@@ -45,20 +45,20 @@ final class LobbyApi(
       "fen" -> (chess.format.Forsyth exportBoard pov.game.toChess.board),
       "color" -> pov.color.name,
       "lastMove" -> ~pov.game.castleLastMoveTime.lastMoveString,
-      "variant" -> Json
-        .obj("key" -> pov.game.variant.key, "name" -> pov.game.variant.name),
+      "variant" -> Json.obj(
+        "key" -> pov.game.variant.key,
+        "name" -> pov.game.variant.name),
       "speed" -> pov.game.speed.key,
       "perf" -> lila.game.PerfPicker.key(pov.game),
       "rated" -> pov.game.rated,
-      "opponent" -> Json
-        .obj(
-          "id" -> pov.opponent.userId,
-          "username" -> lila.game.Namer
-            .playerString(pov.opponent, withRating = false)(lightUser),
-          "rating" -> pov.opponent.rating,
-          "ai" -> pov.opponent.aiLevel
-        )
-        .noNull,
+      "opponent" -> Json.obj(
+        "id" -> pov.opponent.userId,
+        "username" -> lila.game.Namer.playerString(
+          pov.opponent,
+          withRating = false)(lightUser),
+        "rating" -> pov.opponent.rating,
+        "ai" -> pov.opponent.aiLevel
+      ).noNull,
       "isMyTurn" -> pov.isMyTurn,
       "secondsLeft" -> pov.remainingSeconds
     )

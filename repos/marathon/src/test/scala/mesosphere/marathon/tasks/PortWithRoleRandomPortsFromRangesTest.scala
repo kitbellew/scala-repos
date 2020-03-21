@@ -31,9 +31,8 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
         val rand = new Random(new util.Random(seed.toLong))
 
         assert(
-          PortWithRole
-            .lazyRandomPortsFromRanges(rand)(input)
-            .to[Set] == expectedOutput.to[Set])
+          PortWithRole.lazyRandomPortsFromRanges(rand)(input).to[
+            Set] == expectedOutput.to[Set])
       }
     }
 
@@ -45,10 +44,8 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
   }
 
   test("works for one element range") {
-    assert(
-      PortWithRole
-        .lazyRandomPortsFromRanges()(Seq(portRange("role", 10, 10)))
-        .to[Seq] == Seq(PortWithRole("role", 10)))
+    assert(PortWithRole.lazyRandomPortsFromRanges()(
+      Seq(portRange("role", 10, 10))).to[Seq] == Seq(PortWithRole("role", 10)))
   }
 
   test("works for one range with four ports") {

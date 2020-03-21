@@ -44,14 +44,10 @@ class TestTransportSpec
       val transportB = new TestTransport(addressB, registry)
 
       // Must complete the returned promise to receive events
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
+      Await.result(transportB.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressA, addressB))
 
@@ -68,10 +64,8 @@ class TestTransportSpec
       val registry = new AssociationRegistry
       var transportA = new TestTransport(addressA, registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
 
       // TestTransport throws IllegalAssociationException when trying to associate with non-existing system
       intercept[InvalidAssociationException] {
@@ -85,14 +79,10 @@ class TestTransportSpec
       val transportA = new TestTransport(addressA, registry)
       val transportB = new TestTransport(addressB, registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
+      Await.result(transportB.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressA, addressB))
 
@@ -130,14 +120,10 @@ class TestTransportSpec
       val transportA = new TestTransport(addressA, registry)
       val transportB = new TestTransport(addressB, registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
-        .success(ActorAssociationEventListener(self))
+      Await.result(transportA.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
+      Await.result(transportB.listen, timeout.duration)._2.success(
+        ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressA, addressB))
 

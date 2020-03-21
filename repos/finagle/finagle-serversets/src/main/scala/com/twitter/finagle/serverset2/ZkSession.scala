@@ -304,10 +304,8 @@ private[serverset2] object ZkSession {
       ClientBuilder()
         .hosts(hosts)
         .sessionTimeout(sessionTimeout)
-        .statsReceiver(
-          DefaultStatsReceiver
-            .scope("zkclient")
-            .scope(Zk2Resolver.statsOf(hosts)))
+        .statsReceiver(DefaultStatsReceiver.scope("zkclient").scope(
+          Zk2Resolver.statsOf(hosts)))
         .readOnlyOK()
         .reader(),
       statsReceiver.scope(Zk2Resolver.statsOf(hosts)))
@@ -335,12 +333,9 @@ private[serverset2] object ZkSession {
       logger.info(s"Starting new zk session ${zkSession.sessionId}")
 
       // Upon initial connection, send auth info, then update `u`.
-      zkSession.state.changes
-        .filter {
-          _ == WatchState.SessionState(SessionState.SyncConnected)
-        }
-        .toFuture
-        .unit before zkSession.addAuthInfo(
+      zkSession.state.changes.filter {
+        _ == WatchState.SessionState(SessionState.SyncConnected)
+      }.toFuture.unit before zkSession.addAuthInfo(
         "digest",
         Buf.Utf8(authInfo)) onSuccess { _ =>
         logger.info(
@@ -350,19 +345,14 @@ private[serverset2] object ZkSession {
       }
 
       // Kick off a delayed reconnection on session expiration.
-      zkSession.state.changes
-        .filter {
-          _ == WatchState.SessionState(SessionState.Expired)
-        }
-        .toFuture()
-        .unit
-        .before {
-          val jitter = backoff.next()
-          logger.error(
-            s"Zookeeper session ${zkSession.sessionIdAsHex} has expired. Reconnecting in $jitter")
-          Future.sleep(jitter)
-        }
-        .ensure { reconnect() }
+      zkSession.state.changes.filter {
+        _ == WatchState.SessionState(SessionState.Expired)
+      }.toFuture().unit.before {
+        val jitter = backoff.next()
+        logger.error(
+          s"Zookeeper session ${zkSession.sessionIdAsHex} has expired. Reconnecting in $jitter")
+        Future.sleep(jitter)
+      }.ensure { reconnect() }
     }
 
     reconnect()

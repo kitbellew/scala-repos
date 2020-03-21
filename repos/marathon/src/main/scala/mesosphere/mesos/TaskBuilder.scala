@@ -156,18 +156,14 @@ class TaskBuilder(
         val cmd = app.cmd orElse app.args.map(_ mkString " ") getOrElse ""
         val shell = s"chmod ug+rx $executorPath && exec $executorPath $cmd"
         val command =
-          TaskBuilder
-            .commandInfo(
-              app,
-              Some(taskId),
-              host,
-              resourceMatch.hostPorts,
-              envPrefix)
-            .toBuilder
-            .setValue(shell)
+          TaskBuilder.commandInfo(
+            app,
+            Some(taskId),
+            host,
+            resourceMatch.hostPorts,
+            envPrefix).toBuilder.setValue(shell)
 
-        val info = ExecutorInfo
-          .newBuilder()
+        val info = ExecutorInfo.newBuilder()
           .setExecutorId(ExecutorID.newBuilder().setValue(executorId))
           .setCommand(command)
         containerProto.foreach(info.setContainer)
@@ -217,17 +213,11 @@ class TaskBuilder(
       case _ =>
         // Serialize app.portDefinitions to protos. The port numbers are the service ports, we need to
         // overwrite them the port numbers assigned to this particular task.
-        app.portDefinitions
-          .zip(hostPorts)
-          .map {
-            case (portDefinition, hostPort) =>
-              PortDefinitionSerializer
-                .toProto(portDefinition)
-                .toBuilder
-                .setNumber(hostPort)
-                .build
-          }
-          .asJava
+        app.portDefinitions.zip(hostPorts).map {
+          case (portDefinition, hostPort) =>
+            PortDefinitionSerializer.toProto(
+              portDefinition).toBuilder.setNumber(hostPort).build
+        }.asJava
     }
 
     val portsProto = org.apache.mesos.Protos.Ports.newBuilder
@@ -280,15 +270,13 @@ class TaskBuilder(
 
       // Set NetworkInfo if necessary
       app.ipAddress.foreach { ipAddress =>
-        val ipAddressLabels = Labels
-          .newBuilder()
-          .addAllLabels(ipAddress.labels.map {
+        val ipAddressLabels =
+          Labels.newBuilder().addAllLabels(ipAddress.labels.map {
             case (key, value) =>
               Label.newBuilder.setKey(key).setValue(value).build()
           }.asJava)
         val networkInfo: NetworkInfo.Builder =
-          NetworkInfo
-            .newBuilder()
+          NetworkInfo.newBuilder()
             .addAllGroups(ipAddress.groups.asJava)
             .setLabels(ipAddressLabels)
             .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
@@ -301,8 +289,7 @@ class TaskBuilder(
 
       if (builder.getType.equals(ContainerInfo.Type.MESOS)) {
         builder.setMesos(
-          ContainerInfo.MesosInfo
-            .newBuilder()
+          ContainerInfo.MesosInfo.newBuilder()
             .build())
       }
       Some(builder.build)
@@ -334,8 +321,7 @@ object TaskBuilder {
           portsEnv(declaredPorts, ports) ++ host.map("HOST" -> _).toMap) ++
         app.env
 
-    val builder = CommandInfo
-      .newBuilder()
+    val builder = CommandInfo.newBuilder()
       .setEnvironment(environment(envMap))
 
     app.cmd match {

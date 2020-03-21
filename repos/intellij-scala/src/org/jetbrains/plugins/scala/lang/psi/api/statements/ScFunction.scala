@@ -152,9 +152,10 @@ trait ScFunction
   }
 
   def removeAllClauses() {
-    paramClauses.clauses.headOption
-      .zip(paramClauses.clauses.lastOption)
-      .foreach { p => paramClauses.deleteChildRange(p._1, p._2) }
+    paramClauses.clauses.headOption.zip(
+      paramClauses.clauses.lastOption).foreach { p =>
+      paramClauses.deleteChildRange(p._1, p._2)
+    }
   }
 
   def isNative: Boolean = {
@@ -213,10 +214,8 @@ trait ScFunction
                   new ScTypeParameterType(newParam, subst))
             }
             Some(
-              typeParamSubst
-                .followed(subst)
-                .subst(ScType
-                  .create(fun.getReturnType, getProject, getResolveScope)))
+              typeParamSubst.followed(subst).subst(
+                ScType.create(fun.getReturnType, getProject, getResolveScope)))
           case _ => None
         }
         superReturnType
@@ -421,15 +420,13 @@ trait ScFunction
         }
       case i if i < 0 || i >= effectiveParameterClauses.length => None
       case _ =>
-        effectiveParameterClauses
-          .apply(clausePosition)
-          .effectiveParameters
-          .find {
-            case param =>
-              ScalaPsiUtil.memberNamesEquals(param.name, name) ||
-                param.deprecatedName.exists(
-                  ScalaPsiUtil.memberNamesEquals(_, name))
-          }
+        effectiveParameterClauses.apply(
+          clausePosition).effectiveParameters.find {
+          case param =>
+            ScalaPsiUtil.memberNamesEquals(param.name, name) ||
+              param.deprecatedName.exists(
+                ScalaPsiUtil.memberNamesEquals(_, name))
+        }
     }
   }
 
@@ -542,9 +539,8 @@ trait ScFunction
   override def getIcon(flags: Int) = Icons.FUNCTION
 
   def getReturnType: PsiType = {
-    if (DumbService
-          .getInstance(getProject)
-          .isDumb || !SyntheticClasses.get(getProject).isClassesRegistered) {
+    if (DumbService.getInstance(getProject).isDumb || !SyntheticClasses.get(
+          getProject).isClassesRegistered) {
       return null //no resolve during dumb mode or while synthetic classes is not registered
     }
     getReturnTypeImpl
@@ -563,15 +559,13 @@ trait ScFunction
   def superMethods: Seq[PsiMethod] = {
     val clazz = containingClass
     if (clazz != null)
-      TypeDefinitionMembers
-        .getSignatures(clazz)
-        .forName(ScalaPsiUtil.convertMemberName(name))
-        ._1
-        .get(new PhysicalSignature(this, ScSubstitutor.empty))
-        .getOrElse(return Seq.empty)
-        .supers
-        .filter(_.info.isInstanceOf[PhysicalSignature])
-        .map { _.info.asInstanceOf[PhysicalSignature].method }
+      TypeDefinitionMembers.getSignatures(clazz).forName(
+        ScalaPsiUtil.convertMemberName(name))._1.get(
+        new PhysicalSignature(this, ScSubstitutor.empty)).getOrElse(
+        return Seq.empty).supers.filter(
+        _.info.isInstanceOf[PhysicalSignature]).map {
+        _.info.asInstanceOf[PhysicalSignature].method
+      }
     else Seq.empty
   }
 
@@ -580,19 +574,15 @@ trait ScFunction
   def superMethodAndSubstitutor: Option[(PsiMethod, ScSubstitutor)] = {
     val clazz = containingClass
     if (clazz != null) {
-      val option = TypeDefinitionMembers
-        .getSignatures(clazz)
-        .forName(name)
-        ._1
-        .fastPhysicalSignatureGet(
-          new PhysicalSignature(this, ScSubstitutor.empty))
+      val option = TypeDefinitionMembers.getSignatures(clazz).forName(
+        name)._1.fastPhysicalSignatureGet(
+        new PhysicalSignature(this, ScSubstitutor.empty))
       if (option.isEmpty) return None
-      option.get.primarySuper
-        .filter(_.info.isInstanceOf[PhysicalSignature])
-        .map(node =>
-          (
-            node.info.asInstanceOf[PhysicalSignature].method,
-            node.info.substitutor))
+      option.get.primarySuper.filter(
+        _.info.isInstanceOf[PhysicalSignature]).map(node =>
+        (
+          node.info.asInstanceOf[PhysicalSignature].method,
+          node.info.substitutor))
     } else None
   }
 
@@ -600,11 +590,9 @@ trait ScFunction
     val clazz = containingClass
     val s = new PhysicalSignature(this, ScSubstitutor.empty)
     if (clazz == null) return Seq(s)
-    val t = TypeDefinitionMembers
-      .getSignatures(clazz)
-      .forName(ScalaPsiUtil.convertMemberName(name))
-      ._1
-      .fastPhysicalSignatureGet(s) match {
+    val t = TypeDefinitionMembers.getSignatures(clazz).forName(
+      ScalaPsiUtil.convertMemberName(name))._1.fastPhysicalSignatureGet(
+      s) match {
       case Some(x) => x.supers.map { _.info }
       case None    => Seq[Signature]()
     }
@@ -617,10 +605,8 @@ trait ScFunction
     if (clazz == null) return Seq(s)
     val withSelf = clazz.selfType.isDefined
     if (withSelf) {
-      val signs = TypeDefinitionMembers
-        .getSelfTypeSignatures(clazz)
-        .forName(ScalaPsiUtil.convertMemberName(name))
-        ._1
+      val signs = TypeDefinitionMembers.getSelfTypeSignatures(clazz).forName(
+        ScalaPsiUtil.convertMemberName(name))._1
       signs.fastPhysicalSignatureGet(s) match {
         case Some(x) if x.info.namedElement == this => x.supers.map { _.info }
         case Some(x) =>
@@ -639,11 +625,9 @@ trait ScFunction
           }
       }
     } else {
-      TypeDefinitionMembers
-        .getSignatures(clazz)
-        .forName(ScalaPsiUtil.convertMemberName(name))
-        ._1
-        .fastPhysicalSignatureGet(s) match {
+      TypeDefinitionMembers.getSignatures(clazz).forName(
+        ScalaPsiUtil.convertMemberName(name))._1.fastPhysicalSignatureGet(
+        s) match {
         case Some(x) => x.supers.map { _.info }
         case None    => Seq.empty
       }
@@ -691,34 +675,30 @@ trait ScFunction
       override def getReferenceElements: Array[PsiJavaCodeReferenceElement] = {
         getReferencedTypes.map {
           tp =>
-            PsiElementFactory.SERVICE
-              .getInstance(getProject)
-              .createReferenceElementByType(tp)
+            PsiElementFactory.SERVICE.getInstance(
+              getProject).createReferenceElementByType(tp)
         }
       }
 
       override def getReferencedTypes: Array[PsiClassType] = {
         hasAnnotation("scala.throws") match {
           case Some(annotation) =>
-            annotation.constructor.args
-              .map(_.exprs)
-              .getOrElse(Seq.empty)
-              .flatMap { expr =>
-                expr.getType(TypingContext.empty) match {
-                  case Success(ScParameterizedType(des, Seq(arg)), _) =>
-                    ScType.extractClass(des) match {
-                      case Some(clazz)
-                          if clazz.qualifiedName == "java.lang.Class" =>
-                        ScType.toPsi(arg, getProject, getResolveScope) match {
-                          case c: PsiClassType => Seq(c)
-                          case _               => Seq.empty
-                        }
-                      case _ => Seq.empty
-                    }
-                  case _ => Seq.empty
-                }
+            annotation.constructor.args.map(_.exprs).getOrElse(
+              Seq.empty).flatMap { expr =>
+              expr.getType(TypingContext.empty) match {
+                case Success(ScParameterizedType(des, Seq(arg)), _) =>
+                  ScType.extractClass(des) match {
+                    case Some(clazz)
+                        if clazz.qualifiedName == "java.lang.Class" =>
+                      ScType.toPsi(arg, getProject, getResolveScope) match {
+                        case c: PsiClassType => Seq(c)
+                        case _               => Seq.empty
+                      }
+                    case _ => Seq.empty
+                  }
+                case _ => Seq.empty
               }
-              .toArray
+            }.toArray
           case _ => PsiClassType.EMPTY_ARRAY
         }
       }
@@ -752,8 +732,8 @@ trait ScFunction
       case f: ScFunction =>
         f.name == name && {
           if (strictCheck)
-            new PhysicalSignature(this, ScSubstitutor.empty)
-              .paramTypesEquiv(new PhysicalSignature(f, ScSubstitutor.empty))
+            new PhysicalSignature(this, ScSubstitutor.empty).paramTypesEquiv(
+              new PhysicalSignature(f, ScSubstitutor.empty))
           else true
         }
       case _ => false

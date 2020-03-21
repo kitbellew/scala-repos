@@ -386,9 +386,8 @@ abstract class OutputWriter {
 
   protected[sql] def initConverter(dataSchema: StructType) = {
     converter =
-      CatalystTypeConverters
-        .createToScalaConverter(dataSchema)
-        .asInstanceOf[InternalRow => Row]
+      CatalystTypeConverters.createToScalaConverter(dataSchema).asInstanceOf[
+        InternalRow => Row]
   }
 
   protected[sql] def writeInternal(row: InternalRow): Unit = {
@@ -636,23 +635,21 @@ class HDFSFileCatalog(
         hadoopConf,
         sqlContext.sparkContext)
     } else {
-      val statuses = paths
-        .flatMap { path =>
-          val fs = path.getFileSystem(hadoopConf)
-          logInfo(s"Listing $path on driver")
-          // Dummy jobconf to get to the pathFilter defined in configuration
-          val jobConf = new JobConf(hadoopConf, this.getClass())
-          val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
-          if (pathFilter != null) {
-            Try(fs.listStatus(path, pathFilter)).getOrElse(Array.empty)
-          } else {
-            Try(fs.listStatus(path)).getOrElse(Array.empty)
-          }
+      val statuses = paths.flatMap { path =>
+        val fs = path.getFileSystem(hadoopConf)
+        logInfo(s"Listing $path on driver")
+        // Dummy jobconf to get to the pathFilter defined in configuration
+        val jobConf = new JobConf(hadoopConf, this.getClass())
+        val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
+        if (pathFilter != null) {
+          Try(fs.listStatus(path, pathFilter)).getOrElse(Array.empty)
+        } else {
+          Try(fs.listStatus(path)).getOrElse(Array.empty)
         }
-        .filterNot { status =>
-          val name = status.getPath.getName
-          HadoopFsRelation.shouldFilterOut(name)
-        }
+      }.filterNot { status =>
+        val name = status.getPath.getName
+        HadoopFsRelation.shouldFilterOut(name)
+      }
 
       val (dirs, files) = statuses.partition(_.isDirectory)
 
@@ -714,16 +711,14 @@ class HDFSFileCatalog(
   private def basePaths: Set[Path] = {
     val userDefinedBasePath =
       parameters.get("basePath").map(basePath => Set(new Path(basePath)))
-    userDefinedBasePath
-      .getOrElse {
-        // If the user does not provide basePath, we will just use paths.
-        paths.toSet
-      }
-      .map { hdfsPath =>
-        // Make the path qualified (consistent with listLeafFiles and listLeafFilesInParallel).
-        val fs = hdfsPath.getFileSystem(hadoopConf)
-        hdfsPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
-      }
+    userDefinedBasePath.getOrElse {
+      // If the user does not provide basePath, we will just use paths.
+      paths.toSet
+    }.map { hdfsPath =>
+      // Make the path qualified (consistent with listLeafFiles and listLeafFilesInParallel).
+      val fs = hdfsPath.getFileSystem(hadoopConf)
+      hdfsPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
+    }
   }
 
   def refresh(): Unit = {
@@ -813,14 +808,12 @@ private[sql] object HadoopFsRelation extends Logging {
     val serializableConfiguration = new SerializableConfiguration(hadoopConf)
     val serializedPaths = paths.map(_.toString)
 
-    val fakeStatuses = sparkContext
-      .parallelize(serializedPaths)
-      .map(new Path(_))
-      .flatMap { path =>
-        val fs = path.getFileSystem(serializableConfiguration.value)
-        Try(listLeafFiles(fs, fs.getFileStatus(path))).getOrElse(Array.empty)
-      }
-      .map { status =>
+    val fakeStatuses =
+      sparkContext.parallelize(serializedPaths).map(new Path(_)).flatMap {
+        path =>
+          val fs = path.getFileSystem(serializableConfiguration.value)
+          Try(listLeafFiles(fs, fs.getFileStatus(path))).getOrElse(Array.empty)
+      }.map { status =>
         FakeFileStatus(
           status.getPath.toString,
           status.getLen,
@@ -829,8 +822,7 @@ private[sql] object HadoopFsRelation extends Logging {
           status.getBlockSize,
           status.getModificationTime,
           status.getAccessTime)
-      }
-      .collect()
+      }.collect()
 
     val hadoopFakeStatuses = fakeStatuses.map { f =>
       new FileStatus(

@@ -94,8 +94,9 @@ class LoggingStatement(st: Statement) extends Statement {
   def closeOnCompletion(): Unit =
     st.asInstanceOf[{ def closeOnCompletion(): Unit }].closeOnCompletion()
   def isCloseOnCompletion(): Boolean =
-    st.asInstanceOf[{ def isCloseOnCompletion(): Boolean }]
-      .isCloseOnCompletion()
+    st.asInstanceOf[{
+      def isCloseOnCompletion(): Boolean
+    }].isCloseOnCompletion()
 }
 
 /** A wrapper for `java.sql.PreparedStatement` that logs statements and benchmark results

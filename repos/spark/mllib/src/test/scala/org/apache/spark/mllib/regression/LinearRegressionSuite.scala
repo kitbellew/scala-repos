@@ -50,12 +50,9 @@ class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   // Test if we can correctly learn Y = 3 + 10*X1 + 10*X2
   test("linear regression") {
-    val testRDD = sc
-      .parallelize(
-        LinearDataGenerator
-          .generateLinearInput(3.0, Array(10.0, 10.0), 100, 42),
-        2)
-      .cache()
+    val testRDD = sc.parallelize(
+      LinearDataGenerator.generateLinearInput(3.0, Array(10.0, 10.0), 100, 42),
+      2).cache()
     val linReg = new LinearRegressionWithSGD().setIntercept(true)
     linReg.optimizer.setNumIterations(1000).setStepSize(1.0)
 
@@ -84,12 +81,9 @@ class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   // Test if we can correctly learn Y = 10*X1 + 10*X2
   test("linear regression without intercept") {
-    val testRDD = sc
-      .parallelize(
-        LinearDataGenerator
-          .generateLinearInput(0.0, Array(10.0, 10.0), 100, 42),
-        2)
-      .cache()
+    val testRDD = sc.parallelize(
+      LinearDataGenerator.generateLinearInput(0.0, Array(10.0, 10.0), 100, 42),
+      2).cache()
     val linReg = new LinearRegressionWithSGD().setIntercept(false)
     linReg.optimizer.setNumIterations(1000).setStepSize(1.0)
 
@@ -122,13 +116,11 @@ class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
     val denseRDD = sc.parallelize(
       LinearDataGenerator.generateLinearInput(0.0, Array(10.0, 10.0), 100, 42),
       2)
-    val sparseRDD = denseRDD
-      .map {
-        case LabeledPoint(label, v) =>
-          val sv = Vectors.sparse(10000, Seq((0, v(0)), (9999, v(1))))
-          LabeledPoint(label, sv)
-      }
-      .cache()
+    val sparseRDD = denseRDD.map {
+      case LabeledPoint(label, v) =>
+        val sv = Vectors.sparse(10000, Seq((0, v(0)), (9999, v(1))))
+        LabeledPoint(label, sv)
+    }.cache()
     val linReg = new LinearRegressionWithSGD().setIntercept(false)
     linReg.optimizer.setNumIterations(1000).setStepSize(1.0)
 
@@ -186,14 +178,12 @@ class LinearRegressionClusterSuite
   test("task size should be small in both training and prediction") {
     val m = 4
     val n = 200000
-    val points = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val points = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i =>
           LabeledPoint(1.0, Vectors.dense(Array.fill(n)(random.nextDouble()))))
-      }
-      .cache()
+    }.cache()
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
     val model = LinearRegressionWithSGD.train(points, 2)

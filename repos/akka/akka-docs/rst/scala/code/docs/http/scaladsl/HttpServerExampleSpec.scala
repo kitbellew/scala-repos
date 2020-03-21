@@ -40,12 +40,11 @@ class HttpServerExampleSpec
         : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
       Http().bind(interface = "localhost", port = 8080)
     val bindingFuture: Future[Http.ServerBinding] =
-      serverSource
-        .to(Sink.foreach { connection => // foreach materializes the source
+      serverSource.to(Sink.foreach {
+        connection => // foreach materializes the source
           println("Accepted new connection from " + connection.remoteAddress)
           // ... and then actually handle the connection
-        })
-        .run()
+      }).run()
   }
 
   "binding-failure-high-level-example" in compileOnlySpec {
@@ -185,15 +184,13 @@ class HttpServerExampleSpec
     }
 
     val bindingFuture: Future[Http.ServerBinding] =
-      serverSource
-        .to(Sink.foreach { connection =>
-          println("Accepted new connection from " + connection.remoteAddress)
+      serverSource.to(Sink.foreach { connection =>
+        println("Accepted new connection from " + connection.remoteAddress)
 
-          connection handleWithSyncHandler requestHandler
-        // this is equivalent to
-        // connection handleWith { Flow[HttpRequest] map requestHandler }
-        })
-        .run()
+        connection handleWithSyncHandler requestHandler
+      // this is equivalent to
+      // connection handleWith { Flow[HttpRequest] map requestHandler }
+      }).run()
   }
 
   "low-level-server-example" in compileOnlySpec {

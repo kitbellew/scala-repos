@@ -97,12 +97,9 @@ private object YarnExternalShuffleDriver extends Logging with Matchers {
     var result = "failure"
     val execStateCopy = new File(registeredExecFile.getAbsolutePath + "_dup")
     try {
-      val data = sc
-        .parallelize(0 until 100, 10)
-        .map { x => (x % 10) -> x }
-        .reduceByKey { _ + _ }
-        .collect()
-        .toSet
+      val data = sc.parallelize(0 until 100, 10).map { x =>
+        (x % 10) -> x
+      }.reduceByKey { _ + _ }.collect().toSet
       sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
       data should be((0 until 10).map { x => x -> (x * 10 + 450) }.toSet)
       result = "success"

@@ -167,10 +167,9 @@ class DataFrameCallbackSuite extends QueryTest with SharedSQLContext {
     df.groupBy("i").count().collect()
 
     def getPeakExecutionMemory(stageId: Int): Long = {
-      val peakMemoryAccumulator = sparkListener
-        .getCompletedStageInfos(stageId)
-        .accumulables
-        .filter(_._2.name == InternalAccumulator.PEAK_EXECUTION_MEMORY)
+      val peakMemoryAccumulator =
+        sparkListener.getCompletedStageInfos(stageId).accumulables
+          .filter(_._2.name == InternalAccumulator.PEAK_EXECUTION_MEMORY)
 
       assert(peakMemoryAccumulator.size == 1)
       peakMemoryAccumulator.head._2.value.get.asInstanceOf[Long]

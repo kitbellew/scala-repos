@@ -544,9 +544,9 @@ trait LinearRegressionLibModule[M[+_]]
           val tableReducer: (Table, JType) => M[Table] = {
             (table, jtype) =>
               {
-                val arrayTable = table
-                  .canonicalize(sliceSize, Some(sliceSize * 2))
-                  .toArray[Double]
+                val arrayTable = table.canonicalize(
+                  sliceSize,
+                  Some(sliceSize * 2)).toArray[Double]
 
                 val coeffs0 = arrayTable.reduce(coefficientReducer)
                 val errors0 = coeffs0 flatMap { acc =>

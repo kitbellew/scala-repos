@@ -607,10 +607,8 @@ private[akka] object BarrierCoordinator {
       with NoStackTrace
       with Printer
   final case class WrongBarrier(barrier: String, client: ActorRef, data: Data)
-      extends RuntimeException(data.clients
-        .find(_.fsm == client)
-        .map(_.name.toString)
-        .getOrElse(client.toString) +
+      extends RuntimeException(data.clients.find(_.fsm == client).map(
+        _.name.toString).getOrElse(client.toString) +
         " tried to enter '" + barrier + "' while we were waiting for '" + data.barrier + "'")
       with NoStackTrace
       with Printer

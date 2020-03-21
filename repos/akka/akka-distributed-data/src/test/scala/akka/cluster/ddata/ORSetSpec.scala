@@ -129,24 +129,18 @@ class ORSetSpec extends WordSpec with Matchers {
 
     "be able to have its user set correctly merged with another ORSet with overlapping user sets" in {
       // set 1
-      val c1 = ORSet()
-        .add(node1, user1)
-        .add(node1, user2)
-        .add(node1, user3)
-        .remove(node1, user1)
-        .remove(node1, user3)
+      val c1 = ORSet().add(node1, user1).add(node1, user2).add(
+        node1,
+        user3).remove(node1, user1).remove(node1, user3)
 
       c1.elements should not contain (user1)
       c1.elements should contain(user2)
       c1.elements should not contain (user3)
 
       // set 2
-      val c2 = ORSet()
-        .add(node2, user1)
-        .add(node2, user2)
-        .add(node2, user3)
-        .add(node2, user4)
-        .remove(node2, user3)
+      val c2 = ORSet().add(node2, user1).add(node2, user2).add(
+        node2,
+        user3).add(node2, user4).remove(node2, user3)
 
       c2.elements should contain(user1)
       c2.elements should contain(user2)

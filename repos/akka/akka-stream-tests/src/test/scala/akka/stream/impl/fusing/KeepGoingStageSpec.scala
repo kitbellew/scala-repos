@@ -96,10 +96,8 @@ class KeepGoingStageSpec extends AkkaSpec {
   "A stage with keep-going" must {
 
     "still be alive after all ports have been closed until explicitly closed" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = true))(Keep.both)
-        .run()
+      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(
+        new PingableSink(keepAlive = true))(Keep.both).run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)
@@ -130,10 +128,8 @@ class KeepGoingStageSpec extends AkkaSpec {
     }
 
     "still be alive after all ports have been closed until explicitly failed" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = true))(Keep.both)
-        .run()
+      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(
+        new PingableSink(keepAlive = true))(Keep.both).run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)
@@ -164,10 +160,8 @@ class KeepGoingStageSpec extends AkkaSpec {
     }
 
     "still be alive after all ports have been closed until implicitly failed (via exception)" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = true))(Keep.both)
-        .run()
+      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(
+        new PingableSink(keepAlive = true))(Keep.both).run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)
@@ -198,10 +192,8 @@ class KeepGoingStageSpec extends AkkaSpec {
     }
 
     "close down early if keepAlive is not requested" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = false))(Keep.both)
-        .run()
+      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(
+        new PingableSink(keepAlive = false))(Keep.both).run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)

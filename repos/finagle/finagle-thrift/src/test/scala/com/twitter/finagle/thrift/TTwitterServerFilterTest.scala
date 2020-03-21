@@ -20,8 +20,7 @@ class TTwitterServerFilterTest extends FunSuite {
     val service = new Service[Array[Byte], Array[Byte]] {
       def apply(req: Array[Byte]) =
         Future.value(
-          ClientId.current
-            .map(_.name)
+          ClientId.current.map(_.name)
             .getOrElse("NOCLIENT")
             .getBytes(Charsets.Utf8))
     }

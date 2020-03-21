@@ -31,13 +31,13 @@ class ScalaSourceFilterScope(myDelegate: GlobalSearchScope, project: Project)
 
   def contains(file: VirtualFile): Boolean = {
     (null == myDelegate || myDelegate.contains(file)) && (
-      (FileTypeManager
-        .getInstance()
-        .isFileOfType(file, ScalaFileType.SCALA_FILE_TYPE) ||
+      (FileTypeManager.getInstance().isFileOfType(
+        file,
+        ScalaFileType.SCALA_FILE_TYPE) ||
       ScalaLanguageDerivative.hasDerivativeForFileType(
         file.getFileType)) && myIndex.isInSourceContent(file) ||
-      StdFileTypes.CLASS.getDefaultExtension == file.getExtension && myIndex
-        .isInLibraryClasses(file))
+      StdFileTypes.CLASS.getDefaultExtension == file.getExtension && myIndex.isInLibraryClasses(
+        file))
   }
 }
 
@@ -46,8 +46,8 @@ class SourceFilterScope(myDelegate: GlobalSearchScope, project: Project)
   val myIndex = ProjectRootManager.getInstance(project).getFileIndex
 
   override def contains(file: VirtualFile): Boolean = {
-    (myDelegate == null || myDelegate.contains(file)) && myIndex
-      .isInSourceContent(file)
+    (myDelegate == null || myDelegate.contains(
+      file)) && myIndex.isInSourceContent(file)
   }
 
   override def compare(file1: VirtualFile, file2: VirtualFile): Int = {

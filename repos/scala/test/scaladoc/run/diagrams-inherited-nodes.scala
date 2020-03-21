@@ -51,13 +51,8 @@ object Test extends ScaladocModelTest {
 
     // base package
     // Assert we have 7 nodes and 6 edges
-    val base = rootPackage
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("diagrams")
-      ._package("inherited")
-      ._package("nodes")
+    val base = rootPackage._package("scala")._package("test")._package(
+      "scaladoc")._package("diagrams")._package("inherited")._package("nodes")
 
     def checkDiagram(t: String, nodes: Int, edges: Int) = {
       // trait T1

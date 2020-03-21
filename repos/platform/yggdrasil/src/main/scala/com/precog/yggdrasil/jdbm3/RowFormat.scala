@@ -636,8 +636,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                 row: Int,
                 buffer: ByteBuffer,
                 pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-              (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1
-                .encode(row, buffer, pool)) getOrElse {
+              (writers zip selCols) find (_._2.isDefinedAt(
+                row)) map (_._1.encode(row, buffer, pool)) getOrElse {
                 val flag = SortingRowFormat.flagForCType(CUndefined)
                 if (buffer.remaining() > 0) {
                   buffer.put(flag)
@@ -825,8 +825,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                     val b = Codec[Double].read(bbuf)
                     NumericComparisons.approxCompare(a, b) match {
                       case 0 =>
-                        super.BigDecimalCodec
-                          .read(abuf) compare super.BigDecimalCodec.read(bbuf)
+                        super.BigDecimalCodec.read(
+                          abuf) compare super.BigDecimalCodec.read(bbuf)
                       case cmp =>
                         super.BigDecimalCodec.skip(abuf)
                         super.BigDecimalCodec.skip(bbuf)

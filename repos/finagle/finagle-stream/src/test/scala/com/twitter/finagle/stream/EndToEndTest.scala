@@ -64,8 +64,8 @@ class EndToEndTest extends FunSuite {
   def workIt(what: String)(
       mkClient: (MyStreamResponse) => (StreamService, SocketAddress)) {
     test(
-      "Streams %s: writes from the server arrive on the client's channel"
-        .format(what)) {
+      "Streams %s: writes from the server arrive on the client's channel".format(
+        what)) {
       val c = new WorkItContext()
       import c._
       val (client, _) = mkClient(serverRes)
@@ -92,8 +92,8 @@ class EndToEndTest extends FunSuite {
     }
 
     test(
-      "Streams %s: writes from the server are queued before the client responds"
-        .format(what)) {
+      "Streams %s: writes from the server are queued before the client responds".format(
+        what)) {
       val c = new WorkItContext()
       import c._
       val (client, _) = mkClient(serverRes)
@@ -254,8 +254,8 @@ class EndToEndTest extends FunSuite {
       }
 
     test(
-      "Streams %s: server ignores channel buffer messages after channel close"
-        .format(what)) {
+      "Streams %s: server ignores channel buffer messages after channel close".format(
+        what)) {
       val c = new WorkItContext()
       import c._
       val (client, address) = mkClient(serverRes)
@@ -346,8 +346,10 @@ class EndToEndTest extends FunSuite {
       val errors = new Broker[Throwable]
       errors ! EOF
       Future.value(new StreamResponse {
-        val info = StreamResponse
-          .Info(req.version, StreamResponse.Status(200), req.headers)
+        val info = StreamResponse.Info(
+          req.version,
+          StreamResponse.Status(200),
+          req.headers)
         def messages = new Broker[Buf].recv
         def error = errors.recv
         def release() = errors !! EOF

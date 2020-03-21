@@ -30,9 +30,9 @@ object ScFunctionType {
       project: Project,
       scope: GlobalSearchScope): ValueType = {
     def findClass(fullyQualifiedName: String): Option[PsiClass] = {
-      ScalaPsiManager
-        .instance(project)
-        .getCachedClass(scope, fullyQualifiedName)
+      ScalaPsiManager.instance(project).getCachedClass(
+        scope,
+        fullyQualifiedName)
     }
     findClass("scala.Function" + params.length) match {
       case Some(t: ScTrait) =>
@@ -59,9 +59,9 @@ object ScPartialFunctionType {
       project: Project,
       scope: GlobalSearchScope): ValueType = {
     def findClass(fullyQualifiedName: String): Option[PsiClass] = {
-      ScalaPsiManager
-        .instance(project)
-        .getCachedClass(scope, fullyQualifiedName)
+      ScalaPsiManager.instance(project).getCachedClass(
+        scope,
+        fullyQualifiedName)
     }
     findClass("scala.PartialFunction") match {
       case Some(t: ScTrait) =>
@@ -89,9 +89,9 @@ object ScTupleType {
       project: Project,
       scope: GlobalSearchScope): ValueType = {
     def findClass(fullyQualifiedName: String): Option[PsiClass] = {
-      ScalaPsiManager
-        .instance(project)
-        .getCachedClass(scope, fullyQualifiedName)
+      ScalaPsiManager.instance(project).getCachedClass(
+        scope,
+        fullyQualifiedName)
     }
     findClass("scala.Tuple" + components.length) match {
       case Some(t: ScClass) =>

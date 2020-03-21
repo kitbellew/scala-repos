@@ -9,8 +9,9 @@ object $update {
   import play.modules.reactivemongo.json._
 
   def apply[ID: Writes, A <: Identified[ID]: JsTubeInColl](doc: A): Funit =
-    (implicitly[JsTube[A]] toMongo doc)
-      .fold(e => fufail(e.toString), js => apply($select(doc.id), js))
+    (implicitly[JsTube[A]] toMongo doc).fold(
+      e => fufail(e.toString),
+      js => apply($select(doc.id), js))
   def apply[A <: Identified[String]: JsTubeInColl](doc: A): Funit =
     apply[String, A](doc)
 
@@ -19,9 +20,11 @@ object $update {
       update: B,
       upsert: Boolean = false,
       multi: Boolean = false): Funit =
-    implicitly[InColl[A]].coll
-      .update(selector, update, upsert = upsert, multi = multi)
-      .void
+    implicitly[InColl[A]].coll.update(
+      selector,
+      update,
+      upsert = upsert,
+      multi = multi).void
 
   def doc[ID: Writes, A <: Identified[ID]: TubeInColl](id: ID)(
       op: A => JsObject): Funit =
@@ -59,8 +62,11 @@ object $update {
       update: B,
       upsert: Boolean = false,
       multi: Boolean = false) {
-    implicitly[InColl[A]].coll
-      .uncheckedUpdate(selector, update, upsert = upsert, multi = multi)
+    implicitly[InColl[A]].coll.uncheckedUpdate(
+      selector,
+      update,
+      upsert = upsert,
+      multi = multi)
   }
 
   def fieldUnchecked[ID: Writes, A: InColl, B: Writes](

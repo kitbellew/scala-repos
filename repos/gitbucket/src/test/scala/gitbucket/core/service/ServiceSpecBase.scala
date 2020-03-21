@@ -27,8 +27,8 @@ trait ServiceSpecBase {
         DatabaseConfig.password)
       org.h2.Driver.load()
       using(DriverManager.getConnection(url, user, pass)) { conn =>
-        AutoUpdate.versions.reverse
-          .foreach(_.update(conn, Thread.currentThread.getContextClassLoader))
+        AutoUpdate.versions.reverse.foreach(
+          _.update(conn, Thread.currentThread.getContextClassLoader))
       }
       Database.forURL(url, user, pass).withSession { session =>
         action(session)
@@ -59,9 +59,8 @@ trait ServiceSpecBase {
 
   def generateNewUserWithDBRepository(userName: String, repositoryName: String)(
       implicit s: Session): Account = {
-    val ac = AccountService
-      .getAccountByUserName(userName)
-      .getOrElse(generateNewAccount(userName))
+    val ac = AccountService.getAccountByUserName(userName).getOrElse(
+      generateNewAccount(userName))
     dummyService.insertRepository(repositoryName, userName, None, false)
     ac
   }

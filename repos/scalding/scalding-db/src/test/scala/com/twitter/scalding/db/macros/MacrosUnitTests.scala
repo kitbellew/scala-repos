@@ -201,8 +201,12 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rs.getInt("age")) thenReturn (26)
     when(rs.getString("gender")) thenReturn ("F")
 
-    assert(columnDef.resultSetExtractor
-      .toCaseClass(rs, typeDesc.converter) == User(123, "alice", Some(26), "F"))
+    assert(
+      columnDef.resultSetExtractor.toCaseClass(rs, typeDesc.converter) == User(
+        123,
+        "alice",
+        Some(26),
+        "F"))
   }
 
   "Produces the ColumnDefinition for nested case class " should {
@@ -270,11 +274,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     )
 
     assert(
-      DBMacro
-        .toDBTypeDescriptor[User]
-        .columnDefn
-        .columns
-        .toList === expectedColumns)
+      DBMacro.toDBTypeDescriptor[
+        User].columnDefn.columns.toList === expectedColumns)
 
   }
 

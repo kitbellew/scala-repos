@@ -166,8 +166,7 @@ object ConsumerPerformance {
     var lastReportTime: Long = startMs
     var lastConsumedTime = System.currentTimeMillis
 
-    while (messagesRead < count && System
-             .currentTimeMillis() - lastConsumedTime <= timeout) {
+    while (messagesRead < count && System.currentTimeMillis() - lastConsumedTime <= timeout) {
       val records = consumer.poll(100)
       if (records.count() > 0)
         lastConsumedTime = System.currentTimeMillis
@@ -223,35 +222,33 @@ object ConsumerPerformance {
   }
 
   class ConsumerPerfConfig(args: Array[String]) extends PerfConfig(args) {
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "The connection string for the zookeeper connection in the form host:port. " +
-          "Multiple URLS can be given to allow fail-over. This option is only used with the old consumer."
-      )
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over. This option is only used with the old consumer."
+    )
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
-    val bootstrapServersOpt = parser
-      .accepts(
-        "broker-list",
-        "A broker list to use for connecting if using the new consumer.")
+    val bootstrapServersOpt = parser.accepts(
+      "broker-list",
+      "A broker list to use for connecting if using the new consumer.")
       .withRequiredArg()
       .describedAs("host")
       .ofType(classOf[String])
-    val topicOpt = parser
-      .accepts("topic", "REQUIRED: The topic to consume from.")
-      .withRequiredArg
-      .describedAs("topic")
-      .ofType(classOf[String])
-    val groupIdOpt = parser
-      .accepts("group", "The group id to consume on.")
+    val topicOpt =
+      parser.accepts("topic", "REQUIRED: The topic to consume from.")
+        .withRequiredArg
+        .describedAs("topic")
+        .ofType(classOf[String])
+    val groupIdOpt = parser.accepts("group", "The group id to consume on.")
       .withRequiredArg
       .describedAs("gid")
       .defaultsTo("perf-consumer-" + new Random().nextInt(100000))
       .ofType(classOf[String])
-    val fetchSizeOpt = parser
-      .accepts("fetch-size", "The amount of data to fetch in a single request.")
+    val fetchSizeOpt = parser.accepts(
+      "fetch-size",
+      "The amount of data to fetch in a single request.")
       .withRequiredArg
       .describedAs("size")
       .ofType(classOf[java.lang.Integer])
@@ -261,31 +258,31 @@ object ConsumerPerformance {
       "If the consumer does not already have an established " +
         "offset to consume from, start with the latest message present in the log rather than the earliest message."
     )
-    val socketBufferSizeOpt = parser
-      .accepts("socket-buffer-size", "The size of the tcp RECV size.")
-      .withRequiredArg
-      .describedAs("size")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(2 * 1024 * 1024)
-    val numThreadsOpt = parser
-      .accepts("threads", "Number of processing threads.")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(10)
-    val numFetchersOpt = parser
-      .accepts("num-fetch-threads", "Number of fetcher threads.")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
+    val socketBufferSizeOpt =
+      parser.accepts("socket-buffer-size", "The size of the tcp RECV size.")
+        .withRequiredArg
+        .describedAs("size")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(2 * 1024 * 1024)
+    val numThreadsOpt =
+      parser.accepts("threads", "Number of processing threads.")
+        .withRequiredArg
+        .describedAs("count")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(10)
+    val numFetchersOpt =
+      parser.accepts("num-fetch-threads", "Number of fetcher threads.")
+        .withRequiredArg
+        .describedAs("count")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(1)
     val useNewConsumerOpt =
       parser.accepts("new-consumer", "Use the new consumer implementation.")
-    val consumerConfigOpt = parser
-      .accepts("consumer.config", "Consumer config properties file.")
-      .withRequiredArg
-      .describedAs("config file")
-      .ofType(classOf[String])
+    val consumerConfigOpt =
+      parser.accepts("consumer.config", "Consumer config properties file.")
+        .withRequiredArg
+        .describedAs("config file")
+        .ofType(classOf[String])
 
     val options = parser.parse(args: _*)
 

@@ -89,9 +89,8 @@ object CheckBoxTreeTableCell {
   def forTreeTableColumn[S, T](selectedProperty: IntToBool)
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.CheckBoxTreeTableCell
-        .forTreeTableColumn(selectedProperty)
-        .call(column)
+      jfxscc.CheckBoxTreeTableCell.forTreeTableColumn(selectedProperty).call(
+        column)
   }
 
   /**
@@ -117,9 +116,9 @@ object CheckBoxTreeTableCell {
   def forTreeTableColumn[S, T](selectedProperty: IntToBool, showLabel: Boolean)
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.CheckBoxTreeTableCell
-        .forTreeTableColumn(selectedProperty, showLabel)
-        .call(column)
+      jfxscc.CheckBoxTreeTableCell.forTreeTableColumn(
+        selectedProperty,
+        showLabel).call(column)
   }
 
   /**
@@ -132,8 +131,9 @@ object CheckBoxTreeTableCell {
   def forTreeTableColumn[S, T](
       selectedProperty: JCallIntToBool,
       showLabel: Boolean) =
-    jfxscc.CheckBoxTreeTableCell
-      .forTreeTableColumn[S, T](selectedProperty, showLabel)
+    jfxscc.CheckBoxTreeTableCell.forTreeTableColumn[S, T](
+      selectedProperty,
+      showLabel)
 
   /**
     * $FTTC
@@ -151,9 +151,9 @@ object CheckBoxTreeTableCell {
       converter: StringConverter[T])
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.CheckBoxTreeTableCell
-        .forTreeTableColumn(selectedProperty, converter)
-        .call(column)
+      jfxscc.CheckBoxTreeTableCell.forTreeTableColumn(
+        selectedProperty,
+        converter).call(column)
   }
 
   /**
@@ -166,8 +166,9 @@ object CheckBoxTreeTableCell {
   def forTreeTableColumn[S, T](
       selectedProperty: JCallIntToBool,
       converter: jfxu.StringConverter[T]) =
-    jfxscc.CheckBoxTreeTableCell
-      .forTreeTableColumn[S, T](selectedProperty, converter)
+    jfxscc.CheckBoxTreeTableCell.forTreeTableColumn[S, T](
+      selectedProperty,
+      converter)
 
   /**
     * $FTTC

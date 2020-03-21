@@ -54,14 +54,13 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           editor.getCaretModel.moveToOffset(endOffset)
           context.setLaterRunnable(new Runnable {
             def run() {
-              AutoPopupController
-                .getInstance(context.getProject)
-                .scheduleAutoPopup(
-                  context.getEditor,
-                  new Condition[PsiFile] {
-                    def value(t: PsiFile): Boolean = t == context.getFile
-                  }
-                )
+              AutoPopupController.getInstance(
+                context.getProject).scheduleAutoPopup(
+                context.getEditor,
+                new Condition[PsiFile] {
+                  def value(t: PsiFile): Boolean = t == context.getFile
+                }
+              )
             }
           })
         }
@@ -88,9 +87,10 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           endOffset += 2
           editor.getCaretModel.moveToOffset(endOffset - 1)
         } else if (item.typeParameters.nonEmpty) {
-          val str = item.typeParameters
-            .map(ScType.canonicalText)
-            .mkString("[", ", ", "]")
+          val str = item.typeParameters.map(ScType.canonicalText).mkString(
+            "[",
+            ", ",
+            "]")
           document.insertString(endOffset, str)
           endOffset += str.length()
           editor.getCaretModel.moveToOffset(endOffset)
@@ -109,9 +109,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           if (!item.typeParametersProblem)
             editor.getCaretModel.moveToOffset(endOffset - 1)
         }
-        PsiDocumentManager
-          .getInstance(context.getProject)
-          .commitDocument(document)
+        PsiDocumentManager.getInstance(context.getProject).commitDocument(
+          document)
         val file = context.getFile
         val element = file.findElementAt(endOffset - 1)
         val newT =
@@ -139,9 +138,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                     val newRef = ScalaPsiElementFactory.createReferenceFromText(
                       newRefText,
                       clazz.getManager)
-                    val replaced = ref
-                      .replace(newRef)
-                      .asInstanceOf[ScStableCodeReferenceElement]
+                    val replaced = ref.replace(newRef).asInstanceOf[
+                      ScStableCodeReferenceElement]
                     replaced.bindToElement(clazz)
                   } else {
                     ref.bindToElement(clazz)

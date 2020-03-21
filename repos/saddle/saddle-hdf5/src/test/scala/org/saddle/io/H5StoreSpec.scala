@@ -436,8 +436,9 @@ class H5StoreSpec extends Specification {
           H5Store.readFrame[DateTime, Int, Double](
             tmp,
             "f%s".format(100 + i)) must_== df2
-          H5Store
-            .readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_== df1
+          H5Store.readFrame[DateTime, Int, Double](
+            tmp,
+            "f%s".format(i)) must_== df1
         }
       }
 

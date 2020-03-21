@@ -181,8 +181,8 @@ object Tests {
       log.debug(excludeTestsSet.mkString("Excluding tests: \n\t", "\n\t", ""))
     if (undefinedFrameworks.nonEmpty)
       log.warn(
-        "Arguments defined for test frameworks that are not present:\n\t" + undefinedFrameworks
-          .mkString("\n\t"))
+        "Arguments defined for test frameworks that are not present:\n\t" + undefinedFrameworks.mkString(
+          "\n\t"))
 
     def includeTest(test: TestDefinition) =
       !excludeTestsSet.contains(test.name) && testFilters.forall(filter =>
@@ -191,10 +191,8 @@ object Tests {
     val tests =
       if (orderedFilters.isEmpty) filtered0
       else
-        orderedFilters
-          .flatMap(f => filtered0.filter(d => f(d.name)))
-          .toList
-          .distinct
+        orderedFilters.flatMap(f =>
+          filtered0.filter(d => f(d.name))).toList.distinct
     val uniqueTests = distinctBy(tests)(_.name)
     new ProcessedOptions(
       uniqueTests,
@@ -447,8 +445,8 @@ object Tests {
       log: Logger,
       results: Output,
       noTestsMessage: => String): Unit =
-    TestResultLogger.Default
-      .copy(printNoTests = TestResultLogger.const(_ info noTestsMessage))
+    TestResultLogger.Default.copy(printNoTests =
+      TestResultLogger.const(_ info noTestsMessage))
       .run(log, results, "")
 }
 

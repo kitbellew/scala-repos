@@ -98,10 +98,12 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
             threadIdSet == headThreadIdSet,
             "Round-robin assignment is allowed only if all consumers in the group subscribe to the same topics, " +
               "AND if the stream counts across topics are identical for a given consumer instance.\n" +
-              "Topic %s has the following available consumer streams: %s\n"
-                .format(topic, threadIdSet) +
-              "Topic %s has the following available consumer streams: %s\n"
-                .format(headTopic, headThreadIdSet)
+              "Topic %s has the following available consumer streams: %s\n".format(
+                topic,
+                threadIdSet) +
+              "Topic %s has the following available consumer streams: %s\n".format(
+                headTopic,
+                headThreadIdSet)
           )
       }
 
@@ -109,24 +111,21 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
         CoreUtils.circularIterator(headThreadIdSet.toSeq.sorted)
 
       info("Starting round-robin assignment with consumers " + ctx.consumers)
-      val allTopicPartitions = ctx.partitionsForTopic
-        .flatMap {
-          case (topic, partitions) =>
-            info(
-              "Consumer %s rebalancing the following partitions for topic %s: %s"
-                .format(ctx.consumerId, topic, partitions))
-            partitions.map(partition => {
-              TopicAndPartition(topic, partition)
-            })
-        }
-        .toSeq
-        .sortWith((topicPartition1, topicPartition2) => {
-          /*
-           * Randomize the order by taking the hashcode to reduce the likelihood of all partitions of a given topic ending
-           * up on one consumer (if it has a high enough stream count).
-           */
-          topicPartition1.toString.hashCode < topicPartition2.toString.hashCode
-        })
+      val allTopicPartitions = ctx.partitionsForTopic.flatMap {
+        case (topic, partitions) =>
+          info(
+            "Consumer %s rebalancing the following partitions for topic %s: %s"
+              .format(ctx.consumerId, topic, partitions))
+          partitions.map(partition => {
+            TopicAndPartition(topic, partition)
+          })
+      }.toSeq.sortWith((topicPartition1, topicPartition2) => {
+        /*
+         * Randomize the order by taking the hashcode to reduce the likelihood of all partitions of a given topic ending
+         * up on one consumer (if it has a high enough stream count).
+         */
+        topicPartition1.toString.hashCode < topicPartition2.toString.hashCode
+      })
 
       allTopicPartitions.foreach(topicPartition => {
         val threadId = threadAssignor.next()

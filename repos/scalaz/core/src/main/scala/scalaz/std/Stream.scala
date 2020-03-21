@@ -166,9 +166,8 @@ trait StreamInstances {
   implicit def streamShow[A](implicit A0: Show[A]) =
     new Show[Stream[A]] {
       override def show(as: Stream[A]) =
-        "Stream(" +: stream
-          .intersperse(as.map(A0.show), Cord(","))
-          .foldLeft(Cord())(_ ++ _) :+ ")"
+        "Stream(" +: stream.intersperse(as.map(A0.show), Cord(",")).foldLeft(
+          Cord())(_ ++ _) :+ ")"
     }
 
 }

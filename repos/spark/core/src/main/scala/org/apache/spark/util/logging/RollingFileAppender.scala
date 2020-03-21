@@ -114,13 +114,11 @@ private[spark] class RollingFileAppender(
   /** Retain only last few files */
   private[util] def deleteOldFiles() {
     try {
-      val rolledoverFiles = activeFile.getParentFile
-        .listFiles(new FileFilter {
-          def accept(f: File): Boolean = {
-            f.getName.startsWith(activeFile.getName) && f != activeFile
-          }
-        })
-        .sorted
+      val rolledoverFiles = activeFile.getParentFile.listFiles(new FileFilter {
+        def accept(f: File): Boolean = {
+          f.getName.startsWith(activeFile.getName) && f != activeFile
+        }
+      }).sorted
       val filesToBeDeleted = rolledoverFiles.take(
         math.max(0, rolledoverFiles.length - maxRetainedFiles))
       filesToBeDeleted.foreach { file =>

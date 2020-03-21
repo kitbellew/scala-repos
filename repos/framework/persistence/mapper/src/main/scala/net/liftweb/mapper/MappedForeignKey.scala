@@ -103,15 +103,12 @@ trait MappedForeignKey[
   def immutableMsg: NodeSeq = Text(?("Can't change"))
 
   override def _toForm: Box[Elem] =
-    Full(
-      validSelectValues
-        .flatMap {
-          case Nil => Empty
+    Full(validSelectValues.flatMap {
+      case Nil => Empty
 
-          case xs =>
-            Full(SHtml.selectObj(xs, Full(this.get), this.set))
-        }
-        .openOr(<span>{immutableMsg}</span>))
+      case xs =>
+        Full(SHtml.selectObj(xs, Full(this.get), this.set))
+    }.openOr(<span>{immutableMsg}</span>))
 
   /**
     * Is the key defined
@@ -127,10 +124,8 @@ trait MappedForeignKey[
     synchronized { // issue 165
       // invalidate if the primary key has changed Issue 370
       if (_obj.isEmpty || (_calcedObj && _obj.isDefined &&
-          _obj
-            .openOrThrowException("_obj was just checked as full.")
-            .primaryKeyField
-            .get != this.i_is_!)) {
+          _obj.openOrThrowException(
+            "_obj was just checked as full.").primaryKeyField.get != this.i_is_!)) {
         _obj = Empty
         _calcedObj = false
       }

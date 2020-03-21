@@ -430,15 +430,13 @@ class EvolutionsWebCommands @Inject() (
     val resolveEvolutions =
       """/@evolutions/resolve/([a-zA-Z0-9_]+)/([0-9]+)""".r
 
-    lazy val redirectUrl = request.queryString
-      .get("redirect")
-      .filterNot(_.isEmpty)
-      .map(_.head)
-      .getOrElse("/")
+    lazy val redirectUrl = request.queryString.get("redirect").filterNot(
+      _.isEmpty).map(_.head).getOrElse("/")
 
     // Regex removes all parent directories from request path
-    request.path
-      .replaceFirst("^((?!/@evolutions).)*(/@evolutions.*$)", "$2") match {
+    request.path.replaceFirst(
+      "^((?!/@evolutions).)*(/@evolutions.*$)",
+      "$2") match {
 
       case applyEvolutions(db) => {
         Some {

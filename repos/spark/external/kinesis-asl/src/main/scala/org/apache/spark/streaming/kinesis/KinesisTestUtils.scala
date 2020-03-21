@@ -151,9 +151,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
     try {
       val describeStreamRequest =
         new DescribeStreamRequest().withStreamName(streamNameToDescribe)
-      val desc = kinesisClient
-        .describeStream(describeStreamRequest)
-        .getStreamDescription()
+      val desc = kinesisClient.describeStream(
+        describeStreamRequest).getStreamDescription()
       Some(desc)
     } catch {
       case rnfe: ResourceNotFoundException =>
@@ -262,8 +261,7 @@ private[kinesis] class SimpleDataGenerator(client: AmazonKinesisClient)
     data.foreach { num =>
       val str = num.toString
       val data = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8))
-      val putRecordRequest = new PutRecordRequest()
-        .withStreamName(streamName)
+      val putRecordRequest = new PutRecordRequest().withStreamName(streamName)
         .withData(data)
         .withPartitionKey(str)
 

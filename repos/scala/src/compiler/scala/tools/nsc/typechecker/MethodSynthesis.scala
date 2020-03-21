@@ -245,8 +245,7 @@ trait MethodSynthesis {
               // Shouldn't happen, but let's give ourselves a reasonable error when it does
               context.error(
                 cd.pos,
-                s"Internal error: Symbol for synthetic factory method not found among ${context.unit.synthetics.keys
-                  .mkString(", ")}")
+                s"Internal error: Symbol for synthetic factory method not found among ${context.unit.synthetics.keys.mkString(", ")}")
               // Soldier on for the sake of the presentation compiler
               List(cd)
           }

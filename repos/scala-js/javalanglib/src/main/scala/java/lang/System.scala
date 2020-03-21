@@ -34,8 +34,7 @@ object System {
     // We've got to use selectDynamic explicitly not to crash Scala 2.10
     if (global.selectDynamic("performance")) {
       if (global.performance.selectDynamic("now")) {
-        () =>
-          global.performance.now().asInstanceOf[scala.Double]
+        () => global.performance.now().asInstanceOf[scala.Double]
       } else if (global.performance.selectDynamic("webkitNow")) {
         () => global.performance.webkitNow().asInstanceOf[scala.Double]
       } else {

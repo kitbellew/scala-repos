@@ -35,8 +35,7 @@ object Prismic {
 
   def getDocument(id: String): Fu[Option[Document]] =
     prismicApi flatMap { api =>
-      api
-        .forms("everything")
+      api.forms("everything")
         .query(s"""[[:d = at(document.id, "$id")]]""")
         .ref(api.master.ref)
         .submit() map {
@@ -57,8 +56,7 @@ object Prismic {
 
   def getVariant(variant: chess.variant.Variant) =
     prismicApi flatMap { api =>
-      api
-        .forms("variant")
+      api.forms("variant")
         .query(s"""[[:d = at(my.variant.key, "${variant.key}")]]""")
         .ref(api.master.ref)
         .submit() map {

@@ -129,8 +129,8 @@ object ConfigCommand {
       props.setProperty(pair(0).trim, pair(1).trim))
     if (props.containsKey(LogConfig.MessageFormatVersionProp)) {
       println(
-        s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props
-          .getProperty(LogConfig.MessageFormatVersionProp)} is specified. " +
+        s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props.getProperty(
+          LogConfig.MessageFormatVersionProp)} is specified. " +
           s"This configuration will be ignored if the version is newer than the inter.broker.protocol.version specified in the broker.")
     }
     props
@@ -150,11 +150,10 @@ object ConfigCommand {
 
   class ConfigCommandOptions(args: Array[String]) {
     val parser = new OptionParser
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
-          "Multiple URLS can be given to allow fail-over.")
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over.")
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
@@ -162,34 +161,32 @@ object ConfigCommand {
       parser.accepts("alter", "Alter the configuration for the entity.")
     val describeOpt =
       parser.accepts("describe", "List configs for the given entity.")
-    val entityType = parser
-      .accepts("entity-type", "Type of entity (topics/clients)")
-      .withRequiredArg
-      .ofType(classOf[String])
-    val entityName = parser
-      .accepts("entity-name", "Name of entity (topic name/client id)")
-      .withRequiredArg
-      .ofType(classOf[String])
+    val entityType =
+      parser.accepts("entity-type", "Type of entity (topics/clients)")
+        .withRequiredArg
+        .ofType(classOf[String])
+    val entityName =
+      parser.accepts("entity-name", "Name of entity (topic name/client id)")
+        .withRequiredArg
+        .ofType(classOf[String])
 
     val nl = System.getProperty("line.separator")
-    val addConfig = parser
-      .accepts(
-        "add-config",
-        "Key Value pairs configs to add 'k1=v1,k2=v2'. The following is a list of valid configurations: " +
-          "For entity_type '" + ConfigType.Topic + "': " + nl + LogConfig.configNames
-          .map("\t" + _)
-          .mkString(nl) + nl +
-          "For entity_type '" + ConfigType.Client + "': " + nl + "\t" + ClientConfigOverride.ProducerOverride
-          + nl + "\t" + ClientConfigOverride.ConsumerOverride
-      )
+    val addConfig = parser.accepts(
+      "add-config",
+      "Key Value pairs configs to add 'k1=v1,k2=v2'. The following is a list of valid configurations: " +
+        "For entity_type '" + ConfigType.Topic + "': " + nl + LogConfig.configNames.map(
+        "\t" + _).mkString(nl) + nl +
+        "For entity_type '" + ConfigType.Client + "': " + nl + "\t" + ClientConfigOverride.ProducerOverride
+        + nl + "\t" + ClientConfigOverride.ConsumerOverride
+    )
       .withRequiredArg
       .ofType(classOf[String])
       .withValuesSeparatedBy(',')
-    val deleteConfig = parser
-      .accepts("delete-config", "config keys to remove 'k1,k2'")
-      .withRequiredArg
-      .ofType(classOf[String])
-      .withValuesSeparatedBy(',')
+    val deleteConfig =
+      parser.accepts("delete-config", "config keys to remove 'k1,k2'")
+        .withRequiredArg
+        .ofType(classOf[String])
+        .withValuesSeparatedBy(',')
     val helpOpt = parser.accepts("help", "Print usage information.")
     val options = parser.parse(args: _*)
 
@@ -241,8 +238,9 @@ object ConfigCommand {
       if (!entityTypeVal.equals(ConfigType.Topic) && !entityTypeVal.equals(
             ConfigType.Client)) {
         throw new IllegalArgumentException(
-          "--entity-type must be '%s' or '%s'"
-            .format(ConfigType.Topic, ConfigType.Client))
+          "--entity-type must be '%s' or '%s'".format(
+            ConfigType.Topic,
+            ConfigType.Client))
       }
     }
   }

@@ -14,8 +14,9 @@ object Build extends Build {
     }
 
   override def projects = root +: subs
-  lazy val root = Project("root", file("."))
-    .settings(checkLoader <<= checkTask, concurrentRestrictions := Nil)
+  lazy val root = Project("root", file(".")).settings(
+    checkLoader <<= checkTask,
+    concurrentRestrictions := Nil)
 
   lazy val subs = (for (i <- 1 to 20) yield newProject(i)).toSeq
 

@@ -304,11 +304,9 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       blockInfoManager.unlock("block")
     }
     assert(
-      Await
-        .result(
-          Future.firstCompletedOf(Seq(write1Future, write2Future)),
-          1.seconds)
-        .isDefined)
+      Await.result(
+        Future.firstCompletedOf(Seq(write1Future, write2Future)),
+        1.seconds).isDefined)
     val firstWriteWinner = if (write1Future.isCompleted) 1 else 2
     withTaskId(firstWriteWinner) {
       blockInfoManager.unlock("block")

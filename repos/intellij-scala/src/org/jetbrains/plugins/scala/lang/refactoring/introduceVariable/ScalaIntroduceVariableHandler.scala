@@ -48,9 +48,12 @@ class ScalaIntroduceVariableHandler
         file,
         selectionStart,
         selectionEnd)
-      val expr = ScalaRefactoringUtil
-        .getExpression(project, editor, file, selectionStart, selectionEnd)
-        .map(_._1)
+      val expr = ScalaRefactoringUtil.getExpression(
+        project,
+        editor,
+        file,
+        selectionStart,
+        selectionEnd).map(_._1)
       typeElem.orElse(expr)
     }
 
@@ -110,9 +113,8 @@ class ScalaIntroduceVariableHandler
     }
 
     if (typeElement.isDefined) {
-      if (editor
-            .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
-            .isData) {
+      if (editor.getUserData(
+            IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO).isData) {
         invokeTypeElement(project, editor, file, typeElement.get)
       } else {
         ScalaRefactoringUtil.afterTypeElementChoosing(

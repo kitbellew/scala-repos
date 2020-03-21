@@ -194,30 +194,27 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     else {
       val queryString = new ListBuffer[Tree]
       val remaining = new ListBuffer[c.Expr[SetParameter[Unit]]]
-      paramsList
-        .asInstanceOf[List[c.Expr[Any]]]
-        .iterator
-        .zip(rawQueryParts.iterator)
-        .foreach {
-          case (param, rawQueryPart) =>
-            val (queryPart, append) = decode(rawQueryPart)
-            queryString.append(Literal(Constant(queryPart)))
-            if (append) queryString.append(param.tree)
-            else {
-              queryString.append(Literal(Constant("?")))
-              remaining += c.Expr[SetParameter[Unit]] {
-                Apply(
-                  Select(
-                    implicitTree(
-                      TypeTree(param.actualType),
-                      SetParameterTypeTree),
-                    TermName("applied")
-                  ),
-                  List(param.tree)
-                )
-              }
+      paramsList.asInstanceOf[List[c.Expr[Any]]].iterator.zip(
+        rawQueryParts.iterator).foreach {
+        case (param, rawQueryPart) =>
+          val (queryPart, append) = decode(rawQueryPart)
+          queryString.append(Literal(Constant(queryPart)))
+          if (append) queryString.append(param.tree)
+          else {
+            queryString.append(Literal(Constant("?")))
+            remaining += c.Expr[SetParameter[Unit]] {
+              Apply(
+                Select(
+                  implicitTree(
+                    TypeTree(param.actualType),
+                    SetParameterTypeTree),
+                  TermName("applied")
+                ),
+                List(param.tree)
+              )
             }
-        }
+          }
+      }
       queryString.append(Literal(Constant(rawQueryParts.last)))
       val pconv =
         if (remaining.isEmpty) Select(SetParameterTree, TermName("SetUnit"))

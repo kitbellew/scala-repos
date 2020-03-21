@@ -76,16 +76,16 @@ abstract class RemoteNodeRestartGateSpec
 
         identify(second, "subject")
 
-        EventFilter
-          .warning(pattern = "address is now gated", occurrences = 1)
-          .intercept {
-            Await.result(
-              RARP(system).provider.transport.managementCommand(
-                ForceDisassociateExplicitly(
-                  node(second).address,
-                  AssociationHandle.Unknown)),
-              3.seconds)
-          }
+        EventFilter.warning(
+          pattern = "address is now gated",
+          occurrences = 1).intercept {
+          Await.result(
+            RARP(system).provider.transport.managementCommand(
+              ForceDisassociateExplicitly(
+                node(second).address,
+                AssociationHandle.Unknown)),
+            3.seconds)
+        }
 
         enterBarrier("gated")
 
@@ -129,9 +129,10 @@ abstract class RemoteNodeRestartGateSpec
         // Pierce the gate
         within(30.seconds) {
           awaitAssert {
-            freshSystem
-              .actorSelection(RootActorPath(firstAddress) / "user" / "subject")
-              .tell(Identify("subject"), probe.ref)
+            freshSystem.actorSelection(
+              RootActorPath(firstAddress) / "user" / "subject").tell(
+              Identify("subject"),
+              probe.ref)
             probe.expectMsgType[ActorIdentity].ref.get
           }
         }

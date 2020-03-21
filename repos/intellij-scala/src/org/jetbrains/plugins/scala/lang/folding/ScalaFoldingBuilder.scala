@@ -101,8 +101,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       }
       val treeParent: ASTNode = node.getTreeParent
       if (!ScalaCodeFoldingSettings.getInstance().isFoldingForAllBlocks &&
-          treeParent != null && (treeParent.getPsi
-            .isInstanceOf[ScArgumentExprList] ||
+          treeParent != null && (treeParent.getPsi.isInstanceOf[
+            ScArgumentExprList] ||
           treeParent.getPsi.isInstanceOf[ScPatternDefinition] ||
           treeParent.getPsi.isInstanceOf[ScVariableDefinition] ||
           treeParent.getPsi.isInstanceOf[ScForStatement] ||
@@ -178,11 +178,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       }
     } else if (node.getElementType == ScalaElementTypes.SIMPLE_TYPE && node.getText == "Unit" &&
                node.getPsi.getParent.isInstanceOf[ScFunctionDefinition] &&
-               ScalaCodeStyleSettings
-                 .getInstance(node.getPsi.getProject)
-                 .ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT && ScalaCodeFoldingSettings
-                 .getInstance()
-                 .isCollapseCustomRegions) {
+               ScalaCodeStyleSettings.getInstance(
+                 node.getPsi.getProject).ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT && ScalaCodeFoldingSettings.getInstance().isCollapseCustomRegions) {
 
       node.getPsi match {
         case sc: ScalaPsiElement =>
@@ -284,9 +281,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
             return "/.../"
           else {
             if (isTagRegionStart(node.getText)) {
-              val customText: String = node.getText
-                .replaceFirst(".*desc\\s*=\\s*\"(.*)\".*", "$1")
-                .trim
+              val customText: String = node.getText.replaceFirst(
+                ".*desc\\s*=\\s*\"(.*)\".*",
+                "$1").trim
               return if (customText.isEmpty) "..." else customText
             } else if (isSimpleRegionStart(node.getText)) {
               val customText: String =
@@ -325,29 +322,24 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     else {
       node.getElementType match {
         case ScalaTokenTypes.tBLOCK_COMMENT
-            if ScalaCodeFoldingSettings
-              .getInstance()
-              .isCollapseBlockComments && !isWorksheetResults(node) =>
+            if ScalaCodeFoldingSettings.getInstance().isCollapseBlockComments && !isWorksheetResults(
+              node) =>
           true
         case ScalaTokenTypes.tLINE_COMMENT
             if !isCustomRegionStart(node.getText) &&
-              ScalaCodeFoldingSettings
-                .getInstance()
-                .isCollapseLineComments && !isWorksheetResults(node) =>
+              ScalaCodeFoldingSettings.getInstance().isCollapseLineComments && !isWorksheetResults(
+              node) =>
           true
         case ScalaTokenTypes.tLINE_COMMENT
             if isCustomRegionStart(node.getText) &&
               ScalaCodeFoldingSettings.getInstance().isCollapseCustomRegions =>
           true
         case ScalaDocElementTypes.SCALA_DOC_COMMENT
-            if ScalaCodeFoldingSettings
-              .getInstance()
-              .isCollapseScalaDocComments && !isWorksheetResults(node) =>
+            if ScalaCodeFoldingSettings.getInstance().isCollapseScalaDocComments && !isWorksheetResults(
+              node) =>
           true
         case ScalaElementTypes.TEMPLATE_BODY
-            if ScalaCodeFoldingSettings
-              .getInstance()
-              .isCollapseTemplateBodies =>
+            if ScalaCodeFoldingSettings.getInstance().isCollapseTemplateBodies =>
           true
         case ScalaElementTypes.PACKAGING
             if ScalaCodeFoldingSettings.getInstance().isCollapsePackagings =>
@@ -356,35 +348,26 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
             if ScalaCodeFoldingSettings.getInstance().isCollapseImports =>
           true
         case ScalaTokenTypes.tSH_COMMENT
-            if ScalaCodeFoldingSettings
-              .getInstance()
-              .isCollapseShellComments && !isWorksheetResults(node) =>
+            if ScalaCodeFoldingSettings.getInstance().isCollapseShellComments && !isWorksheetResults(
+              node) =>
           true
         case ScalaElementTypes.MATCH_STMT
-            if ScalaCodeFoldingSettings
-              .getInstance()
-              .isCollapseMultilineBlocks =>
+            if ScalaCodeFoldingSettings.getInstance().isCollapseMultilineBlocks =>
           true
         case ScalaElementTypes.BLOCK_EXPR
-            if ScalaCodeFoldingSettings
-              .getInstance()
-              .isCollapseMultilineBlocks =>
+            if ScalaCodeFoldingSettings.getInstance().isCollapseMultilineBlocks =>
           true
         case ScalaElementTypes.SIMPLE_TYPE => true
         case _
             if node.getPsi.isInstanceOf[ScBlockExpr] &&
               node.getTreeParent.getElementType == ScalaElementTypes.ARG_EXPRS &&
-              ScalaCodeFoldingSettings
-                .getInstance()
-                .isCollapseMethodCallBodies =>
+              ScalaCodeFoldingSettings.getInstance().isCollapseMethodCallBodies =>
           true
         case _
             if node.getTreeParent.getElementType == ScalaElementTypes.FUNCTION_DEFINITION &&
-              ScalaCodeFoldingSettings
-                .getInstance()
-                .isCollapseMethodCallBodies &&
-              isMultilineFuncBody(node.getTreeParent.getPsi
-                .asInstanceOf[ScFunctionDefinition])._1 =>
+              ScalaCodeFoldingSettings.getInstance().isCollapseMethodCallBodies &&
+              isMultilineFuncBody(node.getTreeParent.getPsi.asInstanceOf[
+                ScFunctionDefinition])._1 =>
           true
         case _
             if node.getPsi.isInstanceOf[ScTypeProjection] &&
@@ -397,15 +380,11 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         case _
             if node.getPsi.isInstanceOf[ScLiteral] &&
               node.getPsi.asInstanceOf[ScLiteral].isMultiLineString &&
-              ScalaCodeFoldingSettings
-                .getInstance()
-                .isCollapseMultilineStrings =>
+              ScalaCodeFoldingSettings.getInstance().isCollapseMultilineStrings =>
           true
         case _
             if node.getPsi.isInstanceOf[ScArgumentExprList] &&
-              ScalaCodeFoldingSettings
-                .getInstance()
-                .isCollapseMultilineBlocks =>
+              ScalaCodeFoldingSettings.getInstance().isCollapseMultilineBlocks =>
           true
         case _ => false
       }

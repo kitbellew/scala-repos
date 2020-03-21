@@ -161,7 +161,9 @@ private[impl] class ReviveOffersActor(
 
   protected def schedulerCheck(duration: FiniteDuration): Cancellable = {
     import context.dispatcher
-    context.system.scheduler
-      .scheduleOnce(duration, self, ReviveOffersActor.TimedCheck)
+    context.system.scheduler.scheduleOnce(
+      duration,
+      self,
+      ReviveOffersActor.TimedCheck)
   }
 }

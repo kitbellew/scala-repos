@@ -208,8 +208,8 @@ object TraversablesOrderedBuf {
             $element.foreach { t =>
               val $target = t
               $currentHash =
-                _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${innerBuf
-              .hash(target)})
+                _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${innerBuf.hash(
+              target)})
               // go ahead and compute the length so we don't traverse twice for lists
               $len += 1
             }

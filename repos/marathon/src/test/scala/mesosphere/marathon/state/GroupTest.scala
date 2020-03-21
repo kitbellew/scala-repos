@@ -169,9 +169,8 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
 
     it("can delete a node based in the path") {
       Given("an existing group with two subgroups")
-      val current = Group.empty
-        .makeGroup("/test/foo/one".toPath)
-        .makeGroup("/test/bla/two".toPath)
+      val current = Group.empty.makeGroup("/test/foo/one".toPath).makeGroup(
+        "/test/bla/two".toPath)
 
       When("a node will be deleted based on path")
       val group = current.remove("/test/foo".toPath)
@@ -226,7 +225,8 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
       Given(
         "an existing group /some/nested which does not directly or indirectly contain apps")
       val current =
-        Group.empty
+        Group
+          .empty
           .makeGroup("/some/nested/path".toPath)
           .makeGroup("/some/nested/path2".toPath)
 
@@ -257,7 +257,8 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
     it("cannot replace a group with apps by an app definition") {
       Given("an existing group /some/nested which does contain an app")
       val current =
-        Group.empty
+        Group
+          .empty
           .makeGroup("/some/nested/path".toPath)
           .makeGroup("/some/nested/path2".toPath)
           .updateApp(
@@ -297,7 +298,8 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
       Then("the conflict will be detected by our V2 API model validation")
       val result = validate(changed)
       result.isFailure should be(true)
-      ValidationHelper.getAllRuleConstrains(result).head.message should be(
+      ValidationHelper.getAllRuleConstrains(result).head
+        .message should be(
         "Groups and Applications may not have the same identifier.")
     }
 

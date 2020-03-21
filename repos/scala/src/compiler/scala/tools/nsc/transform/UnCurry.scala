@@ -93,12 +93,13 @@ abstract class UnCurry
       f(newMembers.remove(owner).getOrElse(Nil).toList)
 
     private def newFunction0(body: Tree): Tree = {
-      val result = localTyper
-        .typedPos(body.pos)(Function(Nil, body))
-        .asInstanceOf[Function]
+      val result = localTyper.typedPos(body.pos)(
+        Function(Nil, body)).asInstanceOf[Function]
       log(
-        "Change owner from %s to %s in %s"
-          .format(currentOwner, result.symbol, result.body))
+        "Change owner from %s to %s in %s".format(
+          currentOwner,
+          result.symbol,
+          result.body))
       result.body changeOwner (currentOwner -> result.symbol)
       transformFunction(result)
     }
@@ -495,8 +496,8 @@ abstract class UnCurry
 
       // true if the target is a lambda body that's been lifted into a method
       def isLiftedLambdaBody(target: Tree) =
-        target.symbol.isLocalToBlock && target.symbol.isArtifact && target.symbol.name
-          .containsName(nme.ANON_FUN_NAME)
+        target.symbol.isLocalToBlock && target.symbol.isArtifact && target.symbol.name.containsName(
+          nme.ANON_FUN_NAME)
 
       val result =
         (
@@ -543,8 +544,15 @@ abstract class UnCurry
                         rhs1)
                     }
                   } else {
-                    super.transform(treeCopy
-                      .DefDef(dd, mods, name, tparams, vparamssNoRhs, tpt, rhs))
+                    super.transform(
+                      treeCopy.DefDef(
+                        dd,
+                        mods,
+                        name,
+                        tparams,
+                        vparamssNoRhs,
+                        tpt,
+                        rhs))
                   }
                 }
               case ValDef(_, _, _, rhs) =>
@@ -719,8 +727,9 @@ abstract class UnCurry
             applyUnary()
           case ret @ Return(expr) if isNonLocalReturn(ret) =>
             log(
-              "non-local return from %s to %s"
-                .format(currentOwner.enclMethod, ret.symbol))
+              "non-local return from %s to %s".format(
+                currentOwner.enclMethod,
+                ret.symbol))
             atPos(ret.pos)(nonLocalReturnThrow(expr, ret.symbol))
           case TypeTree() =>
             tree
@@ -836,9 +845,10 @@ abstract class UnCurry
                     }
                   val info = info0.normalize
                   val tempValName = unit freshTermName (p.name + "$")
-                  val newSym = dd.symbol
-                    .newTermSymbol(tempValName, p.pos, SYNTHETIC)
-                    .setInfo(info)
+                  val newSym = dd.symbol.newTermSymbol(
+                    tempValName,
+                    p.pos,
+                    SYNTHETIC).setInfo(info)
                   atPos(p.pos)(
                     ValDef(newSym, gen.mkAttributedCast(Ident(p.symbol), info)))
                 }
@@ -917,9 +927,9 @@ abstract class UnCurry
       }
       val forwresult = dd.symbol.tpe_*.finalResultType
       val forwformsyms = map2(forwformals, flatparams)((tp, oldparam) =>
-        currentClass
-          .newValueParameter(oldparam.name.toTermName, oldparam.pos)
-          .setInfo(tp))
+        currentClass.newValueParameter(
+          oldparam.name.toTermName,
+          oldparam.pos).setInfo(tp))
       def mono = MethodType(forwformsyms, forwresult)
       val forwtype = dd.symbol.tpe match {
         case MethodType(_, _) => mono
@@ -959,10 +969,8 @@ abstract class UnCurry
       }
 
       // check if the method with that name and those arguments already exists in the template
-      currentClass.info
-        .member(forwsym.name)
-        .alternatives
-        .find(s => s != forwsym && s.tpe.matches(forwsym.tpe)) match {
+      currentClass.info.member(forwsym.name).alternatives.find(s =>
+        s != forwsym && s.tpe.matches(forwsym.tpe)) match {
         case Some(s) =>
           reporter.error(
             dd.symbol.pos,

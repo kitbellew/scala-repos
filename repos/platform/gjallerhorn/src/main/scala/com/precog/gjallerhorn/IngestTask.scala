@@ -103,14 +103,12 @@ class IngestTask(settings: Settings)
                     |1e-308    "a,b,c"    33    43
                     |-1e308    hello world    x    2""".stripMargin
 
-    val expected = JParser
-      .parseFromString("""[
+    val expected = JParser.parseFromString(
+      """[
       { "a": 1.2, "b": "asdf", "c": null, "d": null },
       { "a": 1e-308, "b": "a,b,c", "c": "33", "d": 43 },
       { "a": -1e308, "b": "hello world", "c": "x", "d": 2 }
-    ]""")
-      .valueOr(throw _)
-      .children
+    ]""").valueOr(throw _).children
 
     //FIXME
     // csv can no longer be ingested this way

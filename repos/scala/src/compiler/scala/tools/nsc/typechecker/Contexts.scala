@@ -1515,8 +1515,9 @@ trait Contexts { self: Analyzer =>
     // [JZ] Contexts, pre- the SI-7345 refactor, avoided allocating the buffers until needed. This
     // is replicated here out of conservatism.
     private def newBuffer[A] =
-      mutable.LinkedHashSet
-        .empty[A] // Important to use LinkedHS for stable results.
+      mutable.LinkedHashSet.empty[
+        A
+      ] // Important to use LinkedHS for stable results.
     final protected def errorBuffer = {
       if (_errorBuffer == null) _errorBuffer = newBuffer; _errorBuffer
     }
@@ -1629,8 +1630,8 @@ trait Contexts { self: Analyzer =>
       def current = selectors.head
       while ((selectors ne Nil) && result == NoSymbol) {
         if (current.rename == name.toTermName)
-          result = qual.tpe
-            .nonLocalMember( // new to address #2733: consider only non-local members for imports
+          result =
+            qual.tpe.nonLocalMember( // new to address #2733: consider only non-local members for imports
               if (name.isTypeName) current.name.toTypeName else current.name)
         else if (current.name == name.toTermName)
           renamed = true

@@ -77,21 +77,19 @@ object RawZipkinTracer {
 
   // Try to flush the tracers when we shut
   // down. We give it 100ms.
-  Runtime
-    .getRuntime()
-    .addShutdownHook(new Thread {
-      setName("RawZipkinTracer-ShutdownHook")
-      override def run() {
-        val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
-        val joined = Future.join(tracers map (_.flush()))
-        try {
-          Await.result(joined, 100.milliseconds)
-        } catch {
-          case _: TimeoutException =>
-            System.err.println("Failed to flush all traces before quitting")
-        }
+  Runtime.getRuntime().addShutdownHook(new Thread {
+    setName("RawZipkinTracer-ShutdownHook")
+    override def run() {
+      val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
+      val joined = Future.join(tracers map (_.flush()))
+      try {
+        Await.result(joined, 100.milliseconds)
+      } catch {
+        case _: TimeoutException =>
+          System.err.println("Failed to flush all traces before quitting")
       }
-    })
+    }
+  })
 }
 
 /**
@@ -210,14 +208,11 @@ private[thrift] class RawZipkinTracer(
     * Log the span data via Scribe.
     */
   def logSpans(spans: Seq[Span]): Future[Unit] = {
-    client
-      .log(createLogEntries(spans))
-      .respond {
-        case Return(ResultCode.Ok)       => okCounter.incr()
-        case Return(ResultCode.TryLater) => tryLaterCounter.incr()
-        case Throw(e)                    => errorReceiver.counter(e.getClass.getName).incr()
-      }
-      .unit
+    client.log(createLogEntries(spans)).respond {
+      case Return(ResultCode.Ok)       => okCounter.incr()
+      case Return(ResultCode.TryLater) => tryLaterCounter.incr()
+      case Throw(e)                    => errorReceiver.counter(e.getClass.getName).incr()
+    }.unit
   }
 
   /**
@@ -279,15 +274,17 @@ private[thrift] class RawZipkinTracer(
           key,
           (if (value) TrueBB else FalseBB).duplicate(),
           thrift.AnnotationType.BOOL)
-      case tracing.Annotation
-            .BinaryAnnotation(key: String, value: Array[Byte]) =>
+      case tracing.Annotation.BinaryAnnotation(
+            key: String,
+            value: Array[Byte]) =>
         binaryAnnotation(
           record,
           key,
           ByteBuffer.wrap(value),
           thrift.AnnotationType.BYTES)
-      case tracing.Annotation
-            .BinaryAnnotation(key: String, value: ByteBuffer) =>
+      case tracing.Annotation.BinaryAnnotation(
+            key: String,
+            value: ByteBuffer) =>
         binaryAnnotation(record, key, value, thrift.AnnotationType.BYTES)
       case tracing.Annotation.BinaryAnnotation(key: String, value: Short) =>
         binaryAnnotation(

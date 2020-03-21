@@ -24,8 +24,7 @@ case class ImportArgs(
 object Import {
   def fileToEvents(ca: ConsoleArgs): Int = {
     val channelArg = ca.imprt.channel
-      .map(ch => Seq("--channel", ch))
-      .getOrElse(Nil)
+      .map(ch => Seq("--channel", ch)).getOrElse(Nil)
     Runner.runOnSpark(
       "io.prediction.tools.imprt.FileToEvents",
       Seq(

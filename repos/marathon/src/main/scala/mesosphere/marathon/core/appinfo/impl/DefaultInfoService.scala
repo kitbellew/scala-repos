@@ -35,8 +35,7 @@ private[appinfo] class DefaultInfoService(
       selector: AppSelector,
       embed: Set[AppInfo.Embed]): Future[Seq[AppInfo]] = {
     log.debug(s"queryAll")
-    groupManager
-      .rootGroup()
+    groupManager.rootGroup()
       .map(_.transitiveApps.filter(selector.matches))
       .flatMap(resolveAppInfos(_, embed))
   }
@@ -106,9 +105,8 @@ private[appinfo] class DefaultInfoService(
         def apps: Option[Seq[AppInfo]] =
           if (groupEmbed(GroupInfo.Embed.Apps))
             Some(
-              ref.apps.toIndexedSeq
-                .flatMap(a => infoById.get(a.id))
-                .sortBy(_.app.id))
+              ref.apps.toIndexedSeq.flatMap(a => infoById.get(a.id)).sortBy(
+                _.app.id))
           else
             None
         //if a subgroup is allowed, we also have to allow all parents implicitly
@@ -137,7 +135,6 @@ private[appinfo] class DefaultInfoService(
               builder
             }
           }
-      }
-      .map(_.result())
+      }.map(_.result())
   }
 }

@@ -92,8 +92,8 @@ sealed trait HttpEntity extends jm.HttpEntity {
 
   /** Java API */
   override def getDataBytes: stream.javadsl.Source[ByteString, AnyRef] =
-    stream.javadsl.Source
-      .fromGraph(dataBytes.asInstanceOf[Source[ByteString, AnyRef]])
+    stream.javadsl.Source.fromGraph(
+      dataBytes.asInstanceOf[Source[ByteString, AnyRef]])
 
   /** Java API */
   override def getContentLengthOption: OptionalLong =
@@ -277,8 +277,9 @@ object HttpEntity {
 
     override def transformDataBytes(
         transformer: Flow[ByteString, ByteString, Any]): MessageEntity =
-      HttpEntity.Chunked
-        .fromData(contentType, Source.single(data).via(transformer))
+      HttpEntity.Chunked.fromData(
+        contentType,
+        Source.single(data).via(transformer))
 
     override def transformDataBytes(
         newContentLength: Long,
@@ -593,37 +594,32 @@ object HttpEntity {
   private def limitable[Out, Mat](
       source: Source[Out, Mat],
       sizeOf: Out ⇒ Int): Source[Out, Mat] =
-    source.via(
-      Flow[Out]
-        .transform { () ⇒
-          new PushStage[Out, Out] {
-            var maxBytes = -1L
-            var bytesLeft = Long.MaxValue
+    source.via(Flow[Out].transform { () ⇒
+      new PushStage[Out, Out] {
+        var maxBytes = -1L
+        var bytesLeft = Long.MaxValue
 
-            override def preStart(ctx: LifecycleContext) =
-              ctx.attributes.getFirst[SizeLimit] match {
-                case Some(limit: SizeLimit) if limit.isDisabled ⇒
-                // "no limit"
-                case Some(SizeLimit(bytes, cl @ Some(contentLength))) ⇒
-                  if (contentLength > bytes)
-                    throw EntityStreamSizeException(bytes, cl)
-                // else we still count but never throw an error
-                case Some(SizeLimit(bytes, None)) ⇒
-                  maxBytes = bytes
-                  bytesLeft = bytes
-                case None ⇒
-              }
-
-            def onPush(
-                elem: Out,
-                ctx: stage.Context[Out]): stage.SyncDirective = {
-              bytesLeft -= sizeOf(elem)
-              if (bytesLeft >= 0) ctx.push(elem)
-              else ctx.fail(EntityStreamSizeException(maxBytes))
-            }
+        override def preStart(ctx: LifecycleContext) =
+          ctx.attributes.getFirst[SizeLimit] match {
+            case Some(limit: SizeLimit) if limit.isDisabled ⇒
+            // "no limit"
+            case Some(SizeLimit(bytes, cl @ Some(contentLength))) ⇒
+              if (contentLength > bytes)
+                throw EntityStreamSizeException(bytes, cl)
+            // else we still count but never throw an error
+            case Some(SizeLimit(bytes, None)) ⇒
+              maxBytes = bytes
+              bytesLeft = bytes
+            case None ⇒
           }
+
+        def onPush(elem: Out, ctx: stage.Context[Out]): stage.SyncDirective = {
+          bytesLeft -= sizeOf(elem)
+          if (bytesLeft >= 0) ctx.push(elem)
+          else ctx.fail(EntityStreamSizeException(maxBytes))
         }
-        .named("limitable"))
+      }
+    }.named("limitable"))
 
   /**
     * INTERNAL API

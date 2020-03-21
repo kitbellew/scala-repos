@@ -66,8 +66,11 @@ object ClientUtils extends Logging {
       val producer: SyncProducer =
         ProducerPool.createSyncProducer(producerConfig, shuffledBrokers(i))
       info(
-        "Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
-          .format(shuffledBrokers(i), correlationId, topics.size, topics))
+        "Fetching metadata from broker %s with correlation id %d for %d topic(s) %s".format(
+          shuffledBrokers(i),
+          correlationId,
+          topics.size,
+          topics))
       try {
         topicMetadataResponse = producer.send(topicMetadataRequest)
         fetchMetaDataSucceeded = true
@@ -85,13 +88,15 @@ object ClientUtils extends Logging {
     }
     if (!fetchMetaDataSucceeded) {
       throw new KafkaException(
-        "fetching topic metadata for topics [%s] from broker [%s] failed"
-          .format(topics, shuffledBrokers),
+        "fetching topic metadata for topics [%s] from broker [%s] failed".format(
+          topics,
+          shuffledBrokers),
         t)
     } else {
       debug(
-        "Successfully fetched metadata for %d topic(s) %s"
-          .format(topics.size, topics))
+        "Successfully fetched metadata for %d topic(s) %s".format(
+          topics.size,
+          topics))
     }
     topicMetadataResponse
   }
@@ -153,16 +158,18 @@ object ClientUtils extends Logging {
             socketTimeoutMs)
           channel.connect()
           debug(
-            "Created channel to broker %s:%d."
-              .format(channel.host, channel.port))
+            "Created channel to broker %s:%d.".format(
+              channel.host,
+              channel.port))
           true
         } catch {
           case e: Exception =>
             if (channel != null) channel.disconnect()
             channel = null
             info(
-              "Error while creating channel to %s:%d."
-                .format(broker.host, broker.port))
+              "Error while creating channel to %s:%d.".format(
+                broker.host,
+                broker.port))
             false
         }
       }
@@ -193,8 +200,10 @@ object ClientUtils extends Logging {
           if (!queryChannel.isConnected)
             queryChannel = channelToAnyBroker(zkUtils)
           debug(
-            "Querying %s:%d to locate offset manager for %s."
-              .format(queryChannel.host, queryChannel.port, group))
+            "Querying %s:%d to locate offset manager for %s.".format(
+              queryChannel.host,
+              queryChannel.port,
+              group))
           queryChannel.send(GroupCoordinatorRequest(group))
           val response = queryChannel.receive()
           val consumerMetadataResponse =
@@ -216,8 +225,9 @@ object ClientUtils extends Logging {
         } catch {
           case ioe: IOException =>
             info(
-              "Failed to fetch consumer metadata from %s:%d."
-                .format(queryChannel.host, queryChannel.port))
+              "Failed to fetch consumer metadata from %s:%d.".format(
+                queryChannel.host,
+                queryChannel.port))
             queryChannel.disconnect()
         }
       }

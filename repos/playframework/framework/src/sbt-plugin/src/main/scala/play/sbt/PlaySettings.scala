@@ -63,8 +63,8 @@ object PlaySettings {
       "com.typesafe.play" %% playDocsName.value % play.core.PlayVersion.current % DocsApplication.name),
     libraryDependencies ++= playDocsModule.value.toSeq,
     manageClasspath(DocsApplication),
-    playDocsJar := (managedClasspath in DocsApplication).value.files
-      .find(_.getName.startsWith(playDocsName.value)),
+    playDocsJar := (managedClasspath in DocsApplication).value.files.find(
+      _.getName.startsWith(playDocsName.value)),
     parallelExecution in Test := false,
     fork in Test := true,
     testOptions in Test += Tests.Argument(
@@ -127,8 +127,10 @@ object PlaySettings {
       (dirs * "routes").get ++ (dirs * "*.routes").get
     },
     playMonitoredFiles <<= PlayCommands.playMonitoredFilesTask,
-    fileWatchService := FileWatchService
-      .defaultWatchService(target.value, pollInterval.value, sLog.value),
+    fileWatchService := FileWatchService.defaultWatchService(
+      target.value,
+      pollInterval.value,
+      sLog.value),
     playDefaultPort := 9000,
     playDefaultAddress := "0.0.0.0",
     // Default hooks

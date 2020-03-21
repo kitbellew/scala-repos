@@ -101,12 +101,12 @@ class ActivatorProjectBuilder
     modifiableRootModel.inheritSdk()
 
     val settings =
-      ExternalSystemApiUtil
-        .getSettings(modifiableRootModel.getProject, SbtProjectSystem.Id)
-        .asInstanceOf[AbstractExternalSystemSettings[
-          _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
-          SbtProjectSettings,
-          _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
+      ExternalSystemApiUtil.getSettings(
+        modifiableRootModel.getProject,
+        SbtProjectSystem.Id).asInstanceOf[AbstractExternalSystemSettings[
+        _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
+        SbtProjectSettings,
+        _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
 
     getExternalProjectSettings setExternalProjectPath getContentEntryPath
     settings linkProject getExternalProjectSettings
@@ -165,14 +165,12 @@ class ActivatorProjectBuilder
   }
 
   private def doWithProgress(body: => Unit, title: String) {
-    ProgressManager
-      .getInstance()
-      .runProcessWithProgressSynchronously(
-        new Runnable {
-          override def run(): Unit = body
-        },
-        title,
-        false,
-        null)
+    ProgressManager.getInstance().runProcessWithProgressSynchronously(
+      new Runnable {
+        override def run(): Unit = body
+      },
+      title,
+      false,
+      null)
   }
 }

@@ -75,9 +75,8 @@ class NettyBlockRpcServer(
       case uploadBlock: UploadBlock =>
         // StorageLevel is serialized as bytes using our JavaSerializer.
         val level: StorageLevel =
-          serializer
-            .newInstance()
-            .deserialize(ByteBuffer.wrap(uploadBlock.metadata))
+          serializer.newInstance().deserialize(
+            ByteBuffer.wrap(uploadBlock.metadata))
         val data = new NioManagedBuffer(ByteBuffer.wrap(uploadBlock.blockData))
         val blockId = BlockId(uploadBlock.blockId)
         blockManager.putBlockData(blockId, data, level)

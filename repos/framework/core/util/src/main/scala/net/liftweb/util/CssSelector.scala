@@ -185,8 +185,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
       case (r :: Nil, Some(sn)) => r.withSubnode(sn)
       case (lst, None)          => lst.reduceRight((b, a) => EnclosedSelector(b, a))
       case (lst, Some(sn)) =>
-        (lst.dropRight(1) ::: lst.takeRight(1).map(_.withSubnode(sn)))
-          .reduceRight((b, a) => EnclosedSelector(b, a))
+        (lst.dropRight(1) ::: lst.takeRight(1).map(
+          _.withSubnode(sn))).reduceRight((b, a) => EnclosedSelector(b, a))
     }
   }
 

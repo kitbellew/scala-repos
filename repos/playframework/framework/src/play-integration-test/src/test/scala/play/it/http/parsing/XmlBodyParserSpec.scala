@@ -71,10 +71,12 @@ object XmlBodyParserSpec extends PlaySpecification {
     }
 
     "default to iso-8859-1 for text sub types" in new WithApplication() {
-      parse("<foo>bär</foo>", Some("text/xml"), "iso-8859-1") must beRight
-        .like {
-          case xml => xml.text must_== "bär"
-        }
+      parse(
+        "<foo>bär</foo>",
+        Some("text/xml"),
+        "iso-8859-1") must beRight.like {
+        case xml => xml.text must_== "bär"
+      }
     }
 
     "default to reading the encoding from the prolog for application sub types" in new WithApplication() {

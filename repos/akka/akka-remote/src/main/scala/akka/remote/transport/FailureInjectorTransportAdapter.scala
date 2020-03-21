@@ -125,13 +125,13 @@ private[remote] class FailureInjectorTransportAdapter(
         new FailureInjectorException(
           "Simulated failure of association to " + remoteAddress))
     else
-      statusPromise.completeWith(
-        wrappedTransport.associate(remoteAddress).map { handle ⇒
+      statusPromise.completeWith(wrappedTransport.associate(remoteAddress).map {
+        handle ⇒
           addressChaosTable.putIfAbsent(
             handle.remoteAddress.copy(protocol = "", system = ""),
             PassThru)
           new FailureInjectorHandle(handle, this)
-        })
+      })
   }
 
   def notify(ev: AssociationEvent): Unit =

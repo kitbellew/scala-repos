@@ -172,16 +172,16 @@ object ScalaI18nUtil {
   @NotNull def getToplevelExpression(
       @NotNull project: Project,
       @NotNull expression: ScExpression): ScExpression = {
-    if (expression.isInstanceOf[PsiBinaryExpression] || expression.getParent
-          .isInstanceOf[PsiBinaryExpression]) {
-      return CachedValuesManager
-        .getManager(project)
-        .getParameterizedCachedValue(
-          expression,
-          TOP_LEVEL_EXPRESSION,
-          TOP_LEVEL_PROVIDER,
-          true,
-          (project, expression))
+    if (expression.isInstanceOf[
+          PsiBinaryExpression] || expression.getParent.isInstanceOf[
+          PsiBinaryExpression]) {
+      return CachedValuesManager.getManager(
+        project).getParameterizedCachedValue(
+        expression,
+        TOP_LEVEL_EXPRESSION,
+        TOP_LEVEL_PROVIDER,
+        true,
+        (project, expression))
     }
     getTopLevel(project, expression)
   }
@@ -281,9 +281,9 @@ object ScalaI18nUtil {
       key: String,
       resourceBundleName: String): Boolean = {
     if (resourceBundleName == null) {
-      !PropertiesImplUtil
-        .findPropertiesByKey(expression.getProject, key)
-        .isEmpty
+      !PropertiesImplUtil.findPropertiesByKey(
+        expression.getProject,
+        key).isEmpty
     } else {
       val propertiesFiles =
         propertiesFilesByBundleName(resourceBundleName, expression)
@@ -310,10 +310,8 @@ object ScalaI18nUtil {
     }
     if (virtualFile != null) {
       val project: Project = containingFile.getProject
-      val module: Module = ProjectRootManager
-        .getInstance(project)
-        .getFileIndex
-        .getModuleForFile(virtualFile)
+      val module: Module = ProjectRootManager.getInstance(
+        project).getFileIndex.getModuleForFile(virtualFile)
       if (module != null) {
         val refManager: PropertiesReferenceManager =
           PropertiesReferenceManager.getInstance(project)
@@ -388,8 +386,8 @@ object ScalaI18nUtil {
         case polyVarRef: PsiPolyVariantReference =>
           for (result <- polyVarRef.multiResolve(false)) {
             var flag = true
-            if (result.isValidResult && result.getElement
-                  .isInstanceOf[IProperty]) {
+            if (result.isValidResult && result.getElement.isInstanceOf[
+                  IProperty]) {
               val value: String =
                 result.getElement.asInstanceOf[IProperty].getValue
               var format: MessageFormat = null
@@ -471,10 +469,9 @@ object ScalaI18nUtil {
     if (mustBePropertyKey(project, expression, annotationAttributeValues)) {
       annotationAttributeValues get AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
         case bundleName: PsiElement =>
-          val result = JavaPsiFacade
-            .getInstance(bundleName.getProject)
-            .getConstantEvaluationHelper
-            .computeConstantExpression(bundleName)
+          val result = JavaPsiFacade.getInstance(
+            bundleName.getProject).getConstantEvaluationHelper.computeConstantExpression(
+            bundleName)
           if (result == null) false
           else {
             val bundleName = result.toString

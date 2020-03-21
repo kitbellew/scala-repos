@@ -387,9 +387,8 @@ private[concurrent] object Promise {
             compressedRoot(dp).link(target)
           case listeners: List[_] if compareAndSet(listeners, target) =>
             if (listeners.nonEmpty)
-              listeners
-                .asInstanceOf[List[CallbackRunnable[T]]]
-                .foreach(target.dispatchOrAddCallback(_))
+              listeners.asInstanceOf[List[CallbackRunnable[T]]].foreach(
+                target.dispatchOrAddCallback(_))
           case _ =>
             link(target)
         }
@@ -415,8 +414,8 @@ private[concurrent] object Promise {
 
       override def onComplete[U](func: Try[T] => U)(implicit
           executor: ExecutionContext): Unit =
-        (new CallbackRunnable(executor.prepare(), func))
-          .executeWithValue(result)
+        (new CallbackRunnable(executor.prepare(), func)).executeWithValue(
+          result)
 
       override def ready(atMost: Duration)(implicit
           permit: CanAwait): this.type = this

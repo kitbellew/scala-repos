@@ -82,9 +82,8 @@ object SyntheticMembersInjector {
     ExtensionPointName.create(CLASS_NAME)
   val injectedExtensions = { proj: Project =>
     try {
-      LibraryInjectorLoader
-        .getInstance(proj)
-        .getInjectorInstances(classOf[SyntheticMembersInjector])
+      LibraryInjectorLoader.getInstance(proj).getInjectorInstances(
+        classOf[SyntheticMembersInjector])
     } catch {
       case e: Throwable =>
         LOG.error("Failed to get dynamic injector", e)

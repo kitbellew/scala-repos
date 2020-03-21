@@ -273,24 +273,28 @@ class ClusterClientSpec
         }
         remainingServerRoleNames = Set(receptionistRoleName)
         // network partition between client and server
-        testConductor
-          .blackhole(client, receptionistRoleName, Direction.Both)
-          .await
+        testConductor.blackhole(
+          client,
+          receptionistRoleName,
+          Direction.Both).await
         c ! ClusterClient.Send("/user/service2", "ping", localAffinity = true)
         // if we would use remote watch the failure detector would trigger and
         // connection quarantined
         expectNoMsg(5 seconds)
 
-        testConductor
-          .passThrough(client, receptionistRoleName, Direction.Both)
-          .await
+        testConductor.passThrough(
+          client,
+          receptionistRoleName,
+          Direction.Both).await
 
         val expectedAddress = node(receptionistRoleName).address
         awaitAssert {
           val probe = TestProbe()
           c.tell(
-            ClusterClient
-              .Send("/user/service2", "bonjour3", localAffinity = true),
+            ClusterClient.Send(
+              "/user/service2",
+              "bonjour3",
+              localAffinity = true),
             probe.ref)
           val reply = probe.expectMsgType[Reply](1 second)
           reply.msg should be("bonjour3-ack")
@@ -355,9 +359,8 @@ class ClusterClientSpec
         // start new system on same port
         val sys2 = ActorSystem(
           system.name,
-          ConfigFactory
-            .parseString("akka.remote.netty.tcp.port=" + Cluster(
-              system).selfAddress.port.get)
+          ConfigFactory.parseString("akka.remote.netty.tcp.port=" + Cluster(
+            system).selfAddress.port.get)
             .withFallback(system.settings.config))
         Cluster(sys2).join(Cluster(sys2).selfAddress)
         val service2 =

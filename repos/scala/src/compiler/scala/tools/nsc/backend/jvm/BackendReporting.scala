@@ -128,20 +128,16 @@ object BackendReporting {
           s"The method $name$descriptor could not be found in the class $ownerInternalName or any of its parents." +
             (if (others.isEmpty) ""
              else
-               others
-                 .map(_.internalName)
-                 .mkString(
-                   "\nNote that the following parent classes could not be found on the classpath: ",
-                   ", ",
-                   "")) +
+               others.map(_.internalName).mkString(
+                 "\nNote that the following parent classes could not be found on the classpath: ",
+                 ", ",
+                 "")) +
             (if (javaDef.isEmpty) ""
              else
-               javaDef
-                 .map(_.internalName)
-                 .mkString(
-                   "\nNote that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: ",
-                   ",",
-                   ""))
+               javaDef.map(_.internalName).mkString(
+                 "\nNote that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: ",
+                 ",",
+                 ""))
 
         case FieldNotFound(name, descriptor, ownerInternalName, missingClass) =>
           s"The field node $name$descriptor could not be found because the classfile $ownerInternalName cannot be found on the classpath." +
@@ -300,8 +296,7 @@ object BackendReporting {
               callsiteClass,
               instruction,
               cause) =>
-          s"Failed to check if $calleeMethodSig can be safely inlined to $callsiteClass without causing an IllegalAccessError. Checking instruction ${AsmUtils
-            .textify(instruction)} failed:\n" + cause
+          s"Failed to check if $calleeMethodSig can be safely inlined to $callsiteClass without causing an IllegalAccessError. Checking instruction ${AsmUtils.textify(instruction)} failed:\n" + cause
 
         case MethodWithHandlerCalledOnNonEmptyStack(
               _,
@@ -310,11 +305,10 @@ object BackendReporting {
               callsiteClass,
               callsiteName,
               callsiteDesc) =>
-          s"""The operand stack at the callsite in ${BackendReporting
-               .methodSignature(
-                 callsiteClass,
-                 callsiteName,
-                 callsiteDesc)} contains more values than the
+          s"""The operand stack at the callsite in ${BackendReporting.methodSignature(
+               callsiteClass,
+               callsiteName,
+               callsiteDesc)} contains more values than the
            |arguments expected by the callee $calleeMethodSig. These values would be discarded
            |when entering an exception handler declared in the inlined method.""".stripMargin
 
@@ -342,8 +336,10 @@ object BackendReporting {
               callsiteClass,
               callsiteName,
               callsiteDesc) =>
-          s"""The size of the callsite method ${BackendReporting
-               .methodSignature(callsiteClass, callsiteName, callsiteDesc)}
+          s"""The size of the callsite method ${BackendReporting.methodSignature(
+               callsiteClass,
+               callsiteName,
+               callsiteDesc)}
            |would exceed the JVM method size limit after inlining $calleeMethodSig.
          """.stripMargin
       }

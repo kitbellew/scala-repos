@@ -144,8 +144,7 @@ trait InputScaledRuntimeReducerEstimator extends HistoryReducerEstimator {
 
     // time-to-byte ratio for a step = time per reducer * number of reducers / number of bytes
     val timeToByteRatios: Seq[Double] =
-      jobTimes
-        .zip { history.map(_.hdfsBytesRead) }
+      jobTimes.zip { history.map(_.hdfsBytesRead) }
         .collect { case (Some(time), bytes) => time / bytes }
 
     // time-to-byte ratio, averaged over all the steps
@@ -200,8 +199,9 @@ trait RuntimeReducerEstimator extends HistoryReducerEstimator {
           def runtimeEstimationScheme = estimationScheme
           def historyService = history
         }
-        ReducerEstimatorStepStrategy.estimatorMonoid
-          .plus(inputScaledEstimator, basicEstimator)
+        ReducerEstimatorStepStrategy.estimatorMonoid.plus(
+          inputScaledEstimator,
+          basicEstimator)
       }
 
     combinedEstimator.estimateReducers(info)

@@ -34,12 +34,9 @@ object LDASuite {
     val sc = sql.sparkContext
     val rng = new java.util.Random()
     rng.setSeed(1)
-    val rdd = sc
-      .parallelize(1 to rows)
-      .map { i =>
-        Vectors.dense(Array.fill(vocabSize)(rng.nextInt(2 * avgWC).toDouble))
-      }
-      .map(v => new TestRow(v))
+    val rdd = sc.parallelize(1 to rows).map { i =>
+      Vectors.dense(Array.fill(vocabSize)(rng.nextInt(2 * avgWC).toDouble))
+    }.map(v => new TestRow(v))
     sql.createDataFrame(rdd)
   }
 
@@ -141,9 +138,8 @@ class LDASuite
       new LDA().setTopicConcentration(-1.1)
     }
 
-    val dummyDF = sqlContext
-      .createDataFrame(Seq((1, Vectors.dense(1.0, 2.0))))
-      .toDF("id", "features")
+    val dummyDF = sqlContext.createDataFrame(
+      Seq((1, Vectors.dense(1.0, 2.0)))).toDF("id", "features")
     // validate parameters
     lda.transformSchema(dummyDF.schema)
     lda.setDocConcentration(1.1)

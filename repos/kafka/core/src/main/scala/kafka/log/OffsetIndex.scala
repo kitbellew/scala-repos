@@ -204,8 +204,9 @@ class OffsetIndex(
     maybeLock(lock) {
       if (n >= entries)
         throw new IllegalArgumentException(
-          "Attempt to fetch the %dth entry from an index of size %d."
-            .format(n, entries))
+          "Attempt to fetch the %dth entry from an index of size %d.".format(
+            n,
+            entries))
       val idx = mmap.duplicate
       OffsetPosition(relativeOffset(idx, n), physical(idx, n))
     }
@@ -221,8 +222,10 @@ class OffsetIndex(
         "Attempt to append to a full index (size = " + size + ").")
       if (size.get == 0 || offset > lastOffset) {
         debug(
-          "Adding index entry %d => %d to %s."
-            .format(offset, position, file.getName))
+          "Adding index entry %d => %d to %s.".format(
+            offset,
+            position,
+            file.getName))
         this.mmap.putInt((offset - baseOffset).toInt)
         this.mmap.putInt(position)
         this.size.incrementAndGet()
@@ -311,9 +314,10 @@ class OffsetIndex(
         forceUnmap(this.mmap)
       try {
         raf.setLength(roundedNewSize)
-        this.mmap = raf
-          .getChannel()
-          .map(FileChannel.MapMode.READ_WRITE, 0, roundedNewSize)
+        this.mmap = raf.getChannel().map(
+          FileChannel.MapMode.READ_WRITE,
+          0,
+          roundedNewSize)
         this.maxEntries = this.mmap.limit / 8
         this.mmap.position(position)
       } finally {
@@ -327,10 +331,8 @@ class OffsetIndex(
     */
   private def forceUnmap(m: MappedByteBuffer) {
     try {
-      if (m.isInstanceOf[sun.nio.ch.DirectBuffer])(m
-        .asInstanceOf[sun.nio.ch.DirectBuffer])
-        .cleaner()
-        .clean()
+      if (m.isInstanceOf[sun.nio.ch.DirectBuffer])(m.asInstanceOf[
+        sun.nio.ch.DirectBuffer]).cleaner().clean()
     } catch {
       case t: Throwable => warn("Error when freeing index buffer", t)
     }

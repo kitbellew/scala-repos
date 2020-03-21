@@ -18,11 +18,8 @@ class FlowDropWithinSpec extends AkkaSpec {
       val input = Iterator.from(1)
       val p = TestPublisher.manualProbe[Int]()
       val c = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromPublisher(p)
-        .dropWithin(1.second)
-        .to(Sink.fromSubscriber(c))
-        .run()
+      Source.fromPublisher(p).dropWithin(1.second).to(
+        Sink.fromSubscriber(c)).run()
       val pSub = p.expectSubscription
       val cSub = c.expectSubscription
       cSub.request(100)
@@ -45,10 +42,8 @@ class FlowDropWithinSpec extends AkkaSpec {
       val upstream = TestPublisher.probe[Int]()
       val downstream = TestSubscriber.probe[Int]()
 
-      Source
-        .fromPublisher(upstream)
-        .dropWithin(1.day)
-        .runWith(Sink.fromSubscriber(downstream))
+      Source.fromPublisher(upstream).dropWithin(1.day).runWith(
+        Sink.fromSubscriber(downstream))
 
       upstream.sendComplete()
       downstream.expectSubscriptionAndComplete()

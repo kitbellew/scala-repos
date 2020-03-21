@@ -730,9 +730,9 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
         val vals =
           values.take(taker) // Take values corresponding to current pivot label
         val v =
-          ixer.rTake
-            .map(vals.take(_))
-            .getOrElse(vals) //   map values to be in correspondence to rix
+          ixer.rTake.map(vals.take(_)).getOrElse(
+            vals
+          ) //   map values to be in correspondence to rix
         result(loc) = v //   and save resulting col vec in array.
         loc += 1 // Increment offset into result array
       }
@@ -799,8 +799,9 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       how: JoinType = LeftJoin): Frame[X, Int, T] = {
     val tmpFrame = other.joinS(this, how)
     Frame(
-      tmpFrame.values.last +: tmpFrame.values
-        .slice(0, tmpFrame.values.length - 1),
+      tmpFrame.values.last +: tmpFrame.values.slice(
+        0,
+        tmpFrame.values.length - 1),
       tmpFrame.rowIx,
       IndexIntRange(other.colIx.length + 1))
   }
@@ -820,8 +821,9 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       how: JoinType = LeftJoin): Frame[X, Int, Any] = {
     val tmpFrame = other.joinAnyS(this, how)
     Panel(
-      tmpFrame.values.last +: tmpFrame.values
-        .slice(0, tmpFrame.values.length - 1),
+      tmpFrame.values.last +: tmpFrame.values.slice(
+        0,
+        tmpFrame.values.length - 1),
       tmpFrame.rowIx,
       IndexIntRange(other.colIx.length + 1))
   }
@@ -890,9 +892,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       val isca = index.scalarTag
       val vidx = index.toVec
       val idxHf = { vidx.head(half) concat vidx.tail(half) }
-      val ilens = idxHf
-        .map(isca.strList(_))
-        .foldLeft(isca.strList(vidx(0)).map(_.length))(maxf)
+      val ilens = idxHf.map(isca.strList(_)).foldLeft(
+        isca.strList(vidx(0)).map(_.length))(maxf)
 
       val vsca = values.scalarTag
       val vlHf = { values.head(half) concat values.tail(half) }

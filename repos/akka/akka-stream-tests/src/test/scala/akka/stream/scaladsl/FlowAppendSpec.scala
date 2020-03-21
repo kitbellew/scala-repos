@@ -32,8 +32,7 @@ class FlowAppendSpec extends AkkaSpec with River {
     "append Flow" in riverOf[String] { subscriber ⇒
       Source(elements)
         .via(otherFlow)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+        .to(Sink.fromSubscriber(subscriber)).run()
     }
 
     "append Sink" in riverOf[String] { subscriber ⇒

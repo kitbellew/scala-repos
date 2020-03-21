@@ -289,9 +289,8 @@ class ParamsSuite extends SparkFunSuite {
       "maxIter: maximum number of iterations (>= 0) (default: 10, current: 100)")
     assert(
       solver.explainParams() ===
-        Seq(handleInvalid, inputCol, maxIter)
-          .map(solver.explainParam)
-          .mkString("\n"))
+        Seq(handleInvalid, inputCol, maxIter).map(solver.explainParam).mkString(
+          "\n"))
 
     assert(solver.getParam("inputCol").eq(inputCol))
     assert(solver.getParam("maxIter").eq(maxIter))
@@ -356,8 +355,11 @@ class ParamsSuite extends SparkFunSuite {
         1) && inRange02IntInclusive(2) &&
         !inRange02IntInclusive(-1) && !inRange02IntInclusive(3))
     val inRange02IntExclusive =
-      ParamValidators
-        .inRange[Int](0, 2, lowerInclusive = false, upperInclusive = false)
+      ParamValidators.inRange[Int](
+        0,
+        2,
+        lowerInclusive = false,
+        upperInclusive = false)
     assert(
       !inRange02IntExclusive(0) && inRange02IntExclusive(
         1) && !inRange02IntExclusive(2))
@@ -368,8 +370,11 @@ class ParamsSuite extends SparkFunSuite {
         inRange02DoubleInclusive(2) &&
         !inRange02DoubleInclusive(-0.1) && !inRange02DoubleInclusive(2.1))
     val inRange02DoubleExclusive =
-      ParamValidators
-        .inRange[Double](0, 2, lowerInclusive = false, upperInclusive = false)
+      ParamValidators.inRange[Double](
+        0,
+        2,
+        lowerInclusive = false,
+        upperInclusive = false)
     assert(
       !inRange02DoubleExclusive(0) && inRange02DoubleExclusive(1) &&
         !inRange02DoubleExclusive(2))

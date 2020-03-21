@@ -429,9 +429,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd3 = sc.parallelize(Array((1, 'a'), (3, 'b'), (4, 'c'), (4, 'd')))
     val joined = rdd1.groupWith(rdd2, rdd3).collect()
     assert(joined.size === 4)
-    val joinedSet = joined
-      .map(x => (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList)))
-      .toSet
+    val joinedSet = joined.map(x =>
+      (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList))).toSet
     assert(
       joinedSet === Set(
         (1, (List(1, 2), List('x'), List('a'))),
@@ -448,12 +447,10 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd4 = sc.parallelize(Array((2, '@')))
     val joined = rdd1.groupWith(rdd2, rdd3, rdd4).collect()
     assert(joined.size === 4)
-    val joinedSet = joined
-      .map(x =>
-        (
-          x._1,
-          (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
-      .toSet
+    val joinedSet = joined.map(x =>
+      (
+        x._1,
+        (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList))).toSet
     assert(
       joinedSet === Set(
         (1, (List(1, 2), List('x'), List('a'), List())),
@@ -539,9 +536,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       def getPartition(key: Any) = key.asInstanceOf[Int]
     }
     // partitionBy so we have a narrow dependency
-    val a = sc
-      .parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")))
-      .partitionBy(p)
+    val a = sc.parallelize(
+      Array((1, "a"), (1, "a"), (2, "b"), (3, "c"))).partitionBy(p)
     // more partitions/no partitioner so a shuffle dependency
     val b = sc.parallelize(Array((2, "b"), (3, "cc"), (4, "d")), 4)
     val c = a.subtractByKey(b)
@@ -781,9 +777,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         seed: Long,
         n: Long): Unit = {
       val trials = stratifiedData.countByKey()
-      val expectedSampleSize = stratifiedData
-        .countByKey()
-        .mapValues(count => math.ceil(count * samplingRate).toInt)
+      val expectedSampleSize = stratifiedData.countByKey().mapValues(count =>
+        math.ceil(count * samplingRate).toInt)
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
       val sample = if (exact) {
         stratifiedData.sampleByKeyExact(true, fractions, seed)

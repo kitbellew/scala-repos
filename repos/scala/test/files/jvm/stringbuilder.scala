@@ -72,8 +72,10 @@ object Test3 {
 
     val j1 = new java.lang.StringBuilder
     val s1 = new StringBuilder
-    j1 insert (0, "###") insert (0, Array('0', '1', '2')) insert (0, "xyz"
-      .subSequence(0, 3))
+    j1 insert (0, "###") insert (0, Array(
+      '0',
+      '1',
+      '2')) insert (0, "xyz".subSequence(0, 3))
     s1 insert (0, "###") insertAll (0, Array('0', '1', '2')) insertAll (0, List(
       'x',
       'y',

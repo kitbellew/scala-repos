@@ -41,12 +41,11 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
     qualAtCaret.resolve() match {
       case named: PsiNamedElement =>
         val importHolder = ScalaImportTypeFix.getImportHolder(element, project)
-        val usages = ReferencesSearch
-          .search(named, new LocalSearchScope(importHolder))
-          .findAll()
-        val pathWithWildcard = ScalaNamesUtil
-          .qualifiedName(named)
-          .getOrElse(return
+        val usages = ReferencesSearch.search(
+          named,
+          new LocalSearchScope(importHolder)).findAll()
+        val pathWithWildcard =
+          ScalaNamesUtil.qualifiedName(named).getOrElse(return
           ) + "._"
         importHolder.addImportForPath(pathWithWildcard)
         sorted(usages, isQualifier = true).foreach {

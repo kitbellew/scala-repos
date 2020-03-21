@@ -68,10 +68,8 @@ object PublishDateExtractor extends Logging {
 
     try {
       Option(
-        datatypeFactory
-          .newXMLGregorianCalendar(txt)
-          .toGregorianCalendar
-          .getTime)
+        datatypeFactory.newXMLGregorianCalendar(
+          txt).toGregorianCalendar.getTime)
     } catch {
       case ex: Exception =>
         info(

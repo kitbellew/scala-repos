@@ -33,12 +33,10 @@ trait DocUsecaseHandling { self: DocResolver =>
                 jarFile.getEntry(scalaFqnToPath(sig.fqn)))
               val html = Source.fromInputStream(is).mkString
               val re = s"""<a id="(${Pattern.quote(prefix)}.+?)"""".r
-              re.findFirstMatchIn(html)
-                .map { m =>
-                  sig.copy(member =
-                    Some(StringEscapeUtils.unescapeHtml(m.group(1))))
-                }
-                .getOrElse(sig)
+              re.findFirstMatchIn(html).map { m =>
+                sig.copy(member =
+                  Some(StringEscapeUtils.unescapeHtml(m.group(1))))
+              }.getOrElse(sig)
             } finally jarFile.close()
           } catch { case e: IOException => sig }
         case _ => sig

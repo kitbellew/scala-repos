@@ -37,15 +37,15 @@ class IdeClientSbt(
   def processed(source: File): Unit = {}
 
   // TODO Expect JPS compiler in UI-designer to take generated class events into account
-  private val FormsToCompileKey =
-    catching(classOf[ClassNotFoundException], classOf[NoSuchFieldException])
-      .opt {
-        val field = Class
-          .forName("org.jetbrains.jps.uiDesigner.compiler.FormsBuilder")
-          .getDeclaredField("FORMS_TO_COMPILE")
-        field.setAccessible(true)
-        field.get(null).asInstanceOf[Key[util.Map[File, util.Collection[File]]]]
-      }
+  private val FormsToCompileKey = catching(
+    classOf[ClassNotFoundException],
+    classOf[NoSuchFieldException]).opt {
+    val field = Class.forName(
+      "org.jetbrains.jps.uiDesigner.compiler.FormsBuilder").getDeclaredField(
+      "FORMS_TO_COMPILE")
+    field.setAccessible(true)
+    field.get(null).asInstanceOf[Key[util.Map[File, util.Collection[File]]]]
+  }
 
   private def invalidateBoundForms(source: File) {
     FormsToCompileKey.foreach { key =>
@@ -53,13 +53,13 @@ class IdeClientSbt(
         val sourceToForm =
           context.getProjectDescriptor.dataManager.getSourceToFormMap
         val sourcePath = FileUtil.toCanonicalPath(source.getPath)
-        Option(sourceToForm.getState(sourcePath))
-          .map(_.asScala.map(new File(_)))
+        Option(sourceToForm.getState(sourcePath)).map(
+          _.asScala.map(new File(_)))
       }
 
       boundForms.foreach { forms =>
-        val formsToCompile = Option(key.get(context))
-          .getOrElse(new util.HashMap[File, util.Collection[File]]())
+        val formsToCompile = Option(key.get(context)).getOrElse(
+          new util.HashMap[File, util.Collection[File]]())
         formsToCompile.put(source, forms.toVector.asJava)
         key.set(context, formsToCompile)
       }

@@ -380,8 +380,8 @@ object EvaluateTask {
       taskKey,
       state,
       ref,
-      EvaluateConfig(false, defaultRestrictions(maxWorkers), checkCycles))
-      .map(_._2)
+      EvaluateConfig(false, defaultRestrictions(maxWorkers), checkCycles)).map(
+      _._2)
 
   /**
     * Evaluates `taskKey` and returns the new State and the result of the task wrapped in Some.
@@ -450,9 +450,8 @@ object EvaluateTask {
     }
 
     for ((key, msg, ex) <- keyed if (msg.isDefined || ex.isDefined)) {
-      val msgString =
-        (msg.toList ++ ex.toList.map(ErrorHandling.reducedToString))
-          .mkString("\n\t")
+      val msgString = (msg.toList ++ ex.toList.map(
+        ErrorHandling.reducedToString)).mkString("\n\t")
       val log = getStreams(key, streams).log
       val display = contextDisplay(state, log.ansiCodesSupported)
       log.error("(" + display(key) + ") " + msgString)
@@ -579,9 +578,8 @@ object EvaluateTask {
       results: RMap[Task, Result],
       state: State,
       streams: Streams): Unit =
-    for (referenced <- Previous.references in Global get Project
-           .structure(state)
-           .data)
+    for (referenced <- Previous.references in Global get Project.structure(
+           state).data)
       Previous.complete(referenced, results, streams)
 
   def applyResults[T](

@@ -399,10 +399,10 @@ private[joins] final class UnsafeHashedRelation(
           1),
         0)
 
-      val pageSizeBytes = Option(SparkEnv.get)
-        .map(_.memoryManager.pageSizeBytes)
-        .getOrElse(
-          new SparkConf().getSizeAsBytes("spark.buffer.pageSize", "16m"))
+      val pageSizeBytes =
+        Option(SparkEnv.get).map(_.memoryManager.pageSizeBytes)
+          .getOrElse(
+            new SparkConf().getSizeAsBytes("spark.buffer.pageSize", "16m"))
 
       // TODO(josh): We won't need this dummy memory manager after future refactorings; revisit
       // during code review
@@ -690,8 +690,9 @@ private[joins] object LongHashedRelation {
         while (i < length) {
           val rows = hashTable.get(i + minKey)
           if (rows != null) {
-            rows(0)
-              .writeToMemory(bytes, Platform.BYTE_ARRAY_OFFSET + offsets(i))
+            rows(0).writeToMemory(
+              bytes,
+              Platform.BYTE_ARRAY_OFFSET + offsets(i))
           }
           i += 1
         }

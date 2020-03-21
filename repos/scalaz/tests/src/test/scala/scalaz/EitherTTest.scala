@@ -35,13 +35,13 @@ object EitherTTest extends SpecLite {
         EitherT.eitherTBitraverse[List].bitraverseImpl(fab)(f, g)
     }
 
-    Bifoldable[EitherTList].bifoldMap(a)(_ :: Nil)(_ :: Nil) must_=== F
-      .bifoldMap(a)(_ :: Nil)(_ :: Nil)
+    Bifoldable[EitherTList].bifoldMap(a)(_ :: Nil)(
+      _ :: Nil) must_=== F.bifoldMap(a)(_ :: Nil)(_ :: Nil)
   }
 
   "show" ! forAll { a: EitherTList[Int, Int] =>
-    Show[EitherTList[Int, Int]].show(a) must_=== Show[List[Int \/ Int]]
-      .show(a.run)
+    Show[EitherTList[Int, Int]].show(a) must_=== Show[List[Int \/ Int]].show(
+      a.run)
   }
 
   "fromDisjunction" ! forAll { (a: String \/ Int) =>
@@ -109,8 +109,7 @@ object EitherTTest extends SpecLite {
           .filter {
             case (abc, "Success") => true
             case _                => false
-          }
-          .map {
+          }.map {
             case (abc, "Success") => "yay"
           }
 

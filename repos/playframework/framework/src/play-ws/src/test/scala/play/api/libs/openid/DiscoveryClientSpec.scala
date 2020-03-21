@@ -103,8 +103,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
       val response = mock[WSResponse]
       response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml")
-      response.xml returns scala.xml.XML
-        .loadString(readFixture("discovery/xrds/google-account-response.xml"))
+      response.xml returns scala.xml.XML.loadString(
+        readFixture("discovery/xrds/google-account-response.xml"))
       val maybeOpenIdServer = new XrdsResolver().resolve(response)
       maybeOpenIdServer.map(_.url) must beSome(
         "https://www.google.com/accounts/o8/ud")
@@ -114,8 +114,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
       val response = mock[WSResponse]
       response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml")
-      response.xml returns scala.xml.XML
-        .loadString(readFixture("discovery/xrds/simple-op.xml"))
+      response.xml returns scala.xml.XML.loadString(
+        readFixture("discovery/xrds/simple-op.xml"))
       val maybeOpenIdServer = new XrdsResolver().resolve(response)
       maybeOpenIdServer.map(_.url) must beSome(
         "https://www.google.com/a/example.com/o8/ud?be=o8")
@@ -125,8 +125,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
       val response = mock[WSResponse]
       response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml")
-      response.xml returns scala.xml.XML
-        .loadString(readFixture("discovery/xrds/multi-service.xml"))
+      response.xml returns scala.xml.XML.loadString(
+        readFixture("discovery/xrds/multi-service.xml"))
       val maybeOpenIdServer = new XrdsResolver().resolve(response)
       maybeOpenIdServer.map(_.url) must beSome("http://www.myopenid.com/server")
     }
@@ -147,8 +147,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
       val response = mock[WSResponse]
       response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml")
-      response.xml returns scala.xml.XML
-        .loadString(readFixture("discovery/xrds/simple-openid-1-op.xml"))
+      response.xml returns scala.xml.XML.loadString(
+        readFixture("discovery/xrds/simple-openid-1-op.xml"))
       val maybeOpenIdServer = new XrdsResolver().resolve(response)
       maybeOpenIdServer.map(_.url) must beSome(
         "http://openidprovider-server-1.example.com")
@@ -158,8 +158,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
       val response = mock[WSResponse]
       response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml")
-      response.xml returns scala.xml.XML
-        .loadString(readFixture("discovery/xrds/simple-openid-1.1-op.xml"))
+      response.xml returns scala.xml.XML.loadString(
+        readFixture("discovery/xrds/simple-openid-1.1-op.xml"))
       val maybeOpenIdServer = new XrdsResolver().resolve(response)
       maybeOpenIdServer.map(_.url) must beSome(
         "http://openidprovider-server-1.1.example.com")
@@ -171,16 +171,17 @@ object DiscoveryClientSpec extends Specification with Mockito {
     "resolve an OpenID server via Yadis" in {
       "with a single service element" in {
         val ws = new WSMock
-        ws.response.xml returns scala.xml.XML
-          .loadString(readFixture("discovery/xrds/simple-op.xml"))
+        ws.response.xml returns scala.xml.XML.loadString(
+          readFixture("discovery/xrds/simple-op.xml"))
         ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
           "application/xrds+xml")
 
         val returnTo = "http://foo.bar.com/openid"
         val openId = "http://abc.example.com/foo"
         val redirectUrl = Await.result(
-          new WsOpenIdClient(ws, new WsDiscovery(ws))
-            .redirectURL(openId, returnTo),
+          new WsOpenIdClient(ws, new WsDiscovery(ws)).redirectURL(
+            openId,
+            returnTo),
           dur)
 
         there was one(ws.request).get()
@@ -196,8 +197,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
       "should redirect to identifier selection" in {
         val ws = new WSMock
-        ws.response.xml returns scala.xml.XML
-          .loadString(readFixture("discovery/xrds/simple-op-non-unique.xml"))
+        ws.response.xml returns scala.xml.XML.loadString(
+          readFixture("discovery/xrds/simple-op-non-unique.xml"))
         ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
           "application/xrds+xml")
 
@@ -206,8 +207,9 @@ object DiscoveryClientSpec extends Specification with Mockito {
         val identifierSelection =
           "http://specs.openid.net/auth/2.0/identifier_select"
         val redirectUrl = Await.result(
-          new WsOpenIdClient(ws, new WsDiscovery(ws))
-            .redirectURL(openId, returnTo),
+          new WsOpenIdClient(ws, new WsDiscovery(ws)).redirectURL(
+            openId,
+            returnTo),
           dur)
 
         there was one(ws.request).get()
@@ -226,16 +228,17 @@ object DiscoveryClientSpec extends Specification with Mockito {
         ws.response.status returns OK thenReturns OK
         ws.response.body returns readFixture(
           "discovery/html/openIDProvider.html")
-        ws.response.xml returns scala.xml.XML
-          .loadString(readFixture("discovery/xrds/invalid-op-identifier.xml"))
+        ws.response.xml returns scala.xml.XML.loadString(
+          readFixture("discovery/xrds/invalid-op-identifier.xml"))
         ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
           "text/html") thenReturns Some("application/xrds+xml")
 
         val returnTo = "http://foo.bar.com/openid"
         val openId = "http://abc.example.com/foo"
         val redirectUrl = Await.result(
-          new WsOpenIdClient(ws, new WsDiscovery(ws))
-            .redirectURL(openId, returnTo),
+          new WsOpenIdClient(ws, new WsDiscovery(ws)).redirectURL(
+            openId,
+            returnTo),
           dur)
 
         there was one(ws.request).get()
@@ -255,16 +258,17 @@ object DiscoveryClientSpec extends Specification with Mockito {
         ws.response.status returns OK thenReturns OK
         ws.response.body returns readFixture(
           "discovery/html/openIDProvider-OpenID-1.1.html")
-        ws.response.xml returns scala.xml.XML
-          .loadString(readFixture("discovery/xrds/invalid-op-identifier.xml"))
+        ws.response.xml returns scala.xml.XML.loadString(
+          readFixture("discovery/xrds/invalid-op-identifier.xml"))
         ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
           "text/html") thenReturns Some("application/xrds+xml")
 
         val returnTo = "http://foo.bar.com/openid"
         val openId = "http://abc.example.com/foo"
         val redirectUrl = Await.result(
-          new WsOpenIdClient(ws, new WsDiscovery(ws))
-            .redirectURL(openId, returnTo),
+          new WsOpenIdClient(ws, new WsDiscovery(ws)).redirectURL(
+            openId,
+            returnTo),
           dur)
 
         there was one(ws.request).get()
@@ -290,8 +294,9 @@ object DiscoveryClientSpec extends Specification with Mockito {
         val returnTo = "http://foo.bar.com/openid"
         val openId = "http://abc.example.com/foo"
         val redirectUrl = Await.result(
-          new WsOpenIdClient(ws, new WsDiscovery(ws))
-            .redirectURL(openId, returnTo),
+          new WsOpenIdClient(ws, new WsDiscovery(ws)).redirectURL(
+            openId,
+            returnTo),
           dur)
 
         there was one(ws.request).get()
@@ -312,8 +317,9 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
         val returnTo = "http://foo.bar.com/openid"
         val redirectUrl = Await.result(
-          new WsOpenIdClient(ws, new WsDiscovery(ws))
-            .redirectURL("http://example.com/", returnTo),
+          new WsOpenIdClient(ws, new WsDiscovery(ws)).redirectURL(
+            "http://example.com/",
+            returnTo),
           dur)
 
         there was one(ws.request).get()

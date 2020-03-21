@@ -248,10 +248,8 @@ object Jvm {
     */
   lazy val ProcessId: Option[Int] =
     try {
-      ManagementFactory.getRuntimeMXBean.getName
-        .split("@")
-        .headOption
-        .map(_.toInt)
+      ManagementFactory.getRuntimeMXBean.getName.split("@").headOption.map(
+        _.toInt)
     } catch {
       case NonFatal(t) =>
         log.log(Level.WARNING, "failed to find process id", t)

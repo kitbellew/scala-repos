@@ -154,9 +154,8 @@ abstract class OperationOnCollectionInspectionBase
         val newArray = listModel.toArray collect { case s: String => s }
         setPatternLists(patternListKey)(newArray)
       }
-      val panel = ToolbarDecorator
-        .createDecorator(patternJBList)
-        .setAddAction(new AnActionButtonRunnable {
+      val panel = ToolbarDecorator.createDecorator(patternJBList).setAddAction(
+        new AnActionButtonRunnable {
           def addPattern(pattern: String) {
             if (pattern == null) return
             val index: Int =
@@ -183,15 +182,12 @@ abstract class OperationOnCollectionInspectionBase
               validator)
             addPattern(newPattern)
           }
-        })
-        .setRemoveAction(new AnActionButtonRunnable {
-          def run(t: AnActionButton) {
-            patternJBList.getSelectedIndices.foreach(listModel.removeElementAt)
-            resetValues()
-          }
-        })
-        .disableUpDownActions
-        .createPanel
+        }).setRemoveAction(new AnActionButtonRunnable {
+        def run(t: AnActionButton) {
+          patternJBList.getSelectedIndices.foreach(listModel.removeElementAt)
+          resetValues()
+        }
+      }).disableUpDownActions.createPanel
 
       val title = panelTitles(patternListKey)
       val border = BorderFactory.createTitledBorder(title)

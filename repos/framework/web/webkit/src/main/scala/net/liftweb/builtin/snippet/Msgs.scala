@@ -77,14 +77,13 @@ object Msgs extends DispatchSnippet {
       case (noticeType, ajaxStorage) => {
         // Extract the title if provided, or default to none. Allow for XML nodes
         // so that people can localize, etc.
-        val title: NodeSeq = (styles \\ noticeType.titleTag)
-          .filter(_.prefix == "lift")
-          .flatMap(_.child)
+        val title: NodeSeq = (styles \\ noticeType.titleTag).filter(
+          _.prefix == "lift").flatMap(_.child)
 
         // Extract any provided classes for the messages
         val cssClasses = ((styles \\ noticeType.styleTag) ++
-          (styles \\ noticeType.titleTag \\ "@class")).toList
-          .map(_.text.trim) match {
+          (styles \\ noticeType.titleTag \\ "@class")).toList.map(
+          _.text.trim) match {
           case Nil     => Empty
           case classes => Full(classes.mkString(" "))
         }

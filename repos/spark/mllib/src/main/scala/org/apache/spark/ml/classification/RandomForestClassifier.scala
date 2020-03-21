@@ -136,13 +136,12 @@ final class RandomForestClassifier @Since("1.4.0") (
         OldAlgo.Classification,
         getOldImpurity)
     val trees =
-      RandomForest
-        .run(
-          oldDataset,
-          strategy,
-          getNumTrees,
-          getFeatureSubsetStrategy,
-          getSeed)
+      RandomForest.run(
+        oldDataset,
+        strategy,
+        getNumTrees,
+        getFeatureSubsetStrategy,
+        getSeed)
         .map(_.asInstanceOf[DecisionTreeClassificationModel])
     val numFeatures = oldDataset.first().features.size
     new RandomForestClassificationModel(trees, numFeatures, numClasses)

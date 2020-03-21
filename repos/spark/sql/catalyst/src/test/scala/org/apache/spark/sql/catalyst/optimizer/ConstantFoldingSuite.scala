@@ -190,8 +190,9 @@ class ConstantFoldingSuite extends PlanTest {
         Literal.create(Seq(1), ArrayType(IntegerType)),
         Literal.create(null, IntegerType)) as 'c4,
       UnresolvedExtractValue(
-        Literal
-          .create(null, StructType(Seq(StructField("a", IntegerType, true)))),
+        Literal.create(
+          null,
+          StructType(Seq(StructField("a", IntegerType, true)))),
         "a") as 'c5,
       UnaryMinus(Literal.create(null, IntegerType)) as 'c6,
       Cast(Literal(null), IntegerType) as 'c7,
@@ -235,8 +236,7 @@ class ConstantFoldingSuite extends PlanTest {
           Literal.create(null, StringType) as 'c18,
           Literal.create(null, BooleanType) as 'c19,
           Literal.create(null, BooleanType) as 'c20
-        )
-        .analyze
+        ).analyze
 
     comparePlans(optimized, correctAnswer)
   }

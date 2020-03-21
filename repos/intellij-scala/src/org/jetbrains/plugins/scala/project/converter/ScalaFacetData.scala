@@ -16,11 +16,9 @@ private case class ScalaFacetData(
     vmOptions: Seq[String],
     compilerSettings: ScalaCompilerSettings) {
   def removeFrom(module: ModuleSettings) {
-    val facetElement = ScalaFacetData
-      .scalaFacetElementIn(module)
-      .getOrElse(
-        throw new IllegalStateException(
-          "Cannot remove Scala facet from module: " + module.getModuleName))
+    val facetElement = ScalaFacetData.scalaFacetElementIn(module).getOrElse(
+      throw new IllegalStateException(
+        "Cannot remove Scala facet from module: " + module.getModuleName))
 
     facetElement.detach()
   }
@@ -42,9 +40,8 @@ private object ScalaFacetData {
 
     val compilerLibraryId = properties.option("compilerLibraryLevel").flatMap {
       level =>
-        properties
-          .option("compilerLibraryName")
-          .map(LibraryReference(Level.fromFacetTitle(level), _))
+        properties.option("compilerLibraryName").map(
+          LibraryReference(Level.fromFacetTitle(level), _))
     }
 
     new ScalaFacetData(

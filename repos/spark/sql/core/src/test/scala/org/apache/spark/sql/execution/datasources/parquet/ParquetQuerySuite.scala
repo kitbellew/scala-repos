@@ -161,24 +161,16 @@ class ParquetQuerySuite
     def testSchemaMerging(expectedColumnNumber: Int): Unit = {
       withTempDir { dir =>
         val basePath = dir.getCanonicalPath
-        sqlContext
-          .range(0, 10)
-          .toDF("a")
-          .write
-          .parquet(new Path(basePath, "foo=1").toString)
-        sqlContext
-          .range(0, 10)
-          .toDF("b")
-          .write
-          .parquet(new Path(basePath, "foo=2").toString)
+        sqlContext.range(0, 10).toDF("a").write.parquet(
+          new Path(basePath, "foo=1").toString)
+        sqlContext.range(0, 10).toDF("b").write.parquet(
+          new Path(basePath, "foo=2").toString)
         // delete summary files, so if we don't merge part-files, one column will not be included.
         Utils.deleteRecursively(new File(basePath + "/foo=1/_metadata"))
         Utils.deleteRecursively(new File(basePath + "/foo=1/_common_metadata"))
         assert(
-          sqlContext.read
-            .parquet(basePath)
-            .columns
-            .length === expectedColumnNumber)
+          sqlContext.read.parquet(
+            basePath).columns.length === expectedColumnNumber)
       }
     }
 
@@ -199,21 +191,13 @@ class ParquetQuerySuite
     def testSchemaMerging(expectedColumnNumber: Int): Unit = {
       withTempDir { dir =>
         val basePath = dir.getCanonicalPath
-        sqlContext
-          .range(0, 10)
-          .toDF("a")
-          .write
-          .parquet(new Path(basePath, "foo=1").toString)
-        sqlContext
-          .range(0, 10)
-          .toDF("b")
-          .write
-          .parquet(new Path(basePath, "foo=2").toString)
+        sqlContext.range(0, 10).toDF("a").write.parquet(
+          new Path(basePath, "foo=1").toString)
+        sqlContext.range(0, 10).toDF("b").write.parquet(
+          new Path(basePath, "foo=2").toString)
         assert(
-          sqlContext.read
-            .parquet(basePath)
-            .columns
-            .length === expectedColumnNumber)
+          sqlContext.read.parquet(
+            basePath).columns.length === expectedColumnNumber)
       }
     }
 
@@ -230,35 +214,23 @@ class ParquetQuerySuite
     "SPARK-8990 DataFrameReader.parquet() should respect user specified options") {
     withTempPath { dir =>
       val basePath = dir.getCanonicalPath
-      sqlContext
-        .range(0, 10)
-        .toDF("a")
-        .write
-        .parquet(new Path(basePath, "foo=1").toString)
-      sqlContext
-        .range(0, 10)
-        .toDF("b")
-        .write
-        .parquet(new Path(basePath, "foo=a").toString)
+      sqlContext.range(0, 10).toDF("a").write.parquet(
+        new Path(basePath, "foo=1").toString)
+      sqlContext.range(0, 10).toDF("b").write.parquet(
+        new Path(basePath, "foo=a").toString)
 
       // Disables the global SQL option for schema merging
       withSQLConf(SQLConf.PARQUET_SCHEMA_MERGING_ENABLED.key -> "false") {
         assertResult(2) {
           // Disables schema merging via data source option
-          sqlContext.read
-            .option("mergeSchema", "false")
-            .parquet(basePath)
-            .columns
-            .length
+          sqlContext.read.option("mergeSchema", "false").parquet(
+            basePath).columns.length
         }
 
         assertResult(3) {
           // Enables schema merging via data source option
-          sqlContext.read
-            .option("mergeSchema", "true")
-            .parquet(basePath)
-            .columns
-            .length
+          sqlContext.read.option("mergeSchema", "true").parquet(
+            basePath).columns.length
         }
       }
     }
@@ -306,10 +278,8 @@ class ParquetQuerySuite
   test("SPARK-10301 requested schema clipping - same schema") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
-      val df = sqlContext
-        .range(1)
-        .selectExpr("NAMED_STRUCT('a', id, 'b', id + 1) AS s")
-        .coalesce(1)
+      val df = sqlContext.range(1).selectExpr(
+        "NAMED_STRUCT('a', id, 'b', id + 1) AS s").coalesce(1)
       df.write.parquet(path)
 
       val userDefinedSchema =
@@ -330,12 +300,9 @@ class ParquetQuerySuite
   test("SPARK-11997 parquet with null partition values") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
-      sqlContext
-        .range(1, 3)
+      sqlContext.range(1, 3)
         .selectExpr("if(id % 2 = 0, null, id) AS n", "id")
-        .write
-        .partitionBy("n")
-        .parquet(path)
+        .write.partitionBy("n").parquet(path)
 
       checkAnswer(
         sqlContext.read.parquet(path).filter("n is null"),
@@ -348,10 +315,8 @@ class ParquetQuerySuite
     "SPARK-10301 requested schema clipping - schemas with disjoint sets of fields") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
-      val df = sqlContext
-        .range(1)
-        .selectExpr("NAMED_STRUCT('a', id, 'b', id + 1) AS s")
-        .coalesce(1)
+      val df = sqlContext.range(1).selectExpr(
+        "NAMED_STRUCT('a', id, 'b', id + 1) AS s").coalesce(1)
       df.write.parquet(path)
 
       val userDefinedSchema =
@@ -373,10 +338,8 @@ class ParquetQuerySuite
     "SPARK-10301 requested schema clipping - requested schema contains physical schema") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
-      val df = sqlContext
-        .range(1)
-        .selectExpr("NAMED_STRUCT('a', id, 'b', id + 1) AS s")
-        .coalesce(1)
+      val df = sqlContext.range(1).selectExpr(
+        "NAMED_STRUCT('a', id, 'b', id + 1) AS s").coalesce(1)
       df.write.parquet(path)
 
       val userDefinedSchema =
@@ -398,10 +361,8 @@ class ParquetQuerySuite
 
     withTempPath { dir =>
       val path = dir.getCanonicalPath
-      val df = sqlContext
-        .range(1)
-        .selectExpr("NAMED_STRUCT('a', id, 'd', id + 3) AS s")
-        .coalesce(1)
+      val df = sqlContext.range(1).selectExpr(
+        "NAMED_STRUCT('a', id, 'd', id + 3) AS s").coalesce(1)
       df.write.parquet(path)
 
       val userDefinedSchema =
@@ -583,7 +544,8 @@ class ParquetQuerySuite
       df2.write.mode(SaveMode.Append).parquet(path)
 
       checkAnswer(
-        sqlContext.read
+        sqlContext
+          .read
           .option("mergeSchema", "true")
           .parquet(path)
           .selectExpr("s.a", "s.b", "s.c"),

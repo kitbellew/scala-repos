@@ -27,8 +27,12 @@ object Tv extends LilaController {
               Env.game.crosstableApi(pov.game) map {
               case (champions, crosstable) =>
                 Ok(
-                  html.tv
-                    .sides(channel, champions, pov, crosstable, streams = Nil))
+                  html.tv.sides(
+                    channel,
+                    champions,
+                    pov,
+                    crosstable,
+                    streams = Nil))
             }
           }
       }
@@ -55,10 +59,11 @@ object Tv extends LilaController {
           }
         },
         api = apiVersion =>
-          Env.api.roundApi
-            .watcher(pov, apiVersion, tv = onTv.some, withOpening = false) map {
-            Ok(_)
-          }
+          Env.api.roundApi.watcher(
+            pov,
+            apiVersion,
+            tv = onTv.some,
+            withOpening = false) map { Ok(_) }
       )
     }
 

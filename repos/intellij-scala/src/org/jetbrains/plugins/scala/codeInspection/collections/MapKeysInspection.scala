@@ -19,22 +19,18 @@ object MapKeys extends SimplificationType {
       case qual `.map`(`_._1`()) `.toIterator` () if isMap(qual) =>
         val iteratorHint = InspectionBundle.message("replace.with.keysIterator")
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "keysIterator"))
-            .highlightFrom(qual)
-            .withHint(iteratorHint))
+          replace(expr).withText(
+            invocationText(qual, "keysIterator")).highlightFrom(qual).withHint(
+            iteratorHint))
       case qual `.map`(`_._1`()) `.toSet` () if isMap(qual) =>
         val setHint = InspectionBundle.message("replace.with.keySet")
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "keySet"))
-            .highlightFrom(qual)
-            .withHint(setHint))
+          replace(expr).withText(invocationText(qual, "keySet")).highlightFrom(
+            qual).withHint(setHint))
       case qual `.map`(`_._1`()) if isMap(qual) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "keys"))
-            .highlightFrom(qual))
+          replace(expr).withText(invocationText(qual, "keys")).highlightFrom(
+            qual))
       case _ => None
     }
 }

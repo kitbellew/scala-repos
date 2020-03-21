@@ -57,8 +57,11 @@ abstract class ScalaRuntimeTypeEvaluator(
             val textWithImports = new TextWithImportsImpl(
               CodeFragmentKind.CODE_BLOCK,
               expression.getText)
-            val codeFragment = new ScalaCodeFragmentFactory()
-              .createCodeFragment(textWithImports, expression, project)
+            val codeFragment =
+              new ScalaCodeFragmentFactory().createCodeFragment(
+                textWithImports,
+                expression,
+                project)
             ScalaEvaluatorBuilder.build(
               codeFragment,
               ContextUtil.getSourcePosition(evaluationContext))
@@ -68,9 +71,8 @@ abstract class ScalaRuntimeTypeEvaluator(
     val value: Value = evaluator.evaluate(evaluationContext)
     if (value != null) {
       inReadAction {
-        Option(getCastableRuntimeType(project, value))
-          .map(new PsiImmediateClassType(_, PsiSubstitutor.EMPTY))
-          .orNull
+        Option(getCastableRuntimeType(project, value)).map(
+          new PsiImmediateClassType(_, PsiSubstitutor.EMPTY)).orNull
       }
     } else
       throw EvaluationException(
@@ -102,10 +104,8 @@ object ScalaRuntimeTypeEvaluator {
           }
         }
         import scala.collection.JavaConversions._
-        classType.interfaces
-          .map(findPsiClass(project, _))
-          .find(_ != null)
-          .orNull
+        classType.interfaces.map(findPsiClass(project, _)).find(
+          _ != null).orNull
       case _ => null
     }
   }
@@ -113,10 +113,9 @@ object ScalaRuntimeTypeEvaluator {
   private def findPsiClass(project: Project, jdiType: Type): PsiClass = {
     val token: AccessToken = ReadAction.start
     try {
-      ScalaPsiManager
-        .instance(project)
-        .getCachedClass(GlobalSearchScope.allScope(project), jdiType.name())
-        .orNull
+      ScalaPsiManager.instance(project).getCachedClass(
+        GlobalSearchScope.allScope(project),
+        jdiType.name()).orNull
     } finally {
       token.finish()
     }

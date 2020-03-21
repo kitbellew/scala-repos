@@ -14,9 +14,7 @@ import com.typesafe.play.docs.sbtplugin.Imports._
 object ApplicationBuild extends Build {
 
   lazy val main = Project("Play-Documentation", file("."))
-    .enablePlugins(PlayDocsPlugin)
-    .disablePlugins(PlayEnhancer)
-    .settings(
+    .enablePlugins(PlayDocsPlugin).disablePlugins(PlayEnhancer).settings(
       resolvers += Resolver.sonatypeRepo(
         "releases"
       ), // TODO: Delete this eventually, just needed for lag between deploying to sonatype and getting on maven central
@@ -26,8 +24,8 @@ object ApplicationBuild extends Build {
       ),
       PlayDocsKeys.docsJarFile := Some(
         (packageBin in (playDocs, Compile)).value),
-      PlayDocsKeys.playDocsValidationConfig := PlayDocsValidation
-        .ValidationConfig(downstreamWikiPages = Set(
+      PlayDocsKeys.playDocsValidationConfig := PlayDocsValidation.ValidationConfig(
+        downstreamWikiPages = Set(
           "ScalaAnorm",
           "PlaySlickMigrationGuide",
           "ScalaTestingWithScalaTest",

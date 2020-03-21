@@ -305,9 +305,9 @@ private class PartitionCoalescer(
     */
   def pickBin(p: Partition): PartitionGroup = {
     val pref =
-      currPrefLocs(p)
-        .map(getLeastGroupHash(_))
-        .sortWith(compare) // least loaded pref locs
+      currPrefLocs(p).map(getLeastGroupHash(_)).sortWith(
+        compare
+      ) // least loaded pref locs
     val prefPart = if (pref == Nil) None else pref.head
 
     val r1 = rnd.nextInt(groupArr.size)

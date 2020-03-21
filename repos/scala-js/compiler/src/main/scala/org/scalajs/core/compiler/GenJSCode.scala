@@ -153,8 +153,9 @@ abstract class GenJSCode
 
     // scalastyle:off disallow.space.after.token
     private val translatedAnonFunctions =
-      mutable.Map
-        .empty[Symbol, /*ctor args:*/ List[js.Tree] => /*instance:*/ js.Tree]
+      mutable.Map.empty[
+        Symbol,
+        /*ctor args:*/ List[js.Tree] => /*instance:*/ js.Tree]
     private val instantiatedAnonFunctions =
       mutable.Set.empty[Symbol]
     private val undefinedDefaultParams =
@@ -240,9 +241,8 @@ abstract class GenJSCode
           /* Similarly, do not emit code for impl classes of raw JS traits. */
           val isRawJSImplClass =
             sym.isImplClass && isRawJSType(
-              sym.owner.info
-                .decl(sym.name.dropRight(nme.IMPL_CLASS_SUFFIX.length))
-                .tpe)
+              sym.owner.info.decl(
+                sym.name.dropRight(nme.IMPL_CLASS_SUFFIX.length)).tpe)
 
           if (!isPrimitive && !isRawJSImplClass) {
             withScopedVars(
@@ -324,9 +324,8 @@ abstract class GenJSCode
           isStdLibClassWithAdHocInlineAnnot(sym))
 
       val optimizerHints =
-        OptimizerHints.empty
-          .withInline(shouldMarkInline)
-          .withNoinline(sym.hasAnnotation(NoinlineAnnotationClass))
+        OptimizerHints.empty.withInline(shouldMarkInline).withNoinline(
+          sym.hasAnnotation(NoinlineAnnotationClass))
 
       // Generate members (constructor + methods)
 
@@ -834,13 +833,11 @@ abstract class GenJSCode
                   !ir.Definitions.isConstructorName(mtd.name)
                 case _ => true
               }
-              val superCallParams = stats
-                .collectFirst {
-                  case js.ApplyStatic(_, mtd, js.This() :: args)
-                      if ir.Definitions.isConstructorName(mtd.name) =>
-                    zipMap(outputParams, args)(js.Assign(_, _))
-                }
-                .getOrElse(Nil)
+              val superCallParams = stats.collectFirst {
+                case js.ApplyStatic(_, mtd, js.This() :: args)
+                    if ir.Definitions.isConstructorName(mtd.name) =>
+                  zipMap(outputParams, args)(js.Assign(_, _))
+              }.getOrElse(Nil)
 
               beforeSuperCall ::: superCallParams
 
@@ -1039,11 +1036,9 @@ abstract class GenJSCode
         }
       }
 
-      val ctorToChildren = secondaryCtors
-        .map { ctor => findCtorForwarderCall(ctor.body) -> ctor }
-        .groupBy(_._1)
-        .mapValues(_.map(_._2))
-        .withDefaultValue(Nil)
+      val ctorToChildren = secondaryCtors.map { ctor =>
+        findCtorForwarderCall(ctor.body) -> ctor
+      }.groupBy(_._1).mapValues(_.map(_._2)).withDefaultValue(Nil)
 
       var overrideNum = -1
       def mkConstructorTree(method: js.MethodDef): ConstructorTree = {
@@ -1191,9 +1186,8 @@ abstract class GenJSCode
             }
 
             val optimizerHints =
-              OptimizerHints.empty
-                .withInline(shouldMarkInline)
-                .withNoinline(shouldMarkNoinline)
+              OptimizerHints.empty.withInline(shouldMarkInline).withNoinline(
+                shouldMarkNoinline)
 
             val methodDef = {
               if (isJSClassConstructor) {
@@ -2019,9 +2013,8 @@ abstract class GenJSCode
           js.BooleanLiteral(l == r)
       } else if (l.isValueType) {
         val result = if (cast) {
-          val ctor = ClassCastExceptionClass.info
-            .member(nme.CONSTRUCTOR)
-            .suchThat(_.tpe.params.isEmpty)
+          val ctor = ClassCastExceptionClass.info.member(
+            nme.CONSTRUCTOR).suchThat(_.tpe.params.isEmpty)
           js.Throw(genNew(ClassCastExceptionClass, ctor, Nil))
         } else {
           js.BooleanLiteral(false)
@@ -3037,8 +3030,9 @@ abstract class GenJSCode
       if (mustUseAnyComparator) {
         val equalsMethod: Symbol = {
           // scalastyle:off line.size.limit
-          val ptfm = platform
-            .asInstanceOf[backend.JavaPlatform with ThisPlatform] // 2.10 compat
+          val ptfm = platform.asInstanceOf[
+            backend.JavaPlatform with ThisPlatform
+          ] // 2.10 compat
           if (ltpe <:< BoxedNumberClass.tpe) {
             if (rtpe <:< BoxedNumberClass.tpe) ptfm.externalEqualsNumNum
             else if (rtpe <:< BoxedCharacterClass.tpe)
@@ -3164,9 +3158,9 @@ abstract class GenJSCode
           newArg
         case _ =>
           implicit val pos = tree.pos
-          val NPECtor =
-            getMemberMethod(NullPointerExceptionClass, nme.CONSTRUCTOR)
-              .suchThat(_.tpe.params.isEmpty)
+          val NPECtor = getMemberMethod(
+            NullPointerExceptionClass,
+            nme.CONSTRUCTOR).suchThat(_.tpe.params.isEmpty)
           js.Block(
             js.If(
               js.BinaryOp(js.BinaryOp.===, newReceiver, js.Null()),
@@ -3609,12 +3603,10 @@ abstract class GenJSCode
             reporter.warning(
               pos,
               "Duplicate keys in object literal: " +
-                duplicateKeyCounts
-                  .map {
-                    case (keyName, count) =>
-                      s""""$keyName" defined $count times"""
-                  }
-                  .mkString(", ") +
+                duplicateKeyCounts.map {
+                  case (keyName, count) =>
+                    s""""$keyName" defined $count times"""
+                }.mkString(", ") +
                 ". Only the last occurrence is assigned."
             )
           }

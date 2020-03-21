@@ -162,10 +162,8 @@ object SparkBuild extends PomBuild {
             "Note: We ignore environment variables, when use of profile is detected in " +
               "conjunction with environment variable.")
         // scalastyle:on println
-        v.split("(\\s+|,)")
-          .filterNot(_.isEmpty)
-          .map(_.trim.replaceAll("-P", ""))
-          .toSeq
+        v.split("(\\s+|,)").filterNot(_.isEmpty).map(
+          _.trim.replaceAll("-P", "")).toSeq
     }
 
     if (System.getProperty("scala-2.10") == "") {
@@ -179,10 +177,8 @@ object SparkBuild extends PomBuild {
 
   Properties.envOrNone("SBT_MAVEN_PROPERTIES") match {
     case Some(v) =>
-      v.split("(\\s+|,)")
-        .filterNot(_.isEmpty)
-        .map(_.split("="))
-        .foreach(x => System.setProperty(x(0), x(1)))
+      v.split("(\\s+|,)").filterNot(_.isEmpty).map(_.split("=")).foreach(x =>
+        System.setProperty(x(0), x(1)))
     case _ =>
   }
 
@@ -201,8 +197,7 @@ object SparkBuild extends PomBuild {
   lazy val sharedSettings = sparkGenjavadocSettings ++ Seq(
     exportJars in Compile := true,
     exportJars in Test := false,
-    javaHome := sys.env
-      .get("JAVA_HOME")
+    javaHome := sys.env.get("JAVA_HOME")
       .orElse(sys.props.get("java.home").map { p =>
         new File(p).getParentFile().getAbsolutePath()
       })
@@ -268,8 +263,8 @@ object SparkBuild extends PomBuild {
 
       def logProblem(l: (=> String) => Unit, f: File, p: xsbti.Problem) = {
         l(
-          f.toString + ":" + p.position.line
-            .fold("")(_ + ":") + " " + p.message)
+          f.toString + ":" + p.position.line.fold("")(
+            _ + ":") + " " + p.message)
         l(p.position.lineContent)
         l("")
       }
@@ -389,9 +384,8 @@ object SparkBuild extends PomBuild {
       outputStrategy in run := Some(StdoutOutput),
       javaOptions ++= Seq("-Xmx2G", "-XX:MaxPermSize=256m"),
       sparkShell := {
-        (runMain in Compile)
-          .toTask(" org.apache.spark.repl.Main -usejavacp")
-          .value
+        (runMain in Compile).toTask(
+          " org.apache.spark.repl.Main -usejavacp").value
       },
       sparkPackage := {
         import complete.DefaultParsers._
@@ -414,9 +408,8 @@ object SparkBuild extends PomBuild {
       },
       javaOptions in Compile += "-Dspark.master=local",
       sparkSql := {
-        (runMain in Compile)
-          .toTask(" org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver")
-          .value
+        (runMain in Compile).toTask(
+          " org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver").value
       }
     ))(assembly)
 
@@ -510,18 +503,16 @@ object Catalyst {
       antlr.setMake(true)
 
       // Add grammar files.
-      grammarFileNames
-        .flatMap(gFileName => (sourceDir ** gFileName).get)
-        .foreach {
-          gFilePath =>
-            val relGFilePath = (gFilePath relativeTo sourceDir).get.getPath
-            log.info("ANTLR: Grammar file '%s' detected.".format(relGFilePath))
-            antlr.addGrammarFile(relGFilePath)
-            // We will set library directory multiple times here. However, only the
-            // last one has effect. Because the grammar files are located under the same directory,
-            // We assume there is only one library directory.
-            antlr.setLibDirectory(gFilePath.getParent)
-        }
+      grammarFileNames.flatMap(gFileName =>
+        (sourceDir ** gFileName).get).foreach { gFilePath =>
+        val relGFilePath = (gFilePath relativeTo sourceDir).get.getPath
+        log.info("ANTLR: Grammar file '%s' detected.".format(relGFilePath))
+        antlr.addGrammarFile(relGFilePath)
+        // We will set library directory multiple times here. However, only the
+        // last one has effect. Because the grammar files are located under the same directory,
+        // We assume there is only one library directory.
+        antlr.setLibDirectory(gFilePath.getParent)
+      }
 
       // Generate the parser.
       antlr.process()
@@ -620,12 +611,9 @@ object Assembly {
   lazy val settings = assemblySettings ++ Seq(
     test in assembly := {},
     hadoopVersion := {
-      sys.props
-        .get("hadoop.version")
-        .getOrElse(
-          SbtPomKeys.effectivePom.value.getProperties
-            .get("hadoop.version")
-            .asInstanceOf[String])
+      sys.props.get("hadoop.version")
+        .getOrElse(SbtPomKeys.effectivePom.value.getProperties.get(
+          "hadoop.version").asInstanceOf[String])
     },
     jarName in assembly <<= (version, moduleName, hadoopVersion) map {
       (v, mName, hv) =>
@@ -652,8 +640,7 @@ object Assembly {
       case _                => MergeStrategy.first
     },
     deployDatanucleusJars := {
-      val jars: Seq[File] = (fullClasspath in assembly).value
-        .map(_.data)
+      val jars: Seq[File] = (fullClasspath in assembly).value.map(_.data)
         .filter(_.getPath.contains("org.datanucleus"))
       var libManagedJars = new File(BuildCommons.sparkHome, "lib_managed/jars")
       libManagedJars.mkdirs()
@@ -877,8 +864,7 @@ object CopyDependencies {
         throw new IOException("Failed to create jars directory.")
       }
 
-      (dependencyClasspath in Compile).value
-        .map(_.data)
+      (dependencyClasspath in Compile).value.map(_.data)
         .filter { jar => jar.isFile() }
         .foreach { jar =>
           val destJar = new File(dest, jar.getName())
@@ -915,10 +901,8 @@ object TestSettings {
     // launched by the tests have access to the correct test-time classpath.
     envVars in Test ++= Map(
       "SPARK_DIST_CLASSPATH" ->
-        (fullClasspath in Test).value.files
-          .map(_.getAbsolutePath)
-          .mkString(":")
-          .stripSuffix(":"),
+        (fullClasspath in Test).value.files.map(_.getAbsolutePath).mkString(
+          ":").stripSuffix(":"),
       "SPARK_PREPEND_CLASSES" -> "1",
       "SPARK_TESTING" -> "1",
       "JAVA_HOME" -> sys.env.get("JAVA_HOME").getOrElse(sys.props("java.home"))
@@ -933,28 +917,24 @@ object TestSettings {
     javaOptions in Test += "-Dspark.unsafe.exceptionOnMemoryLeak=true",
     javaOptions in Test += "-Dsun.io.serialization.extendedDebugInfo=true",
     javaOptions in Test += "-Dderby.system.durability=test",
-    javaOptions in Test ++= System.getProperties.asScala
-      .filter(_._1.startsWith("spark"))
-      .map { case (k, v) => s"-D$k=$v" }
-      .toSeq,
+    javaOptions in Test ++= System.getProperties.asScala.filter(
+      _._1.startsWith("spark"))
+      .map { case (k, v) => s"-D$k=$v" }.toSeq,
     javaOptions in Test += "-ea",
     javaOptions in Test ++= "-Xmx3g -Xss4096k -XX:PermSize=128M -XX:MaxNewSize=256m -XX:MaxPermSize=1g"
-      .split(" ")
-      .toSeq,
+      .split(" ").toSeq,
     javaOptions += "-Xmx3g",
     // Exclude tags defined in a system property
     testOptions in Test += Tests.Argument(
       TestFrameworks.ScalaTest,
-      sys.props
-        .get("test.exclude.tags")
-        .map { tags => tags.split(",").flatMap { tag => Seq("-l", tag) }.toSeq }
-        .getOrElse(Nil): _*),
+      sys.props.get("test.exclude.tags").map { tags =>
+        tags.split(",").flatMap { tag => Seq("-l", tag) }.toSeq
+      }.getOrElse(Nil): _*),
     testOptions in Test += Tests.Argument(
       TestFrameworks.JUnit,
-      sys.props
-        .get("test.exclude.tags")
-        .map { tags => Seq("--exclude-categories=" + tags) }
-        .getOrElse(Nil): _*),
+      sys.props.get("test.exclude.tags").map { tags =>
+        Seq("--exclude-categories=" + tags)
+      }.getOrElse(Nil): _*),
     // Show full stack trace and duration in test cases.
     testOptions in Test += Tests.Argument("-oDF"),
     testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),

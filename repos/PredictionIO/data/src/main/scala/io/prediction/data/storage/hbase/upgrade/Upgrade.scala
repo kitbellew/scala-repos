@@ -53,16 +53,16 @@ object Upgrade {
       s"Copying data from ${fromNamespace}:events for app ID ${fromAppId}"
         + s" to new HBase table ${newTableName}...")
 
-    HB_0_8_0
-      .getByAppId(events.client.connection, fromNamespace, fromAppId)
-      .grouped(batchSize)
-      .foreach { eventGroup =>
-        val puts = eventGroup.map { e =>
-          val (put, rowkey) = HBEventsUtil.eventToPut(e, toAppId)
-          put
-        }
-        newTable.put(puts.toList)
+    HB_0_8_0.getByAppId(
+      events.client.connection,
+      fromNamespace,
+      fromAppId).grouped(batchSize).foreach { eventGroup =>
+      val puts = eventGroup.map { e =>
+        val (put, rowkey) = HBEventsUtil.eventToPut(e, toAppId)
+        put
       }
+      newTable.put(puts.toList)
+    }
 
     newTable.flushCommits()
     newTable.close()

@@ -21,9 +21,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
 
   test("get random ports from single range") {
     val app = AppDefinition(portDefinitions = PortDefinitions(80, 81))
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 32000)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 32000).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isDefined)
@@ -152,9 +152,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
 
   test("get too many ports") {
     val app = AppDefinition(portDefinitions = PortDefinitions(80, 81, 82))
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 31001)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 31001).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isEmpty)
@@ -164,9 +164,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     val app = AppDefinition(
       portDefinitions = PortDefinitions(80, 81, 82),
       requirePorts = true)
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 32000)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 32000).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isEmpty)
@@ -205,9 +205,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       )
     ))
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 31000)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 31000).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isDefined)
@@ -227,9 +227,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       )
     ))
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 32000)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 32000).build
     val rand = new Random(new util.Random(0))
     val matcher = new PortsMatcher(app, offer, random = rand)
 
@@ -266,9 +266,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       )
     ))
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 32000)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 32000).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isEmpty)
@@ -287,9 +287,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       )
     ))
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 32000)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 32000).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isDefined)
@@ -316,10 +316,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       role = "marathon"
     )
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(endPort = -1)
-      .addResources(portsResource)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(endPort = -1).addResources(
+      portsResource).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isEmpty)
@@ -340,9 +338,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       )
     ))
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 31001)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 31001).build
     val matcher = new PortsMatcher(app, offer)
 
     assert(matcher.portsMatch.isDefined)
@@ -370,10 +368,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       role = "marathon"
     )
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 31000, endPort = 31000)
-      .addResources(portsResource)
-      .build
+    val offer = MarathonTestHelper.makeBasicOffer(
+      beginPort = 31000,
+      endPort = 31000).addResources(portsResource).build
     val matcher = new PortsMatcher(
       app,
       offer,

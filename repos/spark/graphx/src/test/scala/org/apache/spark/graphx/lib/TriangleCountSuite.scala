@@ -80,9 +80,10 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
           Array(0L -> 1L, 1L -> 2L, 2L -> 0L) ++
           Array(1L -> 0L, 1L -> 1L),
         2)
-      val graph = Graph
-        .fromEdgeTuples(rawEdges, true, uniqueEdges = Some(RandomVertexCut))
-        .cache()
+      val graph = Graph.fromEdgeTuples(
+        rawEdges,
+        true,
+        uniqueEdges = Some(RandomVertexCut)).cache()
       val triangleCount = graph.triangleCount()
       val verts = triangleCount.vertices
       verts.collect.foreach { case (vid, count) => assert(count === 1) }

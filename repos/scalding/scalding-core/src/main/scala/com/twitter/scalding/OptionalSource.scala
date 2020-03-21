@@ -28,7 +28,6 @@ case class OptionalSource[T](src: Mappable[T]) extends Source with Mappable[T] {
         src.createTap(readOrWrite)
       case Failure(_) =>
         IterableSource[T](Nil)(TupleSetter.singleSetter[T], src.converter)
-          .createTap(readOrWrite)
-          .asInstanceOf[Tap[_, _, _]]
+          .createTap(readOrWrite).asInstanceOf[Tap[_, _, _]]
     }
 }

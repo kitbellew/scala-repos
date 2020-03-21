@@ -260,8 +260,9 @@ class CoarseMesosSchedulerBackendSuite
       offerId: OfferID,
       filter: Boolean = false): Unit = {
     if (filter) {
-      verify(driver, times(1))
-        .declineOffer(Matchers.eq(offerId), anyObject[Filters])
+      verify(driver, times(1)).declineOffer(
+        Matchers.eq(offerId),
+        anyObject[Filters])
     } else {
       verify(driver, times(1)).declineOffer(Matchers.eq(offerId))
     }
@@ -292,8 +293,7 @@ class CoarseMesosSchedulerBackendSuite
       taskId: String,
       slaveId: String,
       state: TaskState): TaskStatus = {
-    TaskStatus
-      .newBuilder()
+    TaskStatus.newBuilder()
       .setTaskId(TaskID.newBuilder().setValue(taskId).build())
       .setSlaveId(SlaveID.newBuilder().setValue(slaveId).build())
       .setState(state)
@@ -322,22 +322,17 @@ class CoarseMesosSchedulerBackendSuite
       mem: Int,
       cpu: Int): Offer = {
     val builder = Offer.newBuilder()
-    builder
-      .addResourcesBuilder()
+    builder.addResourcesBuilder()
       .setName("mem")
       .setType(Value.Type.SCALAR)
       .setScalar(Scalar.newBuilder().setValue(mem))
-    builder
-      .addResourcesBuilder()
+    builder.addResourcesBuilder()
       .setName("cpus")
       .setType(Value.Type.SCALAR)
       .setScalar(Scalar.newBuilder().setValue(cpu))
-    builder
-      .setId(createOfferId(offerId))
-      .setFrameworkId(
-        FrameworkID
-          .newBuilder()
-          .setValue("f1"))
+    builder.setId(createOfferId(offerId))
+      .setFrameworkId(FrameworkID.newBuilder()
+        .setValue("f1"))
       .setSlaveId(SlaveID.newBuilder().setValue(slaveId))
       .setHostname(s"host${slaveId}")
       .build()

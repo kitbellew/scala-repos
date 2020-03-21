@@ -93,15 +93,13 @@ private[stream] object AbstractStage {
         case Supervision.Restart ⇒
           resetAfterSupervise()
           currentStage.postStop()
-          currentStage = currentStage
-            .restart()
-            .asInstanceOf[AbstractStage[
-              In,
-              Out,
-              Directive,
-              Directive,
-              Context[Out],
-              LifecycleContext]]
+          currentStage = currentStage.restart().asInstanceOf[AbstractStage[
+            In,
+            Out,
+            Directive,
+            Directive,
+            Context[Out],
+            LifecycleContext]]
           currentStage.preStart(ctx)
       }
     }

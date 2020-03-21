@@ -36,10 +36,9 @@ object ScalingProposition {
     val ordered =
       sentencedAndRunningMap.values.toSeq ++
         killToMeetConstraints.toSeq ++
-        rest.values.toSeq
-          .sortBy(
-            _.launched.flatMap(_.status.startedAt).getOrElse(Timestamp.zero))
-          .reverse
+        rest.values.toSeq.sortBy(
+          _.launched.flatMap(_.status.startedAt).getOrElse(
+            Timestamp.zero)).reverse
 
     val candidatesToKill = ordered.take(killCount)
     val numberOfTasksToStart = scaleTo - runningTasks.size + killCount

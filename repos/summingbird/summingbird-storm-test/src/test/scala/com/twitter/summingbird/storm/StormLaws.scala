@@ -301,8 +301,7 @@ class StormLaws extends WordSpec {
     val cluster = new LocalCluster()
 
     val producer =
-      Storm
-        .source(TraversableSpout(original))
+      Storm.source(TraversableSpout(original))
         .filter(_ % 2 == 0)
         .map(_ -> 10)
         .sumByKey(storeSupplier)
@@ -392,19 +391,28 @@ class StormLaws extends WordSpec {
     val service =
       ReadableServiceFactory[Int, Int](() => ReadableStore.fromFn(serviceFn))
 
-    val tail = TestGraphs
-      .realJoinTestJob[Storm, Int, Int, Int, Int, Int, Int, Int, Int, Int](
-        source1,
-        source2,
-        source3,
-        source4,
-        service,
-        store1,
-        fn1,
-        fn2,
-        fn3,
-        preJoinFn,
-        postJoinFn)
+    val tail = TestGraphs.realJoinTestJob[
+      Storm,
+      Int,
+      Int,
+      Int,
+      Int,
+      Int,
+      Int,
+      Int,
+      Int,
+      Int](
+      source1,
+      source2,
+      source3,
+      source4,
+      service,
+      store1,
+      fn1,
+      fn2,
+      fn3,
+      preJoinFn,
+      postJoinFn)
 
     assert(OnlinePlan(tail).nodes.size < 10)
     StormTestRun(tail)

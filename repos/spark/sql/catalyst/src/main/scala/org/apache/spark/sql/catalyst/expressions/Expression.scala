@@ -94,27 +94,23 @@ abstract class Expression extends TreeNode[Expression] {
     * @return [[ExprCode]]
     */
   def gen(ctx: CodegenContext): ExprCode = {
-    ctx.subExprEliminationExprs
-      .get(this)
-      .map { subExprState =>
-        // This expression is repeated meaning the code to evaluated has already been added
-        // as a function and called in advance. Just use it.
-        val code = s"/* ${toCommentSafeString(this.toString)} */"
-        ExprCode(code, subExprState.isNull, subExprState.value)
+    ctx.subExprEliminationExprs.get(this).map { subExprState =>
+      // This expression is repeated meaning the code to evaluated has already been added
+      // as a function and called in advance. Just use it.
+      val code = s"/* ${toCommentSafeString(this.toString)} */"
+      ExprCode(code, subExprState.isNull, subExprState.value)
+    }.getOrElse {
+      val isNull = ctx.freshName("isNull")
+      val value = ctx.freshName("value")
+      val ve = ExprCode("", isNull, value)
+      ve.code = genCode(ctx, ve)
+      if (ve.code != "") {
+        // Add `this` in the comment.
+        ve.copy(s"/* ${toCommentSafeString(this.toString)} */\n" + ve.code.trim)
+      } else {
+        ve
       }
-      .getOrElse {
-        val isNull = ctx.freshName("isNull")
-        val value = ctx.freshName("value")
-        val ve = ExprCode("", isNull, value)
-        ve.code = genCode(ctx, ve)
-        if (ve.code != "") {
-          // Add `this` in the comment.
-          ve.copy(
-            s"/* ${toCommentSafeString(this.toString)} */\n" + ve.code.trim)
-        } else {
-          ve
-        }
-      }
+    }
   }
 
   /**

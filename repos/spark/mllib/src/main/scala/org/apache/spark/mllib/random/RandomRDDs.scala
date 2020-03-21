@@ -655,8 +655,14 @@ object RandomRDDs {
       numCols: Int,
       numPartitions: Int,
       seed: Long): JavaRDD[Vector] = {
-    logNormalVectorRDD(jsc.sc, mean, std, numRows, numCols, numPartitions, seed)
-      .toJavaRDD()
+    logNormalVectorRDD(
+      jsc.sc,
+      mean,
+      std,
+      numRows,
+      numCols,
+      numPartitions,
+      seed).toJavaRDD()
   }
 
   /**
@@ -670,8 +676,13 @@ object RandomRDDs {
       numRows: Long,
       numCols: Int,
       numPartitions: Int): JavaRDD[Vector] = {
-    logNormalVectorRDD(jsc.sc, mean, std, numRows, numCols, numPartitions)
-      .toJavaRDD()
+    logNormalVectorRDD(
+      jsc.sc,
+      mean,
+      std,
+      numRows,
+      numCols,
+      numPartitions).toJavaRDD()
   }
 
   /**
@@ -729,8 +740,13 @@ object RandomRDDs {
       numCols: Int,
       numPartitions: Int,
       seed: Long): JavaRDD[Vector] = {
-    poissonVectorRDD(jsc.sc, mean, numRows, numCols, numPartitions, seed)
-      .toJavaRDD()
+    poissonVectorRDD(
+      jsc.sc,
+      mean,
+      numRows,
+      numCols,
+      numPartitions,
+      seed).toJavaRDD()
   }
 
   /**
@@ -799,8 +815,13 @@ object RandomRDDs {
       numCols: Int,
       numPartitions: Int,
       seed: Long): JavaRDD[Vector] = {
-    exponentialVectorRDD(jsc.sc, mean, numRows, numCols, numPartitions, seed)
-      .toJavaRDD()
+    exponentialVectorRDD(
+      jsc.sc,
+      mean,
+      numRows,
+      numCols,
+      numPartitions,
+      seed).toJavaRDD()
   }
 
   /**
@@ -813,8 +834,12 @@ object RandomRDDs {
       numRows: Long,
       numCols: Int,
       numPartitions: Int): JavaRDD[Vector] = {
-    exponentialVectorRDD(jsc.sc, mean, numRows, numCols, numPartitions)
-      .toJavaRDD()
+    exponentialVectorRDD(
+      jsc.sc,
+      mean,
+      numRows,
+      numCols,
+      numPartitions).toJavaRDD()
   }
 
   /**
@@ -874,8 +899,14 @@ object RandomRDDs {
       numCols: Int,
       numPartitions: Int,
       seed: Long): JavaRDD[Vector] = {
-    gammaVectorRDD(jsc.sc, shape, scale, numRows, numCols, numPartitions, seed)
-      .toJavaRDD()
+    gammaVectorRDD(
+      jsc.sc,
+      shape,
+      scale,
+      numRows,
+      numCols,
+      numPartitions,
+      seed).toJavaRDD()
   }
 
   /**
@@ -889,8 +920,13 @@ object RandomRDDs {
       numRows: Long,
       numCols: Int,
       numPartitions: Int): JavaRDD[Vector] = {
-    gammaVectorRDD(jsc.sc, shape, scale, numRows, numCols, numPartitions)
-      .toJavaRDD()
+    gammaVectorRDD(
+      jsc.sc,
+      shape,
+      scale,
+      numRows,
+      numCols,
+      numPartitions).toJavaRDD()
   }
 
   /**
@@ -949,8 +985,13 @@ object RandomRDDs {
       numCols: Int,
       numPartitions: Int,
       seed: Long): JavaRDD[Vector] = {
-    randomVectorRDD(jsc.sc, generator, numRows, numCols, numPartitions, seed)
-      .toJavaRDD()
+    randomVectorRDD(
+      jsc.sc,
+      generator,
+      numRows,
+      numCols,
+      numPartitions,
+      seed).toJavaRDD()
   }
 
   /**
@@ -964,8 +1005,12 @@ object RandomRDDs {
       numRows: Long,
       numCols: Int,
       numPartitions: Int): JavaRDD[Vector] = {
-    randomVectorRDD(jsc.sc, generator, numRows, numCols, numPartitions)
-      .toJavaRDD()
+    randomVectorRDD(
+      jsc.sc,
+      generator,
+      numRows,
+      numCols,
+      numPartitions).toJavaRDD()
   }
 
   /**

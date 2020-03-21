@@ -36,13 +36,11 @@ class NotifyLaunchQueueStepImplTest
       None)
 
     When("calling processUpdate")
-    f.step
-      .processUpdate(
-        updateTimestamp,
-        task = MarathonTestHelper.mininimalTask(appId),
-        status = status
-      )
-      .futureValue
+    f.step.processUpdate(
+      updateTimestamp,
+      task = MarathonTestHelper.mininimalTask(appId),
+      status = status
+    ).futureValue
 
     Then("the update is passed to the LaunchQueue")
     verify(f.launchQueue).notifyOfTaskUpdate(expectedUpdate)

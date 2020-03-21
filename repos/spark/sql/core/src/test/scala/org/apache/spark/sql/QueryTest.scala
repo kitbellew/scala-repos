@@ -79,11 +79,8 @@ abstract class QueryTest extends PlanTest {
   protected def checkDataset[T](ds: Dataset[T], expectedAnswer: T*): Unit = {
     checkAnswer(
       ds.toDF(),
-      sqlContext
-        .createDataset(expectedAnswer)(ds.unresolvedTEncoder)
-        .toDF()
-        .collect()
-        .toSeq)
+      sqlContext.createDataset(expectedAnswer)(
+        ds.unresolvedTEncoder).toDF().collect().toSeq)
 
     checkDecoding(ds, expectedAnswer: _*)
   }
@@ -217,17 +214,15 @@ abstract class QueryTest extends PlanTest {
   private def checkJsonFormat(df: DataFrame): Unit = {
     val logicalPlan = df.queryExecution.analyzed
     // bypass some cases that we can't handle currently.
-    logicalPlan
-      .transform {
-        case _: MapPartitions   => return
-        case _: MapGroups       => return
-        case _: AppendColumns   => return
-        case _: CoGroup         => return
-        case _: LogicalRelation => return
-      }
-      .transformAllExpressions {
-        case a: ImperativeAggregate => return
-      }
+    logicalPlan.transform {
+      case _: MapPartitions   => return
+      case _: MapGroups       => return
+      case _: AppendColumns   => return
+      case _: CoGroup         => return
+      case _: LogicalRelation => return
+    }.transformAllExpressions {
+      case a: ImperativeAggregate => return
+    }
 
     // bypass hive tests before we fix all corner cases in hive module.
     if (this.getClass.getName.startsWith("org.apache.spark.sql.hive")) return
@@ -308,8 +303,9 @@ abstract class QueryTest extends PlanTest {
     if (normalized1 != normalized2) {
       fail(s"""
            |== FAIL: the logical plan parsed from json does not match the original one ===
-           |${sideBySide(logicalPlan.treeString, normalized2.treeString)
-                .mkString("\n")}
+           |${sideBySide(
+                logicalPlan.treeString,
+                normalized2.treeString).mkString("\n")}
           """.stripMargin)
     }
   }

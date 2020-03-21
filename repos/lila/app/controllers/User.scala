@@ -100,12 +100,10 @@ object User extends LilaController {
                 }
             }.map { status(_) }.mon(_.http.response.user.show.website),
             api = _ =>
-              userGames(u, filterOption, page)
-                .map {
-                  case (filterName, pag) =>
-                    Ok(Env.api.userGameApi.filter(filterName, pag))
-                }
-                .mon(_.http.response.user.show.mobile)
+              userGames(u, filterOption, page).map {
+                case (filterName, pag) =>
+                  Ok(Env.api.userGameApi.filter(filterName, pag))
+              }.mon(_.http.response.user.show.mobile)
           )
         else
           negotiate(
@@ -294,8 +292,11 @@ object User extends LilaController {
               distribution <- u.perfs(perfType).established ?? {
                 Env.user.cached.ratingDistribution(perfType) map some
               }
-              data = Env.perfStat
-                .jsonView(u, perfStat, ranks get perfType.key, distribution)
+              data = Env.perfStat.jsonView(
+                u,
+                perfStat,
+                ranks get perfType.key,
+                distribution)
               response <- negotiate(
                 html = Ok(html.user.perfStat(u, ranks, perfType, data)).fuccess,
                 api = _ => Ok(data).fuccess)
@@ -306,10 +307,9 @@ object User extends LilaController {
 
   def autocomplete =
     Open { implicit ctx =>
-      get("term", ctx.req)
-        .filter(_.nonEmpty)
-        .fold(BadRequest("No search term provided").fuccess: Fu[Result]) {
-          term => JsonOk(UserRepo usernamesLike term)
-        }
+      get("term", ctx.req).filter(_.nonEmpty).fold(
+        BadRequest("No search term provided").fuccess: Fu[Result]) { term =>
+        JsonOk(UserRepo usernamesLike term)
+      }
     }
 }

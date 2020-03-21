@@ -418,8 +418,8 @@ trait TypedPipe[+T] extends Serializable {
     //the ev is not needed for the cast.  In fact, you can do the cast with ev(t) and it will return
     //it as (K,V), but the problem is, ev is not serializable.  So we do the cast, which due to ev
     //being present, will always pass.
-    Grouped(raiseTo[(K, V)])
-      .withDescription(LineNumber.tryNonScaldingCaller.map(_.toString))
+    Grouped(raiseTo[(K, V)]).withDescription(
+      LineNumber.tryNonScaldingCaller.map(_.toString))
 
   /** Send all items to a single reducer */
   def groupAll: Grouped[Unit, T] =
@@ -553,8 +553,7 @@ trait TypedPipe[+T] extends Serializable {
     def hadoopTypedSource(conf: Config): TypedSource[T] with TypedSink[T] = {
       // come up with unique temporary filename, use the config here
       // TODO: refactor into TemporarySequenceFile class
-      val tmpDir = conf
-        .get("hadoop.tmp.dir")
+      val tmpDir = conf.get("hadoop.tmp.dir")
         .orElse(conf.get("cascading.tmp.dir"))
         .getOrElse("/tmp")
 
@@ -835,8 +834,9 @@ final case object EmptyTypedPipe extends TypedPipe[Nothing] {
       fd: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe =
-    IterableSource(Iterable.empty, fieldNames)(setter, singleConverter[U])
-      .read(fd, mode)
+    IterableSource(Iterable.empty, fieldNames)(setter, singleConverter[U]).read(
+      fd,
+      mode)
 
   override def toIterableExecution: Execution[Iterable[Nothing]] =
     Execution.from(Iterable.empty)
@@ -914,9 +914,7 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
     Execution.from(this)
 
   override def sum[U >: T](implicit plus: Semigroup[U]): ValuePipe[U] =
-    Semigroup
-      .sumOption[U](iterable)
-      .map(LiteralValue(_))
+    Semigroup.sumOption[U](iterable).map(LiteralValue(_))
       .getOrElse(EmptyValue)
 
   override def sumByLocalKeys[K, V](implicit
@@ -927,9 +925,8 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       case p                    => sys.error("This must be IterablePipe: " + p.toString)
     }
     IterablePipe(
-      kvit
-        .groupBy(_._1)
-        // use map to force this so it is not lazy.
+      kvit.groupBy(_._1)
+      // use map to force this so it is not lazy.
         .map {
           case (k, kvs) =>
             // These lists are never empty, get is safe.
@@ -942,8 +939,9 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       mode: Mode,
       setter: TupleSetter[U]): Pipe =
     // It is slightly more efficient to use this rather than toSourcePipe.toPipe(fieldNames)
-    IterableSource[U](iterable, fieldNames)(setter, singleConverter[U])
-      .read(flowDef, mode)
+    IterableSource[U](iterable, fieldNames)(setter, singleConverter[U]).read(
+      flowDef,
+      mode)
 
   private[this] def toSourcePipe =
     TypedPipe.from(
@@ -971,8 +969,9 @@ object TypedPipeFactory {
           case (memoMode, pipe) if memoMode == m => pipe
           case (memoMode, pipe) =>
             sys.error(
-              "FlowDef reused on different Mode. Original: %s, now: %s"
-                .format(memoMode, m))
+              "FlowDef reused on different Mode. Original: %s, now: %s".format(
+                memoMode,
+                m))
         }
       }
     }
@@ -1079,8 +1078,9 @@ class TypedPipeInst[T] private[scalding] (
     // for historical reasons, it is not checked by the typed system
     assert(
       m == mode,
-      "Cannot switch Mode between TypedSource.read and toPipe calls. Pipe: %s, call: %s"
-        .format(mode, m))
+      "Cannot switch Mode between TypedSource.read and toPipe calls. Pipe: %s, call: %s".format(
+        mode,
+        m))
 
   override def cross[U](tiny: TypedPipe[U]): TypedPipe[(T, U)] =
     tiny match {
@@ -1167,9 +1167,8 @@ class TypedPipeInst[T] private[scalding] (
             checkMode(m)
             new Iterable[T] {
               def iterator =
-                m.openForRead(conf, tap)
-                  .asScala
-                  .map(tup => conv(tup.selectEntry(fields)))
+                m.openForRead(conf, tap).asScala.map(tup =>
+                  conv(tup.selectEntry(fields)))
             }
         }
       case _ => forceToDiskExecution.flatMap(_.toIterableExecution)

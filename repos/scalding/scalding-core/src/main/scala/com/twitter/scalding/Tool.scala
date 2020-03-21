@@ -106,13 +106,13 @@ class Tool extends Configured with HTool {
               val descriptions =
                 baseFlowStep.getConfig.get(Config.StepDescriptions, "")
               if (!descriptions.isEmpty) {
-                val stepXofYData = """\(\d+/\d+\)""".r
-                  .findFirstIn(baseFlowStep.getName)
-                  .getOrElse("")
+                val stepXofYData = """\(\d+/\d+\)""".r.findFirstIn(
+                  baseFlowStep.getName).getOrElse("")
                 // Reflection is only temporary.  Latest cascading has setName public: https://github.com/cwensel/cascading/commit/487a6e9ef#diff-0feab84bc8832b2a39312dbd208e3e69L175
                 // https://github.com/twitter/scalding/issues/1294
-                val x = classOf[BaseFlowStep[JobConf]]
-                  .getDeclaredMethod("setName", classOf[String])
+                val x = classOf[BaseFlowStep[JobConf]].getDeclaredMethod(
+                  "setName",
+                  classOf[String])
                 x.setAccessible(true)
                 x.invoke(step, "%s %s".format(stepXofYData, descriptions))
               }

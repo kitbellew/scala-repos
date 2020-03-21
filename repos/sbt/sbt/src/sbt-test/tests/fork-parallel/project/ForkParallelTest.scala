@@ -17,8 +17,8 @@ object ForkParallelTest extends Build {
       check := {
         val nbProc = java.lang.Runtime.getRuntime().availableProcessors()
         if (nbProc < 4) {
-          streams.value.log
-            .warn("With fewer than 4 processors this test is meaningless")
+          streams.value.log.warn(
+            "With fewer than 4 processors this test is meaningless")
         } else {
           // we've got at least 4 processors, we'll check the upper end but also 3 and 4 as the upper might not
           // be reached if the system is under heavy load.

@@ -204,12 +204,9 @@ object TestActorRef {
       system: ActorSystem): TestActorRef[T] =
     apply[T](
       Props({
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .createInstanceFor[T](t.runtimeClass, Nil)
-          .recover(dynamicCreateRecover)
-          .get
+        system.asInstanceOf[ExtendedActorSystem].dynamicAccess
+          .createInstanceFor[T](t.runtimeClass, Nil).recover(
+            dynamicCreateRecover).get
       }),
       name)
 
@@ -218,12 +215,9 @@ object TestActorRef {
       system: ActorSystem): TestActorRef[T] =
     apply[T](
       Props({
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .createInstanceFor[T](t.runtimeClass, Nil)
-          .recover(dynamicCreateRecover)
-          .get
+        system.asInstanceOf[ExtendedActorSystem].dynamicAccess
+          .createInstanceFor[T](t.runtimeClass, Nil).recover(
+            dynamicCreateRecover).get
       }),
       supervisor)
 
@@ -232,12 +226,9 @@ object TestActorRef {
       system: ActorSystem): TestActorRef[T] =
     apply[T](
       Props({
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .createInstanceFor[T](t.runtimeClass, Nil)
-          .recover(dynamicCreateRecover)
-          .get
+        system.asInstanceOf[ExtendedActorSystem]
+          .dynamicAccess.createInstanceFor[T](t.runtimeClass, Nil).recover(
+            dynamicCreateRecover).get
       }),
       supervisor,
       name

@@ -24,9 +24,8 @@ import com.intellij.ui.PopupHandler
 final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
     extends CallHierarchyBrowserBase(project, method) {
   protected def createTrees(type2TreeMap: util.Map[String, JTree]): Unit = {
-    var group: ActionGroup = ActionManager.getInstance
-      .getAction(IdeActions.GROUP_CALL_HIERARCHY_POPUP)
-      .asInstanceOf[ActionGroup]
+    var group: ActionGroup = ActionManager.getInstance.getAction(
+      IdeActions.GROUP_CALL_HIERARCHY_POPUP).asInstanceOf[ActionGroup]
     val tree1: JTree = createTree(false)
     PopupHandler.installPopupHandler(
       tree1,
@@ -48,9 +47,8 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
       classOf[JComponent])
     method.invoke(
       inst,
-      ActionManager.getInstance
-        .getAction(IdeActions.ACTION_CALL_HIERARCHY)
-        .getShortcutSet,
+      ActionManager.getInstance.getAction(
+        IdeActions.ACTION_CALL_HIERARCHY).getShortcutSet,
       tree1)
     type2TreeMap.put(CALLEE_TYPE, tree1)
     val tree2: JTree = createTree(false)
@@ -61,9 +59,8 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
       ActionManager.getInstance)
     method.invoke(
       inst,
-      ActionManager.getInstance
-        .getAction(IdeActions.ACTION_CALL_HIERARCHY)
-        .getShortcutSet,
+      ActionManager.getInstance.getAction(
+        IdeActions.ACTION_CALL_HIERARCHY).getShortcutSet,
       tree2)
     type2TreeMap.put(CALLER_TYPE, tree2)
   }

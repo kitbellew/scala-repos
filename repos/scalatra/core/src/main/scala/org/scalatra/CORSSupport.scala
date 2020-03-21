@@ -94,39 +94,29 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     super.initialize(config)
     def createDefault: CORSConfig =
       CORSConfig(
-        Option(config.context.getInitParameter(AllowedOriginsKey))
-          .getOrElse(AnyOrigin)
-          .split(",")
-          .map(_.trim),
-        Option(config.context.getInitParameter(AllowedMethodsKey))
-          .getOrElse(DefaultMethods)
-          .split(",")
-          .map(_.trim),
-        Option(config.context.getInitParameter(AllowedHeadersKey))
-          .getOrElse(DefaultHeaders)
-          .split(",")
-          .map(_.trim),
-        Option(config.context.getInitParameter(AllowCredentialsKey))
-          .map(_.toBoolean)
-          .getOrElse(true),
-        Option(config.context.getInitParameter(PreflightMaxAgeKey))
-          .map(_.toInt)
-          .getOrElse(1800),
-        Option(config.context.getInitParameter(EnableKey))
-          .map(_.toBoolean)
-          .getOrElse(true)
+        Option(config.context.getInitParameter(AllowedOriginsKey)).getOrElse(
+          AnyOrigin).split(",").map(_.trim),
+        Option(config.context.getInitParameter(AllowedMethodsKey)).getOrElse(
+          DefaultMethods).split(",").map(_.trim),
+        Option(config.context.getInitParameter(AllowedHeadersKey)).getOrElse(
+          DefaultHeaders).split(",").map(_.trim),
+        Option(config.context.getInitParameter(AllowCredentialsKey)).map(
+          _.toBoolean).getOrElse(true),
+        Option(config.context.getInitParameter(PreflightMaxAgeKey)).map(
+          _.toInt).getOrElse(1800),
+        Option(config.context.getInitParameter(EnableKey)).map(
+          _.toBoolean).getOrElse(true)
       )
 
-    val corsCfg = config.context
-      .getOrElseUpdate(CorsConfigKey, createDefault)
-      .asInstanceOf[CORSConfig]
+    val corsCfg = config.context.getOrElseUpdate(
+      CorsConfigKey,
+      createDefault).asInstanceOf[CORSConfig]
     import corsCfg._
     if (enabled) {
-      logger debug "Enabled CORS Support with:\nallowedOrigins:\n\t%s\nallowedMethods:\n\t%s\nallowedHeaders:\n\t%s"
-        .format(
-          allowedOrigins mkString ", ",
-          allowedMethods mkString ", ",
-          allowedHeaders mkString ", ")
+      logger debug "Enabled CORS Support with:\nallowedOrigins:\n\t%s\nallowedMethods:\n\t%s\nallowedHeaders:\n\t%s".format(
+        allowedOrigins mkString ", ",
+        allowedMethods mkString ", ",
+        allowedHeaders mkString ", ")
     } else {
       logger debug "Cors support is disabled"
     }
@@ -144,10 +134,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     response.headers(AccessControlAllowMethodsHeader) =
       corsConfig.allowedMethods mkString ","
     // 5.2.10
-    val rh = corsConfig.allowedHeaders ++ request
-      .getHeaders(AccessControlRequestHeadersHeader)
-      .asScala
-      .flatMap(_ split (","))
+    val rh = corsConfig.allowedHeaders ++ request.getHeaders(
+      AccessControlRequestHeadersHeader).asScala.flatMap(_ split (","))
     response.headers(AccessControlAllowHeadersHeader) = rh mkString ","
     response.end()
 
@@ -176,9 +164,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
 
   private[this] def originMatches: Boolean = // 6.2.2
     corsConfig.allowedOrigins.contains(AnyOrigin) ||
-      (corsConfig.allowedOrigins contains request.headers
-        .get(OriginHeader)
-        .getOrElse(""))
+      (corsConfig.allowedOrigins contains request.headers.get(
+        OriginHeader).getOrElse(""))
 
   private[this] def isEnabled: Boolean =
     !("Upgrade".equalsIgnoreCase(
@@ -194,10 +181,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
   private[this] def isPreflightRequest: Boolean = {
     val isCors = isCORSRequest
     val validRoute = isValidRoute
-    val isPreflight = request.headers
-      .get(AccessControlRequestMethodHeader)
-      .flatMap(_.blankOption)
-      .isDefined
+    val isPreflight = request.headers.get(
+      AccessControlRequestMethodHeader).flatMap(_.blankOption).isDefined
     val enabled = isEnabled
     val matchesOrigin = originMatches
     val methodAllowed = allowsMethod
@@ -223,17 +208,16 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
 
   private[this] def allOriginsMatch: Boolean = { // 6.1.2
     val h = request.headers.get(OriginHeader).flatMap(_.blankOption)
-    h.isDefined && h.get.split(" ").nonEmpty && h.get
-      .split(" ")
-      .forall(corsConfig.allowedOrigins.contains)
+    h.isDefined && h.get.split(" ").nonEmpty && h.get.split(" ").forall(
+      corsConfig.allowedOrigins.contains)
   }
 
   private[this] def isSimpleRequest: Boolean = {
     val isCors = isCORSRequest
     val enabled = isEnabled
     val allOrigins = allOriginsMatch
-    val res = isCors && enabled && allOrigins && request.headers.keys
-      .forall(isSimpleHeader)
+    val res = isCors && enabled && allOrigins && request.headers.keys.forall(
+      isSimpleHeader)
     //    logger debug "This is a simple request: %s, because: %s, %s, %s".format(res, isCors, enabled, allOrigins)
     res
   }

@@ -25,13 +25,14 @@ trait AbstractTestConfigurationProducer {
       context: ConfigurationContext)
       : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
     if (context.getModule == null) return null
-    val scope: GlobalSearchScope = GlobalSearchScope
-      .moduleWithDependenciesAndLibrariesScope(context.getModule, true)
+    val scope: GlobalSearchScope =
+      GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(
+        context.getModule,
+        true)
     if (suitePaths.forall(suitePath =>
-          ScalaPsiManager
-            .instance(context.getProject)
-            .getCachedClass(scope, suitePath)
-            .orNull == null)) return null
+          ScalaPsiManager.instance(context.getProject).getCachedClass(
+            scope,
+            suitePath).orNull == null)) return null
     myPsiElement = location.getPsiElement
     createConfigurationByLocation(
       location
@@ -42,9 +43,8 @@ trait AbstractTestConfigurationProducer {
       location: Location[_ <: PsiElement],
       existingConfigurations: Array[RunnerAndConfigurationSettings],
       context: ConfigurationContext): RunnerAndConfigurationSettings = {
-    existingConfigurations
-      .find(c => isConfigurationByLocation(c.getConfiguration, location))
-      .orNull
+    existingConfigurations.find(c =>
+      isConfigurationByLocation(c.getConfiguration, location)).orNull
   }
 
   def createConfigurationByLocation(location: Location[_ <: PsiElement])

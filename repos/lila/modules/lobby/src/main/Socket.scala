@@ -99,13 +99,11 @@ private[lobby] final class Socket(
   private def notifyPlayerStart(game: lila.game.Game, color: chess.Color) =
     notifyMember(
       "redirect",
-      Json
-        .obj(
-          "id" -> (game fullIdOf color),
-          "url" -> playerUrl(game fullIdOf color),
-          "cookie" -> AnonCookie.json(game, color)
-        )
-        .noNull) _
+      Json.obj(
+        "id" -> (game fullIdOf color),
+        "url" -> playerUrl(game fullIdOf color),
+        "cookie" -> AnonCookie.json(game, color)
+      ).noNull) _
 
   protected def shouldSkipMessageFor(message: Message, member: Member) =
     message.metadata.hook ?? { hook =>

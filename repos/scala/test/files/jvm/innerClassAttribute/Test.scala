@@ -367,14 +367,11 @@ object Test extends BytecodeTest {
         "SI_9124$$anon$12",
         "SI_9124$$anon$8",
         "SI_9124$$anon$9",
-        "SI_9124$O$$anon$13")
-        .map({ name =>
-          val node = loadClassNode(name)
-          val fMethod =
-            node.methods.asScala.find(_.name.startsWith("f")).get.name
-          (fMethod, node.name)
-        })
-        .toMap
+        "SI_9124$O$$anon$13").map({ name =>
+        val node = loadClassNode(name)
+        val fMethod = node.methods.asScala.find(_.name.startsWith("f")).get.name
+        (fMethod, node.name)
+      }).toMap
     }
 
     // println(classes)
@@ -424,13 +421,14 @@ object Test extends BytecodeTest {
       assertEnclosingMethod(_, "ImplClassesAreTopLevel", null, null))
 
     // encl meth n
-    List("ImplClassesAreTopLevel$B4$1", "ImplClassesAreTopLevel$$anon$16")
-      .foreach(
-        assertEnclosingMethod(
-          _,
-          "ImplClassesAreTopLevel",
-          "n",
-          "()Ljava/lang/Object;"))
+    List(
+      "ImplClassesAreTopLevel$B4$1",
+      "ImplClassesAreTopLevel$$anon$16").foreach(
+      assertEnclosingMethod(
+        _,
+        "ImplClassesAreTopLevel",
+        "n",
+        "()Ljava/lang/Object;"))
 
     val an14 =
       assertAnonymous(_: InnerClassNode, "ImplClassesAreTopLevel$$anon$14")
@@ -483,9 +481,8 @@ object Test extends BytecodeTest {
 
     // all classes are members, no local (can't test local, they crash in specialize)
     cls.foreach(assertNoEnclosingMethod)
-    cls
-      .flatMap(innerClassNodes)
-      .foreach(icn => assert(!icn.name.endsWith("$sp"), icn))
+    cls.flatMap(innerClassNodes).foreach(icn =>
+      assert(!icn.name.endsWith("$sp"), icn))
 
     val a =
       assertMember(_: InnerClassNode, "SpecializedClassesAreTopLevel", "A")

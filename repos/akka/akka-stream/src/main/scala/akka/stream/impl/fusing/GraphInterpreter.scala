@@ -557,11 +557,9 @@ private[stream] final class GraphInterpreter(
     }
 
   private def shutdownCounters: String =
-    shutdownCounter
-      .map(x ⇒
-        if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)"
-        else x.toString)
-      .mkString(",")
+    shutdownCounter.map(x ⇒
+      if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)"
+      else x.toString).mkString(",")
 
   /**
     * Executes pending events until the given limit is met. If there were remaining events, isSuspended will return
@@ -710,8 +708,8 @@ private[stream] final class GraphInterpreter(
   private def enqueue(connection: Int): Unit = {
     if (Debug)
       if (queueTail - queueHead > mask)
-        new Exception(s"$Name internal queue full ($queueStatus) + $connection")
-          .printStackTrace()
+        new Exception(
+          s"$Name internal queue full ($queueStatus) + $connection").printStackTrace()
     eventQueue(queueTail & mask) = connection
     queueTail += 1
   }

@@ -50,11 +50,9 @@ case class SimplePrunedScan(from: Int, to: Int)(
       case "b" => (i: Int) => Seq(i * 2)
     }
 
-    sqlContext.sparkContext
-      .parallelize(from to to)
-      .map(i =>
-        Row.fromSeq(
-          rowBuilders.map(_(i)).reduceOption(_ ++ _).getOrElse(Seq.empty)))
+    sqlContext.sparkContext.parallelize(from to to).map(i =>
+      Row.fromSeq(
+        rowBuilders.map(_(i)).reduceOption(_ ++ _).getOrElse(Seq.empty)))
   }
 }
 
@@ -118,8 +116,9 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
     test(s"Columns output ${expectedColumns.mkString(",")}: $sqlString") {
 
       // These tests check a particular plan, disable whole stage codegen.
-      caseInsensitiveContext.conf
-        .setConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED, false)
+      caseInsensitiveContext.conf.setConf(
+        SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
+        false)
       try {
         val queryExecution = sql(sqlString).queryExecution
         val rawPlan = queryExecution.executedPlan.collect {

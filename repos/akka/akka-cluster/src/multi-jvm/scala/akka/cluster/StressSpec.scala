@@ -246,11 +246,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       s"nr-of-nodes-join-remove should be <= ${totalNumberOfNodes}")
 
     override def toString: String = {
-      testConfig
-        .withFallback(
-          ConfigFactory.parseString(s"nrOfNodes=${totalNumberOfNodes}"))
-        .root
-        .render
+      testConfig.withFallback(
+        ConfigFactory.parseString(
+          s"nrOfNodes=${totalNumberOfNodes}")).root.render
     }
   }
 
@@ -440,9 +438,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   class PhiObserver extends Actor with ActorLogging {
     val cluster = Cluster(context.system)
     var reportTo: Option[ActorRef] = None
-    val emptyPhiByNode = Map
-      .empty[Address, PhiValue]
-      .withDefault(address ⇒ PhiValue(address, 0, 0, 0.0))
+    val emptyPhiByNode = Map.empty[Address, PhiValue].withDefault(address ⇒
+      PhiValue(address, 0, 0, 0.0))
     var phiByNode = emptyPhiByNode
     var nodes = Set.empty[Address]
 
@@ -594,8 +591,10 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         if (outstanding.size == settings.workBatchSize / 2)
           if (batchInterval == Duration.Zero) self ! SendBatch
           else
-            context.system.scheduler
-              .scheduleOnce(batchInterval, self, SendBatch)
+            context.system.scheduler.scheduleOnce(
+              batchInterval,
+              self,
+              SendBatch)
       case SendBatch ⇒ sendJobs()
       case RetryTick ⇒ resend()
       case End ⇒
@@ -852,44 +851,28 @@ abstract class StressSpec
 
     val sb = new StringBuilder
 
-    sb.append("Operating system: ")
-      .append(os.getName)
-      .append(", ")
-      .append(os.getArch)
-      .append(", ")
-      .append(os.getVersion)
+    sb.append("Operating system: ").append(os.getName).append(", ").append(
+      os.getArch).append(", ").append(os.getVersion)
     sb.append("\n")
-    sb.append("JVM: ")
-      .append(runtime.getVmName)
-      .append(" ")
-      .append(runtime.getVmVendor)
-      .append(" ")
-      .append(runtime.getVmVersion)
+    sb.append("JVM: ").append(runtime.getVmName).append(" ").append(
+      runtime.getVmVendor).append(" ").append(runtime.getVmVersion)
     sb.append("\n")
     sb.append("Processors: ").append(os.getAvailableProcessors)
     sb.append("\n")
     sb.append("Load average: ").append(os.getSystemLoadAverage)
     sb.append("\n")
-    sb.append("Thread count: ")
-      .append(threads.getThreadCount)
-      .append(" (")
-      .append(threads.getPeakThreadCount)
-      .append(")")
+    sb.append("Thread count: ").append(threads.getThreadCount).append(
+      " (").append(threads.getPeakThreadCount).append(")")
     sb.append("\n")
-    sb.append("Heap: ")
-      .append((heap.getUsed.toDouble / 1024 / 1024).form)
-      .append(" (")
-      .append((heap.getInit.toDouble / 1024 / 1024).form)
-      .append(" - ")
-      .append((heap.getMax.toDouble / 1024 / 1024).form)
-      .append(")")
-      .append(" MB")
+    sb.append("Heap: ").append(
+      (heap.getUsed.toDouble / 1024 / 1024).form).append(" (").append(
+      (heap.getInit.toDouble / 1024 / 1024).form).append(" - ").append(
+      (heap.getMax.toDouble / 1024 / 1024).form).append(")").append(" MB")
     sb.append("\n")
 
     import scala.collection.JavaConverters._
-    val args = runtime.getInputArguments.asScala
-      .filterNot(_.contains("classpath"))
-      .mkString("\n  ")
+    val args = runtime.getInputArguments.asScala.filterNot(
+      _.contains("classpath")).mkString("\n  ")
     sb.append("Args:\n  ").append(args)
     sb.append("\n")
 
@@ -934,9 +917,9 @@ abstract class StressSpec
   }
 
   def clusterResultAggregator: Option[ActorRef] = {
-    system
-      .actorSelection(node(roles.head) / "user" / ("result" + step))
-      .tell(Identify(step), identifyProbe.ref)
+    system.actorSelection(node(roles.head) / "user" / ("result" + step)).tell(
+      Identify(step),
+      identifyProbe.ref)
     identifyProbe.expectMsgType[ActorIdentity].ref
   }
 
@@ -1044,9 +1027,9 @@ abstract class StressSpec
       }
       enterBarrier("watchee-created-" + step)
       runOn(roles.head) {
-        system
-          .actorSelection(node(removeRole) / "user" / "watchee")
-          .tell(Identify("watchee"), identifyProbe.ref)
+        system.actorSelection(node(removeRole) / "user" / "watchee").tell(
+          Identify("watchee"),
+          identifyProbe.ref)
         val watchee = identifyProbe.expectMsgType[ActorIdentity].ref.get
         watch(watchee)
       }
@@ -1199,9 +1182,9 @@ abstract class StressSpec
   def masterName: String = "master-" + myself.name
 
   def master: Option[ActorRef] = {
-    system
-      .actorSelection("/user/" + masterName)
-      .tell(Identify("master"), identifyProbe.ref)
+    system.actorSelection("/user/" + masterName).tell(
+      Identify("master"),
+      identifyProbe.ref)
     identifyProbe.expectMsgType[ActorIdentity].ref
   }
 
@@ -1222,8 +1205,8 @@ abstract class StressSpec
       runOn(masterRoles: _*) {
         reportResult {
           val m = system.actorOf(
-            Props(classOf[Master], settings, batchInterval, tree)
-              .withDeploy(Deploy.local),
+            Props(classOf[Master], settings, batchInterval, tree).withDeploy(
+              Deploy.local),
             name = masterName)
           m ! Begin
           import system.dispatcher
@@ -1373,8 +1356,11 @@ abstract class StressSpec
     "start routers that are running while nodes are joining" taggedAs LongRunningTest in {
       runOn(roles.take(3): _*) {
         system.actorOf(
-          Props(classOf[Master], settings, settings.workBatchInterval, false)
-            .withDeploy(Deploy.local),
+          Props(
+            classOf[Master],
+            settings,
+            settings.workBatchInterval,
+            false).withDeploy(Deploy.local),
           name = masterName) ! Begin
       }
     }
@@ -1493,8 +1479,11 @@ abstract class StressSpec
       if (exerciseActors) {
         runOn(roles.take(3): _*) {
           system.actorOf(
-            Props(classOf[Master], settings, settings.workBatchInterval, false)
-              .withDeploy(Deploy.local),
+            Props(
+              classOf[Master],
+              settings,
+              settings.workBatchInterval,
+              false).withDeploy(Deploy.local),
             name = masterName) ! Begin
         }
       }

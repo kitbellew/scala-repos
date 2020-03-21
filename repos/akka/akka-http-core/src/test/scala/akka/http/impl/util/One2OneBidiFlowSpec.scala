@@ -43,10 +43,8 @@ class One2OneBidiFlowSpec extends AkkaSpec {
       val upstreamProbe = TestPublisher.probe[Int]()
       val downstreamProbe = TestSubscriber.probe[Int]()
 
-      Source
-        .fromPublisher(upstreamProbe)
-        .via(testSetup)
-        .runWith(Sink.fromSubscriber(downstreamProbe))
+      Source.fromPublisher(upstreamProbe).via(testSetup).runWith(
+        Sink.fromSubscriber(downstreamProbe))
 
       upstreamProbe.ensureSubscription()
       downstreamProbe.ensureSubscription()
@@ -78,10 +76,8 @@ class One2OneBidiFlowSpec extends AkkaSpec {
       val upstreamProbe = TestPublisher.probe[Int]()
       val downstreamProbe = TestSubscriber.probe[Int]()
 
-      Source
-        .fromPublisher(upstreamProbe)
-        .via(testSetup)
-        .runWith(Sink.fromSubscriber(downstreamProbe))
+      Source.fromPublisher(upstreamProbe).via(testSetup).runWith(
+        Sink.fromSubscriber(downstreamProbe))
 
       upstreamProbe.ensureSubscription()
       downstreamProbe.ensureSubscription()
@@ -163,12 +159,10 @@ class One2OneBidiFlowSpec extends AkkaSpec {
     val outIn = TestPublisher.probe[Int]()
     val outOut = TestSubscriber.probe[Int]()
 
-    Source
-      .fromPublisher(inIn)
-      .via(
-        One2OneBidiFlow[Int, Int](maxPending) join Flow.fromSinkAndSourceMat(
-          Sink.fromSubscriber(inOut),
-          Source.fromPublisher(outIn))(Keep.left))
-      .runWith(Sink.fromSubscriber(outOut))
+    Source.fromPublisher(inIn).via(
+      One2OneBidiFlow[Int, Int](maxPending) join Flow.fromSinkAndSourceMat(
+        Sink.fromSubscriber(inOut),
+        Source.fromPublisher(outIn))(Keep.left)).runWith(
+      Sink.fromSubscriber(outOut))
   }
 }

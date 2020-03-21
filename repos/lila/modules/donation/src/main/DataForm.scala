@@ -12,8 +12,9 @@ object DataForm {
     mapping(
       "txn_id" -> optional(nonEmptyText),
       "subscr_id" -> optional(nonEmptyText),
-      "txn_type" -> nonEmptyText
-        .verifying("Invalid txn type", txnTypes contains _),
+      "txn_type" -> nonEmptyText.verifying(
+        "Invalid txn type",
+        txnTypes contains _),
       "mc_gross" -> bigDecimal,
       "mc_fee" -> bigDecimal,
       "custom" -> optional(text),

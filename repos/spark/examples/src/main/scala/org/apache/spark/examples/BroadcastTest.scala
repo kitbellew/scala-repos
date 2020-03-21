@@ -28,8 +28,7 @@ object BroadcastTest {
 
     val blockSize = if (args.length > 2) args(2) else "4096"
 
-    val sparkConf = new SparkConf()
-      .setAppName("Broadcast Test")
+    val sparkConf = new SparkConf().setAppName("Broadcast Test")
       .set("spark.broadcast.blockSize", blockSize)
     val sc = new SparkContext(sparkConf)
 
@@ -48,8 +47,9 @@ object BroadcastTest {
       // Collect the small RDD so we can print the observed sizes locally.
       observedSizes.collect().foreach(i => println(i))
       println(
-        "Iteration %d took %.0f milliseconds"
-          .format(i, (System.nanoTime - startTime) / 1e6))
+        "Iteration %d took %.0f milliseconds".format(
+          i,
+          (System.nanoTime - startTime) / 1e6))
     }
 
     sc.stop()

@@ -102,9 +102,9 @@ class ProcessSpecification extends Properties("Process I/O") {
       reduceExit: (Boolean, Boolean) => Boolean) = {
     (codes.length > 1) ==> {
       val unsignedCodes = codes.map(unsigned)
-      val exitCode = unsignedCodes
-        .map(code => Process(process("processtest.exit " + code)))
-        .reduceLeft(reduceProcesses) !
+      val exitCode = unsignedCodes.map(code =>
+        Process(process("processtest.exit " + code))).reduceLeft(
+        reduceProcesses) !
       val expectedExitCode = unsignedCodes.map(toBoolean).reduceLeft(reduceExit)
       toBoolean(exitCode) == expectedExitCode
     }
@@ -152,9 +152,10 @@ class ProcessSpecification extends Properties("Process I/O") {
   }
   private def unsigned(b: Byte): Int = ((b: Int) + 256) % 256
   private def process(command: String) = {
-    val thisClasspath =
-      List(getSource[ScalaObject], getSource[IO.type], getSource[SourceTag])
-        .mkString(File.pathSeparator)
+    val thisClasspath = List(
+      getSource[ScalaObject],
+      getSource[IO.type],
+      getSource[SourceTag]).mkString(File.pathSeparator)
     "java -cp " + thisClasspath + " " + command
   }
   private def getSource[T: Manifest]: String =

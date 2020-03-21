@@ -98,9 +98,8 @@ object CSRFConfig {
 
   @deprecated("Use dependency injection", "2.5.0")
   def global =
-    Play.privateMaybeApplication
-      .map(_.injector.instanceOf[CSRFConfig])
-      .getOrElse(CSRFConfig())
+    Play.privateMaybeApplication.map(
+      _.injector.instanceOf[CSRFConfig]).getOrElse(CSRFConfig())
 
   def fromConfiguration(conf: Configuration): CSRFConfig = {
     val config =
@@ -135,12 +134,10 @@ object CSRFConfig {
         }
       }
 
-    val protectHeaders = config
-      .get[Option[Map[String, String]]]("header.protectHeaders")
-      .getOrElse(Map.empty)
-    val bypassHeaders = config
-      .get[Option[Map[String, String]]]("header.bypassHeaders")
-      .getOrElse(Map.empty)
+    val protectHeaders = config.get[Option[Map[String, String]]](
+      "header.protectHeaders").getOrElse(Map.empty)
+    val bypassHeaders = config.get[Option[Map[String, String]]](
+      "header.bypassHeaders").getOrElse(Map.empty)
 
     val shouldProtect: RequestHeader => Boolean = { rh =>
       def foundHeaderValues(headersToCheck: Map[String, String]) = {
@@ -198,8 +195,8 @@ object CSRF {
     // Try to get the re-signed token first, then get the "new" token.
     for {
       name <- request.tags.get(Token.NameRequestTag)
-      value <- request.tags.get(Token.ReSignedRequestTag) orElse request.tags
-        .get(Token.RequestTag)
+      value <- request.tags.get(
+        Token.ReSignedRequestTag) orElse request.tags.get(Token.RequestTag)
     } yield Token(name, value)
   }
 

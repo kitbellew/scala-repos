@@ -26,9 +26,8 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
       FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
     if (editor == null) return
 
-    val psiFile: PsiFile = PsiDocumentManager
-      .getInstance(e.getProject)
-      .getPsiFile(editor.getDocument)
+    val psiFile: PsiFile = PsiDocumentManager.getInstance(
+      e.getProject).getPsiFile(editor.getDocument)
     val viewer = WorksheetViewerInfo.getViewer(editor)
     if (psiFile == null || viewer == null) return
 
@@ -77,9 +76,8 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
 
     def getFromRight(lineNumber: Int) = getFromDoc(lineNumber, rightDocument)
 
-    val marker = viewer.getFoldingModel
-      .asInstanceOf[FoldingModelImpl]
-      .getAllFoldRegions find {
+    val marker = viewer.getFoldingModel.asInstanceOf[
+      FoldingModelImpl].getAllFoldRegions find {
       case r: WorksheetFoldRegionDelegate => true
       case _                              => false
     }

@@ -61,12 +61,10 @@ final case class RemoteRouterConfig(local: Pool, nodes: Iterable[Address])
     // attachChild means that the provider will treat this call as if possibly done out of the wrong
     // context and use RepointableActorRef instead of LocalActorRef. Seems like a slightly sub-optimal
     // choice in a corner case (and hence not worth fixing).
-    val ref = context
-      .asInstanceOf[ActorCell]
-      .attachChild(
-        local.enrichWithPoolDispatcher(routeeProps, context).withDeploy(deploy),
-        name,
-        systemService = false)
+    val ref = context.asInstanceOf[ActorCell].attachChild(
+      local.enrichWithPoolDispatcher(routeeProps, context).withDeploy(deploy),
+      name,
+      systemService = false)
     ActorRefRoutee(ref)
   }
 

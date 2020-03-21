@@ -71,27 +71,25 @@ class CreateScalaDocStubAction
     val project = docOwner.getProject
     val docCommentEnd = docOwner.getTextRange.getStartOffset - 1
 
-    CommandProcessor
-      .getInstance()
-      .executeCommand(
-        project,
-        new Runnable {
-          def run() {
-            extensions inWriteAction {
-              psiDocument insertString (docCommentEnd, newComment.getText + "\n")
-              PsiDocumentManager getInstance project commitDocument psiDocument
-            }
-
-            val docRange = docOwner.getDocComment.getTextRange
-            extensions inWriteAction {
-              CodeStyleManager getInstance project reformatText (docOwner.getContainingFile, docRange.getStartOffset, docRange.getEndOffset + 2)
-            }
+    CommandProcessor.getInstance().executeCommand(
+      project,
+      new Runnable {
+        def run() {
+          extensions inWriteAction {
+            psiDocument insertString (docCommentEnd, newComment.getText + "\n")
+            PsiDocumentManager getInstance project commitDocument psiDocument
           }
-        },
-        "Create ScalaDoc stub",
-        null,
-        psiDocument
-      )
+
+          val docRange = docOwner.getDocComment.getTextRange
+          extensions inWriteAction {
+            CodeStyleManager getInstance project reformatText (docOwner.getContainingFile, docRange.getStartOffset, docRange.getEndOffset + 2)
+          }
+        }
+      },
+      "Create ScalaDoc stub",
+      null,
+      psiDocument
+    )
   }
 
   private def recreateStub(docOwner: ScDocCommentOwner, psiDocument: Document) {
@@ -143,38 +141,36 @@ class CreateScalaDocStubAction
     }
 
     val project = docOwner.getProject
-    CommandProcessor
-      .getInstance()
-      .executeCommand(
-        project,
-        new Runnable {
-          def run() {
-            extensions inWriteAction {
-              docOwner match {
-                case fun: ScFunctionDefinition =>
-                  processParams(
-                    List("@param", "@tparam"),
-                    List(fun.parameters, fun.typeParameters))
-                case clazz: ScClass =>
-                  processParams(
-                    List("@param", "@tparam"),
-                    List(clazz.parameters, clazz.typeParameters))
-                case trt: ScTrait =>
-                  processParams(List("@tparam"), List(trt.typeParameters))
-                case alias: ScTypeAlias =>
-                  processParams(List("@tparam"), List(alias.typeParameters))
-                case _ =>
-              }
-
-              PsiDocumentManager getInstance project commitDocument psiDocument
-              val range = docOwner.getDocComment.getTextRange
-              CodeStyleManager getInstance project reformatText (docOwner.getContainingFile, range.getStartOffset, range.getEndOffset)
+    CommandProcessor.getInstance().executeCommand(
+      project,
+      new Runnable {
+        def run() {
+          extensions inWriteAction {
+            docOwner match {
+              case fun: ScFunctionDefinition =>
+                processParams(
+                  List("@param", "@tparam"),
+                  List(fun.parameters, fun.typeParameters))
+              case clazz: ScClass =>
+                processParams(
+                  List("@param", "@tparam"),
+                  List(clazz.parameters, clazz.typeParameters))
+              case trt: ScTrait =>
+                processParams(List("@tparam"), List(trt.typeParameters))
+              case alias: ScTypeAlias =>
+                processParams(List("@tparam"), List(alias.typeParameters))
+              case _ =>
             }
+
+            PsiDocumentManager getInstance project commitDocument psiDocument
+            val range = docOwner.getDocComment.getTextRange
+            CodeStyleManager getInstance project reformatText (docOwner.getContainingFile, range.getStartOffset, range.getEndOffset)
           }
-        },
-        "Create ScalaDoc Stub",
-        null,
-        psiDocument
-      )
+        }
+      },
+      "Create ScalaDoc Stub",
+      null,
+      psiDocument
+    )
   }
 }

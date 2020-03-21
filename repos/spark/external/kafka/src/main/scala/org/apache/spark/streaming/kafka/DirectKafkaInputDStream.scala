@@ -89,8 +89,10 @@ private[streaming] class DirectKafkaInputDStream[
 
   protected val kc = new KafkaCluster(kafkaParams)
 
-  private val maxRateLimitPerPartition: Int = context.sparkContext.getConf
-    .getInt("spark.streaming.kafka.maxRatePerPartition", 0)
+  private val maxRateLimitPerPartition: Int =
+    context.sparkContext.getConf.getInt(
+      "spark.streaming.kafka.maxRatePerPartition",
+      0)
 
   protected[streaming] def maxMessagesPerPartition(
       offsets: Map[TopicAndPartition, Long])
@@ -155,16 +157,14 @@ private[streaming] class DirectKafkaInputDStream[
       : Map[TopicAndPartition, LeaderOffset] = {
     val offsets = leaderOffsets.mapValues(lo => lo.offset)
 
-    maxMessagesPerPartition(offsets)
-      .map { mmp =>
-        mmp.map {
-          case (tp, messages) =>
-            val lo = leaderOffsets(tp)
-            tp -> lo.copy(offset =
-              Math.min(currentOffsets(tp) + messages, lo.offset))
-        }
+    maxMessagesPerPartition(offsets).map { mmp =>
+      mmp.map {
+        case (tp, messages) =>
+          val lo = leaderOffsets(tp)
+          tp -> lo.copy(offset =
+            Math.min(currentOffsets(tp) + messages, lo.offset))
       }
-      .getOrElse(leaderOffsets)
+    }.getOrElse(leaderOffsets)
   }
 
   override def compute(validTime: Time): Option[KafkaRDD[K, V, U, T, R]] = {
@@ -182,16 +182,13 @@ private[streaming] class DirectKafkaInputDStream[
         val uo = untilOffsets(tp)
         OffsetRange(tp.topic, tp.partition, fo, uo.offset)
     }
-    val description = offsetRanges
-      .filter { offsetRange =>
-        // Don't display empty ranges.
-        offsetRange.fromOffset != offsetRange.untilOffset
-      }
-      .map { offsetRange =>
-        s"topic: ${offsetRange.topic}\tpartition: ${offsetRange.partition}\t" +
-          s"offsets: ${offsetRange.fromOffset} to ${offsetRange.untilOffset}"
-      }
-      .mkString("\n")
+    val description = offsetRanges.filter { offsetRange =>
+      // Don't display empty ranges.
+      offsetRange.fromOffset != offsetRange.untilOffset
+    }.map { offsetRange =>
+      s"topic: ${offsetRange.topic}\tpartition: ${offsetRange.partition}\t" +
+        s"offsets: ${offsetRange.fromOffset} to ${offsetRange.untilOffset}"
+    }.mkString("\n")
     // Copy offsetRanges to immutable.List to prevent from being modified by the user
     val metadata = Map(
       "offsets" -> offsetRanges.toList,
@@ -218,11 +215,8 @@ private[streaming] class DirectKafkaInputDStream[
     override def update(time: Time) {
       batchForTime.clear()
       generatedRDDs.foreach { kv =>
-        val a = kv._2
-          .asInstanceOf[KafkaRDD[K, V, U, T, R]]
-          .offsetRanges
-          .map(_.toTuple)
-          .toArray
+        val a = kv._2.asInstanceOf[KafkaRDD[K, V, U, T, R]].offsetRanges.map(
+          _.toTuple).toArray
         batchForTime += kv._1 -> a
       }
     }

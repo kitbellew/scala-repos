@@ -50,13 +50,10 @@ object FreeTListOption {
   implicit def freeTListOptionArb[A](implicit
       A: Arbitrary[A]): Arbitrary[FreeTListOption[A]] =
     Arbitrary(
-      FreeTTest
-        .freeTGen[List, Option, A](
-          Gen
-            .choose(0, 2)
-            .flatMap(Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f)))
-        )
-        .map(FreeTListOption.apply))
+      FreeTTest.freeTGen[List, Option, A](
+        Gen.choose(0, 2).flatMap(
+          Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f)))
+      ).map(FreeTListOption.apply))
 
   implicit def freeTListOptionEq[A](implicit
       A: Equal[A]): Equal[FreeTListOption[A]] =
@@ -75,10 +72,8 @@ object FreeTTest extends SpecLite {
       (1, Functor[Arbitrary].map(A)(FreeT.point[F, G, A](_)).arbitrary),
       (
         1,
-        Functor[Arbitrary]
-          .map(Arbitrary(g))(
-            FreeT.liftF[F, G, FreeT[F, G, A]](_).flatMap(x => x))
-          .arbitrary)
+        Functor[Arbitrary].map(Arbitrary(g))(
+          FreeT.liftF[F, G, FreeT[F, G, A]](_).flatMap(x => x)).arbitrary)
     )
   "ListOption" should {
     checkAll(monadPlus.laws[FreeTListOption])
@@ -108,9 +103,8 @@ object FreeTTest extends SpecLite {
     "not stack overflow with bind followed by 50k maps" in {
       val expected = Applicative[FreeTListOption].point(())
       val result =
-        (0 until 50000).foldLeft(
-          ().point[FreeTListOption].flatMap(u => u.point[FreeTListOption]))(
-          (fu, i) => fu.map(u => u))
+        (0 until 50000).foldLeft(().point[FreeTListOption].flatMap(u =>
+          u.point[FreeTListOption]))((fu, i) => fu.map(u => u))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }

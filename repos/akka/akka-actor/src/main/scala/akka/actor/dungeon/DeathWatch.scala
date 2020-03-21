@@ -103,16 +103,13 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
       try {
         // Don't need to send to parent parent since it receives a DWN by default
         def sendTerminated(ifLocal: Boolean)(watcher: ActorRef): Unit =
-          if (watcher
-                .asInstanceOf[ActorRefScope]
-                .isLocal == ifLocal && watcher != parent)
-            watcher
-              .asInstanceOf[InternalActorRef]
-              .sendSystemMessage(
-                DeathWatchNotification(
-                  self,
-                  existenceConfirmed = true,
-                  addressTerminated = false))
+          if (watcher.asInstanceOf[
+                ActorRefScope].isLocal == ifLocal && watcher != parent)
+            watcher.asInstanceOf[InternalActorRef].sendSystemMessage(
+              DeathWatchNotification(
+                self,
+                existenceConfirmed = true,
+                addressTerminated = false))
 
         /*
          * It is important to notify the remote watchers first, otherwise RemoteDaemon might shut down, causing

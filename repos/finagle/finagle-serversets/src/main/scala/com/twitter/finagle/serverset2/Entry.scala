@@ -119,8 +119,9 @@ object Endpoint {
         status <- Status.ofString(s)
       } yield status
     } getOrElse Endpoint.Status.Unknown
-    val tmpl = Endpoint.Empty
-      .copy(shard = shard.getOrElse(Int.MinValue), status = status)
+    val tmpl = Endpoint.Empty.copy(
+      shard = shard.getOrElse(Int.MinValue),
+      status = status)
 
     val namesByHostPort =
       Memoize.snappable[(String, Int), ArrayBuffer[String]] {

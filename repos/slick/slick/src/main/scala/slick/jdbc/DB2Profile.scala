@@ -68,9 +68,8 @@ trait DB2Profile extends JdbcProfile {
       seq: Sequence[_]): SequenceDDLBuilder[_] = new SequenceDDLBuilder(seq)
 
   override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =
-    MTable
-      .getTables(None, None, None, Some(Seq("TABLE")))
-      .map(_.filter(_.name.schema.filter(_ == "SYSTOOLS").isEmpty))
+    MTable.getTables(None, None, None, Some(Seq("TABLE"))).map(
+      _.filter(_.name.schema.filter(_ == "SYSTOOLS").isEmpty))
 
   override def defaultSqlTypeName(
       tmd: JdbcType[_],

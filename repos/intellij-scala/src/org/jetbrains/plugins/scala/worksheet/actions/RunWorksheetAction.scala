@@ -54,8 +54,8 @@ class RunWorksheetAction extends AnAction with TopComponentAction {
   override def update(e: AnActionEvent) {
     val presentation = e.getPresentation
     presentation.setIcon(AllIcons.Actions.Execute)
-    val shortcuts = KeymapManager.getInstance.getActiveKeymap
-      .getShortcuts("Scala.RunWorksheet")
+    val shortcuts = KeymapManager.getInstance.getActiveKeymap.getShortcuts(
+      "Scala.RunWorksheet")
     if (shortcuts.nonEmpty) {
       val shortcutText = " (" + KeymapUtil.getShortcutText(shortcuts(0)) + ")"
       presentation.setText(
@@ -110,8 +110,11 @@ object RunWorksheetAction {
                 scala.extensions.inWriteAction {
                   CleanWorksheetAction.resetScrollModel(viewer)
                   if (!auto)
-                    CleanWorksheetAction
-                      .cleanWorksheet(file.getNode, editor, viewer, project)
+                    CleanWorksheetAction.cleanWorksheet(
+                      file.getNode,
+                      editor,
+                      viewer,
+                      project)
                 }
               }
             },
@@ -141,20 +144,18 @@ object RunWorksheetAction {
         }
 
         if (WorksheetCompiler isMakeBeforeRun psiFile) {
-          CompilerManager
-            .getInstance(project)
-            .make(
-              getModuleFor(file),
-              new CompileStatusNotification {
-                override def finished(
-                    aborted: Boolean,
-                    errors: Int,
-                    warnings: Int,
-                    compileContext: CompileContext) {
-                  if (!aborted && errors == 0) runnable()
-                }
+          CompilerManager.getInstance(project).make(
+            getModuleFor(file),
+            new CompileStatusNotification {
+              override def finished(
+                  aborted: Boolean,
+                  errors: Int,
+                  warnings: Int,
+                  compileContext: CompileContext) {
+                if (!aborted && errors == 0) runnable()
               }
-            )
+            }
+          )
         } else runnable()
       case _ =>
     }
@@ -234,8 +235,8 @@ object RunWorksheetAction {
     val myProcessListener: ProcessAdapter = new ProcessAdapter {
       override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
         val text = event.getText
-        if (ConsoleViewContentType.NORMAL_OUTPUT == ConsoleViewContentType
-              .getConsoleViewType(outputType)) {
+        if (ConsoleViewContentType.NORMAL_OUTPUT == ConsoleViewContentType.getConsoleViewType(
+              outputType)) {
           worksheetPrinter processLine text
         }
       }
@@ -256,13 +257,10 @@ object RunWorksheetAction {
       project: Project): Boolean =
     vFileOpt.exists {
       case vFile =>
-        ScratchFileService
-          .getInstance()
-          .getRootType(vFile)
-          .isInstanceOf[ScratchRootType] &&
-          ScalaProjectSettings
-            .getInstance(project)
-            .isTreatScratchFilesAsWorksheet
+        ScratchFileService.getInstance().getRootType(vFile).isInstanceOf[
+          ScratchRootType] &&
+          ScalaProjectSettings.getInstance(
+            project).isTreatScratchFilesAsWorksheet
     }
 
   def isScratchWorksheet(file: PsiFile): Boolean =

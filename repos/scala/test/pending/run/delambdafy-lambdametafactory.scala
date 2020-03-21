@@ -54,14 +54,17 @@ object Test {
       methodType,
       target,
       instantiatedMethodType)
-    site.getTarget
-      .invokeWithArguments(captured: _*)
-      .asInstanceOf[Function1ish[A, B]]
+    site.getTarget.invokeWithArguments(captured: _*).asInstanceOf[Function1ish[
+      A,
+      B]]
   }
   def main(args: Array[String]) {
     println(
-      lambdaFactory(classOf[C], classOf[String], classOf[String], "accessor$1")
-        .apply("abc"))
+      lambdaFactory(
+        classOf[C],
+        classOf[String],
+        classOf[String],
+        "accessor$1").apply("abc"))
     println(
       lambdaFactory(
         classOf[C],

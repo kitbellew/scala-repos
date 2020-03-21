@@ -64,25 +64,20 @@ class PlannerSpec extends WordSpec {
     val store2 = testStore
     val store3 = testStore
 
-    val h = arbSource1
-      .name("name1")
+    val h = arbSource1.name("name1")
       .flatMap { i: Int => List(i, i) }
       .name("name1PostFM")
-    val h2 = arbSource2
-      .name("name2")
-      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }
-      .name("name2PostFM")
+    val h2 = arbSource2.name("name2")
+      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }.name("name2PostFM")
 
     val combined = h2.merge(h)
 
-    val s1 = combined
-      .name("combinedPipes")
+    val s1 = combined.name("combinedPipes")
       .map { i: Int => (i, i * 2) }
 
     val s2 = combined.map { i: Int => (i, i * 3) }
 
-    val tail = s1
-      .sumByKey(store1)
+    val tail = s1.sumByKey(store1)
       .name("Store one writter")
       .also(s2)
       .sumByKey(store2)
@@ -105,27 +100,22 @@ class PlannerSpec extends WordSpec {
     val store2 = testStore
     val store3 = testStore
 
-    val h = arbSource1
-      .name("name1")
+    val h = arbSource1.name("name1")
       .flatMap { i: Int => List(i, i) }
       .name("name1PostFM")
-    val h2 = arbSource2
-      .name("name2")
-      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }
-      .name("name2PostFM")
+    val h2 = arbSource2.name("name2")
+      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }.name("name2PostFM")
 
     val combined = h2.merge(h)
 
-    val s1 = combined
-      .name("combinedPipes")
+    val s1 = combined.name("combinedPipes")
       .map { i: Int => (i, i * 2) }
 
     val s2 = combined.map { i: Int => (i, i * 3) }
 
     val s3 = combined.map { i: Int => (i, i * 4) }
 
-    val tail = s1
-      .sumByKey(store1)
+    val tail = s1.sumByKey(store1)
       .name("Store one writter")
       .also(s2)
       .sumByKey(store2)
@@ -174,12 +164,9 @@ class PlannerSpec extends WordSpec {
     val part1: TailProducer[Memory, (Int, (Option[Int], Int))] =
       arbSource1.map { i => (i % 10, i * i) }.sumByKey(store1).name("Sarnatsky")
     val store2 = testStore
-    val part2 = part1
-      .mapValues { case (optV, v) => v }
-      .mapKeys(_ => 1)
-      .name("Preexpanded")
-      .sumByKey(store2)
-      .name("All done")
+    val part2 = part1.mapValues { case (optV, v) => v }
+      .mapKeys(_ => 1).name("Preexpanded")
+      .sumByKey(store2).name("All done")
     Try(OnlinePlan(part1.also(part2))) match {
       case Success(graph) =>
         TopologyPlannerLaws.dumpGraph(graph)

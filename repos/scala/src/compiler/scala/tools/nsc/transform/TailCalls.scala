@@ -127,14 +127,15 @@ abstract class TailCalls extends Transform {
 
       def newThis(pos: Position) = {
         def msg =
-          "Creating new `this` during tailcalls\n  method: %s\n  current class: %s"
-            .format(
-              method.ownerChain.mkString(" -> "),
-              currentClass.ownerChain.mkString(" -> ")
-            )
+          "Creating new `this` during tailcalls\n  method: %s\n  current class: %s".format(
+            method.ownerChain.mkString(" -> "),
+            currentClass.ownerChain.mkString(" -> ")
+          )
         logResult(msg)(
-          method
-            .newValue(nme.THIS, pos, SYNTHETIC) setInfo currentClass.typeOfThis)
+          method.newValue(
+            nme.THIS,
+            pos,
+            SYNTHETIC) setInfo currentClass.typeOfThis)
       }
       override def toString =
         s"${method.name} tparams=$tparams tailPos=$tailPos label=$label label info=${label.info}"

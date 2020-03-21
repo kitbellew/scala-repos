@@ -27,8 +27,9 @@ object Flat extends Build {
       unmanagedSourceDirectories := (baseDirectory.value / name) :: Nil,
       excludeFilter in unmanagedResources := (includeFilter in unmanagedSources).value,
       unmanagedResourceDirectories := unmanagedSourceDirectories.value,
-      unpackage := IO
-        .unzip(artifactPath in packageSrc value, baseDirectory.value / name)
+      unpackage := IO.unzip(
+        artifactPath in packageSrc value,
+        baseDirectory.value / name)
     )
 
   val unpackage = TaskKey[Unit]("unpackage")

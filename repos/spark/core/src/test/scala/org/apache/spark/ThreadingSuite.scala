@@ -125,21 +125,18 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
       new Thread {
         override def run() {
           try {
-            val ans = nums
-              .map(number => {
-                val running = ThreadingSuiteState.runningThreads
-                running.getAndIncrement()
-                val time = System.currentTimeMillis()
-                while (running.get() != 4 && System
-                         .currentTimeMillis() < time + 1000) {
-                  Thread.sleep(100)
-                }
-                if (running.get() != 4) {
-                  ThreadingSuiteState.failed.set(true)
-                }
-                number
-              })
-              .collect()
+            val ans = nums.map(number => {
+              val running = ThreadingSuiteState.runningThreads
+              running.getAndIncrement()
+              val time = System.currentTimeMillis()
+              while (running.get() != 4 && System.currentTimeMillis() < time + 1000) {
+                Thread.sleep(100)
+              }
+              if (running.get() != 4) {
+                ThreadingSuiteState.failed.set(true)
+              }
+              number
+            }).collect()
             assert(ans.toList === List(1, 2))
           } catch {
             case t: Throwable =>

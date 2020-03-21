@@ -115,8 +115,8 @@ private[spark] class BlockManagerMaster(
 
   /** Remove all blocks belonging to the given shuffle. */
   def removeShuffle(shuffleId: Int, blocking: Boolean) {
-    val future = driverEndpoint
-      .askWithRetry[Future[Seq[Boolean]]](RemoveShuffle(shuffleId))
+    val future = driverEndpoint.askWithRetry[Future[Seq[Boolean]]](
+      RemoveShuffle(shuffleId))
     future.onFailure {
       case e: Exception =>
         logWarning(s"Failed to remove shuffle $shuffleId - ${e.getMessage}", e)
@@ -152,8 +152,8 @@ private[spark] class BlockManagerMaster(
     * amount of remaining memory.
     */
   def getMemoryStatus: Map[BlockManagerId, (Long, Long)] = {
-    driverEndpoint
-      .askWithRetry[Map[BlockManagerId, (Long, Long)]](GetMemoryStatus)
+    driverEndpoint.askWithRetry[Map[BlockManagerId, (Long, Long)]](
+      GetMemoryStatus)
   }
 
   def getStorageStatus: Array[StorageStatus] = {
@@ -177,8 +177,8 @@ private[spark] class BlockManagerMaster(
      * should not block on waiting for a block manager, which can in turn be waiting for the
      * master endpoint for a response to a prior message.
      */
-    val response = driverEndpoint
-      .askWithRetry[Map[BlockManagerId, Future[Option[BlockStatus]]]](msg)
+    val response = driverEndpoint.askWithRetry[
+      Map[BlockManagerId, Future[Option[BlockStatus]]]](msg)
     val (blockManagerIds, futures) = response.unzip
     implicit val sameThread = ThreadUtils.sameThread
     val cbf =
@@ -193,13 +193,10 @@ private[spark] class BlockManagerMaster(
       throw new SparkException(
         "BlockManager returned null for BlockStatus query: " + blockId)
     }
-    blockManagerIds
-      .zip(blockStatus)
-      .flatMap {
-        case (blockManagerId, status) =>
-          status.map { s => (blockManagerId, s) }
-      }
-      .toMap
+    blockManagerIds.zip(blockStatus).flatMap {
+      case (blockManagerId, status) =>
+        status.map { s => (blockManagerId, s) }
+    }.toMap
   }
 
   /**

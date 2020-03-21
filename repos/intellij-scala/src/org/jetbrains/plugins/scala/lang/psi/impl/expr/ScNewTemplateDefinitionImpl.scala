@@ -172,15 +172,17 @@ class ScNewTemplateDefinitionImpl private (
   override def findMethodBySignature(
       patternMethod: PsiMethod,
       checkBases: Boolean): PsiMethod = {
-    super[ScNewTemplateDefinition]
-      .findMethodBySignature(patternMethod, checkBases)
+    super[ScNewTemplateDefinition].findMethodBySignature(
+      patternMethod,
+      checkBases)
   }
 
   override def findMethodsBySignature(
       patternMethod: PsiMethod,
       checkBases: Boolean): Array[PsiMethod] = {
-    super[ScNewTemplateDefinition]
-      .findMethodsBySignature(patternMethod, checkBases)
+    super[ScNewTemplateDefinition].findMethodsBySignature(
+      patternMethod,
+      checkBases)
   }
 
   import java.util.{Collection => JCollection, List => JList}
@@ -210,8 +212,9 @@ class ScNewTemplateDefinitionImpl private (
   override def findMethodsAndTheirSubstitutorsByName(
       name: String,
       checkBases: Boolean): JList[IPair[PsiMethod, PsiSubstitutor]] = {
-    super[ScNewTemplateDefinition]
-      .findMethodsAndTheirSubstitutorsByName(name, checkBases)
+    super[ScNewTemplateDefinition].findMethodsAndTheirSubstitutorsByName(
+      name,
+      checkBases)
   }
 
   override def getAllMethodsAndTheirSubstitutors

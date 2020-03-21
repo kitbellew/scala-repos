@@ -85,16 +85,10 @@ object ColumnarTestUtils {
       columnType: ColumnType[JvmType],
       count: Int): Seq[JvmType] = {
 
-    Iterator
-      .iterate(HashSet.empty[JvmType]) { set =>
-        set + Iterator
-          .continually(makeRandomValue(columnType))
-          .filterNot(set.contains)
-          .next()
-      }
-      .drop(count)
-      .next()
-      .toSeq
+    Iterator.iterate(HashSet.empty[JvmType]) { set =>
+      set + Iterator.continually(makeRandomValue(columnType)).filterNot(
+        set.contains).next()
+    }.drop(count).next().toSeq
   }
 
   def makeRandomRow(head: ColumnType[_], tail: ColumnType[_]*): InternalRow =

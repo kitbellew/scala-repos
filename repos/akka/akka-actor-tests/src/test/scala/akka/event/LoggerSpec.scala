@@ -46,16 +46,14 @@ object LoggerSpec {
       }
     """).withFallback(AkkaSpec.testConf)
 
-  val multipleConfig = ConfigFactory
-    .parseString(
-      """
+  val multipleConfig = ConfigFactory.parseString(
+    """
       akka {
         stdout-loglevel = "OFF"
         loglevel = "WARNING"
         loggers = ["akka.event.LoggerSpec$TestLogger1", "akka.event.LoggerSpec$TestLogger2"]
       }
-    """)
-    .withFallback(AkkaSpec.testConf)
+    """).withFallback(AkkaSpec.testConf)
 
   val ticket3165Config =
     ConfigFactory.parseString("""

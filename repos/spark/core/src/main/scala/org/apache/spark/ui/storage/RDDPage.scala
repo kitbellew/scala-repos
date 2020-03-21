@@ -55,12 +55,12 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
       Option(parameterBlockPrevPageSize).map(_.toInt).getOrElse(blockPageSize)
 
     val rddId = parameterId.toInt
-    val rddStorageInfo = AllRDDResource
-      .getRDDStorageInfo(rddId, listener, includeDetails = true)
-      .getOrElse {
-        // Rather than crashing, render an "RDD Not Found" page
-        return UIUtils.headerSparkPage("RDD Not Found", Seq[Node](), parent)
-      }
+    val rddStorageInfo =
+      AllRDDResource.getRDDStorageInfo(rddId, listener, includeDetails = true)
+        .getOrElse {
+          // Rather than crashing, render an "RDD Not Found" page
+          return UIUtils.headerSparkPage("RDD Not Found", Seq[Node](), parent)
+        }
 
     // Worker table
     val workerTable = UIUtils.listingTable(

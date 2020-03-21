@@ -426,9 +426,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       val universe: self.global.type = self.global
       val callsiteTyper: universe.analyzer.Typer =
         typer.asInstanceOf[global.analyzer.Typer]
-      val expandee = universe.analyzer
-        .macroExpanderAttachment(expandeeTree)
-        .original orElse duplicateAndKeepPositions(expandeeTree)
+      val expandee = universe.analyzer.macroExpanderAttachment(
+        expandeeTree).original orElse duplicateAndKeepPositions(expandeeTree)
     } with UnaffiliatedMacroContext {
       val prefix = Expr[Nothing](prefixTree)(TypeTag.Nothing)
       override def toString =
@@ -455,10 +454,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     val prefix = core match {
       case Select(qual, _) => qual; case _ => EmptyTree
     }
-    val context = expandee.attachments
-      .get[MacroRuntimeAttachment]
-      .flatMap(_.macroContext)
-      .getOrElse(macroContext(typer, prefix, expandee))
+    val context = expandee.attachments.get[MacroRuntimeAttachment].flatMap(
+      _.macroContext).getOrElse(macroContext(typer, prefix, expandee))
 
     macroLogVerbose(sm"""
       |context: $context

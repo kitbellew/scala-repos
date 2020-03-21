@@ -132,8 +132,12 @@ object ActorSystem {
       extends ActorSystem[T](_name)
       with ScalaActorRef[T] {
     override private[akka] val untyped: ExtendedActorSystem =
-      new ActorSystemImpl(_name, _config, _cl, _ec, Some(Props.untyped(_p)))
-        .start()
+      new ActorSystemImpl(
+        _name,
+        _config,
+        _cl,
+        _ec,
+        Some(Props.untyped(_p))).start()
   }
 
   private class Wrapper(val untyped: ExtendedActorSystem)

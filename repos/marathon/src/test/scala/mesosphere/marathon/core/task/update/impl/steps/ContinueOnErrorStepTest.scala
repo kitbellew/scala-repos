@@ -65,10 +65,8 @@ class ContinueOnErrorStepTest
       step.processUpdate(
         timestamp,
         task = dummyTask,
-        mesosStatus = TaskStatus
-          .newBuilder()
-          .setTaskId(TaskID.newBuilder().setValue("task"))
-          .buildPartial())
+        mesosStatus = TaskStatus.newBuilder().setTaskId(
+          TaskID.newBuilder().setValue("task")).buildPartial())
     }
 
     Given("a nested step that is always successful")

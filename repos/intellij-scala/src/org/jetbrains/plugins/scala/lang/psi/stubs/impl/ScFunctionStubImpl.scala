@@ -51,8 +51,8 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
       isLocal: Boolean) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = StringRef.fromString(name)
     this.declaration = isDeclaration
     this.annotations = annotations.map(StringRef.fromString)
@@ -78,8 +78,8 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
       isLocal: Boolean) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = name
     this.declaration = isDeclaration
     this.annotations = annotations
@@ -108,8 +108,10 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScTypeElement] =
       if (getReturnTypeText != "") {
         Some(
-          ScalaPsiElementFactory
-            .createTypeElementFromText(getReturnTypeText, getPsi, null))
+          ScalaPsiElementFactory.createTypeElementFromText(
+            getReturnTypeText,
+            getPsi,
+            null))
       } else None
     myReturnTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -124,8 +126,10 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScExpression] =
       if (getBodyText != "") {
         Some(
-          ScalaPsiElementFactory
-            .createExpressionWithContextFromText(getBodyText, getPsi, null))
+          ScalaPsiElementFactory.createExpressionWithContextFromText(
+            getBodyText,
+            getPsi,
+            null))
       } else None
     myBodyExpression = new SofterReference[Option[ScExpression]](res)
     res

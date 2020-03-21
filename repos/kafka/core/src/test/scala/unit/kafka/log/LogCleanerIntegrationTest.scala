@@ -66,9 +66,8 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     // wait until cleaning up to base_offset, note that cleaning happens only when "log dirty ratio" is higher than LogConfig.MinCleanableDirtyRatioProp
     cleaner.awaitCleaned("log", 0, firstDirty)
     val compactedSize = log.logSegments.map(_.size).sum
-    val lastCleaned = cleaner.cleanerManager.allCleanerCheckpoints
-      .get(TopicAndPartition("log", 0))
-      .get
+    val lastCleaned = cleaner.cleanerManager.allCleanerCheckpoints.get(
+      TopicAndPartition("log", 0)).get
     assertTrue(
       s"log cleaner should have processed up to offset $firstDirty, but lastCleaned=$lastCleaned",
       lastCleaned >= firstDirty)
@@ -92,9 +91,8 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     val firstDirty2 = log.activeSegment.baseOffset
     cleaner.awaitCleaned("log", 0, firstDirty2)
 
-    val lastCleaned2 = cleaner.cleanerManager.allCleanerCheckpoints
-      .get(TopicAndPartition("log", 0))
-      .get
+    val lastCleaned2 = cleaner.cleanerManager.allCleanerCheckpoints.get(
+      TopicAndPartition("log", 0)).get
     assertTrue(
       s"log cleaner should have processed up to offset $firstDirty2",
       lastCleaned2 >= firstDirty2);

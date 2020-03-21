@@ -99,8 +99,12 @@ class StreamingContext private[streaming] (
       jars: Seq[String] = Nil,
       environment: Map[String, String] = Map()) = {
     this(
-      StreamingContext
-        .createNewSparkContext(master, appName, sparkHome, jars, environment),
+      StreamingContext.createNewSparkContext(
+        master,
+        appName,
+        sparkHome,
+        jars,
+        environment),
       null,
       batchDuration)
   }
@@ -131,9 +135,10 @@ class StreamingContext private[streaming] (
   def this(path: String, sparkContext: SparkContext) = {
     this(
       sparkContext,
-      CheckpointReader
-        .read(path, sparkContext.conf, sparkContext.hadoopConfiguration)
-        .get,
+      CheckpointReader.read(
+        path,
+        sparkContext.conf,
+        sparkContext.hadoopConfiguration).get,
       null)
   }
 
@@ -447,8 +452,8 @@ class StreamingContext private[streaming] (
     */
   def textFileStream(directory: String): DStream[String] =
     withNamedScope("text file stream") {
-      fileStream[LongWritable, Text, TextInputFormat](directory)
-        .map(_._2.toString)
+      fileStream[LongWritable, Text, TextInputFormat](directory).map(
+        _._2.toString)
     }
 
   /**
@@ -882,9 +887,8 @@ object StreamingContext extends Logging {
       new SparkConf(),
       hadoopConf,
       createOnError)
-    checkpointOption
-      .map(new StreamingContext(null, _, null))
-      .getOrElse(creatingFunc())
+    checkpointOption.map(new StreamingContext(null, _, null)).getOrElse(
+      creatingFunc())
   }
 
   /**

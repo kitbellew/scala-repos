@@ -149,8 +149,8 @@ object PlayConfigSpec extends Specification {
           "bar")
       }
       "when undefined" in {
-        config()
-          .get[Option[String]]("foo.bar") must throwA[ConfigException.Missing]
+        config().get[Option[String]]("foo.bar") must throwA[
+          ConfigException.Missing]
       }
     }
     "support getting prototyped seqs" in {

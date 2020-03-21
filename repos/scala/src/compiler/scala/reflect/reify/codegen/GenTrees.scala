@@ -116,8 +116,8 @@ trait GenTrees {
               // all free vars local to the enclosing reifee should've already been inlined by `Metalevels`
               for (sym <- inlinedSymtab.syms if sym.isLocalToReifee)
                 abort(
-                  "free var local to the reifee, should have already been inlined by Metalevels: " + inlinedSymtab
-                    .symDef(sym))
+                  "free var local to the reifee, should have already been inlined by Metalevels: " + inlinedSymtab.symDef(
+                    sym))
               state.symtab ++= inlinedSymtab
               rtree
             case tree =>
@@ -182,8 +182,10 @@ trait GenTrees {
 
       case _ =>
         throw new Error(
-          "internal error: %s (%s, %s) is not supported"
-            .format(tree, tree.productPrefix, tree.getClass))
+          "internal error: %s (%s, %s) is not supported".format(
+            tree,
+            tree.productPrefix,
+            tree.getClass))
     }
   }
 
@@ -201,8 +203,8 @@ trait GenTrees {
       // then we can reify the scrutinee as a symless AST and that will definitely be hygienic
       // why? because then typechecking of a scrutinee doesn't depend on the environment external to the quasiquote
       // otherwise we need to reify the corresponding type
-      if (sym.isLocalToReifee || tpe.isLocalToReifee || treeInfo
-            .isWildcardStarType(tree))
+      if (sym.isLocalToReifee || tpe.isLocalToReifee || treeInfo.isWildcardStarType(
+            tree))
         reifyProduct(tree)
       else {
         if (reifyDebug)
@@ -254,8 +256,10 @@ trait GenTrees {
 
       case _ =>
         throw new Error(
-          "internal error: %s (%s, %s) is not supported"
-            .format(tree, tree.productPrefix, tree.getClass))
+          "internal error: %s (%s, %s) is not supported".format(
+            tree,
+            tree.productPrefix,
+            tree.getClass))
     }
   }
 

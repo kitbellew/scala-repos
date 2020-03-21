@@ -322,9 +322,8 @@ object Conformance {
           }
           ScType.extractDesignated(l, withoutAliases = false) match {
             case Some((el, _)) =>
-              val notNullClass = ScalaPsiManager
-                .instance(el.getProject)
-                .getCachedClass(
+              val notNullClass =
+                ScalaPsiManager.instance(el.getProject).getCachedClass(
                   "scala.NotNull",
                   el.getResolveScope,
                   ScalaPsiManager.ClassCategory.TYPE)
@@ -976,8 +975,8 @@ object Conformance {
             argsPair match {
               case (ScAbstractType(tpt, lower, upper), r) =>
                 val right =
-                  if (tpt.args.length > 0 && !r
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 && !r.isInstanceOf[
+                        ScParameterizedType])
                     ScParameterizedType(r, tpt.args)
                   else r
                 if (!upper.equiv(Any)) {
@@ -1008,8 +1007,8 @@ object Conformance {
                 }
               case (l, ScAbstractType(tpt, lower, upper)) =>
                 val left =
-                  if (tpt.args.length > 0 && !l
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 && !l.isInstanceOf[
+                        ScParameterizedType])
                     ScParameterizedType(l, tpt.args)
                   else l
                 if (!upper.equiv(Any)) {
@@ -1209,8 +1208,8 @@ object Conformance {
             if proj.actualElement.isInstanceOf[ScTypeAlias] =>
           r match {
             case ScParameterizedType(proj2: ScProjectionType, args2)
-                if proj.actualElement
-                  .isInstanceOf[ScTypeAliasDeclaration] && (proj equiv proj2) =>
+                if proj.actualElement.isInstanceOf[
+                  ScTypeAliasDeclaration] && (proj equiv proj2) =>
               processEquivalentDesignators(args2)
               return
             case _ =>
@@ -1282,8 +1281,8 @@ object Conformance {
             argsPair match {
               case (ScAbstractType(tpt, lower, upper), r) =>
                 val right =
-                  if (tpt.args.length > 0 && !r
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 && !r.isInstanceOf[
+                        ScParameterizedType])
                     ScParameterizedType(r, tpt.args)
                   else r
                 if (!upper.equiv(Any)) {
@@ -1314,8 +1313,8 @@ object Conformance {
                 }
               case (l, ScAbstractType(tpt, lower, upper)) =>
                 val left =
-                  if (tpt.args.length > 0 && !l
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 && !l.isInstanceOf[
+                        ScParameterizedType])
                     ScParameterizedType(l, tpt.args)
                   else l
                 if (!upper.equiv(Any)) {
@@ -2187,25 +2186,23 @@ object Conformance {
           val subst = new ScSubstitutor(
             new collection.immutable.HashMap[
               (String, PsiElement),
-              ScType] ++ typeParameters1
-              .zip(typeParameters2)
-              .map({
-                tuple =>
-                  (
-                    (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
-                    new ScTypeParameterType(
-                      tuple._2.name,
-                      tuple._2.ptp match {
-                        case p: ScTypeParam =>
-                          p.typeParameters.toList.map {
-                            new ScTypeParameterType(_, ScSubstitutor.empty)
-                          }
-                        case _ => Nil
-                      },
-                      new Suspension(tuple._2.lowerType),
-                      new Suspension(tuple._2.upperType),
-                      tuple._2.ptp))
-              }),
+              ScType] ++ typeParameters1.zip(typeParameters2).map({
+              tuple =>
+                (
+                  (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
+                  new ScTypeParameterType(
+                    tuple._2.name,
+                    tuple._2.ptp match {
+                      case p: ScTypeParam =>
+                        p.typeParameters.toList.map {
+                          new ScTypeParameterType(_, ScSubstitutor.empty)
+                        }
+                      case _ => Nil
+                    },
+                    new Suspension(tuple._2.lowerType),
+                    new Suspension(tuple._2.upperType),
+                    tuple._2.ptp))
+            }),
             Map.empty,
             None)
           val t = conformsInner(

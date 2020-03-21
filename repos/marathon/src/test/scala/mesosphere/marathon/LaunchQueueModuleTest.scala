@@ -134,8 +134,9 @@ class LaunchQueueModuleTest
 
     When("we ask for matching an offer")
     call(taskOpFactory.buildTaskOp(Matchers.any())).thenReturn(None)
-    val matchFuture = offerMatcherManager.offerMatchers.head
-      .matchOffer(clock.now() + 3.seconds, offer)
+    val matchFuture = offerMatcherManager.offerMatchers.head.matchOffer(
+      clock.now() + 3.seconds,
+      offer)
     val matchedTasks = Await.result(matchFuture, 3.seconds)
 
     Then("the offer gets passed to the task factory and respects the answer")
@@ -151,13 +152,12 @@ class LaunchQueueModuleTest
   test("an offer gets successfully matched against an item in the queue") {
     val offer = MarathonTestHelper.makeBasicOffer().build()
     val taskId = Task.Id.forApp(PathId("/test"))
-    val mesosTask = MarathonTestHelper
-      .makeOneCPUTask("")
-      .setTaskId(taskId.mesosTaskId)
-      .build()
+    val mesosTask = MarathonTestHelper.makeOneCPUTask("").setTaskId(
+      taskId.mesosTaskId).build()
     val marathonTask = MarathonTestHelper.mininimalTask(taskId)
-    val launch = new TaskOpFactoryHelper(Some("principal"), Some("role"))
-      .launch(mesosTask, marathonTask)
+    val launch = new TaskOpFactoryHelper(
+      Some("principal"),
+      Some("role")).launch(mesosTask, marathonTask)
 
     Given("An app in the queue")
     call(taskTracker.tasksByAppSync).thenReturn(TaskTracker.TasksByApp.empty)
@@ -168,8 +168,9 @@ class LaunchQueueModuleTest
     }
 
     When("we ask for matching an offer")
-    val matchFuture = offerMatcherManager.offerMatchers.head
-      .matchOffer(clock.now() + 3.seconds, offer)
+    val matchFuture = offerMatcherManager.offerMatchers.head.matchOffer(
+      clock.now() + 3.seconds,
+      offer)
     val matchedTasks = Await.result(matchFuture, 3.seconds)
 
     Then("the offer gets passed to the task factory and respects the answer")

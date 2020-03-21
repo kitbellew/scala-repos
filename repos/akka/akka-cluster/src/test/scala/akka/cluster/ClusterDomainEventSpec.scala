@@ -81,9 +81,9 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
     }
 
     "be produced for members in unreachable" in {
-      val reachability1 = Reachability.empty
-        .unreachable(aUp.uniqueAddress, cUp.uniqueAddress)
-        .unreachable(aUp.uniqueAddress, eUp.uniqueAddress)
+      val reachability1 = Reachability.empty.unreachable(
+        aUp.uniqueAddress,
+        cUp.uniqueAddress).unreachable(aUp.uniqueAddress, eUp.uniqueAddress)
       val g1 = Gossip(
         members = SortedSet(aUp, bUp, cUp, eUp),
         overview = GossipOverview(reachability = reachability1))
@@ -101,17 +101,19 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
     }
 
     "be produced for members becoming reachable after unreachable" in {
-      val reachability1 = Reachability.empty
-        .unreachable(aUp.uniqueAddress, cUp.uniqueAddress)
-        .reachable(aUp.uniqueAddress, cUp.uniqueAddress)
-        .unreachable(aUp.uniqueAddress, eUp.uniqueAddress)
-        .unreachable(aUp.uniqueAddress, bUp.uniqueAddress)
+      val reachability1 = Reachability.empty.unreachable(
+        aUp.uniqueAddress,
+        cUp.uniqueAddress).reachable(
+        aUp.uniqueAddress,
+        cUp.uniqueAddress).unreachable(
+        aUp.uniqueAddress,
+        eUp.uniqueAddress).unreachable(aUp.uniqueAddress, bUp.uniqueAddress)
       val g1 = Gossip(
         members = SortedSet(aUp, bUp, cUp, eUp),
         overview = GossipOverview(reachability = reachability1))
-      val reachability2 = reachability1
-        .unreachable(aUp.uniqueAddress, cUp.uniqueAddress)
-        .reachable(aUp.uniqueAddress, bUp.uniqueAddress)
+      val reachability2 = reachability1.unreachable(
+        aUp.uniqueAddress,
+        cUp.uniqueAddress).reachable(aUp.uniqueAddress, bUp.uniqueAddress)
       val g2 = Gossip(
         members = SortedSet(aUp, cUp, bUp, eUp),
         overview = GossipOverview(reachability = reachability2))
@@ -137,13 +139,10 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
     }
 
     "be produced for convergence changes" in {
-      val g1 = Gossip(members = SortedSet(aUp, bUp, eJoining))
-        .seen(aUp.uniqueAddress)
-        .seen(bUp.uniqueAddress)
-        .seen(eJoining.uniqueAddress)
-      val g2 = Gossip(members = SortedSet(aUp, bUp, eJoining))
-        .seen(aUp.uniqueAddress)
-        .seen(bUp.uniqueAddress)
+      val g1 = Gossip(members = SortedSet(aUp, bUp, eJoining)).seen(
+        aUp.uniqueAddress).seen(bUp.uniqueAddress).seen(eJoining.uniqueAddress)
+      val g2 = Gossip(members = SortedSet(aUp, bUp, eJoining)).seen(
+        aUp.uniqueAddress).seen(bUp.uniqueAddress)
 
       diffMemberEvents(g1, g2) should ===(Seq.empty)
       diffUnreachable(g1, g2, selfDummyAddress) should ===(Seq.empty)

@@ -139,10 +139,8 @@ class ConsumerIntegrationTest
         new ErrorThrowingConsumer("direct:error-handler-test") {
           override def onRouteDefinition =
             (rd: RouteDefinition) ⇒ {
-              rd.onException(classOf[TestException])
-                .handled(true)
-                .transform(Builder.exceptionMessage)
-                .end
+              rd.onException(classOf[TestException]).handled(true).transform(
+                Builder.exceptionMessage).end
             }
         },
         name = "direct-error-handler-test"
@@ -178,11 +176,9 @@ class ConsumerIntegrationTest
           def receive = { case _ ⇒ sender() ! Ack }
         },
         name = "direct-manual-ack-1")
-      camel.template
-        .asyncSendBody("direct:manual-ack", "some message")
-        .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should ===(
-        null
-      ) //should not timeout
+      camel.template.asyncSendBody("direct:manual-ack", "some message").get(
+        defaultTimeoutDuration.toSeconds,
+        TimeUnit.SECONDS) should ===(null) //should not timeout
       stop(ref)
     }
 
@@ -196,9 +192,9 @@ class ConsumerIntegrationTest
         name = "direct-manual-ack-2")
 
       intercept[ExecutionException] {
-        camel.template
-          .asyncSendBody("direct:manual-ack", "some message")
-          .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
+        camel.template.asyncSendBody("direct:manual-ack", "some message").get(
+          defaultTimeoutDuration.toSeconds,
+          TimeUnit.SECONDS)
       }.getCause.getCause should ===(someException)
       stop(ref)
     }
@@ -213,9 +209,9 @@ class ConsumerIntegrationTest
         name = "direct-manual-ack-3")
 
       intercept[ExecutionException] {
-        camel.template
-          .asyncSendBody("direct:manual-ack", "some message")
-          .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
+        camel.template.asyncSendBody("direct:manual-ack", "some message").get(
+          defaultTimeoutDuration.toSeconds,
+          TimeUnit.SECONDS)
       }.getCause.getCause.getMessage should include("Failed to get Ack")
       stop(ref)
     }
@@ -252,10 +248,8 @@ class ErrorRespondingConsumer(override val endpointUri: String)
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒ {
       // Catch TestException and handle it by returning a modified version of the in message
-      rd.onException(classOf[TestException])
-        .handled(true)
-        .transform(Builder.body.append(" has an error"))
-        .end
+      rd.onException(classOf[TestException]).handled(true).transform(
+        Builder.body.append(" has an error")).end
     }
 
   final override def preRestart(reason: Throwable, message: Option[Any]) {

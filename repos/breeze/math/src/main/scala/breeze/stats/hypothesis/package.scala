@@ -93,9 +93,8 @@ package object hypothesis {
       control: (Long, Long),
       trials: Seq[(Long, Long)]): Seq[Chi2Result] = {
     val numTrials = trials.size
-    trials
-      .map(x => chi2Test(control._1, control._2, x._1, x._2))
-      .map(r => Chi2Result(r.chi2, sidakCorrectedPVal(r.pVal, numTrials)))
+    trials.map(x => chi2Test(control._1, control._2, x._1, x._2)).map(r =>
+      Chi2Result(r.chi2, sidakCorrectedPVal(r.pVal, numTrials)))
   }
 
   /**

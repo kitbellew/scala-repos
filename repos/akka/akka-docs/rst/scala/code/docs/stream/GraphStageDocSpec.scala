@@ -337,8 +337,7 @@ class GraphStageDocSpec extends AkkaSpec {
     val in = TestPublisher.probe[Int]()
     val out = TestSubscriber.probe[Int]()
 
-    Source
-      .fromPublisher(in)
+    Source.fromPublisher(in)
       .via(duplicator)
       .to(Sink.fromSubscriber(out))
       .withAttributes(Attributes.inputBuffer(1, 1))
@@ -555,8 +554,7 @@ class GraphStageDocSpec extends AkkaSpec {
     val subscriber = TestSubscriber.manualProbe[Int]()
     val publisher = TestPublisher.probe[Int]()
     val flow2 =
-      Source
-        .fromPublisher(publisher)
+      Source.fromPublisher(publisher)
         .via(new TwoBuffer)
         .to(Sink.fromSubscriber(subscriber))
 

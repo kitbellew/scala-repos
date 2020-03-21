@@ -54,17 +54,12 @@ object RDDRelation {
       sqlContext.sql("SELECT key, value FROM records WHERE key < 10")
 
     println("Result of RDD.map:")
-    rddFromSql.rdd
-      .map(row => s"Key: ${row(0)}, Value: ${row(1)}")
-      .collect()
-      .foreach(println)
+    rddFromSql.rdd.map(row =>
+      s"Key: ${row(0)}, Value: ${row(1)}").collect().foreach(println)
 
     // Queries can also be written using a LINQ-like Scala DSL.
-    df.where($"key" === 1)
-      .orderBy($"value".asc)
-      .select($"key")
-      .collect()
-      .foreach(println)
+    df.where($"key" === 1).orderBy($"value".asc).select(
+      $"key").collect().foreach(println)
 
     // Write out an RDD as a parquet file with overwrite mode.
     df.write.mode(SaveMode.Overwrite).parquet("pair.parquet")
@@ -73,11 +68,8 @@ object RDDRelation {
     val parquetFile = sqlContext.read.parquet("pair.parquet")
 
     // Queries can be run using the DSL on parquet files just like the original RDD.
-    parquetFile
-      .where($"key" === 1)
-      .select($"value".as("a"))
-      .collect()
-      .foreach(println)
+    parquetFile.where($"key" === 1).select($"value".as("a")).collect().foreach(
+      println)
 
     // These files can also be registered as tables.
     parquetFile.registerTempTable("parquetFile")

@@ -65,9 +65,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                   while (i < subpatterns.length) {
                     val tp = {
                       substitutor.subst(
-                        params(i)
-                          .getType(TypingContext.empty)
-                          .getOrElse(return false))
+                        params(i).getType(TypingContext.empty).getOrElse(
+                          return false))
                     }
                     if (!subpatterns.apply(i).isIrrefutableFor(Some(tp))) {
                       return false
@@ -90,9 +89,10 @@ class ScConstructorPatternImpl(node: ASTNode)
         r.element match {
           //todo: remove all classes?
           case td: ScClass if td.typeParameters.nonEmpty =>
-            val refType: ScType = ScSimpleTypeElementImpl
-              .calculateReferenceType(ref, shapesOnly = false)
-              .getOrElse(ScType.designator(td))
+            val refType: ScType =
+              ScSimpleTypeElementImpl.calculateReferenceType(
+                ref,
+                shapesOnly = false).getOrElse(ScType.designator(td))
             val newSubst = {
               val clazzType = ScParameterizedType(
                 refType,
@@ -124,11 +124,9 @@ class ScConstructorPatternImpl(node: ASTNode)
             Success(
               ScParameterizedType(
                 refType,
-                td.getTypeParameters
-                  .map({
-                    tp => newSubst.subst(ScalaPsiManager.typeVariable(tp))
-                  })
-                  .toSeq),
+                td.getTypeParameters.map({
+                  tp => newSubst.subst(ScalaPsiManager.typeVariable(tp))
+                }).toSeq),
               Some(this))
           case td: ScClass   => Success(ScType.designator(td), Some(this))
           case obj: ScObject => Success(ScType.designator(obj), Some(this))
@@ -169,12 +167,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                   }
                 }
               }
-            fun.paramClauses.clauses
-              .apply(0)
-              .parameters
-              .apply(0)
-              .getType(TypingContext.empty)
-              .map(subst.subst)
+            fun.paramClauses.clauses.apply(0).parameters.apply(0).getType(
+              TypingContext.empty).map(subst.subst)
           case _ => Success(Nothing, Some(this))
         }
       case _ => Failure("Cannot resolve symbol", Some(this))

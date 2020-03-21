@@ -26,9 +26,8 @@ class MetricsConfigSuite extends SparkFunSuite with BeforeAndAfter {
   var filePath: String = _
 
   before {
-    filePath = getClass.getClassLoader
-      .getResource("test_metrics_config.properties")
-      .getFile()
+    filePath = getClass.getClassLoader.getResource(
+      "test_metrics_config.properties").getFile()
   }
 
   test("MetricsConfig with default properties") {

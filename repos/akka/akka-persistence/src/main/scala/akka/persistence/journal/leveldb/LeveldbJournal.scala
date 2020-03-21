@@ -50,14 +50,11 @@ private[persistence] class LeveldbJournal extends {
                 }
             }.map(_ ⇒ highSeqNr)
           }
-        }
-        .map {
+        }.map {
           highSeqNr ⇒ RecoverySuccess(highSeqNr)
-        }
-        .recover {
+        }.recover {
           case e ⇒ ReplayMessagesFailure(e)
-        }
-        .pipeTo(replyTo)
+        }.pipeTo(replyTo)
 
     case SubscribePersistenceId(persistenceId: String) ⇒
       addPersistenceIdSubscriber(sender(), persistenceId)
@@ -133,8 +130,8 @@ private[persistence] object LeveldbJournal {
   * Journal backed by a [[SharedLeveldbStore]]. For testing only.
   */
 private[persistence] class SharedLeveldbJournal extends AsyncWriteProxy {
-  val timeout: Timeout = context.system.settings.config
-    .getMillisDuration("akka.persistence.journal.leveldb-shared.timeout")
+  val timeout: Timeout = context.system.settings.config.getMillisDuration(
+    "akka.persistence.journal.leveldb-shared.timeout")
 
   override def receivePluginInternal: Receive = {
     case cmd: LeveldbJournal.SubscriptionCommand ⇒

@@ -53,8 +53,7 @@ private[mysql] class PrepareCache(
         }
       }
     }
-    val underlying = CacheBuilder
-      .newBuilder()
+    val underlying = CacheBuilder.newBuilder()
       .maximumSize(max)
       .removalListener(listener)
       .build[Request, Future[Result]]()

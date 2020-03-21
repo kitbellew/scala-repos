@@ -88,16 +88,11 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
     val errs = new Err
     withBrokers(Random.shuffle(config.seedBrokers), errs) { consumer =>
       val resp: TopicMetadataResponse = consumer.send(req)
-      resp.topicsMetadata
-        .find(_.topic == topic)
-        .flatMap { tm: TopicMetadata =>
-          tm.partitionsMetadata.find(_.partitionId == partition)
-        }
-        .foreach { pm: PartitionMetadata =>
-          pm.leader.foreach { leader =>
-            return Right((leader.host, leader.port))
-          }
-        }
+      resp.topicsMetadata.find(_.topic == topic).flatMap { tm: TopicMetadata =>
+        tm.partitionsMetadata.find(_.partitionId == partition)
+      }.foreach { pm: PartitionMetadata =>
+        pm.leader.foreach { leader => return Right((leader.host, leader.port)) }
+      }
     }
     Left(errs)
   }
@@ -431,11 +426,11 @@ object KafkaCluster {
       */
     def apply(kafkaParams: Map[String, String]): SimpleConsumerConfig = {
       // These keys are from other pre-existing kafka configs for specifying brokers, accept either
-      val brokers = kafkaParams
-        .get("metadata.broker.list")
+      val brokers = kafkaParams.get("metadata.broker.list")
         .orElse(kafkaParams.get("bootstrap.servers"))
-        .getOrElse(throw new SparkException(
-          "Must specify metadata.broker.list or bootstrap.servers"))
+        .getOrElse(
+          throw new SparkException(
+            "Must specify metadata.broker.list or bootstrap.servers"))
 
       val props = new Properties()
       kafkaParams.foreach {

@@ -16,8 +16,11 @@ object ApplicationSecretGeneratorSpec extends Specification {
           |""".stripMargin
       val config = ConfigFactory.parseString(configContent)
       val lines = configContent.split("\n").toList
-      val newLines: List[String] = ApplicationSecretGenerator
-        .getUpdatedSecretLines("newSecret", lines, config)
+      val newLines: List[String] =
+        ApplicationSecretGenerator.getUpdatedSecretLines(
+          "newSecret",
+          lines,
+          config)
 
       val newConfig = ConfigFactory.parseString(newLines.mkString("\n"))
       newConfig.getString("play.crypto.secret").should_===("newSecret")
@@ -35,8 +38,11 @@ object ApplicationSecretGeneratorSpec extends Specification {
           |""".stripMargin
       val config = ConfigFactory.parseString(configContent)
       val lines = configContent.split("\n").toList
-      val newLines: List[String] = ApplicationSecretGenerator
-        .getUpdatedSecretLines("newSecret", lines, config)
+      val newLines: List[String] =
+        ApplicationSecretGenerator.getUpdatedSecretLines(
+          "newSecret",
+          lines,
+          config)
 
       val newConfig = ConfigFactory.parseString(newLines.mkString("\n"))
       newConfig.getString("play.crypto.secret").should_===("newSecret")
@@ -57,8 +63,11 @@ object ApplicationSecretGeneratorSpec extends Specification {
           |""".stripMargin
       val config = ConfigFactory.parseString(configContent)
       val lines = configContent.split("\n").toList
-      val newLines: List[String] = ApplicationSecretGenerator
-        .getUpdatedSecretLines("newSecret", lines, config)
+      val newLines: List[String] =
+        ApplicationSecretGenerator.getUpdatedSecretLines(
+          "newSecret",
+          lines,
+          config)
 
       val newConfig = ConfigFactory.parseString(newLines.mkString("\n"))
       newConfig.getString("play.crypto.secret") must_== ("newSecret")
@@ -79,8 +88,11 @@ object ApplicationSecretGeneratorSpec extends Specification {
           |""".stripMargin
       val config = ConfigFactory.parseString(configContent)
       val lines = configContent.split("\n").toList
-      val newLines: List[String] = ApplicationSecretGenerator
-        .getUpdatedSecretLines("newSecret", lines, config)
+      val newLines: List[String] =
+        ApplicationSecretGenerator.getUpdatedSecretLines(
+          "newSecret",
+          lines,
+          config)
 
       val newConfig = ConfigFactory.parseString(newLines.mkString("\n"))
       newConfig.getString("play.crypto.secret") must_== ("newSecret")

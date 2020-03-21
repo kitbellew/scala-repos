@@ -128,9 +128,10 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
   def isActive(rawIndex: Int) = rawIndex < used && rawIndex > 0
 
   override def toString = {
-    (index.iterator zip data.iterator)
-      .take(used)
-      .mkString(s"VectorBuilder($length)(", ", ", ")")
+    (index.iterator zip data.iterator).take(used).mkString(
+      s"VectorBuilder($length)(",
+      ", ",
+      ")")
   }
 
   def copy: VectorBuilder[E] = {

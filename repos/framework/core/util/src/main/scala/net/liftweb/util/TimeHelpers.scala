@@ -308,12 +308,10 @@ trait TimeHelpers { self: ControlHelpers =>
       */
     def format(millis: Long): String = {
       def divideInUnits(millis: Long) =
-        scales
-          .foldLeft[(Long, List[(Long, String)])]((millis, Nil)) {
-            (total, div) =>
-              (total._1 / div._1, (total._1 % div._1, div._2) :: total._2)
-          }
-          ._2
+        scales.foldLeft[(Long, List[(Long, String)])]((millis, Nil)) {
+          (total, div) =>
+            (total._1 / div._1, (total._1 % div._1, div._2) :: total._2)
+        }._2
       def formatAmount(amountUnit: (Long, String)) =
         amountUnit match {
           case (amount, unit) if (amount == 1) => amount + " " + unit

@@ -282,8 +282,9 @@ abstract class ClassfileParser {
           val start = firstExpecting(index, CONSTANT_NAMEANDTYPE)
           val name = getName(in.getChar(start).toInt)
           // create a dummy symbol for method types
-          val dummy = ownerTpe.typeSymbol
-            .newMethod(name.toTermName, ownerTpe.typeSymbol.pos)
+          val dummy = ownerTpe.typeSymbol.newMethod(
+            name.toTermName,
+            ownerTpe.typeSymbol.pos)
           val tpe = getType(dummy, in.getChar(start + 2).toInt)
           // fix the return type, which is blindly set to the class currently parsed
           val restpe = tpe match {
@@ -941,12 +942,8 @@ abstract class ClassfileParser {
               scalaSigAnnot match {
                 case Some(san: AnnotationInfo) =>
                   val bytes =
-                    san.assocs
-                      .find({ _._1 == nme.bytes })
-                      .get
-                      ._2
-                      .asInstanceOf[ScalaSigBytes]
-                      .bytes
+                    san.assocs.find({ _._1 == nme.bytes }).get._2.asInstanceOf[
+                      ScalaSigBytes].bytes
                   unpickler.unpickle(
                     bytes,
                     0,
@@ -1153,11 +1150,9 @@ abstract class ClassfileParser {
       val owner = ownerForFlags(jflags)
       val scope = getScope(jflags)
       def newStub(name: Name) =
-        owner
-          .newStubSymbol(
-            name,
-            s"Class file for ${entry.externalName} not found")
-          .setFlag(JAVA)
+        owner.newStubSymbol(
+          name,
+          s"Class file for ${entry.externalName} not found").setFlag(JAVA)
 
       val (innerClass, innerModule) = if (file == NoAbstractFile) {
         (newStub(name.toTypeName), newStub(name.toTermName))

@@ -46,9 +46,9 @@ abstract class OptimizeImportsTestBase
       getProjectAdapter,
       "Test")
     res =
-      scalaFile.getText
-        .substring(0, lastPsi.getTextOffset)
-        .trim //getImportStatements.map(_.getText()).mkString("\n")
+      scalaFile.getText.substring(
+        0,
+        lastPsi.getTextOffset).trim //getImportStatements.map(_.getText()).mkString("\n")
 
     lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     val text = lastPsi.getText

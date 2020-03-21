@@ -51,8 +51,9 @@ class TopicFilterTest extends JUnitSuite {
 
     val topicFilter3 = new Whitelist("white_listed-topic.+")
     assertTrue(
-      topicFilter3
-        .isTopicAllowed("white_listed-topic1", excludeInternalTopics = true))
+      topicFilter3.isTopicAllowed(
+        "white_listed-topic1",
+        excludeInternalTopics = true))
     assertFalse(
       topicFilter3.isTopicAllowed("black1", excludeInternalTopics = true))
 

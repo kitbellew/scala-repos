@@ -43,10 +43,9 @@ class ImmutableLRUTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(LRUEntriesGenerator[Int]) { entries =>
       val lru = buildLRU(ImmutableLRU[String, Int](4), entries)
       assert(
-        lru.keySet == entries
-          .map(_._1)
-          .slice(entries.size - 4, entries.size)
-          .toSet)
+        lru.keySet == entries.map(_._1).slice(
+          entries.size - 4,
+          entries.size).toSet)
     }
   }
 

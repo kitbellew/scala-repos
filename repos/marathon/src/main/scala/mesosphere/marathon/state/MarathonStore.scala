@@ -38,8 +38,7 @@ class MarathonStore[S <: MarathonState[_, S]](
 
   def fetch(key: String): Future[Option[S]] = {
     log.debug(s"Fetch $prefix$key")
-    store
-      .load(prefix + key)
+    store.load(prefix + key)
       .map {
         _.map { entity =>
           bytesRead.update(entity.bytes.length)
@@ -66,33 +65,27 @@ class MarathonStore[S <: MarathonState[_, S]](
           bytesWritten.update(created.length)
           store.create(prefix + key, created)
       }
-      res
-        .map { entity =>
-          val result = stateFromBytes(entity.bytes.toArray)
-          onSuccess(result)
-          result
-        }
-        .recover(exceptionTransform(
-          s"Could not modify ${ct.runtimeClass.getSimpleName} with key: $key"))
+      res.map { entity =>
+        val result = stateFromBytes(entity.bytes.toArray)
+        onSuccess(result)
+        result
+      }.recover(exceptionTransform(
+        s"Could not modify ${ct.runtimeClass.getSimpleName} with key: $key"))
     }
   }
 
   def expunge(key: String, onSuccess: () => Unit = () => ()): Future[Boolean] =
     lockManager.executeSequentially(key) {
       log.debug(s"Expunge $prefix$key")
-      store
-        .delete(prefix + key)
-        .map { result =>
-          onSuccess()
-          result
-        }
-        .recover(exceptionTransform(
-          s"Could not expunge ${ct.runtimeClass.getSimpleName} with key: $key"))
+      store.delete(prefix + key).map { result =>
+        onSuccess()
+        result
+      }.recover(exceptionTransform(
+        s"Could not expunge ${ct.runtimeClass.getSimpleName} with key: $key"))
     }
 
   def names(): Future[Seq[String]] = {
-    store
-      .allIds()
+    store.allIds()
       .map {
         _.collect {
           case name: String if name startsWith prefix =>

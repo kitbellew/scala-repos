@@ -92,10 +92,10 @@ class AppRepositoryTest extends MarathonSpec {
       Seq("app1", "app2") ++ allApps.map(x => s"${x.id}:${x.version}"))
 
     when(store.names()).thenReturn(future)
-    when(store.fetch(appDef1.id.toString))
-      .thenReturn(Future.successful(Some(appDef1)))
-    when(store.fetch(appDef2.id.toString))
-      .thenReturn(Future.successful(Some(appDef2)))
+    when(store.fetch(appDef1.id.toString)).thenReturn(
+      Future.successful(Some(appDef1)))
+    when(store.fetch(appDef2.id.toString)).thenReturn(
+      Future.successful(Some(appDef2)))
 
     val repo = new AppRepository(store, None, metrics)
     val res = repo.apps()

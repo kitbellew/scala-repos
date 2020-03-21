@@ -16,9 +16,8 @@ object accumulate extends UFunc {
     new Impl[DenseVector[T], DenseVector[T]] {
       def apply(dv: DenseVector[T]): DenseVector[T] = {
         DenseVector(
-          cumImpl(List[T](0.asInstanceOf[T]), dv.toArray.toList).reverse
-            .drop(1)
-            .toArray)
+          cumImpl(List[T](0.asInstanceOf[T]), dv.toArray.toList).reverse.drop(
+            1).toArray)
       }
       def cumImpl(listNew: List[T], listOld: List[T]): List[T] = {
         if (listOld == Nil) listNew

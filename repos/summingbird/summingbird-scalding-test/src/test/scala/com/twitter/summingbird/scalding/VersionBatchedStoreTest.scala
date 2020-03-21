@@ -157,11 +157,14 @@ class VersionedBatchedStoreTest extends WordSpec {
 
       // First store's A & B
       {
-        val tail = TestGraphs
-          .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
-            source,
-            testStoreA,
-            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
+        val tail = TestGraphs.multipleSummerJob[
+          Scalding,
+          (Long, Int),
+          Int,
+          Int,
+          Int,
+          Int,
+          Int](source, testStoreA, testStoreB)({ t => fnA(t._2) }, fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -170,11 +173,14 @@ class VersionedBatchedStoreTest extends WordSpec {
 
       // Now Stores C & B
       {
-        val tail = TestGraphs
-          .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
-            source,
-            testStoreC,
-            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
+        val tail = TestGraphs.multipleSummerJob[
+          Scalding,
+          (Long, Int),
+          Int,
+          Int,
+          Int,
+          Int,
+          Int](source, testStoreC, testStoreB)({ t => fnA(t._2) }, fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -184,11 +190,14 @@ class VersionedBatchedStoreTest extends WordSpec {
       // Run stores C & B again, now there should be no operations to do
       // This should warning but succeed
       {
-        val tail = TestGraphs
-          .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
-            source,
-            testStoreC,
-            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
+        val tail = TestGraphs.multipleSummerJob[
+          Scalding,
+          (Long, Int),
+          Int,
+          Int,
+          Int,
+          Int,
+          Int](source, testStoreC, testStoreB)({ t => fnA(t._2) }, fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))

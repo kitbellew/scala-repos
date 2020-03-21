@@ -99,16 +99,15 @@ class ScProjectionType private (
                   actualSubst.subst(tp) match {
                     case ScParameterizedType(des, typeArgs) =>
                       val taArgs = ta.typeParameters
-                      if (taArgs.length == typeArgs.length && taArgs
-                            .zip(typeArgs)
-                            .forall {
-                              case (
-                                    tParam: ScTypeParam,
-                                    ScTypeParameterType(_, _, _, _, param))
-                                  if tParam == param =>
-                                true
-                              case _ => false
-                            })
+                      if (taArgs.length == typeArgs.length && taArgs.zip(
+                            typeArgs).forall {
+                            case (
+                                  tParam: ScTypeParam,
+                                  ScTypeParameterType(_, _, _, _, param))
+                                if tParam == param =>
+                              true
+                            case _ => false
+                          })
                         return Some(
                           AliasType(
                             ta,
@@ -153,8 +152,10 @@ class ScProjectionType private (
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = projected
-        .hashCode() + element.hashCode() * 31 + (if (superReference) 239 else 0)
+      hash =
+        projected.hashCode() + element.hashCode() * 31 + (if (superReference)
+                                                            239
+                                                          else 0)
     }
     hash
   }
@@ -205,9 +206,10 @@ class ScProjectionType private (
     val emptySubst = new ScSubstitutor(Map.empty, Map.empty, Some(projected))
     val resolvePlace = {
       def fromClazz(clazz: ScTypeDefinition): PsiElement = {
-        clazz.extendsBlock.templateBody
-          .flatMap(_.asInstanceOf[ScTemplateBodyImpl].getLastChildStub.toOption)
-          .getOrElse(clazz.extendsBlock)
+        clazz.extendsBlock.templateBody.flatMap(
+          _.asInstanceOf[
+            ScTemplateBodyImpl].getLastChildStub.toOption).getOrElse(
+          clazz.extendsBlock)
       }
       ScType.extractClass(projected, Some(element.getProject)) match {
         case Some(clazz: ScTypeDefinition) => fromClazz(clazz)
@@ -236,15 +238,14 @@ class ScProjectionType private (
       val proc = resolveProcessor(ValueSet(CLASS), name)
       proc.processType(projected, resolvePlace, ResolveState.initial)
       val candidates = proc.candidates
-      if (candidates.length == 1 && candidates(0).element
-            .isInstanceOf[PsiNamedElement]) {
+      if (candidates.length == 1 && candidates(0).element.isInstanceOf[
+            PsiNamedElement]) {
         val defaultSubstitutor = emptySubst followed candidates(0).substitutor
         if (superReference) {
-          ScalaPsiUtil
-            .superTypeMembersAndSubstitutors(candidates(0).element)
-            .find {
-              _.info == element
-            } match {
+          ScalaPsiUtil.superTypeMembersAndSubstitutors(
+            candidates(0).element).find {
+            _.info == element
+          } match {
             case Some(node) =>
               Some(element, defaultSubstitutor followed node.substitutor)
             case _ => Some(element, defaultSubstitutor)
@@ -261,8 +262,8 @@ class ScProjectionType private (
         val proc = resolveProcessor(ValueSet(VAL, OBJECT), name)
         proc.processType(projected, resolvePlace, ResolveState.initial)
         val candidates = proc.candidates
-        if (candidates.length == 1 && candidates(0).element
-              .isInstanceOf[PsiNamedElement]) {
+        if (candidates.length == 1 && candidates(0).element.isInstanceOf[
+              PsiNamedElement]) {
           //todo: superMemberSubstitutor? However I don't know working example for this case
           Some(
             candidates(0).element,
@@ -275,8 +276,9 @@ class ScProjectionType private (
   }
 
   private def actual: (PsiNamedElement, ScSubstitutor) = {
-    actualImpl(projected, superReference)
-      .getOrElse(element, ScSubstitutor.empty)
+    actualImpl(projected, superReference).getOrElse(
+      element,
+      ScSubstitutor.empty)
   }
 
   def actualElement: PsiNamedElement = actual._1
@@ -527,16 +529,15 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                 tp match {
                   case ScParameterizedType(des, typeArgs) =>
                     val taArgs = ta.typeParameters
-                    if (taArgs.length == typeArgs.length && taArgs
-                          .zip(typeArgs)
-                          .forall {
-                            case (
-                                  tParam: ScTypeParam,
-                                  ScTypeParameterType(_, _, _, _, param))
-                                if tParam == param =>
-                              true
-                            case _ => false
-                          })
+                    if (taArgs.length == typeArgs.length && taArgs.zip(
+                          typeArgs).forall {
+                          case (
+                                tParam: ScTypeParam,
+                                ScTypeParameterType(_, _, _, _, param))
+                              if tParam == param =>
+                            true
+                          case _ => false
+                        })
                       return Some(
                         AliasType(
                           ta,

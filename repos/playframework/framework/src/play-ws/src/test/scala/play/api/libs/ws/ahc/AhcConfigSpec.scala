@@ -31,8 +31,7 @@ object AhcConfigSpec extends Specification with Mockito {
 
     def parseThis(input: String)(implicit app: play.api.Application) = {
       val config = play.api.Configuration(
-        ConfigFactory
-          .parseString(input)
+        ConfigFactory.parseString(input)
           .withFallback(ConfigFactory.defaultReference()))
       val parser = new AhcWSClientConfigParser(
         defaultWsConfig,
@@ -346,9 +345,8 @@ object AhcConfigSpec extends Specification with Mockito {
           val existingProtocols =
             Array("goodTwo", "badOne", "badTwo", deprecatedProtocol, "goodOne")
 
-          builder
-            .configureProtocols(existingProtocols, sslConfig)
-            .must(throwAn[IllegalStateException])
+          builder.configureProtocols(existingProtocols, sslConfig).must(
+            throwAn[IllegalStateException])
         }
 
         "not throw exception on deprecated protocols from list if allowWeakProtocols is enabled" in {
@@ -401,9 +399,8 @@ object AhcConfigSpec extends Specification with Mockito {
           val builder = new AhcConfigBuilder(config)
           val existingCiphers = enabledCiphers.toArray
 
-          builder
-            .configureCipherSuites(existingCiphers, sslConfig)
-            .must(throwAn[IllegalStateException])
+          builder.configureCipherSuites(existingCiphers, sslConfig).must(
+            throwAn[IllegalStateException])
         }
 
         "not throw exception on deprecated ciphers if allowWeakCiphers is enabled" in {

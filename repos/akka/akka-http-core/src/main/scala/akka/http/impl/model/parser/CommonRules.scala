@@ -333,9 +333,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // to also allow digits at the start of a label
   def `domain-value` =
     rule {
-      optional('.') ~ capture(
-        oneOrMore(oneOrMore(oneOrMore(ALPHANUM)).separatedBy('-'))
-          .separatedBy('.')) ~ OWS
+      optional('.') ~ capture(oneOrMore(
+        oneOrMore(oneOrMore(ALPHANUM)).separatedBy('-')).separatedBy('.')) ~ OWS
     }
 
   def `path-av` =
@@ -389,8 +388,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `origin-list` =
     rule {
-      oneOrMore(capture(oneOrMore(VCHAR)) ~> (HttpOrigin(_)))
-        .separatedBy(SP) ~ OWS // offload to URL parser
+      oneOrMore(capture(oneOrMore(VCHAR)) ~> (HttpOrigin(_))).separatedBy(
+        SP) ~ OWS // offload to URL parser
     }
 
   // ******************************************************************************************
@@ -491,8 +490,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   def `transfer-extension` =
     rule {
       token ~ zeroOrMore(
-        ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (TransferEncodings
-        .Extension(_, _))
+        ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (TransferEncodings.Extension(
+        _,
+        _))
     }
 
   def `transfer-parameter` = rule { token ~ ws('=') ~ word ~> (_ -> _) }

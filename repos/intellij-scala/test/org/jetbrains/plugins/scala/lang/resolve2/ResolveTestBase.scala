@@ -107,30 +107,28 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   }
 
   def doTest(file: String) {
-    references
-      .zip(options)
-      .foreach(it => {
-        it._1 match {
-          case ref: ScReferenceElement =>
-            doEachTest(it._1.asInstanceOf[ScReferenceElement], it._2)
-          case ref: PsiMultiReference =>
-            val hostReferences = ref.getReferences
-            if (hostReferences.length == 2) {
-              hostReferences.find(_.isInstanceOf[ScReferenceElement]) match {
-                case Some(r: ScReferenceElement) =>
-                  doEachTest(r, it._2)
-                case _ =>
-                  assert(
-                    assertion = false,
-                    message = "Multihost references are not supported")
-              }
-            } else {
-              assert(
-                assertion = false,
-                message = "Multihost references are not supported")
+    references.zip(options).foreach(it => {
+      it._1 match {
+        case ref: ScReferenceElement =>
+          doEachTest(it._1.asInstanceOf[ScReferenceElement], it._2)
+        case ref: PsiMultiReference =>
+          val hostReferences = ref.getReferences
+          if (hostReferences.length == 2) {
+            hostReferences.find(_.isInstanceOf[ScReferenceElement]) match {
+              case Some(r: ScReferenceElement) =>
+                doEachTest(r, it._2)
+              case _ =>
+                assert(
+                  assertion = false,
+                  message = "Multihost references are not supported")
             }
-        }
-      })
+          } else {
+            assert(
+              assertion = false,
+              message = "Multihost references are not supported")
+          }
+      }
+    })
   }
 
   def doEachTest(reference: ScReferenceElement, options: Parameters) {
@@ -186,8 +184,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
           target.asInstanceOf[ScTypeDefinition].qualifiedName)
       }
 
-      if (options.contains(File) || options.contains(Offset) || options
-            .contains(Line)) {
+      if (options.contains(File) || options.contains(
+            Offset) || options.contains(Line)) {
         val actual =
           target.getContainingFile.getVirtualFile.getNameWithoutExtension
         val expected = if (!options.contains(File) || options(File) == "this") {
@@ -225,9 +223,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   }
 
   def lineOf(element: PsiElement) = {
-    element.getContainingFile.getText
-      .substring(0, element.getTextOffset)
-      .count(_ == '\n') + 1
+    element.getContainingFile.getText.substring(0, element.getTextOffset).count(
+      _ == '\n') + 1
   }
 
   def format(text: String, message: String, line: Int) = {

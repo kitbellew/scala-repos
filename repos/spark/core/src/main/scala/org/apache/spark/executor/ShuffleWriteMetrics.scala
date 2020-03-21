@@ -40,8 +40,9 @@ class ShuffleWriteMetrics private (
       TaskMetrics.getAccum[Long](
         accumMap,
         InternalAccumulator.shuffleWrite.RECORDS_WRITTEN),
-      TaskMetrics
-        .getAccum[Long](accumMap, InternalAccumulator.shuffleWrite.WRITE_TIME))
+      TaskMetrics.getAccum[Long](
+        accumMap,
+        InternalAccumulator.shuffleWrite.WRITE_TIME))
   }
 
   /**
@@ -54,11 +55,9 @@ class ShuffleWriteMetrics private (
     * A better alternative is [[TaskMetrics.registerShuffleWriteMetrics]].
     */
   private[spark] def this() {
-    this(
-      InternalAccumulator
-        .createShuffleWriteAccums()
-        .map { a => (a.name.get, a) }
-        .toMap)
+    this(InternalAccumulator.createShuffleWriteAccums().map { a =>
+      (a.name.get, a)
+    }.toMap)
   }
 
   /**

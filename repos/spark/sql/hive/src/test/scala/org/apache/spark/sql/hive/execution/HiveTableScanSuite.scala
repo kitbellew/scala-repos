@@ -60,9 +60,8 @@ class HiveTableScanSuite extends HiveComparisonTest {
   test("Spark-4041: lowercase issue") {
     TestHive.sql("CREATE TABLE tb (KEY INT, VALUE STRING) STORED AS ORC")
     TestHive.sql("insert into table tb select key, value from src")
-    TestHive
-      .sql("select KEY from tb where VALUE='just_for_test' limit 5")
-      .collect()
+    TestHive.sql(
+      "select KEY from tb where VALUE='just_for_test' limit 5").collect()
     TestHive.sql("drop table tb")
   }
 
@@ -76,9 +75,8 @@ class HiveTableScanSuite extends HiveComparisonTest {
         LINES TERMINATED BY '\n'
       """.stripMargin)
     val location =
-      Utils.getSparkClassLoader
-        .getResource("data/files/issue-4077-data.txt")
-        .getFile()
+      Utils.getSparkClassLoader.getResource(
+        "data/files/issue-4077-data.txt").getFile()
 
     TestHive.sql(
       s"LOAD DATA LOCAL INPATH '$location' INTO TABLE timestamp_query_null")
@@ -94,11 +92,9 @@ class HiveTableScanSuite extends HiveComparisonTest {
     "Spark-4959 Attributes are case sensitive when using a select query from a projection") {
     sql("create table spark_4959 (col1 string)")
     sql("""insert into table spark_4959 select "hi" from src limit 1""")
-    table("spark_4959")
-      .select(
-        'col1.as("CaseSensitiveColName"),
-        'col1.as("CaseSensitiveColName2"))
-      .registerTempTable("spark_4959_2")
+    table("spark_4959").select(
+      'col1.as("CaseSensitiveColName"),
+      'col1.as("CaseSensitiveColName2")).registerTempTable("spark_4959_2")
 
     assert(
       sql("select CaseSensitiveColName from spark_4959_2").head() === Row("hi"))

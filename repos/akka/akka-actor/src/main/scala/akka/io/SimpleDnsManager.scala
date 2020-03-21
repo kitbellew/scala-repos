@@ -17,9 +17,11 @@ class SimpleDnsManager(val ext: DnsExt)
 
   private val resolver = actorOf(
     FromConfig.props(
-      Props(ext.provider.actorClass, ext.cache, ext.Settings.ResolverConfig)
-        .withDeploy(Deploy.local)
-        .withDispatcher(ext.Settings.Dispatcher)),
+      Props(
+        ext.provider.actorClass,
+        ext.cache,
+        ext.Settings.ResolverConfig).withDeploy(Deploy.local).withDispatcher(
+        ext.Settings.Dispatcher)),
     ext.Settings.Resolver
   )
   private val cacheCleanup = ext.cache match {
@@ -29,8 +31,9 @@ class SimpleDnsManager(val ext: DnsExt)
 
   private val cleanupTimer = cacheCleanup map { _ ⇒
     val interval = Duration(
-      ext.Settings.ResolverConfig
-        .getDuration("cache-cleanup-interval", TimeUnit.MILLISECONDS),
+      ext.Settings.ResolverConfig.getDuration(
+        "cache-cleanup-interval",
+        TimeUnit.MILLISECONDS),
       TimeUnit.MILLISECONDS)
     system.scheduler.schedule(
       interval,

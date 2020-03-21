@@ -33,9 +33,9 @@ object RegressionMetricsExample {
     val sqlContext = new SQLContext(sc)
     // $example on$
     // Load the data
-    val data = MLUtils
-      .loadLibSVMFile(sc, "data/mllib/sample_linear_regression_data.txt")
-      .cache()
+    val data = MLUtils.loadLibSVMFile(
+      sc,
+      "data/mllib/sample_linear_regression_data.txt").cache()
 
     // Build the model
     val numIterations = 100

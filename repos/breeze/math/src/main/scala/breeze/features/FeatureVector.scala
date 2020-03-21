@@ -90,9 +90,11 @@ object FeatureVector {
           i += 1
         }
       }
-      implicitly[
-        TernaryUpdateRegistry[Vector[T], T, FeatureVector, scaleAdd.type]]
-        .register(this)
+      implicitly[TernaryUpdateRegistry[
+        Vector[T],
+        T,
+        FeatureVector,
+        scaleAdd.type]].register(this)
     }
 
   }
@@ -144,9 +146,11 @@ object FeatureVector {
           }
         }
       }
-      implicitly[
-        TernaryUpdateRegistry[Vector[T], T, FeatureVector, scaleAdd.type]]
-        .register(this)
+      implicitly[TernaryUpdateRegistry[
+        Vector[T],
+        T,
+        FeatureVector,
+        scaleAdd.type]].register(this)
     }
   }
 

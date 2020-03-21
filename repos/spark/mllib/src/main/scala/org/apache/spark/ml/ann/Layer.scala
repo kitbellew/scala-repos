@@ -778,8 +778,10 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
       data.map { v =>
         (
           0.0,
-          Vectors.fromBreeze(BDV
-            .vertcat(v._1.toBreeze.toDenseVector, v._2.toBreeze.toDenseVector)))
+          Vectors.fromBreeze(
+            BDV.vertcat(
+              v._1.toBreeze.toDenseVector,
+              v._2.toBreeze.toDenseVector)))
       }
     } else {
       data.mapPartitions { it =>
@@ -790,8 +792,12 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
           var i = 0
           seq.foreach {
             case (in, out) =>
-              System
-                .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
+              System.arraycopy(
+                in.toArray,
+                0,
+                bigVector,
+                i * inputSize,
+                inputSize)
               System.arraycopy(
                 out.toArray,
                 0,

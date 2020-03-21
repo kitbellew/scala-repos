@@ -222,8 +222,8 @@ object Tuple7 {
       _5: T5,
       _6: T6,
       _7: T7): Tuple7[T1, T2, T3, T4, T5, T6, T7] =
-    Array(_1, _2, _3, _4, _5, _6, _7)
-      .asInstanceOf[Tuple7[T1, T2, T3, T4, T5, T6, T7]]
+    Array(_1, _2, _3, _4, _5, _6, _7).asInstanceOf[
+      Tuple7[T1, T2, T3, T4, T5, T6, T7]]
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7](
       t: Tuple7[T1, T2, T3, T4, T5, T6, T7])
@@ -266,8 +266,8 @@ object Tuple8 {
       _6: T6,
       _7: T7,
       _8: T8): Tuple8[T1, T2, T3, T4, T5, T6, T7, T8] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8)
-      .asInstanceOf[Tuple8[T1, T2, T3, T4, T5, T6, T7, T8]]
+    Array(_1, _2, _3, _4, _5, _6, _7, _8).asInstanceOf[
+      Tuple8[T1, T2, T3, T4, T5, T6, T7, T8]]
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8](
       t: Tuple8[T1, T2, T3, T4, T5, T6, T7, T8])
@@ -315,8 +315,8 @@ object Tuple9 {
       _7: T7,
       _8: T8,
       _9: T9): Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9)
-      .asInstanceOf[Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9]]
+    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9).asInstanceOf[
+      Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9]]
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9](
       t: Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9])
@@ -366,8 +366,8 @@ object Tuple10 {
       _8: T8,
       _9: T9,
       _10: T10): Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10)
-      .asInstanceOf[Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]]
+    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10).asInstanceOf[
+      Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]]
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](
       t: Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10])
@@ -428,8 +428,8 @@ object Tuple11 {
       _9: T9,
       _10: T10,
       _11: T11): Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11)
-      .asInstanceOf[Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11]]
+    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11).asInstanceOf[
+      Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11]]
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11](
       t: Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11])
@@ -504,8 +504,8 @@ object Tuple12 {
       _10: T10,
       _11: T11,
       _12: T12): Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12)
-      .asInstanceOf[Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12]]
+    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12).asInstanceOf[
+      Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12]]
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12](
       t: Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12])
@@ -722,9 +722,22 @@ object Tuple14 {
       _13: T13,
       _14: T14)
       : Tuple14[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14)
-      .asInstanceOf[
-        Tuple14[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14]]
+    Array(
+      _1,
+      _2,
+      _3,
+      _4,
+      _5,
+      _6,
+      _7,
+      _8,
+      _9,
+      _10,
+      _11,
+      _12,
+      _13,
+      _14).asInstanceOf[
+      Tuple14[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14]]
 
   @inline def unapply[
       T1,
@@ -898,23 +911,23 @@ object Tuple15 {
     T13,
     T14,
     T15] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15)
-      .asInstanceOf[Tuple15[
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8,
-        T9,
-        T10,
-        T11,
-        T12,
-        T13,
-        T14,
-        T15]]
+    Array(
+      _1,
+      _2,
+      _3,
+      _4,
+      _5,
+      _6,
+      _7,
+      _8,
+      _9,
+      _10,
+      _11,
+      _12,
+      _13,
+      _14,
+      _15).asInstanceOf[
+      Tuple15[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15]]
 
   @inline def unapply[
       T1,
@@ -1144,24 +1157,39 @@ object Tuple16 {
     T14,
     T15,
     T16] =
-    Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16)
-      .asInstanceOf[Tuple16[
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8,
-        T9,
-        T10,
-        T11,
-        T12,
-        T13,
-        T14,
-        T15,
-        T16]]
+    Array(
+      _1,
+      _2,
+      _3,
+      _4,
+      _5,
+      _6,
+      _7,
+      _8,
+      _9,
+      _10,
+      _11,
+      _12,
+      _13,
+      _14,
+      _15,
+      _16).asInstanceOf[Tuple16[
+      T1,
+      T2,
+      T3,
+      T4,
+      T5,
+      T6,
+      T7,
+      T8,
+      T9,
+      T10,
+      T11,
+      T12,
+      T13,
+      T14,
+      T15,
+      T16]]
 
   @inline def unapply[
       T1,

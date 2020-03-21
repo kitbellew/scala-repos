@@ -48,8 +48,8 @@ class ScTypeAliasStubImpl[ParentPsi <: PsiElement](
       stableQualifier: Boolean) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = StringRef.fromString(name)
     this.declaration = isDeclaration
     this.typeElementText = StringRef.fromString(typeElementText)

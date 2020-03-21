@@ -123,9 +123,9 @@ package play.api.mvc {
       * The Request Langs extracted from the Accept-Language header and sorted by preference (preferred first).
       */
     lazy val acceptLanguages: Seq[play.api.i18n.Lang] = {
-      val langs = RequestHeader
-        .acceptHeader(headers, HeaderNames.ACCEPT_LANGUAGE)
-        .map(item => (item._1, Lang.get(item._2)))
+      val langs =
+        RequestHeader.acceptHeader(headers, HeaderNames.ACCEPT_LANGUAGE).map(
+          item => (item._1, Lang.get(item._2)))
       langs.sortWith((a, b) => a._1 > b._1).map(_._2).flatten
     }
 
@@ -484,12 +484,10 @@ package play.api.mvc {
     def getAll(key: String): Seq[String] = toMap.getOrElse(key, Nil)
 
     override def hashCode = {
-      toMap
-        .map {
-          case (name, value) =>
-            name.toLowerCase(Locale.ENGLISH) -> value
-        }
-        .hashCode()
+      toMap.map {
+        case (name, value) =>
+          name.toLowerCase(Locale.ENGLISH) -> value
+      }.hashCode()
     }
 
     /**
@@ -593,12 +591,10 @@ package play.api.mvc {
       * Encodes the data as a `String`.
       */
     def encode(data: Map[String, String]): String = {
-      val encoded = data
-        .map {
-          case (k, v) =>
-            URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
-        }
-        .mkString("&")
+      val encoded = data.map {
+        case (k, v) =>
+          URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
+      }.mkString("&")
       if (isSigned)
         cookieSigner.sign(encoded) + "-" + encoded
       else
@@ -615,8 +611,9 @@ package play.api.mvc {
           .split("&")
           .map(_.split("=", 2))
           .map(p =>
-            URLDecoder.decode(p(0), "UTF-8") -> URLDecoder
-              .decode(p(1), "UTF-8"))
+            URLDecoder.decode(p(0), "UTF-8") -> URLDecoder.decode(
+              p(1),
+              "UTF-8"))
           .toMap
       }
 
@@ -1028,16 +1025,12 @@ package play.api.mvc {
       */
     def decodeCookieHeader(cookieHeader: String): Seq[Cookie] = {
       Try {
-        config.serverDecoder
-          .decode(cookieHeader)
-          .asScala
-          .map { cookie =>
-            Cookie(
-              cookie.name,
-              cookie.value
-            )
-          }
-          .toSeq
+        config.serverDecoder.decode(cookieHeader).asScala.map { cookie =>
+          Cookie(
+            cookie.name,
+            cookie.value
+          )
+        }.toSeq
       }.getOrElse {
         logger.debug(
           s"Couldn't decode the Cookie header containing: $cookieHeader")

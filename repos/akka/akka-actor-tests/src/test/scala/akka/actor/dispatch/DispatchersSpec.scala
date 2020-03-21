@@ -122,15 +122,12 @@ class DispatchersSpec
     settings.config.getConfig("akka.actor.default-dispatcher")
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
-    validTypes
-      .map(t ⇒
-        (
-          t,
-          from(
-            ConfigFactory
-              .parseMap(Map(tipe -> t, id -> t).asJava)
-              .withFallback(defaultDispatcherConfig))))
-      .toMap
+    validTypes.map(t ⇒
+      (
+        t,
+        from(
+          ConfigFactory.parseMap(Map(tipe -> t, id -> t).asJava).withFallback(
+            defaultDispatcherConfig)))).toMap
   }
 
   def assertMyDispatcherIsUsed(actor: ActorRef): Unit = {
@@ -168,10 +165,11 @@ class DispatchersSpec
     "throw ConfigurationException if type does not exist" in {
       intercept[ConfigurationException] {
         from(
-          ConfigFactory
-            .parseMap(
-              Map(tipe -> "typedoesntexist", id -> "invalid-dispatcher").asJava)
-            .withFallback(defaultDispatcherConfig))
+          ConfigFactory.parseMap(
+            Map(
+              tipe -> "typedoesntexist",
+              id -> "invalid-dispatcher").asJava).withFallback(
+            defaultDispatcherConfig))
       }
     }
 

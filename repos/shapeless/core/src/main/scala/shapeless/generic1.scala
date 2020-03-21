@@ -449,13 +449,10 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
     val nme = TypeName(c.freshName)
 
     def balanced(args: List[Type]): Boolean =
-      args
-        .find(_.contains(lParam))
-        .map { pivot =>
-          !(pivot =:= lParamTpe) &&
-          args.forall { arg => arg =:= pivot || !arg.contains(lParam) }
-        }
-        .getOrElse(false)
+      args.find(_.contains(lParam)).map { pivot =>
+        !(pivot =:= lParamTpe) &&
+        args.forall { arg => arg =:= pivot || !arg.contains(lParam) }
+      }.getOrElse(false)
 
     val (oTpt, iTpt) =
       lDealiasedTpe match {

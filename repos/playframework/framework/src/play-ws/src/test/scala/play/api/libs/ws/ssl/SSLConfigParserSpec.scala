@@ -20,9 +20,8 @@ object SSLConfigParserSpec extends Specification {
   "SSLConfigParser" should {
 
     def parseThis(input: String)(implicit app: play.api.Application) = {
-      val config = ConfigFactory
-        .parseString(input)
-        .withFallback(ConfigFactory.defaultReference().getConfig("play.ws.ssl"))
+      val config = ConfigFactory.parseString(input).withFallback(
+        ConfigFactory.defaultReference().getConfig("play.ws.ssl"))
       val parser = new SSLConfigParser(PlayConfig(config), app.classloader)
       parser.parse()
     }

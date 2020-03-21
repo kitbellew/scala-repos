@@ -30,16 +30,13 @@ class IsotonicRegressionSuite
     with DefaultReadWriteTest {
 
   private def generateIsotonicInput(labels: Seq[Double]): DataFrame = {
-    sqlContext
-      .createDataFrame(
-        labels.zipWithIndex.map { case (label, i) => (label, i.toDouble, 1.0) }
-      )
-      .toDF("label", "features", "weight")
+    sqlContext.createDataFrame(
+      labels.zipWithIndex.map { case (label, i) => (label, i.toDouble, 1.0) }
+    ).toDF("label", "features", "weight")
   }
 
   private def generatePredictionInput(features: Seq[Double]): DataFrame = {
-    sqlContext
-      .createDataFrame(features.map(Tuple1.apply))
+    sqlContext.createDataFrame(features.map(Tuple1.apply))
       .toDF("features")
   }
 
@@ -51,13 +48,10 @@ class IsotonicRegressionSuite
 
     val predictions = model
       .transform(dataset)
-      .select("prediction")
-      .rdd
-      .map {
+      .select("prediction").rdd.map {
         case Row(pred) =>
           pred
-      }
-      .collect()
+      }.collect()
 
     assert(predictions === Array(1, 2, 2, 2, 6, 16.5, 16.5, 17, 18))
 
@@ -77,12 +71,9 @@ class IsotonicRegressionSuite
 
     val predictions = model
       .transform(features)
-      .select("prediction")
-      .rdd
-      .map {
+      .select("prediction").rdd.map {
         case Row(pred) => pred
-      }
-      .collect()
+      }.collect()
 
     assert(predictions === Array(7, 7, 6, 5.5, 5, 4, 1))
   }
@@ -110,8 +101,7 @@ class IsotonicRegressionSuite
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
 
-    model
-      .transform(dataset)
+    model.transform(dataset)
       .select("label", "features", "prediction", "weight")
       .collect()
 
@@ -155,21 +145,19 @@ class IsotonicRegressionSuite
     }
 
     intercept[IllegalArgumentException] {
-      new IsotonicRegression()
-        .fit(dataset)
-        .setFeaturesCol("f")
-        .transform(dataset)
+      new IsotonicRegression().fit(dataset).setFeaturesCol("f").transform(
+        dataset)
     }
   }
 
   test("vector features column with feature index") {
-    val dataset = sqlContext
-      .createDataFrame(
-        Seq(
-          (4.0, Vectors.dense(0.0, 1.0)),
-          (3.0, Vectors.dense(0.0, 2.0)),
-          (5.0, Vectors.sparse(2, Array(1), Array(3.0)))))
-      .toDF("label", "features")
+    val dataset = sqlContext.createDataFrame(
+      Seq(
+        (4.0, Vectors.dense(0.0, 1.0)),
+        (3.0, Vectors.dense(0.0, 2.0)),
+        (5.0, Vectors.sparse(2, Array(1), Array(3.0))))).toDF(
+      "label",
+      "features")
 
     val ir = new IsotonicRegression()
       .setFeatureIndex(1)
@@ -180,12 +168,9 @@ class IsotonicRegressionSuite
 
     val predictions = model
       .transform(features)
-      .select("prediction")
-      .rdd
-      .map {
+      .select("prediction").rdd.map {
         case Row(pred) => pred
-      }
-      .collect()
+      }.collect()
 
     assert(predictions === Array(3.5, 5.0, 5.0, 5.0))
   }

@@ -34,15 +34,12 @@ class DummyBroadcastClass(rdd: RDD[Int]) extends Serializable {
   val bid = broadcast.id
 
   def doSomething(): Set[(Int, Boolean)] = {
-    rdd
-      .map { x =>
-        val bm = SparkEnv.get.blockManager
-        // Check if broadcast block was fetched
-        val isFound = bm.getLocalValues(BroadcastBlockId(bid)).isDefined
-        (x, isFound)
-      }
-      .collect()
-      .toSet
+    rdd.map { x =>
+      val bm = SparkEnv.get.blockManager
+      // Check if broadcast block was fetched
+      val isFound = bm.getLocalValues(BroadcastBlockId(bid)).isDefined
+      (x, isFound)
+    }.collect().toSet
   }
 }
 
@@ -246,13 +243,10 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     // Use broadcast variable on all executors
     val partitions = 10
     assert(partitions > numSlaves)
-    val results = sc
-      .parallelize(1 to partitions, partitions)
-      .map(x => (x, broadcast.value.sum))
-    assert(
-      results.collect().toSet === (1 to partitions)
-        .map(x => (x, list.sum))
-        .toSet)
+    val results = sc.parallelize(1 to partitions, partitions).map(x =>
+      (x, broadcast.value.sum))
+    assert(results.collect().toSet === (1 to partitions).map(x =>
+      (x, list.sum)).toSet)
     afterUsingBroadcast(broadcast.id, blockManagerMaster)
 
     // Unpersist broadcast
@@ -272,13 +266,10 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       intercept[SparkException] { broadcast.unpersist() }
       intercept[SparkException] { broadcast.destroy(blocking = true) }
     } else {
-      val results = sc
-        .parallelize(1 to partitions, partitions)
-        .map(x => (x, broadcast.value.sum))
-      assert(
-        results.collect().toSet === (1 to partitions)
-          .map(x => (x, list.sum))
-          .toSet)
+      val results = sc.parallelize(1 to partitions, partitions).map(x =>
+        (x, broadcast.value.sum))
+      assert(results.collect().toSet === (1 to partitions).map(x =>
+        (x, list.sum)).toSet)
     }
   }
 }

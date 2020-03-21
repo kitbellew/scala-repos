@@ -162,14 +162,14 @@ private[kafka] class KafkaRDD[
         s"offsets ${part.fromOffset} -> ${part.untilOffset}")
 
     val kc = new KafkaCluster(kafkaParams)
-    val keyDecoder = classTag[U].runtimeClass
-      .getConstructor(classOf[VerifiableProperties])
-      .newInstance(kc.config.props)
-      .asInstanceOf[Decoder[K]]
-    val valueDecoder = classTag[T].runtimeClass
-      .getConstructor(classOf[VerifiableProperties])
-      .newInstance(kc.config.props)
-      .asInstanceOf[Decoder[V]]
+    val keyDecoder =
+      classTag[U].runtimeClass.getConstructor(classOf[VerifiableProperties])
+        .newInstance(kc.config.props)
+        .asInstanceOf[Decoder[K]]
+    val valueDecoder =
+      classTag[T].runtimeClass.getConstructor(classOf[VerifiableProperties])
+        .newInstance(kc.config.props)
+        .asInstanceOf[Decoder[V]]
     val consumer = connectLeader
     var requestOffset = part.fromOffset
     var iter: Iterator[MessageAndOffset] = null
@@ -178,14 +178,13 @@ private[kafka] class KafkaRDD[
     // to minimize number of kafka metadata requests
     private def connectLeader: SimpleConsumer = {
       if (context.attemptNumber > 0) {
-        kc.connectLeader(part.topic, part.partition)
-          .fold(
-            errs =>
-              throw new SparkException(
-                s"Couldn't connect to leader for topic ${part.topic} ${part.partition}: " +
-                  errs.mkString("\n")),
-            consumer => consumer
-          )
+        kc.connectLeader(part.topic, part.partition).fold(
+          errs =>
+            throw new SparkException(
+              s"Couldn't connect to leader for topic ${part.topic} ${part.partition}: " +
+                errs.mkString("\n")),
+          consumer => consumer
+        )
       } else {
         kc.connect(part.host, part.port)
       }
@@ -217,8 +216,7 @@ private[kafka] class KafkaRDD[
       val resp = consumer.fetch(req)
       handleFetchErr(resp)
       // kafka may return a batch that starts before the requested offset
-      resp
-        .messageSet(part.topic, part.partition)
+      resp.messageSet(part.topic, part.partition)
         .iterator
         .dropWhile(_.offset < requestOffset)
     }

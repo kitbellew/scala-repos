@@ -240,8 +240,8 @@ case class ClassFile(
   val RUNTIME_VISIBLE_ANNOTATIONS = "RuntimeVisibleAnnotations"
   def annotations =
     (
-      attributes
-        .find(attr => constant(attr.nameIndex) == RUNTIME_VISIBLE_ANNOTATIONS)
+      attributes.find(attr =>
+        constant(attr.nameIndex) == RUNTIME_VISIBLE_ANNOTATIONS)
         .map(attr => ClassFileParser.parseAnnotations(attr.byteCode)))
 
   def annotation(name: String) =

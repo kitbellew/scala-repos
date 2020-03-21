@@ -57,8 +57,9 @@ case class BroadcastHashJoin(
     with CodegenSupport {
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   override def outputPartitioning: Partitioning =
     streamedPlan.outputPartitioning
@@ -83,10 +84,8 @@ case class BroadcastHashJoin(
     streamedPlan.execute().mapPartitions { streamedIter =>
       val joinedRow = new JoinedRow()
       val hashTable = broadcastRelation.value
-      TaskContext
-        .get()
-        .taskMetrics()
-        .incPeakExecutionMemory(hashTable.getMemorySize)
+      TaskContext.get().taskMetrics().incPeakExecutionMemory(
+        hashTable.getMemorySize)
       val keyGenerator = streamSideKeyGenerator
       val resultProj = createResultProjection
 
@@ -243,9 +242,9 @@ case class BroadcastHashJoin(
         evaluateRequiredVariables(buildPlan.output, buildVars, expr.references)
       // filter the output via condition
       ctx.currentVars = input ++ buildVars
-      val ev = BindReferences
-        .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-        .gen(ctx)
+      val ev = BindReferences.bindReference(
+        expr,
+        streamedPlan.output ++ buildPlan.output).gen(ctx)
       s"""
          |$eval
          |${ev.code}
@@ -314,9 +313,9 @@ case class BroadcastHashJoin(
       val eval =
         evaluateRequiredVariables(buildPlan.output, buildVars, expr.references)
       ctx.currentVars = input ++ buildVars
-      val ev = BindReferences
-        .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-        .gen(ctx)
+      val ev = BindReferences.bindReference(
+        expr,
+        streamedPlan.output ++ buildPlan.output).gen(ctx)
       s"""
          |boolean $conditionPassed = true;
          |${eval.trim}
@@ -343,10 +342,8 @@ case class BroadcastHashJoin(
          |if (!$conditionPassed) {
          |  $matched = null;
          |  // reset the variables those are already evaluated.
-         |  ${buildVars
-           .filter(_.code == "")
-           .map(v => s"${v.isNull} = true;")
-           .mkString("\n")}
+         |  ${buildVars.filter(_.code == "").map(v =>
+           s"${v.isNull} = true;").mkString("\n")}
          |}
          |$numOutput.add(1);
          |${consume(ctx, resultVars)}
@@ -396,9 +393,9 @@ case class BroadcastHashJoin(
         evaluateRequiredVariables(buildPlan.output, buildVars, expr.references)
       // filter the output via condition
       ctx.currentVars = input ++ buildVars
-      val ev = BindReferences
-        .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-        .gen(ctx)
+      val ev = BindReferences.bindReference(
+        expr,
+        streamedPlan.output ++ buildPlan.output).gen(ctx)
       s"""
          |$eval
          |${ev.code}

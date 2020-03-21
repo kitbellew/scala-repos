@@ -312,8 +312,7 @@ class AccumulatorSuite
     acc2.setValue(20L)
     internalAccums
       .find(_.name == Some(InternalAccumulator.TEST_ACCUM))
-      .get
-      .asInstanceOf[Accumulator[Long]]
+      .get.asInstanceOf[Accumulator[Long]]
       .setValue(30L)
     // Simulate the task being serialized and sent to the executors.
     val dummyTask = new DummyTask(internalAccums, externalAccums)

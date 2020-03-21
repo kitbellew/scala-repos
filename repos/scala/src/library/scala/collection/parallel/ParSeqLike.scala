@@ -113,14 +113,12 @@ trait ParSeqLike[
       val realfrom = if (from < 0) 0 else from
       val ctx = new DefaultSignalling with AtomicIndexFlag
       ctx.setIndexFlag(Int.MaxValue)
-      tasksupport
-        .executeAndWaitResult(
-          new SegmentLength(
-            p,
-            0,
-            splitter.psplitWithSignalling(realfrom, length - realfrom)(
-              1) assign ctx))
-        ._1
+      tasksupport.executeAndWaitResult(
+        new SegmentLength(
+          p,
+          0,
+          splitter.psplitWithSignalling(realfrom, length - realfrom)(
+            1) assign ctx))._1
     }
 
   /** Finds the first element satisfying some predicate.
@@ -541,8 +539,10 @@ trait ParSeqLike[
     override def split = {
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
-      for ((p, op) <- pit.psplitWithSignalling(fp, sp) zip otherpit
-             .psplitWithSignalling(fp, sp)) yield new SameElements(p, op)
+      for ((p, op) <- pit.psplitWithSignalling(
+             fp,
+             sp) zip otherpit.psplitWithSignalling(fp, sp))
+        yield new SameElements(p, op)
     }
     override def merge(that: SameElements[U]) = result = result && that.result
     override def requiresStrictSplitters = true
@@ -610,8 +610,10 @@ trait ParSeqLike[
     override def split = {
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
-      for ((p, op) <- pit.psplitWithSignalling(fp, sp) zip otherpit
-             .psplitWithSignalling(fp, sp)) yield new Corresponds(corr, p, op)
+      for ((p, op) <- pit.psplitWithSignalling(
+             fp,
+             sp) zip otherpit.psplitWithSignalling(fp, sp))
+        yield new Corresponds(corr, p, op)
     }
     override def merge(that: Corresponds[S]) = result = result && that.result
     override def requiresStrictSplitters = true

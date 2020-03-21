@@ -45,7 +45,8 @@ object TupleConverterImpl {
     import TypeDescriptorProviderImpl.{optionInner, evidentColumn}
 
     def membersOf(outerTpe: Type): Vector[Type] =
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect { case m: MethodSymbol if m.isCaseAccessor => m }
         .map { accessorMethod =>
           accessorMethod.returnType.asSeenFrom(
@@ -76,12 +77,11 @@ object TupleConverterImpl {
         extends ConverterBuilder {
       val columns = members.map(_.columns).sum
       def applyTree(offset: Int) = {
-        val trees = members
-          .scanLeft((offset, Option.empty[Tree])) {
-            case ((o, _), cb) =>
-              val nextOffset = o + cb.columns
-              (nextOffset, Some(cb.applyTree(o)))
-          }
+        val trees = members.scanLeft((offset, Option.empty[Tree])) {
+          case ((o, _), cb) =>
+            val nextOffset = o + cb.columns
+            (nextOffset, Some(cb.applyTree(o)))
+        }
           .collect { case (_, Some(tree)) => tree }
 
         q"${tpe.typeSymbol.companionSymbol}(..$trees)"

@@ -40,10 +40,9 @@ case class Authorities private (accountIds: Set[AccountId]) {
     this.copy(accountIds = this.accountIds + ownerAccountId)
 
   def sha1 =
-    Hashing
-      .sha1()
-      .hashString(accountIds.toList.sorted.toString, Charsets.UTF_8)
-      .toString
+    Hashing.sha1().hashString(
+      accountIds.toList.sorted.toString,
+      Charsets.UTF_8).toString
 
   def render = accountIds.mkString("[", ", ", "]")
 }

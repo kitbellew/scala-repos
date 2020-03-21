@@ -82,8 +82,8 @@ object AsyncExecutor extends Logging {
   }
 
   private class DaemonThreadFactory(namePrefix: String) extends ThreadFactory {
-    private[this] val group = Option(System.getSecurityManager)
-      .fold(Thread.currentThread.getThreadGroup)(_.getThreadGroup)
+    private[this] val group = Option(System.getSecurityManager).fold(
+      Thread.currentThread.getThreadGroup)(_.getThreadGroup)
     private[this] val threadNumber = new AtomicInteger(1)
 
     def newThread(r: Runnable): Thread = {

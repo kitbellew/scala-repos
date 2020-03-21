@@ -56,10 +56,8 @@ import slick.util.ConfigExtensionMethods._
 trait SQLServerProfile extends JdbcProfile {
 
   override protected[this] def loadProfileConfig: Config = {
-    if (!GlobalConfig
-          .profileConfig("slick.driver.SQLServer")
-          .entrySet()
-          .isEmpty)
+    if (!GlobalConfig.profileConfig(
+          "slick.driver.SQLServer").entrySet().isEmpty)
       SlickLogger[SQLServerProfile].warn(
         "The config key 'slick.driver.SQLServer' is deprecated and not used anymore. Use 'slick.jdbc.SQLServerProfile' instead.")
     super.loadProfileConfig
@@ -113,18 +111,14 @@ trait SQLServerProfile extends JdbcProfile {
         override def rawDefault =
           super.rawDefault.map(
             _.stripPrefix("(") // jtds
-              .stripPrefix("(")
-              .stripSuffix(")")
-              .stripSuffix(")"))
+            .stripPrefix("(")
+            .stripSuffix(")")
+            .stripSuffix(")"))
         override def default =
-          rawDefault
-            .map((_, tpe))
-            .collect {
-              case ("0", "Boolean") => Some(false)
-              case ("1", "Boolean") => Some(true)
-            }
-            .map(d => Some(d))
-            .getOrElse { super.default }
+          rawDefault.map((_, tpe)).collect {
+            case ("0", "Boolean") => Some(false)
+            case ("1", "Boolean") => Some(true)
+          }.map(d => Some(d)).getOrElse { super.default }
       }
   }
 
@@ -150,9 +144,8 @@ trait SQLServerProfile extends JdbcProfile {
             defaultStringType match {
               case Some(s) => s
               case None =>
-                if (sym
-                      .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
-                      .isDefined)
+                if (sym.flatMap(_.findColumnOption[
+                      ColumnOption.PrimaryKey.type]).isDefined)
                   "VARCHAR(254)"
                 else "VARCHAR(MAX)"
             }
@@ -208,8 +201,9 @@ trait SQLServerProfile extends JdbcProfile {
           super.expr(n, skipParens)
           b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
         case Library.Substring(n, start) =>
-          b"\({fn substring($n, ${QueryParameter
-            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
+          b"\({fn substring($n, ${QueryParameter.constOp[Int]("+")(_ + _)(
+            start,
+            LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
         case Library.Repeat(str, count) =>
           b"replicate($str, $count)"
         case n => super.expr(n, skipParens)
@@ -358,8 +352,8 @@ class ProtectGroupBy extends Phase {
             logger.debug("All columns reference the source: " + refsOK)
             if (refsOK) n
             else
-              n.copy(from = g1.copy(from = Subquery(f1, Subquery.Default)))
-                .infer()
+              n.copy(from =
+                g1.copy(from = Subquery(f1, Subquery.Default))).infer()
 
         },
         bottomUp = true,

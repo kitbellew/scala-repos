@@ -29,9 +29,8 @@ class StringTemplateSupport(
 
   private val companionTemplate = {
     val maybeSTG =
-      Option(new File(templateFile.absolutePath + ".stg"))
-        .filter(_.exists)
-        .map { cf => new STGroupFile(cf.absolutePath, '$', '$') }
+      Option(new File(templateFile.absolutePath + ".stg")).filter(
+        _.exists).map { cf => new STGroupFile(cf.absolutePath, '$', '$') }
     new STCompanionTemplate(maybeSTG)
   }
 
@@ -86,8 +85,9 @@ class StringTemplateSupport(
         .mapValues(_.map { case (k, v) => k.tail -> v })
         .mapValues { m: Map[List[String], Any] =>
           val (leaves, branches) = m.partition(_._1.length == 1)
-          leaves
-            .map { case (k, v) => k.head -> v } ++ expand(branches, level + 1)
+          leaves.map { case (k, v) => k.head -> v } ++ expand(
+            branches,
+            level + 1)
         }
         .map(identity)
     }
@@ -109,13 +109,11 @@ object StringTemplateSupport {
       }
       s match {
         case null | "" | "wrap-all-classes" =>
-          classes
-            .map(new ScaloidCodeGenerator(_, ct).wholeClassDef)
-            .mkString("\n\n")
+          classes.map(new ScaloidCodeGenerator(_, ct).wholeClassDef).mkString(
+            "\n\n")
         case "package-implicit-conversions" =>
-          classes
-            .map(new ScaloidCodeGenerator(_, ct).implicitConversion)
-            .mkString("\n")
+          classes.map(
+            new ScaloidCodeGenerator(_, ct).implicitConversion).mkString("\n")
         case _ => throw new Error("Invalid format: " + s)
       }
     }

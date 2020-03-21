@@ -454,10 +454,10 @@ trait MatrixOpsLowPrio extends MatrixGenericOps {
       bb: B <:< Vector[T],
       op: OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]) =
     (
-      implicitly[OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]]
-        .asInstanceOf[
-          breeze.linalg.operators.OpMulMatrix.Impl2[Matrix[T], B, Vector[T]]]
-      )
+      implicitly[
+        OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]].asInstanceOf[
+        breeze.linalg.operators.OpMulMatrix.Impl2[Matrix[T], B, Vector[T]]]
+    )
 
   // ibid.
   implicit def canMulM_M_def[T, B <: Matrix[T]](implicit

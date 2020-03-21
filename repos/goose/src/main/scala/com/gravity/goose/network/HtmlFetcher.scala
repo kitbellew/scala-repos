@@ -151,9 +151,10 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
           }
         }
         try {
-          htmlResult = HtmlFetcher
-            .convertStreamToString(instream, 15728640, encodingType)
-            .trim
+          htmlResult = HtmlFetcher.convertStreamToString(
+            instream,
+            15728640,
+            encodingType).trim
         } finally {
           EntityUtils.consume(entity)
         }
@@ -286,9 +287,8 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
     cm.setMaxTotal(20000)
     cm.setDefaultMaxPerRoute(500)
     httpClient = new DefaultHttpClient(cm, httpParams)
-    httpClient
-      .asInstanceOf[AbstractHttpClient]
-      .setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false))
+    httpClient.asInstanceOf[AbstractHttpClient].setHttpRequestRetryHandler(
+      new DefaultHttpRequestRetryHandler(0, false))
     httpClient.getParams.setParameter("http.conn-manager.timeout", 120000L)
     httpClient.getParams.setParameter("http.protocol.wait-for-continue", 10000L)
     httpClient.getParams.setParameter("http.tcp.nodelay", true)

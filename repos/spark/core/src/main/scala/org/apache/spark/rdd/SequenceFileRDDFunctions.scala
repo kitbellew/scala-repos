@@ -65,12 +65,9 @@ class SequenceFileRDDFunctions[
         // We get the type of the Writable class by looking at the apply method which converts
         // from T to Writable. Since we have two apply methods we filter out the one which
         // is not of the form "java.lang.Object apply(java.lang.Object)"
-        implicitly[T => Writable].getClass
-          .getDeclaredMethods()
-          .filter(m =>
-            m.getReturnType().toString != "class java.lang.Object" &&
-              m.getName() == "apply")(0)
-          .getReturnType
+        implicitly[T => Writable].getClass.getDeclaredMethods().filter(m =>
+          m.getReturnType().toString != "class java.lang.Object" &&
+            m.getName() == "apply")(0).getReturnType
 
       }
       // TODO: use something like WritableConverter to avoid reflection
@@ -112,35 +109,30 @@ class SequenceFileRDDFunctions[
           jobConf,
           codec)
       } else if (!convertKey && convertValue) {
-        self
-          .map(x => (x._1, anyToWritable(x._2)))
-          .saveAsHadoopFile(
-            path,
-            keyWritableClass,
-            valueWritableClass,
-            format,
-            jobConf,
-            codec)
+        self.map(x => (x._1, anyToWritable(x._2))).saveAsHadoopFile(
+          path,
+          keyWritableClass,
+          valueWritableClass,
+          format,
+          jobConf,
+          codec)
       } else if (convertKey && !convertValue) {
-        self
-          .map(x => (anyToWritable(x._1), x._2))
-          .saveAsHadoopFile(
-            path,
-            keyWritableClass,
-            valueWritableClass,
-            format,
-            jobConf,
-            codec)
+        self.map(x => (anyToWritable(x._1), x._2)).saveAsHadoopFile(
+          path,
+          keyWritableClass,
+          valueWritableClass,
+          format,
+          jobConf,
+          codec)
       } else if (convertKey && convertValue) {
-        self
-          .map(x => (anyToWritable(x._1), anyToWritable(x._2)))
-          .saveAsHadoopFile(
-            path,
-            keyWritableClass,
-            valueWritableClass,
-            format,
-            jobConf,
-            codec)
+        self.map(x =>
+          (anyToWritable(x._1), anyToWritable(x._2))).saveAsHadoopFile(
+          path,
+          keyWritableClass,
+          valueWritableClass,
+          format,
+          jobConf,
+          codec)
       }
     }
 }

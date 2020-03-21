@@ -190,10 +190,9 @@ trait AssignClusterModule[M[+_]]
                         }
                         val clusterCenters: Array[Array[Double]] =
                           (model.clusters).map {
-                            _.featureValues.toArray
-                              .sortBy { case (path, _) => path }
-                              .map { case (_, col) => col }
-                              .toArray
+                            _.featureValues.toArray.sortBy {
+                              case (path, _) => path
+                            }.map { case (_, col) => col }.toArray
                           }
 
                         val centerPaths: Array[CPath] =

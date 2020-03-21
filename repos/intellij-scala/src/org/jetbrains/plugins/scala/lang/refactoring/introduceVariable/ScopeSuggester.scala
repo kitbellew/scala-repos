@@ -104,9 +104,8 @@ object ScopeSuggester {
       noContinue = currentElement.calcType match {
         case projectionType: ScProjectionType =>
           //we can't use typeAlias outside scope where it was defined
-          parent
-            .asInstanceOf[ScTemplateBody]
-            .isAncestorOf(projectionType.actualElement)
+          parent.asInstanceOf[ScTemplateBody].isAncestorOf(
+            projectionType.actualElement)
         case _ => false
       }
 
@@ -123,9 +122,9 @@ object ScopeSuggester {
         parent,
         occurrences.isEmpty)
 
-      val possibleNames = NameSuggester
-        .suggestNamesByType(currentElement.calcType)
-        .map(validator.validateName(_, increaseNumber = true))
+      val possibleNames =
+        NameSuggester.suggestNamesByType(currentElement.calcType)
+          .map(validator.validateName(_, increaseNumber = true))
 
       result += SimpleScopeItem(
         name,
@@ -150,10 +149,8 @@ object ScopeSuggester {
           resultDirectory,
           needDirectoryCreating = false,
           Array(
-            NameSuggester
-              .suggestNamesByType(currentElement.calcType)
-              .apply(0)
-              .capitalize)
+            NameSuggester.suggestNamesByType(currentElement.calcType).apply(
+              0).capitalize)
         )
       }
     }
@@ -234,9 +231,9 @@ object ScopeSuggester {
       }
     }
 
-    val currentPackage = ScPackageImpl
-      .findPackage(typeElement.getProject, packageName)
-      .asInstanceOf[PsiPackage]
+    val currentPackage = ScPackageImpl.findPackage(
+      typeElement.getProject,
+      packageName).asInstanceOf[PsiPackage]
     val directoriesContainingFile = getDirectoriesContainigfile(
       typeElement.getContainingFile)
     val module = RunWorksheetAction.getModuleFor(typeElement.getContainingFile)
@@ -317,8 +314,9 @@ object ScopeSuggester {
     val fileEncloser =
       if (packageObject.isDefined)
         PsiTreeUtil.getChildOfType(
-          PsiTreeUtil
-            .getChildOfType(packageObject.get, classOf[ScExtendsBlock]),
+          PsiTreeUtil.getChildOfType(
+            packageObject.get,
+            classOf[ScExtendsBlock]),
           classOf[ScTemplateBody])
       else
         containinDirectory

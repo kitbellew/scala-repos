@@ -73,11 +73,9 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
   def withServer[T](routes: (String, String) => Handler)(
       block: WSClient => T): T = {
-    val app = GuiceApplicationBuilder()
-      .routes({
-        case (method, path) => routes(method, path)
-      })
-      .build()
+    val app = GuiceApplicationBuilder().routes({
+      case (method, path) => routes(method, path)
+    }).build()
     running(TestServer(testServerPort, app))(
       block(app.injector.instanceOf[WSClient]))
   }
@@ -101,8 +99,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
       //#complex-holder
       val complexRequest: WSRequest =
-        request
-          .withHeaders("Accept" -> "application/json")
+        request.withHeaders("Accept" -> "application/json")
           .withRequestTimeout(10000.millis)
           .withQueryString("search" -> "play")
       //#complex-holder
@@ -157,9 +154,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val xmlString = "<foo></foo>"
       val response =
         //#content-type
-        ws.url(url)
-          .withHeaders("Content-Type" -> "application/xml")
-          .post(xmlString)
+        ws.url(url).withHeaders("Content-Type" -> "application/xml").post(
+          xmlString)
       //#content-type
 
       await(response).status must_== 200
@@ -341,16 +337,13 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
               }
 
               // materialize and run the stream
-              res.body
-                .runWith(sink)
-                .andThen {
-                  case result =>
-                    // Close the output stream whether there was an error or not
-                    outputStream.close()
-                    // Get the result or rethrow the error
-                    result.get
-                }
-                .map(_ => file)
+              res.body.runWith(sink).andThen {
+                case result =>
+                  // Close the output stream whether there was an error or not
+                  outputStream.close()
+                  // Get the result or rethrow the error
+                  result.get
+              }.map(_ => file)
           }
           //#stream-to-file
           await(downloadedFile) must_== file
@@ -374,16 +367,18 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
                 if (response.status == 200) {
 
                   // Get the content type
-                  val contentType = response.headers
-                    .get("Content-Type")
-                    .flatMap(_.headOption)
-                    .getOrElse("application/octet-stream")
+                  val contentType =
+                    response.headers.get("Content-Type").flatMap(_.headOption)
+                      .getOrElse("application/octet-stream")
 
                   // If there's a content length, send that, otherwise return the body chunked
                   response.headers.get("Content-Length") match {
                     case Some(Seq(length)) =>
-                      Ok.sendEntity(HttpEntity
-                        .Streamed(body, Some(length.toLong), Some(contentType)))
+                      Ok.sendEntity(
+                        HttpEntity.Streamed(
+                          body,
+                          Some(length.toLong),
+                          Some(contentType)))
                     case _ =>
                       Ok.chunked(body).as(contentType)
                   }
@@ -424,10 +419,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       } { ws =>
         def largeImageFromDB: Source[ByteString, _] = largeSource
         //#scalaws-stream-request
-        val wsResponse: Future[WSResponse] = ws
-          .url(url)
-          .withBody(StreamedBody(largeImageFromDB))
-          .execute("PUT")
+        val wsResponse: Future[WSResponse] = ws.url(url)
+          .withBody(StreamedBody(largeImageFromDB)).execute("PUT")
         //#scalaws-stream-request
         await(wsResponse).status must_== 200
       }

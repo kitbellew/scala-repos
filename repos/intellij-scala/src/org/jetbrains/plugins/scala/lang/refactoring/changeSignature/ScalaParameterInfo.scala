@@ -90,13 +90,10 @@ class ScalaParameterInfo(
         qual + defaultForJava
       } else defaultForJava
 
-    val expression = JavaPsiFacade
-      .getElementFactory(project)
-      .createExpressionFromText(defaultText, expr)
-    JavaCodeStyleManager
-      .getInstance(project)
-      .shortenClassReferences(expression)
-      .asInstanceOf[PsiExpression]
+    val expression = JavaPsiFacade.getElementFactory(
+      project).createExpressionFromText(defaultText, expr)
+    JavaCodeStyleManager.getInstance(project).shortenClassReferences(
+      expression).asInstanceOf[PsiExpression]
   }
 
   override def getTypeWrapper: CanonicalTypes.Type = {

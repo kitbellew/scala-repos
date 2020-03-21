@@ -70,16 +70,13 @@ class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
 
   override def open(req: HttpServletRequest, name: String): Repository = {
     // Rewrite repository path if routing is marched
-    PluginRegistry()
-      .getRepositoryRouting("/" + name)
-      .map {
-        case GitRepositoryRouting(urlPattern, localPath, _) =>
-          val path = urlPattern.r.replaceFirstIn(name, localPath)
-          resolver.open(req, path)
-      }
-      .getOrElse {
-        parent.open(req, name)
-      }
+    PluginRegistry().getRepositoryRouting("/" + name).map {
+      case GitRepositoryRouting(urlPattern, localPath, _) =>
+        val path = urlPattern.r.replaceFirstIn(name, localPath)
+        resolver.open(req, path)
+    }.getOrElse {
+      parent.open(req, name)
+    }
   }
 
 }
@@ -96,9 +93,8 @@ class GitBucketReceivePackFactory
       db: Repository): ReceivePack = {
     val receivePack = new ReceivePack(db)
 
-    if (PluginRegistry()
-          .getRepositoryRouting(request.gitRepositoryPath)
-          .isEmpty) {
+    if (PluginRegistry().getRepositoryRouting(
+          request.gitRepositoryPath).isEmpty) {
       val pusher =
         request.getAttribute(Keys.Request.UserName).asInstanceOf[String]
 
@@ -155,8 +151,7 @@ class CommitLogHook(
         PluginRegistry().getReceiveHooks
           .flatMap(
             _.preReceive(owner, repository, receivePack, command, pusher))
-          .headOption
-          .foreach { error =>
+          .headOption.foreach { error =>
             command.setResult(
               ReceiveCommand.Result.REJECTED_OTHER_REASON,
               error)

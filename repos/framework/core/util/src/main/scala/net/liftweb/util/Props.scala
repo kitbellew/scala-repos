@@ -188,9 +188,8 @@ private[util] trait Props extends Logger {
     */
   lazy val mode: Props.RunModes.Value = {
     runModeInitialised = true
-    Box
-      .legacyNullTest((System.getProperty("run.mode")))
-      .map(_.toLowerCase) match {
+    Box.legacyNullTest((System.getProperty("run.mode"))).map(
+      _.toLowerCase) match {
       case Full("test")        => Test
       case Full("production")  => Production
       case Full("staging")     => Staging
@@ -425,8 +424,8 @@ private[util] trait Props extends Logger {
 
       case _ =>
         error(
-          "Failed to find a properties file (but properties were accessed).  Searched: " + tried.reverse
-            .mkString(", "))
+          "Failed to find a properties file (but properties were accessed).  Searched: " + tried.reverse.mkString(
+            ", "))
         Map()
     }
   }

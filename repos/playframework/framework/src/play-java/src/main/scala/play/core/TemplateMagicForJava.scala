@@ -36,8 +36,10 @@ object PlayMagicForJava {
       jField.constraints.asScala.map { jT => jT._1 -> jT._2.asScala },
       Option(jField.format).map(f => f._1 -> f._2.asScala),
       jField.errors.asScala.map { jE =>
-        play.api.data
-          .FormError(jE.key, jE.messages.asScala, jE.arguments.asScala)
+        play.api.data.FormError(
+          jE.key,
+          jE.messages.asScala,
+          jE.arguments.asScala)
       },
       Option(jField.value)) {
 
@@ -57,8 +59,9 @@ object PlayMagicForJava {
   implicit def implicitJavaMessages: play.api.i18n.Messages =
     try {
       val jmessages = play.mvc.Http.Context.current().messages()
-      play.api.i18n
-        .Messages(jmessages.lang(), jmessages.messagesApi().scalaApi())
+      play.api.i18n.Messages(
+        jmessages.lang(),
+        jmessages.messagesApi().scalaApi())
     } catch {
       case NonFatal(_) =>
         val app = play.api.Play.privateMaybeApplication.get

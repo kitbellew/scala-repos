@@ -141,8 +141,8 @@ private[cors] trait AbstractCORSPolicy {
        * with as values the header field names given in the list of exposed headers.
        */
       if (corsConfig.exposedHeaders.nonEmpty) {
-        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS -> corsConfig.exposedHeaders
-          .mkString(",")
+        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS -> corsConfig.exposedHeaders.mkString(
+          ",")
       }
 
       import play.api.libs.iteratee.Execution.Implicits.trampoline
@@ -216,10 +216,9 @@ private[cors] trait AbstractCORSPolicy {
                 HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
                 case None => List.empty[String]
                 case Some(headerVal) =>
-                  headerVal.trim
-                    .split(',')
-                    .map(_.trim.toLowerCase(java.util.Locale.ENGLISH))(
-                      collection.breakOut)
+                  headerVal.trim.split(',').map(
+                    _.trim.toLowerCase(java.util.Locale.ENGLISH))(
+                    collection.breakOut)
               }
             }
 
@@ -305,8 +304,8 @@ private[cors] trait AbstractCORSPolicy {
                * headers from Access-Control-Allow-Headers can be enough.
                */
               if (!accessControlRequestHeaders.isEmpty) {
-                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_HEADERS -> accessControlRequestHeaders
-                  .mkString(",")
+                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_HEADERS -> accessControlRequestHeaders.mkString(
+                  ",")
               }
 
               Future.successful {
@@ -321,8 +320,8 @@ private[cors] trait AbstractCORSPolicy {
   private def handleInvalidCORSRequest(
       request: RequestHeader): Future[Result] = {
     logger.trace(s"""Invalid CORS request;Origin=${request.headers.get(
-      HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers
-      .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
+      HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers.get(
+      HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
     Future.successful(Results.Forbidden)
   }
 
@@ -343,8 +342,8 @@ private[cors] trait AbstractCORSPolicy {
   private def isSameOrigin(origin: String, request: RequestHeader): Boolean = {
     val hostUri = new URI(origin.toLowerCase(Locale.ENGLISH))
     val originUri = new URI(
-      (if (request.secure) "https://" else "http://") + request.host
-        .toLowerCase(Locale.ENGLISH))
+      (if (request.secure) "https://"
+       else "http://") + request.host.toLowerCase(Locale.ENGLISH))
     (
       hostUri.getScheme,
       hostUri.getHost,

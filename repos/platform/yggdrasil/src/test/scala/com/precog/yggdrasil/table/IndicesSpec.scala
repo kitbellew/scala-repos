@@ -211,21 +211,17 @@ trait IndicesSpec[M[+_]]
       test(Array(CString("foo"), CLong(999)), empty)
     }
 
-    val index1 = TableIndex
-      .createFromTable(
-        table,
-        Array(groupkey("a")),
-        valuekey("c")
-      )
-      .copoint
+    val index1 = TableIndex.createFromTable(
+      table,
+      Array(groupkey("a")),
+      valuekey("c")
+    ).copoint
 
-    val index2 = TableIndex
-      .createFromTable(
-        table,
-        Array(groupkey("b")),
-        valuekey("c")
-      )
-      .copoint
+    val index2 = TableIndex.createFromTable(
+      table,
+      Array(groupkey("b")),
+      valuekey("c")
+    ).copoint
 
     "efficiently combine to produce unions" in {
 

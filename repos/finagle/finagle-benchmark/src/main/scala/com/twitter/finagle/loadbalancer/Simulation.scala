@@ -170,22 +170,22 @@ private[finagle] object Simulation extends com.twitter.app.App {
 
     val factory = bal() match {
       case "p2c" =>
-        Balancers
-          .p2c()
-          .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
+        Balancers.p2c().newBalancer(
+          activity,
+          statsReceiver = stats.scope("p2c"),
+          noBrokers)
 
       case "ewma" =>
-        Balancers
-          .p2cPeakEwma()
-          .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
+        Balancers.p2cPeakEwma().newBalancer(
+          activity,
+          statsReceiver = stats.scope("p2c"),
+          noBrokers)
 
       case "aperture" =>
-        Balancers
-          .aperture()
-          .newBalancer(
-            activity,
-            statsReceiver = stats.scope("aperture"),
-            noBrokers)
+        Balancers.aperture().newBalancer(
+          activity,
+          statsReceiver = stats.scope("aperture"),
+          noBrokers)
     }
 
     val balancer = factory.toService

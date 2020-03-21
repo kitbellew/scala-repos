@@ -79,8 +79,8 @@ class AkkaHttpServer(
     val bindingFuture: Future[Http.ServerBinding] =
       serverSource.to(connectionSink).run()
 
-    val bindTimeout = PlayConfig(config.configuration)
-      .get[Duration]("play.akka.http-bind-timeout")
+    val bindTimeout = PlayConfig(config.configuration).get[Duration](
+      "play.akka.http-bind-timeout")
     Await.result(bindingFuture, bindTimeout)
   }
 
@@ -238,9 +238,8 @@ class AkkaHttpServer(
       // requests demand.  This is due to a semantic mismatch between Play and Akka-HTTP, Play signals to continue
       // by requesting demand, Akka-HTTP signals to continue by attaching a sink to the source. See
       // https://github.com/akka/akka/issues/17782 for more details.
-      requestBodySource
-        .map(source =>
-          Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
+      requestBodySource.map(source =>
+        Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
         .orElse(Some(Source.empty))
     } else {
       requestBodySource

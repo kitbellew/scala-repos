@@ -45,10 +45,9 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
     val builder = ContainerFormats.SelectionEnvelope.newBuilder()
     val message = sel.msg.asInstanceOf[AnyRef]
     val serializer = serialization.findSerializerFor(message)
-    builder
-      .setEnclosedMessage(ByteString.copyFrom(serializer.toBinary(message)))
-      .setSerializerId(serializer.identifier)
-      .setWildcardFanOut(sel.wildcardFanOut)
+    builder.setEnclosedMessage(
+      ByteString.copyFrom(serializer.toBinary(message))).setSerializerId(
+      serializer.identifier).setWildcardFanOut(sel.wildcardFanOut)
 
     serializer match {
       case ser2: SerializerWithStringManifest ⇒
@@ -87,12 +86,10 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
       if (selectionEnvelope.hasMessageManifest)
         selectionEnvelope.getMessageManifest.toStringUtf8
       else ""
-    val msg = serialization
-      .deserialize(
-        selectionEnvelope.getEnclosedMessage.toByteArray,
-        selectionEnvelope.getSerializerId,
-        manifest)
-      .get
+    val msg = serialization.deserialize(
+      selectionEnvelope.getEnclosedMessage.toByteArray,
+      selectionEnvelope.getSerializerId,
+      manifest).get
 
     import scala.collection.JavaConverters._
     val elements: immutable.Iterable[SelectionPathElement] =

@@ -80,8 +80,7 @@ class RichFlowDef(val fd: FlowDef) {
 
     fd.mergeMiscFrom(o)
     // Merge the FlowState
-    FlowStateMap
-      .get(o)
+    FlowStateMap.get(o)
       .foreach { oFS =>
         FlowStateMap.mutate(fd) { current =>
           // overwrite the items from o with current
@@ -146,8 +145,7 @@ class RichFlowDef(val fd: FlowDef) {
       newFd.addTailSink(pipe, sinks.get(pipe.getName))
     }
     // Update the FlowState:
-    FlowStateMap
-      .get(fd)
+    FlowStateMap.get(fd)
       .foreach { thisFS =>
         val subFlowState = thisFS.sourceMap
           .foldLeft(Map[String, Source]()) {

@@ -65,9 +65,9 @@ class JavaJsonSpec extends Specification {
           Json.parse(testJsonString))
       }
       "asciiStringify" in new JsonScope {
-        val resultString = Json
-          .stringify(Json.parse(testJsonString))
-          .replace("\u00a9", "\\u00A9")
+        val resultString = Json.stringify(Json.parse(testJsonString)).replace(
+          "\u00a9",
+          "\\u00A9")
         Json.asciiStringify(testJson) must_== resultString
       }
       "prettyPrint" in new JsonScope {

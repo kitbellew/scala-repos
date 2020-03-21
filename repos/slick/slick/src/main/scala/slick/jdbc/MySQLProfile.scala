@@ -88,19 +88,16 @@ trait MySQLProfile extends JdbcProfile { profile =>
         meta: MColumn): ColumnBuilder =
       new ColumnBuilder(tableBuilder, meta) {
         override def default =
-          meta.columnDef
-            .map((_, tpe))
-            .collect {
-              case (v, "String")    => Some(Some(v))
-              case ("1", "Boolean") => Some(Some(true))
-              case ("0", "Boolean") => Some(Some(false))
-            }
-            .getOrElse {
-              val d = super.default
-              if (meta.nullable == Some(true) && d == None) {
-                Some(None)
-              } else d
-            }
+          meta.columnDef.map((_, tpe)).collect {
+            case (v, "String")    => Some(Some(v))
+            case ("1", "Boolean") => Some(Some(true))
+            case ("0", "Boolean") => Some(Some(false))
+          }.getOrElse {
+            val d = super.default
+            if (meta.nullable == Some(true) && d == None) {
+              Some(None)
+            } else d
+          }
         override def length: Option[Int] = {
           val l = super.length
           if (tpe == "String" && varying && l == Some(65535)) None
@@ -117,8 +114,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler
-      .replace(new MySQLResolveZipJoins) - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(
+      new MySQLResolveZipJoins) - Phase.fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =
@@ -146,13 +143,10 @@ trait MySQLProfile extends JdbcProfile { profile =>
             defaultStringType match {
               case Some(s) => s
               case None =>
-                if (sym
-                      .flatMap(_.findColumnOption[
-                        RelationalProfile.ColumnOption.Default[_]])
-                      .isDefined ||
-                    sym
-                      .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
-                      .isDefined)
+                if (sym.flatMap(_.findColumnOption[
+                      RelationalProfile.ColumnOption.Default[_]]).isDefined ||
+                    sym.flatMap(_.findColumnOption[
+                      ColumnOption.PrimaryKey.type]).isDefined)
                   "VARCHAR(254)"
                 else "TEXT"
             }

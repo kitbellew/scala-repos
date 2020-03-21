@@ -125,9 +125,7 @@ abstract class BytecodeTest {
   protected def loadClassNode(
       name: String,
       skipDebugInfo: Boolean = true): ClassNode = {
-    val classBytes: InputStream = classpath
-      .findClassFile(name)
-      .map(_.input)
+    val classBytes: InputStream = classpath.findClassFile(name).map(_.input)
       .getOrElse(
         sys.error(s"failed to load class '$name'; classpath = $classpath"))
 

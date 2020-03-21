@@ -127,17 +127,17 @@ class VectorIndexer(override val uid: String)
       firstRow.length == 1,
       s"VectorIndexer cannot be fit on an empty dataset.")
     val numFeatures = firstRow(0).getAs[Vector](0).size
-    val vectorDataset =
-      dataset.select($(inputCol)).rdd.map { case Row(v: Vector) => v }
+    val vectorDataset = dataset.select($(inputCol)).rdd.map {
+      case Row(v: Vector) => v
+    }
     val maxCats = $(maxCategories)
-    val categoryStats: VectorIndexer.CategoryStats = vectorDataset
-      .mapPartitions { iter =>
+    val categoryStats: VectorIndexer.CategoryStats =
+      vectorDataset.mapPartitions { iter =>
         val localCatStats =
           new VectorIndexer.CategoryStats(numFeatures, maxCats)
         iter.foreach(localCatStats.addVector)
         Iterator(localCatStats)
-      }
-      .reduce((stats1, stats2) => stats1.merge(stats2))
+      }.reduce((stats1, stats2) => stats1.merge(stats2))
     val model =
       new VectorIndexerModel(uid, numFeatures, categoryStats.getCategoryMaps)
         .setParent(this)
@@ -221,22 +221,18 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
       */
     def getCategoryMaps: Map[Int, Map[Double, Int]] = {
       // Filter out features which are declared continuous.
-      featureValueSets.zipWithIndex
-        .filter(_._1.size <= maxCategories)
-        .map {
-          case (featureValues: OpenHashSet[Double], featureIndex: Int) =>
-            var sortedFeatureValues =
-              featureValues.iterator.filter(_ != 0.0).toArray.sorted
-            val zeroExists =
-              sortedFeatureValues.length + 1 == featureValues.size
-            if (zeroExists) {
-              sortedFeatureValues = 0.0 +: sortedFeatureValues
-            }
-            val categoryMap: Map[Double, Int] =
-              sortedFeatureValues.zipWithIndex.toMap
-            (featureIndex, categoryMap)
-        }
-        .toMap
+      featureValueSets.zipWithIndex.filter(_._1.size <= maxCategories).map {
+        case (featureValues: OpenHashSet[Double], featureIndex: Int) =>
+          var sortedFeatureValues =
+            featureValues.iterator.filter(_ != 0.0).toArray.sorted
+          val zeroExists = sortedFeatureValues.length + 1 == featureValues.size
+          if (zeroExists) {
+            sortedFeatureValues = 0.0 +: sortedFeatureValues
+          }
+          val categoryMap: Map[Double, Int] =
+            sortedFeatureValues.zipWithIndex.toMap
+          (featureIndex, categoryMap)
+      }.toMap
     }
 
     private def addDenseVector(dv: DenseVector): Unit = {
@@ -301,10 +297,9 @@ class VectorIndexerModel private[ml] (
 
   /** Java-friendly version of [[categoryMaps]] */
   def javaCategoryMaps: JMap[JInt, JMap[JDouble, JInt]] = {
-    categoryMaps
-      .mapValues(_.asJava)
-      .asJava
-      .asInstanceOf[JMap[JInt, JMap[JDouble, JInt]]]
+    categoryMaps.mapValues(_.asJava).asJava.asInstanceOf[JMap[
+      JInt,
+      JMap[JDouble, JInt]]]
   }
 
   /**
@@ -320,10 +315,8 @@ class VectorIndexerModel private[ml] (
       if (categoryMaps.contains(featureIndex)) {
         // categorical feature
         val featureValues: Array[String] =
-          categoryMaps(featureIndex).toArray
-            .sortBy(_._1)
-            .map(_._1)
-            .map(_.toString)
+          categoryMaps(featureIndex).toArray.sortBy(_._1).map(_._1).map(
+            _.toString)
         if (featureValues.length == 2) {
           attrs(featureIndex) = new BinaryAttribute(
             index = Some(featureIndex),
@@ -495,11 +488,8 @@ object VectorIndexerModel extends MLReadable[VectorIndexerModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.numFeatures, instance.categoryMaps)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -510,8 +500,7 @@ object VectorIndexerModel extends MLReadable[VectorIndexerModel] {
     override def load(path: String): VectorIndexerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
+      val data = sqlContext.read.parquet(dataPath)
         .select("numFeatures", "categoryMaps")
         .head()
       val numFeatures = data.getAs[Int](0)

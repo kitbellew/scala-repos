@@ -34,10 +34,9 @@ class ScalatraBroadcasterFactory(
   private def createBroadcaster[T <: Broadcaster](c: Class[T], id: Any): T = {
     try {
       val b: T = if (classOf[ScalatraBroadcaster].isAssignableFrom(c)) {
-        bCfg.broadcasterClass
-          .getConstructor(classOf[WireFormat], classOf[ActorSystem])
-          .newInstance(wireFormat, system)
-          .asInstanceOf[T]
+        bCfg.broadcasterClass.getConstructor(
+          classOf[WireFormat],
+          classOf[ActorSystem]).newInstance(wireFormat, system).asInstanceOf[T]
       } else {
         cfg.framework().newClassInstance(c, c)
       }

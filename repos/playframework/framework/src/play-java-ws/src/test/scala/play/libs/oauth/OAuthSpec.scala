@@ -26,8 +26,9 @@ class OAuthSpec extends PlaySpecification {
 
   val consumerKey =
     play.api.libs.oauth.ConsumerKey(javaConsumerKey.key, javaConsumerKey.secret)
-  val requestToken = play.api.libs.oauth
-    .RequestToken(javaRequestToken.token, javaRequestToken.secret)
+  val requestToken = play.api.libs.oauth.RequestToken(
+    javaRequestToken.token,
+    javaRequestToken.secret)
 
   "OAuth" should {
     "sign a simple get request" in {
@@ -44,11 +45,9 @@ class OAuthSpec extends PlaySpecification {
 
     "sign a get request with query parameters" in {
       val (request, body, hostUrl) = receiveRequest { (client, hostUrl) =>
-        client
-          .url(hostUrl + "/foo")
-          .setQueryParameter("param", "paramValue")
-          .sign(oauthCalculator)
-          .get()
+        client.url(hostUrl + "/foo").setQueryParameter(
+          "param",
+          "paramValue").sign(oauthCalculator).get()
       }
       OAuthRequestVerifier.verifyRequest(
         request,
@@ -60,10 +59,8 @@ class OAuthSpec extends PlaySpecification {
 
     "sign a post request with a body" in {
       val (request, body, hostUrl) = receiveRequest { (client, hostUrl) =>
-        client
-          .url(hostUrl + "/foo")
-          .sign(oauthCalculator)
-          .setContentType("application/x-www-form-urlencoded")
+        client.url(hostUrl + "/foo").sign(oauthCalculator).setContentType(
+          "application/x-www-form-urlencoded")
           .post("param=paramValue")
       }
       OAuthRequestVerifier.verifyRequest(
@@ -80,16 +77,14 @@ class OAuthSpec extends PlaySpecification {
       : (RequestHeader, ByteString, String) = {
     val hostUrl = "http://localhost:" + testServerPort
     val promise = Promise[(RequestHeader, ByteString)]()
-    val app = GuiceApplicationBuilder()
-      .routes {
-        case _ =>
-          Action(BodyParsers.parse.raw) { request =>
-            promise.success(
-              (request, request.body.asBytes().getOrElse(ByteString.empty)))
-            Results.Ok
-          }
-      }
-      .build()
+    val app = GuiceApplicationBuilder().routes {
+      case _ =>
+        Action(BodyParsers.parse.raw) { request =>
+          promise.success(
+            (request, request.body.asBytes().getOrElse(ByteString.empty)))
+          Results.Ok
+        }
+    }.build()
     running(TestServer(testServerPort, app)) {
       val client = app.injector.instanceOf(classOf[play.libs.ws.WSClient])
       makeRequest(client, hostUrl).toCompletableFuture.get()

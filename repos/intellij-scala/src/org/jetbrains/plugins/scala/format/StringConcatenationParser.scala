@@ -40,10 +40,8 @@ object StringConcatenationParser extends StringParser {
       case literal: ScLiteral =>
         Text(literal.getValue.toString).withEscapedPercent(exp.getManager)
       case it =>
-        FormattedStringParser
-          .parse(it)
-          .map(_.toList)
-          .getOrElse(Injection(it, None) :: Nil)
+        FormattedStringParser.parse(it).map(_.toList).getOrElse(
+          Injection(it, None) :: Nil)
     }
   }
 

@@ -11,8 +11,10 @@ object TestMarker {
       case None => markers(marker.marker) = marker
       case Some(otherMarker) =>
         val msg =
-          "Marker `%s` is already used by %s. Please choose a different marker for %s"
-            .format(marker.marker, marker, otherMarker)
+          "Marker `%s` is already used by %s. Please choose a different marker for %s".format(
+            marker.marker,
+            marker,
+            otherMarker)
         throw new DuplicateTestMarker(msg)
     }
   }

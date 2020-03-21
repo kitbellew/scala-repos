@@ -129,12 +129,9 @@ case class SimpleFilteredScan(from: Int, to: Int)(
         translateFilterOnC(_)(c))
     }
 
-    sqlContext.sparkContext
-      .parallelize(from to to)
-      .filter(eval)
-      .map(i =>
-        Row.fromSeq(
-          rowBuilders.map(_(i)).reduceOption(_ ++ _).getOrElse(Seq.empty)))
+    sqlContext.sparkContext.parallelize(from to to).filter(eval).map(i =>
+      Row.fromSeq(
+        rowBuilders.map(_(i)).reduceOption(_ ++ _).getOrElse(Seq.empty)))
   }
 }
 
@@ -168,14 +165,12 @@ class FilteredScanSuite
 
   sqlTest(
     "SELECT * FROM oneToTenFiltered",
-    (1 to 10)
-      .map(i =>
-        Row(
-          i,
-          i * 2,
-          (i - 1 + 'a').toChar.toString * 5
-            + (i - 1 + 'a').toChar.toString.toUpperCase * 5))
-      .toSeq)
+    (1 to 10).map(i =>
+      Row(
+        i,
+        i * 2,
+        (i - 1 + 'a').toChar.toString * 5
+          + (i - 1 + 'a').toChar.toString.toUpperCase * 5)).toSeq)
 
   sqlTest(
     "SELECT a, b FROM oneToTenFiltered",
@@ -416,8 +411,9 @@ class FilteredScanSuite
 
     test(s"PushDown Returns $expectedCount: $sqlString") {
       // These tests check a particular plan, disable whole stage codegen.
-      caseInsensitiveContext.conf
-        .setConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED, false)
+      caseInsensitiveContext.conf.setConf(
+        SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
+        false)
       try {
         val queryExecution = sql(sqlString).queryExecution
         val rawPlan = queryExecution.executedPlan.collect {
@@ -435,9 +431,8 @@ class FilteredScanSuite
         }.get
 
         assert(
-          relation
-            .unhandledFilters(FiltersPushed.list.toArray)
-            .toSet === expectedUnhandledFilters)
+          relation.unhandledFilters(
+            FiltersPushed.list.toArray).toSet === expectedUnhandledFilters)
 
         if (rawCount != expectedCount) {
           fail(

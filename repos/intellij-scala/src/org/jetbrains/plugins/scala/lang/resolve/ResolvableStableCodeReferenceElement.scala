@@ -174,10 +174,8 @@ trait ResolvableStableCodeReferenceElement
         }
       case ScalaResolveResult(typed: ScTypedDefinition, s) =>
         val fromType = s.subst(
-          typed
-            .getType(TypingContext.empty)
-            .getOrElse(return
-            ))
+          typed.getType(TypingContext.empty).getOrElse(return
+          ))
         processor.processType(
           fromType,
           this,
@@ -258,8 +256,8 @@ trait ResolvableStableCodeReferenceElement
         //todo: improve checking for this and super
         val refText: String = ref.getText
         if (!refText.contains("this") && !refText.contains("super") && (
-              refText.contains(".") || ref.getContext
-                .isInstanceOf[ScStableCodeReferenceElement]
+              refText.contains(".") || ref.getContext.isInstanceOf[
+                ScStableCodeReferenceElement]
             )) {
           //so this is full qualified reference => findClass, or findPackage
           val facade = JavaPsiFacade.getInstance(getProject)
@@ -325,8 +323,8 @@ trait ResolvableStableCodeReferenceElement
           case _ =>
         }
       case Some(q: ScDocResolvableCodeReference) =>
-        q.multiResolve(incomplete = true)
-          .foreach(processQualifierResolveResult(_, processor, ref))
+        q.multiResolve(incomplete = true).foreach(
+          processQualifierResolveResult(_, processor, ref))
       case Some(q: ScStableCodeReferenceElement) =>
         q.bind() match {
           case Some(res) => processQualifierResolveResult(res, processor, ref)
@@ -346,9 +344,8 @@ trait ResolvableStableCodeReferenceElement
     getContext match {
       case p: ScInterpolationPattern => Some(p)
       case sel: ScImportSelector =>
-        sel.getContext /*ScImportSelectors*/ .getContext
-          .asInstanceOf[ScImportExpr]
-          .reference
+        sel.getContext /*ScImportSelectors*/ .getContext.asInstanceOf[
+          ScImportExpr].reference
       case _ => pathQualifier
     }
   }

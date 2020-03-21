@@ -18,8 +18,9 @@ object ScentrySpec extends Specification with Mockito {
 
     var invalidateCalled = false
     val context = new ScalatraFilter {
-      private[this] val sessionMap = scala.collection.mutable
-        .HashMap[String, Any](Scentry.scentryAuthKey -> "6789")
+      private[this] val sessionMap =
+        scala.collection.mutable.HashMap[String, Any](
+          Scentry.scentryAuthKey -> "6789")
       val mockSession = smartMock[HttpSession]
       override def session(implicit request: HttpServletRequest) = mockSession
       mockSession.getAttribute(anyString) answers { k =>
@@ -123,9 +124,8 @@ object ScentrySpec extends Specification with Mockito {
     }
     "allow registration of global strategies" in {
       Scentry.register("Bogus", (_: ScalatraBase) => s)
-      Scentry
-        .globalStrategies("Bogus")
-        .asInstanceOf[Scentry[User]#StrategyFactory](context) must be_==(s)
+      Scentry.globalStrategies("Bogus").asInstanceOf[Scentry[
+        User]#StrategyFactory](context) must be_==(s)
     }
 
     "allow registration of local strategies" in {
@@ -152,8 +152,9 @@ object ScentrySpec extends Specification with Mockito {
       req.getAttribute("scentry.auth.default.user") returns null
       (theScentry.user = User("6789")) must be_==("6789")
       req.getAttribute("scentry.auth.default.user") returns User("6789")
-      there was atLeastOne(req)
-        .setAttribute("scentry.auth.default.user", User("6789"))
+      there was atLeastOne(req).setAttribute(
+        "scentry.auth.default.user",
+        User("6789"))
       beforeSetUserCalled must beTrue
       afterSetUserCalled must beTrue
     }
@@ -172,8 +173,9 @@ object ScentrySpec extends Specification with Mockito {
       theScentry.register("LocalFoo", _ => s)
       req.getAttribute("scentry.auth.default.user") returns null
       theScentry.authenticate()
-      there were two(req)
-        .setAttribute("scentry.auth.default.user", User("12345"))
+      there were two(req).setAttribute(
+        "scentry.auth.default.user",
+        User("12345"))
       req.getAttribute("scentry.auth.default.user") returns User("12345")
       beforeAuthenticateCalled must beTrue
       afterAuthenticateCalled must beTrue

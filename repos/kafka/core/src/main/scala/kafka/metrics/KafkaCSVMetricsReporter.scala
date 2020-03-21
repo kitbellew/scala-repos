@@ -64,8 +64,8 @@ private class KafkaCSVMetricsReporter
         underlying.start(pollingPeriodSecs, TimeUnit.SECONDS)
         running = true
         info(
-          "Started Kafka CSV metrics reporter with polling period %d seconds"
-            .format(pollingPeriodSecs))
+          "Started Kafka CSV metrics reporter with polling period %d seconds".format(
+            pollingPeriodSecs))
       }
     }
   }

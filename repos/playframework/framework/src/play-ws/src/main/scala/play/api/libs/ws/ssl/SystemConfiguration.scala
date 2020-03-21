@@ -23,8 +23,8 @@ class SystemConfiguration {
   def configure(config: WSClientConfig) {
 
     config.ssl.loose.allowUnsafeRenegotiation.map(configureUnsafeRenegotiation)
-    config.ssl.loose.allowLegacyHelloMessages
-      .map(configureAllowLegacyHelloMessages)
+    config.ssl.loose.allowLegacyHelloMessages.map(
+      configureAllowLegacyHelloMessages)
     config.ssl.checkRevocation.map(configureCheckRevocation)
   }
 

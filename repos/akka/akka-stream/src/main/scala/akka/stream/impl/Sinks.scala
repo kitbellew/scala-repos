@@ -132,9 +132,8 @@ private[akka] final class SinkholeSink(
     extends SinkModule[Any, Future[Done]](shape) {
 
   override def create(context: MaterializationContext) = {
-    val effectiveSettings = ActorMaterializer
-      .downcast(context.materializer)
-      .effectiveSettings(context.effectiveAttributes)
+    val effectiveSettings = ActorMaterializer.downcast(
+      context.materializer).effectiveSettings(context.effectiveAttributes)
     val p = Promise[Done]()
     (new SinkholeSubscriber[Any](p), p.future)
   }
@@ -223,8 +222,10 @@ private[akka] final class ActorRefSink[In](
       actorMaterializer.effectiveSettings(context.effectiveAttributes)
     val subscriberRef = actorMaterializer.actorOf(
       context,
-      ActorRefSinkActor
-        .props(ref, effectiveSettings.maxInputBufferSize, onCompleteMessage))
+      ActorRefSinkActor.props(
+        ref,
+        effectiveSettings.maxInputBufferSize,
+        onCompleteMessage))
     (akka.stream.actor.ActorSubscriber[In](subscriberRef), NotUsed)
   }
 
@@ -385,9 +386,9 @@ final private[stream] class QueueSink[T]()
       with CallbackWrapper[Requested[T]] {
       type Received[E] = Try[Option[E]]
 
-      val maxBuffer = inheritedAttributes
-        .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-        .max
+      val maxBuffer = inheritedAttributes.getAttribute(
+        classOf[InputBuffer],
+        InputBuffer(16, 16)).max
       require(maxBuffer > 0, "Buffer size must be greater than 0")
 
       var buffer: Buffer[Received[T]] = _

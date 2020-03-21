@@ -23,8 +23,10 @@ class ScalaDelegateMethodTest
       ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
     ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
       specifyType
-    new ScalaGenerateDelegateHandler()
-      .invoke(getProjectAdapter, getEditorAdapter, getFileAdapter)
+    new ScalaGenerateDelegateHandler().invoke(
+      getProjectAdapter,
+      getEditorAdapter,
+      getFileAdapter)
     checkResultByText(expectedText.replace("\r", "").stripMargin.trim)
     ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
       oldSpecifyType

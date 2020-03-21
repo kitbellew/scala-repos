@@ -110,14 +110,16 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(points.length === 3)
       assert(points(0).label === 1.0)
       assert(
-        points(0).features === Vectors
-          .sparse(6, Seq((0, 1.0), (2, 2.0), (4, 3.0))))
+        points(0).features === Vectors.sparse(
+          6,
+          Seq((0, 1.0), (2, 2.0), (4, 3.0))))
       assert(points(1).label == 0.0)
       assert(points(1).features == Vectors.sparse(6, Seq()))
       assert(points(2).label === 0.0)
       assert(
-        points(2).features === Vectors
-          .sparse(6, Seq((1, 4.0), (3, 5.0), (5, 6.0))))
+        points(2).features === Vectors.sparse(
+          6,
+          Seq((1, 4.0), (3, 5.0), (5, 6.0))))
     }
 
     val multiclassPoints = loadLibSVMFile(sc, path).collect()
@@ -175,8 +177,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val tempDir = Utils.createTempDir()
     val outputDir = new File(tempDir, "output")
     MLUtils.saveAsLibSVMFile(examples, outputDir.toURI.toString)
-    val lines = outputDir
-      .listFiles()
+    val lines = outputDir.listFiles()
       .filter(_.getName.startsWith("part-"))
       .flatMap(Source.fromFile(_).getLines())
       .toSet
@@ -203,13 +204,11 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val collectedData = data.collect().sorted
     val twoFoldedRdd = kFold(data, 2, 1)
     assert(
-      twoFoldedRdd(0)._1.collect().sorted === twoFoldedRdd(1)._2
-        .collect()
-        .sorted)
+      twoFoldedRdd(0)._1.collect().sorted === twoFoldedRdd(
+        1)._2.collect().sorted)
     assert(
-      twoFoldedRdd(0)._2.collect().sorted === twoFoldedRdd(1)._1
-        .collect()
-        .sorted)
+      twoFoldedRdd(0)._2.collect().sorted === twoFoldedRdd(
+        1)._1.collect().sorted)
     for (folds <- 2 to 10) {
       for (seed <- 1 to 5) {
         val foldedRdds = kFold(data, folds, seed)

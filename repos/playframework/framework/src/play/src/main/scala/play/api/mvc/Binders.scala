@@ -353,12 +353,9 @@ object QueryStringBindable {
   implicit def bindableString =
     new QueryStringBindable[String] {
       def bind(key: String, params: Map[String, Seq[String]]) =
-        params
-          .get(key)
-          .flatMap(_.headOption)
-          .map(
-            Right(_)
-          ) // No need to URL decode from query string since netty already does that
+        params.get(key).flatMap(_.headOption).map(
+          Right(_)
+        ) // No need to URL decode from query string since netty already does that
       // Use an option here in case users call index(null) in the routes -- see #818
       def unbind(key: String, value: String) =
         key + "=" + URLEncoder.encode(Option(value).getOrElse(""), "utf-8")
@@ -462,8 +459,8 @@ object QueryStringBindable {
         },
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Boolean: should be true, false, 0 or 1"
-            .format(key)
+          "Cannot parse parameter %s as Boolean: should be true, false, 0 or 1".format(
+            key)
       ) {
     override def javascriptUnbind = """function(k,v){return k+'='+(!!v)}"""
   }
@@ -492,15 +489,13 @@ object QueryStringBindable {
     new QueryStringBindable[Option[T]] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         Some(
-          implicitly[QueryStringBindable[T]]
-            .bind(key, params)
+          implicitly[QueryStringBindable[T]].bind(key, params)
             .map(_.right.map(Some(_)))
             .getOrElse(Right(None)))
       }
       def unbind(key: String, value: Option[T]) =
-        value
-          .map(implicitly[QueryStringBindable[T]].unbind(key, _))
-          .getOrElse("")
+        value.map(implicitly[QueryStringBindable[T]].unbind(key, _)).getOrElse(
+          "")
       override def javascriptUnbind =
         javascriptUnbindOption(
           implicitly[QueryStringBindable[T]].javascriptUnbind)
@@ -514,15 +509,13 @@ object QueryStringBindable {
     new QueryStringBindable[Optional[T]] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         Some(
-          implicitly[QueryStringBindable[T]]
-            .bind(key, params)
+          implicitly[QueryStringBindable[T]].bind(key, params)
             .map(_.right.map(Optional.ofNullable[T]))
             .getOrElse(Right(Optional.empty[T])))
       }
       def unbind(key: String, value: Optional[T]) = {
-        value.asScala
-          .map(implicitly[QueryStringBindable[T]].unbind(key, _))
-          .getOrElse("")
+        value.asScala.map(
+          implicitly[QueryStringBindable[T]].unbind(key, _)).getOrElse("")
       }
       override def javascriptUnbind =
         javascriptUnbindOption(
@@ -576,8 +569,9 @@ object QueryStringBindable {
       values match {
         case Nil => Right(results.reverse) // to preserve the original order
         case head :: rest =>
-          implicitly[QueryStringBindable[T]]
-            .bind(key, Map(key -> Seq(head))) match {
+          implicitly[QueryStringBindable[T]].bind(
+            key,
+            Map(key -> Seq(head))) match {
             case None                => collectResults(rest, results)
             case Some(Right(result)) => collectResults(rest, result :: results)
             case Some(Left(err))     => collectErrs(rest, err :: Nil)
@@ -592,8 +586,9 @@ object QueryStringBindable {
       values match {
         case Nil => Left(errs.reverse.mkString("\n"))
         case head :: rest =>
-          implicitly[QueryStringBindable[T]]
-            .bind(key, Map(key -> Seq(head))) match {
+          implicitly[QueryStringBindable[T]].bind(
+            key,
+            Map(key -> Seq(head))) match {
             case Some(Left(err))       => collectErrs(rest, err :: errs)
             case Some(Right(_)) | None => collectErrs(rest, errs)
           }
@@ -625,9 +620,9 @@ object QueryStringBindable {
     new QueryStringBindable[T] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         try {
-          val o = ct.runtimeClass.newInstance
-            .asInstanceOf[T]
-            .bind(key, params.mapValues(_.toArray).asJava)
+          val o = ct.runtimeClass.newInstance.asInstanceOf[T].bind(
+            key,
+            params.mapValues(_.toArray).asJava)
           if (o.isPresent) {
             Some(Right(o.get))
           } else {
@@ -776,8 +771,8 @@ object PathBindable {
         },
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Boolean: should be true, false, 0 or 1"
-            .format(key)
+          "Cannot parse parameter %s as Boolean: should be true, false, 0 or 1".format(
+            key)
       ) {
     override def javascriptUnbind = """function(k,v){return !!v}"""
   }

@@ -21,12 +21,10 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       configuration: Map[String, _ <: Any] = Map.empty)(
       block: WSResponse => T) = {
     implicit val port = testServerPort
-    lazy val app: Application = GuiceApplicationBuilder()
-      .configure(configuration)
-      .routes {
+    lazy val app: Application =
+      GuiceApplicationBuilder().configure(configuration).routes {
         case _ => JAction(app, controller)
-      }
-      .build()
+      }.build()
 
     running(TestServer(port, app)) {
       val response = await(wsUrl("/").get())

@@ -52,8 +52,9 @@ class ShuffleReadMetrics private (
       TaskMetrics.getAccum[Long](
         accumMap,
         InternalAccumulator.shuffleRead.FETCH_WAIT_TIME),
-      TaskMetrics
-        .getAccum[Long](accumMap, InternalAccumulator.shuffleRead.RECORDS_READ))
+      TaskMetrics.getAccum[Long](
+        accumMap,
+        InternalAccumulator.shuffleRead.RECORDS_READ))
   }
 
   /**
@@ -67,11 +68,9 @@ class ShuffleReadMetrics private (
     * [[TaskMetrics.mergeShuffleReadMetrics]].
     */
   private[spark] def this() {
-    this(
-      InternalAccumulator
-        .createShuffleReadAccums()
-        .map { a => (a.name.get, a) }
-        .toMap)
+    this(InternalAccumulator.createShuffleReadAccums().map { a =>
+      (a.name.get, a)
+    }.toMap)
   }
 
   /**

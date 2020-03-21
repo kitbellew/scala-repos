@@ -75,29 +75,25 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
     def showNotification(text: String) {
 
       val popupFactory = JBPopupFactory.getInstance
-      popupFactory
-        .createConfirmation(
-          text,
-          "Continue",
-          "Cancel",
-          new Runnable {
-            //action on confirmation
-            def run() {
-              //to make action Undoable
-              CommandProcessor
-                .getInstance()
-                .executeCommand(
-                  project,
-                  new Runnable() {
-                    def run() { doReplacement() }
-                  },
-                  null,
-                  null)
-            }
-          },
-          0
-        )
-        .showInBestPositionFor(editor)
+      popupFactory.createConfirmation(
+        text,
+        "Continue",
+        "Cancel",
+        new Runnable {
+          //action on confirmation
+          def run() {
+            //to make action Undoable
+            CommandProcessor.getInstance().executeCommand(
+              project,
+              new Runnable() {
+                def run() { doReplacement() }
+              },
+              null,
+              null)
+          }
+        },
+        0
+      ).showInBestPositionFor(editor)
     }
 
     def doReplacement() {
@@ -121,9 +117,8 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
         val newBody =
           ScalaPsiElementFactory.createExpressionFromText(bodyText, manager)
 
-        val parentBlockHasBraces: Boolean = doStmt.getParent.children
-          .map(_.getNode.getElementType)
-          .contains(ScalaTokenTypes.tLBRACE)
+        val parentBlockHasBraces: Boolean = doStmt.getParent.children.map(
+          _.getNode.getElementType).contains(ScalaTokenTypes.tLBRACE)
 
         val parentBlockNeedBraces: Boolean = doStmtParent match {
           case _: ScalaFile => false
@@ -165,9 +160,8 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
             ScalaPsiElementFactory.createNewLine(manager),
             newExpression)
 
-          PsiDocumentManager
-            .getInstance(project)
-            .commitDocument(editor.getDocument)
+          PsiDocumentManager.getInstance(project).commitDocument(
+            editor.getDocument)
         }
       }
     }

@@ -29,9 +29,8 @@ class BinaryVectorizer(propertyMap: HashMap[(String, String), Int])
   val numFeatures = propertyMap.size
 
   override def toString: String = {
-    s"BinaryVectorizer($numFeatures): " + properties
-      .map(e => s"(${e._1}, ${e._2})")
-      .mkString(",")
+    s"BinaryVectorizer($numFeatures): " + properties.map(e =>
+      s"(${e._1}, ${e._2})").mkString(",")
   }
 
   def toBinary(map: Array[(String, String)]): Vector = {
@@ -48,8 +47,7 @@ object BinaryVectorizer {
       properties: HashSet[String]): BinaryVectorizer = {
     new BinaryVectorizer(
       HashMap(
-        input
-          .flatMap(identity)
+        input.flatMap(identity)
           .filter(e => properties.contains(e._1))
           .distinct
           .collect

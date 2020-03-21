@@ -37,10 +37,8 @@ class ClientCancellationSpec extends AkkaSpec("""
       Utils.assertAllStagesStopped {
         val requests = TestPublisher.probe[HttpRequest]()
         val responses = TestSubscriber.probe[HttpResponse]()
-        Source
-          .fromPublisher(requests)
-          .via(connection)
-          .runWith(Sink.fromSubscriber(responses))
+        Source.fromPublisher(requests).via(connection).runWith(
+          Sink.fromSubscriber(responses))
         responses.request(1)
         requests.sendNext(HttpRequest())
         responses.expectNext().entity.dataBytes.runWith(Sink.cancelled)
@@ -65,8 +63,9 @@ class ClientCancellationSpec extends AkkaSpec("""
     "support cancellation in simple outgoing connection with TLS" in {
       pending
       testCase(
-        Http()
-          .outgoingConnectionHttps(addressTls.getHostName, addressTls.getPort))
+        Http().outgoingConnectionHttps(
+          addressTls.getHostName,
+          addressTls.getPort))
     }
 
     "support cancellation in pooled outgoing connection with TLS" in {

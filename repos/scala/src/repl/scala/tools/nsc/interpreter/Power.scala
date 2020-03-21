@@ -72,8 +72,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       unseenHistory += unseen.size
       if (settings.verbose) {
         println(
-          "%3d  %s accumulated, %s discarded.  This pass: %s unseen, %s repeats"
-            .format(pass, keep.size, discarded, unseen.size, repeats.size))
+          "%3d  %s accumulated, %s discarded.  This pass: %s unseen, %s repeats".format(
+            pass,
+            keep.size,
+            discarded,
+            unseen.size,
+            repeats.size))
       }
       if (lastCount == processed || unseen.isEmpty || isFinished())
         return keep.toSet

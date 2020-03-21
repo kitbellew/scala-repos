@@ -88,8 +88,7 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     }
 
     val packageObjectsData = PackageObjectsData.getFor(context)
-    if (JavaBuilderUtil
-          .isForcedRecompilationAllJavaModules(context)) { //rebuild
+    if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context)) { //rebuild
       packageObjectsData.clear()
     } else {
       val additionalFiles =
@@ -202,9 +201,9 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     for {
       target <- chunk.getTargets.asScala
-      tempRoot <- project.getBuildRootIndex
-        .getTempTargetRoots(target, context)
-        .asScala
+      tempRoot <- project.getBuildRootIndex.getTempTargetRoots(
+        target,
+        context).asScala
     } {
       FileUtil.processFilesRecursively(
         tempRoot.getRootFile,

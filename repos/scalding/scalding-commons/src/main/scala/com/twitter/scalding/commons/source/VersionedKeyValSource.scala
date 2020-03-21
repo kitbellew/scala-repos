@@ -222,8 +222,7 @@ class VersionedKeyValSource[K, V](
       config: Config,
       mode: Mode): Iterator[(K, V)] = {
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(config, tap)
+    mode.openForRead(config, tap)
       .asScala
       .flatMap { te =>
         val item = te.selectTuple(fields)

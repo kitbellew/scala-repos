@@ -36,12 +36,11 @@ trait Dependent {
     */
   def youDependOnMe(who: Cell[_]): Unit =
     synchronized {
-      _iDependOn =
-        new WeakReference(who.asInstanceOf[Object]) :: _iDependOn.filter(
-          _.get match {
-            case null => false
-            case x    => x ne who
-          })
+      _iDependOn = new WeakReference(
+        who.asInstanceOf[Object]) :: _iDependOn.filter(_.get match {
+        case null => false
+        case x    => x ne who
+      })
     }
 
   /**
@@ -62,12 +61,10 @@ trait Dependent {
     */
   protected def whoDoIDependOn: Seq[Cell[_]] =
     synchronized {
-      _iDependOn
-        .flatMap(_.get match {
-          case null => Nil
-          case x    => List(x)
-        })
-        .asInstanceOf[List[Cell[_]]]
+      _iDependOn.flatMap(_.get match {
+        case null => Nil
+        case x    => List(x)
+      }).asInstanceOf[List[Cell[_]]]
     }
 
   private var _iDependOn: List[WeakReference[Object]] = Nil

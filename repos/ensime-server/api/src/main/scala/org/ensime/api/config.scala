@@ -27,10 +27,9 @@ case class EnsimeConfig(
     disableSourceMonitoring: Boolean = false,
     disableClassMonitoring: Boolean = false
 ) {
-  (rootDir :: cacheDir :: javaHome :: referenceSourceRoots ::: javaLibs)
-    .foreach { f =>
-      require(f.exists, "" + f + " is required but does not exist")
-    }
+  (rootDir :: cacheDir :: javaHome :: referenceSourceRoots ::: javaLibs).foreach {
+    f => require(f.exists, "" + f + " is required but does not exist")
+  }
 
   /* Proposed alternatives to the legacy wire format field names */
   def root = rootDir

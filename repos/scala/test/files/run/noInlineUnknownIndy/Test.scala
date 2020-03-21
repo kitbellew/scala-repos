@@ -33,9 +33,9 @@ object Test extends DirectTest {
     modifyClassFile(new File(testOutput.toFile, "A_1.class"))(
       (cn: ClassNode) => {
         val testMethod = cn.methods.iterator.asScala.find(_.name == "test").head
-        val indy = testMethod.instructions.iterator.asScala
-          .collect({ case i: InvokeDynamicInsnNode => i })
-          .next()
+        val indy = testMethod.instructions.iterator.asScala.collect({
+          case i: InvokeDynamicInsnNode => i
+        }).next()
         indy.bsm = unknownBootstrapMethod
         cn
       })

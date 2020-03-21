@@ -164,8 +164,11 @@ trait ThriftTest { self: FunSuite =>
       (serverName, newServer) <- servers
       testDef <- thriftTests
     } test(
-      "server:%s client:%s proto:%s %s"
-        .format(serverName, clientName, protoName, testDef.label)) {
+      "server:%s client:%s proto:%s %s".format(
+        serverName,
+        clientName,
+        protoName,
+        testDef.label)) {
       val tracer = new BufferingTracer
       val previous = DefaultTracer.self
       DefaultTracer.self = tracer

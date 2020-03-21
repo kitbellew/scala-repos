@@ -25,8 +25,8 @@ case class ScCompoundType(
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = components
-        .hashCode() + (signatureMap.hashCode() * 31 + typesMap.hashCode()) * 31
+      hash =
+        components.hashCode() + (signatureMap.hashCode() * 31 + typesMap.hashCode()) * 31
     }
     hash
   }
@@ -181,14 +181,16 @@ case class ScCompoundType(
           new TypeParameter(
             tp.name,
             tp.typeParams.map(updateTypeParam), {
-              val res = tp
-                .lowerType()
-                .recursiveVarianceUpdateModifiable(newData, update, 1)
+              val res = tp.lowerType().recursiveVarianceUpdateModifiable(
+                newData,
+                update,
+                1)
               () => res
             }, {
-              val res = tp
-                .upperType()
-                .recursiveVarianceUpdateModifiable(newData, update, 1)
+              val res = tp.upperType().recursiveVarianceUpdateModifiable(
+                newData,
+                update,
+                1)
               () => res
             },
             tp.ptp)

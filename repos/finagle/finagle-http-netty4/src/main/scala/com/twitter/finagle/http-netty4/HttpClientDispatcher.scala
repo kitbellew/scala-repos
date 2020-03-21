@@ -62,45 +62,41 @@ private[http4] class HttpClientDispatcher(
     }
 
     val nettyReq = Bijections.finagle.requestToNetty(req)
-    trans
-      .write(nettyReq)
-      .rescue(wrapWriteException)
-      .before {
-        // 1. Drain the Request body into the Transport.
-        val reqStreamF =
-          if (req.isChunked) streamChunks(trans, req.reader)
-          else Future.Done
+    trans.write(nettyReq).rescue(wrapWriteException).before {
+      // 1. Drain the Request body into the Transport.
+      val reqStreamF =
+        if (req.isChunked) streamChunks(trans, req.reader)
+        else Future.Done
 
-        // 2. Drain the Transport into Response body.
-        val repF = trans.read().flatMap {
-          case res: NettyHttp.HttpResponse if isNack(res) =>
-            p.updateIfEmpty(NackFailure)
-            Future.Done
+      // 2. Drain the Transport into Response body.
+      val repF = trans.read().flatMap {
+        case res: NettyHttp.HttpResponse if isNack(res) =>
+          p.updateIfEmpty(NackFailure)
+          Future.Done
 
-          case rep: NettyHttp.HttpResponse =>
-            // unchunked response
-            val finagleRep = Bijections.netty.responseToFinagle(rep)
-            p.updateIfEmpty(Return(finagleRep))
-            Future.Done
+        case rep: NettyHttp.HttpResponse =>
+          // unchunked response
+          val finagleRep = Bijections.netty.responseToFinagle(rep)
+          p.updateIfEmpty(Return(finagleRep))
+          Future.Done
 
-          case rep: NettyHttp.HttpContent =>
-            // chunked response
-            val coll = Transport.collate(trans, readChunk)
-            p.updateIfEmpty(Return(Response(req.version, Status.Ok, coll)))
-            coll
+        case rep: NettyHttp.HttpContent =>
+          // chunked response
+          val coll = Transport.collate(trans, readChunk)
+          p.updateIfEmpty(Return(Response(req.version, Status.Ok, coll)))
+          coll
 
-          case invalid =>
-            // relies on GenSerialClientDispatcher satisfying `p`
-            Future.exception(
-              new IllegalArgumentException(s"invalid message '$invalid'"))
-        }
-
-        Future.join(reqStreamF, repF).unit
-
+        case invalid =>
+          // relies on GenSerialClientDispatcher satisfying `p`
+          Future.exception(
+            new IllegalArgumentException(s"invalid message '$invalid'"))
       }
-      .onFailure { _ =>
-        req.reader.discard()
-        trans.close()
-      }
+
+      Future.join(reqStreamF, repF).unit
+
+    }.onFailure { _ =>
+      req.reader.discard()
+      trans.close()
+    }
   }
 }

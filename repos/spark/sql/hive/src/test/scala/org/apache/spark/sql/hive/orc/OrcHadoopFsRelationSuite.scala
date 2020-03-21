@@ -63,12 +63,11 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
           dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
-        hiveContext.read
-          .options(Map(
+        hiveContext.read.options(
+          Map(
             "path" -> file.getCanonicalPath,
-            "dataSchema" -> dataSchemaWithPartition.json))
-          .format(dataSourceName)
-          .load())
+            "dataSchema" -> dataSchemaWithPartition.json)).format(
+          dataSourceName).load())
     }
   }
 
@@ -111,7 +110,8 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
         OrcFile.createReader(orcFilePath, OrcFile.readerOptions(conf))
       assert(orcReader.getCompression == CompressionKind.ZLIB)
 
-      val copyDf = sqlContext.read
+      val copyDf = sqlContext
+        .read
         .orc(path)
       checkAnswer(df, copyDf)
     }

@@ -67,11 +67,10 @@ class ScDocTagValueImpl(node: ASTNode)
   def getSameNameVariants: Array[ResolveResult] = Array.empty
 
   def multiResolve(incompleteCode: Boolean): Array[ResolveResult] =
-    getParametersVariants
-      .filter(a =>
-        a.name == refName || ScalaPsiUtil.convertMemberName(
-          a.name) == ScalaPsiUtil.convertMemberName(refName))
-      .map(new ScalaResolveResult(_))
+    getParametersVariants.filter(a =>
+      a.name == refName || ScalaPsiUtil.convertMemberName(
+        a.name) == ScalaPsiUtil.convertMemberName(refName)).map(
+      new ScalaResolveResult(_))
 
   override def toString = "ScalaDocTagValue: " + getText
 
@@ -97,12 +96,10 @@ class ScDocTagValueImpl(node: ASTNode)
 
   override def handleElementRename(newElementName: String): PsiElement = {
     if (!ScalaNamesUtil.isIdentifier(newElementName)) return this
-    val doc = FileDocumentManager
-      .getInstance()
-      .getDocument(getContainingFile.getVirtualFile)
-    PsiDocumentManager
-      .getInstance(getProject)
-      .doPostponedOperationsAndUnblockDocument(doc)
+    val doc = FileDocumentManager.getInstance().getDocument(
+      getContainingFile.getVirtualFile)
+    PsiDocumentManager.getInstance(
+      getProject).doPostponedOperationsAndUnblockDocument(doc)
     val range: TextRange = getFirstChild.getTextRange
     doc.replaceString(range.getStartOffset, range.getEndOffset, newElementName)
     PsiDocumentManager.getInstance(getProject).commitAllDocuments()
@@ -152,9 +149,8 @@ class ScDocTagValueImpl(node: ASTNode)
           yield tag.getValueElement.getText).toSet
 
       val result = ArrayBuilder.make[ScNamedElement]()
-      params
-        .filter(param => !paramsSet.contains(param.name))
-        .foreach(result += _)
+      params.filter(param => !paramsSet.contains(param.name)).foreach(
+        result += _)
       result.result()
     }
 

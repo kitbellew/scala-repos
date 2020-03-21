@@ -185,9 +185,8 @@ private[parquet] object CatalystReadSupport {
       )
 
       assert(
-        parquetList.getFieldCount == 1 && parquetList
-          .getType(0)
-          .isRepetition(Repetition.REPEATED),
+        parquetList.getFieldCount == 1 && parquetList.getType(0).isRepetition(
+          Repetition.REPEATED),
         "Invalid Parquet schema. " +
           "LIST-annotated group should only have exactly one repeated field: " +
           parquetList

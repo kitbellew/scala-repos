@@ -138,8 +138,10 @@ object ScalaOIUtil {
           val sortedMembers = ScalaMemberChooser.sorted(selectedMembers, clazz)
           val genInfos = sortedMembers.map(new ScalaGenerationInfo(_))
           val anchor = getAnchor(editor.getCaretModel.getOffset, clazz)
-          val inserted = GenerateMembersUtil
-            .insertMembersBeforeAnchor(clazz, anchor.orNull, genInfos.reverse)
+          val inserted = GenerateMembersUtil.insertMembersBeforeAnchor(
+            clazz,
+            anchor.orNull,
+            genInfos.reverse)
           inserted.headOption.foreach(
             _.positionCaret(editor, toEditMethodBody = true))
         }
@@ -153,14 +155,12 @@ object ScalaOIUtil {
       clazz: ScTemplateDefinition,
       withOwn: Boolean = false,
       withSelfType: Boolean = false): Iterable[ClassMember] = {
-    allMembers(clazz, withSelfType)
-      .filter {
-        case sign: PhysicalSignature => needImplement(sign, clazz, withOwn)
-        case (named: PsiNamedElement, subst: ScSubstitutor) =>
-          needImplement(named, clazz, withOwn)
-        case _ => false
-      }
-      .flatMap(toClassMember(_, isImplement = true))
+    allMembers(clazz, withSelfType).filter {
+      case sign: PhysicalSignature => needImplement(sign, clazz, withOwn)
+      case (named: PsiNamedElement, subst: ScSubstitutor) =>
+        needImplement(named, clazz, withOwn)
+      case _ => false
+    }.flatMap(toClassMember(_, isImplement = true))
   }
 
   def isProductAbstractMethod(
@@ -193,14 +193,12 @@ object ScalaOIUtil {
   def getMembersToOverride(
       clazz: ScTemplateDefinition,
       withSelfType: Boolean): Iterable[ClassMember] = {
-    allMembers(clazz, withSelfType)
-      .filter {
-        case sign: PhysicalSignature => needOverride(sign, clazz)
-        case (named: PsiNamedElement, _: ScSubstitutor) =>
-          needOverride(named, clazz)
-        case _ => false
-      }
-      .flatMap(toClassMember(_, isImplement = false))
+    allMembers(clazz, withSelfType).filter {
+      case sign: PhysicalSignature => needOverride(sign, clazz)
+      case (named: PsiNamedElement, _: ScSubstitutor) =>
+        needOverride(named, clazz)
+      case _ => false
+    }.flatMap(toClassMember(_, isImplement = false))
   }
 
   def allMembers(
@@ -272,10 +270,10 @@ object ScalaOIUtil {
             "abstract") =>
         true
       case x
-          if x.hasModifierPropertyScala("abstract") && !x
-            .isInstanceOf[ScFunctionDefinition] &&
-            !x.isInstanceOf[ScPatternDefinition] && !x
-            .isInstanceOf[ScVariableDefinition] =>
+          if x.hasModifierPropertyScala("abstract") && !x.isInstanceOf[
+            ScFunctionDefinition] &&
+            !x.isInstanceOf[ScPatternDefinition] && !x.isInstanceOf[
+            ScVariableDefinition] =>
         true
       case x: ScFunctionDeclaration
           if x.hasAnnotation("scala.native") == None =>

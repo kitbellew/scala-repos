@@ -280,16 +280,14 @@ class ConcurrentMemory(implicit
 
     val deps = Dependants(optimize(prod, ourRule))
     val heads = deps.nodes.collect { case s @ Source(_) => s }
-    heads
-      .foldLeft(
-        (HMap.empty[ProdCons, PhysicalNode], NullPlan: ConcurrentMemoryPlan)) {
-        case ((hm, plan), head) =>
-          val (nextHm, plannedSource) = toPhys(deps, hm, head)
-          // All sources should be planned to source nodes
-          val sourceNode = plannedSource.asInstanceOf[SourceNode[_]]
-          val nextPlan = Monoid.plus(plan, sourceNode)
-          (nextHm, nextPlan)
-      }
-      ._2
+    heads.foldLeft(
+      (HMap.empty[ProdCons, PhysicalNode], NullPlan: ConcurrentMemoryPlan)) {
+      case ((hm, plan), head) =>
+        val (nextHm, plannedSource) = toPhys(deps, hm, head)
+        // All sources should be planned to source nodes
+        val sourceNode = plannedSource.asInstanceOf[SourceNode[_]]
+        val nextPlan = Monoid.plus(plan, sourceNode)
+        (nextHm, nextPlan)
+    }._2
   }
 }

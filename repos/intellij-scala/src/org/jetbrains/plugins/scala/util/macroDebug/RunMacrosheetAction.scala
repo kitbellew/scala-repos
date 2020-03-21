@@ -28,12 +28,11 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
       defaultText: String = "",
       lang: Language = StdLanguages.TEXT): Editor = {
     val editor = EditorFactory.getInstance.createViewer(
-      PsiDocumentManager
-        .getInstance(project)
-        .getDocument(
-          PsiFileFactory
-            .getInstance(project)
-            .createFileFromText("dummy", lang, defaultText)),
+      PsiDocumentManager.getInstance(project).getDocument(
+        PsiFileFactory.getInstance(project).createFileFromText(
+          "dummy",
+          lang,
+          defaultText)),
       project)
     editor setBorder null
     editor
@@ -44,14 +43,13 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
       FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
     if (editor == null) return
 
-    val psiFile: PsiFile = PsiDocumentManager
-      .getInstance(e.getProject)
-      .getPsiFile(editor.getDocument)
+    val psiFile: PsiFile = PsiDocumentManager.getInstance(
+      e.getProject).getPsiFile(editor.getDocument)
     psiFile match {
       case file: ScalaFile =>
-        val viewer = WorksheetEditorPrinter
-          .newMacrosheetUiFor(editor, file.getVirtualFile)
-          .getViewerEditor
+        val viewer = WorksheetEditorPrinter.newMacrosheetUiFor(
+          editor,
+          file.getVirtualFile).getViewerEditor
 
         val project = e.getProject
 
@@ -61,8 +59,11 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
               override def run() {
                 extensions.inWriteAction {
                   CleanWorksheetAction.resetScrollModel(viewer)
-                  CleanWorksheetAction
-                    .cleanWorksheet(file.getNode, editor, viewer, project)
+                  CleanWorksheetAction.cleanWorksheet(
+                    file.getNode,
+                    editor,
+                    viewer,
+                    project)
                 }
               }
             },

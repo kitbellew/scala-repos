@@ -104,26 +104,23 @@ class FileJobManager[M[+_]] private[FileJobManager] (
 
   private[this] def saveJob(jobId: JobId, jobState: FileJobState) = {
     cache += (jobId -> jobState)
-    IOUtils
-      .safeWriteToFile(jobState.serialize.renderCompact, jobFile(jobId))
-      .unsafePerformIO
+    IOUtils.safeWriteToFile(
+      jobState.serialize.renderCompact,
+      jobFile(jobId)).unsafePerformIO
   }
 
   private[this] def loadJob(jobId: JobId): Option[FileJobState] = {
     cache.get(jobId) orElse {
       if (jobFile(jobId).exists) {
-        JParser
-          .parseFromFile(jobFile(jobId))
-          .bimap(Extractor.Thrown(_), j => j)
-          .flatMap { jobV => jobV.validated[FileJobState] }
-          .bimap(
-            {
-              error =>
-                logger.error(
-                  "Error loading job for %s: %s".format(jobId, error.message))
-            },
-            j => j)
-          .toOption
+        JParser.parseFromFile(jobFile(jobId)).bimap(
+          Extractor.Thrown(_),
+          j => j).flatMap { jobV => jobV.validated[FileJobState] }.bimap(
+          {
+            error =>
+              logger.error(
+                "Error loading job for %s: %s".format(jobId, error.message))
+          },
+          j => j).toOption
       } else {
         None
       }
@@ -221,37 +218,33 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         (extra map (JField("info", _) :: Nil) getOrElse Nil)
     )
 
-    cache
-      .get(jobId)
-      .map {
-        case FileJobState(_, status, _) =>
-          status match {
-            case Some(curStatus)
-                if curStatus.id == prevStatus.getOrElse(curStatus.id) =>
-              for (m <- addMessage(jobId, JobManager.channels.Status, jval))
-                yield {
-                  val Some(s) = Status.fromMessage(m)
-                  cache += (jobId -> cache(jobId).copy(status = Some(s)))
-                  Right(s)
-                }
+    cache.get(jobId).map {
+      case FileJobState(_, status, _) =>
+        status match {
+          case Some(curStatus)
+              if curStatus.id == prevStatus.getOrElse(curStatus.id) =>
+            for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+              yield {
+                val Some(s) = Status.fromMessage(m)
+                cache += (jobId -> cache(jobId).copy(status = Some(s)))
+                Right(s)
+              }
 
-            case Some(_) =>
-              M.point(Left("Current status did not match expected status."))
+          case Some(_) =>
+            M.point(Left("Current status did not match expected status."))
 
-            case None if prevStatus.isDefined =>
-              M.point(
-                Left("Job has not yet started, yet a status was expected."))
+          case None if prevStatus.isDefined =>
+            M.point(Left("Job has not yet started, yet a status was expected."))
 
-            case None =>
-              for (m <- addMessage(jobId, JobManager.channels.Status, jval))
-                yield {
-                  val Some(s) = Status.fromMessage(m)
-                  cache += (jobId -> cache(jobId).copy(status = Some(s)))
-                  Right(s)
-                }
-          }
-      }
-      .getOrElse(M.point(Left("No job found for jobId " + jobId)))
+          case None =>
+            for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+              yield {
+                val Some(s) = Status.fromMessage(m)
+                cache += (jobId -> cache(jobId).copy(status = Some(s)))
+                Right(s)
+              }
+        }
+    }.getOrElse(M.point(Left("No job found for jobId " + jobId)))
   }
 
   def getStatus(jobId: JobId): M[Option[Status]] =
@@ -262,16 +255,13 @@ class FileJobManager[M[+_]] private[FileJobManager] (
   def transition(jobId: JobId)(
       t: JobState => Either[String, JobState]): M[Either[String, Job]] =
     M.point {
-      loadJob(jobId)
-        .toSuccess("Failed to locate job " + jobId)
-        .flatMap { fjs =>
-          Validation.fromEither(t(fjs.job.state)).map { newState =>
-            val updated = fjs.copy(job = fjs.job.copy(state = newState))
-            saveJob(jobId, updated)
-            updated.job
-          }
+      loadJob(jobId).toSuccess("Failed to locate job " + jobId).flatMap { fjs =>
+        Validation.fromEither(t(fjs.job.state)).map { newState =>
+          val updated = fjs.copy(job = fjs.job.copy(state = newState))
+          saveJob(jobId, updated)
+          updated.job
         }
-        .toEither
+      }.toEither
     }
 
   // Results handling

@@ -78,9 +78,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
   def rewriteClosureApplyInvocations(): Unit = {
 
     // sort all closure invocations to rewrite to ensure bytecode stability
-    val toRewrite = mutable.TreeMap
-      .empty[ClosureInstantiation, mutable.ArrayBuffer[(MethodInsnNode, Int)]](
-        closureInitOrdering)
+    val toRewrite = mutable.TreeMap.empty[
+      ClosureInstantiation,
+      mutable.ArrayBuffer[(MethodInsnNode, Int)]](closureInitOrdering)
     def addRewrite(
         init: ClosureInstantiation,
         invocation: MethodInsnNode,
@@ -178,47 +178,42 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     val ownerClass = closureInit.ownerClass
     val lambdaBodyHandle = closureInit.lambdaMetaFactoryCall.implMethod
 
-    ownerMethod.instructions.iterator.asScala
-      .collect({
-        case invocation: MethodInsnNode
-            if isSamInvocation(invocation, closureInit, prodCons) =>
-          // TODO: This is maybe over-cautious.
-          // We are checking if the closure body method is accessible at the closure callsite.
-          // If the closure allocation has access to the body method, then the callsite (in the same
-          // method as the allocation) should have access too.
-          val bodyAccessible: Either[OptimizerWarning, Boolean] = for {
-            (bodyMethodNode, declClass) <- byteCodeRepository.methodNode(
-              lambdaBodyHandle.getOwner,
-              lambdaBodyHandle.getName,
-              lambdaBodyHandle.getDesc): Either[
-              OptimizerWarning,
-              (MethodNode, InternalName)]
-            isAccessible <- inliner.memberIsAccessible(
-              bodyMethodNode.access,
-              classBTypeFromParsedClassfile(declClass),
-              classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
-              ownerClass)
-          } yield {
-            isAccessible
+    ownerMethod.instructions.iterator.asScala.collect({
+      case invocation: MethodInsnNode
+          if isSamInvocation(invocation, closureInit, prodCons) =>
+        // TODO: This is maybe over-cautious.
+        // We are checking if the closure body method is accessible at the closure callsite.
+        // If the closure allocation has access to the body method, then the callsite (in the same
+        // method as the allocation) should have access too.
+        val bodyAccessible: Either[OptimizerWarning, Boolean] = for {
+          (bodyMethodNode, declClass) <- byteCodeRepository.methodNode(
+            lambdaBodyHandle.getOwner,
+            lambdaBodyHandle.getName,
+            lambdaBodyHandle.getDesc): Either[
+            OptimizerWarning,
+            (MethodNode, InternalName)]
+          isAccessible <- inliner.memberIsAccessible(
+            bodyMethodNode.access,
+            classBTypeFromParsedClassfile(declClass),
+            classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
+            ownerClass)
+        } yield {
+          isAccessible
+        }
+
+        def pos =
+          callGraph.callsites(ownerMethod).get(invocation).map(
+            _.callsitePosition).getOrElse(NoPosition)
+        val stackSize: Either[RewriteClosureApplyToClosureBodyFailed, Int] =
+          bodyAccessible match {
+            case Left(w) => Left(RewriteClosureAccessCheckFailed(pos, w))
+            case Right(false) =>
+              Left(RewriteClosureIllegalAccess(pos, ownerClass.internalName))
+            case _ => Right(prodCons.frameAt(invocation).getStackSize)
           }
 
-          def pos =
-            callGraph
-              .callsites(ownerMethod)
-              .get(invocation)
-              .map(_.callsitePosition)
-              .getOrElse(NoPosition)
-          val stackSize: Either[RewriteClosureApplyToClosureBodyFailed, Int] =
-            bodyAccessible match {
-              case Left(w) => Left(RewriteClosureAccessCheckFailed(pos, w))
-              case Right(false) =>
-                Left(RewriteClosureIllegalAccess(pos, ownerClass.internalName))
-              case _ => Right(prodCons.frameAt(invocation).getStackSize)
-            }
-
-          stackSize.right.map((invocation, _))
-      })
-      .toList
+        stackSize.right.map((invocation, _))
+    }).toList
   }
 
   /**
@@ -262,9 +257,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       }
 
       def isSpecializedVersion(specName: String, nonSpecName: String) =
-        specName.startsWith(nonSpecName) && specializationSuffix.pattern
-          .matcher(specName.substring(nonSpecName.length))
-          .matches
+        specName.startsWith(
+          nonSpecName) && specializationSuffix.pattern.matcher(
+          specName.substring(nonSpecName.length)).matches
 
       def sameOrSpecializedType(specTp: Type, nonSpecTp: Type) = {
         specTp == nonSpecTp || {
@@ -450,10 +445,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       lambdaBodyHandle.getName,
       lambdaBodyHandle.getDesc)
     def bodyMethodIsBeingCompiled =
-      byteCodeRepository
-        .classNodeAndSource(lambdaBodyHandle.getOwner)
-        .map(_._2 == CompilationUnit)
-        .getOrElse(false)
+      byteCodeRepository.classNodeAndSource(lambdaBodyHandle.getOwner).map(
+        _._2 == CompilationUnit).getOrElse(false)
     val callee = bodyMethod.map({
       case (bodyMethodNode, bodyMethodDeclClass) =>
         val bodyDeclClassType =
@@ -474,12 +467,10 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           calleeInfoWarning = None
         )
     })
-    val argInfos = closureInit.capturedArgInfos ++ originalCallsite
-      .map(cs =>
-        cs.argInfos map {
-          case (index, info) => (index + numCapturedValues, info)
-        })
-      .getOrElse(IntMap.empty)
+    val argInfos = closureInit.capturedArgInfos ++ originalCallsite.map(cs =>
+      cs.argInfos map {
+        case (index, info) => (index + numCapturedValues, info)
+      }).getOrElse(IntMap.empty)
     val bodyMethodCallsite = Callsite(
       callsiteInstruction = bodyInvocation,
       callsiteMethod = ownerMethod,
@@ -504,9 +495,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // (x: T) => ??? has return type Nothing$, and an ATHROW is added (see fixLoadedNothingOrNullValue).
     unreachableCodeEliminated -= ownerMethod
 
-    if (hasAdaptedImplMethod(closureInit) && inliner
-          .canInlineBody(bodyMethodCallsite)
-          .isEmpty)
+    if (hasAdaptedImplMethod(closureInit) && inliner.canInlineBody(
+          bodyMethodCallsite).isEmpty)
       inliner.inlineCallsite(bodyMethodCallsite)
   }
 

@@ -370,8 +370,7 @@ router-dispatcher {}
     val threads10bNr = threads10b.size
     require(
       threads10bNr == 5,
-      s"Expected 5 threads for router10b, had $threads10bNr! Got: ${threads10b
-        .map(_.getName)}")
+      s"Expected 5 threads for router10b, had $threads10bNr! Got: ${threads10b.map(_.getName)}")
 
     //#smallest-mailbox-pool-1
     val router11: ActorRef =
@@ -411,8 +410,8 @@ router-dispatcher {}
     //#scatter-gather-pool-2
     val router18: ActorRef =
       context.actorOf(
-        ScatterGatherFirstCompletedPool(5, within = 10.seconds)
-          .props(Props[Worker]),
+        ScatterGatherFirstCompletedPool(5, within = 10.seconds).props(
+          Props[Worker]),
         "router18")
     //#scatter-gather-pool-2
 
@@ -436,8 +435,8 @@ router-dispatcher {}
     //#tail-chopping-pool-2
     val router22: ActorRef =
       context.actorOf(
-        TailChoppingPool(5, within = 10.seconds, interval = 20.millis)
-          .props(Props[Worker]),
+        TailChoppingPool(5, within = 10.seconds, interval = 20.millis).props(
+          Props[Worker]),
         "router22")
     //#tail-chopping-pool-2
 
@@ -449,8 +448,10 @@ router-dispatcher {}
     //#tail-chopping-group-2
     val router24: ActorRef =
       context.actorOf(
-        TailChoppingGroup(paths, within = 10.seconds, interval = 20.millis)
-          .props(),
+        TailChoppingGroup(
+          paths,
+          within = 10.seconds,
+          interval = 20.millis).props(),
         "router24")
     //#tail-chopping-group-2
 
@@ -522,8 +523,8 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
     val router: ActorRef = system.actorOf(
       // “head” router actor will run on "router-dispatcher" dispatcher
       // Worker routees will run on "pool-dispatcher" dispatcher
-      RandomPool(5, routerDispatcher = "router-dispatcher")
-        .props(Props[Worker]),
+      RandomPool(5, routerDispatcher = "router-dispatcher").props(
+        Props[Worker]),
       name = "poolWithDispatcher"
     )
     //#dispatchers

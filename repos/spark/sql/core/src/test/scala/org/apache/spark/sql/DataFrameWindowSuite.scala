@@ -68,9 +68,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("lead with default value") {
-    val df =
-      Seq((1, "1"), (1, "1"), (2, "2"), (1, "1"), (2, "2"), (1, "1"), (2, "2"))
-        .toDF("key", "value")
+    val df = Seq(
+      (1, "1"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2")).toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
@@ -88,9 +93,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("lag with default value") {
-    val df =
-      Seq((1, "1"), (1, "1"), (2, "2"), (1, "1"), (2, "2"), (1, "1"), (2, "2"))
-        .toDF("key", "value")
+    val df = Seq(
+      (1, "1"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2")).toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
@@ -150,8 +160,10 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("aggregation and range between") {
-    val df = Seq((1, "1"), (1, "1"), (3, "1"), (2, "2"), (2, "1"), (2, "2"))
-      .toDF("key", "value")
+    val df =
+      Seq((1, "1"), (1, "1"), (3, "1"), (2, "2"), (2, "1"), (2, "2")).toDF(
+        "key",
+        "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
@@ -168,22 +180,18 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("aggregation and rows between with unbounded") {
-    val df = Seq((1, "1"), (2, "2"), (2, "3"), (1, "3"), (3, "2"), (4, "3"))
-      .toDF("key", "value")
+    val df =
+      Seq((1, "1"), (2, "2"), (2, "3"), (1, "3"), (3, "2"), (4, "3")).toDF(
+        "key",
+        "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
         $"key",
-        last("key").over(
-          Window
-            .partitionBy($"value")
-            .orderBy($"key")
-            .rowsBetween(0, Long.MaxValue)),
-        last("key").over(
-          Window
-            .partitionBy($"value")
-            .orderBy($"key")
-            .rowsBetween(Long.MinValue, 0)),
+        last("key").over(Window.partitionBy($"value").orderBy(
+          $"key").rowsBetween(0, Long.MaxValue)),
+        last("key").over(Window.partitionBy($"value").orderBy(
+          $"key").rowsBetween(Long.MinValue, 0)),
         last("key").over(
           Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 1))
       ),
@@ -198,33 +206,30 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("aggregation and range between with unbounded") {
-    val df = Seq((5, "1"), (5, "2"), (4, "2"), (6, "2"), (3, "1"), (2, "2"))
-      .toDF("key", "value")
+    val df =
+      Seq((5, "1"), (5, "2"), (4, "2"), (6, "2"), (3, "1"), (2, "2")).toDF(
+        "key",
+        "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
         $"key",
-        last("value")
-          .over(
-            Window.partitionBy($"value").orderBy($"key").rangeBetween(-2, -1))
+        last("value").over(
+          Window.partitionBy($"value").orderBy($"key").rangeBetween(-2, -1))
           .equalTo("2")
           .as("last_v"),
-        avg("key")
-          .over(
-            Window
-              .partitionBy("value")
-              .orderBy("key")
-              .rangeBetween(Long.MinValue, 1))
+        avg("key").over(
+          Window.partitionBy("value").orderBy("key").rangeBetween(
+            Long.MinValue,
+            1))
           .as("avg_key1"),
-        avg("key")
-          .over(
-            Window
-              .partitionBy("value")
-              .orderBy("key")
-              .rangeBetween(0, Long.MaxValue))
+        avg("key").over(
+          Window.partitionBy("value").orderBy("key").rangeBetween(
+            0,
+            Long.MaxValue))
           .as("avg_key2"),
-        avg("key")
-          .over(Window.partitionBy("value").orderBy("key").rangeBetween(-1, 0))
+        avg("key").over(
+          Window.partitionBy("value").orderBy("key").rangeBetween(-1, 0))
           .as("avg_key3")
       ),
       Seq(
@@ -251,10 +256,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       (9, "Pro", "Tablet", 4500),
       (10, "Pro2", "Tablet", 6500)
     ).toDF("id", "product", "category", "revenue")
-    val window = Window
-      .partitionBy($"category")
-      .orderBy($"revenue".desc)
-      .rangeBetween(-2000L, 1000L)
+    val window = Window.partitionBy($"category").orderBy(
+      $"revenue".desc).rangeBetween(-2000L, 1000L)
     checkAnswer(
       df.select($"id", avg($"revenue").over(window).cast("int")),
       Row(1, 5833) :: Row(2, 2000) :: Row(3, 5500) ::
@@ -279,9 +282,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("statistical functions") {
-    val df =
-      Seq(("a", 1), ("a", 1), ("a", 2), ("a", 2), ("b", 4), ("b", 3), ("b", 2))
-        .toDF("key", "value")
+    val df = Seq(
+      ("a", 1),
+      ("a", 1),
+      ("a", 2),
+      ("a", 2),
+      ("b", 4),
+      ("b", 3),
+      ("b", 2)).toDF("key", "value")
     val window = Window.partitionBy($"key")
     checkAnswer(
       df.select(
@@ -295,9 +303,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("window function with aggregates") {
-    val df =
-      Seq(("a", 1), ("a", 1), ("a", 2), ("a", 2), ("b", 4), ("b", 3), ("b", 2))
-        .toDF("key", "value")
+    val df = Seq(
+      ("a", 1),
+      ("a", 1),
+      ("a", 2),
+      ("a", 2),
+      ("b", 4),
+      ("b", 3),
+      ("b", 2)).toDF("key", "value")
     val window = Window.orderBy()
     checkAnswer(
       df.groupBy($"key")
@@ -419,8 +432,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
 
   test(
     "SPARK-12989 ExtractWindowExpressions treats alias as regular attribute") {
-    val src = Seq((0, 3, 5))
-      .toDF("a", "b", "c")
+    val src = Seq((0, 3, 5)).toDF("a", "b", "c")
       .withColumn("Data", struct("a", "b"))
       .drop("a")
       .drop("b")

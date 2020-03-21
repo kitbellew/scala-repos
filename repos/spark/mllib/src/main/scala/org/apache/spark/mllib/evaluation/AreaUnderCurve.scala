@@ -42,13 +42,11 @@ private[evaluation] object AreaUnderCurve {
     * @param curve a RDD of ordered 2D points stored in pairs representing a curve
     */
   def of(curve: RDD[(Double, Double)]): Double = {
-    curve
-      .sliding(2)
-      .aggregate(0.0)(
-        seqOp = (auc: Double, points: Array[(Double, Double)]) =>
-          auc + trapezoid(points),
-        combOp = _ + _
-      )
+    curve.sliding(2).aggregate(0.0)(
+      seqOp = (auc: Double, points: Array[(Double, Double)]) =>
+        auc + trapezoid(points),
+      combOp = _ + _
+    )
   }
 
   /**
@@ -57,13 +55,10 @@ private[evaluation] object AreaUnderCurve {
     * @param curve an iterator over ordered 2D points stored in pairs representing a curve
     */
   def of(curve: Iterable[(Double, Double)]): Double = {
-    curve.toIterator
-      .sliding(2)
-      .withPartial(false)
-      .aggregate(0.0)(
-        seqop = (auc: Double, points: Seq[(Double, Double)]) =>
-          auc + trapezoid(points),
-        combop = _ + _
-      )
+    curve.toIterator.sliding(2).withPartial(false).aggregate(0.0)(
+      seqop =
+        (auc: Double, points: Seq[(Double, Double)]) => auc + trapezoid(points),
+      combop = _ + _
+    )
   }
 }

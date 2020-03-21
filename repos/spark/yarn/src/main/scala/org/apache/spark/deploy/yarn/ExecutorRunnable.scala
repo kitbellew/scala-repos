@@ -75,8 +75,7 @@ private[yarn] class ExecutorRunnable(
   def startContainer(): java.util.Map[String, ByteBuffer] = {
     logInfo("Setting up ContainerLaunchContext")
 
-    val ctx = Records
-      .newRecord(classOf[ContainerLaunchContext])
+    val ctx = Records.newRecord(classOf[ContainerLaunchContext])
       .asInstanceOf[ContainerLaunchContext]
 
     val localResources = prepareLocalResources
@@ -162,14 +161,12 @@ private[yarn] class ExecutorRunnable(
 
     // Set extra Java options for the executor, if defined
     sparkConf.get(EXECUTOR_JAVA_OPTIONS).foreach { opts =>
-      javaOpts ++= Utils
-        .splitCommandString(opts)
-        .map(YarnSparkHadoopUtil.escapeForShell)
+      javaOpts ++= Utils.splitCommandString(opts).map(
+        YarnSparkHadoopUtil.escapeForShell)
     }
     sys.env.get("SPARK_JAVA_OPTS").foreach { opts =>
-      javaOpts ++= Utils
-        .splitCommandString(opts)
-        .map(YarnSparkHadoopUtil.escapeForShell)
+      javaOpts ++= Utils.splitCommandString(opts).map(
+        YarnSparkHadoopUtil.escapeForShell)
     }
     sparkConf.get(EXECUTOR_LIBRARY_PATH).foreach { p =>
       prefixEnv = Some(
@@ -223,18 +220,15 @@ private[yarn] class ExecutorRunnable(
     javaOpts += ("-Dspark.yarn.app.container.log.dir=" + ApplicationConstants.LOG_DIR_EXPANSION_VAR)
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
-    val userClassPath = Client
-      .getUserClasspath(sparkConf)
-      .flatMap { uri =>
-        val absPath =
-          if (new File(uri.getPath()).isAbsolute()) {
-            Client.getClusterPath(sparkConf, uri.getPath())
-          } else {
-            Client.buildPath(Environment.PWD.$(), uri.getPath())
-          }
-        Seq("--user-class-path", "file:" + absPath)
-      }
-      .toSeq
+    val userClassPath = Client.getUserClasspath(sparkConf).flatMap { uri =>
+      val absPath =
+        if (new File(uri.getPath()).isAbsolute()) {
+          Client.getClusterPath(sparkConf, uri.getPath())
+        } else {
+          Client.buildPath(Environment.PWD.$(), uri.getPath())
+        }
+      Seq("--user-class-path", "file:" + absPath)
+    }.toSeq
 
     val commands = prefixEnv ++ Seq(
       YarnSparkHadoopUtil.expandEnvironment(
@@ -376,10 +370,7 @@ private[yarn] class ExecutorRunnable(
       env("SPARK_LOG_URL_STDOUT") = s"$baseUrl/stdout?start=-4096"
     }
 
-    System
-      .getenv()
-      .asScala
-      .filterKeys(_.startsWith("SPARK"))
+    System.getenv().asScala.filterKeys(_.startsWith("SPARK"))
       .foreach { case (k, v) => env(k) = v }
     env
   }

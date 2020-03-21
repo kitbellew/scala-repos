@@ -23,7 +23,8 @@ import org.apache.kafka.common.internals.TopicConstants
 
 sealed abstract class TopicFilter(rawRegex: String) extends Logging {
 
-  val regex = rawRegex.trim
+  val regex = rawRegex
+    .trim
     .replace(',', '|')
     .replace(" ", "")
     .replaceAll("""^["']+""", "")
@@ -43,8 +44,9 @@ sealed abstract class TopicFilter(rawRegex: String) extends Logging {
 
 case class Whitelist(rawRegex: String) extends TopicFilter(rawRegex) {
   override def isTopicAllowed(topic: String, excludeInternalTopics: Boolean) = {
-    val allowed = topic.matches(regex) && !(TopicConstants.INTERNAL_TOPICS
-      .contains(topic) && excludeInternalTopics)
+    val allowed =
+      topic.matches(regex) && !(TopicConstants.INTERNAL_TOPICS.contains(
+        topic) && excludeInternalTopics)
 
     debug("%s %s".format(topic, if (allowed) "allowed" else "filtered"))
 
@@ -55,8 +57,9 @@ case class Whitelist(rawRegex: String) extends TopicFilter(rawRegex) {
 
 case class Blacklist(rawRegex: String) extends TopicFilter(rawRegex) {
   override def isTopicAllowed(topic: String, excludeInternalTopics: Boolean) = {
-    val allowed = (!topic.matches(regex)) && !(TopicConstants.INTERNAL_TOPICS
-      .contains(topic) && excludeInternalTopics)
+    val allowed =
+      (!topic.matches(regex)) && !(TopicConstants.INTERNAL_TOPICS.contains(
+        topic) && excludeInternalTopics)
 
     debug("%s %s".format(topic, if (allowed) "allowed" else "filtered"))
 

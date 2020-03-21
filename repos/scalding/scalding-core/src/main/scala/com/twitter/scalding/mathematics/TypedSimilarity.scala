@@ -45,12 +45,11 @@ object GraphOperations extends Serializable {
     */
   def joinAggregate[N, E, T](grouped: Grouped[N, Edge[N, E]])(
       agfn: Iterable[Edge[N, E]] => T): TypedPipe[Edge[N, (E, T)]] =
-    grouped
-      .cogroup(grouped) {
-        (to: N, left: Iterator[Edge[N, E]], right: Iterable[Edge[N, E]]) =>
-          val newState = agfn(right)
-          left.map { _.mapData { e: E => (e, newState) } }
-      }
+    grouped.cogroup(grouped) {
+      (to: N, left: Iterator[Edge[N, E]], right: Iterable[Edge[N, E]]) =>
+        val newState = agfn(right)
+        left.map { _.mapData { e: E => (e, newState) } }
+    }
       .values
 
   // Returns all Vertices with non-zero in-degree
@@ -168,32 +167,33 @@ object TypedSimilarity extends Serializable {
     // 2) fix seed so that map-reduce speculative execution does not give inconsistent results.
     lazy val rnd = new scala.util.Random(1024)
     maybeWithReducers(
-      smallG
-        .cogroup(bigG) {
-          (n: N, leftit: Iterator[(N, Int)], rightit: Iterable[(N, Int)]) =>
-            // Use a co-group to ensure this happens in the reducer:
-            leftit.flatMap {
-              case (node1, deg1) =>
-                rightit.iterator.flatMap {
-                  case (node2, deg2) =>
-                    val weight =
-                      1.0 / scala.math.sqrt(deg1.toDouble * deg2.toDouble)
-                    val prob = oversample * weight
-                    if (prob >= 1.0) {
-                      // Small degree case, just output all of them:
-                      Iterator(((node1, node2), weight))
-                    } else if (rnd.nextDouble < prob) {
-                      // Sample
-                      Iterator(((node1, node2), 1.0 / oversample))
-                    } else
-                      Iterator.empty
-                }
-            }
-        }
+      smallG.cogroup(bigG) {
+        (n: N, leftit: Iterator[(N, Int)], rightit: Iterable[(N, Int)]) =>
+          // Use a co-group to ensure this happens in the reducer:
+          leftit.flatMap {
+            case (node1, deg1) =>
+              rightit.iterator.flatMap {
+                case (node2, deg2) =>
+                  val weight =
+                    1.0 / scala.math.sqrt(deg1.toDouble * deg2.toDouble)
+                  val prob = oversample * weight
+                  if (prob >= 1.0) {
+                    // Small degree case, just output all of them:
+                    Iterator(((node1, node2), weight))
+                  } else if (rnd.nextDouble < prob) {
+                    // Sample
+                    Iterator(((node1, node2), 1.0 / oversample))
+                  } else
+                    Iterator.empty
+              }
+          }
+      }
         .values
         .group,
       smallG.reducers
-    ).forceToReducers.sum
+    )
+      .forceToReducers
+      .sum
       .map { case ((node1, node2), sim) => Edge(node1, node2, sim) }
   }
 
@@ -209,35 +209,36 @@ object TypedSimilarity extends Serializable {
       oversample: Double): TypedPipe[Edge[N, Double]] = {
     lazy val rnd = new scala.util.Random(1024)
     maybeWithReducers(
-      smallG
-        .cogroup(bigG) {
-          (
-              n: N,
-              leftit: Iterator[(N, Double, Double)],
-              rightit: Iterable[(N, Double, Double)]) =>
-            // Use a co-group to ensure this happens in the reducer:
-            leftit.flatMap {
-              case (node1, weight1, norm1) =>
-                rightit.iterator.flatMap {
-                  case (node2, weight2, norm2) =>
-                    val weight = 1.0 / (norm1.toDouble * norm2.toDouble)
-                    val prob = oversample * weight
-                    if (prob >= 1.0) {
-                      // Small degree case, just output all of them:
-                      Iterator(((node1, node2), weight * weight1 * weight2))
-                    } else if (rnd.nextDouble < prob) {
-                      // Sample
-                      Iterator(
-                        ((node1, node2), 1.0 / oversample * weight1 * weight2))
-                    } else
-                      Iterator.empty
-                }
-            }
-        }
+      smallG.cogroup(bigG) {
+        (
+            n: N,
+            leftit: Iterator[(N, Double, Double)],
+            rightit: Iterable[(N, Double, Double)]) =>
+          // Use a co-group to ensure this happens in the reducer:
+          leftit.flatMap {
+            case (node1, weight1, norm1) =>
+              rightit.iterator.flatMap {
+                case (node2, weight2, norm2) =>
+                  val weight = 1.0 / (norm1.toDouble * norm2.toDouble)
+                  val prob = oversample * weight
+                  if (prob >= 1.0) {
+                    // Small degree case, just output all of them:
+                    Iterator(((node1, node2), weight * weight1 * weight2))
+                  } else if (rnd.nextDouble < prob) {
+                    // Sample
+                    Iterator(
+                      ((node1, node2), 1.0 / oversample * weight1 * weight2))
+                  } else
+                    Iterator.empty
+              }
+          }
+      }
         .values
         .group,
       smallG.reducers
-    ).forceToReducers.sum
+    )
+      .forceToReducers
+      .sum
       .map { case ((node1, node2), sim) => Edge(node1, node2, sim) }
   }
 }
@@ -259,8 +260,7 @@ class ExactInCosine[N](reducers: Int = -1)(implicit
       .map { e => (e.from, (e.to, e.data.degree)) }
       .group
       .withReducers(reducers)
-    TypedSimilarity
-      .exactSetSimilarity(groupedOnSrc, smallpred, bigpred)
+    TypedSimilarity.exactSetSimilarity(groupedOnSrc, smallpred, bigpred)
       .flatMap { e => e.data.cosine.map { c => e.mapData { s => c } } }
   }
 }

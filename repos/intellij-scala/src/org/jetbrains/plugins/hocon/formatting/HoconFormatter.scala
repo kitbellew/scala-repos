@@ -80,12 +80,10 @@ class HoconFormatter(settings: CodeStyleSettings) {
     val lineBreakEnsuringSpacing =
       Spacing.createSpacing(0, 0, 1, keepLineBreaks, maxBlankLines)
 
-    val isLineBreakBetween = parent.getText
-      .subSequence(
-        leftChild.getTextRange.getEndOffset - parent.getTextRange.getStartOffset,
-        rightChild.getTextRange.getStartOffset - parent.getTextRange.getStartOffset)
-      .charIterator
-      .contains('\n')
+    val isLineBreakBetween = parent.getText.subSequence(
+      leftChild.getTextRange.getEndOffset - parent.getTextRange.getStartOffset,
+      rightChild.getTextRange.getStartOffset - parent.getTextRange.getStartOffset)
+      .charIterator.contains('\n')
 
     def standardSpacing =
       (leftChild.getElementType, rightChild.getElementType) match {

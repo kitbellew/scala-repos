@@ -30,8 +30,8 @@ class ScFieldIdStubImpl[ParentPsi <: PsiElement](
       name: String) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = StringRef.fromString(name)
   }
 

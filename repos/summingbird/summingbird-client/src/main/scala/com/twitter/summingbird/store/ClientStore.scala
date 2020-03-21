@@ -168,9 +168,8 @@ class ClientStore[K, V: Semigroup](
    */
   def multiGetBatch[K1 <: K](batch: BatchID, ks: Set[K1]): Map[K1, FOpt[V]] = {
     val offlineResult: Map[K1, FOpt[(BatchID, V)]] =
-      offlineStore
-        .multiGet(ks)
-        /*
+      offlineStore.multiGet(ks)
+      /*
          * The offline BatchID is an *exclusive* upper bound (see decrementOfflineBatch below).
          * As a result we can just look at the offline store if the that
          * offline batch <= batch.next

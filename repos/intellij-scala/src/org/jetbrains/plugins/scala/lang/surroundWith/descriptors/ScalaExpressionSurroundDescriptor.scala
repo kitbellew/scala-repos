@@ -121,12 +121,12 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
         startOffset: Int,
         endOffset: Int): Array[PsiElement] = {
       var element = file.findElementAt(startOffset)
-      while (element != null && !element.isInstanceOf[ScExpression] && !element
-               .isInstanceOf[ScValue] &&
-             !element.isInstanceOf[ScFunction] && !element
-               .isInstanceOf[ScTypeAlias] &&
-             !element.isInstanceOf[ScVariable] && !element
-               .isInstanceOf[PsiWhiteSpace] &&
+      while (element != null && !element.isInstanceOf[
+               ScExpression] && !element.isInstanceOf[ScValue] &&
+             !element.isInstanceOf[ScFunction] && !element.isInstanceOf[
+               ScTypeAlias] &&
+             !element.isInstanceOf[ScVariable] && !element.isInstanceOf[
+               PsiWhiteSpace] &&
              element.getNode.getElementType != ScalaTokenTypes.tSEMICOLON &&
              !ScalaTokenTypes.COMMENTS_TOKEN_SET.contains(
                element.getNode.getElementType) ||

@@ -27,13 +27,11 @@ object WritesSpec extends org.specs2.mutable.Specification {
       Writes.temporalWrites[LocalDateTime, String]("dd/MM/yyyy, HH:mm:ss")
 
     "be written as number" in {
-      Writes.LocalDateTimeNumberWrites
-        .writes(
-          LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(1234567890L),
-            ZoneOffset.UTC
-          ))
-        .aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
+      Writes.LocalDateTimeNumberWrites.writes(
+        LocalDateTime.ofInstant(
+          Instant.ofEpochMilli(1234567890L),
+          ZoneOffset.UTC
+        )).aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
     }
 
     "be written with default implicit as '2011-12-03T10:15:30'" in {
@@ -43,9 +41,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     }
 
     "be written with custom pattern as '03/12/2011, 10:15:30'" in {
-      CustomWrites1
-        .writes(dateTime("2011-12-03T10:15:30"))
-        .aka("written date") must_== JsString("03/12/2011, 10:15:30")
+      CustomWrites1.writes(dateTime("2011-12-03T10:15:30")).aka(
+        "written date") must_== JsString("03/12/2011, 10:15:30")
     }
   }
 
@@ -65,9 +62,9 @@ object WritesSpec extends org.specs2.mutable.Specification {
     }
 
     "be written with custom pattern as '03/12/2011, 10:15:30 (-01:30)'" in {
-      CustomWrites1
-        .writes(OffsetDateTime.parse("2011-12-03T10:15:30-01:30"))
-        .aka("written date") must_== JsString("03/12/2011, 10:15:30 (-01:30)")
+      CustomWrites1.writes(
+        OffsetDateTime.parse("2011-12-03T10:15:30-01:30")).aka(
+        "written date") must_== JsString("03/12/2011, 10:15:30 (-01:30)")
     }
   }
 
@@ -81,13 +78,11 @@ object WritesSpec extends org.specs2.mutable.Specification {
       Writes.temporalWrites[ZonedDateTime, String]("dd/MM/yyyy, HH:mm:ss")
 
     "be written as number" in {
-      Writes.ZonedDateTimeNumberWrites
-        .writes(
-          ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(1234567890L),
-            ZoneOffset.UTC
-          ))
-        .aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
+      Writes.ZonedDateTimeNumberWrites.writes(
+        ZonedDateTime.ofInstant(
+          Instant.ofEpochMilli(1234567890L),
+          ZoneOffset.UTC
+        )).aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
     }
 
     "be written with default implicit as '2011-12-03T10:15:30+01:00[Europe/Paris]'" in {
@@ -105,9 +100,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     }
 
     "be written with custom pattern as '03/12/2011, 10:15:30'" in {
-      CustomWrites1
-        .writes(dateTime("2011-12-03T10:15:30+05:30"))
-        .aka("written date") must_== JsString("03/12/2011, 10:15:30")
+      CustomWrites1.writes(dateTime("2011-12-03T10:15:30+05:30")).aka(
+        "written date") must_== JsString("03/12/2011, 10:15:30")
     }
   }
 
@@ -131,9 +125,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     }
 
     "be written with custom pattern as '03/12/2011'" in {
-      CustomWrites1
-        .writes(date("2011-12-03"))
-        .aka("written date") must_== JsString("03/12/2011")
+      CustomWrites1.writes(date("2011-12-03")).aka(
+        "written date") must_== JsString("03/12/2011")
     }
   }
 
@@ -147,9 +140,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     val CustomWrites1 = Writes.temporalWrites[Instant, String](customPattern1)
 
     "be written as number" in {
-      Writes.InstantNumberWrites
-        .writes(Instant ofEpochMilli 1234567890L)
-        .aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
+      Writes.InstantNumberWrites.writes(Instant ofEpochMilli 1234567890L).aka(
+        "written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
     }
 
     "be written with default implicit as '2011-12-03T10:15:30Z'" in {

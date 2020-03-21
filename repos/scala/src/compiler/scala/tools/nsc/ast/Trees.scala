@@ -207,8 +207,9 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
           selector,
           erasure)
       case InjectDerivedValue(arg) =>
-        transformer.treeCopy
-          .InjectDerivedValue(tree, transformer.transform(arg))
+        transformer.treeCopy.InjectDerivedValue(
+          tree,
+          transformer.transform(arg))
       case TypeTreeWithDeferredRefCheck() =>
         transformer.treeCopy.TypeTreeWithDeferredRefCheck(tree)
     }

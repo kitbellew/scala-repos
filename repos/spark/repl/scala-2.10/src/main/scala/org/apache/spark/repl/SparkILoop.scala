@@ -194,9 +194,8 @@ class SparkILoop(
       def prompt = SparkILoop.this.prompt
     }
     override protected def parentClassLoader =
-      SparkHelper
-        .explicitParentLoader(settings)
-        .getOrElse(classOf[SparkILoop].getClassLoader)
+      SparkHelper.explicitParentLoader(settings).getOrElse(
+        classOf[SparkILoop].getClassLoader)
   }
 
   /**
@@ -251,9 +250,8 @@ class SparkILoop(
       case Nil => echo(cmd + ": no such command.  Type :help for help.")
       case xs =>
         echo(
-          cmd + " is ambiguous: did you mean " + xs
-            .map(":" + _.name)
-            .mkString(" or ") + "?")
+          cmd + " is ambiguous: did you mean " + xs.map(":" + _.name).mkString(
+            " or ") + "?")
     }
     Result(true, None)
   }
@@ -787,8 +785,8 @@ class SparkILoop(
     }
     if (intp.namedDefinedTerms.nonEmpty)
       echo(
-        "Forgetting all expression results and named terms: " + intp.namedDefinedTerms
-          .mkString(", "))
+        "Forgetting all expression results and named terms: " + intp.namedDefinedTerms.mkString(
+          ", "))
     if (intp.definedTypes.nonEmpty)
       echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
 
@@ -855,8 +853,9 @@ class SparkILoop(
       intp.addUrlsToClassPath(f.toURI.toURL)
       sparkContext.addJar(f.toURI.toURL.getPath)
       echo(
-        "Added '%s'.  Your new classpath is:\n\"%s\""
-          .format(f.path, intp.global.classPath.asClasspathString))
+        "Added '%s'.  Your new classpath is:\n\"%s\"".format(
+          f.path,
+          intp.global.classPath.asClasspathString))
     } else echo("The path '" + f + "' doesn't seem to exist.")
   }
 
@@ -1034,9 +1033,9 @@ class SparkILoop(
       m,
       new TypeCreator {
         def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
-          m.staticClass(classTag[T].runtimeClass.getName)
-            .toTypeConstructor
-            .asInstanceOf[U#Type]
+          m.staticClass(
+            classTag[T].runtimeClass.getName).toTypeConstructor.asInstanceOf[
+            U#Type]
       }
     )
 
@@ -1134,11 +1133,8 @@ class SparkILoop(
     val name = "org.apache.spark.sql.hive.HiveContext"
     val loader = Utils.getContextOrSparkClassLoader
     try {
-      sqlContext = loader
-        .loadClass(name)
-        .getConstructor(classOf[SparkContext])
-        .newInstance(sparkContext)
-        .asInstanceOf[SQLContext]
+      sqlContext = loader.loadClass(name).getConstructor(classOf[SparkContext])
+        .newInstance(sparkContext).asInstanceOf[SQLContext]
       logInfo("Created sql context (with Hive support)..")
     } catch {
       case _: java.lang.ClassNotFoundException |
@@ -1231,9 +1227,8 @@ object SparkILoop extends Logging {
         if (settings.classpath.isDefault)
           settings.classpath.value = sys.props("java.class.path")
 
-        getAddedJars
-          .map(jar => new URI(jar).getPath)
-          .foreach(settings.classpath.append(_))
+        getAddedJars.map(jar => new URI(jar).getPath).foreach(
+          settings.classpath.append(_))
 
         repl process settings
       }

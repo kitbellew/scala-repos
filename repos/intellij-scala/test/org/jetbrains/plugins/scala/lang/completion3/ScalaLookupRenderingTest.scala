@@ -30,9 +30,9 @@ class ScalaLookupRenderingTest extends ScalaCodeInsightTestBase {
       """.stripMargin('|').replaceAll("\r", "").trim()
 
     inWriteAction {
-      val myVFile = getSourceRootAdapter
-        .createChildDirectory(null, "a")
-        .createChildData(null, "Java.java")
+      val myVFile = getSourceRootAdapter.createChildDirectory(
+        null,
+        "a").createChildData(null, "Java.java")
       VfsUtil.saveText(myVFile, javaFileText)
     }
 
@@ -44,16 +44,12 @@ class ScalaLookupRenderingTest extends ScalaCodeInsightTestBase {
       |foo(x: Int*)
       """.stripMargin('|').replaceAll("\r", "").trim()
 
-    val result = activeLookup
-      .filter(_.getLookupString == "foo")
-      .map(p => {
-        val presentation: LookupElementPresentation =
-          new LookupElementPresentation
-        p.renderElement(presentation)
-        presentation.getItemText + presentation.getTailText
-      })
-      .sorted
-      .mkString("\n")
+    val result = activeLookup.filter(_.getLookupString == "foo").map(p => {
+      val presentation: LookupElementPresentation =
+        new LookupElementPresentation
+      p.renderElement(presentation)
+      presentation.getItemText + presentation.getTailText
+    }).sorted.mkString("\n")
 
     Assert.assertEquals(resultText, result)
   }

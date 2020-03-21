@@ -241,7 +241,8 @@ object PortsMatcher {
             val resourceBuilder = RangesResource(
               name = Resource.PORTS,
               createRanges(portsForResource),
-              role = role).toBuilder
+              role = role)
+              .toBuilder
             reservation.foreach(resourceBuilder.setReservation(_))
             builder += resourceBuilder.build()
             process(resources.drop(portsForResource.size))
@@ -301,10 +302,8 @@ object PortsMatcher {
 
       // These are created on demand if necessary
       def afterStartRange: Iterator[PortWithRole] =
-        shuffled
-          .slice(rangeIdx + 1, shuffled.length)
-          .iterator
-          .flatMap(_.portsWithRolesIterator)
+        shuffled.slice(rangeIdx + 1, shuffled.length).iterator.flatMap(
+          _.portsWithRolesIterator)
       def beforeStartRange: Iterator[PortWithRole] =
         shuffled.slice(0, rangeIdx).iterator.flatMap(_.portsWithRolesIterator)
       def endRange: Iterator[PortWithRole] =

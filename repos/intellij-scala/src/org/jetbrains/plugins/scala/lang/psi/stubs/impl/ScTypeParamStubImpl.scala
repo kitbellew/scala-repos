@@ -57,8 +57,8 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
       typeParameterText: StringRef) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = name
     this.upperText = upperText
     this.lowerText = lowerText
@@ -91,8 +91,10 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScTypeElement] =
       if (getLowerText != "")
         Some(
-          ScalaPsiElementFactory
-            .createTypeElementFromText(getLowerText, getPsi, null))
+          ScalaPsiElementFactory.createTypeElementFromText(
+            getLowerText,
+            getPsi,
+            null))
       else None
     lowerElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -108,8 +110,10 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScTypeElement] =
       if (getUpperText != "")
         Some(
-          ScalaPsiElementFactory
-            .createTypeElementFromText(getUpperText, getPsi, null))
+          ScalaPsiElementFactory.createTypeElementFromText(
+            getUpperText,
+            getPsi,
+            null))
       else None
     upperElement = new SofterReference[Option[ScTypeElement]](res)
     res

@@ -15,9 +15,10 @@ class FailureDetectorTest extends FunSuite {
     sessionFailureDetector.let("threshold") {
       val FailureDetector.Param(failDetectorConfig) =
         FailureDetector.Param.param.default
-      assert(
-        FailureDetector(failDetectorConfig, ping, statsReceiver)
-          .isInstanceOf[ThresholdFailureDetector])
+      assert(FailureDetector(
+        failDetectorConfig,
+        ping,
+        statsReceiver).isInstanceOf[ThresholdFailureDetector])
     }
   }
 
@@ -44,8 +45,10 @@ class FailureDetectorTest extends FunSuite {
   test("flag settings with valid string") {
     sessionFailureDetector.let("threshold") {
       assert(
-        FailureDetector(FailureDetector.GlobalFlagConfig, ping, statsReceiver)
-          .isInstanceOf[ThresholdFailureDetector])
+        FailureDetector(
+          FailureDetector.GlobalFlagConfig,
+          ping,
+          statsReceiver).isInstanceOf[ThresholdFailureDetector])
     }
   }
 
@@ -59,7 +62,9 @@ class FailureDetectorTest extends FunSuite {
 
   test("explicit threshold used") {
     assert(
-      FailureDetector(FailureDetector.ThresholdConfig(), ping, statsReceiver)
-        .isInstanceOf[ThresholdFailureDetector])
+      FailureDetector(
+        FailureDetector.ThresholdConfig(),
+        ping,
+        statsReceiver).isInstanceOf[ThresholdFailureDetector])
   }
 }

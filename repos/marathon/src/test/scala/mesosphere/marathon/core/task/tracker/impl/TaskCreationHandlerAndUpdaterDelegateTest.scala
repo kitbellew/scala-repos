@@ -121,10 +121,8 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val appId: PathId = PathId("/test")
     val taskId = "task1"
 
-    val update = TaskStatus
-      .newBuilder()
-      .setTaskId(TaskID.newBuilder().setValue(taskId))
-      .buildPartial()
+    val update = TaskStatus.newBuilder().setTaskId(
+      TaskID.newBuilder().setValue(taskId)).buildPartial()
 
     When("created is called")
     val statusUpdate = f.delegate.statusUpdate(appId, update)

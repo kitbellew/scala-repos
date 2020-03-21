@@ -106,26 +106,25 @@ private[prediction] case class EventOp(
 
   def toDataMap(): Option[DataMap] = {
     setProp.flatMap { set =>
-      val unsetKeys: Set[String] = unsetProp
-        .map(unset =>
-          unset.fields.filter { case (k, v) => (v >= set.fields(k).t) }.keySet)
-        .getOrElse(Set())
+      val unsetKeys: Set[String] = unsetProp.map(unset =>
+        unset.fields.filter {
+          case (k, v) => (v >= set.fields(k).t)
+        }.keySet).getOrElse(Set())
 
-      val combinedFields = deleteEntity
-        .map { delete =>
-          if (delete.t >= set.t) {
-            None
-          } else {
-            val deleteKeys: Set[String] = set.fields.filter {
+      val combinedFields = deleteEntity.map { delete =>
+        if (delete.t >= set.t) {
+          None
+        } else {
+          val deleteKeys: Set[String] = set.fields
+            .filter {
               case (k, PropTime(kv, t)) =>
                 (delete.t >= t)
             }.keySet
-            Some(set.fields -- unsetKeys -- deleteKeys)
-          }
+          Some(set.fields -- unsetKeys -- deleteKeys)
         }
-        .getOrElse {
-          Some(set.fields -- unsetKeys)
-        }
+      }.getOrElse {
+        Some(set.fields -- unsetKeys)
+      }
 
       // Note: mapValues() doesn't return concrete Map and causes
       // NotSerializableException issue. Use map(identity) to work around this.

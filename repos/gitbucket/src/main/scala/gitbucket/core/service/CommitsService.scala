@@ -62,8 +62,7 @@ trait CommitsService {
       s: Session) =
     CommitComments
       .filter(_.byPrimaryKey(commentId))
-      .map { t => t.content -> t.updatedDate }
-      .update(content, currentDate)
+      .map { t => t.content -> t.updatedDate }.update(content, currentDate)
 
   def deleteCommitComment(commentId: Int)(implicit s: Session) =
     CommitComments filter (_.byPrimaryKey(commentId)) delete

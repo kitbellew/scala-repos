@@ -161,10 +161,8 @@ trait SingleMarathonIntegrationTest
       num: Int,
       maxWait: FiniteDuration = 30.seconds): List[ITEnrichedTask] = {
     def checkTasks: Option[List[ITEnrichedTask]] = {
-      val tasks = Try(marathon.tasks(appId))
-        .map(_.value)
-        .getOrElse(Nil)
-        .filter(_.launched)
+      val tasks = Try(marathon.tasks(appId)).map(_.value).getOrElse(Nil).filter(
+        _.launched)
       if (tasks.size == num) Some(tasks) else None
     }
     WaitTestSupport.waitFor(s"$num tasks to launch", maxWait)(checkTasks)
@@ -181,9 +179,9 @@ trait SingleMarathonIntegrationTest
   private def appProxyMainInvocationImpl: String = {
     val javaExecutable =
       sys.props.get("java.home").fold("java")(_ + "/bin/java")
-    val classPath = sys.props
-      .getOrElse("java.class.path", "target/classes")
-      .replaceAll(" ", "")
+    val classPath = sys.props.getOrElse(
+      "java.class.path",
+      "target/classes").replaceAll(" ", "")
     val main = classOf[AppMock].getName
     s"""$javaExecutable -Xmx64m -classpath $classPath $main"""
   }
@@ -228,8 +226,9 @@ trait SingleMarathonIntegrationTest
         new Container(
           docker = Some(
             new mesosphere.marathon.state.Container.Docker(
-              image = s"""marathon-buildbase:${sys.env
-                .getOrElse("BUILD_ID", "test")}""",
+              image = s"""marathon-buildbase:${sys.env.getOrElse(
+                "BUILD_ID",
+                "test")}""",
               network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST)
             )),
           volumes = collection.immutable.Seq(
@@ -304,18 +303,14 @@ trait SingleMarathonIntegrationTest
       appId: PathId,
       versionId: String,
       state: Boolean): Seq[IntegrationHealthCheck] = {
-    marathon
-      .tasks(appId)
-      .value
-      .flatMap(_.ports)
-      .flatMap(_.map { port =>
-        val check = new IntegrationHealthCheck(appId, versionId, port, state)
-        ExternalMarathonIntegrationTest.healthChecks
-          .filter(c => c.appId == appId && c.versionId == versionId)
-          .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
-        ExternalMarathonIntegrationTest.healthChecks += check
-        check
-      })
+    marathon.tasks(appId).value.flatMap(_.ports).flatMap(_.map { port =>
+      val check = new IntegrationHealthCheck(appId, versionId, port, state)
+      ExternalMarathonIntegrationTest.healthChecks
+        .filter(c => c.appId == appId && c.versionId == versionId)
+        .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
+      ExternalMarathonIntegrationTest.healthChecks += check
+      check
+    })
   }
 
   def cleanUp(

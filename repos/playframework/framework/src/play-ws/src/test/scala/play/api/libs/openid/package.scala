@@ -28,9 +28,8 @@ package object openid {
 
   def readFixture(filePath: String): String =
     this.synchronized {
-      Source
-        .fromInputStream(this.getClass.getResourceAsStream(filePath))
-        .mkString
+      Source.fromInputStream(
+        this.getClass.getResourceAsStream(filePath)).mkString
     }
 
   def parseQueryString(url: String): Params = {

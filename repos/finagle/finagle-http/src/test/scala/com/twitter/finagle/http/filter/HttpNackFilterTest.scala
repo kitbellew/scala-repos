@@ -72,8 +72,7 @@ class HttpNackFilterTest extends FunSuite {
           .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
           .codec(com.twitter.finagle.http.Http())
           .reportTo(clientSr)
-          .hostConnectionLimit(1)
-          .build()
+          .hostConnectionLimit(1).build()
 
       assert(Await.result(client(request)).status == Status.Ok)
       assert(clientSr.counters(Seq("http", "retries", "requeues")) == 1)

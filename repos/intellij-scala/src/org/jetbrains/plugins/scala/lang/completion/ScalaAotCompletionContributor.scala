@@ -33,9 +33,8 @@ import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
 class ScalaAotCompletionContributor extends ScalaCompletionContributor {
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
-      .withParent(classOf[ScParameter]),
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER).withParent(
+      classOf[ScParameter]),
     new CompletionProvider[CompletionParameters] {
 
       def addCompletions(
@@ -54,9 +53,8 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
 
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
-      .withParent(classOf[ScFieldId]),
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER).withParent(
+      classOf[ScFieldId]),
     new CompletionProvider[CompletionParameters] {
 
       def addCompletions(
@@ -66,8 +64,8 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
         val scope =
           positionFromParameters(parameters).getContext.getContext.getContext
 
-        if (!scope.isInstanceOf[ScVariableDeclaration] && !scope
-              .isInstanceOf[ScValueDeclaration]) return
+        if (!scope.isInstanceOf[ScVariableDeclaration] && !scope.isInstanceOf[
+              ScValueDeclaration]) return
 
         addCompletions0(parameters, result, typed = false) { (text, element) =>
           val declaration = createValueDeclarationFrom(text, element)
@@ -113,14 +111,12 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
 
 private object ScalaAotCompletionContributor {
   def typeIdentifierIn(parameter: ScParameter): PsiElement =
-    parameter.paramType.get.depthFirst
-      .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
-      .get
+    parameter.paramType.get.depthFirst.find(
+      _.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER).get
 
   def typeIdentifierIn(declaration: ScTypedDeclaration): PsiElement =
-    declaration.typeElement.get.depthFirst
-      .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
-      .get
+    declaration.typeElement.get.depthFirst.find(
+      _.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER).get
 
   def capitalize(s: String): String =
     if (s.length == 0) s else s.substring(0, 1).toUpperCase + s.substring(1)
@@ -136,9 +132,10 @@ private object ScalaAotCompletionContributor {
   def createValueDeclarationFrom(
       text: String,
       original: PsiElement): ScValueDeclaration = {
-    ScalaPsiElementFactory
-      .createDeclarationFromText(s"val $text", original.getContext, original)
-      .asInstanceOf[ScValueDeclaration]
+    ScalaPsiElementFactory.createDeclarationFromText(
+      s"val $text",
+      original.getContext,
+      original).asInstanceOf[ScValueDeclaration]
   }
 }
 

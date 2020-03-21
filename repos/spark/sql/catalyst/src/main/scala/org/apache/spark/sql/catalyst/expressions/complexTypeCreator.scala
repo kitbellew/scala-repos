@@ -55,19 +55,17 @@ case class CreateArray(children: Seq[Expression]) extends Expression {
       final boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
     """ +
-      children.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+      children.zipWithIndex.map {
+        case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-        }
-        .mkString("\n") +
+      }.mkString("\n") +
       s"final ArrayData ${ev.value} = new $arrayClass($values);"
   }
 
@@ -111,19 +109,17 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
     """ +
-      children.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+      children.zipWithIndex.map {
+        case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-        }
-        .mkString("\n") +
+      }.mkString("\n") +
       s"final InternalRow ${ev.value} = new $rowClass($values);"
   }
 
@@ -147,11 +143,9 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
     }
 
   private lazy val (nameExprs, valExprs) =
-    children
-      .grouped(2)
-      .map { case Seq(name, value) => (name, value) }
-      .toList
-      .unzip
+    children.grouped(2).map {
+      case Seq(name, value) => (name, value)
+    }.toList.unzip
 
   private lazy val names = nameExprs.map(_.eval(EmptyRow))
 
@@ -201,19 +195,17 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${valExprs.size}];
     """ +
-      valExprs.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+      valExprs.zipWithIndex.map {
+        case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-        }
-        .mkString("\n") +
+      }.mkString("\n") +
       s"final InternalRow ${ev.value} = new $rowClass($values);"
   }
 
@@ -275,11 +267,9 @@ case class CreateNamedStructUnsafe(children: Seq[Expression])
     extends Expression {
 
   private lazy val (nameExprs, valExprs) =
-    children
-      .grouped(2)
-      .map { case Seq(name, value) => (name, value) }
-      .toList
-      .unzip
+    children.grouped(2).map {
+      case Seq(name, value) => (name, value)
+    }.toList.unzip
 
   private lazy val names = nameExprs.map(_.eval(EmptyRow).toString)
 

@@ -136,8 +136,9 @@ object Serializers {
           key,
           { b =>
             b.hintTag(intOptPickler.tag)
-            intOptPickler
-              .pickle(if (value == null) None else Some(value.intValue), b)
+            intOptPickler.pickle(
+              if (value == null) None else Some(value.intValue),
+              b)
           })
       }
       def writeStringField(key: String, value: String): Unit = {
@@ -189,19 +190,16 @@ object Serializers {
       def readIntField(key: String): Int =
         intPickler.unpickleEntry(reader.readField(key)).asInstanceOf[Int]
       def readIntOptField(key: String): Option[Int] =
-        intOptUnpickler
-          .unpickleEntry(reader.readField(key))
-          .asInstanceOf[Option[Int]]
+        intOptUnpickler.unpickleEntry(reader.readField(key)).asInstanceOf[
+          Option[Int]]
       def readStringField(key: String): String =
         stringPickler.unpickleEntry(reader.readField(key)).asInstanceOf[String]
       def readStringOptField(key: String): Option[String] =
-        stringOptUnpickler
-          .unpickleEntry(reader.readField(key))
-          .asInstanceOf[Option[String]]
+        stringOptUnpickler.unpickleEntry(reader.readField(key)).asInstanceOf[
+          Option[String]]
       def readThrowableOptField(key: String): Option[Throwable] =
-        throwableOptUnpickler
-          .unpickleEntry(reader.readField(key))
-          .asInstanceOf[Option[Throwable]]
+        throwableOptUnpickler.unpickleEntry(reader.readField(key)).asInstanceOf[
+          Option[Throwable]]
 
       reader.pushHints()
       reader.hintStaticallyElidedType()
@@ -272,11 +270,14 @@ object Serializers {
   }
 
   val serializers: Seq[LocalRegisteredSerializer] = List(
-    LocalRegisteredSerializer
-      .fromSbtSerializer(forkConfigPickler, forkConfigUnpickler),
-    LocalRegisteredSerializer
-      .fromSbtSerializer(compileResultPickler, compileResultUnpickler),
-    LocalRegisteredSerializer
-      .fromSbtSerializer(playServerStartedPickler, playServerStartedUnpickler)
+    LocalRegisteredSerializer.fromSbtSerializer(
+      forkConfigPickler,
+      forkConfigUnpickler),
+    LocalRegisteredSerializer.fromSbtSerializer(
+      compileResultPickler,
+      compileResultUnpickler),
+    LocalRegisteredSerializer.fromSbtSerializer(
+      playServerStartedPickler,
+      playServerStartedUnpickler)
   )
 }

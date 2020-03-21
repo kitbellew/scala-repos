@@ -27,11 +27,9 @@ object EchoTestClientApp extends App {
   implicit val materializer = ActorMaterializer()
 
   def delayedCompletion(delay: FiniteDuration): Source[Nothing, NotUsed] =
-    Source
-      .single(1)
+    Source.single(1)
       .mapAsync(1)(_ ⇒ akka.pattern.after(delay, system.scheduler)(Future(1)))
-      .drop(1)
-      .asInstanceOf[Source[Nothing, NotUsed]]
+      .drop(1).asInstanceOf[Source[Nothing, NotUsed]]
 
   def messages: List[Message] =
     List(
@@ -49,13 +47,11 @@ object EchoTestClientApp extends App {
     Flow[Message]
       .mapAsync(1) {
         case tm: TextMessage ⇒
-          tm.textStream
-            .runWith(Sink.fold("")(_ + _))
-            .map(str ⇒ s"TextMessage: '$str'")
+          tm.textStream.runWith(Sink.fold("")(_ + _)).map(str ⇒
+            s"TextMessage: '$str'")
         case bm: BinaryMessage ⇒
-          bm.dataStream
-            .runWith(Sink.fold(ByteString.empty)(_ ++ _))
-            .map(bs ⇒ s"BinaryMessage: '${bs.utf8String}'")
+          bm.dataStream.runWith(Sink.fold(ByteString.empty)(_ ++ _)).map(bs ⇒
+            s"BinaryMessage: '${bs.utf8String}'")
       }
       .grouped(10000)
       .toMat(Sink.head)(Keep.right)

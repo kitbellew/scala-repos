@@ -199,8 +199,9 @@ object Permission {
         pathV: Validation[Error, Path])(
         f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
       (obj \? "ownerAccountIds") map { ids =>
-        Apply[({ type l[a] = Validation[Error, a] })#l].zip
-          .zip(pathV, ids.validated[Set[AccountId]]) flatMap {
+        Apply[({ type l[a] = Validation[Error, a] })#l].zip.zip(
+          pathV,
+          ids.validated[Set[AccountId]]) flatMap {
           case (path, accountIds) =>
             if (accountIds.isEmpty) success(f(path, WrittenByAny))
             else if (accountIds.size == 1)

@@ -80,9 +80,8 @@ class MapVectorSpace[K, V](override implicit val scalar: Field[V])
     var f = scalar.times _
     if (x.size < y.size) { xx = y; yy = x }
     yy.foldLeft(zero) { (z, kv) =>
-      (xx get kv._1)
-        .map(u => z.updated(kv._1, scalar.times(u, kv._2)))
-        .getOrElse(z)
+      (xx get kv._1).map(u =>
+        z.updated(kv._1, scalar.times(u, kv._2))).getOrElse(z)
     }
   }
 }

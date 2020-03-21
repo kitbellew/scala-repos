@@ -91,8 +91,7 @@ object TypeAdjuster extends ApplicationAdapter {
       typeElements: Seq[ScTypeElement],
       useTypeAliases: Boolean): Seq[ReplacementInfo] = {
     val infos = typeElements.map(ReplacementInfo.initial)
-    infos
-      .flatMap(simplify)
+    infos.flatMap(simplify)
       .map(shortenReference(_, useTypeAliases))
   }
 
@@ -122,8 +121,8 @@ object TypeAdjuster extends ApplicationAdapter {
         if (index >= 0) {
           val endIndex = index + thisWithDot.length
           val withoutThisType = text.substring(endIndex)
-          val newResolve = newRef(withoutThisType, info.origTypeElem)
-            .flatMap(_.resolve().toOption)
+          val newResolve = newRef(withoutThisType, info.origTypeElem).flatMap(
+            _.resolve().toOption)
           for {
             oldRes <- info.resolve
             newRes <- newResolve
@@ -149,9 +148,8 @@ object TypeAdjuster extends ApplicationAdapter {
             collectAdjustableTypeElements(newTypeEl).filter(_ != newTypeEl)
           if (subTypeElems.isEmpty) {
             Some(
-              ReplacementInfo
-                .initial(newTypeEl)
-                .copy(origTypeElem = info.origTypeElem))
+              ReplacementInfo.initial(newTypeEl).copy(origTypeElem =
+                info.origTypeElem))
           } else
             Some(
               CompoundInfo(
@@ -162,9 +160,8 @@ object TypeAdjuster extends ApplicationAdapter {
       }
     }
 
-    if (info.origTypeElem.parentsInFile
-          .filterByType(classOf[ScTypeElement])
-          .exists(isMarkedToReplace)) None
+    if (info.origTypeElem.parentsInFile.filterByType(
+          classOf[ScTypeElement]).exists(isMarkedToReplace)) None
     else
       info match {
         case cmp: CompoundInfo =>
@@ -182,9 +179,8 @@ object TypeAdjuster extends ApplicationAdapter {
         val typeElement = simple.origTypeElem
         val replacement = simple.replacement
         if (typeElement.getText != replacement)
-          typeElement
-            .replace(newTypeElem(replacement, typeElement))
-            .asInstanceOf[ScTypeElement]
+          typeElement.replace(
+            newTypeElem(replacement, typeElement)).asInstanceOf[ScTypeElement]
         else typeElement
       case cmp: CompoundInfo =>
         val tempElem = cmp.tempTypeElem
@@ -247,8 +243,9 @@ object TypeAdjuster extends ApplicationAdapter {
     def findMaxHolders(infos: Set[ReplacementInfo])
         : Set[(ReplacementInfo, ScImportsHolder)] = {
       val infosToHolders = infos.map(info =>
-        info -> ScalaImportTypeFix
-          .getImportHolder(info.origTypeElem, info.origTypeElem.getProject))
+        info -> ScalaImportTypeFix.getImportHolder(
+          info.origTypeElem,
+          info.origTypeElem.getProject))
       val holders = infosToHolders.map(_._2)
       val maxHolders = holders.filter(h => !holders.exists(_.isAncestorOf(h)))
       infosToHolders.map {
@@ -358,9 +355,8 @@ object TypeAdjuster extends ApplicationAdapter {
       val (newText, pathToImport) = target match {
         case clazz: PsiClass =>
           val qName = clazz.qualifiedName
-          val needPrefix = ScalaCodeStyleSettings
-            .getInstance(origTypeElem.getProject)
-            .hasImportWithPrefix(qName)
+          val needPrefix = ScalaCodeStyleSettings.getInstance(
+            origTypeElem.getProject).hasImportWithPrefix(qName)
           if (needPrefix) {
             val words = qName.split('.')
             val withPrefix = words.takeRight(2).mkString(".")

@@ -37,10 +37,10 @@ object CircuitBreakerStressSpec {
     private def job = {
       val promise = Promise[JobDone.type]()
 
-      context.system.scheduler
-        .scheduleOnce(ThreadLocalRandom.current.nextInt(300).millisecond) {
-          promise.success(JobDone)
-        }
+      context.system.scheduler.scheduleOnce(
+        ThreadLocalRandom.current.nextInt(300).millisecond) {
+        promise.success(JobDone)
+      }
 
       promise.future
     }

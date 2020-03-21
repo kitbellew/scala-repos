@@ -71,8 +71,9 @@ private[cluster] class Reachability private (
         val allUnreachable = Set.empty[UniqueAddress]
         (observerRowsMap, allUnreachable, allTerminated)
       } else {
-        val mapBuilder = scala.collection.mutable.Map
-          .empty[UniqueAddress, Map[UniqueAddress, Reachability.Record]]
+        val mapBuilder = scala.collection.mutable.Map.empty[
+          UniqueAddress,
+          Map[UniqueAddress, Reachability.Record]]
         import scala.collection.mutable.SetBuilder
         val terminatedBuilder =
           new SetBuilder[UniqueAddress, Set[UniqueAddress]](Set.empty)

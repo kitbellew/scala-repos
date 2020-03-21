@@ -26,10 +26,11 @@ private[akka] trait WriteJournalBase {
   /** INTERNAL API */
   private[akka] final def adaptFromJournal(
       repr: PersistentRepr): immutable.Seq[PersistentRepr] =
-    eventAdapters
-      .get(repr.payload.getClass)
-      .fromJournal(repr.payload, repr.manifest)
-      .events map { adaptedPayload ⇒ repr.withPayload(adaptedPayload) }
+    eventAdapters.get(repr.payload.getClass).fromJournal(
+      repr.payload,
+      repr.manifest).events map { adaptedPayload ⇒
+      repr.withPayload(adaptedPayload)
+    }
 
   /** INTERNAL API */
   private[akka] final def adaptToJournal(
@@ -41,13 +42,12 @@ private[akka] trait WriteJournalBase {
     // doesn't have an assigned manifest, but when WriteMessages is sent directly to the
     // journal for testing purposes we want to preserve the original manifest instead of
     // letting IdentityEventAdapter clearing it out.
-    if (adapter == IdentityEventAdapter || adapter
-          .isInstanceOf[NoopWriteEventAdapter])
+    if (adapter == IdentityEventAdapter || adapter.isInstanceOf[
+          NoopWriteEventAdapter])
       repr
     else {
-      repr
-        .withPayload(adapter.toJournal(payload))
-        .withManifest(adapter.manifest(payload))
+      repr.withPayload(adapter.toJournal(payload)).withManifest(
+        adapter.manifest(payload))
     }
   }
 

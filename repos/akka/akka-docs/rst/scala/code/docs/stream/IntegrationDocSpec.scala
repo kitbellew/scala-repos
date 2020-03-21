@@ -180,8 +180,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val emailAddresses: Source[String, NotUsed] =
       authors.via(
-        Flow[Author]
-          .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
+        Flow[Author].mapAsync(4)(author =>
+          addressSystem.lookupEmail(author.handle))
           .withAttributes(supervisionStrategy(resumingDecider)))
     //#email-addresses-mapAsync-supervision
   }
@@ -232,8 +232,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val authors = tweets.filter(_.hashtags.contains(akka)).map(_.author)
 
     val phoneNumbers =
-      authors
-        .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
+      authors.mapAsync(4)(author =>
+        addressSystem.lookupPhoneNumber(author.handle))
         .collect { case Some(phoneNo) => phoneNo }
 
     //#blocking-mapAsync
@@ -273,8 +273,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val authors = tweets.filter(_.hashtags.contains(akka)).map(_.author)
 
     val phoneNumbers =
-      authors
-        .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
+      authors.mapAsync(4)(author =>
+        addressSystem.lookupPhoneNumber(author.handle))
         .collect { case Some(phoneNo) => phoneNo }
 
     //#blocking-map
@@ -337,9 +337,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
       system.dispatchers.lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
-    implicit val materializer = ActorMaterializer(
-      ActorMaterializerSettings(system)
-        .withInputBuffer(initialSize = 4, maxSize = 4))
+    implicit val materializer = ActorMaterializer(ActorMaterializerSettings(
+      system).withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => { println(s"before: $elem"); elem })
@@ -371,9 +370,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
       system.dispatchers.lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
-    implicit val materializer = ActorMaterializer(
-      ActorMaterializerSettings(system)
-        .withInputBuffer(initialSize = 4, maxSize = 4))
+    implicit val materializer = ActorMaterializer(ActorMaterializerSettings(
+      system).withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => { println(s"before: $elem"); elem })

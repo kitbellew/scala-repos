@@ -90,8 +90,7 @@ case class HealthCheck(
           s"Mesos does not support health checks of type [$protocol]")
     }
 
-    builder
-      .setDelaySeconds(0)
+    builder.setDelaySeconds(0)
       .setIntervalSeconds(this.interval.toSeconds.toDouble)
       .setTimeoutSeconds(this.timeout.toSeconds.toDouble)
       .setConsecutiveFailures(this.maxConsecutiveFailures)

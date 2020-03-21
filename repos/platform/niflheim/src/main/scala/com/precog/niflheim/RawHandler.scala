@@ -81,9 +81,9 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
   def snapshot(pathConstraint: Option[Set[CPath]]): Block = {
     handleNonempty
 
-    val segs = pathConstraint
-      .map { cpaths => segments.a.filter { seg => cpaths(seg.cpath) } }
-      .getOrElse(segments.a.clone)
+    val segs = pathConstraint.map { cpaths =>
+      segments.a.filter { seg => cpaths(seg.cpath) }
+    }.getOrElse(segments.a.clone)
 
     Block(id, segs, isStable)
   }
@@ -91,11 +91,9 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
   def snapshotRef(refConstraints: Option[Set[ColumnRef]]): Block = {
     handleNonempty
 
-    val segs = refConstraints
-      .map { refs =>
-        segments.a.filter { seg => refs(ColumnRef(seg.cpath, seg.ctype)) }
-      }
-      .getOrElse(segments.a.clone)
+    val segs = refConstraints.map { refs =>
+      segments.a.filter { seg => refs(ColumnRef(seg.cpath, seg.ctype)) }
+    }.getOrElse(segments.a.clone)
 
     Block(id, segs, isStable)
   }

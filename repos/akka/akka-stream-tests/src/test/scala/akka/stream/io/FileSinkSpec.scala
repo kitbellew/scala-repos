@@ -116,17 +116,15 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
         implicit val timeout = Timeout(3.seconds)
 
         try {
-          Source
-            .fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
-            .runWith(FileIO.toFile(f))(materializer)
+          Source.fromIterator(() ⇒
+            Iterator.continually(TestByteStrings.head)).runWith(
+            FileIO.toFile(f))(materializer)
 
-          materializer
-            .asInstanceOf[ActorMaterializerImpl]
-            .supervisor
-            .tell(StreamSupervisor.GetChildren, testActor)
-          val ref = expectMsgType[Children].children
-            .find(_.path.toString contains "fileSource")
-            .get
+          materializer.asInstanceOf[ActorMaterializerImpl].supervisor.tell(
+            StreamSupervisor.GetChildren,
+            testActor)
+          val ref = expectMsgType[Children].children.find(
+            _.path.toString contains "fileSource").get
           assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
         } finally shutdown(sys)
       }
@@ -141,20 +139,17 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
         implicit val timeout = Timeout(3.seconds)
 
         try {
-          Source
-            .fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
+          Source.fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
             .to(FileIO.toFile(f))
             .withAttributes(
               ActorAttributes.dispatcher("akka.actor.default-dispatcher"))
             .run()(materializer)
 
-          materializer
-            .asInstanceOf[ActorMaterializerImpl]
-            .supervisor
-            .tell(StreamSupervisor.GetChildren, testActor)
-          val ref = expectMsgType[Children].children
-            .find(_.path.toString contains "File")
-            .get
+          materializer.asInstanceOf[ActorMaterializerImpl].supervisor.tell(
+            StreamSupervisor.GetChildren,
+            testActor)
+          val ref = expectMsgType[Children].children.find(
+            _.path.toString contains "File").get
           assertDispatcher(ref, "akka.actor.default-dispatcher")
         } finally shutdown(sys)
       }

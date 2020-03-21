@@ -57,10 +57,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
 
   "browse" should {
     "find child paths" in {
-      client
-        .browse("", Path("/foo/"))
-        .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
+      client.browse("", Path("/foo/")).valueOr(e =>
+        sys.error(e.toString)).copoint must beLike {
         case JArray(results) =>
           results.map(_ \ "name") must haveTheSameElementsAs(
             JString("bar/") :: JString("bar1/") :: JString("bar2/") :: Nil)
@@ -70,28 +68,22 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
 
   "size" should {
     "find correct size for single-column path" in {
-      client
-        .size("", Path("/foo/bar1/baz/quux1"))
-        .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
+      client.size("", Path("/foo/bar1/baz/quux1")).valueOr(e =>
+        sys.error(e.toString)).copoint must beLike {
         case JNum(result) => result mustEqual 10
       }
     }
 
     "find correct size for multi-column path" in {
-      client
-        .size("", Path("/foo/bar"))
-        .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
+      client.size("", Path("/foo/bar")).valueOr(e =>
+        sys.error(e.toString)).copoint must beLike {
         case JNum(result) => result mustEqual 60
       }
     }
 
     "find default (0) size for non-existent path" in {
-      client
-        .size("", Path("/not/really"))
-        .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
+      client.size("", Path("/not/really")).valueOr(e =>
+        sys.error(e.toString)).copoint must beLike {
         case JNum(result) => result mustEqual 0
       }
     }
@@ -99,10 +91,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
 
   "structure" should {
     "find correct node information" in {
-      client
-        .structure("", Path("/foo/bar"), CPath.Identity)
-        .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
+      client.structure("", Path("/foo/bar"), CPath.Identity).valueOr(e =>
+        sys.error(e.toString)).copoint must beLike {
         case result =>
           result must_== JObject(
             "children" -> JArray(JString(".bar") :: JString(".baz") :: Nil),
@@ -111,10 +101,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
     }
 
     "find correct leaf types" in {
-      client
-        .structure("", Path("/foo/bar"), CPath("bar"))
-        .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
+      client.structure("", Path("/foo/bar"), CPath("bar")).valueOr(e =>
+        sys.error(e.toString)).copoint must beLike {
         case result =>
           result must_== JObject(
             "children" -> JArray(),
@@ -123,10 +111,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
     }
 
     "find default empty result for non-existent path" in {
-      client
-        .structure("", Path("/bar/foo"), CPath.Identity)
-        .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
+      client.structure("", Path("/bar/foo"), CPath.Identity).valueOr(e =>
+        sys.error(e.toString)).copoint must beLike {
         case result => result must_== JUndefined
       }
     }

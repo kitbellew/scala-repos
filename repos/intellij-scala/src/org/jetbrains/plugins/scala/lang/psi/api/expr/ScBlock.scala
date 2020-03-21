@@ -66,13 +66,11 @@ trait ScBlock
           val manager = ScalaPsiManager.instance(getProject)
           val funs =
             manager.getCachedClasses(getResolveScope, "scala.PartialFunction")
-          val fun = funs
-            .find(_.isInstanceOf[ScTrait])
-            .getOrElse(
-              return Failure("Cannot find PartialFunction class", Some(this)))
-          val throwable = manager
-            .getCachedClass(getResolveScope, "java.lang.Throwable")
-            .orNull
+          val fun = funs.find(_.isInstanceOf[ScTrait]).getOrElse(
+            return Failure("Cannot find PartialFunction class", Some(this)))
+          val throwable = manager.getCachedClass(
+            getResolveScope,
+            "java.lang.Throwable").orNull
           if (throwable == null)
             return Failure("Cannot find Throwable class", Some(this))
           return Success(
@@ -98,8 +96,9 @@ trait ScBlock
               Success(
                 ScPartialFunctionType(
                   clausesType,
-                  param
-                    .removeVarianceAbstracts(1))(getProject, getResolveScope),
+                  param.removeVarianceAbstracts(1))(
+                  getProject,
+                  getResolveScope),
                 Some(this))
             case _ =>
               Failure(
@@ -121,9 +120,8 @@ trait ScBlock
           val visitedWithT = visited + t
           t match {
             case ScDesignatorType(p: ScParameter)
-                if p.owner.isInstanceOf[ScFunctionExpr] && p.owner
-                  .asInstanceOf[ScFunctionExpr]
-                  .result == Some(this) =>
+                if p.owner.isInstanceOf[ScFunctionExpr] && p.owner.asInstanceOf[
+                  ScFunctionExpr].result == Some(this) =>
               val t =
                 existize(p.getType(TypingContext.empty).getOrAny, visitedWithT)
               m.put(p.name, new ScExistentialArgument(p.name, Nil, t, t))

@@ -55,26 +55,18 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
       makeConstraint("rack", Operator.GROUP_BY, ""),
       makeConstraint("color", Operator.GROUP_BY, "")))
     val tasks =
-      0.to(9)
-        .map(num =>
+      0.to(9).map(num =>
+        makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue"))) ++
+        10.to(19).map(num =>
           makeSampleTask(
             s"$num",
-            Map("rack" -> "rack-1", "color" -> "blue"))) ++
-        10.to(19)
-          .map(num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-1", "color" -> "green"))) ++
-        20.to(29)
-          .map(num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-2", "color" -> "blue"))) ++
-        30.to(39)
-          .map(num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-2", "color" -> "green")))
+            Map("rack" -> "rack-1", "color" -> "green"))) ++
+        20.to(29).map(num =>
+          makeSampleTask(
+            s"$num",
+            Map("rack" -> "rack-2", "color" -> "blue"))) ++
+        30.to(39).map(num =>
+          makeSampleTask(s"$num", Map("rack" -> "rack-2", "color" -> "green")))
 
     When("20 tasks should be selected to kill")
     val result = Constraints.selectTasksToKill(app, tasks, 20)
@@ -97,10 +89,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
   test("Does not select any task without constraint") {
     Given("app with hostname group_by and 10 tasks even distributed on 5 hosts")
     val app = AppDefinition()
-    val tasks = 0
-      .to(9)
-      .map(num =>
-        makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue")))
+    val tasks = 0.to(9).map(num =>
+      makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue")))
 
     When("10 tasks should be selected to kill")
     val result = Constraints.selectTasksToKill(app, tasks, 5)
@@ -516,8 +506,7 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     val attributes = attrs.map {
       case (name, value) => TextAttribute(name, value): Attribute
     }
-    MarathonTestHelper
-      .stagedTask(id)
+    MarathonTestHelper.stagedTask(id)
       .withAgentInfo(_.copy(attributes = attributes))
       .withNetworking(Task.HostPorts(999))
   }

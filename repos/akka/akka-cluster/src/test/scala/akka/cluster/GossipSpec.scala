@@ -42,25 +42,22 @@ class GossipSpec extends WordSpec with Matchers {
     }
 
     "reach convergence for two nodes" in {
-      val g1 = (Gossip(members = SortedSet(a1, b1)))
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
+      val g1 = (Gossip(members = SortedSet(a1, b1))).seen(
+        a1.uniqueAddress).seen(b1.uniqueAddress)
       g1.convergence(a1.uniqueAddress) should ===(true)
     }
 
     "reach convergence, skipping joining" in {
       // e1 is joining
-      val g1 = (Gossip(members = SortedSet(a1, b1, e1)))
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
+      val g1 = (Gossip(members = SortedSet(a1, b1, e1))).seen(
+        a1.uniqueAddress).seen(b1.uniqueAddress)
       g1.convergence(a1.uniqueAddress) should ===(true)
     }
 
     "reach convergence, skipping down" in {
       // e3 is down
-      val g1 = (Gossip(members = SortedSet(a1, b1, e3)))
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
+      val g1 = (Gossip(members = SortedSet(a1, b1, e3))).seen(
+        a1.uniqueAddress).seen(b1.uniqueAddress)
       g1.convergence(a1.uniqueAddress) should ===(true)
     }
 
@@ -70,8 +67,7 @@ class GossipSpec extends WordSpec with Matchers {
       val g1 = (Gossip(
         members = SortedSet(a1, b1),
         overview = GossipOverview(reachability = r1)))
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
+        .seen(a1.uniqueAddress).seen(b1.uniqueAddress)
       g1.convergence(b1.uniqueAddress) should ===(false)
       // but from a1's point of view (it knows that itself is not unreachable)
       g1.convergence(a1.uniqueAddress) should ===(true)
@@ -84,9 +80,7 @@ class GossipSpec extends WordSpec with Matchers {
       val g1 = (Gossip(
         members = SortedSet(a1, b1, e3),
         overview = GossipOverview(reachability = r1)))
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
-        .seen(e3.uniqueAddress)
+        .seen(a1.uniqueAddress).seen(b1.uniqueAddress).seen(e3.uniqueAddress)
       g1.convergence(b1.uniqueAddress) should ===(true)
     }
 
@@ -105,9 +99,9 @@ class GossipSpec extends WordSpec with Matchers {
     }
 
     "merge unreachable" in {
-      val r1 = Reachability.empty
-        .unreachable(b1.uniqueAddress, a1.uniqueAddress)
-        .unreachable(b1.uniqueAddress, c1.uniqueAddress)
+      val r1 = Reachability.empty.unreachable(
+        b1.uniqueAddress,
+        a1.uniqueAddress).unreachable(b1.uniqueAddress, c1.uniqueAddress)
       val g1 = Gossip(
         members = SortedSet(a1, b1, c1),
         overview = GossipOverview(reachability = r1))
@@ -171,12 +165,10 @@ class GossipSpec extends WordSpec with Matchers {
 
     "merge seen table correctly" in {
       val vclockNode = VectorClock.Node("something")
-      val g1 = (Gossip(members = SortedSet(a1, b1, c1, d1)) :+ vclockNode)
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
-      val g2 = (Gossip(members = SortedSet(a1, b1, c1, d1)) :+ vclockNode)
-        .seen(a1.uniqueAddress)
-        .seen(c1.uniqueAddress)
+      val g1 = (Gossip(members = SortedSet(a1, b1, c1, d1)) :+ vclockNode).seen(
+        a1.uniqueAddress).seen(b1.uniqueAddress)
+      val g2 = (Gossip(members = SortedSet(a1, b1, c1, d1)) :+ vclockNode).seen(
+        a1.uniqueAddress).seen(c1.uniqueAddress)
       val g3 = (g1 copy (version = g2.version)).seen(d1.uniqueAddress)
 
       def checkMerged(merged: Gossip) {
@@ -204,9 +196,9 @@ class GossipSpec extends WordSpec with Matchers {
       val g2 = Gossip(
         members = SortedSet(a2, b1.copyUp(3), e1),
         overview = GossipOverview(reachability =
-          Reachability.empty
-            .unreachable(a2.uniqueAddress, b1.uniqueAddress)
-            .unreachable(a2.uniqueAddress, e1.uniqueAddress))
+          Reachability.empty.unreachable(
+            a2.uniqueAddress,
+            b1.uniqueAddress).unreachable(a2.uniqueAddress, e1.uniqueAddress))
       )
       g2.youngestMember should ===(b1)
       val g3 = Gossip(members = SortedSet(a2, b1.copyUp(3), e2.copyUp(4)))

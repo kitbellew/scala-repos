@@ -279,9 +279,8 @@ class ScalaChangeSignatureDialog(
 
     paramItems.foreach {
       case item
-          if item.parameter.isRepeatedParameter && !splittedItems
-            .flatMap(_.lastOption)
-            .contains(item) =>
+          if item.parameter.isRepeatedParameter && !splittedItems.flatMap(
+            _.lastOption).contains(item) =>
         problems += ScalaBundle.message(
           "change.signature.vararg.should.be.last.in.clause")
       case _ =>
@@ -403,9 +402,8 @@ class ScalaChangeSignatureDialog(
     addClauseButton.addCustomUpdater(new AnActionButtonUpdater {
       override def isEnabled(e: AnActionEvent): Boolean = {
         val selected = parametersTable.getSelectedRow
-        selected > 0 && !myParametersTableModel
-          .getItem(selected)
-          .startsNewClause
+        selected > 0 && !myParametersTableModel.getItem(
+          selected).startsNewClause
       }
     })
     addClauseButton.setShortcut(CustomShortcutSet.fromString("alt EQUALS"))
@@ -501,8 +499,7 @@ class ScalaChangeSignatureDialog(
     table.getSelectionModel.setSelectionInterval(0, 0)
     table.setSurrendersFocusOnKeystroke(true)
     val buttonsPanel: JPanel =
-      ToolbarDecorator
-        .createDecorator(table)
+      ToolbarDecorator.createDecorator(table)
         .setMoveUpAction(upAction)
         .setMoveDownAction(downAction)
         .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
@@ -560,9 +557,9 @@ class ScalaChangeSignatureDialog(
             focused)
 
           if (item.parameter.isIntroducedParameter) {
-            val fields = UIUtil
-              .findComponentsOfType(comp, classOf[EditorTextField])
-              .asScala
+            val fields = UIUtil.findComponentsOfType(
+              comp,
+              classOf[EditorTextField]).asScala
             fields.foreach { f => f.setFont(f.getFont.deriveFont(Font.BOLD)) }
           }
 

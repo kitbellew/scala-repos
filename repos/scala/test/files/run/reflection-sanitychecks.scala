@@ -48,23 +48,17 @@ object Test extends App {
       "method #2: " + failsafe(
         im.reflectMethod(tpe.member(TermName("baz")).asMethod)()))
     println(
-      "constructor #1: " + failsafe(
-        cm.reflectClass(im.symbol)
-          .reflectConstructor(tpe.member(TermName("bar")).asMethod)()))
+      "constructor #1: " + failsafe(cm.reflectClass(
+        im.symbol).reflectConstructor(tpe.member(TermName("bar")).asMethod)()))
     println(
       "constructor #2: " + failsafe(
-        cm.reflectClass(im.symbol)
-          .reflectConstructor(tpe.member(TermName("<init>")).asMethod)()))
+        cm.reflectClass(im.symbol).reflectConstructor(
+          tpe.member(TermName("<init>")).asMethod)()))
     println(
       "class: " + failsafe(
-        im.reflectClass(tpe.member(TypeName("C")).asClass)
-          .reflectConstructor(
-            typeOf[C]
-              .member(TypeName("C"))
-              .asClass
-              .info
-              .member(termNames.CONSTRUCTOR)
-              .asMethod)()))
+        im.reflectClass(tpe.member(TypeName("C")).asClass).reflectConstructor(
+          typeOf[C].member(TypeName("C")).asClass.info.member(
+            termNames.CONSTRUCTOR).asMethod)()))
     println(
       "object: " + failsafe(
         im.reflectModule(tpe.member(TermName("O")).asModule).instance))

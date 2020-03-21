@@ -59,22 +59,16 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(listener.executorIdToStorageStatus.get("fat").isDefined)
     assert(listener.deadExecutorStorageStatus.size === 1)
     assert(
-      listener
-        .deadExecutorStorageStatus(0)
-        .blockManagerId
-        .executorId
-        .equals("big"))
+      listener.deadExecutorStorageStatus(0).blockManagerId.executorId.equals(
+        "big"))
     listener.onBlockManagerRemoved(SparkListenerBlockManagerRemoved(1L, bm2))
     assert(listener.executorIdToStorageStatus.size === 0)
     assert(!listener.executorIdToStorageStatus.get("big").isDefined)
     assert(!listener.executorIdToStorageStatus.get("fat").isDefined)
     assert(listener.deadExecutorStorageStatus.size === 1)
     assert(
-      listener
-        .deadExecutorStorageStatus(0)
-        .blockManagerId
-        .executorId
-        .equals("fat"))
+      listener.deadExecutorStorageStatus(0).blockManagerId.executorId.equals(
+        "fat"))
   }
 
   test("task end without updated blocks") {
@@ -179,9 +173,8 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(listener.executorIdToStorageStatus("big").numBlocks === 1)
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 1)
     assert(
-      !listener
-        .executorIdToStorageStatus("big")
-        .containsBlock(RDDBlockId(1, 1)))
+      !listener.executorIdToStorageStatus("big").containsBlock(
+        RDDBlockId(1, 1)))
     assert(
       listener.executorIdToStorageStatus("big").containsBlock(RDDBlockId(1, 2)))
     assert(
@@ -197,9 +190,8 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(listener.executorIdToStorageStatus("big").numBlocks === 1)
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 0)
     assert(
-      !listener
-        .executorIdToStorageStatus("big")
-        .containsBlock(RDDBlockId(1, 1)))
+      !listener.executorIdToStorageStatus("big").containsBlock(
+        RDDBlockId(1, 1)))
     assert(
       listener.executorIdToStorageStatus("big").containsBlock(RDDBlockId(1, 2)))
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 0)

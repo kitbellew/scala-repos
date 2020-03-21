@@ -121,10 +121,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       coffees.sortBy(_.price).take(3) join suppliers on (_.supID === _.id)
     def q1b =
       for {
-        (c, s) <- q1b_0
-          .sortBy(_._1.price)
-          .take(2)
-          .filter(_._1.name =!= "Colombian")
+        (c, s) <- q1b_0.sortBy(_._1.price).take(2).filter(
+          _._1.name =!= "Colombian")
         (c2, s2) <- q1b_0
       } yield (c.name, s.city, c2.name)
 
@@ -139,53 +137,50 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
             ("French_Roast_Decaf", 49, 999, 5, 0)
           )
         },
-        mark("q1", q1.result)
-          .named("q1: Plain implicit join")
-          .map(_.toSet)
-          .map { r1 =>
-            r1 shouldBe Set(
-              (
-                ("Colombian", "Groundsville:"),
-                ("Colombian", 101, 799, 1, 0),
-                (101, "Acme, Inc.", "99 Market Street"),
-                799),
-              (
-                ("Colombian", "Mendocino:"),
-                ("Colombian", 101, 799, 1, 0),
-                (49, "Superior Coffee", "1 Party Place"),
-                799),
-              (
-                ("Colombian", "Meadows:"),
-                ("Colombian", 101, 799, 1, 0),
-                (150, "The High Ground", "100 Coffee Lane"),
-                799),
-              (
-                ("Colombian_Decaf", "Groundsville:"),
-                ("Colombian_Decaf", 101, 849, 4, 0),
-                (101, "Acme, Inc.", "99 Market Street"),
-                3396),
-              (
-                ("Colombian_Decaf", "Mendocino:"),
-                ("Colombian_Decaf", 101, 849, 4, 0),
-                (49, "Superior Coffee", "1 Party Place"),
-                3396),
-              (
-                ("Colombian_Decaf", "Meadows:"),
-                ("Colombian_Decaf", 101, 849, 4, 0),
-                (150, "The High Ground", "100 Coffee Lane"),
-                3396)
-            )
-          },
+        mark("q1", q1.result).named("q1: Plain implicit join").map(
+          _.toSet).map { r1 =>
+          r1 shouldBe Set(
+            (
+              ("Colombian", "Groundsville:"),
+              ("Colombian", 101, 799, 1, 0),
+              (101, "Acme, Inc.", "99 Market Street"),
+              799),
+            (
+              ("Colombian", "Mendocino:"),
+              ("Colombian", 101, 799, 1, 0),
+              (49, "Superior Coffee", "1 Party Place"),
+              799),
+            (
+              ("Colombian", "Meadows:"),
+              ("Colombian", 101, 799, 1, 0),
+              (150, "The High Ground", "100 Coffee Lane"),
+              799),
+            (
+              ("Colombian_Decaf", "Groundsville:"),
+              ("Colombian_Decaf", 101, 849, 4, 0),
+              (101, "Acme, Inc.", "99 Market Street"),
+              3396),
+            (
+              ("Colombian_Decaf", "Mendocino:"),
+              ("Colombian_Decaf", 101, 849, 4, 0),
+              (49, "Superior Coffee", "1 Party Place"),
+              3396),
+            (
+              ("Colombian_Decaf", "Meadows:"),
+              ("Colombian_Decaf", 101, 849, 4, 0),
+              (150, "The High Ground", "100 Coffee Lane"),
+              3396)
+          )
+        },
         ifCap(rcap.pagingNested) {
-          mark("q1b", q1b.result)
-            .named("q1b: Explicit join with condition")
-            .map { r1b =>
-              r1b.toSet shouldBe Set(
-                ("French_Roast", "Mendocino", "Colombian"),
-                ("French_Roast", "Mendocino", "French_Roast"),
-                ("French_Roast", "Mendocino", "Colombian_Decaf")
-              )
-            }
+          mark("q1b", q1b.result).named(
+            "q1b: Explicit join with condition").map { r1b =>
+            r1b.toSet shouldBe Set(
+              ("French_Roast", "Mendocino", "Colombian"),
+              ("French_Roast", "Mendocino", "French_Roast"),
+              ("French_Roast", "Mendocino", "Colombian_Decaf")
+            )
+          }
         }
       )
 
@@ -219,11 +214,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     // Map to tuple, then filter
     def q4 =
       for {
-        c <- coffees
-          .map(c => (c.name, c.price, 42))
-          .sortBy(_._1)
-          .take(2)
-          .filter(_._2 < 800)
+        c <- coffees.map(c => (c.name, c.price, 42)).sortBy(_._1).take(
+          2).filter(_._2 < 800)
       } yield (c._1, c._3)
 
     // Map to tuple, then filter, with self-join
@@ -247,20 +239,17 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
           r3 shouldBe Set(
             ("Colombian_Decaf", "Acme, Inc.", "Colombian_Decaf", 0, 3396))
         }
-        _ <- q3b.result
-          .named("Lifting scalar values, with extra tuple")
-          .map(_.toSet)
-          .map { r3b =>
-            r3b shouldBe Set(
-              ("Colombian", "Acme, Inc.", "Colombian", 0, 799, 42),
-              ("French_Roast", "Superior Coffee", "French_Roast", 0, 1598, 42),
-              ("Colombian_Decaf", "Acme, Inc.", "Colombian_Decaf", 0, 3396, 42)
-            )
-          }
+        _ <- q3b.result.named("Lifting scalar values, with extra tuple").map(
+          _.toSet).map { r3b =>
+          r3b shouldBe Set(
+            ("Colombian", "Acme, Inc.", "Colombian", 0, 799, 42),
+            ("French_Roast", "Superior Coffee", "French_Roast", 0, 1598, 42),
+            ("Colombian_Decaf", "Acme, Inc.", "Colombian_Decaf", 0, 3396, 42)
+          )
+        }
         _ <- ifCap(rcap.pagingNested) {
-          mark("q4", q4.result)
-            .named("q4: Map to tuple, then filter")
-            .map(_.toSet shouldBe Set(("Colombian", 42)))
+          mark("q4", q4.result).named("q4: Map to tuple, then filter").map(
+            _.toSet shouldBe Set(("Colombian", 42)))
         }
         _ <- mark("q4b", q4b.result).map(
           _.toSet shouldBe Set(
@@ -288,36 +277,31 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     def a4 =
       seq(
-        mark("q5", q5.result)
-          .named("q5: Implicit self-join")
-          .map(_.toSet)
-          .map { r5 =>
+        mark("q5", q5.result).named("q5: Implicit self-join").map(_.toSet).map {
+          r5 =>
             r5 shouldBe Set(
               (("Colombian", 101, 799, 1, 0), ("Colombian", 101, 799, 1, 0)),
               (("Colombian", 101, 799, 1, 0), ("French_Roast", 49, 799, 2, 0)),
               (("French_Roast", 49, 799, 2, 0), ("Colombian", 101, 799, 1, 0)),
               (("French_Roast", 49, 799, 2, 0), ("French_Roast", 49, 799, 2, 0))
             )
-          },
-        mark("q5b", q5b.result)
-          .named("q5b: Explicit self-join with condition")
-          .map(_.toSet)
-          .map { r5b =>
-            r5b shouldBe Set(
-              (("Colombian", 101, 799, 1, 0), ("Colombian", 101, 799, 1, 0)),
-              (("French_Roast", 49, 799, 2, 0), ("French_Roast", 49, 799, 2, 0))
-            )
-          },
-        mark("q6", q6.result)
-          .named("q6: Unused outer query result, unbound TableQuery")
-          .map(_.toSet)
-          .map { r6 =>
-            r6 shouldBe Set(
-              (101, "Acme, Inc.", "99 Market Street"),
-              (49, "Superior Coffee", "1 Party Place"),
-              (150, "The High Ground", "100 Coffee Lane")
-            )
-          }
+        },
+        mark("q5b", q5b.result).named(
+          "q5b: Explicit self-join with condition").map(_.toSet).map { r5b =>
+          r5b shouldBe Set(
+            (("Colombian", 101, 799, 1, 0), ("Colombian", 101, 799, 1, 0)),
+            (("French_Roast", 49, 799, 2, 0), ("French_Roast", 49, 799, 2, 0))
+          )
+        },
+        mark("q6", q6.result).named(
+          "q6: Unused outer query result, unbound TableQuery").map(
+          _.toSet).map { r6 =>
+          r6 shouldBe Set(
+            (101, "Acme, Inc.", "99 Market Street"),
+            (49, "Superior Coffee", "1 Party Place"),
+            (150, "The High Ground", "100 Coffee Lane")
+          )
+        }
       )
 
     // Simple union
@@ -327,9 +311,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     // Union
     val q7 = for {
-      c <- coffees.filter(_.price < 800).map((_, 1)) union coffees
-        .filter(_.price > 950)
-        .map((_, 2))
+      c <- coffees.filter(_.price < 800).map((_, 1)) union coffees.filter(
+        _.price > 950).map((_, 2))
     } yield (c._1.name, c._1.supID, c._2)
 
     // Transitive push-down without union
@@ -355,15 +338,13 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
             ("French_Roast_Decaf", 49, 2)
           )
         },
-        q71.result
-          .named("Transitive push-down without union")
-          .map(_.toSet)
-          .map { r71 =>
-            r71 shouldBe Set(
-              ("Colombian", 101, 1),
-              ("French_Roast", 49, 1)
-            )
-          }
+        q71.result.named("Transitive push-down without union").map(
+          _.toSet).map { r71 =>
+          r71 shouldBe Set(
+            ("Colombian", 101, 1),
+            ("French_Roast", 49, 1)
+          )
+        }
       )
 
     // Union with filter on the outside
@@ -377,25 +358,21 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     // Nested outer join
     val q8b = for {
-      t <- coffees.sortBy(_.sales).take(1) joinLeft coffees
-        .sortBy(_.sales)
-        .take(2) on (_.name === _.name) joinLeft coffees
-        .sortBy(_.sales)
-        .take(4) on (_._1.supID === _.supID)
+      t <- coffees.sortBy(_.sales).take(1) joinLeft coffees.sortBy(
+        _.sales).take(2) on (_.name === _.name) joinLeft coffees.sortBy(
+        _.sales).take(4) on (_._1.supID === _.supID)
     } yield (t._1, t._2)
 
     def a6 =
       seq(
-        q7b.result
-          .named("Union with filter on the outside")
-          .map(_.toSet)
-          .map { r7b =>
+        q7b.result.named("Union with filter on the outside").map(_.toSet).map {
+          r7b =>
             r7b shouldBe Set(
               ("French_Roast", 49, 1),
               ("Espresso", 150, 2),
               ("French_Roast_Decaf", 49, 2)
             )
-          },
+        },
         q8.result.named("Outer join").map(_.toSet).map { r8 =>
           r8 shouldBe Set(
             ("Colombian", Some("Colombian")),
@@ -464,8 +441,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     val q6c =
       (for (o <- orders if o.orderID === (for {
               o2 <- orders if o.userID === o2.userID
-            } yield o2.orderID).max)
-        yield o).sortBy(_.orderID).map(o => o.orderID ~ o.userID)
+            } yield o2.orderID).max) yield o).sortBy(_.orderID).map(o =>
+        o.orderID ~ o.userID)
 
     seq(
       (users.schema ++ orders.schema).create,
@@ -616,33 +593,24 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     val q12 = as.filter(_.id <= as.map(_.id).max - 1).map(_.a)
     val q13 = (as.filter(_.id < 2) union as.filter(_.id > 2)).map(_.id)
     val q14 = q13.to[Set]
-    val q15 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.get).to[Set]
-    val q16 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
+    val q15 = (as.map(a => a.id.?).filter(_ < 2) unionAll as.map(a =>
+      a.id.?).filter(_ > 2)).map(_.get).to[Set]
+    val q16 = (as.map(a => a.id.?).filter(_ < 2) unionAll as.map(a =>
+      a.id.?).filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
     val q17 = as.sortBy(_.id).zipWithIndex.filter(_._2 < 2L).map {
       case (a, i) => (a.id, i)
     }
-    val q18 = as
-      .joinLeft(as)
-      .on { case (a1, a2) => a1.id === a2.id }
-      .filter { case (a1, a2) => a1.id === 3 }
-      .map { case (a1, a2) => a2 }
-    val q19 = as
-      .joinLeft(as)
-      .on { case (a1, a2) => a1.id === a2.id }
-      .joinLeft(as)
-      .on { case ((_, a2), a3) => a2.map(_.b) === a3.b }
-      .map(_._2)
-    val q19b = as
-      .joinLeft(as)
-      .on { case (a1, a2) => a1.id === a2.id }
-      .joinLeft(as)
-      .on { case ((_, a2), a3) => a2.map(_.b) === a3.b }
-      .subquery
-      .map(_._2)
+    val q18 = as.joinLeft(as).on { case (a1, a2) => a1.id === a2.id }.filter {
+      case (a1, a2) => a1.id === 3
+    }.map { case (a1, a2) => a2 }
+    val q19 =
+      as.joinLeft(as).on { case (a1, a2) => a1.id === a2.id }.joinLeft(as).on {
+        case ((_, a2), a3) => a2.map(_.b) === a3.b
+      }.map(_._2)
+    val q19b =
+      as.joinLeft(as).on { case (a1, a2) => a1.id === a2.id }.joinLeft(as).on {
+        case ((_, a2), a3) => a2.map(_.b) === a3.b
+      }.subquery.map(_._2)
 
     if (tdb.profile == H2Profile) {
       assertNesting(q1, 1)
@@ -682,8 +650,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       _ <- mark("q1", q1.result).map(_.toSet shouldBe data.zip(data))
       _ <- mark("q2", q2.result).map(_.toSet shouldBe data.zip(data).zip(data))
       _ <- mark("q3", q3.result).map(_.toSet shouldBe data)
-      _ <- mark("q4", q4.result)
-        .map(_.toSet shouldBe data.filter(_._3 == "b").map {
+      _ <- mark("q4", q4.result).map(
+        _.toSet shouldBe data.filter(_._3 == "b").map {
           case t @ (id, _, _) => (id, t)
         })
       _ <- mark("q5a", q5a.result).map(_ shouldBe Set(2, 3))
@@ -698,8 +666,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       _ <- mark("q8", q8.result).map(_ shouldBe Seq("c", "a", "a"))
       _ <- mark("q9a", q9a.result).map(_ shouldBe Seq(3, 1, 2))
       _ <- mark("q9b", q9b.result).map(_ shouldBe Seq(3, 1, 2))
-      _ <- mark("q10", q10.result)
-        .map(_ shouldBe Seq(1, 2, 3, 4, 5, 6, 7, 8, 9))
+      _ <- mark("q10", q10.result).map(
+        _ shouldBe Seq(1, 2, 3, 4, 5, 6, 7, 8, 9))
       _ <- mark("q11a", q11a.result).map(_ shouldBe Seq(1, 2, 3, 4, 5))
       _ <- mark("q11b", q11b.result).map(_ shouldBe Seq(1, 2, 3))
       _ <- mark("q11c", q11c.result).map(_ shouldBe Seq(2, 3))

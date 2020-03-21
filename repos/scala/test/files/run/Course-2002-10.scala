@@ -14,9 +14,9 @@ object M0 {
 
   def test = {
     var i = 0;
-    fib
-      .take(20)
-      .foreach(n => { Console.println("fib(" + i + ") = " + n); i = i + 1 });
+    fib.take(20).foreach(n => {
+      Console.println("fib(" + i + ") = " + n); i = i + 1
+    });
     Console.println;
   }
 }

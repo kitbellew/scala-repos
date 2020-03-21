@@ -90,8 +90,10 @@ object PythonRunner {
     try {
       val process = builder.start()
 
-      new RedirectThread(process.getInputStream, System.out, "redirect output")
-        .start()
+      new RedirectThread(
+        process.getInputStream,
+        System.out,
+        "redirect output").start()
 
       val exitCode = process.waitFor()
       if (exitCode != 0) {
@@ -144,8 +146,7 @@ object PythonRunner {
   def formatPaths(
       paths: String,
       testWindows: Boolean = false): Array[String] = {
-    Option(paths)
-      .getOrElse("")
+    Option(paths).getOrElse("")
       .split(",")
       .filter(_.nonEmpty)
       .map { p => formatPath(p, testWindows) }

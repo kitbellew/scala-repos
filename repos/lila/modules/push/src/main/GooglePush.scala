@@ -26,8 +26,7 @@ private final class GooglePush(
                 "body" -> data.body
               ),
               "data" -> data.payload
-            ))
-          .flatMap {
+            )).flatMap {
             case res if res.status == 200 => funit
             case res =>
               fufail(

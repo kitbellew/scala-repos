@@ -70,8 +70,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
   @Test
   def testAutoCommitOnClose() {
-    this.consumerConfig
-      .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
+    this.consumerConfig.setProperty(
+      ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
+      "true")
     val consumer0 = new KafkaConsumer(
       this.consumerConfig,
       new ByteArrayDeserializer(),
@@ -103,8 +104,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
   @Test
   def testAutoCommitOnCloseAfterWakeup() {
-    this.consumerConfig
-      .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
+    this.consumerConfig.setProperty(
+      ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
+      "true")
     val consumer0 = new KafkaConsumer(
       this.consumerConfig,
       new ByteArrayDeserializer(),
@@ -195,7 +197,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment()}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(
+        0).assignment()}"
     )
 
     val topic4 = "tsomec" // matches subscribed pattern
@@ -212,7 +215,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment()}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(
+        0).assignment()}"
     )
 
     this.consumers(0).unsubscribe()
@@ -231,9 +235,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     assertEquals(0, this.consumers(0).assignment().size)
 
-    this
-      .consumers(0)
-      .subscribe(Pattern.compile("t.*c"), new TestConsumerReassignmentListener)
+    this.consumers(0).subscribe(
+      Pattern.compile("t.*c"),
+      new TestConsumerReassignmentListener)
     this.consumers(0).poll(50)
 
     val subscriptions = Set(
@@ -247,7 +251,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment()}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(
+        0).assignment()}"
     )
 
     this.consumers(0).unsubscribe()
@@ -511,8 +516,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
   @Test
   def testFetchInvalidOffset() {
-    this.consumerConfig
-      .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "none");
+    this.consumerConfig.setProperty(
+      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
+      "none");
     val consumer0 = new KafkaConsumer(
       this.consumerConfig,
       new ByteArrayDeserializer(),
@@ -578,8 +584,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   @Test
   def testRoundRobinAssignment() {
     // 1 consumer using round-robin assignment
-    this.consumerConfig
-      .setProperty(ConsumerConfig.GROUP_ID_CONFIG, "roundrobin-group")
+    this.consumerConfig.setProperty(
+      ConsumerConfig.GROUP_ID_CONFIG,
+      "roundrobin-group")
     this.consumerConfig.setProperty(
       ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG,
       classOf[RoundRobinAssignor].getName)
@@ -640,8 +647,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
   @Test
   def testMultiConsumerRoundRobinAssignment() {
-    this.consumerConfig
-      .setProperty(ConsumerConfig.GROUP_ID_CONFIG, "roundrobin-group")
+    this.consumerConfig.setProperty(
+      ConsumerConfig.GROUP_ID_CONFIG,
+      "roundrobin-group")
     this.consumerConfig.setProperty(
       ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG,
       classOf[RoundRobinAssignor].getName)
@@ -755,16 +763,10 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     // produce records
     val numRecords = 10
-    (0 until numRecords)
-      .map { i =>
-        testProducer.send(
-          new ProducerRecord(
-            tp.topic(),
-            tp.partition(),
-            s"key $i",
-            s"value $i"))
-      }
-      .foreach(_.get)
+    (0 until numRecords).map { i =>
+      testProducer.send(
+        new ProducerRecord(tp.topic(), tp.partition(), s"key $i", s"value $i"))
+    }.foreach(_.get)
     assertEquals(numRecords, MockProducerInterceptor.ONSEND_COUNT.intValue())
     assertEquals(
       numRecords,
@@ -848,20 +850,15 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       this.producerConfig,
       new StringSerializer,
       new StringSerializer)
-    (0 until numRecords)
-      .map { i =>
-        testProducer.send(
-          new ProducerRecord(
-            tp.topic(),
-            tp.partition(),
-            s"key $i",
-            s"value $i"))
-      }
-      .foreach(_.get)
+    (0 until numRecords).map { i =>
+      testProducer.send(
+        new ProducerRecord(tp.topic(), tp.partition(), s"key $i", s"value $i"))
+    }.foreach(_.get)
 
     // create consumer with interceptor
-    this.consumerConfig
-      .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
+    this.consumerConfig.setProperty(
+      ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
+      "true")
     this.consumerConfig.setProperty(
       ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
       "org.apache.kafka.test.MockConsumerInterceptor")
@@ -904,16 +901,14 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     assertEquals(10, testConsumer.committed(tp).offset)
     assertEquals(20, testConsumer.committed(tp2).offset)
     assertTrue(
-      MockConsumerInterceptor.ON_COMMIT_COUNT
-        .intValue() > commitCountBeforeRebalance)
+      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue() > commitCountBeforeRebalance)
 
     // verify commits are intercepted on close
     val commitCountBeforeClose =
       MockConsumerInterceptor.ON_COMMIT_COUNT.intValue()
     testConsumer.close()
     assertTrue(
-      MockConsumerInterceptor.ON_COMMIT_COUNT
-        .intValue() > commitCountBeforeClose)
+      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue() > commitCountBeforeClose)
     testProducer.close()
 
     // cleanup
@@ -1064,9 +1059,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     if (closeConsumer)
       timeoutConsumer.close()
 
-    val maxSessionTimeout = this.serverConfig
-      .getProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp)
-      .toLong
+    val maxSessionTimeout = this.serverConfig.getProperty(
+      KafkaConfig.GroupMaxSessionTimeoutMsProp).toLong
     validateGroupAssignment(
       consumerPollers,
       subscriptions,

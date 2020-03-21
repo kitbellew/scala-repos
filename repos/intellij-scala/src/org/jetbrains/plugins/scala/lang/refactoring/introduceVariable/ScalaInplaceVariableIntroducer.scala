@@ -99,9 +99,8 @@ class ScalaInplaceVariableIntroducer(
         val range = new TextRange(
           myCaretRangeMarker.getStartOffset,
           myCaretRangeMarker.getEndOffset)
-        if (range.getLength == 0 && UndoManager
-              .getInstance(myProject)
-              .isUndoInProgress) {} else {
+        if (range.getLength == 0 && UndoManager.getInstance(
+              myProject).isUndoInProgress) {} else {
           val input = myCaretRangeMarker.getDocument.getText(range)
           val numberOfSpaces = input.lastIndexOf(' ') + 1
           val declaration = findDeclaration(
@@ -148,9 +147,8 @@ class ScalaInplaceVariableIntroducer(
   }
 
   private def commitDocument(): Unit = {
-    PsiDocumentManager
-      .getInstance(myProject)
-      .commitDocument(myEditor.getDocument)
+    PsiDocumentManager.getInstance(myProject).commitDocument(
+      myEditor.getDocument)
   }
 
   private def needInferType =
@@ -183,11 +181,13 @@ class ScalaInplaceVariableIntroducer(
               val replacement =
                 declaration match {
                   case value: ScValue if asVar =>
-                    ScalaPsiElementFactory
-                      .createVarFromValDeclaration(value, value.getManager)
+                    ScalaPsiElementFactory.createVarFromValDeclaration(
+                      value,
+                      value.getManager)
                   case variable: ScVariableDefinition if !asVar =>
-                    ScalaPsiElementFactory
-                      .createValFromVarDefinition(variable, variable.getManager)
+                    ScalaPsiElementFactory.createValFromVarDefinition(
+                      variable,
+                      variable.getManager)
                   case _ => declaration
                 }
               if (replacement != declaration)
@@ -280,12 +280,14 @@ class ScalaInplaceVariableIntroducer(
                     holder.findFirstChildByType(ScalaTokenTypes.tCOLON)
                   val assign =
                     holder.findFirstChildByType(ScalaTokenTypes.tASSIGN)
-                  val whiteSpace = ScalaPsiElementFactory
-                    .createExpressionFromText("1 + 1", myFile.getManager)
-                    .findElementAt(1)
+                  val whiteSpace =
+                    ScalaPsiElementFactory.createExpressionFromText(
+                      "1 + 1",
+                      myFile.getManager).findElementAt(1)
                   val newWhiteSpace = holder.addBefore(whiteSpace, assign)
-                  holder.getNode
-                    .removeRange(colon.getNode, newWhiteSpace.getNode)
+                  holder.getNode.removeRange(
+                    colon.getNode,
+                    newWhiteSpace.getNode)
                   setDeclaration(holder)
                   commitDocument()
                 case enum: ScEnumerator
@@ -379,9 +381,8 @@ class ScalaInplaceVariableIntroducer(
           myEditor.getCaretModel.moveToOffset(
             declaration.getTextRange.getEndOffset)
         }
-      } else if (getDeclaration != null && !UndoManager
-                   .getInstance(myProject)
-                   .isUndoInProgress) {
+      } else if (getDeclaration != null && !UndoManager.getInstance(
+                   myProject).isUndoInProgress) {
         val revertInfo =
           myEditor.getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
         if (revertInfo != null) {

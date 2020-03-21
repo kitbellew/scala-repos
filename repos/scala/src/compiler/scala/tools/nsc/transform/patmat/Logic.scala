@@ -507,13 +507,14 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       // TODO: there seems to be bug for singleton domains (variable does not show up in model)
       lazy val domain: Option[Set[Const]] = {
         val subConsts =
-          enumerateSubtypes(staticTp, grouped = false).headOption.map { tps =>
-            tps.toSet[Type].map { tp =>
-              val domainC = TypeConst(tp)
-              registerEquality(domainC)
-              domainC
+          enumerateSubtypes(staticTp, grouped = false)
+            .headOption.map { tps =>
+              tps.toSet[Type].map { tp =>
+                val domainC = TypeConst(tp)
+                registerEquality(domainC)
+                domainC
+              }
             }
-          }
 
         val allConsts =
           if (mayBeNull) {
@@ -527,15 +528,12 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
       lazy val groupedDomains: List[Set[Sym]] = {
         val subtypes = enumerateSubtypes(staticTp, grouped = true)
-        subtypes
-          .map {
-            subTypes =>
-              val syms = subTypes
-                .flatMap(tpe => symForEqualsTo.get(TypeConst(tpe)))
-                .toSet
-              if (mayBeNull) syms + symForEqualsTo(NullConst) else syms
-          }
-          .filter(_.nonEmpty)
+        subtypes.map {
+          subTypes =>
+            val syms =
+              subTypes.flatMap(tpe => symForEqualsTo.get(TypeConst(tpe))).toSet
+            if (mayBeNull) syms + symForEqualsTo(NullConst) else syms
+        }.filter(_.nonEmpty)
       }
 
       // populate equalitySyms
@@ -730,18 +728,18 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       private[TreesAndTypesDomain] def unique(
           tp: Type,
           mkFresh: => Const): Const =
-        uniques
-          .get(tp)
-          .getOrElse(uniques.find { case (oldTp, oldC) => oldTp =:= tp } match {
-            case Some((_, c)) =>
-              debug.patmat("unique const: " + ((tp, c)))
-              c
-            case _ =>
-              val fresh = mkFresh
-              debug.patmat("uniqued const: " + ((tp, fresh)))
-              uniques(tp) = fresh
-              fresh
-          })
+        uniques.get(tp).getOrElse(uniques.find {
+          case (oldTp, oldC) => oldTp =:= tp
+        } match {
+          case Some((_, c)) =>
+            debug.patmat("unique const: " + ((tp, c)))
+            c
+          case _ =>
+            val fresh = mkFresh
+            debug.patmat("uniqued const: " + ((tp, fresh)))
+            uniques(tp) = fresh
+            fresh
+        })
 
       private val trees = mutable.HashSet.empty[Tree]
 

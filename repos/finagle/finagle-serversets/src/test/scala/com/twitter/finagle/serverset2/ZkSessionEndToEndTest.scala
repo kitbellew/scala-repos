@@ -160,12 +160,10 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
     Await.ready(session2.value.close())
 
     // This will expire the session.
-    val session1Expired = session1.state.changes
-      .filter(_ == WatchState.SessionState(SessionState.Expired))
-      .toFuture()
-    val zkConnected = varZkState.changes
-      .filter(_ == WatchState.SessionState(SessionState.SyncConnected))
-      .toFuture()
+    val session1Expired = session1.state.changes.filter(
+      _ == WatchState.SessionState(SessionState.Expired)).toFuture()
+    val zkConnected = varZkState.changes.filter(
+      _ == WatchState.SessionState(SessionState.SyncConnected)).toFuture()
 
     Await.ready(session1.getData("/sadfads"))
     Await.ready(session1Expired)

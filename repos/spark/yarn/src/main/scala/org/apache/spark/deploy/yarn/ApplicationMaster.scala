@@ -64,9 +64,9 @@ private[spark] class ApplicationMaster(
   // optimal as more containers are available. Might need to handle this better.
 
   private val sparkConf = new SparkConf()
-  private val yarnConf: YarnConfiguration = SparkHadoopUtil.get
-    .newConfiguration(sparkConf)
-    .asInstanceOf[YarnConfiguration]
+  private val yarnConf: YarnConfiguration =
+    SparkHadoopUtil.get.newConfiguration(sparkConf)
+      .asInstanceOf[YarnConfiguration]
   private val isClusterMode = args.userClass != null
 
   // Default to twice the number of executors (twice the maximum number of executors if dynamic
@@ -86,9 +86,8 @@ private[spark] class ApplicationMaster(
       if (effectiveNumExecutors > Int.MaxValue / 2) Int.MaxValue
       else (2 * effectiveNumExecutors))
 
-    sparkConf
-      .get(MAX_EXECUTOR_FAILURES)
-      .getOrElse(defaultMaxNumExecutorFailures)
+    sparkConf.get(MAX_EXECUTOR_FAILURES).getOrElse(
+      defaultMaxNumExecutorFailures)
   }
 
   @volatile private var exitCode = 0
@@ -247,9 +246,8 @@ private[spark] class ApplicationMaster(
       if (!unregistered) {
         logInfo(
           s"Unregistering ApplicationMaster with $status" +
-            Option(diagnostics)
-              .map(msg => s" (diag message: $msg)")
-              .getOrElse(""))
+            Option(diagnostics).map(msg => s" (diag message: $msg)").getOrElse(
+              ""))
         unregistered = true
         client.unregister(status, Option(diagnostics).getOrElse(""))
       }
@@ -270,13 +268,11 @@ private[spark] class ApplicationMaster(
         finalStatus = status
         finalMsg = msg
         finished = true
-        if (!inShutdown && Thread
-              .currentThread() != reporterThread && reporterThread != null) {
+        if (!inShutdown && Thread.currentThread() != reporterThread && reporterThread != null) {
           logDebug("shutting down reporter thread")
           reporterThread.interrupt()
         }
-        if (!inShutdown && Thread
-              .currentThread() != userClassThread && userClassThread != null) {
+        if (!inShutdown && Thread.currentThread() != userClassThread && userClassThread != null) {
           logDebug("shutting down user thread")
           userClassThread.interrupt()
         }
@@ -306,8 +302,7 @@ private[spark] class ApplicationMaster(
     val appId = client.getAttemptId().getApplicationId().toString()
     val attemptId = client.getAttemptId().getAttemptId().toString()
     val historyAddress =
-      sparkConf
-        .get(HISTORY_SERVER_ADDRESS)
+      sparkConf.get(HISTORY_SERVER_ADDRESS)
         .map { text =>
           SparkHadoopUtil.get.substituteHadoopVariables(text, yarnConf)
         }
@@ -514,8 +509,7 @@ private[spark] class ApplicationMaster(
       val totalWaitTime = sparkConf.get(AM_MAX_WAIT_TIME)
       val deadline = System.currentTimeMillis() + totalWaitTime
 
-      while (sparkContextRef
-               .get() == null && System.currentTimeMillis < deadline && !finished) {
+      while (sparkContextRef.get() == null && System.currentTimeMillis < deadline && !finished) {
         logInfo("Waiting for spark context initialization ... ")
         sparkContextRef.wait(10000L)
       }
@@ -551,8 +545,9 @@ private[spark] class ApplicationMaster(
       } catch {
         case e: Exception =>
           logError(
-            "Failed to connect to driver at %s:%s, retrying ..."
-              .format(driverHost, driverPort))
+            "Failed to connect to driver at %s:%s, retrying ...".format(
+              driverHost,
+              driverPort))
           Thread.sleep(100L)
       }
     }
@@ -613,8 +608,7 @@ private[spark] class ApplicationMaster(
     if (args.primaryRFile != null && args.primaryRFile.endsWith(".R")) {
       // TODO(davies): add R dependencies here
     }
-    val mainMethod = userClassLoader
-      .loadClass(args.userClass)
+    val mainMethod = userClassLoader.loadClass(args.userClass)
       .getMethod("main", classOf[Array[String]])
 
     val userThread = new Thread {

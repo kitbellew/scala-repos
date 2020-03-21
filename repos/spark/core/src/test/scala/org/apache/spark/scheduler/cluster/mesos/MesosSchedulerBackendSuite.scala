@@ -122,11 +122,8 @@ class MesosSchedulerBackendSuite
     val (executorInfo, _) =
       mesosSchedulerBackend.createExecutorInfo(resources, "test-id")
     val executorResources = executorInfo.getResourcesList
-    val cpus = executorResources.asScala
-      .find(_.getName.equals("cpus"))
-      .get
-      .getScalar
-      .getValue
+    val cpus = executorResources.asScala.find(
+      _.getName.equals("cpus")).get.getScalar.getValue
 
     assert(cpus === mesosExecutorCores)
   }
@@ -228,22 +225,18 @@ class MesosSchedulerBackendSuite
   test("mesos resource offers result in launching tasks") {
     def createOffer(id: Int, mem: Int, cpu: Int): Offer = {
       val builder = Offer.newBuilder()
-      builder
-        .addResourcesBuilder()
+      builder.addResourcesBuilder()
         .setName("mem")
         .setType(Value.Type.SCALAR)
         .setScalar(Scalar.newBuilder().setValue(mem))
-      builder
-        .addResourcesBuilder()
+      builder.addResourcesBuilder()
         .setName("cpus")
         .setType(Value.Type.SCALAR)
         .setScalar(Scalar.newBuilder().setValue(cpu))
-      builder
-        .setId(OfferID.newBuilder().setValue(s"o${id.toString}").build())
+      builder.setId(OfferID.newBuilder().setValue(s"o${id.toString}").build())
         .setFrameworkId(FrameworkID.newBuilder().setValue("f1"))
         .setSlaveId(SlaveID.newBuilder().setValue(s"s${id.toString}"))
-        .setHostname(s"host${id.toString}")
-        .build()
+        .setHostname(s"host${id.toString}").build()
     }
 
     val driver = mock[SchedulerDriver]
@@ -293,8 +286,8 @@ class MesosSchedulerBackendSuite
       "n1",
       0,
       ByteBuffer.wrap(new Array[Byte](0)))
-    when(taskScheduler.resourceOffers(expectedWorkerOffers))
-      .thenReturn(Seq(Seq(taskDesc)))
+    when(taskScheduler.resourceOffers(expectedWorkerOffers)).thenReturn(
+      Seq(Seq(taskDesc)))
     when(taskScheduler.CPUS_PER_TASK).thenReturn(2)
 
     val capture = ArgumentCaptor.forClass(classOf[Collection[TaskInfo]])
@@ -305,10 +298,10 @@ class MesosSchedulerBackendSuite
         any(classOf[Filters])
       )
     ).thenReturn(Status.valueOf(1))
-    when(driver.declineOffer(mesosOffers.get(1).getId))
-      .thenReturn(Status.valueOf(1))
-    when(driver.declineOffer(mesosOffers.get(2).getId))
-      .thenReturn(Status.valueOf(1))
+    when(driver.declineOffer(mesosOffers.get(1).getId)).thenReturn(
+      Status.valueOf(1))
+    when(driver.declineOffer(mesosOffers.get(2).getId)).thenReturn(
+      Status.valueOf(1))
 
     backend.resourceOffers(driver, mesosOffers)
 
@@ -332,11 +325,12 @@ class MesosSchedulerBackendSuite
     mesosOffers2.add(createOffer(1, minMem, minCpu))
     reset(taskScheduler)
     reset(driver)
-    when(taskScheduler.resourceOffers(any(classOf[Seq[WorkerOffer]])))
-      .thenReturn(Seq(Seq()))
+    when(
+      taskScheduler.resourceOffers(any(classOf[Seq[WorkerOffer]]))).thenReturn(
+      Seq(Seq()))
     when(taskScheduler.CPUS_PER_TASK).thenReturn(2)
-    when(driver.declineOffer(mesosOffers2.get(0).getId))
-      .thenReturn(Status.valueOf(1))
+    when(driver.declineOffer(mesosOffers2.get(0).getId)).thenReturn(
+      Status.valueOf(1))
 
     backend.resourceOffers(driver, mesosOffers2)
     verify(driver, times(1)).declineOffer(mesosOffers2.get(0).getId)
@@ -362,36 +356,31 @@ class MesosSchedulerBackendSuite
 
     val id = 1
     val builder = Offer.newBuilder()
-    builder
-      .addResourcesBuilder()
+    builder.addResourcesBuilder()
       .setName("mem")
       .setType(Value.Type.SCALAR)
       .setRole("prod")
       .setScalar(Scalar.newBuilder().setValue(500))
-    builder
-      .addResourcesBuilder()
+    builder.addResourcesBuilder()
       .setName("cpus")
       .setRole("prod")
       .setType(Value.Type.SCALAR)
       .setScalar(Scalar.newBuilder().setValue(1))
-    builder
-      .addResourcesBuilder()
+    builder.addResourcesBuilder()
       .setName("mem")
       .setRole("dev")
       .setType(Value.Type.SCALAR)
       .setScalar(Scalar.newBuilder().setValue(600))
-    builder
-      .addResourcesBuilder()
+    builder.addResourcesBuilder()
       .setName("cpus")
       .setRole("dev")
       .setType(Value.Type.SCALAR)
       .setScalar(Scalar.newBuilder().setValue(2))
-    val offer = builder
-      .setId(OfferID.newBuilder().setValue(s"o${id.toString}").build())
-      .setFrameworkId(FrameworkID.newBuilder().setValue("f1"))
-      .setSlaveId(SlaveID.newBuilder().setValue(s"s${id.toString}"))
-      .setHostname(s"host${id.toString}")
-      .build()
+    val offer =
+      builder.setId(OfferID.newBuilder().setValue(s"o${id.toString}").build())
+        .setFrameworkId(FrameworkID.newBuilder().setValue("f1"))
+        .setSlaveId(SlaveID.newBuilder().setValue(s"s${id.toString}"))
+        .setHostname(s"host${id.toString}").build()
 
     val mesosOffers = new java.util.ArrayList[Offer]
     mesosOffers.add(offer)
@@ -413,8 +402,8 @@ class MesosSchedulerBackendSuite
       "n1",
       0,
       ByteBuffer.wrap(new Array[Byte](0)))
-    when(taskScheduler.resourceOffers(expectedWorkerOffers))
-      .thenReturn(Seq(Seq(taskDesc)))
+    when(taskScheduler.resourceOffers(expectedWorkerOffers)).thenReturn(
+      Seq(Seq(taskDesc)))
     when(taskScheduler.CPUS_PER_TASK).thenReturn(1)
 
     val capture = ArgumentCaptor.forClass(classOf[Collection[TaskInfo]])
@@ -444,12 +433,12 @@ class MesosSchedulerBackendSuite
     assert(cpusDev.getRole.equals("dev"))
     val executorResources = taskInfo.getExecutor.getResourcesList.asScala
     assert(executorResources.exists { r =>
-      r.getName.equals("mem") && r.getScalar.getValue.equals(484.0) && r.getRole
-        .equals("prod")
+      r.getName.equals("mem") && r.getScalar.getValue.equals(
+        484.0) && r.getRole.equals("prod")
     })
     assert(executorResources.exists { r =>
-      r.getName.equals("cpus") && r.getScalar.getValue.equals(1.0) && r.getRole
-        .equals("prod")
+      r.getName.equals("cpus") && r.getScalar.getValue.equals(
+        1.0) && r.getRole.equals("prod")
     })
   }
 }

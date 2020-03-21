@@ -89,15 +89,17 @@ class BindingSpec extends Specification {
     "build a Binding with Map[String, String]" in {
 
       val builder = Binding(FieldDescriptor[String]("login"))
-      val conv = implicitly[TypeConverter[String, String]]
-        .asInstanceOf[TypeConverter[String, builder.T]]
+      val conv = implicitly[TypeConverter[String, String]].asInstanceOf[
+        TypeConverter[String, builder.T]]
       val container =
         Binding(builder.field, conv, implicitly[TypeConverterFactory[String]])(
           manifest[String],
           builder.valueManifest)
       container(
-        Right(Some("joske"
-          .asInstanceOf[container.S]))).validation must_== "joske".success
+        Right(
+          Some(
+            "joske".asInstanceOf[
+              container.S]))).validation must_== "joske".success
     }
 
   }
@@ -308,9 +310,8 @@ class BindingSpec extends Specification {
       field.validator must not(beEmpty)
       field.validator.get.apply("hello".success).isSuccess must beTrue
       field.validator.get.apply("".success).isSuccess must beFalse
-      field.validator.get
-        .apply(null.asInstanceOf[String].success)
-        .isSuccess must beFalse
+      field.validator.get.apply(
+        null.asInstanceOf[String].success).isSuccess must beFalse
     }
 
     "have a validation for greater than" in {
@@ -325,9 +326,8 @@ class BindingSpec extends Specification {
       val field = newBinding[Seq[String]].notEmpty
       field.validator must not(beEmpty)
       field.validator.get.apply(Success(Seq("hello"))).isSuccess must beTrue
-      field.validator.get
-        .apply(Success(Seq.empty[String]))
-        .isSuccess must beFalse
+      field.validator.get.apply(
+        Success(Seq.empty[String])).isSuccess must beFalse
     }
 
     "allow chaining validations" in {

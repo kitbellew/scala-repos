@@ -126,8 +126,9 @@ abstract class DefaultDatabase(
     databaseConfig.driver.map { driverClassName =>
       try {
         val proxyDriver = new ProxyDriver(
-          Reflect
-            .createInstance[Driver](driverClassName, environment.classLoader))
+          Reflect.createInstance[Driver](
+            driverClassName,
+            environment.classLoader))
         DriverManager.registerDriver(proxyDriver)
         proxyDriver
       } catch {

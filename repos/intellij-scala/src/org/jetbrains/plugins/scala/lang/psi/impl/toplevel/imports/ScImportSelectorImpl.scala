@@ -92,10 +92,9 @@ class ScImportSelectorImpl private (
     getStub match {
       case stub: ScImportSelectorStub => stub.isAliasedImport
       case _ =>
-        PsiTreeUtil
-          .getParentOfType(this, classOf[ScImportExpr])
-          .selectors
-          .nonEmpty &&
+        PsiTreeUtil.getParentOfType(
+          this,
+          classOf[ScImportExpr]).selectors.nonEmpty &&
           !getLastChild.isInstanceOf[ScStableCodeReferenceElement]
     }
   }

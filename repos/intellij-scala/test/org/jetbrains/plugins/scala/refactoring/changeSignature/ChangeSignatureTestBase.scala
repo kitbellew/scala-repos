@@ -70,9 +70,8 @@ abstract class ChangeSignatureTestBase
 
     processor(newVisibility, newName, newReturnType, newParams).run()
 
-    PostprocessReformattingAspect
-      .getInstance(getProjectAdapter)
-      .doPostponedFormatting()
+    PostprocessReformattingAspect.getInstance(
+      getProjectAdapter).doPostponedFormatting()
 
     val mainAfterText = getTextFromTestData(mainFileAfterName(testName))
     assertEquals(mainAfterText, getFileAdapter.getText)

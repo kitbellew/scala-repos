@@ -48,14 +48,11 @@ private[sql] abstract class ParquetCompatibilityTest
       pathFilter: Path => Boolean): MessageType = {
     val fsPath = new Path(path)
     val fs = fsPath.getFileSystem(hadoopConfiguration)
-    val parquetFiles = fs
-      .listStatus(
-        fsPath,
-        new PathFilter {
-          override def accept(path: Path): Boolean = pathFilter(path)
-        })
-      .toSeq
-      .asJava
+    val parquetFiles = fs.listStatus(
+      fsPath,
+      new PathFilter {
+        override def accept(path: Path): Boolean = pathFilter(path)
+      }).toSeq.asJava
 
     val footers =
       ParquetFileReader.readAllFootersInParallel(

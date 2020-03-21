@@ -50,8 +50,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   private val graph = ssc.graph
 
   val clock = {
-    val clockClass = ssc.sc.conf
-      .get("spark.streaming.clock", "org.apache.spark.util.SystemClock")
+    val clockClass = ssc.sc.conf.get(
+      "spark.streaming.clock",
+      "org.apache.spark.util.SystemClock")
     try {
       Utils.classForName(clockClass).newInstance().asInstanceOf[Clock]
     } catch {
@@ -248,10 +249,10 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       "Batches pending processing (" + pendingTimes.length + " batches): " +
         pendingTimes.mkString(", "))
     // Reschedule jobs for these times
-    val timesToReschedule = (pendingTimes ++ downTimes)
-      .filter { _ < restartTime }
-      .distinct
-      .sorted(Time.ordering)
+    val timesToReschedule = (pendingTimes ++ downTimes).filter {
+      _ < restartTime
+    }
+      .distinct.sorted(Time.ordering)
     logInfo(
       "Batches to reschedule (" + timesToReschedule.length + " batches): " +
         timesToReschedule.mkString(", "))
@@ -279,8 +280,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
     // Checkpoint all RDDs marked for checkpointing to ensure their lineages are
     // truncated periodically. Otherwise, we may run into stack overflows (SPARK-6847).
-    ssc.sparkContext
-      .setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, "true")
+    ssc.sparkContext.setLocalProperty(
+      RDD.CHECKPOINT_ALL_MARKED_ANCESTORS,
+      "true")
     Try {
       jobScheduler.receiverTracker.allocateBlocksToBatch(
         time

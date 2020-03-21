@@ -192,8 +192,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           logWarning("WaitList too short")
           thresholdByKey += (key -> acceptResult.waitListBound)
         } else {
-          thresholdByKey += (key -> acceptResult.waitList.sorted
-            .apply(numWaitListAccepted))
+          thresholdByKey += (key -> acceptResult.waitList.sorted.apply(
+            numWaitListAccepted))
         }
       }
     }

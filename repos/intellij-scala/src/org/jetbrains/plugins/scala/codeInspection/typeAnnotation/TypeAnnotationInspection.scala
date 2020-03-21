@@ -39,9 +39,9 @@ class TypeAnnotationInspection extends AbstractInspection {
       inspect(
         value.bindings.head,
         kindOf(value) + " value",
-        value.declaredElements.headOption
-          .map(ScalaPsiUtil.superValsSignatures(_, withSelfType = true))
-          .exists(_.nonEmpty),
+        value.declaredElements.headOption.map(
+          ScalaPsiUtil.superValsSignatures(_, withSelfType = true)).exists(
+          _.nonEmpty),
         value.expr.exists(isSimple),
         requirementForProperty(value, settings),
         settings.OVERRIDING_PROPERTY_TYPE_ANNOTATION,
@@ -56,9 +56,9 @@ class TypeAnnotationInspection extends AbstractInspection {
       inspect(
         variable.bindings.head,
         kindOf(variable) + " variable",
-        variable.declaredElements.headOption
-          .map(ScalaPsiUtil.superValsSignatures(_, withSelfType = true))
-          .exists(_.nonEmpty),
+        variable.declaredElements.headOption.map(
+          ScalaPsiUtil.superValsSignatures(_, withSelfType = true)).exists(
+          _.nonEmpty),
         variable.expr.exists(isSimple),
         requirementForProperty(variable, settings),
         settings.OVERRIDING_PROPERTY_TYPE_ANNOTATION,

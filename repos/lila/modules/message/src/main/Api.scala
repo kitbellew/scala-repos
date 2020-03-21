@@ -35,9 +35,8 @@ final class Api(
   def thread(id: String, me: User): Fu[Option[Thread]] =
     for {
       threadOption ← $find.byId(id) map (_ filter (_ hasUser me))
-      _ ← threadOption
-        .filter(_ isUnReadBy me)
-        .??(thread => (ThreadRepo setRead thread) >>- updateUser(me))
+      _ ← threadOption.filter(_ isUnReadBy me).??(thread =>
+        (ThreadRepo setRead thread) >>- updateUser(me))
     } yield threadOption
 
   def markThreadAsRead(id: String, me: User): Funit = thread(id, me).void
@@ -58,8 +57,10 @@ final class Api(
           sendUnlessBlocked(thread, fromMod) >>-
             updateUser(invited) >>- {
             val text = s"${data.subject} ${data.text}"
-            shutup ! lila.hub.actorApi.shutup
-              .RecordPrivateMessage(me.id, invited.id, text)
+            shutup ! lila.hub.actorApi.shutup.RecordPrivateMessage(
+              me.id,
+              invited.id,
+              text)
           } inject thread
         }
       }
@@ -96,8 +97,10 @@ final class Api(
             }
           } >>- {
             val toUserId = newThread otherUserId me
-            shutup ! lila.hub.actorApi.shutup
-              .RecordPrivateMessage(me.id, toUserId, text)
+            shutup ! lila.hub.actorApi.shutup.RecordPrivateMessage(
+              me.id,
+              toUserId,
+              text)
           } inject newThread
       }
   }

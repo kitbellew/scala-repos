@@ -32,10 +32,9 @@ class ProtobufSerializerSpec extends AkkaSpec {
       // serialize it with ProtobufSerializer
       val bytes = ser.serialize(protobufMessage).get
       // deserialize the bytes with ProtobufSerializer
-      val deserialized = ser
-        .deserialize(bytes, protobufMessage.getClass)
-        .get
-        .asInstanceOf[SerializedMessage]
+      val deserialized = ser.deserialize(
+        bytes,
+        protobufMessage.getClass).get.asInstanceOf[SerializedMessage]
       deserialized.getSerializerId should ===(protobufMessage.getSerializerId)
       deserialized.getMessage should ===(
         protobufMessage.getMessage

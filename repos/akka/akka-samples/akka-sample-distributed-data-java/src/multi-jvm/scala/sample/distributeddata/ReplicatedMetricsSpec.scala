@@ -87,11 +87,8 @@ class ReplicatedMetricsSpec
           probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should be(
             2)
         }
-        probe
-          .expectMsgType[UsedHeap]
-          .percentPerNode
-          .asScala
-          .toMap should not contain (
+        probe.expectMsgType[
+          UsedHeap].percentPerNode.asScala.toMap should not contain (
           nodeKey(node3Address))
       }
       enterBarrier("after-3")

@@ -28,8 +28,8 @@ class ScalaWhileConditionFixer extends ScalaFixer {
 
     whileStatement.condition match {
       case None
-          if leftParenthesis != null && !leftParenthesis.getNextSibling
-            .isInstanceOf[PsiErrorElement] &&
+          if leftParenthesis != null && !leftParenthesis.getNextSibling.isInstanceOf[
+            PsiErrorElement] &&
             whileStatement.lastChild.exists(_.isInstanceOf[PsiErrorElement]) =>
         doc.insertString(
           whileStatement.lastChild.get.getTextRange.getEndOffset,

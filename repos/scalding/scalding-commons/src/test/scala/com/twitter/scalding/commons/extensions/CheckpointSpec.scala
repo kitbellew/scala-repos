@@ -63,8 +63,7 @@ class TypedCheckpointJob(args: Args) extends Job(args) {
     }
   def out =
     Checkpoint[(Int, Int, Double)]("c2") {
-      in0
-        .groupBy(_._2)
+      in0.groupBy(_._2)
         .join(in1.groupBy(_._2))
         .mapValues { case (l, r) => ((l._1, r._1), (l._3 * r._3).toDouble) }
         .values

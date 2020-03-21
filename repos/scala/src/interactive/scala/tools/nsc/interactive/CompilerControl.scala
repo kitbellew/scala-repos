@@ -439,8 +439,10 @@ trait CompilerControl { self: Global =>
       extends WorkItem {
     def apply() = self.getDocComment(sym, source, site, fragments, response)
     override def toString =
-      "doc comment " + sym + " in " + source + " with fragments:" + fragments
-        .mkString("(", ",", ")")
+      "doc comment " + sym + " in " + source + " with fragments:" + fragments.mkString(
+        "(",
+        ",",
+        ")")
 
     def raiseMissing() =
       response raise new MissingResponse

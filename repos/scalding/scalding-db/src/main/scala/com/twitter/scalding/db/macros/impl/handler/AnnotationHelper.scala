@@ -35,16 +35,16 @@ private[handler] abstract class AnnotationHelper {
       _.flatten.map(o => WithSize(o)).getOrElse(WithoutSize))
 
   def textAnnotation: scala.util.Try[(AnnotationHelper, TextAnno)] =
-    consume(typeOf[com.twitter.scalding.db.macros.text])(
-      _.map(_ => WithText).getOrElse(WithoutText))
+    consume(typeOf[com.twitter.scalding.db.macros.text])(_.map(_ =>
+      WithText).getOrElse(WithoutText))
 
   def varcharAnnotation: scala.util.Try[(AnnotationHelper, VarcharAnno)] =
     consume(typeOf[com.twitter.scalding.db.macros.varchar])(_.map(_ =>
       WithVarchar).getOrElse(WithoutVarchar))
 
   def dateAnnotation: scala.util.Try[(AnnotationHelper, DateAnno)] =
-    consume(typeOf[com.twitter.scalding.db.macros.date])(
-      _.map(_ => WithDate).getOrElse(WithoutDate))
+    consume(typeOf[com.twitter.scalding.db.macros.date])(_.map(_ =>
+      WithDate).getOrElse(WithoutDate))
 
   def consume[T](t: ctx.universe.Type)(
       fn: Option[Option[Int]] => T): scala.util.Try[(AnnotationHelper, T)] = {

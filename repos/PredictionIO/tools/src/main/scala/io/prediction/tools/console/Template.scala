@@ -177,9 +177,9 @@ object Template extends Logging {
     val data =
       Map("repo" -> repo, "name" -> name, "email" -> email, "org" -> org)
     try {
-      httpOptionalProxy("http://update.prediction.io/templates.subscribe")
-        .postData("json=" + write(data))
-        .asString
+      httpOptionalProxy(
+        "http://update.prediction.io/templates.subscribe").postData(
+        "json=" + write(data)).asString
     } catch {
       case e: Throwable => error("Unable to subscribe.")
     }
@@ -342,8 +342,9 @@ object Template extends Logging {
     var ze = zis.getNextEntry
     while (ze != null) {
       val filenameSegments = ze.getName.split(File.separatorChar)
-      val destFilename = (ca.template.directory +: filenameSegments.tail)
-        .mkString(File.separator)
+      val destFilename =
+        (ca.template.directory +: filenameSegments.tail).mkString(
+          File.separator)
       if (ze.isDirectory) {
         new File(destFilename).mkdirs
       } else {

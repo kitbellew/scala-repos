@@ -149,14 +149,16 @@ object ScalaGenerationInfo {
             statements(0).getTextRange.getStartOffset,
             statements(statements.length - 1).getTextRange.getEndOffset)
           editor.getCaretModel.moveToOffset(range.getStartOffset)
-          editor.getSelectionModel
-            .setSelection(range.getStartOffset, range.getEndOffset)
+          editor.getSelectionModel.setSelection(
+            range.getStartOffset,
+            range.getEndOffset)
         }
       case _ =>
         val range = body.getTextRange
         editor.getCaretModel.moveToOffset(range.getStartOffset)
-        editor.getSelectionModel
-          .setSelection(range.getStartOffset, range.getEndOffset)
+        editor.getSelectionModel.setSelection(
+          range.getStartOffset,
+          range.getEndOffset)
     }
   }
 
@@ -166,9 +168,8 @@ object ScalaGenerationInfo {
     val superOrSelfQual: String = td.selfType match {
       case None => "super."
       case Some(st: ScType) =>
-        val psiClass = ScType
-          .extractClass(st, Option(td.getProject))
-          .getOrElse(return "super.")
+        val psiClass = ScType.extractClass(st, Option(td.getProject)).getOrElse(
+          return "super.")
 
         def nonStrictInheritor(base: PsiClass, inheritor: PsiClass): Boolean = {
           if (base == null || inheritor == null) false
@@ -189,16 +190,16 @@ object ScalaGenerationInfo {
       method match {
         case fun: ScFunction =>
           val clauses = fun.paramClauses.clauses.filter(!_.isImplicit)
-          clauses
-            .map(_.parameters.map(_.name).mkString("(", ", ", ")"))
-            .mkString
+          clauses.map(
+            _.parameters.map(_.name).mkString("(", ", ", ")")).mkString
         case method: PsiMethod =>
           if (method.isAccessor && method.getParameterList.getParametersCount == 0)
             ""
           else
-            method.getParameterList.getParameters
-              .map(paramText)
-              .mkString("(", ", ", ")")
+            method.getParameterList.getParameters.map(paramText).mkString(
+              "(",
+              ", ",
+              ")")
       }
     }
     superOrSelfQual + methodName + parametersText

@@ -55,23 +55,16 @@ class ReplaceEqualsOrEqualityInInfixExprIntention
 
     val expr = new StringBuilder
     val replaceOper = Map("equals" -> "==", "==" -> "equals")
-    expr
-      .append(infixExpr.getBaseExpr.getText)
-      .append(" ")
-      .append(replaceOper(infixExpr.operation.nameId.getText))
-      .append(" ")
-      .append(infixExpr.getArgExpr.getText)
+    expr.append(infixExpr.getBaseExpr.getText).append(" ").append(
+      replaceOper(infixExpr.operation.nameId.getText)).append(" ").append(
+      infixExpr.getArgExpr.getText)
 
     val newInfixExpr = ScalaPsiElementFactory.createExpressionFromText(
       expr.toString(),
       element.getManager)
 
-    val size = newInfixExpr
-      .asInstanceOf[ScInfixExpr]
-      .operation
-      .nameId
-      .getTextRange
-      .getStartOffset -
+    val size = newInfixExpr.asInstanceOf[
+      ScInfixExpr].operation.nameId.getTextRange.getStartOffset -
       newInfixExpr.getTextRange.getStartOffset
 
     inWriteAction {

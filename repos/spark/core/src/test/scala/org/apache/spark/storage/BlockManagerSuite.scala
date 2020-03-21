@@ -465,8 +465,8 @@ class BlockManagerSuite
       master.getLocations("a1").size == 0,
       "a1 was not removed from master")
 
-    val reregister = !master.driverEndpoint
-      .askWithRetry[Boolean](BlockManagerHeartbeat(store.blockManagerId))
+    val reregister = !master.driverEndpoint.askWithRetry[Boolean](
+      BlockManagerHeartbeat(store.blockManagerId))
     assert(reregister == true)
   }
 
@@ -584,8 +584,8 @@ class BlockManagerSuite
     val bmId1 = BlockManagerId("id1", localHost, 1)
     val bmId2 = BlockManagerId("id2", localHost, 2)
     val bmId3 = BlockManagerId("id3", otherHost, 3)
-    when(bmMaster.getLocations(mc.any[BlockId]))
-      .thenReturn(Seq(bmId1, bmId2, bmId3))
+    when(bmMaster.getLocations(mc.any[BlockId])).thenReturn(
+      Seq(bmId1, bmId2, bmId3))
 
     val blockManager = makeBlockManager(128, "exec", bmMaster)
     val getLocations = PrivateMethod[Seq[BlockManagerId]]('getLocations)
@@ -1240,14 +1240,14 @@ class BlockManagerSuite
 
     // getLocations and getBlockStatus should yield the same locations
     assert(
-      store.master
-        .getMatchingBlockIds(_.toString.contains("list"), askSlaves = false)
-        .size
+      store.master.getMatchingBlockIds(
+        _.toString.contains("list"),
+        askSlaves = false).size
         === 3)
     assert(
-      store.master
-        .getMatchingBlockIds(_.toString.contains("list1"), askSlaves = false)
-        .size
+      store.master.getMatchingBlockIds(
+        _.toString.contains("list1"),
+        askSlaves = false).size
         === 1)
 
     // insert some more blocks
@@ -1269,14 +1269,14 @@ class BlockManagerSuite
 
     // getLocations and getBlockStatus should yield the same locations
     assert(
-      store.master
-        .getMatchingBlockIds(_.toString.contains("newlist"), askSlaves = false)
-        .size
+      store.master.getMatchingBlockIds(
+        _.toString.contains("newlist"),
+        askSlaves = false).size
         === 1)
     assert(
-      store.master
-        .getMatchingBlockIds(_.toString.contains("newlist"), askSlaves = true)
-        .size
+      store.master.getMatchingBlockIds(
+        _.toString.contains("newlist"),
+        askSlaves = true).size
         === 3)
 
     val blockIds = Seq(RDDBlockId(1, 0), RDDBlockId(1, 1), RDDBlockId(2, 0))
@@ -1369,10 +1369,16 @@ class BlockManagerSuite
     assert(memoryStore.remove("unroll"))
 
     // Unroll with not enough space. This should succeed after kicking out someBlock1.
-    assert(store
-      .putIterator("someBlock1", smallList.iterator, StorageLevel.MEMORY_ONLY))
-    assert(store
-      .putIterator("someBlock2", smallList.iterator, StorageLevel.MEMORY_ONLY))
+    assert(
+      store.putIterator(
+        "someBlock1",
+        smallList.iterator,
+        StorageLevel.MEMORY_ONLY))
+    assert(
+      store.putIterator(
+        "someBlock2",
+        smallList.iterator,
+        StorageLevel.MEMORY_ONLY))
     putResult = memoryStore.putIterator(
       "unroll",
       smallList.iterator,
@@ -1390,8 +1396,11 @@ class BlockManagerSuite
     // Unroll huge block with not enough space. Even after ensuring free space of 12000 * 0.4 =
     // 4800 bytes, there is still not enough room to unroll this block. This returns an iterator.
     // In the mean time, however, we kicked out someBlock2 before giving up.
-    assert(store
-      .putIterator("someBlock3", smallList.iterator, StorageLevel.MEMORY_ONLY))
+    assert(
+      store.putIterator(
+        "someBlock3",
+        smallList.iterator,
+        StorageLevel.MEMORY_ONLY))
     putResult = memoryStore.putIterator(
       "unroll",
       bigList.iterator,
@@ -1631,15 +1640,14 @@ class BlockManagerSuite
     // so that we have a chance to do location refresh
     val blockManagerIds = (0 to maxFailuresBeforeLocationRefresh)
       .map { i => BlockManagerId(s"id-$i", s"host-$i", i + 1) }
-    when(mockBlockManagerMaster.getLocations(mc.any[BlockId]))
-      .thenReturn(blockManagerIds)
+    when(mockBlockManagerMaster.getLocations(mc.any[BlockId])).thenReturn(
+      blockManagerIds)
     store = makeBlockManager(
       8000,
       "executor1",
       mockBlockManagerMaster,
       transferService = Option(mockBlockTransferService))
-    val block = store
-      .getRemoteBytes("item")
+    val block = store.getRemoteBytes("item")
       .asInstanceOf[Option[ByteBuffer]]
     assert(block.isDefined)
     verify(mockBlockManagerMaster, times(2)).getLocations("item")

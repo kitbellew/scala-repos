@@ -180,9 +180,8 @@ class ActorEventBusSpec(conf: Config)
 
   def this() {
     this(
-      ConfigFactory
-        .parseString("akka.actor.debug.event-stream = on")
-        .withFallback(AkkaSpec.testConf))
+      ConfigFactory.parseString(
+        "akka.actor.debug.event-stream = on").withFallback(AkkaSpec.testConf))
   }
 
   type BusType = MyActorEventBus

@@ -15,8 +15,9 @@ class InterpolatedStringsAnnotatorTest
     configureFromFileTextAdapter("dummy.scala", text)
     val mock = new AnnotatorHolderMock
 
-    new ScalaAnnotator()
-      .annotate(getFileAdapter.asInstanceOf[ScalaFile].getLastChild, mock)
+    new ScalaAnnotator().annotate(
+      getFileAdapter.asInstanceOf[ScalaFile].getLastChild,
+      mock)
     mock.annotations
   }
 

@@ -94,8 +94,7 @@ object Externalizables {
     }
 
     // per type a sorted list of indices
-    val perType = targs.zipWithIndex
-      .groupBy { case (targ, i) => targ }
+    val perType = targs.zipWithIndex.groupBy { case (targ, i) => targ }
       .map {
         case (targ, things) => (targ, (things.map { case (_, i) => i }).sorted)
       }
@@ -246,9 +245,9 @@ object Externalizables {
       // implementation restriction: only store a single array
       q"val arrByteArr: Array[Array[Byte]] = Array.ofDim[Array[Byte]](1)", {
         val storageTpe = storage(typeOf[AnyRef])
-        q"val anyRefArr: Array[$storageTpe] = Array.ofDim[$storageTpe](${perType
-          .getOrElse(typeOf[AnyRef], List[Int]())
-          .size})"
+        q"val anyRefArr: Array[$storageTpe] = Array.ofDim[$storageTpe](${perType.getOrElse(
+          typeOf[AnyRef],
+          List[Int]()).size})"
       }
     )
 

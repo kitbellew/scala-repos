@@ -22,10 +22,8 @@ abstract class HoconManipulatorTest[T <: HoconPsiElement: ClassTag](
     val psiFile = createPseudoPhysicalHoconFile(getProject, input)
 
     inWriteCommandAction {
-      val element = Iterator
-        .iterate(psiFile.findElementAt(offset))(_.getParent)
-        .collectFirst({ case t: T => t })
-        .get
+      val element = Iterator.iterate(psiFile.findElementAt(offset))(_.getParent)
+        .collectFirst({ case t: T => t }).get
       val manipulator = ElementManipulators.getManipulator(element)
       val range = manipulator.getRangeInElement(element)
       manipulator.handleContentChange(element, range, newContent)

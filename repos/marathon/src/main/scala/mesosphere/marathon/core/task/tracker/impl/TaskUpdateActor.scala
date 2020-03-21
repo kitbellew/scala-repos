@@ -72,9 +72,8 @@ private[impl] class TaskUpdateActor(
 
   // this has to be a mutable field because we need to access it in postStop()
   private[impl] var operationsByTaskId =
-    Map
-      .empty[Task.Id, Queue[TaskOpProcessor.Operation]]
-      .withDefaultValue(Queue.empty)
+    Map.empty[Task.Id, Queue[TaskOpProcessor.Operation]].withDefaultValue(
+      Queue.empty)
 
   override def preStart(): Unit = {
     metrics.numberOfActiveOps.setValue(0)

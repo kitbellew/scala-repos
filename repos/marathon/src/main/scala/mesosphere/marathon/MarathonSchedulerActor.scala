@@ -175,8 +175,13 @@ class MarathonSchedulerActor private (
         withLockFor(appId) {
           val promise = Promise[Unit]()
           context.actorOf(
-            TaskKillActor
-              .props(driver, appId, taskTracker, eventBus, taskIds, promise))
+            TaskKillActor.props(
+              driver,
+              appId,
+              taskTracker,
+              eventBus,
+              taskIds,
+              promise))
           val res = for {
             _ <- promise.future
             Some(app) <- appRepository.currentVersion(appId)
@@ -300,21 +305,21 @@ class MarathonSchedulerActor private (
         if (origSender != Actor.noSender) origSender ! cmd.answer
       case Failure(e: LockingFailedException) if cmd.force =>
         deploymentManager ! CancelConflictingDeployments(plan)
-        val cancellationHandler = context.system.scheduler
-          .scheduleOnce(cancellationTimeout, self, CancellationTimeoutExceeded)
+        val cancellationHandler = context.system.scheduler.scheduleOnce(
+          cancellationTimeout,
+          self,
+          CancellationTimeoutExceeded)
 
         context.become(awaitCancellation(plan, origSender, cancellationHandler))
       case Failure(e: LockingFailedException) =>
-        deploymentManager
-          .ask(RetrieveRunningDeployments)(2.seconds)
+        deploymentManager.ask(RetrieveRunningDeployments)(2.seconds)
           .mapTo[RunningDeployments]
           .foreach {
             case RunningDeployments(plans) =>
               def intersectsWithNewPlan(
                   existingPlan: DeploymentPlan): Boolean = {
-                existingPlan.affectedApplicationIds
-                  .intersect(plan.affectedApplicationIds)
-                  .nonEmpty
+                existingPlan.affectedApplicationIds.intersect(
+                  plan.affectedApplicationIds).nonEmpty
               }
               val relatedDeploymentIds: Seq[String] = plans.collect {
                 case DeploymentStepInfo(p, _, _) if intersectsWithNewPlan(p) =>
@@ -477,15 +482,11 @@ class SchedulerActions(
   }
 
   def scaleApps(): Future[Unit] = {
-    appRepository
-      .allPathIds()
-      .map(_.toSet)
-      .andThen {
-        case Success(appIds) =>
-          for (appId <- appIds) schedulerActor ! ScaleApp(appId)
-        case Failure(t) => log.warn("Failed to get task names", t)
-      }
-      .map(_ => ())
+    appRepository.allPathIds().map(_.toSet).andThen {
+      case Success(appIds) =>
+        for (appId <- appIds) schedulerActor ! ScaleApp(appId)
+      case Failure(t) => log.warn("Failed to get task names", t)
+    }.map(_ => ())
   }
 
   /**
@@ -527,9 +528,8 @@ class SchedulerActions(
 
   def reconcileHealthChecks(): Unit = {
     for {
-      apps <- groupRepository
-        .rootGroup()
-        .map(_.map(_.transitiveApps).getOrElse(Set.empty))
+      apps <- groupRepository.rootGroup().map(
+        _.map(_.transitiveApps).getOrElse(Set.empty))
       app <- apps
     } healthCheckManager.reconcileWith(app.id)
   }
@@ -574,9 +574,8 @@ class SchedulerActions(
         s"Scaling ${app.id} from $launchedCount down to $targetCount instances")
       taskQueue.purge(app.id)
 
-      val toKill = taskTracker
-        .appTasksLaunchedSync(app.id)
-        .take(launchedCount - targetCount)
+      val toKill = taskTracker.appTasksLaunchedSync(app.id).take(
+        launchedCount - targetCount)
       val taskIds: Iterable[TaskID] = toKill.flatMap(_.launchedMesosId)
       log.info(s"Killing tasks: ${taskIds.map(_.getValue)}")
       for (taskId <- taskIds) {

@@ -48,10 +48,8 @@ import org.apache.spark.util.{ThreadUtils, Utils}
 
 object TestData {
   def getTestDataFilePath(name: String): URL = {
-    Thread
-      .currentThread()
-      .getContextClassLoader
-      .getResource(s"data/files/$name")
+    Thread.currentThread().getContextClassLoader.getResource(
+      s"data/files/$name")
   }
 
   val smallKv = getTestDataFilePath("small_kv.txt")
@@ -85,9 +83,9 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
       }
 
       assertResult("Spark SQL", "Wrong GetInfo(CLI_SERVER_NAME) result") {
-        client
-          .getInfo(sessionHandle, GetInfoType.CLI_SERVER_NAME)
-          .getStringValue
+        client.getInfo(
+          sessionHandle,
+          GetInfoType.CLI_SERVER_NAME).getStringValue
       }
 
       assertResult(true, "Spark version shouldn't be \"Unknown\"") {
@@ -797,16 +795,12 @@ abstract class HiveThriftServer2Test
         redirectStderr = true
       )
 
-      lines
-        .split("\n")
-        .collectFirst {
-          case line if line.contains(LOG_FILE_MARK) =>
-            new File(line.drop(LOG_FILE_MARK.length))
-        }
-        .getOrElse {
-          throw new RuntimeException(
-            "Failed to find HiveThriftServer2 log file.")
-        }
+      lines.split("\n").collectFirst {
+        case line if line.contains(LOG_FILE_MARK) =>
+          new File(line.drop(LOG_FILE_MARK.length))
+      }.getOrElse {
+        throw new RuntimeException("Failed to find HiveThriftServer2 log file.")
+      }
     }
 
     val serverStarted = Promise[Unit]()
@@ -883,21 +877,18 @@ abstract class HiveThriftServer2Test
     diagnosisBuffer.clear()
 
     // Retries up to 3 times with different port numbers if the server fails to start
-    (1 to 3)
-      .foldLeft(Try(startThriftServer(listeningPort, 0))) {
-        case (started, attempt) =>
-          started.orElse {
-            listeningPort += 1
-            stopThriftServer()
-            Try(startThriftServer(listeningPort, attempt))
-          }
-      }
-      .recover {
-        case cause: Throwable =>
-          dumpLogs()
-          throw cause
-      }
-      .get
+    (1 to 3).foldLeft(Try(startThriftServer(listeningPort, 0))) {
+      case (started, attempt) =>
+        started.orElse {
+          listeningPort += 1
+          stopThriftServer()
+          Try(startThriftServer(listeningPort, attempt))
+        }
+    }.recover {
+      case cause: Throwable =>
+        dumpLogs()
+        throw cause
+    }.get
 
     logInfo(s"HiveThriftServer2 started successfully")
   }

@@ -27,15 +27,25 @@ class XorTTests extends CatsSuite {
     SerializableTests.serializable(MonoidK[XorT[List, String, ?]]))
   checkAll(
     "XorT[List, ?, ?]",
-    BifunctorTests[XorT[List, ?, ?]]
-      .bifunctor[Int, Int, Int, String, String, String])
+    BifunctorTests[XorT[List, ?, ?]].bifunctor[
+      Int,
+      Int,
+      Int,
+      String,
+      String,
+      String])
   checkAll(
     "Bifunctor[XorT[List, ?, ?]]",
     SerializableTests.serializable(Bifunctor[XorT[List, ?, ?]]))
   checkAll(
     "XorT[List, Int, ?]",
-    TraverseTests[XorT[List, Int, ?]]
-      .traverse[Int, Int, Int, Int, Option, Option])
+    TraverseTests[XorT[List, Int, ?]].traverse[
+      Int,
+      Int,
+      Int,
+      Int,
+      Option,
+      Option])
   checkAll(
     "Traverse[XorT[List, Int, ?]]",
     SerializableTests.serializable(Traverse[XorT[List, Int, ?]]))

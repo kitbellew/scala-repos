@@ -94,25 +94,23 @@ trait I18nSupport { this: ScalatraBase =>
     */
   private def resolveHttpLocaleFromUserAgent: Option[Locale] = {
     request.headers.get("Accept-Language") map { s =>
-      val locales = s
-        .split(",")
-        .map(s => {
-          def splitLanguageCountry(s: String): Locale = {
-            val langCountry = s.split("-")
-            if (langCountry.length > 1) {
-              new Locale(langCountry.head, langCountry.last)
-            } else {
-              new Locale(langCountry.head)
-            }
-          }
-          // If this language has a quality index:
-          if (s.indexOf(";") > 0) {
-            val qualityLocale = s.split(";")
-            splitLanguageCountry(qualityLocale.head)
+      val locales = s.split(",").map(s => {
+        def splitLanguageCountry(s: String): Locale = {
+          val langCountry = s.split("-")
+          if (langCountry.length > 1) {
+            new Locale(langCountry.head, langCountry.last)
           } else {
-            splitLanguageCountry(s)
+            new Locale(langCountry.head)
           }
-        })
+        }
+        // If this language has a quality index:
+        if (s.indexOf(";") > 0) {
+          val qualityLocale = s.split(";")
+          splitLanguageCountry(qualityLocale.head)
+        } else {
+          splitLanguageCountry(s)
+        }
+      })
       // save all found locales for later user
       request.setAttribute(UserLocalesKey, locales)
       // We assume that all accept-languages are stored in order of quality

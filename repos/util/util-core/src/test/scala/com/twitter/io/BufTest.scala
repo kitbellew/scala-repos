@@ -183,8 +183,8 @@ class BufTest
 
   AllCharsets foreach { charset =>
     test(
-      "Buf.StringCoder: decoding to %s does not modify underlying byte buffer"
-        .format(charset.name)) {
+      "Buf.StringCoder: decoding to %s does not modify underlying byte buffer".format(
+        charset.name)) {
       val coder = new Buf.StringCoder(charset) {}
       val hw = "Hello, world!"
       val bb = charset.encode(hw)
@@ -198,8 +198,8 @@ class BufTest
 
   AllCharsets foreach { charset =>
     test(
-      "Buf.StringCoder: %s charset can encode and decode an English phrase"
-        .format(charset.name)) {
+      "Buf.StringCoder: %s charset can encode and decode an English phrase".format(
+        charset.name)) {
       val coder = new Buf.StringCoder(charset) {}
       val phrase = "Hello, world!"
       val encoded = coder(phrase)
@@ -383,8 +383,9 @@ class BufTest
       .concat(Buf.U32LE(Int.MinValue))
       .concat(Buf.U64LE(Long.MinValue))
 
-    val Buf
-      .U32BE(be32, Buf.U64BE(be64, Buf.U32LE(le32, Buf.U64LE(le64, rem)))) = buf
+    val Buf.U32BE(
+      be32,
+      Buf.U64BE(be64, Buf.U32LE(le32, Buf.U64LE(le64, rem)))) = buf
 
     assert(be32 == Int.MaxValue)
     assert(be64 == Long.MaxValue)

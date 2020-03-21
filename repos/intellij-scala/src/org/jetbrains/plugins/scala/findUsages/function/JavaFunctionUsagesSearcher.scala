@@ -47,8 +47,8 @@ class JavaFunctionUsagesSearcher
                             refElement) =>
                         return false
                       case t: StaticPsiMethodWrapper
-                          if t.getNavigationElement == method && !consumer
-                            .process(refElement) =>
+                          if t.getNavigationElement == method && !consumer.process(
+                            refElement) =>
                         return false
                       case _ =>
                     }

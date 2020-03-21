@@ -31,9 +31,8 @@ object ActivatorDist {
       streams) map {
       (project, projectBase, activatorDistDirectory, version, structure, s) =>
         {
-          val directories = projectBase
-            .listFiles(DirectoryFilter)
-            .filter(dir => (dir / "activator.properties").exists)
+          val directories = projectBase.listFiles(DirectoryFilter).filter(dir =>
+            (dir / "activator.properties").exists)
           val rootGitignoreLines =
             IO.readLines(AkkaBuild.root.base / ".gitignore")
           for (dir <- directories) {
@@ -41,8 +40,8 @@ object ActivatorDist {
               if ((dir / ".gitignore").exists) IO.readLines(dir / ".gitignore")
               else Nil
             val gitignoreFileFilter =
-              (".gitignore" :: localGitignoreLines ::: rootGitignoreLines)
-                .foldLeft[FileFilter](NothingFilter)((acc, x) => acc || x)
+              (".gitignore" :: localGitignoreLines ::: rootGitignoreLines).foldLeft[
+                FileFilter](NothingFilter)((acc, x) => acc || x)
             val filteredPathFinder = PathFinder(
               dir) descendantsExcept ("*", gitignoreFileFilter) filter (_.isFile)
             filteredPathFinder pair Path.rebase(

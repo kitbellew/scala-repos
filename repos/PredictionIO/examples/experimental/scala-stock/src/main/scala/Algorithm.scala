@@ -38,9 +38,7 @@ abstract class StockStrategy[M: ClassTag]
       .activeFrame()
       .rowAt(0)
       .filter(identity)
-      .index
-      .toVec
-      .contents
+      .index.toVec.contents
 
     val query = Query(
       idx = queryDate.idx,

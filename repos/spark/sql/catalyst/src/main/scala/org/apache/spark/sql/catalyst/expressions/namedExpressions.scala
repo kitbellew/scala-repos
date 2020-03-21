@@ -140,8 +140,8 @@ case class Alias(child: Expression, name: String)(
 
   // Alias(Generator, xx) need to be transformed into Generate(generator, ...)
   override lazy val resolved =
-    childrenResolved && checkInputDataTypes().isSuccess && !child
-      .isInstanceOf[Generator]
+    childrenResolved && checkInputDataTypes().isSuccess && !child.isInstanceOf[
+      Generator]
 
   override def eval(input: InternalRow): Any = child.eval(input)
 

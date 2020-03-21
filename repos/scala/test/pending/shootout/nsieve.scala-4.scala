@@ -28,10 +28,8 @@ object nsieve {
 
       def pad(i: Int, width: Int) = {
         val s = i.toString
-        List
-          .range(0, width - s.length)
-          .map((i) => " ")
-          .foldLeft("")((a, b) => a + b) + s
+        List.range(0, width - s.length)
+          .map((i) => " ").foldLeft("")((a, b) => a + b) + s
       }
 
       Console.println("Primes up to " + pad(m, 8) + pad(nsieve(m, flags), 9))

@@ -85,8 +85,9 @@ class ActorScheduler(scheduler: ActorRef, timeout: Timeout)
 
   def statusForTask(id: UUID, limit: Option[Int]) =
     EitherT {
-      (scheduler ? StatusForTask(id, limit))
-        .mapTo[String \/ Option[(ScheduledTask, Seq[ScheduledRunReport])]]
+      (scheduler ? StatusForTask(id, limit)).mapTo[String \/ Option[(
+          ScheduledTask,
+          Seq[ScheduledRunReport])]]
     }
 }
 

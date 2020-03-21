@@ -237,8 +237,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     val possibleTotalContainerNum = pendingHostToContainerCount.values.sum
     val localityMatchedPendingNum =
       localityMatchedPendingAllocations.size.toDouble
-    pendingHostToContainerCount
-      .mapValues(_ * localityMatchedPendingNum / possibleTotalContainerNum)
+    pendingHostToContainerCount.mapValues(
+      _ * localityMatchedPendingNum / possibleTotalContainerNum)
       .toMap
   }
 }

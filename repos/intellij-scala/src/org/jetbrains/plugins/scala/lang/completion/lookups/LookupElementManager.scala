@@ -63,9 +63,8 @@ object LookupElementManager {
               val clazz: Option[PsiClass] = named match {
                 case cl: PsiClass => Some(cl)
                 case tp: TypingContextOwner =>
-                  tp.getType(TypingContext.empty)
-                    .map(ScType.extractClass(_))
-                    .getOrElse(None)
+                  tp.getType(TypingContext.empty).map(
+                    ScType.extractClass(_)).getOrElse(None)
                 case _ => None
               }
               checkIsExpectedClassMember(clazz)
@@ -108,8 +107,7 @@ object LookupElementManager {
     val Setter = """(.*)_=""".r
     name match {
       case Setter(prefix)
-          if !element
-            .isInstanceOf[FakePsiMethod] => //if element is fake psi method, then this setter is already generated from var
+          if !element.isInstanceOf[FakePsiMethod] => //if element is fake psi method, then this setter is already generated from var
         Seq(
           getLookupElementInternal(isAssignment = true, prefix),
           getLookupElementInternal(isAssignment = false, name))

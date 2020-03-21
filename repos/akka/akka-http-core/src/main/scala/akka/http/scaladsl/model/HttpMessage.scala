@@ -177,8 +177,8 @@ final class HttpRequest(
     entity.isKnownEmpty || method.isEntityAccepted,
     s"Requests with method '${method.value}' must have an empty entity")
   require(
-    protocol != HttpProtocols.`HTTP/1.0` || !entity
-      .isInstanceOf[HttpEntity.Chunked],
+    protocol != HttpProtocols.`HTTP/1.0` || !entity.isInstanceOf[
+      HttpEntity.Chunked],
     "HTTP/1.0 requests must not have a chunked entity")
 
   type Self = HttpRequest
@@ -382,8 +382,8 @@ final class HttpResponse(
     entity.isKnownEmpty || status.allowsEntity,
     "Responses with this status code must have an empty entity")
   require(
-    protocol == HttpProtocols.`HTTP/1.1` || !entity
-      .isInstanceOf[HttpEntity.Chunked],
+    protocol == HttpProtocols.`HTTP/1.1` || !entity.isInstanceOf[
+      HttpEntity.Chunked],
     "HTTP/1.0 responses must not have a chunked entity")
 
   type Self = HttpResponse

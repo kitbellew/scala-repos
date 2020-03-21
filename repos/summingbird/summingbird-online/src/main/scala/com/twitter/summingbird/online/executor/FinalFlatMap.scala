@@ -115,12 +115,10 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
       val itemL = items.toList
       if (itemL.size > 0) {
         state.fanOut(itemL.size)
-        sCache
-          .addAll(itemL.map {
-            case (k, v) =>
-              k -> (List(state), v)
-          })
-          .map(formatResult(_))
+        sCache.addAll(itemL.map {
+          case (k, v) =>
+            k -> (List(state), v)
+        }).map(formatResult(_))
       } else { // Here we handle mapping to nothing, option map et. al
         Future.value(
           List(

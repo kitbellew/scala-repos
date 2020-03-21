@@ -208,9 +208,9 @@ private[spark] class Client(
         // The setApplicationTags method was only introduced in Hadoop 2.4+, so we need to use
         // reflection to set it, printing a warning if a tag was specified but the YARN version
         // doesn't support it.
-        val method = appContext
-          .getClass()
-          .getMethod("setApplicationTags", classOf[java.util.Set[String]])
+        val method = appContext.getClass().getMethod(
+          "setApplicationTags",
+          classOf[java.util.Set[String]])
         method.invoke(appContext, new java.util.HashSet[String](tags.asJava))
       } catch {
         case e: NoSuchMethodException =>
@@ -229,9 +229,9 @@ private[spark] class Client(
 
     sparkConf.get(ATTEMPT_FAILURE_VALIDITY_INTERVAL_MS).foreach { interval =>
       try {
-        val method = appContext
-          .getClass()
-          .getMethod("setAttemptFailuresValidityInterval", classOf[Long])
+        val method = appContext.getClass().getMethod(
+          "setAttemptFailuresValidityInterval",
+          classOf[Long])
         method.invoke(appContext, interval: java.lang.Long)
       } catch {
         case e: NoSuchMethodException =>
@@ -253,8 +253,9 @@ private[spark] class Client(
           amRequest.setPriority(Priority.newInstance(0))
           amRequest.setCapability(capability)
           amRequest.setNumContainers(1)
-          val method = amRequest.getClass
-            .getMethod("setNodeLabelExpression", classOf[String])
+          val method = amRequest.getClass.getMethod(
+            "setNodeLabelExpression",
+            classOf[String])
           method.invoke(amRequest, expr)
 
           val setResourceRequestMethod =
@@ -319,8 +320,9 @@ private[spark] class Client(
           "Please increase the value of 'yarn.scheduler.maximum-allocation-mb'.")
     }
     logInfo(
-      "Will allocate AM container, with %d MB memory including %d MB overhead"
-        .format(amMem, amMemoryOverhead))
+      "Will allocate AM container, with %d MB memory including %d MB overhead".format(
+        amMem,
+        amMemoryOverhead))
 
     // We could add checks to make sure the entire cluster has enough resources but that involves
     // getting all the node reports and computing ourselves.
@@ -387,9 +389,7 @@ private[spark] class Client(
       hadoopConf,
       credentials)
 
-    val replication = sparkConf
-      .get(STAGING_FILE_REPLICATION)
-      .map(_.toShort)
+    val replication = sparkConf.get(STAGING_FILE_REPLICATION).map(_.toShort)
       .getOrElse(fs.getDefaultReplication(dst))
     val localResources = HashMap[String, LocalResource]()
     FileSystem.mkdirs(fs, dst, new FsPermission(STAGING_DIR_PERMISSION))
@@ -442,9 +442,8 @@ private[spark] class Client(
         if (addDistributedUri(localURI)) {
           val localPath = getQualifiedLocalPath(localURI, hadoopConf)
           val linkname = targetDir.map(_ + "/").getOrElse("") +
-            destName
-              .orElse(Option(localURI.getFragment()))
-              .getOrElse(localPath.getName())
+            destName.orElse(Option(localURI.getFragment())).getOrElse(
+              localPath.getName())
           val destPath = copyFileToRemote(dst, localPath, replication)
           val destFs = FileSystem.get(destPath.toUri(), hadoopConf)
           distCacheMgr.addResource(
@@ -646,12 +645,13 @@ private[spark] class Client(
     // configuration file is provided through --files then executors will be taking configurations
     // from --files instead of $SPARK_CONF_DIR/log4j.properties.
     val log4jFileName = "log4j.properties"
-    Option(Utils.getContextOrSparkClassLoader.getResource(log4jFileName))
-      .foreach { url =>
+    Option(
+      Utils.getContextOrSparkClassLoader.getResource(log4jFileName)).foreach {
+      url =>
         if (url.getProtocol == "file") {
           hadoopConfFiles(log4jFileName) = new File(url.getPath)
         }
-      }
+    }
 
     Seq("HADOOP_CONF_DIR", "YARN_CONF_DIR").foreach { envKey =>
       sys.env.get(envKey).foreach { path =>
@@ -837,9 +837,8 @@ private[spark] class Client(
         env("SPARK_JAVA_OPTS") = value
       }
       // propagate PYSPARK_DRIVER_PYTHON and PYSPARK_PYTHON to driver in cluster mode
-      sys.env
-        .get("PYSPARK_DRIVER_PYTHON")
-        .foreach(env("PYSPARK_DRIVER_PYTHON") = _)
+      sys.env.get("PYSPARK_DRIVER_PYTHON").foreach(env(
+        "PYSPARK_DRIVER_PYTHON") = _)
       sys.env.get("PYSPARK_PYTHON").foreach(env("PYSPARK_PYTHON") = _)
     }
 
@@ -914,13 +913,11 @@ private[spark] class Client(
 
     // Include driver-specific java options if we are launching a driver
     if (isClusterMode) {
-      val driverOpts = sparkConf
-        .get(DRIVER_JAVA_OPTIONS)
-        .orElse(sys.env.get("SPARK_JAVA_OPTS"))
+      val driverOpts = sparkConf.get(DRIVER_JAVA_OPTIONS).orElse(
+        sys.env.get("SPARK_JAVA_OPTS"))
       driverOpts.foreach { opts =>
-        javaOpts ++= Utils
-          .splitCommandString(opts)
-          .map(YarnSparkHadoopUtil.escapeForShell)
+        javaOpts ++= Utils.splitCommandString(opts).map(
+          YarnSparkHadoopUtil.escapeForShell)
       }
       val libraryPaths = Seq(
         sparkConf.get(DRIVER_LIBRARY_PATH),
@@ -946,9 +943,8 @@ private[spark] class Client(
             s"$${amJavaOptions.key} is not allowed to alter memory settings (was '$opts')."
           throw new SparkException(msg)
         }
-        javaOpts ++= Utils
-          .splitCommandString(opts)
-          .map(YarnSparkHadoopUtil.escapeForShell)
+        javaOpts ++= Utils.splitCommandString(opts).map(
+          YarnSparkHadoopUtil.escapeForShell)
       }
 
       sparkConf.get(AM_LIBRARY_PATH).foreach { paths =>
@@ -987,13 +983,11 @@ private[spark] class Client(
       }
     val amClass =
       if (isClusterMode) {
-        Utils
-          .classForName("org.apache.spark.deploy.yarn.ApplicationMaster")
-          .getName
+        Utils.classForName(
+          "org.apache.spark.deploy.yarn.ApplicationMaster").getName
       } else {
-        Utils
-          .classForName("org.apache.spark.deploy.yarn.ExecutorLauncher")
-          .getName
+        Utils.classForName(
+          "org.apache.spark.deploy.yarn.ExecutorLauncher").getName
       }
     if (args.primaryRFile != null && args.primaryRFile.endsWith(".R")) {
       args.userArgs = ArrayBuffer(args.primaryRFile) ++ args.userArgs
@@ -1171,13 +1165,11 @@ private[spark] class Client(
     )
 
     // Use more loggable format if value is null or empty
-    details
-      .map {
-        case (k, v) =>
-          val newValue = Option(v).filter(_.nonEmpty).getOrElse("N/A")
-          s"\n\t $k: $newValue"
-      }
-      .mkString("")
+    details.map {
+      case (k, v) =>
+        val newValue = Option(v).filter(_.nonEmpty).getOrElse("N/A")
+        s"\n\t $k: $newValue"
+    }.mkString("")
   }
 
   /**
@@ -1219,8 +1211,7 @@ private[spark] class Client(
   }
 
   private def findPySparkArchives(): Seq[String] = {
-    sys.env
-      .get("PYSPARK_ARCHIVES_PATH")
+    sys.env.get("PYSPARK_ARCHIVES_PATH")
       .map(_.split(",").toSeq)
       .getOrElse {
         val pyLibPath =
@@ -1463,12 +1454,10 @@ object Client extends Logging {
   }
 
   private def getMainJarUri(mainJar: Option[String]): Option[URI] = {
-    mainJar
-      .flatMap { path =>
-        val uri = Utils.resolveURI(path)
-        if (uri.getScheme == LOCAL_SCHEME) Some(uri) else None
-      }
-      .orElse(Some(new URI(APP_JAR_NAME)))
+    mainJar.flatMap { path =>
+      val uri = Utils.resolveURI(path)
+      if (uri.getScheme == LOCAL_SCHEME) Some(uri) else None
+    }.orElse(Some(new URI(APP_JAR_NAME)))
   }
 
   private def getSecondaryJarUris(
@@ -1556,8 +1545,7 @@ object Client extends Logging {
   private def compareFs(srcFs: FileSystem, destFs: FileSystem): Boolean = {
     val srcUri = srcFs.getUri()
     val dstUri = destFs.getUri()
-    if (srcUri.getScheme() == null || srcUri.getScheme() != dstUri
-          .getScheme()) {
+    if (srcUri.getScheme() == null || srcUri.getScheme() != dstUri.getScheme()) {
       return false
     }
 
@@ -1592,10 +1580,8 @@ object Client extends Logging {
         // If not specified, assume this is in the local filesystem to keep the behavior
         // consistent with that of Hadoop
         new URI(
-          FileSystem
-            .getLocal(hadoopConf)
-            .makeQualified(new Path(localURI))
-            .toString)
+          FileSystem.getLocal(hadoopConf).makeQualified(
+            new Path(localURI)).toString)
       } else {
         localURI
       }

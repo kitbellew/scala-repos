@@ -37,9 +37,8 @@ object Marshallers {
       mediaType: MediaType.WithOpenCharset,
       convert: function.Function[T, String]): Marshaller[T] =
     MarshallerImpl(_ ⇒
-      ScalaMarshaller
-        .stringMarshaller(mediaType.asScala)
-        .compose[T](convert(_)))
+      ScalaMarshaller.stringMarshaller(mediaType.asScala).compose[T](
+        convert(_)))
 
   /**
     * Creates a marshaller by specifying a media type and conversion function from `T` to String.
@@ -49,9 +48,8 @@ object Marshallers {
       mediaType: MediaType.WithFixedCharset,
       convert: function.Function[T, String]): Marshaller[T] =
     MarshallerImpl(_ ⇒
-      ScalaMarshaller
-        .stringMarshaller(mediaType.asScala)
-        .compose[T](convert(_)))
+      ScalaMarshaller.stringMarshaller(mediaType.asScala).compose[T](
+        convert(_)))
 
   /**
     * Creates a marshaller from a ContentType and a conversion function from `T` to a `Array[Byte]`.

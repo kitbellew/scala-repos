@@ -93,8 +93,11 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         readMode: ReadMode): Resource => EitherT[M, ResourceError, Resource] = {
       resource =>
         logger.debug(
-          "Verifying access to %s as %s on %s (mode %s)"
-            .format(resource, apiKey, path, readMode))
+          "Verifying access to %s as %s on %s (mode %s)".format(
+            resource,
+            apiKey,
+            path,
+            readMode))
         import AccessMode._
         val permissions: Set[Permission] = resource.authorities.accountIds map {
           accountId =>
@@ -115,8 +118,10 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             case false =>
               \/.left(
                 permissionsError(
-                  "API key %s does not provide %s permission to resource at path %s."
-                    .format(apiKey, readMode.name, path.path)))
+                  "API key %s does not provide %s permission to resource at path %s.".format(
+                    apiKey,
+                    readMode.name,
+                    path.path)))
           }
         }
     }
@@ -232,40 +237,45 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         }
 
       logger.debug(
-        "Checking on cached result for %s with maxAge = %s and recacheAfter = %s and cacheable = %s"
-          .format(path, maxAge, recacheAfter, cacheable))
+        "Checking on cached result for %s with maxAge = %s and recacheAfter = %s and cacheable = %s".format(
+          path,
+          maxAge,
+          recacheAfter,
+          cacheable))
       EitherT.right(vfs.currentVersion(cachePath)) flatMap {
         case Some(VersionEntry(id, _, timestamp))
             if maxAge.forall(ms => timestamp.plus(ms) >= clock.instant()) =>
           logger.debug(
-            "Found fresh cache entry (%s) for query on %s"
-              .format(timestamp, path))
-          val recacheAction = (
-            recacheAfter
-              .exists(ms => timestamp.plus(ms) < clock.instant()))
-            .whenM[({ type l[a] = EitherT[M, EvaluationError, a] })#l, UUID] {
-              // if recacheAfter has expired since the head version was cached,
-              // then return the cached version and refresh the cache
-              for {
-                basePath <- pathPrefix
-                queryResource <- readResource(
-                  ctx.apiKey,
-                  path,
-                  Version.Current,
-                  AccessMode.Execute) leftMap storageError
-                taskId <- scheduler.addTask(
-                  None,
-                  ctx.apiKey,
-                  queryResource.authorities,
-                  ctx,
-                  path,
-                  cachePath,
-                  None) leftMap invalidState
-                _ = logger.debug(
-                  "Cache refresh scheduled for query %s, as id %s."
-                    .format(path.path, taskId))
-              } yield taskId
-            }
+            "Found fresh cache entry (%s) for query on %s".format(
+              timestamp,
+              path))
+          val recacheAction = (recacheAfter.exists(ms =>
+            timestamp.plus(ms) < clock.instant())).whenM[
+            ({ type l[a] = EitherT[M, EvaluationError, a] })#l,
+            UUID] {
+            // if recacheAfter has expired since the head version was cached,
+            // then return the cached version and refresh the cache
+            for {
+              basePath <- pathPrefix
+              queryResource <- readResource(
+                ctx.apiKey,
+                path,
+                Version.Current,
+                AccessMode.Execute) leftMap storageError
+              taskId <- scheduler.addTask(
+                None,
+                ctx.apiKey,
+                queryResource.authorities,
+                ctx,
+                path,
+                cachePath,
+                None) leftMap invalidState
+              _ = logger.debug(
+                "Cache refresh scheduled for query %s, as id %s.".format(
+                  path.path,
+                  taskId))
+            } yield taskId
+          }
 
           for {
             _ <- recacheAction
@@ -283,8 +293,10 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
         case Some(VersionEntry(_, _, timestamp)) =>
           logger.debug(
-            "Cached entry (%s) found for %s, but is not applicable to max-age %s"
-              .format(timestamp, path, maxAge))
+            "Cached entry (%s) found for %s, but is not applicable to max-age %s".format(
+              timestamp,
+              path,
+              maxAge))
           fallBack
 
         case None =>
@@ -313,9 +325,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           path,
           Version.Current,
           AccessMode.Execute) leftMap { storageError _ }
-        query <- Resource
-          .asQuery(path, Version.Current)
-          .apply(queryRes) leftMap { storageError _ }
+        query <- Resource.asQuery(path, Version.Current).apply(
+          queryRes) leftMap { storageError _ }
         _ = logger.debug(
           "Text of stored query at %s: \n%s".format(path.path, query))
         raw <- executor.execute(query, ctx, queryOptions)
@@ -333,8 +344,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                     \/.left(
                       storageError(
                         PermissionsError(
-                          "API key %s has no permission to write to the caching path %s."
-                            .format(ctx.apiKey, cachePath)))
+                          "API key %s has no permission to write to the caching path %s.".format(
+                            ctx.apiKey,
+                            cachePath)))
                     )
                 }
               }
@@ -348,8 +360,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
               )
             } yield {
               logger.debug(
-                "Building caching stream for path %s writing to %s"
-                  .format(path.path, cachePath.path))
+                "Building caching stream for path %s writing to %s".format(
+                  path.path,
+                  cachePath.path))
               // FIXME: determination of authorities with which to write the cached data needs to be implemented;
               // for right now, simply using the authorities with which the query itself was written is probably
               // best.
@@ -368,8 +381,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
           case None =>
             logger.debug(
-              "No caching to be performed for query results of query at path  %s"
-                .format(path.path))
+              "No caching to be performed for query results of query at path  %s".format(
+                path.path))
             EitherT.right(StoredQueryResult(raw, None, None).point[M])
         }
       } yield result
@@ -396,8 +409,10 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                 }
 
               logger.debug(
-                "Persisting %d stream records (from slice of size %d) to %s"
-                  .format(ingestRecords.size, VFS.blockSize(x), path))
+                "Persisting %d stream records (from slice of size %d) to %s".format(
+                  ingestRecords.size,
+                  VFS.blockSize(x),
+                  path))
 
               for {
                 terminal <- xs.isEmpty
@@ -420,8 +435,11 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                 par.fold(
                   errors => {
                     logger.error(
-                      "Unable to complete persistence of result stream by %s to %s as %s: %s"
-                        .format(apiKey, path.path, writeAs, errors.shows))
+                      "Unable to complete persistence of result stream by %s to %s as %s: %s".format(
+                        apiKey,
+                        path.path,
+                        writeAs,
+                        errors.shows))
                     None
                   },
                   _ => Some((x, (pseudoOffset + 1, xs)))
@@ -430,8 +448,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
             case None =>
               logger.debug(
-                "Persist stream for query by %s writing to %s complete."
-                  .format(apiKey, path.path))
+                "Persist stream for query by %s writing to %s complete.".format(
+                  apiKey,
+                  path.path))
               None.point[M]
           }
       }

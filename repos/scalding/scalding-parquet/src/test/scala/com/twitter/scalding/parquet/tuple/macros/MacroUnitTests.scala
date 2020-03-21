@@ -363,11 +363,8 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       val a = converter.getConverter(0).asPrimitiveConverter()
       a.addBinary(Binary.fromString("foo"))
 
-      val keyValue = converter
-        .getConverter(1)
-        .asGroupConverter()
-        .getConverter(0)
-        .asGroupConverter()
+      val keyValue = converter.getConverter(1).asGroupConverter().getConverter(
+        0).asGroupConverter()
       keyValue.start()
       val key = keyValue.getConverter(0).asGroupConverter()
       key.start()

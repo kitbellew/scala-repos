@@ -139,12 +139,10 @@ class SingleAppScalingTest
       metrics.result())
 
     log.info("XXX suspend")
-    val result = marathon
-      .updateApp(
-        appWithManyInstances.id,
-        AppUpdate(instances = Some(0)),
-        force = true)
-      .originalResponse
+    val result = marathon.updateApp(
+      appWithManyInstances.id,
+      AppUpdate(instances = Some(0)),
+      force = true).originalResponse
     log.info(s"XXX ${result.status}: ${result.entity}")
 
     WaitTestSupport.waitFor("app suspension", 10.seconds) {

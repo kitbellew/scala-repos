@@ -66,8 +66,9 @@ private[http] final class BodyPartParser(
   }
 
   private[this] var output =
-    collection.immutable.Queue
-      .empty[Output] // FIXME this probably is too wasteful
+    collection.immutable.Queue.empty[
+      Output
+    ] // FIXME this probably is too wasteful
   private[this] var state: ByteString ⇒ StateResult = tryParseInitialBoundary
   private[this] var terminated = false
 

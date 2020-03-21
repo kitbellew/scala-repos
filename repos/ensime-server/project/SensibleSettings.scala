@@ -141,16 +141,11 @@ object Sensible {
     ) ++ logback.map(_ % config)
 
   // e.g. YOURKIT_AGENT=/opt/yourkit/bin/linux-x86-64/libyjpagent.so
-  val yourkitAgent = Properties
-    .envOrNone("YOURKIT_AGENT")
-    .map { name =>
-      val agent = file(name)
-      require(
-        agent.exists(),
-        s"Yourkit agent specified ($agent) does not exist")
-      Seq(s"-agentpath:${agent.getCanonicalPath}")
-    }
-    .getOrElse(Nil)
+  val yourkitAgent = Properties.envOrNone("YOURKIT_AGENT").map { name =>
+    val agent = file(name)
+    require(agent.exists(), s"Yourkit agent specified ($agent) does not exist")
+    Seq(s"-agentpath:${agent.getCanonicalPath}")
+  }.getOrElse(Nil)
 
   // WORKAROUND: https://github.com/scalatest/scalatest/issues/511
   def noColorIfEmacs =

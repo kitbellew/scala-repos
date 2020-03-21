@@ -144,10 +144,8 @@ class SinkSpec extends AkkaSpec {
     }
 
     "support contramap" in {
-      Source(0 to 9)
-        .toMat(Sink.seq.contramap(_ + 1))(Keep.right)
-        .run()
-        .futureValue should ===(1 to 10)
+      Source(0 to 9).toMat(Sink.seq.contramap(_ + 1))(
+        Keep.right).run().futureValue should ===(1 to 10)
     }
   }
 

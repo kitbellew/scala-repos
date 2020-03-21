@@ -62,8 +62,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       val withIndex = columnsPositional.zipWithIndex
       if (autoIncLastAsOption)
         // put auto inc column last
-        (withIndex.filterNot(_._1.autoInc) ++ withIndex.filter(_._1.autoInc))
-          .map(_._2)
+        (withIndex.filterNot(_._1.autoInc) ++ withIndex.filter(
+          _._1.autoInc)).map(_._2)
       else
         withIndex.map(_._2)
     }
@@ -201,15 +201,15 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         s"Table description of table ${model.name.table}. Objects of this class serve as prototypes for rows in queries." + {
           val collidingTerms = columns.map(_.rawName) intersect scalaKeywords
           if (collidingTerms.nonEmpty)
-            "\nNOTE: The following names collided with Scala keywords and were escaped: " + collidingTerms
-              .mkString(", ")
+            "\nNOTE: The following names collided with Scala keywords and were escaped: " + collidingTerms.mkString(
+              ", ")
           else ""
         } + {
           val collidingTerms =
             columns.map(_.rawName) intersect slickTableTermMembersNoArgs
           if (collidingTerms.nonEmpty)
-            "\nNOTE: The following names collided with Scala method names and were disambiguated: " + collidingTerms
-              .mkString(", ")
+            "\nNOTE: The following names collided with Scala method names and were disambiguated: " + collidingTerms.mkString(
+              ", ")
           else ""
         }
       def rawName: String = tableName(model.name.table)
@@ -242,9 +242,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Code for enabled definitions in this table class grouped into logical groups. */
       def body: Seq[Seq[Code]] =
-        definitions
-          .map(_.flatMap(_.getEnabled).map(_.docWithCode))
-          .filter(_.nonEmpty)
+        definitions.map(_.flatMap(_.getEnabled).map(_.docWithCode)).filter(
+          _.nonEmpty)
     }
 
     /** Table value generator virtual class */
@@ -308,12 +307,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Generates code for the ColumnOptions (DBType, AutoInc, etc.) */
       def options: Iterable[Code] =
-        model.options
-          .filter {
-            case t: SqlProfile.ColumnOption.SqlType => dbType
-            case _                                  => true
-          }
-          .flatMap(columnOptionCode(_).toSeq)
+        model.options.filter {
+          case t: SqlProfile.ColumnOption.SqlType => dbType
+          case _                                  => true
+        }.flatMap(columnOptionCode(_).toSeq)
 
       /** Indicates if a (non-portable) DBType ColumnOption should be generated */
       def dbType: Boolean = false
@@ -323,19 +320,15 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Generates a literal represenation of the default value or None in case of an Option-typed autoinc column */
       def default: Option[Code] =
-        model.options
-          .collect {
-            case RelationalProfile.ColumnOption.Default(value) => value
-            case _ if fakeNullable                             => None
-          }
-          .map(defaultCode)
-          .headOption
+        model.options.collect {
+          case RelationalProfile.ColumnOption.Default(value) => value
+          case _ if fakeNullable                             => None
+        }.map(defaultCode).headOption
 
       def rawName: String = model.name.toCamelCase.uncapitalize
       def doc: String =
-        "Database column " + model.name + " " + model.options
-          .map(_.toString)
-          .mkString(", ")
+        "Database column " + model.name + " " + model.options.map(
+          _.toString).mkString(", ")
     }
 
     /** Primary key generator virtual class */
@@ -452,9 +445,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def rawName = disambiguateTerm("index" + id)
       def doc: String =
         (if (model.unique) "Uniqueness " else "") +
-          "Index over " + columns
-          .map(_.name)
-          .mkString("(", ",", ")") + s" (database name ${dbName})"
+          "Index over " + columns.map(_.name).mkString(
+          "(",
+          ",",
+          ")") + s" (database name ${dbName})"
     }
 
     /** Common interface for any kind of definition within the generated code */
@@ -506,8 +500,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Adds one or more X to the end of the given string to avoid collisions with column names. */
       def disambiguateTerm(name: String, postfix: String = "X"): String =
-        if ((columns.map(_.rawName) ++ slickTableTermMembersNoArgs)
-              .contains(name)) disambiguateTerm(name + postfix)
+        if ((columns.map(_.rawName) ++ slickTableTermMembersNoArgs).contains(
+              name)) disambiguateTerm(name + postfix)
         else name
     }
 

@@ -24,10 +24,9 @@ class DataFrameImplicitsSuite extends QueryTest with SharedSQLContext {
 
   test("RDD of tuples") {
     checkAnswer(
-      sparkContext
-        .parallelize(1 to 10)
-        .map(i => (i, i.toString))
-        .toDF("intCol", "strCol"),
+      sparkContext.parallelize(1 to 10).map(i => (i, i.toString)).toDF(
+        "intCol",
+        "strCol"),
       (1 to 10).map(i => Row(i, i.toString)))
   }
 

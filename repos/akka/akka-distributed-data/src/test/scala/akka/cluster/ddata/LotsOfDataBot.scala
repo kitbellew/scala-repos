@@ -35,9 +35,9 @@ object LotsOfDataBot {
   def startup(ports: Seq[String]): Unit = {
     ports.foreach { port ⇒
       // Override the configuration of the port
-      val config = ConfigFactory
-        .parseString("akka.remote.netty.tcp.port=" + port)
-        .withFallback(ConfigFactory.load(ConfigFactory.parseString(
+      val config = ConfigFactory.parseString(
+        "akka.remote.netty.tcp.port=" + port).withFallback(
+        ConfigFactory.load(ConfigFactory.parseString(
           """
             passive = off
             max-entries = 100000

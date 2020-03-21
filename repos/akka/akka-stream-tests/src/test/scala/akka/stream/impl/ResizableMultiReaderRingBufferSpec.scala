@@ -174,8 +174,8 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
         n ← 1 to 2
       } {
         var counter = 1
-        var activeCursors = List
-          .tabulate(random.nextInt(8) + 1)(new StressTestCursor(_, 1 << bit))
+        var activeCursors = List.tabulate(random.nextInt(8) + 1)(
+          new StressTestCursor(_, 1 << bit))
         var stillWriting =
           2 // give writing a slight bias, so as to somewhat "stretch" the buffer
         val buf = new TestBuffer(
@@ -209,9 +209,10 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
   class TestBuffer(iSize: Int, mSize: Int, cursors: Cursors)
       extends ResizableMultiReaderRingBuffer[Int](iSize, mSize, cursors) {
     def inspect: String =
-      underlyingArray
-        .map(x ⇒ if (x == null) 0 else x)
-        .mkString("", " ", " " + toString.dropWhile(_ != '('))
+      underlyingArray.map(x ⇒ if (x == null) 0 else x).mkString(
+        "",
+        " ",
+        " " + toString.dropWhile(_ != '('))
   }
 
   class Test(iSize: Int, mSize: Int, cursorCount: Int)

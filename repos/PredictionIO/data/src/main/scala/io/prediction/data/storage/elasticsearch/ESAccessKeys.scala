@@ -48,11 +48,8 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
         ("properties" ->
           ("key" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
             ("events" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
-    indices
-      .preparePutMapping(index)
-      .setType(estype)
-      .setSource(compact(render(json)))
-      .get
+    indices.preparePutMapping(index).setType(estype).setSource(
+      compact(render(json))).get
   }
 
   def insert(accessKey: AccessKey): Option[String] = {
@@ -86,10 +83,8 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
 
   def getByAppid(appid: Int): Seq[AccessKey] = {
     try {
-      val builder = client
-        .prepareSearch(index)
-        .setTypes(estype)
-        .setPostFilter(termFilter("appid", appid))
+      val builder = client.prepareSearch(index).setTypes(estype).setPostFilter(
+        termFilter("appid", appid))
       ESUtils.getAll[AccessKey](client, builder)
     } catch {
       case e: ElasticsearchException =>
@@ -100,10 +95,8 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
 
   def update(accessKey: AccessKey): Unit = {
     try {
-      client
-        .prepareIndex(index, estype, accessKey.key)
-        .setSource(write(accessKey))
-        .get()
+      client.prepareIndex(index, estype, accessKey.key).setSource(
+        write(accessKey)).get()
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)

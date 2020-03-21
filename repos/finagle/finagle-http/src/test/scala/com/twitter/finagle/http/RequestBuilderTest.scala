@@ -283,8 +283,7 @@ v3
       .addFormElement(FORM0: _*)
 
     val req0 = builder0.buildFormPost(true)
-    val content = "--[^-\r\n]+".r
-      .replaceAllIn(req0.contentString, "--Boundary")
+    val content = "--[^-\r\n]+".r.replaceAllIn(req0.contentString, "--Boundary")
       .replace("\r\n", "\n")
     assert(content == MULTIPART0)
   }

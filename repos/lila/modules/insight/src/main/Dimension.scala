@@ -207,8 +207,9 @@ object Dimension {
     }
 
   def valueToJson[X](d: Dimension[X])(v: X): play.api.libs.json.JsObject = {
-    play.api.libs.json.Json
-      .obj("key" -> valueKey(d)(v), "name" -> d.valueName(v))
+    play.api.libs.json.Json.obj(
+      "key" -> valueKey(d)(v),
+      "name" -> d.valueName(v))
   }
 
   def valueKey[X](d: Dimension[X])(v: X): String =

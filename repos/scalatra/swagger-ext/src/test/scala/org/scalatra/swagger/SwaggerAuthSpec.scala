@@ -31,8 +31,8 @@ object SwaggerAuthSpec {
       extends ScentryStrategy[User] {
     override def name = "header_or_query_token"
     private def token(implicit request: HttpServletRequest) =
-      (app.request.header("API-TOKEN") orElse app.params.get("api_token"))
-        .flatMap(_.blankOption)
+      (app.request.header("API-TOKEN") orElse app.params.get(
+        "api_token")).flatMap(_.blankOption)
     override def isValid(implicit request: HttpServletRequest) = token.isDefined
     def authenticate()(implicit
         request: HttpServletRequest,

@@ -204,11 +204,9 @@ object Namer {
             case Activity.Ok(t) => t
           }
           if (oks.isEmpty) {
-            seq
-              .collectFirst {
-                case f @ Activity.Failed(_) => f
-              }
-              .getOrElse(Activity.Pending)
+            seq.collectFirst {
+              case f @ Activity.Failed(_) => f
+            }.getOrElse(Activity.Pending)
           } else {
             Activity.Ok(Union.fromSeq(oks).simplified)
           }

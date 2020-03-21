@@ -64,10 +64,8 @@ package object project {
     }
 
     def classes: Set[File] =
-      library
-        .getFiles(OrderRootType.CLASSES)
-        .toSet
-        .map(VfsUtilCore.virtualToIoFile)
+      library.getFiles(OrderRootType.CLASSES).toSet.map(
+        VfsUtilCore.virtualToIoFile)
   }
 
   implicit class ModuleExt(module: Module) {
@@ -76,20 +74,15 @@ package object project {
     def hasDotty: Boolean = scalaSdk.exists(_.isDottySdk)
 
     def scalaSdk: Option[ScalaSdk] =
-      ScalaProjectCache
-        .instanceIn(module.getProject)
+      ScalaProjectCache.instanceIn(module.getProject)
         .getOrUpdate(module)(scalaSdk0)
 
     private def scalaSdk0: Option[ScalaSdk] = {
       var result: Option[ScalaSdk] = None
 
       // TODO breadth-first search is preferable
-      val enumerator = ModuleRootManager
-        .getInstance(module)
-        .orderEntries()
-        .recursively()
-        .librariesOnly()
-        .exportedOnly()
+      val enumerator = ModuleRootManager.getInstance(module)
+        .orderEntries().recursively().librariesOnly().exportedOnly()
 
       enumerator.forEachLibrary(new Processor[Library] {
         override def process(library: Library) = {
@@ -107,10 +100,8 @@ package object project {
 
     def libraries: Set[Library] = {
       val collector = new CollectProcessor[Library]()
-      OrderEnumerator
-        .orderEntries(module)
-        .librariesOnly()
-        .forEachLibrary(collector)
+      OrderEnumerator.orderEntries(module).librariesOnly().forEachLibrary(
+        collector)
       collector.getResults.asScala.toSet
     }
 
@@ -258,9 +249,8 @@ package object project {
     implicit def toLibrary(v: ScalaSdk): Library = v.library
 
     def documentationUrlFor(version: Option[Version]): String =
-      "http://www.scala-lang.org/api/" + version
-        .map(_.number)
-        .getOrElse("current") + "/"
+      "http://www.scala-lang.org/api/" + version.map(_.number).getOrElse(
+        "current") + "/"
   }
 
   implicit class ProjectPsiElementExt(element: PsiElement) {
@@ -282,9 +272,8 @@ package object project {
       val file: PsiFile = getContainingFileByContext(element)
       if (file == null || file.getVirtualFile == null)
         return ScalaLanguageLevel.Default
-      val module: Module = ProjectFileIndex.SERVICE
-        .getInstance(element.getProject)
-        .getModuleForFile(file.getVirtualFile)
+      val module: Module = ProjectFileIndex.SERVICE.getInstance(
+        element.getProject).getModuleForFile(file.getVirtualFile)
       if (module == null) return ScalaLanguageLevel.Default
       module.scalaSdk.map(_.languageLevel).getOrElse(ScalaLanguageLevel.Default)
     }

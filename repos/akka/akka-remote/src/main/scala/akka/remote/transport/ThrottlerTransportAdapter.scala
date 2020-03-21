@@ -307,12 +307,10 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       val naked = nakedAddress(address)
       throttlingModes = throttlingModes.updated(naked, (mode, direction))
       val ok = Future.successful(SetThrottleAck)
-      Future
-        .sequence(handleTable map {
-          case (`naked`, handle) ⇒ setMode(handle, mode, direction)
-          case _ ⇒ ok
-        })
-        .map(_ ⇒ SetThrottleAck) pipeTo sender()
+      Future.sequence(handleTable map {
+        case (`naked`, handle) ⇒ setMode(handle, mode, direction)
+        case _ ⇒ ok
+      }).map(_ ⇒ SetThrottleAck) pipeTo sender()
     case ForceDisassociate(address) ⇒
       val naked = nakedAddress(address)
       handleTable foreach {
@@ -405,15 +403,13 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
     ThrottlerHandle(
       originalHandle,
       context.actorOf(
-        RARP(context.system)
-          .configureDispatcher(
-            Props(
-              classOf[ThrottledAssociation],
-              managerRef,
-              listener,
-              originalHandle,
-              inbound))
-          .withDeploy(Deploy.local),
+        RARP(context.system).configureDispatcher(
+          Props(
+            classOf[ThrottledAssociation],
+            managerRef,
+            listener,
+            originalHandle,
+            inbound)).withDeploy(Deploy.local),
         "throttler" + nextId()
       )
     )
@@ -550,8 +546,9 @@ private[transport] class ThrottledAssociation(
       cancelTimer(DequeueTimerName)
       if (throttledMessages.nonEmpty)
         scheduleDequeue(
-          inboundThrottleMode
-            .timeToAvailable(System.nanoTime(), throttledMessages.head.length))
+          inboundThrottleMode.timeToAvailable(
+            System.nanoTime(),
+            throttledMessages.head.length))
       sender() ! SetThrottleAck
       stay()
     case Event(InboundPayload(p), _) ⇒
@@ -563,12 +560,14 @@ private[transport] class ThrottledAssociation(
         val (payload, newqueue) = throttledMessages.dequeue
         upstreamListener notify InboundPayload(payload)
         throttledMessages = newqueue
-        inboundThrottleMode = inboundThrottleMode
-          .tryConsumeTokens(System.nanoTime(), payload.length)
-          ._1
+        inboundThrottleMode = inboundThrottleMode.tryConsumeTokens(
+          System.nanoTime(),
+          payload.length)._1
         if (throttledMessages.nonEmpty)
-          scheduleDequeue(inboundThrottleMode
-            .timeToAvailable(System.nanoTime(), throttledMessages.head.length))
+          scheduleDequeue(
+            inboundThrottleMode.timeToAvailable(
+              System.nanoTime(),
+              throttledMessages.head.length))
       }
       stay()
 

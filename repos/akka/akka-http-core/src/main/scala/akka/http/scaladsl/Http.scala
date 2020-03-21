@@ -101,24 +101,22 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
         settings.socketOptions,
         halfClose = false,
         settings.timeouts.idleTimeout)
-    connections
-      .map {
-        case Tcp.IncomingConnection(localAddress, remoteAddress, flow) ⇒
-          val layer = serverLayer(settings, Some(remoteAddress), log)
-          val flowWithTimeoutRecovered = flow.via(MapError {
-            case t: TimeoutException ⇒
-              new HttpConnectionTimeoutException(t.getMessage)
-          })
-          IncomingConnection(
-            localAddress,
-            remoteAddress,
-            layer atop tlsStage join flowWithTimeoutRecovered)
-      }
-      .mapMaterializedValue {
-        _.map(tcpBinding ⇒
-          ServerBinding(tcpBinding.localAddress)(() ⇒ tcpBinding.unbind()))(
-          fm.executionContext)
-      }
+    connections.map {
+      case Tcp.IncomingConnection(localAddress, remoteAddress, flow) ⇒
+        val layer = serverLayer(settings, Some(remoteAddress), log)
+        val flowWithTimeoutRecovered = flow.via(MapError {
+          case t: TimeoutException ⇒
+            new HttpConnectionTimeoutException(t.getMessage)
+        })
+        IncomingConnection(
+          localAddress,
+          remoteAddress,
+          layer atop tlsStage join flowWithTimeoutRecovered)
+    }.mapMaterializedValue {
+      _.map(tcpBinding ⇒
+        ServerBinding(tcpBinding.localAddress)(() ⇒ tcpBinding.unbind()))(
+        fm.executionContext)
+    }
   }
 
   /**
@@ -622,8 +620,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       log: LoggingAdapter = system.log)(implicit
       mat: Materializer): (Future[WebSocketUpgradeResponse], T) =
     webSocketClientFlow(request, connectionContext, localAddress, settings, log)
-      .joinMat(clientFlow)(Keep.both)
-      .run()
+      .joinMat(clientFlow)(Keep.both).run()
 
   /**
     * Triggers an orderly shutdown of all host connections pools currently maintained by the [[akka.actor.ActorSystem]].

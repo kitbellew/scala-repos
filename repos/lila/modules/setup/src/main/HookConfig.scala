@@ -115,9 +115,8 @@ object HookConfig extends BaseHumanConfig {
       days = d,
       mode = realMode,
       allowAnon = !membersOnly, // membersOnly
-      ratingRange = e
-        .filter(_ => useRatingRange)
-        .fold(RatingRange.default)(RatingRange.orDefault),
+      ratingRange = e.filter(_ => useRatingRange).fold(RatingRange.default)(
+        RatingRange.orDefault),
       color = Color(c) err "Invalid color " + c)
   }
 

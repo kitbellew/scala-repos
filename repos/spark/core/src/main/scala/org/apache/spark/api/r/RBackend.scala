@@ -72,11 +72,8 @@ private[spark] class RBackend {
 
     channelFuture = bootstrap.bind(new InetSocketAddress("localhost", 0))
     channelFuture.syncUninterruptibly()
-    channelFuture
-      .channel()
-      .localAddress()
-      .asInstanceOf[InetSocketAddress]
-      .getPort()
+    channelFuture.channel().localAddress().asInstanceOf[
+      InetSocketAddress].getPort()
   }
 
   def run(): Unit = {

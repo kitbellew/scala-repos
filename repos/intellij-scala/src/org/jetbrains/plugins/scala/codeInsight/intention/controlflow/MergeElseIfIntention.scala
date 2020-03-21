@@ -65,22 +65,16 @@ class MergeElseIfIntention extends PsiElementBaseIntentionAction {
       editor.getCaretModel.getOffset - ifStmt.thenBranch.get.getTextRange.getEndOffset - elseIndex
 
     val expr = new StringBuilder
-    expr
-      .append("if (")
-      .append(ifStmt.condition.get.getText)
-      .append(") ")
-      .append(ifStmt.thenBranch.get.getText)
-      .append(" else ")
-      .append(ifStmt.elseBranch.get.getText.trim.drop(1).dropRight(1))
+    expr.append("if (").append(ifStmt.condition.get.getText).append(
+      ") ").append(ifStmt.thenBranch.get.getText).append(" else ").append(
+      ifStmt.elseBranch.get.getText.trim.drop(1).dropRight(1))
 
-    val newIfStmt: ScExpression = ScalaPsiElementFactory
-      .createExpressionFromText(expr.toString(), element.getManager)
-    val size = newIfStmt
-      .asInstanceOf[ScIfStmt]
-      .thenBranch
-      .get
-      .getTextRange
-      .getEndOffset -
+    val newIfStmt: ScExpression =
+      ScalaPsiElementFactory.createExpressionFromText(
+        expr.toString(),
+        element.getManager)
+    val size = newIfStmt.asInstanceOf[
+      ScIfStmt].thenBranch.get.getTextRange.getEndOffset -
       newIfStmt.asInstanceOf[ScIfStmt].getTextRange.getStartOffset
 
     inWriteAction {

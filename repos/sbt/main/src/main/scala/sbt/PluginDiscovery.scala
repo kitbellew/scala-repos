@@ -131,10 +131,8 @@ object PluginDiscovery {
       loader: ClassLoader,
       resourceName: String): Seq[String] = {
     import collection.JavaConversions._
-    loader
-      .getResources(resourceName)
-      .toSeq
-      .filter(onClasspath(classpath)) flatMap { u =>
+    loader.getResources(resourceName).toSeq.filter(
+      onClasspath(classpath)) flatMap { u =>
       IO.readLinesURL(u).map(_.trim).filter(!_.isEmpty)
     }
   }
@@ -187,8 +185,8 @@ object PluginDiscovery {
     val msgExtra =
       if (evictedStrings.isEmpty) ""
       else
-        "\nNote that conflicts were resolved for some dependencies:\n\t" + evictedStrings
-          .mkString("\n\t")
+        "\nNote that conflicts were resolved for some dependencies:\n\t" + evictedStrings.mkString(
+          "\n\t")
     throw new IncompatiblePluginsException(msgBase + msgExtra, t)
   }
 }

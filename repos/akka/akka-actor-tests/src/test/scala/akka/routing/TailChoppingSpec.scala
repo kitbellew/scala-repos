@@ -72,8 +72,10 @@ class TailChoppingSpec
 
       val paths = List(actor1, actor2).map(_.path.toString)
       val routedActor = system.actorOf(
-        TailChoppingGroup(paths, within = 1.second, interval = 100.millisecond)
-          .props())
+        TailChoppingGroup(
+          paths,
+          within = 1.second,
+          interval = 100.millisecond).props())
       routedActor ! Broadcast(1)
       routedActor ! Broadcast("end")
 
@@ -89,8 +91,10 @@ class TailChoppingSpec
       val probe = TestProbe()
       val paths = List(actor1, actor2).map(_.path.toString)
       val routedActor = system.actorOf(
-        TailChoppingGroup(paths, within = 1.seconds, interval = 50.millisecond)
-          .props())
+        TailChoppingGroup(
+          paths,
+          within = 1.seconds,
+          interval = 50.millisecond).props())
 
       probe.send(routedActor, "")
       probe.expectMsg("ack")

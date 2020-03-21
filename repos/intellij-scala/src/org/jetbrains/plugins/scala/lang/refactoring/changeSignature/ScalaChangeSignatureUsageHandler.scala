@@ -168,8 +168,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       if (paramTypes.size == names.size)
         names.zip(paramTypes).map {
           case (name, tpe) =>
-            ScalaExtractMethodUtils
-              .typedName(name, tpe.canonicalText, usage.expr.getProject)
+            ScalaExtractMethodUtils.typedName(
+              name,
+              tpe.canonicalText,
+              usage.expr.getProject)
         }
       else names
     val clause = params.mkString("(", ", ", ")")
@@ -177,9 +179,9 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     val funExpr = ScalaPsiElementFactory.createExpressionFromText(
       newFunExprText,
       usage.expr.getManager)
-    val replaced = usage.expr
-      .replaceExpression(funExpr, removeParenthesis = true)
-      .asInstanceOf[ScFunctionExpr]
+    val replaced = usage.expr.replaceExpression(
+      funExpr,
+      removeParenthesis = true).asInstanceOf[ScFunctionExpr]
     TypeAdjuster.markToAdjust(replaced)
     replaced.result match {
       case Some(infix: ScInfixExpr) =>
@@ -208,11 +210,9 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       case _ => return
     }
     keywordToChange.foreach { kw =>
-      val defKeyword = ScalaPsiElementFactory
-        .createMethodFromText("def foo {}", named.getManager)
-        .children
-        .find(_.getText == "def")
-        .get
+      val defKeyword = ScalaPsiElementFactory.createMethodFromText(
+        "def foo {}",
+        named.getManager).children.find(_.getText == "def").get
       if (change.getNewParameters.nonEmpty) kw.replace(defKeyword)
     }
 
@@ -258,8 +258,11 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       infix.getArgExpr match {
         case t: ScTuple if !hasSeveralClauses(change) =>
           val tupleText = argsText(change, usage)
-          val newTuple = ScalaPsiElementFactory
-            .createExpressionWithContextFromText(tupleText, infix, t)
+          val newTuple =
+            ScalaPsiElementFactory.createExpressionWithContextFromText(
+              tupleText,
+              infix,
+              t)
           t.replaceExpression(newTuple, removeParenthesis = false)
         case _ =>
           val qualText = infix.getBaseExpr.getText
@@ -468,9 +471,9 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
   private def replaceNameId(elem: PsiElement, newName: String) {
     elem match {
       case scRef: ScReferenceElement =>
-        val newId = ScalaPsiElementFactory
-          .createIdentifier(newName, scRef.getManager)
-          .getPsi
+        val newId = ScalaPsiElementFactory.createIdentifier(
+          newName,
+          scRef.getManager).getPsi
         scRef.nameId.replace(newId)
       case jRef: PsiReferenceExpression =>
         jRef.getReferenceNameElement match {
@@ -484,9 +487,9 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
         }
       case _ =>
         elem.replace(
-          ScalaPsiElementFactory
-            .createIdentifier(newName, elem.getManager)
-            .getPsi)
+          ScalaPsiElementFactory.createIdentifier(
+            newName,
+            elem.getManager).getPsi)
     }
   }
 
@@ -509,9 +512,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           `=> ` + text + `*`
         case jInfo: JavaParameterInfo =>
           val javaType = jInfo.createType(method, method.getManager)
-          val scType = UsageUtil
-            .substitutor(usage)
-            .subst(ScType.create(javaType, method.getProject))
+          val scType = UsageUtil.substitutor(usage).subst(
+            ScType.create(javaType, method.getProject))
           (scType, javaType) match {
             case (JavaArrayType(tpe), _: PsiEllipsisType) =>
               tpe.canonicalText + "*"
@@ -564,9 +566,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     change match {
       case sc: ScalaChangeInfo =>
-        sc.newParams
-          .map(cl => cl.map(paramText).mkString("(", ", ", ")"))
-          .mkString
+        sc.newParams.map(cl =>
+          cl.map(paramText).mkString("(", ", ", ")")).mkString
       case _ =>
         change.getNewParameters.toSeq.map(paramText).mkString("(", ", ", ")")
     }

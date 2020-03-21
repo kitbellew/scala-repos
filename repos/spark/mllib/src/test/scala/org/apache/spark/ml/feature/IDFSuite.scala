@@ -69,9 +69,9 @@ class IDFSuite
     })
     val expected = scaleDataWithIDF(data, idf)
 
-    val df = sqlContext
-      .createDataFrame(data.zip(expected))
-      .toDF("features", "expected")
+    val df = sqlContext.createDataFrame(data.zip(expected)).toDF(
+      "features",
+      "expected")
 
     val idfModel = new IDF()
       .setInputCol("features")
@@ -99,9 +99,9 @@ class IDFSuite
     })
     val expected = scaleDataWithIDF(data, idf)
 
-    val df = sqlContext
-      .createDataFrame(data.zip(expected))
-      .toDF("features", "expected")
+    val df = sqlContext.createDataFrame(data.zip(expected)).toDF(
+      "features",
+      "expected")
 
     val idfModel = new IDF()
       .setInputCol("features")

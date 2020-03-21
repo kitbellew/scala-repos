@@ -8,8 +8,7 @@ import com.twitter.scalding._
   * This example job does not yet work.  It is a test for Kyro serialization
   */
 class MergeTest(args: Args) extends Job(args) {
-  TextLine(args("input"))
-    .flatMapTo('word) { _.split("""\s+""") }
+  TextLine(args("input")).flatMapTo('word) { _.split("""\s+""") }
     .groupBy('word) { _.size }
     //Now, let's get the top 10 words:
     .groupAll {

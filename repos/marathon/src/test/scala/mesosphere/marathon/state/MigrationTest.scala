@@ -28,9 +28,8 @@ class MigrationTest
 
   test("migrations can be filtered by version") {
     val f = new Fixture
-    val all = f.migration.migrations
-      .filter(_._1 > StorageVersions(0, 0, 0))
-      .sortBy(_._1)
+    val all = f.migration.migrations.filter(
+      _._1 > StorageVersions(0, 0, 0)).sortBy(_._1)
     all should have size f.migration.migrations.size.toLong
 
     val none =
@@ -148,10 +147,8 @@ class MigrationTest
         metrics = metrics,
         newState = () =>
           MarathonTaskState(
-            MarathonTask
-              .newBuilder()
-              .setId(UUID.randomUUID().toString)
-              .build()),
+            MarathonTask.newBuilder().setId(
+              UUID.randomUUID().toString).build()),
         prefix = "task:"),
       metrics
     )

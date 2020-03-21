@@ -58,8 +58,10 @@ object ScalaElementPresentation {
 
     if (function.paramClauses != null)
       presentableText.append(
-        StructureViewUtil
-          .getParametersAsString(function.paramClauses, fast, subst))
+        StructureViewUtil.getParametersAsString(
+          function.paramClauses,
+          fast,
+          subst))
 
     if (fast) {
       function.returnTypeElement match {

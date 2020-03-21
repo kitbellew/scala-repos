@@ -77,10 +77,8 @@ trait MemberLookupBase {
                                 else "")
               val packageSuffix = if (sym.hasPackageFlag) ".package" else ""
 
-              sym.ownerChain.reverse
-                .filterNot(isRoot(_))
-                .map(nameString(_))
-                .mkString(".") + packageSuffix
+              sym.ownerChain.reverse.filterNot(isRoot(_)).map(
+                nameString(_)).mkString(".") + packageSuffix
             }
 
             if (sym.isClass || sym.isModule || sym.isTrait || sym.hasPackageFlag)

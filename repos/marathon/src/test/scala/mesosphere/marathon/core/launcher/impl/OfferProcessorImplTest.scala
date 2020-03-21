@@ -96,11 +96,10 @@ class OfferProcessorImplTest
       MatchedTaskOps(offerId, tasksWithSource))
     for (task <- tasksWithSource) {
       val op = task.op
-      taskCreationHandler.created(op.maybeNewTask.get) returns Future
-        .successful(op.maybeNewTask.get)
-      taskCreationHandler
-        .terminated(op.taskId)
-        .asInstanceOf[Future[Unit]] returns
+      taskCreationHandler.created(
+        op.maybeNewTask.get) returns Future.successful(op.maybeNewTask.get)
+      taskCreationHandler.terminated(op.taskId).asInstanceOf[
+        Future[Unit]] returns
         Future.successful(())
     }
 
@@ -149,8 +148,8 @@ class OfferProcessorImplTest
       MatchedTaskOps(offerId, tasksWithSource))
     for (task <- tasksWithSource) {
       val op = task.op
-      taskCreationHandler.created(op.maybeNewTask.get) returns Future
-        .successful(op.maybeNewTask.get)
+      taskCreationHandler.created(
+        op.maybeNewTask.get) returns Future.successful(op.maybeNewTask.get)
       taskCreationHandler.created(op.oldTask.get) returns Future.successful(
         op.oldTask.get)
     }
@@ -245,9 +244,8 @@ class OfferProcessorImplTest
         clock += 1.hour
         Future.successful(task.op.maybeNewTask.get)
       }
-      taskCreationHandler
-        .terminated(task.op.taskId)
-        .asInstanceOf[Future[Unit]] returns
+      taskCreationHandler.terminated(task.op.taskId).asInstanceOf[
+        Future[Unit]] returns
         Future.successful(Some(task.op.taskId))
     }
 
@@ -334,8 +332,9 @@ class OfferProcessorImplTest
 
   object f {
     import org.apache.mesos.{Protos => Mesos}
-    val launch = new TaskOpFactoryHelper(Some("principal"), Some("role"))
-      .launch(_: Mesos.TaskInfo, _: Task, None)
+    val launch = new TaskOpFactoryHelper(
+      Some("principal"),
+      Some("role")).launch(_: Mesos.TaskInfo, _: Task, None)
     val launchWithOldTask =
       new TaskOpFactoryHelper(Some("principal"), Some("role")).launch _
   }

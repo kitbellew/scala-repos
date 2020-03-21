@@ -39,25 +39,25 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
       request: TaskOpFactory.Request): Option[TaskOp] = {
     val TaskOpFactory.Request(app, offer, tasks, _) = request
 
-    new TaskBuilder(app, Task.Id.forApp, config)
-      .buildIfMatches(offer, tasks.values)
-      .map {
-        case (taskInfo, ports) =>
-          val task = Task.LaunchedEphemeral(
-            taskId = Task.Id(taskInfo.getTaskId),
-            agentInfo = Task.AgentInfo(
-              host = offer.getHostname,
-              agentId = Some(offer.getSlaveId.getValue),
-              attributes = offer.getAttributesList.asScala
-            ),
-            appVersion = app.version,
-            status = Task.Status(
-              stagedAt = clock.now()
-            ),
-            networking = Task.HostPorts(ports)
-          )
-          taskOperationFactory.launch(taskInfo, task)
-      }
+    new TaskBuilder(app, Task.Id.forApp, config).buildIfMatches(
+      offer,
+      tasks.values).map {
+      case (taskInfo, ports) =>
+        val task = Task.LaunchedEphemeral(
+          taskId = Task.Id(taskInfo.getTaskId),
+          agentInfo = Task.AgentInfo(
+            host = offer.getHostname,
+            agentId = Some(offer.getSlaveId.getValue),
+            attributes = offer.getAttributesList.asScala
+          ),
+          appVersion = app.version,
+          status = Task.Status(
+            stagedAt = clock.now()
+          ),
+          networking = Task.HostPorts(ports)
+        )
+        taskOperationFactory.launch(taskInfo, task)
+    }
   }
 
   private[this] def inferForResidents(
@@ -104,8 +104,9 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
               ResourceSelector(
                 config.mesosRole.get.toSet,
                 reserved = true,
-                requiredLabels = TaskLabels
-                  .labelsForTask(request.frameworkId, volumeMatch.task)
+                requiredLabels = TaskLabels.labelsForTask(
+                  request.frameworkId,
+                  volumeMatch.task)
               )
             )
 
@@ -151,8 +152,10 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
       : Option[TaskOp] = {
 
     // create a TaskBuilder that used the id of the existing task as id for the created TaskInfo
-    new TaskBuilder(app, (_) => task.taskId, config)
-      .build(offer, resourceMatch, volumeMatch) map {
+    new TaskBuilder(app, (_) => task.taskId, config).build(
+      offer,
+      resourceMatch,
+      volumeMatch) map {
       case (taskInfo, ports) =>
         val launch = TaskStateOp.Launch(
           appVersion = app.version,

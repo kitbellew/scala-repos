@@ -39,15 +39,13 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
 
   override def setUp(): Unit = {
     super.setUp()
-    myProject.getMessageBus
-      .connect(myTestRootDisposable)
-      .subscribe(
-        ProjectTopics.PROJECT_ROOTS,
-        new ModuleRootAdapter {
-          override def rootsChanged(event: ModuleRootEvent) {
-            forceFSRescan()
-          }
-        })
+    myProject.getMessageBus.connect(myTestRootDisposable).subscribe(
+      ProjectTopics.PROJECT_ROOTS,
+      new ModuleRootAdapter {
+        override def rootsChanged(event: ModuleRootEvent) {
+          forceFSRescan()
+        }
+      })
     CompilerTestUtil.enableExternalCompiler()
 
     addRoots()
@@ -67,9 +65,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
       val srcRoot = getOrCreateChildDir("src")
       PsiTestUtil.addSourceRoot(getModule, srcRoot, false)
       val output = getOrCreateChildDir("out")
-      CompilerProjectExtension
-        .getInstance(getProject)
-        .setCompilerOutputUrl(output.getUrl)
+      CompilerProjectExtension.getInstance(getProject).setCompilerOutputUrl(
+        output.getUrl)
     }
   }
 
@@ -156,8 +153,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
         for (category <- CompilerMessageCategory.values) {
           for (message <- compileContext.getMessages(category)) {
             val msg: String = message.getMessage
-            if (category != CompilerMessageCategory.INFORMATION || !msg
-                  .startsWith("Compilation completed successfully")) {
+            if (category != CompilerMessageCategory.INFORMATION || !msg.startsWith(
+                  "Compilation completed successfully")) {
               myMessages += (category + ": " + msg)
             }
           }

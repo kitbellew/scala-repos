@@ -38,8 +38,7 @@ object MultilayerPerceptronClassifierExample {
 
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read
-      .format("libsvm")
+    val data = sqlContext.read.format("libsvm")
       .load("data/mllib/sample_multiclass_classification_data.txt")
     // Split the data into train and test
     val splits = data.randomSplit(Array(0.6, 0.4), seed = 1234L)

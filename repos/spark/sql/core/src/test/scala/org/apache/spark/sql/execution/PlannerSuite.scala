@@ -83,11 +83,9 @@ class PlannerSuite extends SharedSQLContext {
 
   test("mixed aggregates are partially aggregated") {
     val query =
-      testData
-        .groupBy('value)
-        .agg(count('value), countDistinct('key))
-        .queryExecution
-        .analyzed
+      testData.groupBy('value).agg(
+        count('value),
+        countDistinct('key)).queryExecution.analyzed
     testPartialAggregationPlan(query)
   }
 
@@ -101,9 +99,8 @@ class PlannerSuite extends SharedSQLContext {
         val schema = StructType(fields)
         val row = Row.fromSeq(Seq.fill(fields.size)(null))
         val rowRDD = sparkContext.parallelize(row :: Nil)
-        sqlContext
-          .createDataFrame(rowRDD, schema)
-          .registerTempTable("testLimit")
+        sqlContext.createDataFrame(rowRDD, schema).registerTempTable(
+          "testLimit")
 
         val planned = sql(
           """

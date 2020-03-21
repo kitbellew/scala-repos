@@ -32,12 +32,9 @@ class GraphiteClient(address: InetSocketAddress) extends Closeable {
   /** Send measurement carbon server. Thread-safe. */
   def send(name: String, value: String, timestamp: Long) {
     val sb = new StringBuilder()
-      .append(sanitize(name))
-      .append(' ')
-      .append(sanitize(value))
-      .append(' ')
-      .append(timestamp.toString)
-      .append('\n')
+      .append(sanitize(name)).append(' ')
+      .append(sanitize(value)).append(' ')
+      .append(timestamp.toString).append('\n')
 
     // The write calls below handle the string in-one-go (locking);
     // Whereas the metrics' implementation of the graphite client uses multiple `write` calls,

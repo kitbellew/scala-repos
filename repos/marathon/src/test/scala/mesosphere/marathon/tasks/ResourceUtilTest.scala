@@ -67,10 +67,8 @@ class ResourceUtilTest
     val reservationInfo =
       ReservationInfo.newBuilder().setPrincipal("principal").build()
 
-    val disk = DiskInfo
-      .newBuilder()
-      .setPersistence(Persistence.newBuilder().setId("persistenceId"))
-      .build()
+    val disk = DiskInfo.newBuilder().setPersistence(
+      Persistence.newBuilder().setId("persistenceId")).build()
     val resourceWithReservation = MTH.scalarResource(
       "disk",
       1024,
@@ -130,14 +128,10 @@ class ResourceUtilTest
   test("resource consumption considers reservation labels") {
     val reservationInfo1 =
       ReservationInfo.newBuilder().setPrincipal("principal").build()
-    val labels = Protos.Labels
-      .newBuilder()
-      .addLabels(Protos.Label.newBuilder().setKey("key").setValue("value"))
-    val reservationInfo2 = ReservationInfo
-      .newBuilder()
-      .setPrincipal("principal")
-      .setLabels(labels)
-      .build()
+    val labels = Protos.Labels.newBuilder().addLabels(
+      Protos.Label.newBuilder().setKey("key").setValue("value"))
+    val reservationInfo2 = ReservationInfo.newBuilder().setPrincipal(
+      "principal").setLabels(labels).build()
 
     val resourceWithReservation1 =
       MTH.scalarResource("disk", 1024, "role", Some(reservationInfo1), None)
@@ -204,10 +198,8 @@ class ResourceUtilTest
   test("display resources displays disk and reservation info") {
     val reservationInfo =
       ReservationInfo.newBuilder().setPrincipal("principal").build()
-    val disk = DiskInfo
-      .newBuilder()
-      .setPersistence(Persistence.newBuilder().setId("persistenceId"))
-      .build()
+    val disk = DiskInfo.newBuilder().setPersistence(
+      Persistence.newBuilder().setId("persistenceId")).build()
     val resource = MTH.scalarResource(
       "disk",
       1024,
@@ -336,9 +328,7 @@ class ResourceUtilTest
     def toRange(range: Range.Inclusive): Value.Range =
       Value.Range
         .newBuilder()
-        .setBegin(range.start.toLong)
-        .setEnd(range.end.toLong)
-        .build()
+        .setBegin(range.start.toLong).setEnd(range.end.toLong).build()
 
     Resource
       .newBuilder()

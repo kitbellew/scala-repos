@@ -53,8 +53,10 @@ object StaticTraitScFunctionWrapper {
       function.returnType match {
         case Success(tp, _) =>
           builder.append(
-            JavaConversionUtil
-              .typeText(tp, function.getProject, function.getResolveScope))
+            JavaConversionUtil.typeText(
+              tp,
+              function.getProject,
+              function.getResolveScope))
         case _ => builder.append("java.lang.Object")
       }
     }
@@ -80,8 +82,11 @@ object StaticTraitScFunctionWrapper {
             case Success(tp, _) =>
               if (param.isCallByNameParameter)
                 builder.append("scala.Function0<")
-              builder.append(JavaConversionUtil
-                .typeText(tp, function.getProject, function.getResolveScope))
+              builder.append(
+                JavaConversionUtil.typeText(
+                  tp,
+                  function.getProject,
+                  function.getResolveScope))
               if (param.isCallByNameParameter) builder.append(">")
             case _ => builder.append("java.lang.Object")
           }

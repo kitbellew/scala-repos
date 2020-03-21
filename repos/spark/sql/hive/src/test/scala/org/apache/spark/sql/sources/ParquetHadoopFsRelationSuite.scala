@@ -52,8 +52,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         sparkContext
           .parallelize(for (i <- 1 to 3) yield (i, s"val_$i", p1))
           .toDF("a", "b", "p1")
-          .write
-          .parquet(partitionDir.toString)
+          .write.parquet(partitionDir.toString)
       }
 
       val dataSchemaWithPartition =
@@ -61,8 +60,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
           dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
-        hiveContext.read
-          .format(dataSourceName)
+        hiveContext.read.format(dataSourceName)
           .option("dataSchema", dataSchemaWithPartition.json)
           .load(file.getCanonicalPath))
     }
@@ -121,8 +119,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         // Parquet doesn't allow field names with spaces.  Here we are intentionally making an
         // exception thrown from the `ParquetRelation2.prepareForWriteJob()` method to trigger
         // the bug.  Please refer to spark-8079 for more details.
-        hiveContext
-          .range(1, 10)
+        hiveContext.range(1, 10)
           .withColumnRenamed("id", "a b")
           .write
           .format("parquet")
@@ -157,12 +154,8 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
 
-      sqlContext
-        .range(2)
-        .select('id as 'a, 'id as 'b)
-        .write
-        .partitionBy("b")
-        .parquet(path)
+      sqlContext.range(2).select('id as 'a, 'id as 'b).write.partitionBy(
+        "b").parquet(path)
       val df = sqlContext.read.parquet(path).filter('a === 0).select('b)
       val physicalPlan = df.queryExecution.sparkPlan
 
@@ -227,7 +220,8 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         .option("dataSchema", df.schema.json)
         .save(path)
 
-      val loadedDF = sqlContext.read
+      val loadedDF = sqlContext
+        .read
         .format(dataSourceName)
         .option("dataSchema", df.schema.json)
         .schema(df.schema)
@@ -251,7 +245,8 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         val compressedFiles = new File(path).listFiles()
         assert(compressedFiles.exists(_.getName.endsWith(".gz.parquet")))
 
-        val copyDf = sqlContext.read
+        val copyDf = sqlContext
+          .read
           .parquet(path)
         checkAnswer(df, copyDf)
       }

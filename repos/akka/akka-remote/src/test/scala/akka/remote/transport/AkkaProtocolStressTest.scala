@@ -55,8 +55,10 @@ object AkkaProtocolStressTest {
           remote ! nextSeq
           nextSeq += 1
           if (nextSeq % 2000 == 0)
-            context.system.scheduler
-              .scheduleOnce(500.milliseconds, self, "sendNext")
+            context.system.scheduler.scheduleOnce(
+              500.milliseconds,
+              self,
+              "sendNext")
           else self ! "sendNext"
         }
       case seq: Int ⇒
@@ -118,8 +120,8 @@ class AkkaProtocolStressTest
       system.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))
       systemB.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))
       Await.result(
-        RARP(system).provider.transport
-          .managementCommand(One(addressB, Drop(0.1, 0.1))),
+        RARP(system).provider.transport.managementCommand(
+          One(addressB, Drop(0.1, 0.1))),
         3.seconds.dilated)
 
       val tester =

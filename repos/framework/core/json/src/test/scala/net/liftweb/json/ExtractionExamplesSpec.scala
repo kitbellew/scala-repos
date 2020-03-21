@@ -37,8 +37,9 @@ object ExtractionExamples extends Specification {
 
   "Extraction with path expression example" in {
     val json = parse(testJson)
-    (json \ "address")
-      .extract[Address] mustEqual Address("Bulevard", "Helsinki")
+    (json \ "address").extract[Address] mustEqual Address(
+      "Bulevard",
+      "Helsinki")
   }
 
   "Partial extraction example" in {
@@ -123,8 +124,11 @@ object ExtractionExamples extends Specification {
   "Option extraction example" in {
     val json =
       parse("""{ "name": null, "age": 5, "mother":{"name":"Marilyn"}}""")
-    json
-      .extract[OChild] mustEqual OChild(None, 5, Some(Parent("Marilyn")), None)
+    json.extract[OChild] mustEqual OChild(
+      None,
+      5,
+      Some(Parent("Marilyn")),
+      None)
   }
 
   "Missing JSON array can be extracted as an empty List" in {
@@ -218,9 +222,8 @@ object ExtractionExamples extends Specification {
   "Flatten and unflatten are symmetric with empty sets" in {
     val s = SetWrapper(Set())
 
-    Extraction
-      .unflatten(Extraction.flatten(Extraction.decompose(s)))
-      .extract[SetWrapper] mustEqual s
+    Extraction.unflatten(Extraction.flatten(Extraction.decompose(s))).extract[
+      SetWrapper] mustEqual s
   }
 
   "List extraction example" in {
@@ -249,34 +252,35 @@ object ExtractionExamples extends Specification {
   }
 
   "Best matching constructor selection example" in {
-    parse("""{"name":"john","age":32,"size":"M"}""")
-      .extract[MultipleConstructors] mustEqual
+    parse("""{"name":"john","age":32,"size":"M"}""").extract[
+      MultipleConstructors] mustEqual
       MultipleConstructors("john", 32, Some("M"))
 
-    parse("""{"name":"john","age":32}""")
-      .extract[MultipleConstructors] mustEqual
+    parse("""{"name":"john","age":32}""").extract[
+      MultipleConstructors] mustEqual
       MultipleConstructors("john", 32, Some("S"))
 
-    parse("""{"name":"john","foo":"xxx"}""")
-      .extract[MultipleConstructors] mustEqual
+    parse("""{"name":"john","foo":"xxx"}""").extract[
+      MultipleConstructors] mustEqual
       MultipleConstructors("john", 30, None)
 
-    parse("""{"name":"john","age":32,"size":null}""")
-      .extract[MultipleConstructors] mustEqual
+    parse("""{"name":"john","age":32,"size":null}""").extract[
+      MultipleConstructors] mustEqual
       MultipleConstructors("john", 32, None)
 
-    parse("""{"birthYear":1990,"name":"john","foo":2}""")
-      .extract[MultipleConstructors] mustEqual
+    parse("""{"birthYear":1990,"name":"john","foo":2}""").extract[
+      MultipleConstructors] mustEqual
       MultipleConstructors("john", 20, None)
 
-    parse("""{"foo":2,"age":12,"size":"XS"}""")
-      .extract[MultipleConstructors] mustEqual
+    parse("""{"foo":2,"age":12,"size":"XS"}""").extract[
+      MultipleConstructors] mustEqual
       MultipleConstructors("unknown", 12, Some("XS"))
   }
 
   "Partial JSON extraction" in {
-    parse(stringField)
-      .extract[ClassWithJSON] mustEqual ClassWithJSON("one", JString("msg"))
+    parse(stringField).extract[ClassWithJSON] mustEqual ClassWithJSON(
+      "one",
+      JString("msg"))
     parse(objField).extract[ClassWithJSON] mustEqual ClassWithJSON(
       "one",
       JObject(List(JField("yes", JString("woo")))))
@@ -297,8 +301,8 @@ object ExtractionExamples extends Specification {
   }
 
   "Complex nested non-polymorphic collections extraction example" in {
-    parse("""{"a":[{"b":"c"}]}""")
-      .extract[Map[String, List[Map[String, String]]]] mustEqual Map(
+    parse("""{"a":[{"b":"c"}]}""").extract[
+      Map[String, List[Map[String, String]]]] mustEqual Map(
       "a" -> List(Map("b" -> "c")))
   }
 

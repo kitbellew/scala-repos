@@ -62,10 +62,9 @@ case class HttpBasicAuthentication(realmName: String)(
     extends HttpAuthentication {
   def credentials(r: Req): Box[(String, String)] = {
     header(r).flatMap(auth => {
-      val decoded =
-        new String(Base64.decodeBase64(auth.substring(6, auth.length).getBytes))
-          .split(":")
-          .toList
+      val decoded = new String(
+        Base64.decodeBase64(auth.substring(6, auth.length).getBytes)).split(
+        ":").toList
       decoded match {
         case userName :: password :: _ => Full((userName, password))
         case userName :: Nil           => Full((userName, ""))
@@ -187,10 +186,9 @@ case class HttpDigestAuthentication(realmName: String)(
 
   private def validate(clientAuth: DigestAuthentication)(
       password: String): Boolean = {
-    val ha1 = hexEncode(
-      md5(
-        (clientAuth.userName + ":" + clientAuth.realm + ":" + password)
-          .getBytes("UTF-8")))
+    val ha1 = hexEncode(md5(
+      (clientAuth.userName + ":" + clientAuth.realm + ":" + password).getBytes(
+        "UTF-8")))
     val ha2 = hexEncode(
       md5((clientAuth.method + ":" + clientAuth.uri).getBytes("UTF-8")))
 

@@ -110,8 +110,8 @@ class ScalaLanguageConsole(project: Project, title: String)
     scalaFile = ScalaPsiElementFactory.createScalaFileFromText(
       textBuffer.toString() + ";\n1",
       project)
-    getFile
-      .asInstanceOf[ScalaFile]
-      .setContext(scalaFile, scalaFile.getLastChild)
+    getFile.asInstanceOf[ScalaFile].setContext(
+      scalaFile,
+      scalaFile.getLastChild)
   }
 }

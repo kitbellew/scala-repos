@@ -32,9 +32,8 @@ class AnalysisSuite extends AnalysisTest {
     val plan = (1 to 100)
       .map(_ => testRelation)
       .fold[LogicalPlan](testRelation) { (a, b) =>
-        a.select(UnresolvedStar(None))
-          .select('a)
-          .unionAll(b.select(UnresolvedStar(None)))
+        a.select(UnresolvedStar(None)).select('a).unionAll(
+          b.select(UnresolvedStar(None)))
       }
 
     assertAnalysisSuccess(plan)
@@ -94,32 +93,24 @@ class AnalysisSuite extends AnalysisTest {
 
     // Case 1: one missing attribute is in the leaf node and another is in the unary node
     val plan1 = testRelation2
-      .where('a > "str")
-      .select('a, 'b)
-      .where('b > "str")
-      .select('a)
+      .where('a > "str").select('a, 'b)
+      .where('b > "str").select('a)
       .sortBy('b.asc, 'c.desc)
     val expected1 = testRelation2
-      .where(a > "str")
-      .select(a, b, c)
-      .where(b > "str")
-      .select(a, b, c)
+      .where(a > "str").select(a, b, c)
+      .where(b > "str").select(a, b, c)
       .sortBy(b.asc, c.desc)
       .select(a)
     checkAnalysis(plan1, expected1)
 
     // Case 2: all the missing attributes are in the leaf node
     val plan2 = testRelation2
-      .where('a > "str")
-      .select('a)
-      .where('a > "str")
-      .select('a)
+      .where('a > "str").select('a)
+      .where('a > "str").select('a)
       .sortBy('b.asc, 'c.desc)
     val expected2 = testRelation2
-      .where(a > "str")
-      .select(a, b, c)
-      .where(a > "str")
-      .select(a, b, c)
+      .where(a > "str").select(a, b, c)
+      .where(a > "str").select(a, b, c)
       .sortBy(b.asc, c.desc)
       .select(a)
     checkAnalysis(plan2, expected2)
@@ -132,15 +123,11 @@ class AnalysisSuite extends AnalysisTest {
     val h = testRelation3.output(3)
 
     // Case: join itself can resolve all the missing attributes
-    val plan = testRelation2
-      .join(testRelation3)
-      .where('a > "str")
-      .select('a, 'b)
+    val plan = testRelation2.join(testRelation3)
+      .where('a > "str").select('a, 'b)
       .sortBy('c.desc, 'h.asc)
-    val expected = testRelation2
-      .join(testRelation3)
-      .where(a > "str")
-      .select(a, b, c, h)
+    val expected = testRelation2.join(testRelation3)
+      .where(a > "str").select(a, b, c, h)
       .sortBy(c.desc, h.asc)
       .select(a, b)
     checkAnalysis(plan, expected)
@@ -251,8 +238,8 @@ class AnalysisSuite extends AnalysisTest {
     var expected = testRelation.select((a + 1 + 2).as("col"))
     checkAnalysis(plan, expected)
 
-    plan = testRelation
-      .groupBy(a.as("a1").as("a2"))((min(a).as("min_a") + 1).as("col"))
+    plan = testRelation.groupBy(a.as("a1").as("a2"))(
+      (min(a).as("min_a") + 1).as("col"))
     expected = testRelation.groupBy(a)((min(a) + 1).as("col"))
     checkAnalysis(plan, expected)
 
@@ -270,10 +257,8 @@ class AnalysisSuite extends AnalysisTest {
     val c = testRelation2.output(2)
 
     val plan = testRelation2.select('c).orderBy(Floor('a).asc)
-    val expected = testRelation2
-      .select(c, a)
-      .orderBy(Floor(a.cast(DoubleType)).asc)
-      .select(c)
+    val expected = testRelation2.select(c, a).orderBy(
+      Floor(a.cast(DoubleType)).asc).select(c)
 
     checkAnalysis(plan, expected)
   }

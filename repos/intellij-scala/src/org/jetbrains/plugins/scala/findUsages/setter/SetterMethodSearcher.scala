@@ -42,8 +42,8 @@ class SetterMethodSearcher
         processAssignments(fun, fun.name, project)
         processSimpleUsages(fun, fun.name, project)
       case refPattern: ScReferencePattern
-          if inReadAction(ScalaPsiUtil.nameContext(refPattern))
-            .isInstanceOf[ScVariable] =>
+          if inReadAction(ScalaPsiUtil.nameContext(refPattern)).isInstanceOf[
+            ScVariable] =>
         val name = refPattern.name
         processAssignments(refPattern, name, project)
         processSimpleUsages(refPattern, name + suffixScala, project)

@@ -503,15 +503,13 @@ trait ParIterableLike[
   }
 
   def min[U >: T](implicit ord: Ordering[U]): T = {
-    tasksupport
-      .executeAndWaitResult(new Min(ord, splitter) mapResult { _.get })
-      .asInstanceOf[T]
+    tasksupport.executeAndWaitResult(
+      new Min(ord, splitter) mapResult { _.get }).asInstanceOf[T]
   }
 
   def max[U >: T](implicit ord: Ordering[U]): T = {
-    tasksupport
-      .executeAndWaitResult(new Max(ord, splitter) mapResult { _.get })
-      .asInstanceOf[T]
+    tasksupport.executeAndWaitResult(
+      new Max(ord, splitter) mapResult { _.get }).asInstanceOf[T]
   }
 
   def maxBy[S](f: T => S)(implicit cmp: Ordering[S]): T = {
@@ -1665,10 +1663,8 @@ trait ParIterableLike[
             thiselem,
             thatelem,
             pbf,
-            immutable
-              .repetition(thiselem, diff)
-              .splitter
-              .asInstanceOf[IterableSplitter[T]],
+            immutable.repetition(thiselem, diff).splitter.asInstanceOf[
+              IterableSplitter[T]],
             opits(1))
         )
       }

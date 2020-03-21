@@ -364,8 +364,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
           case _: Double  => "scala.Double"
           case _: String  => "java.lang.String"
           case c: Class[_] =>
-            "java.lang.Class[" + c.getComponentType.getCanonicalName
-              .replace("$", ".") + "]"
+            "java.lang.Class[" + c.getComponentType.getCanonicalName.replace(
+              "$",
+              ".") + "]"
         })
       case TypeRefType(prefix, symbol, typeArgs) =>
         sep + (symbol.path match {
@@ -440,10 +441,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def typeArgString(typeArgs: Seq[Type]): String =
     if (typeArgs.isEmpty) ""
     else
-      typeArgs
-        .map(toString)
-        .map(StringUtil.trimStart(_, "=> "))
-        .mkString("[", ", ", "]")
+      typeArgs.map(toString).map(StringUtil.trimStart(_, "=> ")).mkString(
+        "[",
+        ", ",
+        "]")
 
   def typeParamString(params: Seq[Symbol]): String =
     if (params.isEmpty) ""

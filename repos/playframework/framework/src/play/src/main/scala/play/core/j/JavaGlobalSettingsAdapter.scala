@@ -28,30 +28,32 @@ class JavaGlobalSettingsAdapter(val underlying: play.GlobalSettings)
 
   override def onRouteRequest(request: RequestHeader): Option[Handler] = {
     val r = new play.mvc.Http.RequestImpl(request)
-    Option(underlying.onRouteRequest(r))
-      .map(Some(_))
-      .getOrElse(super.onRouteRequest(request))
+    Option(underlying.onRouteRequest(r)).map(Some(_)).getOrElse(
+      super.onRouteRequest(request))
   }
 
   override def onError(
       request: RequestHeader,
       ex: Throwable): Future[Result] = {
-    JavaHelpers
-      .invokeWithContextOpt(request, req => underlying.onError(req, ex))
+    JavaHelpers.invokeWithContextOpt(
+      request,
+      req => underlying.onError(req, ex))
       .getOrElse(super.onError(request, ex))
   }
 
   override def onHandlerNotFound(request: RequestHeader): Future[Result] = {
-    JavaHelpers
-      .invokeWithContextOpt(request, req => underlying.onHandlerNotFound(req))
+    JavaHelpers.invokeWithContextOpt(
+      request,
+      req => underlying.onHandlerNotFound(req))
       .getOrElse(super.onHandlerNotFound(request))
   }
 
   override def onBadRequest(
       request: RequestHeader,
       error: String): Future[Result] = {
-    JavaHelpers
-      .invokeWithContextOpt(request, req => underlying.onBadRequest(req, error))
+    JavaHelpers.invokeWithContextOpt(
+      request,
+      req => underlying.onBadRequest(req, error))
       .getOrElse(super.onBadRequest(request, error))
   }
 

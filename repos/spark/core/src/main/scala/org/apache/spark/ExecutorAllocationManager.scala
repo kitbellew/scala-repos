@@ -550,8 +550,8 @@ private[spark] class ExecutorAllocationManager(
   private def onExecutorIdle(executorId: String): Unit =
     synchronized {
       if (executorIds.contains(executorId)) {
-        if (!removeTimes.contains(executorId) && !executorsPendingToRemove
-              .contains(executorId)) {
+        if (!removeTimes.contains(
+              executorId) && !executorsPendingToRemove.contains(executorId)) {
           // Note that it is not necessary to query the executors since all the cached
           // blocks we are concerned with are reported to the driver. Note that this
           // does not include broadcast blocks.

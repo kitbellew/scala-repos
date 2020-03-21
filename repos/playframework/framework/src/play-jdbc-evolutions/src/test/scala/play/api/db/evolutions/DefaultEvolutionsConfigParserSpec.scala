@@ -22,22 +22,22 @@ object DefaultEvolutionsConfigParserSpec extends Specification {
     // This ensures that the config for default is detected, ensuring that a configuration based fallback is used
     val fooConfig = "play.evolutions.db.default.foo" -> "foo"
     read(
-      parse(s"play.evolutions.$key" -> true, fooConfig)
-        .forDatasource("default")) must_== true
+      parse(s"play.evolutions.$key" -> true, fooConfig).forDatasource(
+        "default")) must_== true
     read(
-      parse(s"play.evolutions.$key" -> false, fooConfig)
-        .forDatasource("default")) must_== false
+      parse(s"play.evolutions.$key" -> false, fooConfig).forDatasource(
+        "default")) must_== false
   }
 
   def testNString(key: String)(read: EvolutionsDatasourceConfig => String) = {
     // This ensures that the config for default is detected, ensuring that a configuration based fallback is used
     val fooConfig = "play.evolutions.db.default.foo" -> "foo"
     read(
-      parse(s"play.evolutions.$key" -> "", fooConfig)
-        .forDatasource("default")) must_== ""
+      parse(s"play.evolutions.$key" -> "", fooConfig).forDatasource(
+        "default")) must_== ""
     read(
-      parse(s"play.evolutions.$key" -> "something", fooConfig)
-        .forDatasource("default")) must_== "something"
+      parse(s"play.evolutions.$key" -> "something", fooConfig).forDatasource(
+        "default")) must_== "something"
   }
 
   val default = parse().forDatasource("default")

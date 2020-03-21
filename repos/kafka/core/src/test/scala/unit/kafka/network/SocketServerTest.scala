@@ -267,11 +267,9 @@ class SocketServerTest extends JUnitSuite {
         Array(TestUtils.trustAllCerts),
         new java.security.SecureRandom())
       val socketFactory = sslContext.getSocketFactory
-      val sslSocket = socketFactory
-        .createSocket(
-          "localhost",
-          overrideServer.boundPort(SecurityProtocol.SSL))
-        .asInstanceOf[SSLSocket]
+      val sslSocket = socketFactory.createSocket(
+        "localhost",
+        overrideServer.boundPort(SecurityProtocol.SSL)).asInstanceOf[SSLSocket]
       sslSocket.setNeedClientAuth(false)
 
       val apiKey = ApiKeys.PRODUCE.id

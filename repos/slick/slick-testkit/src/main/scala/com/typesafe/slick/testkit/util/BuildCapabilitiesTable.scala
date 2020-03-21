@@ -38,11 +38,8 @@ object BuildCapabilitiesTable extends App {
       )
 
   val profiles = profileNames.map { n =>
-    Class
-      .forName(n + "$")
-      .getField("MODULE$")
-      .get(null)
-      .asInstanceOf[BasicProfile]
+    Class.forName(n + "$").getField("MODULE$").get(null).asInstanceOf[
+      BasicProfile]
   }
 
   val profileCapabilities = Vector(
@@ -57,8 +54,9 @@ object BuildCapabilitiesTable extends App {
       if (c.toString.endsWith(".other")) "" else c.toString)
   } yield (
     cap,
-    linkBase + cap.toString
-      .replaceFirst(".*\\.", "") + ":slick.basic.Capability")
+    linkBase + cap.toString.replaceFirst(
+      ".*\\.",
+      "") + ":slick.basic.Capability")
 
   val out = new FileOutputStream(args(0))
   try {
@@ -68,10 +66,8 @@ object BuildCapabilitiesTable extends App {
       "Capability," + profileNames.map(n => s":api:`$n`").mkString(","))
     for ((cap, link) <- capabilities) {
       val flags = profiles.map(d => d.capabilities.contains(cap))
-      wr.println(
-        s":api:`$cap <$link>`," + flags
-          .map(b => if (b) "Yes" else "")
-          .mkString(","))
+      wr.println(s":api:`$cap <$link>`," + flags.map(b =>
+        if (b) "Yes" else "").mkString(","))
     }
     wr.flush()
   } finally out.close()

@@ -49,9 +49,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     in.toLowerCase + "_pw" :: in.toLowerCase + "_slt" :: Nil
 
   override lazy val dbSelectString =
-    dbColumnNames(name)
-      .map(cn => fieldOwner.getSingleton._dbTableNameLC + "." + cn)
-      .mkString(", ")
+    dbColumnNames(name).map(cn =>
+      fieldOwner.getSingleton._dbTableNameLC + "." + cn).mkString(", ")
 
   def asJsonValue: Box[JsonAST.JValue] = Full(JsonAST.JNull)
 
@@ -121,8 +120,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         invalidPw = false;
         val bcrypted = BCrypt.hashpw(
           value,
-          MappedPassword.bcryptStrength.map(BCrypt.gensalt(_)) openOr BCrypt
-            .gensalt())
+          MappedPassword.bcryptStrength.map(
+            BCrypt.gensalt(_)) openOr BCrypt.gensalt())
         password.set("b;" + bcrypted.substring(0, 44))
         salt_i.set(bcrypted.substring(44))
       case _ =>
@@ -178,8 +177,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
   def real_convertToJDBCFriendly(value: String): Object =
     BCrypt.hashpw(
       value,
-      MappedPassword.bcryptStrength.map(BCrypt.gensalt(_)) openOr BCrypt
-        .gensalt())
+      MappedPassword.bcryptStrength.map(
+        BCrypt.gensalt(_)) openOr BCrypt.gensalt())
 
   /**
     * Get the JDBC SQL Type for this field

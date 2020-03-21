@@ -72,23 +72,19 @@ object MLUtils {
       path: String,
       numFeatures: Int,
       minPartitions: Int): RDD[LabeledPoint] = {
-    val parsed = sc
-      .textFile(path, minPartitions)
+    val parsed = sc.textFile(path, minPartitions)
       .map(_.trim)
       .filter(line => !(line.isEmpty || line.startsWith("#")))
       .map { line =>
         val items = line.split(' ')
         val label = items.head.toDouble
-        val (indices, values) = items.tail
-          .filter(_.nonEmpty)
-          .map { item =>
-            val indexAndValue = item.split(':')
-            val index =
-              indexAndValue(0).toInt - 1 // Convert 1-based indices to 0-based.
-            val value = indexAndValue(1).toDouble
-            (index, value)
-          }
-          .unzip
+        val (indices, values) = items.tail.filter(_.nonEmpty).map { item =>
+          val indexAndValue = item.split(':')
+          val index =
+            indexAndValue(0).toInt - 1 // Convert 1-based indices to 0-based.
+          val value = indexAndValue(1).toDouble
+          (index, value)
+        }.unzip
 
         // check if indices are one-based and in ascending order
         var previous = -1
@@ -112,12 +108,10 @@ object MLUtils {
       numFeatures
     } else {
       parsed.persist(StorageLevel.MEMORY_ONLY)
-      parsed
-        .map {
-          case (label, indices, values) =>
-            indices.lastOption.getOrElse(0)
-        }
-        .reduce(math.max) + 1
+      parsed.map {
+        case (label, indices, values) =>
+          indices.lastOption.getOrElse(0)
+      }.reduce(math.max) + 1
     }
 
     parsed.map {

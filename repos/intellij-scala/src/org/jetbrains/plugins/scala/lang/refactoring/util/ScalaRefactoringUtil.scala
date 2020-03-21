@@ -96,15 +96,13 @@ object ScalaRefactoringUtil {
     var end = editor.getSelectionModel.getSelectionEnd
     if (start == end) return
     while (file.findElementAt(start).isInstanceOf[PsiWhiteSpace] ||
-           (file
-             .findElementAt(start)
-             .isInstanceOf[PsiComment] && trimComments) ||
+           (file.findElementAt(start).isInstanceOf[
+             PsiComment] && trimComments) ||
            file.getText.charAt(start) == '\n' ||
            file.getText.charAt(start) == ' ') start = start + 1
     while (file.findElementAt(end - 1).isInstanceOf[PsiWhiteSpace] ||
-           (file
-             .findElementAt(end - 1)
-             .isInstanceOf[PsiComment] && trimComments) ||
+           (file.findElementAt(end - 1).isInstanceOf[
+             PsiComment] && trimComments) ||
            file.getText.charAt(end - 1) == '\n' ||
            file.getText.charAt(end - 1) == ' ') end = end - 1
     editor.getSelectionModel.setSelection(start, end)
@@ -148,10 +146,8 @@ object ScalaRefactoringUtil {
     expr.expectedType().foreach(types += _)
     if (types.isEmpty) types += psi.types.Any
     val unit = psi.types.Unit
-    val sorted = types
-      .map(_.removeAbstracts)
-      .distinct
-      .sortWith((t1, t2) => t1.conforms(t2))
+    val sorted = types.map(_.removeAbstracts).distinct.sortWith((t1, t2) =>
+      t1.conforms(t2))
     val result = if (sorted.contains(unit)) (sorted - unit) :+ unit else sorted
     result.toArray
   }
@@ -189,9 +185,8 @@ object ScalaRefactoringUtil {
       endOffset,
       classOf[ScTypeElement])
 
-    Option(element)
-      .filter(_.getTextRange.getEndOffset == endOffset)
-      .flatMap(checkTypeElement)
+    Option(element).filter(_.getTextRange.getEndOffset == endOffset).flatMap(
+      checkTypeElement)
   }
 
   def getOwner(typeElement: PsiElement) =
@@ -328,9 +323,10 @@ object ScalaRefactoringUtil {
       val quote = if (lit.isMultiLineString) "\"\"\"" else "\""
 
       val text = s"$prefix$quote$rangeText$quote"
-      val expr = ScalaPsiElementFactory
-        .createExpressionWithContextFromText(text, lit.getContext, lit)
-        .asInstanceOf[ScLiteral]
+      val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(
+        text,
+        lit.getContext,
+        lit).asInstanceOf[ScLiteral]
       val tpe = expr.getNonValueType().getOrAny
       Some(expr, Array(tpe))
     }
@@ -706,29 +702,22 @@ object ScalaRefactoringUtil {
       }
     })
 
-    JBPopupFactory.getInstance
-      .createListPopupBuilder(list)
-      .setTitle(title)
-      .setMovable(false)
-      .setResizable(false)
-      .setRequestFocus(true)
-      .setItemChoosenCallback(new Runnable {
-        def run() {
-          pass(list.getSelectedValue.asInstanceOf[T])
-        }
-      })
-      .addListener(new JBPopupAdapter {
-        override def beforeShown(event: LightweightWindowEvent): Unit = {
-          selection.addHighlighter()
-        }
+    JBPopupFactory.getInstance.createListPopupBuilder(list).setTitle(
+      title).setMovable(false).setResizable(false).setRequestFocus(
+      true).setItemChoosenCallback(new Runnable {
+      def run() {
+        pass(list.getSelectedValue.asInstanceOf[T])
+      }
+    }).addListener(new JBPopupAdapter {
+      override def beforeShown(event: LightweightWindowEvent): Unit = {
+        selection.addHighlighter()
+      }
 
-        override def onClosed(event: LightweightWindowEvent) {
-          highlighter.dropHighlight()
-          selection.removeHighlighter()
-        }
-      })
-      .createPopup
-      .showInBestPositionFor(editor)
+      override def onClosed(event: LightweightWindowEvent) {
+        highlighter.dropHighlight()
+        selection.removeHighlighter()
+      }
+    }).createPopup.showInBestPositionFor(editor)
   }
 
   def getShortText(expr: ScalaPsiElement): String = {
@@ -946,8 +935,8 @@ object ScalaRefactoringUtil {
         while (parent != null) {
           parent match {
             case simpleType: ScSimpleTypeElement
-                if simpleType.getNextSiblingNotWhitespace
-                  .isInstanceOf[ScTypeArgs] =>
+                if simpleType.getNextSiblingNotWhitespace.isInstanceOf[
+                  ScTypeArgs] =>
             case typeInParenthesis: ScParenthesisedTypeElement =>
               val inType = typeInParenthesis.typeElement
               if (inType.isDefined && !res.contains(
@@ -1034,10 +1023,10 @@ object ScalaRefactoringUtil {
   def enclosingContainer(parent: PsiElement): PsiElement = {
     Option(parent)
       .map(elem =>
-        elem.firstChild
-          .getOrElse(elem)) //to make enclosing container non-strict
-      .flatMap(_.scopes.toStream.headOption)
-      .orNull
+        elem.firstChild.getOrElse(
+          elem
+        )) //to make enclosing container non-strict
+      .flatMap(_.scopes.toStream.headOption).orNull
   }
 
   def commonParent(file: PsiFile, textRanges: TextRange*): PsiElement = {
@@ -1175,10 +1164,8 @@ object ScalaRefactoringUtil {
           if !ScalaPsiUtil.needParentheses(pars, inner) =>
         val textRange = pars.getTextRange
         val afterWord = textRange.getStartOffset > 0 && {
-          val prevElemType = file
-            .findElementAt(textRange.getStartOffset - 1)
-            .getNode
-            .getElementType
+          val prevElemType = file.findElementAt(
+            textRange.getStartOffset - 1).getNode.getElementType
           ScalaTokenTypes.IDENTIFIER_TOKEN_SET.contains(
             prevElemType) || ScalaTokenTypes.KEYWORDS.contains(prevElemType)
         }
@@ -1214,8 +1201,9 @@ object ScalaRefactoringUtil {
         val replaceAsInjection = Seq("s", "raw").contains(prefix)
 
         if (replaceAsInjection) {
-          val withNextChar = file.getText
-            .substring(newRange.getStartOffset, newRange.getEndOffset + 1)
+          val withNextChar = file.getText.substring(
+            newRange.getStartOffset,
+            newRange.getEndOffset + 1)
           val needBraces = ScalaNamesUtil.isIdentifier(
             withNextChar) && withNextChar.last != '$'
           val text = if (needBraces) s"$${$newString}" else s"$$$newString"
@@ -1258,8 +1246,7 @@ object ScalaRefactoringUtil {
       newStart,
       classOf[ScPattern],
       true)
-    Option(newExpr)
-      .orElse(Option(newPattern))
+    Option(newExpr).orElse(Option(newPattern))
       .map(elem => document.createRangeMarker(elem.getTextRange))
       .getOrElse(throw new IntroduceException)
   }
@@ -1301,8 +1288,10 @@ object ScalaRefactoringUtil {
       result || needBraces(parExpr, nextParent)
     }
     val interpolated = Option(
-      PsiTreeUtil
-        .getParentOfType(elem, classOf[ScInterpolatedStringLiteral], false))
+      PsiTreeUtil.getParentOfType(
+        elem,
+        classOf[ScInterpolatedStringLiteral],
+        false))
     val expr = interpolated getOrElse PsiTreeUtil.getParentOfType(
       elem,
       classOf[ScExpression],
@@ -1372,8 +1361,9 @@ object ScalaRefactoringUtil {
           case ScPostfixExpr(_, `ref`)  =>
           case ScPrefixExpr(`ref`, _)   =>
           case _ =>
-            val newRef = ScalaPsiElementFactory
-              .createExpressionFromText(ref.getText, position)
+            val newRef = ScalaPsiElementFactory.createExpressionFromText(
+              ref.getText,
+              position)
               .asInstanceOf[ScReferenceExpression]
             result &= ref.resolve() == newRef.resolve()
         }
@@ -1457,9 +1447,8 @@ object ScalaRefactoringUtil {
     def errors(elem: PsiElement): Option[String] =
       elem match {
         case funDef: ScFunctionDefinition if hasOutsideUsages(funDef) =>
-          ScalaBundle
-            .message("cannot.extract.used.function.definition")
-            .toOption
+          ScalaBundle.message(
+            "cannot.extract.used.function.definition").toOption
         case _: ScBlockStatement                                        => None
         case comm: PsiComment if !comm.getParent.isInstanceOf[ScMember] => None
         case _: PsiWhiteSpace                                           => None

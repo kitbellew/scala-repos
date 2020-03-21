@@ -55,10 +55,8 @@ private[serverset2] object Stabilizer {
     () => 10.seconds,
     FinagleStatsReceiver.scope("zk2").scope("timer"))
 
-  private val notifyMs = FinagleStatsReceiver
-    .scope("serverset2")
-    .scope("stabilizer")
-    .stat("notify_ms")
+  private val notifyMs = FinagleStatsReceiver.scope("serverset2").scope(
+    "stabilizer").stat("notify_ms")
 
   // Create an event of epochs for the given duration.
   def epochs(period: Duration): Epoch =
@@ -190,39 +188,37 @@ private[serverset2] object Stabilizer {
       // Trigger at most one change to state per batchEpoch
       val init = States(Some(Addr.Pending), Addr.Pending, None, Time.Zero)
       val batchedUpdates =
-        (addrs select batchEpoch.event)
-          .foldLeft(init) {
-            case (st, ev) =>
-              val now = Time.now
-              ev match {
-                case Left(newAddr) =>
-                  // There's a change to the serverset but it's not different. Noop
-                  if (newAddr == st.last)
-                    st.copy(publish = None)
-                  // There's a change to the serverset, but we have published in < batchEpoch. Hold change.
-                  else if (now - st.lastEmit < batchEpoch.period)
-                    st.copy(publish = None, next = Some(newAddr))
-                  // There's a change to the serverset and we haven't published in >= batchEpoch. Publish.
-                  else
-                    States(Some(newAddr), newAddr, None, now)
+        (addrs select batchEpoch.event).foldLeft(init) {
+          case (st, ev) =>
+            val now = Time.now
+            ev match {
+              case Left(newAddr) =>
+                // There's a change to the serverset but it's not different. Noop
+                if (newAddr == st.last)
+                  st.copy(publish = None)
+                // There's a change to the serverset, but we have published in < batchEpoch. Hold change.
+                else if (now - st.lastEmit < batchEpoch.period)
+                  st.copy(publish = None, next = Some(newAddr))
+                // There's a change to the serverset and we haven't published in >= batchEpoch. Publish.
+                else
+                  States(Some(newAddr), newAddr, None, now)
 
-                case Right(_) =>
-                  st.next match {
-                    // Epoch turned, but we have published in < batchEpoch. Noop
-                    case _ if now - st.lastEmit < batchEpoch.period =>
-                      st.copy(publish = None)
-                    // Epoch turned but there is no next state. Noop
-                    case None =>
-                      st.copy(publish = None)
-                    // Epoch turned, there's a next state, and we haven't published in >= batchEpoch. Publish.
-                    case Some(next) =>
-                      States(Some(next), next, None, now)
-                  }
-              }
-          }
-          .collect {
-            case States(Some(publish), _, _, _) => publish
-          }
+              case Right(_) =>
+                st.next match {
+                  // Epoch turned, but we have published in < batchEpoch. Noop
+                  case _ if now - st.lastEmit < batchEpoch.period =>
+                    st.copy(publish = None)
+                  // Epoch turned but there is no next state. Noop
+                  case None =>
+                    st.copy(publish = None)
+                  // Epoch turned, there's a next state, and we haven't published in >= batchEpoch. Publish.
+                  case Some(next) =>
+                    States(Some(next), next, None, now)
+                }
+            }
+        }.collect {
+          case States(Some(publish), _, _, _) => publish
+        }
 
       batchedUpdates.register(Witness(u))
     }

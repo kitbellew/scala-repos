@@ -76,7 +76,8 @@ class MapOutputTrackerSuite extends SparkFunSuite {
           (
             BlockManagerId("b", "hostB", 1000),
             ArrayBuffer((ShuffleBlockId(10, 1, 0), size10000)))
-        ).toSet)
+        )
+          .toSet)
     tracker.stop()
     rpcEnv.shutdown()
   }

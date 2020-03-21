@@ -387,11 +387,8 @@ private[scala] trait JavaMirrors
       Object_hashCode,
       Object_toString,
       Object_notify,
-      Object_notifyAll) ++ ObjectClass.info
-      .member(nme.wait_)
-      .asTerm
-      .alternatives
-      .map(_.asMethod)
+      Object_notifyAll) ++ ObjectClass.info.member(
+      nme.wait_).asTerm.alternatives.map(_.asMethod)
     private def isBytecodelessMethod(meth: MethodSymbol): Boolean = {
       if (isGetClass(meth) || isStringConcat(
             meth) || meth.owner.isPrimitiveValueClass || meth == runDefinitions.Predef_classOf || meth.isMacro)
@@ -671,8 +668,8 @@ private[scala] trait JavaMirrors
           abort(msg + ", it cannot be invoked with mirrors")
 
         def invokePrimitiveMethod = {
-          val jmeths = classOf[BoxesRunTime].getDeclaredMethods
-            .filter(_.getName == nme.primitiveMethodName(symbol.name).toString)
+          val jmeths = classOf[BoxesRunTime].getDeclaredMethods.filter(
+            _.getName == nme.primitiveMethodName(symbol.name).toString)
           assert(jmeths.length == 1, jmeths.toList)
           val jmeth = jmeths.head
           val result = jmeth.invoke(
@@ -829,10 +826,10 @@ private[scala] trait JavaMirrors
           val result = anns find (_.annotationType == annotClass)
           if (result.isEmpty && (anns exists (_.annotationType.getName == name)))
             throw new ClassNotFoundException(
-              sm"""Mirror classloader mismatch: $jclazz (loaded by ${ReflectionUtils
-                .show(jclazz.getClassLoader)})
-                  |is unrelated to the mirror's classloader: (${ReflectionUtils
-                .show(classLoader)})""")
+              sm"""Mirror classloader mismatch: $jclazz (loaded by ${ReflectionUtils.show(
+                jclazz.getClassLoader)})
+                  |is unrelated to the mirror's classloader: (${ReflectionUtils.show(
+                classLoader)})""")
           result
         }
       def loadBytes[T: ClassTag](name: String): Option[T] =
@@ -886,8 +883,7 @@ private[scala] trait JavaMirrors
       */
     private def createTypeParameter(
         jtvar: jTypeVariable[_ <: GenericDeclaration]): TypeSymbol = {
-      val tparam = sOwner(jtvar)
-        .newTypeParameter(newTypeName(jtvar.getName))
+      val tparam = sOwner(jtvar).newTypeParameter(newTypeName(jtvar.getName))
         .setInfo(new TypeParamCompleter(jtvar))
       markFlagsCompleted(tparam)(mask = AllFlags)
       tparamCache enter (jtvar, tparam)
@@ -1187,7 +1183,8 @@ private[scala] trait JavaMirrors
       val owner = followStatic(preOwner, jmeth.javaFlags)
       (lookup(owner, jmeth.getName) suchThat (erasesTo(
         _,
-        jmeth)) orElse jmethodAsScala(jmeth)).asMethod
+        jmeth)) orElse jmethodAsScala(jmeth))
+        .asMethod
     }
 
     /**
@@ -1203,7 +1200,8 @@ private[scala] trait JavaMirrors
         followStatic(classToScala(jconstr.getDeclaringClass), jconstr.javaFlags)
       (lookup(owner, jconstr.getName) suchThat (erasesTo(
         _,
-        jconstr)) orElse jconstrAsScala(jconstr)).asMethod
+        jconstr)) orElse jconstrAsScala(jconstr))
+        .asMethod
     }
 
     /**
@@ -1369,8 +1367,8 @@ private[scala] trait JavaMirrors
       def targToScala(arg: jType): Type =
         arg match {
           case jwild: WildcardType =>
-            val tparam = owner
-              .newExistential(newTypeName("T$" + tparams.length))
+            val tparam = owner.newExistential(
+              newTypeName("T$" + tparams.length))
               .setInfo(TypeBounds(
                 lub(jwild.getLowerBounds.toList map typeToScala),
                 glb(jwild.getUpperBounds.toList map typeToScala map objToAny)))
@@ -1569,9 +1567,8 @@ private[scala] trait JavaMirrors
 
           // println(s"ownerChildren = ${ownerChildren.toList}")
           // println(s"fullNameOfJavaClass = $fullNameOfJavaClass")
-          ownerChildren
-            .find(_.getName == fullNameOfJavaClass)
-            .getOrElse(noClass)
+          ownerChildren.find(_.getName == fullNameOfJavaClass).getOrElse(
+            noClass)
         } else
           noClass
       }

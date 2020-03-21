@@ -102,8 +102,8 @@ final class SbtHandler(
   // if the argument contains spaces, enclose it in quotes, quoting backslashes and quotes
   def escape(argument: String) =
     if (argument.contains(" "))
-      "\"" + argument
-        .replaceAll(q("""\"""), """\\""")
-        .replaceAll(q("\""), "\\\"") + "\""
+      "\"" + argument.replaceAll(q("""\"""), """\\""").replaceAll(
+        q("\""),
+        "\\\"") + "\""
     else argument
 }

@@ -71,13 +71,10 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
       data: RDD[Double],
       cdf: Double => Double): KolmogorovSmirnovTestResult = {
     val n = data.count().toDouble
-    val localData = data
-      .sortBy(x => x)
-      .mapPartitions { part =>
-        val partDiffs = oneSampleDifferences(part, n, cdf) // local distances
-        searchOneSampleCandidates(partDiffs) // candidates: local extrema
-      }
-      .collect()
+    val localData = data.sortBy(x => x).mapPartitions { part =>
+      val partDiffs = oneSampleDifferences(part, n, cdf) // local distances
+      searchOneSampleCandidates(partDiffs) // candidates: local extrema
+    }.collect()
     val ksStat =
       searchOneSampleStatistic(localData, n) // result: global extreme
     evalOneSampleP(ksStat, n.toLong)

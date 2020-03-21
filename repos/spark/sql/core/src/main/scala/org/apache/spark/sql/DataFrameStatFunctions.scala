@@ -67,10 +67,11 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
       col: String,
       probabilities: Array[Double],
       relativeError: Double): Array[Double] = {
-    StatFunctions
-      .multipleApproxQuantiles(df, Seq(col), probabilities, relativeError)
-      .head
-      .toArray
+    StatFunctions.multipleApproxQuantiles(
+      df,
+      Seq(col),
+      probabilities,
+      relativeError).head.toArray
   }
 
   /**

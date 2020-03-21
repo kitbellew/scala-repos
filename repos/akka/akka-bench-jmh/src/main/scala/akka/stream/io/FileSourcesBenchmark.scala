@@ -33,8 +33,7 @@ class FileSourcesBenchmark {
     val f = File.createTempFile(getClass.getName, ".bench.tmp")
     f.deleteOnExit()
 
-    val ft = Source
-      .fromIterator(() ⇒ Iterator.continually(line))
+    val ft = Source.fromIterator(() ⇒ Iterator.continually(line))
       .take(10 * 39062) // adjust as needed
       .runWith(FileIO.toFile(f))
     Await.result(ft, 30.seconds)
@@ -54,9 +53,8 @@ class FileSourcesBenchmark {
     fileChannelSource = FileIO.fromFile(file, bufSize)
     fileInputStreamSource =
       StreamConverters.fromInputStream(() ⇒ new FileInputStream(file), bufSize)
-    ioSourceLinesIterator = Source
-      .fromIterator(() ⇒ scala.io.Source.fromFile(file).getLines())
-      .map(ByteString(_))
+    ioSourceLinesIterator = Source.fromIterator(() ⇒
+      scala.io.Source.fromFile(file).getLines()).map(ByteString(_))
   }
 
   @TearDown
@@ -78,10 +76,8 @@ class FileSourcesBenchmark {
 
   @Benchmark
   def fileChannel_noReadAhead(): Unit = {
-    val h = fileChannelSource
-      .withAttributes(Attributes.inputBuffer(1, 1))
-      .to(Sink.ignore)
-      .run()
+    val h = fileChannelSource.withAttributes(Attributes.inputBuffer(1, 1)).to(
+      Sink.ignore).run()
 
     Await.result(h, 30.seconds)
   }

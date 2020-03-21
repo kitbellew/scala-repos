@@ -27,15 +27,13 @@ object SbtWatcherMain {
     val messageConsumer = new MessageConsumer {
       override def consume(message: String) {
         out.write(
-          Base64Converter
-            .encode(
-              MessageEvent(
-                BuildMessage.Kind.INFO,
-                message,
-                None,
-                None,
-                None).toBytes)
-            .getBytes)
+          Base64Converter.encode(
+            MessageEvent(
+              BuildMessage.Kind.INFO,
+              message,
+              None,
+              None,
+              None).toBytes).getBytes)
       }
     }
 

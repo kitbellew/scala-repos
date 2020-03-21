@@ -203,9 +203,9 @@ private[json] object Meta {
               mkConstructor(t)
           case aType: GenericArrayType =>
             // Couldn't find better way to reconstruct proper array type:
-            val raw = java.lang.reflect.Array
-              .newInstance(rawClassOf(aType.getGenericComponentType), 0: Int)
-              .getClass
+            val raw = java.lang.reflect.Array.newInstance(
+              rawClassOf(aType.getGenericComponentType),
+              0: Int).getClass
             (
               Col(
                 TypeInfo(raw, None),
@@ -328,9 +328,8 @@ private[json] object Meta {
         names: ParameterNameReader,
         context: Option[Context])
         : List[(JConstructor[_], List[(String, Type)])] =
-      rawClassOf(t).getDeclaredConstructors
-        .map(c => (c, constructorArgs(t, c, names, context)))
-        .toList
+      rawClassOf(t).getDeclaredConstructors.map(c =>
+        (c, constructorArgs(t, c, names, context))).toList
 
     def constructorArgs(
         t: Type,
@@ -349,14 +348,12 @@ private[json] object Meta {
             case (v: TypeVariable[_], idx) =>
               val arg = typeArgs.getOrElse(v, v)
               if (arg == classOf[java.lang.Object])
-                context
-                  .map(ctx =>
-                    ScalaSigReader.readConstructor(
-                      ctx.argName,
-                      ctx.containingClass,
-                      idx,
-                      ctx.allArgs.map(_._1)))
-                  .getOrElse(arg)
+                context.map(ctx =>
+                  ScalaSigReader.readConstructor(
+                    ctx.argName,
+                    ctx.containingClass,
+                    idx,
+                    ctx.allArgs.map(_._1))).getOrElse(arg)
               else arg
             case (x, _) => x
           }
@@ -370,11 +367,10 @@ private[json] object Meta {
         case c: Class[_] => argsInfo(constructor, Map())
         case p: ParameterizedType =>
           val vars =
-            Map() ++ rawClassOf(p).getTypeParameters.toList
-              .map(_.asInstanceOf[TypeVariable[_]])
-              .zip(
-                p.getActualTypeArguments.toList
-              ) // FIXME this cast should not be needed
+            Map() ++ rawClassOf(p).getTypeParameters.toList.map(
+              _.asInstanceOf[TypeVariable[_]]).zip(
+              p.getActualTypeArguments.toList
+            ) // FIXME this cast should not be needed
           argsInfo(constructor, vars)
         case x => fail("Do not know how query constructor info for " + x)
       }
@@ -455,8 +451,8 @@ private[json] object Meta {
       }
 
     def array_?(x: Any) =
-      x != null && classOf[scala.Array[_]]
-        .isAssignableFrom(x.asInstanceOf[AnyRef].getClass)
+      x != null && classOf[scala.Array[_]].isAssignableFrom(
+        x.asInstanceOf[AnyRef].getClass)
 
     def fields(clazz: Class[_]): List[(String, TypeInfo)] = {
       val fs = clazz.getDeclaredFields.toList

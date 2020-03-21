@@ -50,8 +50,10 @@ private[nio] object GenDataViewBuffer {
       byteOffset: Int,
       byteLength: Int): DataView = {
     if (byteLength == 0)
-      lit(buffer = buffer, byteOffset = byteOffset, byteLength = byteLength)
-        .asInstanceOf[DataView]
+      lit(
+        buffer = buffer,
+        byteOffset = byteOffset,
+        byteLength = byteLength).asInstanceOf[DataView]
     else
       new DataView(buffer, byteOffset, byteLength)
   }

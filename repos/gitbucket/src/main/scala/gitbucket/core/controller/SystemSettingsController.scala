@@ -277,14 +277,11 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     createGroup(form.groupName, form.url)
     updateGroupMembers(
       form.groupName,
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList)
+      }.toList)
     updateImage(form.groupName, form.fileId, false)
     redirect("/admin/users")
   })
@@ -300,14 +297,11 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   post("/admin/users/:groupName/_editgroup", editGroupForm)(adminOnly { form =>
     defining(
       params("groupName"),
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList) {
+      }.toList) {
       case (groupName, members) =>
         getAccountByUserName(groupName, true).map {
           account =>

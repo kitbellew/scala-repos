@@ -81,8 +81,7 @@ trait Constraints {
       if (e == null) Invalid(ValidationError("error.email"))
       else if (e.trim.isEmpty) Invalid(ValidationError("error.email"))
       else
-        emailRegex
-          .findFirstMatchIn(e)
+        emailRegex.findFirstMatchIn(e)
           .map(_ => Valid)
           .getOrElse(Invalid(ValidationError("error.email")))
     }
@@ -177,10 +176,8 @@ trait Constraints {
 
       if (o == null) Invalid(ValidationError(error, regex))
       else
-        regex
-          .unapplySeq(o)
-          .map(_ => Valid)
-          .getOrElse(Invalid(ValidationError(error, regex)))
+        regex.unapplySeq(o).map(_ => Valid).getOrElse(
+          Invalid(ValidationError(error, regex)))
     }
 
 }

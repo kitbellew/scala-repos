@@ -46,8 +46,8 @@ with AbstractTestConfigurationProducer {
     val element = location.getPsiElement
     if (element == null) return None
 
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] || element.isInstanceOf[
+          PsiDirectory]) {
       val name = element match {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
@@ -59,8 +59,9 @@ with AbstractTestConfigurationProducer {
             element,
             location,
             confFactory,
-            ScalaBundle
-              .message("test.in.scope.specs2.presentable.text", name))))
+            ScalaBundle.message(
+              "test.in.scope.specs2.presentable.text",
+              name))))
     }
 
     val parent: ScTypeDefinition =
@@ -68,9 +69,8 @@ with AbstractTestConfigurationProducer {
 
     if (parent == null) return None
 
-    val settings = RunManager
-      .getInstance(location.getProject)
-      .createRunConfiguration(parent.name, confFactory)
+    val settings = RunManager.getInstance(
+      location.getProject).createRunConfiguration(parent.name, confFactory)
     val runConfiguration =
       settings.getConfiguration.asInstanceOf[Specs2RunConfiguration]
     val (testClass, testName) = getLocationClassAndTest(location)
@@ -99,8 +99,9 @@ with AbstractTestConfigurationProducer {
     } catch {
       case e: Exception =>
     }
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(runConfiguration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      runConfiguration,
+      location)
     Some((testClass, settings))
   }
 
@@ -109,8 +110,8 @@ with AbstractTestConfigurationProducer {
       location: Location[_ <: PsiElement]): Boolean = {
     val element = location.getPsiElement
     if (element == null) return false
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] || element.isInstanceOf[
+          PsiDirectory]) {
       if (!configuration.isInstanceOf[Specs2RunConfiguration]) return false
       return TestConfigurationUtil.isPackageConfiguration(
         element,
@@ -119,15 +120,11 @@ with AbstractTestConfigurationProducer {
     val parent: ScTypeDefinition =
       PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
     if (parent == null) return false
-    val suiteClasses = suitePaths
-      .map(suite =>
-        ScalaPsiManager
-          .instance(parent.getProject)
-          .getCachedClass(
-            suite,
-            element.getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE))
-      .filter(_ != null)
+    val suiteClasses = suitePaths.map(suite =>
+      ScalaPsiManager.instance(parent.getProject).getCachedClass(
+        suite,
+        element.getResolveScope,
+        ScalaPsiManager.ClassCategory.TYPE)).filter(_ != null)
     if (suiteClasses.isEmpty) return false
     val suiteClazz = suiteClasses.head
 
@@ -152,11 +149,9 @@ with AbstractTestConfigurationProducer {
 
   private def extractStaticTestName(
       testDefExpr: ScInfixExpr): Option[String] = {
-    testDefExpr.getChildren
-      .filter(_.isInstanceOf[ScExpression])
-      .map(_.asInstanceOf[ScExpression])
-      .headOption
-      .flatMap(TestConfigurationUtil.getStaticTestName(_))
+    testDefExpr.getChildren.filter(_.isInstanceOf[ScExpression]).map(
+      _.asInstanceOf[ScExpression]).headOption.flatMap(
+      TestConfigurationUtil.getStaticTestName(_))
   }
 
   def getLocationClassAndTest(
@@ -167,13 +162,11 @@ with AbstractTestConfigurationProducer {
     if (testClassDef == null) return (null, null)
 
     val psiManager = ScalaPsiManager.instance(testClassDef.getProject)
-    val suiteClasses = suitePaths
-      .map(suite =>
-        psiManager.getCachedClass(
-          suite,
-          element.getResolveScope,
-          ScalaPsiManager.ClassCategory.TYPE))
-      .filter(_ != null)
+    val suiteClasses = suitePaths.map(suite =>
+      psiManager.getCachedClass(
+        suite,
+        element.getResolveScope,
+        ScalaPsiManager.ClassCategory.TYPE)).filter(_ != null)
     if (suiteClasses.isEmpty) return (null, null)
     val suiteClazz = suiteClasses.head
     if (!ScalaPsiUtil.cachedDeepIsInheritor(testClassDef, suiteClazz))

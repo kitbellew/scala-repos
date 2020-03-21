@@ -101,8 +101,9 @@ class ScalaCollectionRendererTest
       name: String) = {
     try {
       val frameProxy = evaluationContext.getFrameProxy
-      val local = frameTree.getNodeFactory
-        .getLocalVariableDescriptor(null, frameProxy visibleVariableByName name)
+      val local = frameTree.getNodeFactory.getLocalVariableDescriptor(
+        null,
+        frameProxy visibleVariableByName name)
       local setContext evaluationContext
       local
     } catch {
@@ -122,8 +123,8 @@ class ScalaCollectionRendererTest
         NodeRendererSettings.getInstance().getClassRenderer
       val typeName = classRenderer.renderTypeName(collectionClass)
       val expectedLabel =
-        s"$collectionName = {$typeName@$UNIQUE_ID}${ScalaCollectionRenderer
-          .transformName(collectionClass)} size = $collectionLength"
+        s"$collectionName = {$typeName@$UNIQUE_ID}${ScalaCollectionRenderer.transformName(
+          collectionClass)} size = $collectionLength"
 
       assertEquals(expectedLabel, label)
       val intType = classRenderer.renderTypeName("java.lang.Integer")

@@ -67,9 +67,8 @@ object KMeans {
 
     // Do a cross product to produce all point, cluster pairs
     // in scalding, the smaller pipe should go on the right.
-    val next = points
-      .leftCross(clusters)
-      // now compute the closest cluster for each vector
+    val next = points.leftCross(clusters)
+    // now compute the closest cluster for each vector
       .map {
         case ((oldId, vector), Some(centroids)) =>
           val (id, newcentroid) = closest(vector, centroids)
@@ -84,8 +83,9 @@ object KMeans {
     next.map { pipe =>
       (
         ComputedValue(
-          pipe.group
-          // There is no need to use more than k reducers
+          pipe
+            .group
+            // There is no need to use more than k reducers
             .withReducers(k)
             .mapValueStream { vectors => Iterator(centroidOf(vectors)) }
             // Now collect them all into one big
@@ -101,12 +101,14 @@ object KMeans {
       : (ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector]) = {
     val rng = new java.util.Random(123)
     // take a random k vectors:
-    val clusters = points
-      .map { v => (rng.nextDouble, v) }
+    val clusters = points.map { v => (rng.nextDouble, v) }
       .groupAll
       .sortedTake(k)(Ordering.by(_._1))
       .mapValues { randk =>
-        randk.iterator.zipWithIndex.map { case ((_, v), id) => (id, v) }.toList
+        randk.iterator
+          .zipWithIndex
+          .map { case ((_, v), id) => (id, v) }
+          .toList
       }
       .values
 
@@ -134,7 +136,8 @@ object KMeans {
         p: TypedPipe[LabeledVector],
         step: Int): Execution[
       (Int, ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector])] =
-      kmeansStep(k, s, c, p).getAndResetCounters
+      kmeansStep(k, s, c, p)
+        .getAndResetCounters
         .flatMap {
           case ((nextC, nextP), counters) =>
             val changed = counters(key)

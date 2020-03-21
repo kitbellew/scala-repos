@@ -83,11 +83,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
     if (expr == null || !expr.isValid) return
 
-    var start = expr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
-      .getStartOffset - 1
+    var start = expr.getInvokedExpr.asInstanceOf[
+      ScReferenceExpression].nameId.getTextRange.getStartOffset - 1
     val buf = new StringBuilder
     var qualifier =
       expr.getInvokedExpr.asInstanceOf[ScReferenceExpression].qualifier.get
@@ -108,16 +105,19 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
             val clazz: Option[ScTemplateDefinition] = expr.getParent match {
               case _ if expr.isInstanceOf[ScClassParameter] =>
                 Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                  PsiTreeUtil.getParentOfType(
+                    expr,
+                    classOf[ScTemplateDefinition]))
               case _: ScEarlyDefinitions =>
                 Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                  PsiTreeUtil.getParentOfType(
+                    expr,
+                    classOf[ScTemplateDefinition]))
               case _: ScTemplateBody =>
                 Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                  PsiTreeUtil.getParentOfType(
+                    expr,
+                    classOf[ScTemplateDefinition]))
               case _ => None
             }
 
@@ -152,8 +152,9 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
 
             if (flag) {
               showErrorHint(
-                InspectionBundle
-                  .message("remove.apply.overloaded", namedElement.name))
+                InspectionBundle.message(
+                  "remove.apply.overloaded",
+                  namedElement.name))
               return
             }
           case _ =>

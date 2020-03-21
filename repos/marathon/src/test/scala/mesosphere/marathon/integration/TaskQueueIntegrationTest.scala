@@ -26,12 +26,8 @@ class TaskQueueIntegrationTest
 
   test("GET /v2/queue with pending app") {
     Given("a new app with constraints that cannot be fulfilled")
-    val c = Protos.Constraint
-      .newBuilder()
-      .setField("nonExistent")
-      .setOperator(Operator.CLUSTER)
-      .setValue("na")
-      .build()
+    val c = Protos.Constraint.newBuilder().setField("nonExistent").setOperator(
+      Operator.CLUSTER).setValue("na").build()
     val appId = testBasePath / "app"
     val app = AppDefinition(
       appId,

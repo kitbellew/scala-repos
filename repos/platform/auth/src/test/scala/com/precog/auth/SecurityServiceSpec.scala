@@ -91,9 +91,8 @@ class SecurityServiceSpec
     with Tags {
   import Permission._
 
-  val authService: HttpClient[JValue] = client
-    .contentType[JValue](application / (MimeTypes.json))
-    .path("/security/v1/")
+  val authService: HttpClient[JValue] = client.contentType[JValue](
+    application / (MimeTypes.json)).path("/security/v1/")
   val apiKeyManager =
     new InMemoryAPIKeyManager[Future](blueeyes.util.Clock.System)
 
@@ -110,9 +109,9 @@ class SecurityServiceSpec
     createAPIKeyRaw(authAPIKey, request.serialize)
 
   def createAPIKeyRaw(authAPIKey: String, request: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
-      .post("/apikeys/")(request)(identity[JValue], tc)
+    authService.query("apiKey", authAPIKey).post("/apikeys/")(request)(
+      identity[JValue],
+      tc)
 
   def getAPIKeyDetails(queryKey: String) =
     authService.get("/apikeys/" + queryKey)
@@ -133,17 +132,16 @@ class SecurityServiceSpec
       authAPIKey: String,
       updateKey: String,
       grantId: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
-      .post("/apikeys/" + updateKey + "/grants/")(grantId)(identity[JValue], tc)
+    authService.query("apiKey", authAPIKey).post(
+      "/apikeys/" + updateKey + "/grants/")(grantId)(identity[JValue], tc)
 
   def createAPIKeyGrant(authAPIKey: String, request: v1.NewGrantRequest) =
     createAPIKeyGrantRaw(authAPIKey, request.serialize)
 
   def createAPIKeyGrantRaw(authAPIKey: String, request: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
-      .post("/grants/")(request)(identity[JValue], tc)
+    authService.query("apiKey", authAPIKey).post("/grants/")(request)(
+      identity[JValue],
+      tc)
 
   def removeAPIKeyGrant(
       authAPIKey: String,
@@ -155,9 +153,8 @@ class SecurityServiceSpec
     authService.query("apiKey", authAPIKey).get("/grants/" + grantId)
 
   def getGrantChildren(authAPIKey: String, grantId: String) =
-    authService
-      .query("apiKey", authAPIKey)
-      .get("/grants/" + grantId + "/children/")
+    authService.query("apiKey", authAPIKey).get(
+      "/grants/" + grantId + "/children/")
 
   def addGrantChild(
       authAPIKey: String,
@@ -166,9 +163,8 @@ class SecurityServiceSpec
     addGrantChildRaw(authAPIKey, grantId, request.serialize)
 
   def addGrantChildRaw(authAPIKey: String, grantId: String, request: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
-      .post("/grants/" + grantId + "/children/")(request)(identity[JValue], tc)
+    authService.query("apiKey", authAPIKey).post(
+      "/grants/" + grantId + "/children/")(request)(identity[JValue], tc)
 
   def deleteGrant(authAPIKey: String, grantId: String) =
     authService.query("apiKey", authAPIKey).delete("/grants/" + grantId)
@@ -244,12 +240,18 @@ class SecurityServiceSpec
     to)
 
   val user5 = Await.result(
-    apiKeyManager
-      .createAPIKey(Some("user5-key"), None, user1.apiKey, Set.empty),
+    apiKeyManager.createAPIKey(
+      Some("user5-key"),
+      None,
+      user1.apiKey,
+      Set.empty),
     to)
   val user6 = Await.result(
-    apiKeyManager
-      .createAPIKey(Some("user6-key"), None, user1.apiKey, Set.empty),
+    apiKeyManager.createAPIKey(
+      Some("user6-key"),
+      None,
+      user1.apiKey,
+      Set.empty),
     to)
 
   val expiredGrant = Await.result(
@@ -262,8 +264,11 @@ class SecurityServiceSpec
       Some(new DateTime().minusYears(1000))),
     to)
   val expired = Await.result(
-    apiKeyManager
-      .createAPIKey(None, None, user1.apiKey, Set(expiredGrant.grantId)),
+    apiKeyManager.createAPIKey(
+      None,
+      None,
+      user1.apiKey,
+      Set(expiredGrant.grantId)),
     to)
 
   val allAPIKeys = Await.result(apiKeyManager.listAPIKeys(), to)

@@ -29,11 +29,8 @@ object Main {
     } else {
       val system = ActorSystem("Main")
       try {
-        val appClass = system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .getClassFor[Actor](args(0))
-          .get
+        val appClass = system.asInstanceOf[
+          ExtendedActorSystem].dynamicAccess.getClassFor[Actor](args(0)).get
         val app = system.actorOf(Props(appClass), "app")
         val terminator =
           system.actorOf(Props(classOf[Terminator], app), "app-terminator")

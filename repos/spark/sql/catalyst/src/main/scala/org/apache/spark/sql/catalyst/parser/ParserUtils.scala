@@ -93,17 +93,17 @@ object ParserUtils {
     }
 
     if (remainingNodes.nonEmpty) {
-      sys.error(s"""Unhandled clauses: ${remainingNodes
-                     .map(_.treeString)
-                     .mkString("\n")}.
+      sys.error(s"""Unhandled clauses: ${remainingNodes.map(
+                     _.treeString).mkString("\n")}.
             |You are likely trying to use an unsupported Hive feature."""".stripMargin)
     }
     clauses
   }
 
   def getClause(clauseName: String, nodeList: Seq[ASTNode]): ASTNode = {
-    getClauseOption(clauseName, nodeList).getOrElse(sys.error(
-      s"Expected clause $clauseName missing from ${nodeList.map(_.treeString).mkString("\n")}"))
+    getClauseOption(clauseName, nodeList).getOrElse(
+      sys.error(s"Expected clause $clauseName missing from ${nodeList.map(
+        _.treeString).mkString("\n")}"))
   }
 
   def getClauseOption(
@@ -170,9 +170,9 @@ object ParserUtils {
       case Token(
             "TOK_TABCOL",
             Token(fieldName, Nil) :: dataType :: comment :: Nil) =>
-        val meta = new MetadataBuilder()
-          .putString("comment", unquoteString(comment.text))
-          .build()
+        val meta = new MetadataBuilder().putString(
+          "comment",
+          unquoteString(comment.text)).build()
         StructField(
           cleanIdentifier(fieldName),
           nodeToDataType(dataType),

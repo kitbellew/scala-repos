@@ -68,8 +68,8 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case (found, td: ScTypeDefinition) if td.isSynthetic        => found
       case (found, _: ScClassParameter | _: ScPrimaryConstructor) => found
       case (found, _)
-          if context == found.extendsBlock || found.extendsBlock.templateBody
-            .contains(context) ||
+          if context == found.extendsBlock || found.extendsBlock.templateBody.contains(
+            context) ||
             found.extendsBlock.earlyDefinitions.contains(context) =>
         found
       case (found, _) => null // See SCL-3178
@@ -204,9 +204,8 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
     }
 
     def fromQualifiedPrivate(): Option[SearchScope] = {
-      accessModifier
-        .filter(am => am.isPrivate && am.getReference != null)
-        .map(_.scope) collect {
+      accessModifier.filter(am => am.isPrivate && am.getReference != null).map(
+        _.scope) collect {
         case p: PsiPackage        => new PackageScope(p, true, true)
         case td: ScTypeDefinition => ScalaPsiUtil.withCompanionSearchScope(td)
       }
@@ -214,17 +213,15 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
 
     val fromModifierOrContext = this match {
       case _ if accessModifier.exists(mod => mod.isPrivate && mod.isThis) =>
-        Option(containingClass)
-          .orElse(containingFile)
-          .map(new LocalSearchScope(_))
+        Option(containingClass).orElse(containingFile).map(
+          new LocalSearchScope(_))
       case _ if accessModifier.exists(_.isUnqualifiedPrivateOrThis) =>
         containingClass match {
           case null => containingFile.map(new LocalSearchScope(_))
           case c    => Some(ScalaPsiUtil.withCompanionSearchScope(c))
         }
       case cp: ScClassParameter =>
-        Option(cp.containingClass)
-          .map(_.getUseScope)
+        Option(cp.containingClass).map(_.getUseScope)
           .orElse(Option(super.getUseScope))
       case fun: ScFunction if fun.isSynthetic =>
         fun.getSyntheticNavigationElement.map(_.getUseScope)

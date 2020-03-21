@@ -63,11 +63,10 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
   def compareRanks(a: VertexRDD[Double], b: VertexRDD[Double]): Double = {
     a.leftJoin(b) {
-        case (id, a, bOpt) =>
-          (a - bOpt.getOrElse(0.0)) * (a - bOpt.getOrElse(0.0))
-      }
-      .map { case (id, error) => error }
-      .sum()
+      case (id, a, bOpt) =>
+        (a - bOpt.getOrElse(0.0)) * (a - bOpt.getOrElse(0.0))
+    }
+      .map { case (id, error) => error }.sum()
   }
 
   test("Star PageRank") {
@@ -83,12 +82,9 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
         starGraph.staticPageRank(numIter = 2, resetProb).vertices.cache()
 
       // Static PageRank should only take 2 iterations to converge
-      val notMatching = staticRanks1
-        .innerZipJoin(staticRanks2) { (vid, pr1, pr2) =>
-          if (pr1 != pr2) 1 else 0
-        }
-        .map { case (vid, test) => test }
-        .sum()
+      val notMatching = staticRanks1.innerZipJoin(staticRanks2) {
+        (vid, pr1, pr2) => if (pr1 != pr2) 1 else 0
+      }.map { case (vid, test) => test }.sum()
       assert(notMatching === 0)
 
       val staticErrors = staticRanks2.map {
@@ -115,18 +111,14 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
       val staticRanks1 =
         starGraph.staticPersonalizedPageRank(0, numIter = 1, resetProb).vertices
-      val staticRanks2 = starGraph
-        .staticPersonalizedPageRank(0, numIter = 2, resetProb)
-        .vertices
-        .cache()
+      val staticRanks2 =
+        starGraph.staticPersonalizedPageRank(0, numIter = 2, resetProb)
+          .vertices.cache()
 
       // Static PageRank should only take 2 iterations to converge
-      val notMatching = staticRanks1
-        .innerZipJoin(staticRanks2) { (vid, pr1, pr2) =>
-          if (pr1 != pr2) 1 else 0
-        }
-        .map { case (vid, test) => test }
-        .sum
+      val notMatching = staticRanks1.innerZipJoin(staticRanks2) {
+        (vid, pr1, pr2) => if (pr1 != pr2) 1 else 0
+      }.map { case (vid, test) => test }.sum
       assert(notMatching === 0)
 
       val staticErrors = staticRanks2.map {
@@ -142,10 +134,9 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
       assert(compareRanks(staticRanks2, dynamicRanks) < errorTol)
 
       // We have one outbound edge from 1 to 0
-      val otherStaticRanks2 = starGraph
-        .staticPersonalizedPageRank(1, numIter = 2, resetProb)
-        .vertices
-        .cache()
+      val otherStaticRanks2 =
+        starGraph.staticPersonalizedPageRank(1, numIter = 2, resetProb)
+          .vertices.cache()
       val otherDynamicRanks =
         starGraph.personalizedPageRank(1, 0, resetProb).vertices.cache()
       assert(compareRanks(otherDynamicRanks, otherStaticRanks2) < errorTol)
@@ -176,8 +167,9 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
   test("Chain PageRank") {
     withSpark { sc =>
       val chain1 = (0 until 9).map(x => (x, x + 1))
-      val rawEdges =
-        sc.parallelize(chain1, 1).map { case (s, d) => (s.toLong, d.toLong) }
+      val rawEdges = sc.parallelize(chain1, 1).map {
+        case (s, d) => (s.toLong, d.toLong)
+      }
       val chain = Graph.fromEdgeTuples(rawEdges, 1.0).cache()
       val resetProb = 0.15
       val tol = 0.0001
@@ -194,8 +186,9 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
   test("Chain PersonalizedPageRank") {
     withSpark { sc =>
       val chain1 = (0 until 9).map(x => (x, x + 1))
-      val rawEdges =
-        sc.parallelize(chain1, 1).map { case (s, d) => (s.toLong, d.toLong) }
+      val rawEdges = sc.parallelize(chain1, 1).map {
+        case (s, d) => (s.toLong, d.toLong)
+      }
       val chain = Graph.fromEdgeTuples(rawEdges, 1.0).cache()
       val resetProb = 0.15
       val tol = 0.0001

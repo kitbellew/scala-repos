@@ -25,10 +25,9 @@ object ScalaStatisticManager {
     val value = element match {
       case f: ScFunction =>
         s"function#${f.name}" +
-          f.parameters
-            .map(p =>
-              "#" + p.getType(TypingContext.empty).getOrAny.presentableText)
-            .mkString
+          f.parameters.map(p =>
+            "#" + p.getType(
+              TypingContext.empty).getOrAny.presentableText).mkString
       case o: ScObject    => s"object#${o.qualifiedName}"
       case c: ScClass     => s"class#${c.qualifiedName}"
       case t: ScTrait     => s"trait#${t.qualifiedName}"

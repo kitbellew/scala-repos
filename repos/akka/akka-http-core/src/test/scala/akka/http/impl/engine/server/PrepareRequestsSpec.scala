@@ -54,8 +54,9 @@ class PrepareRequestsSpec extends AkkaSpec {
       HttpProtocols.`HTTP/1.1`,
       List(),
       StrictEntityCreator(
-        HttpEntity
-          .Strict(ContentTypes.`application/octet-stream`, ByteString("body"))),
+        HttpEntity.Strict(
+          ContentTypes.`application/octet-stream`,
+          ByteString("body"))),
       true,
       false
     )
@@ -71,8 +72,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -90,8 +90,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 
@@ -133,8 +132,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -152,8 +150,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 
@@ -186,8 +183,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -205,8 +201,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 
@@ -229,8 +224,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
+      Source.fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -248,8 +242,7 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 

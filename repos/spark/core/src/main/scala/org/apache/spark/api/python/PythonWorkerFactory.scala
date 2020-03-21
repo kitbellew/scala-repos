@@ -222,10 +222,14 @@ private[spark] class PythonWorkerFactory(
       stdout: InputStream,
       stderr: InputStream) {
     try {
-      new RedirectThread(stdout, System.err, "stdout reader for " + pythonExec)
-        .start()
-      new RedirectThread(stderr, System.err, "stderr reader for " + pythonExec)
-        .start()
+      new RedirectThread(
+        stdout,
+        System.err,
+        "stdout reader for " + pythonExec).start()
+      new RedirectThread(
+        stderr,
+        System.err,
+        "stderr reader for " + pythonExec).start()
     } catch {
       case e: Exception =>
         logError("Exception in redirecting streams", e)
@@ -243,8 +247,7 @@ private[spark] class PythonWorkerFactory(
     override def run() {
       while (true) {
         synchronized {
-          if (lastActivity + IDLE_WORKER_TIMEOUT_MS < System
-                .currentTimeMillis()) {
+          if (lastActivity + IDLE_WORKER_TIMEOUT_MS < System.currentTimeMillis()) {
             cleanupIdleWorkers()
             lastActivity = System.currentTimeMillis()
           }

@@ -94,10 +94,6 @@ class BoyerMooreSpec extends WordSpec with Matchers {
   }
 
   def findWithRegex(needle: ByteString, haystack: ByteString): Seq[Int] =
-    Pattern
-      .quote(needle.map(_.toChar).mkString)
-      .r
-      .findAllMatchIn(haystack.map(_.toChar).mkString)
-      .map(_.start)
-      .toSeq
+    Pattern.quote(needle.map(_.toChar).mkString).r.findAllMatchIn(
+      haystack.map(_.toChar).mkString).map(_.start).toSeq
 }

@@ -115,8 +115,8 @@ object Test extends InteractiveTest {
                 val toplevel =
                   compiler.rootMirror.EmptyPackage.info.decl(TypeName(name))
                 if (toplevel eq NoSymbol) {
-                  val clazz = compiler.rootMirror.EmptyPackage.info
-                    .decl(TypeName(className))
+                  val clazz = compiler.rootMirror.EmptyPackage.info.decl(
+                    TypeName(className))
                   val term = clazz.info.decl(TermName(name))
                   if (term eq NoSymbol) clazz.info.decl(TypeName(name))
                   else if (term.isAccessor) term.accessed
@@ -157,10 +157,8 @@ object Test extends InteractiveTest {
         case c: Comment => existsText(c.body, text)
       }
     val (derived, base) = compiler.ask { () =>
-      val derived = compiler.rootMirror.RootPackage.info
-        .decl(newTermName("p"))
-        .info
-        .decl(newTypeName("Derived"))
+      val derived = compiler.rootMirror.RootPackage.info.decl(
+        newTermName("p")).info.decl(newTypeName("Derived"))
       (derived, derived.ancestors(0))
     }
     val cmt1 = getComment(

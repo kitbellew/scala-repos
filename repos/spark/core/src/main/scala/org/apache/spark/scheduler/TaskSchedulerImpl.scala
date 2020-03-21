@@ -333,8 +333,10 @@ private[spark] class TaskSchedulerImpl(
       val sortedTaskSets = rootPool.getSortedTaskSetQueue
       for (taskSet <- sortedTaskSets) {
         logDebug(
-          "parentName: %s, name: %s, runningTasks: %s"
-            .format(taskSet.parent.name, taskSet.name, taskSet.runningTasks))
+          "parentName: %s, name: %s, runningTasks: %s".format(
+            taskSet.parent.name,
+            taskSet.name,
+            taskSet.runningTasks))
         if (newExecAvail) {
           taskSet.executorAdded()
         }
@@ -393,8 +395,10 @@ private[spark] class TaskSchedulerImpl(
                 taskSet,
                 tid,
                 serializedData)
-            } else if (Set(TaskState.FAILED, TaskState.KILLED, TaskState.LOST)
-                         .contains(state)) {
+            } else if (Set(
+                         TaskState.FAILED,
+                         TaskState.KILLED,
+                         TaskState.LOST).contains(state)) {
               taskSet.removeRunningTask(tid)
               taskResultGetter.enqueueFailedTask(
                 taskSet,

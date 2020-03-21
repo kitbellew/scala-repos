@@ -1011,9 +1011,8 @@ trait ContextErrors {
           try {
             // [Eugene] is there a better way?
             // [Paul] See Exceptional.scala and Origins.scala.
-            val relevancyThreshold = realex
-              .getStackTrace()
-              .indexWhere(_.getMethodName endsWith "macroExpandWithRuntime")
+            val relevancyThreshold = realex.getStackTrace().indexWhere(
+              _.getMethodName endsWith "macroExpandWithRuntime")
             if (relevancyThreshold == -1) None
             else {
               var relevantElements =
@@ -1065,8 +1064,9 @@ trait ContextErrors {
           )
         macroExpansionError(
           expandee,
-          template(sym.name.nameKind)
-            .format(sym.name + " " + sym.origin, forgotten))
+          template(sym.name.nameKind).format(
+            sym.name + " " + sym.origin,
+            forgotten))
       }
 
       def MacroExpansionHasInvalidTypeError(expandee: Tree, expanded: Any) = {
@@ -1314,11 +1314,15 @@ trait ContextErrors {
           kindErrors: List[String]) = {
         issueNormalTypeError(
           tree,
-          prefix + "kinds of the type arguments " + targs
-            .mkString("(", ",", ")") +
+          prefix + "kinds of the type arguments " + targs.mkString(
+            "(",
+            ",",
+            ")") +
             " do not conform to the expected kinds of the type parameters " +
-            tparams
-              .mkString("(", ",", ")") + tparams.head.locationString + "." +
+            tparams.mkString(
+              "(",
+              ",",
+              ")") + tparams.head.locationString + "." +
             kindErrors.toList.mkString("\n", ", ", "")
         )
       }
@@ -1461,8 +1465,9 @@ trait ContextErrors {
           case c @ CyclicReference(sym, info: TypeCompleter) =>
             val error = new NormalTypeErrorFromCyclicReference(
               tree,
-              typer
-                .cyclicReferenceMessage(sym, info.tree) getOrElse ex.getMessage)
+              typer.cyclicReferenceMessage(
+                sym,
+                info.tree) getOrElse ex.getMessage)
             issueTypeError(error)
           case _ =>
             contextNamerErrorGen.issue(TypeErrorWithUnderlyingTree(tree, ex))
@@ -1685,11 +1690,10 @@ trait ContextErrors {
       setError(arg) // to distinguish it from ambiguous reference error
 
       def errMsg =
-        "%s definition needs %s because '%s' is used as a named argument in its body."
-          .format(
-            "variable", // "method"
-            "type", // "result type"
-            sym.name)
+        "%s definition needs %s because '%s' is used as a named argument in its body.".format(
+          "variable", // "method"
+          "type", // "result type"
+          sym.name)
       issueSymbolTypeError(sym, errMsg)
     }
 

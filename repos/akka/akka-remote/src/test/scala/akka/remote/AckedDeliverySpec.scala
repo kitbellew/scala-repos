@@ -92,11 +92,8 @@ class AckedDeliverySpec extends AkkaSpec {
     }
 
     "refuse buffering new messages if capacity reached" in {
-      val buffer = new AckedSendBuffer[Sequenced](4)
-        .buffer(msg(0))
-        .buffer(msg(1))
-        .buffer(msg(2))
-        .buffer(msg(3))
+      val buffer = new AckedSendBuffer[Sequenced](4).buffer(msg(0)).buffer(
+        msg(1)).buffer(msg(2)).buffer(msg(3))
 
       intercept[ResendBufferCapacityReachedException] {
         buffer buffer msg(4)
@@ -236,8 +233,7 @@ class AckedDeliverySpec extends AkkaSpec {
         .receive(msg2)
         .extractDeliverable
 
-      val buf3 = buf2
-        .receive(msg0)
+      val buf3 = buf2.receive(msg0)
         .receive(msg1)
         .receive(msg2)
 
@@ -256,10 +252,8 @@ class AckedDeliverySpec extends AkkaSpec {
       val msg2 = msg(2)
       val msg3 = msg(3)
 
-      val buf = buf1
-        .receive(msg1a)
-        .receive(msg2)
-        .mergeFrom(buf2.receive(msg1b).receive(msg3))
+      val buf = buf1.receive(msg1a).receive(msg2).mergeFrom(
+        buf2.receive(msg1b).receive(msg3))
 
       val (_, deliver, ack) = buf.receive(msg0).extractDeliverable
       deliver should ===(Vector(msg0, msg1a, msg2, msg3))

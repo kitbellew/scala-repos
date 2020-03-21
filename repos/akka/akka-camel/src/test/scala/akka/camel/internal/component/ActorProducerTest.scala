@@ -366,9 +366,8 @@ private[camel] trait ActorProducerFixture
     val sys = mock[ExtendedActorSystem]
     val config = ConfigFactory.defaultReference()
     when(sys.dispatcher) thenReturn system.dispatcher
-    when(sys.dynamicAccess) thenReturn system
-      .asInstanceOf[ExtendedActorSystem]
-      .dynamicAccess
+    when(sys.dynamicAccess) thenReturn system.asInstanceOf[
+      ExtendedActorSystem].dynamicAccess
     when(sys.settings) thenReturn (new Settings(
       this.getClass.getClassLoader,
       config,

@@ -455,10 +455,11 @@ private[columnar] trait DirectCopyColumnType[JvmType]
       val numBytes = buffer.getInt
       val cursor = buffer.position()
       buffer.position(cursor + numBytes)
-      row
-        .asInstanceOf[MutableUnsafeRow]
-        .writer
-        .write(ordinal, buffer.array(), buffer.arrayOffset() + cursor, numBytes)
+      row.asInstanceOf[MutableUnsafeRow].writer.write(
+        ordinal,
+        buffer.array(),
+        buffer.arrayOffset() + cursor,
+        numBytes)
     } else {
       setField(row, ordinal, extract(buffer))
     }
@@ -639,9 +640,9 @@ private[columnar] case class LARGE_DECIMAL(precision: Int, scale: Int)
   }
 
   override def actualSize(row: InternalRow, ordinal: Int): Int = {
-    4 + getField(row, ordinal).toJavaBigDecimal
-      .unscaledValue()
-      .bitLength() / 8 + 1
+    4 + getField(
+      row,
+      ordinal).toJavaBigDecimal.unscaledValue().bitLength() / 8 + 1
   }
 
   override def serialize(value: Decimal): Array[Byte] = {

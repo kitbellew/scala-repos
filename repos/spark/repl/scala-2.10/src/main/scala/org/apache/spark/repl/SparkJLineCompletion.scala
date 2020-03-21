@@ -119,8 +119,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
         lazy val upgrade = {
           intp rebind param
           intp.reporter.printMessage(
-            "\nRebinding stable value %s from %s to %s"
-              .format(param.name, tp, param.tpe))
+            "\nRebinding stable value %s from %s to %s".format(
+              param.name,
+              tp,
+              param.tpe))
           upgraded = true
           new TypeMemberCompletion(runtimeType)
         }
@@ -397,8 +399,12 @@ class SparkJLineCompletion(val intp: SparkIMain)
     override def complete(buf: String, cursor: Int): Candidates = {
       verbosity = if (isConsecutiveTabs(buf, cursor)) verbosity + 1 else 0
       logDebug(
-        "\ncomplete(%s, %d) last = (%s, %d), verbosity: %s"
-          .format(buf, cursor, lastBuf, lastCursor, verbosity))
+        "\ncomplete(%s, %d) last = (%s, %d), verbosity: %s".format(
+          buf,
+          cursor,
+          lastBuf,
+          lastCursor,
+          verbosity))
 
       // we don't try lower priority completions unless higher ones return no results.
       def tryCompletion(
@@ -414,8 +420,11 @@ class SparkJLineCompletion(val intp: SparkIMain)
             lastCursor = p.position + advance.length
             lastBuf = (buf take p.position) + advance
             logDebug(
-              "tryCompletion(%s, _) lastBuf = %s, lastCursor = %s, p.position = %s"
-                .format(p, lastBuf, lastCursor, p.position))
+              "tryCompletion(%s, _) lastBuf = %s, lastCursor = %s, p.position = %s".format(
+                p,
+                lastBuf,
+                lastCursor,
+                p.position))
             p.position
           }
 

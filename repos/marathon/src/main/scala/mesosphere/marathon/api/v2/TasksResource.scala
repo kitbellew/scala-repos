@@ -143,9 +143,8 @@ class TasksResource @Inject() (
       }
 
       def killTasks(toKill: Map[PathId, Iterable[Task]]): Response = {
-        val affectedApps = tasksToAppId.values
-          .flatMap(appId => result(groupManager.app(appId)))
-          .toSeq
+        val affectedApps = tasksToAppId.values.flatMap(appId =>
+          result(groupManager.app(appId))).toSeq
         // FIXME (gkleiman): taskKiller.kill a few lines below also checks authorization, but we need to check ALL before
         // starting to kill tasks
         affectedApps.foreach(checkAuthorization(UpdateApp, _))

@@ -193,30 +193,28 @@ abstract class GenIncOptimizer private[optimizer] (
           (defaults, neededDefaults))
       } {
         CollOps.retain(containerMap) { (namespaceName, namespace) =>
-          CollOps
-            .remove(neededLinkedClasses, namespaceName)
-            .fold {
-              /* Deleted static/defaults context. Mark all its methods as
-               * deleted, and remove it from known static/default contexts.
-               */
-              namespace.methods.values.foreach(_.delete())
+          CollOps.remove(neededLinkedClasses, namespaceName).fold {
+            /* Deleted static/defaults context. Mark all its methods as
+             * deleted, and remove it from known static/default contexts.
+             */
+            namespace.methods.values.foreach(_.delete())
 
-              false
-            } { linkedClass =>
-              /* Existing static/default context. Update it. */
-              val (added, changed, removed) =
-                namespace.updateWith(linkedClass)
+            false
+          } { linkedClass =>
+            /* Existing static/default context. Update it. */
+            val (added, changed, removed) =
+              namespace.updateWith(linkedClass)
 
-              if (containerMap eq statics) {
-                for (method <- changed)
-                  namespace.myInterface.tagCallersOfStatic(method)
-              } else {
-                for (method <- changed)
-                  namespace.myInterface.tagStaticCallersOf(method)
-              }
-
-              true
+            if (containerMap eq statics) {
+              for (method <- changed)
+                namespace.myInterface.tagCallersOfStatic(method)
+            } else {
+              for (method <- changed)
+                namespace.myInterface.tagStaticCallersOf(method)
             }
+
+            true
+          }
         }
       }
     }
@@ -362,19 +360,17 @@ abstract class GenIncOptimizer private[optimizer] (
         val methodInfo = linkedMethodDef.info
         val methodName = methodInfo.encodedName
 
-        methods
-          .get(methodName)
-          .fold {
-            addedMethods += methodName
-            val method = newMethodImpl(this, methodName)
-            method.updateWith(linkedMethodDef)
-            methods(methodName) = method
-            method
-          } { method =>
-            if (method.updateWith(linkedMethodDef))
-              changedMethods += methodName
-            method
-          }
+        methods.get(methodName).fold {
+          addedMethods += methodName
+          val method = newMethodImpl(this, methodName)
+          method.updateWith(linkedMethodDef)
+          methods(methodName) = method
+          method
+        } { method =>
+          if (method.updateWith(linkedMethodDef))
+            changedMethods += methodName
+          method
+        }
       }
 
       (addedMethods.result(), changedMethods.result(), deletedMethods.result())
@@ -663,9 +659,8 @@ abstract class GenIncOptimizer private[optimizer] (
               args.forall(isTriviallySideEffectFree) &&
               impl.owner.asInstanceOf[Class].superClass.exists { superCls =>
                 superCls.encodedName == cls &&
-                superCls
-                  .lookupMethod(methodName.name)
-                  .exists(isElidableModuleConstructor)
+                superCls.lookupMethod(methodName.name).exists(
+                  isElidableModuleConstructor)
               }
           case StoreModule(_, _) =>
             true
@@ -987,18 +982,15 @@ abstract class GenIncOptimizer private[optimizer] (
       protected def staticCall(
           className: String,
           methodName: String): Option[MethodID] = {
-        classes
-          .get(className)
-          .fold {
-            // If it's not a class, it must be a call to a default intf method
-            val defaultsNS = defaults(className)
-            MethodImpl.this
-              .registerStaticCall(defaultsNS.myInterface, methodName)
-            defaultsNS.methods.get(methodName)
-          } { clazz =>
-            MethodImpl.this.registerStaticCall(clazz.myInterface, methodName)
-            clazz.lookupMethod(methodName)
-          }
+        classes.get(className).fold {
+          // If it's not a class, it must be a call to a default intf method
+          val defaultsNS = defaults(className)
+          MethodImpl.this.registerStaticCall(defaultsNS.myInterface, methodName)
+          defaultsNS.methods.get(methodName)
+        } { clazz =>
+          MethodImpl.this.registerStaticCall(clazz.myInterface, methodName)
+          clazz.lookupMethod(methodName)
+        }
       }
 
       /** Look up the target of a call to a static method. */

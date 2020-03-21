@@ -161,9 +161,8 @@ case class Add(left: Expression, right: Expression) extends BinaryArithmetic {
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     if (dataType.isInstanceOf[CalendarIntervalType]) {
-      input1
-        .asInstanceOf[CalendarInterval]
-        .add(input2.asInstanceOf[CalendarInterval])
+      input1.asInstanceOf[CalendarInterval].add(
+        input2.asInstanceOf[CalendarInterval])
     } else {
       numeric.plus(input1, input2)
     }
@@ -197,9 +196,8 @@ case class Subtract(left: Expression, right: Expression)
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     if (dataType.isInstanceOf[CalendarIntervalType]) {
-      input1
-        .asInstanceOf[CalendarInterval]
-        .subtract(input2.asInstanceOf[CalendarInterval])
+      input1.asInstanceOf[CalendarInterval].subtract(
+        input2.asInstanceOf[CalendarInterval])
     } else {
       numeric.minus(input1, input2)
     }
@@ -521,8 +519,7 @@ case class Pmod(left: Expression, right: Expression) extends BinaryArithmetic {
           // byte and short are casted into int when add, minus, times or divide
           case ByteType | ShortType =>
             s"""
-            ${ctx.javaType(dataType)} r = (${ctx
-              .javaType(dataType)})($eval1 % $eval2);
+            ${ctx.javaType(dataType)} r = (${ctx.javaType(dataType)})($eval1 % $eval2);
             if (r < 0) {
               ${ev.value} = (${ctx.javaType(dataType)})((r + $eval2) % $eval2);
             } else {

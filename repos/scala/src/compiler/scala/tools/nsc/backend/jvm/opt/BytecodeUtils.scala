@@ -117,8 +117,8 @@ object BytecodeUtils {
     (methodNode.access & ACC_NATIVE) != 0
 
   def hasCallerSensitiveAnnotation(methodNode: MethodNode) =
-    methodNode.visibleAnnotations != null && methodNode.visibleAnnotations.asScala
-      .exists(_.desc == "Lsun/reflect/CallerSensitive;")
+    methodNode.visibleAnnotations != null && methodNode.visibleAnnotations.asScala.exists(
+      _.desc == "Lsun/reflect/CallerSensitive;")
 
   def isFinalClass(classNode: ClassNode): Boolean =
     (classNode.access & ACC_FINAL) != 0
@@ -242,10 +242,10 @@ object BytecodeUtils {
     * The number of local variable slots used for parameters and for the `this` reference.
     */
   def parametersSize(methodNode: MethodNode): Int = {
-    (Type
-      .getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(
-                                                                  methodNode)) 1
-                                                            else 0)
+    (Type.getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(
+                                                                     methodNode))
+                                                                 1
+                                                               else 0)
   }
 
   def labelReferences(method: MethodNode): Map[LabelNode, Set[AnyRef]] = {
@@ -263,16 +263,14 @@ object BytecodeUtils {
       case _ =>
     }
     if (method.localVariables != null) {
-      method.localVariables
-        .iterator()
-        .asScala
-        .foreach(l => { add(l.start, l); add(l.end, l) })
+      method.localVariables.iterator().asScala.foreach(l => {
+        add(l.start, l); add(l.end, l)
+      })
     }
     if (method.tryCatchBlocks != null) {
-      method.tryCatchBlocks
-        .iterator()
-        .asScala
-        .foreach(l => { add(l.start, l); add(l.handler, l); add(l.end, l) })
+      method.tryCatchBlocks.iterator().asScala.foreach(l => {
+        add(l.start, l); add(l.handler, l); add(l.end, l)
+      })
     }
 
     res.toMap
@@ -335,13 +333,9 @@ object BytecodeUtils {
   }
 
   def cloneLabels(methodNode: MethodNode): Map[LabelNode, LabelNode] = {
-    methodNode.instructions
-      .iterator()
-      .asScala
-      .collect({
-        case labelNode: LabelNode => (labelNode, newLabelNode)
-      })
-      .toMap
+    methodNode.instructions.iterator().asScala.collect({
+      case labelNode: LabelNode => (labelNode, newLabelNode)
+    }).toMap
   }
 
   /**
@@ -363,19 +357,15 @@ object BytecodeUtils {
       labelMap: Map[LabelNode, LabelNode],
       prefix: String,
       shift: Int): List[LocalVariableNode] = {
-    methodNode.localVariables
-      .iterator()
-      .asScala
-      .map(localVariable =>
-        new LocalVariableNode(
-          prefix + localVariable.name,
-          localVariable.desc,
-          localVariable.signature,
-          labelMap(localVariable.start),
-          labelMap(localVariable.end),
-          localVariable.index + shift
-        ))
-      .toList
+    methodNode.localVariables.iterator().asScala.map(localVariable =>
+      new LocalVariableNode(
+        prefix + localVariable.name,
+        localVariable.desc,
+        localVariable.signature,
+        labelMap(localVariable.start),
+        labelMap(localVariable.end),
+        localVariable.index + shift
+      )).toList
   }
 
   /**
@@ -385,17 +375,13 @@ object BytecodeUtils {
   def cloneTryCatchBlockNodes(
       methodNode: MethodNode,
       labelMap: Map[LabelNode, LabelNode]): List[TryCatchBlockNode] = {
-    methodNode.tryCatchBlocks
-      .iterator()
-      .asScala
-      .map(tryCatch =>
-        new TryCatchBlockNode(
-          labelMap(tryCatch.start),
-          labelMap(tryCatch.end),
-          labelMap(tryCatch.handler),
-          tryCatch.`type`
-        ))
-      .toList
+    methodNode.tryCatchBlocks.iterator().asScala.map(tryCatch =>
+      new TryCatchBlockNode(
+        labelMap(tryCatch.start),
+        labelMap(tryCatch.end),
+        labelMap(tryCatch.handler),
+        tryCatch.`type`
+      )).toList
   }
 
   /**

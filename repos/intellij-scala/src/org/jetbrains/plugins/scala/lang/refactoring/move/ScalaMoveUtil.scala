@@ -133,9 +133,8 @@ object ScalaMoveUtil {
     }
 
     if (withCompanion)
-      ScalaPsiUtil
-        .getBaseCompanionModule(aClass)
-        .foreach(c => moveClassInner(c, moveDestination))
+      ScalaPsiUtil.getBaseCompanionModule(aClass).foreach(c =>
+        moveClassInner(c, moveDestination))
     moveClassInner(aClass, moveDestination)
   }
 
@@ -157,9 +156,8 @@ object ScalaMoveUtil {
       case file: ScalaFile if !alreadyMoved =>
         collectData(aClass, file)
         if (withCompanion)
-          ScalaPsiUtil
-            .getBaseCompanionModule(aClass)
-            .foreach(c => collectData(c, file))
+          ScalaPsiUtil.getBaseCompanionModule(aClass).foreach(c =>
+            collectData(c, file))
       case _ =>
     }
   }
@@ -202,13 +200,11 @@ object ScalaMoveUtil {
       case p: ScPackage => p.getClasses.toSeq
       case _            => Nil
     }
-    classes
-      .flatMap {
-        case td: ScTypeDefinition =>
-          td :: ScalaPsiUtil.getBaseCompanionModule(td).toList
-        case e => List(e)
-      }
-      .foreach(_.putUserData(MOVE_DESTINATION, moveDestination))
+    classes.flatMap {
+      case td: ScTypeDefinition =>
+        td :: ScalaPsiUtil.getBaseCompanionModule(td).toList
+      case e => List(e)
+    }.foreach(_.putUserData(MOVE_DESTINATION, moveDestination))
   }
 
   def getMoveDestination(@NotNull element: PsiElement): PsiDirectory =

@@ -44,9 +44,8 @@ class DeploymentsResource @Inject() (
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       @Context req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      val plan = result(service.listRunningDeployments())
-        .find(_.plan.id == id)
-        .map(_.plan)
+      val plan = result(service.listRunningDeployments()).find(
+        _.plan.id == id).map(_.plan)
       plan.fold(notFound(s"DeploymentPlan $id does not exist")) { deployment =>
         deployment.affectedApplications.foreach(
           checkAuthorization(UpdateApp, _))
@@ -74,9 +73,8 @@ class DeploymentsResource @Inject() (
       deployment: DeploymentPlan,
       currentStepInfo: DeploymentStepInfo): JsObject = {
 
-    val steps = deployment.steps
-      .map(step => step.actions.map(actionToMap))
-      .map(Json.toJson(_))
+    val steps = deployment.steps.map(step => step.actions.map(actionToMap)).map(
+      Json.toJson(_))
     Json.obj(
       "id" -> deployment.id,
       "version" -> deployment.version,

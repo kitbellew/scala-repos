@@ -44,8 +44,8 @@ object BuildPaths {
     val unversioned = defaultGlobalBase
     def globalDefined(base: File): Boolean =
       getGlobalPluginsDirectory(state, base).exists ||
-        configurationSources(getGlobalSettingsDirectory(state, base))
-          .exists(_.exists)
+        configurationSources(getGlobalSettingsDirectory(state, base)).exists(
+          _.exists)
     val warnTransition = !globalDefined(versioned) && globalDefined(unversioned)
     if (warnTransition)
       state.log.warn(globalDirTransitionWarning(unversioned, versioned))
@@ -93,8 +93,8 @@ object BuildPaths {
   def defaultGlobalBase = Path.userHome / ConfigDirectoryName
 
   private[this] def binarySbtVersion(state: State): String =
-    sbt.internal.librarymanagement.cross.CrossVersionUtil
-      .binarySbtVersion(state.configuration.provider.id.version)
+    sbt.internal.librarymanagement.cross.CrossVersionUtil.binarySbtVersion(
+      state.configuration.provider.id.version)
   private[this] def defaultStaging(globalBase: File) = globalBase / "staging"
   private[this] def defaultGlobalPlugins(globalBase: File) =
     globalBase / PluginsDirectoryName

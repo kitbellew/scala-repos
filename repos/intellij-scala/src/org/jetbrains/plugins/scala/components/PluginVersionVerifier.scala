@@ -72,9 +72,8 @@ object ScalaPluginVersionVerifier {
   def getPluginDescriptor = {
     getClass.getClassLoader match {
       case pluginLoader: PluginClassLoader =>
-        PluginManager
-          .getPlugin(pluginLoader.getPluginId)
-          .asInstanceOf[IdeaPluginDescriptorImpl]
+        PluginManager.getPlugin(pluginLoader.getPluginId).asInstanceOf[
+          IdeaPluginDescriptorImpl]
       case other =>
         throw new RuntimeException(s"Wrong plugin classLoader: $other")
     }
@@ -120,11 +119,10 @@ class ScalaPluginVersionVerifierApplicationComponent
                     val Scala_Group = "Scala Plugin Incompatibility"
                     val app: Application = ApplicationManager.getApplication
                     if (!app.isDisposed) {
-                      app.getMessageBus
-                        .syncPublisher(Notifications.TOPIC)
-                        .register(
-                          Scala_Group,
-                          NotificationDisplayType.STICKY_BALLOON)
+                      app.getMessageBus.syncPublisher(
+                        Notifications.TOPIC).register(
+                        Scala_Group,
+                        NotificationDisplayType.STICKY_BALLOON)
                     }
                     NotificationGroup.balloonGroup(Scala_Group)
                     val notification = new Notification(

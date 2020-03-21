@@ -49,8 +49,9 @@ class ScalaConsoleExecuteAction extends AnAction {
       // Process input and add to history
       extensions.inWriteAction {
         val range: TextRange = new TextRange(0, document.getTextLength)
-        editor.getSelectionModel
-          .setSelection(range.getStartOffset, range.getEndOffset)
+        editor.getSelectionModel.setSelection(
+          range.getStartOffset,
+          range.getEndOffset)
         console.addToHistory(range, console.getConsoleEditor, true)
         model.addToHistory(text)
 
@@ -58,21 +59,19 @@ class ScalaConsoleExecuteAction extends AnAction {
         editor.getDocument.setText("")
       }
 
-      text
-        .split('\n')
-        .foreach(line => {
-          if (line != "") {
-            val outputStream: OutputStream = processHandler.getProcessInput
-            try {
-              val bytes: Array[Byte] = (line + "\n").getBytes
-              outputStream.write(bytes)
-              outputStream.flush()
-            } catch {
-              case e: IOException => //ignore
-            }
+      text.split('\n').foreach(line => {
+        if (line != "") {
+          val outputStream: OutputStream = processHandler.getProcessInput
+          try {
+            val bytes: Array[Byte] = (line + "\n").getBytes
+            outputStream.write(bytes)
+            outputStream.flush()
+          } catch {
+            case e: IOException => //ignore
           }
-          console.textSent(line + "\n")
-        })
+        }
+        console.textSent(line + "\n")
+      })
     } else {
       ScalaConsoleExecuteAction.LOG.info(
         new Throwable(

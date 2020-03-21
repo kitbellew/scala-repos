@@ -85,8 +85,7 @@ object ImportDataScript extends App {
     * @return the list of string arrays made from every file line
     */
   private def readCSV(filename: String, delimiter: String = "\\|") =
-    Source
-      .fromFile(filename, "UTF-8")
+    Source.fromFile(filename, "UTF-8")
       .getLines()
       .map(_.split(delimiter).toVector)
 }

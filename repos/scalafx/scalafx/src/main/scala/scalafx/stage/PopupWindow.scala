@@ -141,8 +141,9 @@ abstract class PopupWindow(override val delegate: jfxs.PopupWindow)
   def anchorLocation: ObjectProperty[jfxs.PopupWindow.AnchorLocation] =
     delegate.anchorLocationProperty
   def anchorLocation_=(v: PopupWindow.AnchorLocation) {
-    ObjectProperty
-      .fillProperty[jfxs.PopupWindow.AnchorLocation](this.anchorLocation, v)
+    ObjectProperty.fillProperty[jfxs.PopupWindow.AnchorLocation](
+      this.anchorLocation,
+      v)
   }
 
   /** Specifies the x coordinate of the popup anchor point on the screen. */

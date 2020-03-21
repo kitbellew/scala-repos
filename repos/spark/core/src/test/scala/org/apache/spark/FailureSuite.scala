@@ -42,19 +42,16 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
   // whether the job completes successfully and we ran 4 tasks in total.
   test("failure in a single-stage job") {
     sc = new SparkContext("local[1,2]", "test")
-    val results = sc
-      .makeRDD(1 to 3, 3)
-      .map { x =>
-        FailureSuiteState.synchronized {
-          FailureSuiteState.tasksRun += 1
-          if (x == 1 && FailureSuiteState.tasksFailed == 0) {
-            FailureSuiteState.tasksFailed += 1
-            throw new Exception("Intentional task failure")
-          }
+    val results = sc.makeRDD(1 to 3, 3).map { x =>
+      FailureSuiteState.synchronized {
+        FailureSuiteState.tasksRun += 1
+        if (x == 1 && FailureSuiteState.tasksFailed == 0) {
+          FailureSuiteState.tasksFailed += 1
+          throw new Exception("Intentional task failure")
         }
-        x * x
       }
-      .collect()
+      x * x
+    }.collect()
     FailureSuiteState.synchronized {
       assert(FailureSuiteState.tasksRun === 4)
     }
@@ -65,22 +62,17 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
   // Run a map-reduce job in which a reduce task deterministically fails once.
   test("failure in a two-stage job") {
     sc = new SparkContext("local[1,2]", "test")
-    val results = sc
-      .makeRDD(1 to 3)
-      .map(x => (x, x))
-      .groupByKey(3)
-      .map {
-        case (k, v) =>
-          FailureSuiteState.synchronized {
-            FailureSuiteState.tasksRun += 1
-            if (k == 1 && FailureSuiteState.tasksFailed == 0) {
-              FailureSuiteState.tasksFailed += 1
-              throw new Exception("Intentional task failure")
-            }
+    val results = sc.makeRDD(1 to 3).map(x => (x, x)).groupByKey(3).map {
+      case (k, v) =>
+        FailureSuiteState.synchronized {
+          FailureSuiteState.tasksRun += 1
+          if (k == 1 && FailureSuiteState.tasksFailed == 0) {
+            FailureSuiteState.tasksFailed += 1
+            throw new Exception("Intentional task failure")
           }
-          (k, v.head * v.head)
-      }
-      .collect()
+        }
+        (k, v.head * v.head)
+    }.collect()
     FailureSuiteState.synchronized {
       assert(FailureSuiteState.tasksRun === 4)
     }
@@ -91,8 +83,9 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
   // Run a map-reduce job in which the map stage always fails.
   test("failure in a map stage") {
     sc = new SparkContext("local", "test")
-    val data =
-      sc.makeRDD(1 to 3).map(x => { throw new Exception; (x, x) }).groupByKey(3)
+    val data = sc.makeRDD(1 to 3).map(x => {
+      throw new Exception; (x, x)
+    }).groupByKey(3)
     intercept[SparkException] {
       data.collect()
     }
@@ -134,10 +127,8 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
 
     // Non-serializable closure in an earlier stage
     val thrown1 = intercept[SparkException] {
-      sc.parallelize(1 to 10, 2)
-        .map(x => (x, a))
-        .partitionBy(new HashPartitioner(3))
-        .count()
+      sc.parallelize(1 to 10, 2).map(x => (x, a)).partitionBy(
+        new HashPartitioner(3)).count()
     }
     assert(thrown1.getClass === classOf[SparkException])
     assert(
@@ -165,25 +156,21 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     // If a task leaks memory but fails due to some other cause, then make sure that the original
     // cause is preserved
     val thrownDueToTaskFailure = intercept[SparkException] {
-      sc.parallelize(Seq(0))
-        .mapPartitions { iter =>
-          TaskContext.get().taskMemoryManager().allocatePage(128, null)
-          throw new Exception("intentional task failure")
-          iter
-        }
-        .count()
+      sc.parallelize(Seq(0)).mapPartitions { iter =>
+        TaskContext.get().taskMemoryManager().allocatePage(128, null)
+        throw new Exception("intentional task failure")
+        iter
+      }.count()
     }
     assert(
       thrownDueToTaskFailure.getMessage.contains("intentional task failure"))
 
     // If the task succeeded but memory was leaked, then the task should fail due to that leak
     val thrownDueToMemoryLeak = intercept[SparkException] {
-      sc.parallelize(Seq(0))
-        .mapPartitions { iter =>
-          TaskContext.get().taskMemoryManager().allocatePage(128, null)
-          iter
-        }
-        .count()
+      sc.parallelize(Seq(0)).mapPartitions { iter =>
+        TaskContext.get().taskMemoryManager().allocatePage(128, null)
+        iter
+      }.count()
     }
     assert(thrownDueToMemoryLeak.getMessage.contains("memory leak"))
   }

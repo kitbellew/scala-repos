@@ -88,8 +88,9 @@ class VectorSlicerSuite
     val resultAttrGroup =
       new AttributeGroup("expected", resultAttrs.asInstanceOf[Array[Attribute]])
 
-    val rdd =
-      sc.parallelize(data.zip(expected)).map { case (a, b) => Row(a, b) }
+    val rdd = sc.parallelize(data.zip(expected)).map {
+      case (a, b) => Row(a, b)
+    }
     val df = sqlContext.createDataFrame(
       rdd,
       StructType(
@@ -107,12 +108,11 @@ class VectorSlicerSuite
       val expectedMetadata =
         AttributeGroup.fromStructField(df.schema("expected"))
       assert(resultMetadata.numAttributes === expectedMetadata.numAttributes)
-      resultMetadata.attributes.get
-        .zip(expectedMetadata.attributes.get)
-        .foreach {
-          case (a, b) =>
-            assert(a === b)
-        }
+      resultMetadata.attributes.get.zip(
+        expectedMetadata.attributes.get).foreach {
+        case (a, b) =>
+          assert(a === b)
+      }
     }
 
     vectorSlicer.setIndices(Array(1, 4)).setNames(Array.empty)

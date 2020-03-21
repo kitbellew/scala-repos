@@ -48,14 +48,13 @@ class HiveDataFrameAnalyticsSuite
     checkAnswer(
       testData.rollup($"a" + $"b", $"b").agg(sum($"a" - $"b")),
       sql(
-        "select a + b, b, sum(a - b) from mytable group by a + b, b with rollup")
-        .collect()
+        "select a + b, b, sum(a - b) from mytable group by a + b, b with rollup").collect()
     )
 
     checkAnswer(
       testData.rollup("a", "b").agg(sum("b")),
-      sql("select a, b, sum(b) from mytable group by a, b with rollup")
-        .collect()
+      sql(
+        "select a, b, sum(b) from mytable group by a, b with rollup").collect()
     )
   }
 
@@ -74,8 +73,7 @@ class HiveDataFrameAnalyticsSuite
     checkAnswer(
       testData.cube($"a" + $"b", $"b").agg(sum($"a" - $"b")),
       sql(
-        "select a + b, b, sum(a - b) from mytable group by a + b, b with cube")
-        .collect()
+        "select a + b, b, sum(a - b) from mytable group by a + b, b with cube").collect()
     )
 
     checkAnswer(

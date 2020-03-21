@@ -263,12 +263,8 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
     val root = new DirEntry("/")
     val dirs = mutable.HashMap[String, DirEntry]("/" -> root)
     val manifest = new Manifest(input)
-    val iter = manifest
-      .getEntries()
-      .keySet()
-      .iterator()
-      .filter(_.endsWith(".class"))
-      .map(new ZipEntry(_))
+    val iter = manifest.getEntries().keySet().iterator().filter(
+      _.endsWith(".class")).map(new ZipEntry(_))
 
     for (zipEntry <- iter) {
       val dir = getDir(dirs, zipEntry)
@@ -310,10 +306,9 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
     new FilterInputStream(null) {
       override def read(): Int = {
         if (in == null)
-          in = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream(path)
+          in =
+            Thread.currentThread().getContextClassLoader().getResourceAsStream(
+              path)
         if (in == null) throw new RuntimeException(path + " not found")
         super.read()
       }

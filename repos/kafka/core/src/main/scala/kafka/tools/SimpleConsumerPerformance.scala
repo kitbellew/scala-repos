@@ -64,11 +64,8 @@ object SimpleConsumerPerformance {
           else OffsetRequest.EarliestTime,
           1)
       ))
-    var offset: Long = consumer
-      .getOffsetsBefore(request)
-      .partitionErrorAndOffsets(topicAndPartition)
-      .offsets
-      .head
+    var offset: Long = consumer.getOffsetsBefore(
+      request).partitionErrorAndOffsets(topicAndPartition).offsets.head
 
     val startMs = System.currentTimeMillis
     var done = false
@@ -146,35 +143,36 @@ object SimpleConsumerPerformance {
   }
 
   class ConsumerPerfConfig(args: Array[String]) extends PerfConfig(args) {
-    val urlOpt = parser
-      .accepts("server", "REQUIRED: The hostname of the server to connect to.")
+    val urlOpt = parser.accepts(
+      "server",
+      "REQUIRED: The hostname of the server to connect to.")
       .withRequiredArg
       .describedAs("kafka://hostname:port")
       .ofType(classOf[String])
-    val topicOpt = parser
-      .accepts("topic", "REQUIRED: The topic to consume from.")
-      .withRequiredArg
-      .describedAs("topic")
-      .ofType(classOf[String])
+    val topicOpt =
+      parser.accepts("topic", "REQUIRED: The topic to consume from.")
+        .withRequiredArg
+        .describedAs("topic")
+        .ofType(classOf[String])
     val resetBeginningOffsetOpt = parser.accepts(
       "from-latest",
       "If the consumer does not already have an established " +
         "offset to consume from, start with the latest message present in the log rather than the earliest message."
     )
-    val partitionOpt = parser
-      .accepts("partition", "The topic partition to consume from.")
-      .withRequiredArg
-      .describedAs("partition")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(0)
-    val fetchSizeOpt = parser
-      .accepts("fetch-size", "REQUIRED: The fetch size to use for consumption.")
+    val partitionOpt =
+      parser.accepts("partition", "The topic partition to consume from.")
+        .withRequiredArg
+        .describedAs("partition")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(0)
+    val fetchSizeOpt = parser.accepts(
+      "fetch-size",
+      "REQUIRED: The fetch size to use for consumption.")
       .withRequiredArg
       .describedAs("bytes")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(1024 * 1024)
-    val clientIdOpt = parser
-      .accepts("clientId", "The ID of this client.")
+    val clientIdOpt = parser.accepts("clientId", "The ID of this client.")
       .withRequiredArg
       .describedAs("clientId")
       .ofType(classOf[String])

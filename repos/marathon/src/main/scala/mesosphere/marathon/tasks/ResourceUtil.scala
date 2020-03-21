@@ -45,11 +45,10 @@ object ResourceUtil {
         None
       } else {
         Some(
-          resource.toBuilder
-            .setScalar(
-              MesosProtos.Value.Scalar
-                .newBuilder()
-                .setValue(leftOver))
+          resource
+            .toBuilder
+            .setScalar(MesosProtos.Value.Scalar
+              .newBuilder().setValue(leftOver))
             .build())
       }
     }
@@ -93,7 +92,8 @@ object ResourceUtil {
       val rangesBuilder = MesosProtos.Value.Ranges.newBuilder()
       diminished.foreach(rangesBuilder.addRange)
 
-      val result = resource.toBuilder
+      val result = resource
+        .toBuilder
         .setRanges(rangesBuilder)
         .build()
 
@@ -115,7 +115,8 @@ object ResourceUtil {
 
       if (resultSet.nonEmpty)
         Some(
-          resource.toBuilder
+          resource
+            .toBuilder
             .setSet(
               MesosProtos.Value.Set.newBuilder().addAllItem(resultSet.asJava))
             .build()
@@ -190,19 +191,16 @@ object ResourceUtil {
       offer.getResourcesList.asScala
     val leftOverResources =
       ResourceUtil.consumeResources(offerResources, usedResources)
-    offer.toBuilder
-      .clearResources()
-      .addAllResources(leftOverResources.asJava)
-      .build()
+    offer.toBuilder.clearResources().addAllResources(
+      leftOverResources.asJava).build()
   }
 
   def displayResource(
       resource: MesosProtos.Resource,
       maxRanges: Int): String = {
     def rangesToString(ranges: Seq[MesosProtos.Value.Range]): String = {
-      ranges
-        .map { range => s"${range.getBegin}->${range.getEnd}" }
-        .mkString(",")
+      ranges.map { range => s"${range.getBegin}->${range.getEnd}" }.mkString(
+        ",")
     }
 
     lazy val resourceName = {

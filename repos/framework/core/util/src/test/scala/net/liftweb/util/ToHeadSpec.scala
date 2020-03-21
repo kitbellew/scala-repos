@@ -34,10 +34,10 @@ object ToHeadSpec extends Specification with XmlMatchers {
   "lift <head> merger" should {
     "merge /html/body//head into existing /html/head section" in {
       val susfiles = for {
-        act <- tryo(getClass.getResource("ToHeadSpec.actual1.html"))
-          .filter(_ ne null)
-        exp <- tryo(getClass.getResource("ToHeadSpec.expected1.html"))
-          .filter(_ ne null)
+        act <- tryo(getClass.getResource("ToHeadSpec.actual1.html")).filter(
+          _ ne null)
+        exp <- tryo(getClass.getResource("ToHeadSpec.expected1.html")).filter(
+          _ ne null)
       } yield (act, exp)
 
       susfiles must beLike {
@@ -51,10 +51,10 @@ object ToHeadSpec extends Specification with XmlMatchers {
 
     "merge <head> from real example" in {
       val susfiles = for {
-        act <- tryo(getClass.getResource("ToHeadSpec.actual2.html"))
-          .filter(_ ne null)
-        exp <- tryo(getClass.getResource("ToHeadSpec.expected2.html"))
-          .filter(_ ne null)
+        act <- tryo(getClass.getResource("ToHeadSpec.actual2.html")).filter(
+          _ ne null)
+        exp <- tryo(getClass.getResource("ToHeadSpec.expected2.html")).filter(
+          _ ne null)
       } yield (act, exp)
 
       susfiles must beLike {
@@ -67,10 +67,10 @@ object ToHeadSpec extends Specification with XmlMatchers {
 
     "merge <lift:tohead> into a new head if not previously exist" in {
       val susfiles = for {
-        act <- tryo(getClass.getResource("ToHeadSpec.actual3.html"))
-          .filter(_ ne null)
-        exp <- tryo(getClass.getResource("ToHeadSpec.expected3.html"))
-          .filter(_ ne null)
+        act <- tryo(getClass.getResource("ToHeadSpec.actual3.html")).filter(
+          _ ne null)
+        exp <- tryo(getClass.getResource("ToHeadSpec.expected3.html")).filter(
+          _ ne null)
       } yield (act, exp)
 
       susfiles must beLike {

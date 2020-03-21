@@ -85,14 +85,12 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
     }
 
     "block read until get requested number of bytes from upstream" in assertAllStagesStopped {
-      val (probe, inputStream) = TestSource
-        .probe[ByteString]
-        .toMat(StreamConverters.asInputStream())(Keep.both)
-        .run()
+      val (probe, inputStream) = TestSource.probe[ByteString].toMat(
+        StreamConverters.asInputStream())(Keep.both).run()
       val f = Future(inputStream.read(new Array[Byte](byteString.size)))
 
-      the[Exception] thrownBy Await
-        .result(f, timeout) shouldBe a[TimeoutException]
+      the[Exception] thrownBy Await.result(f, timeout) shouldBe a[
+        TimeoutException]
       probe.sendNext(byteString)
       Await.result(f, timeout) should ===(byteString.size)
 
@@ -103,8 +101,8 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
     "fill up buffer by default" in assertAllStagesStopped {
       val byteString2 = randomByteString(3)
-      val inputStream = Source(byteString :: byteString2 :: Nil)
-        .runWith(StreamConverters.asInputStream())
+      val inputStream = Source(byteString :: byteString2 :: Nil).runWith(
+        StreamConverters.asInputStream())
 
       readN(inputStream, 3) should ===((3, byteString))
       readN(inputStream, 3) should ===((3, byteString2))
@@ -113,10 +111,8 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
     }
 
     "throw error when reactive stream is closed" in assertAllStagesStopped {
-      val (probe, inputStream) = TestSource
-        .probe[ByteString]
-        .toMat(StreamConverters.asInputStream())(Keep.both)
-        .run()
+      val (probe, inputStream) = TestSource.probe[ByteString].toMat(
+        StreamConverters.asInputStream())(Keep.both).run()
       probe.sendNext(byteString)
       inputStream.close()
       probe.expectCancellation()
@@ -125,10 +121,8 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
     "return all data when upstream is completed" in assertAllStagesStopped {
       val sinkProbe = TestProbe()
-      val (probe, inputStream) = TestSource
-        .probe[ByteString]
-        .toMat(testSink(sinkProbe))(Keep.both)
-        .run()
+      val (probe, inputStream) = TestSource.probe[ByteString]
+        .toMat(testSink(sinkProbe))(Keep.both).run()
       val bytes = randomByteString(1)
 
       probe.sendNext(bytes)
@@ -232,16 +226,13 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
       val sys = ActorSystem("dispatcher-testing", UnboundedMailboxConfig)
       val materializer = ActorMaterializer()(sys)
       try {
-        TestSource
-          .probe[ByteString]
-          .runWith(StreamConverters.asInputStream())(materializer)
-        materializer
-          .asInstanceOf[ActorMaterializerImpl]
-          .supervisor
-          .tell(StreamSupervisor.GetChildren, testActor)
-        val ref = expectMsgType[Children].children
-          .find(_.path.toString contains "inputStreamSink")
-          .get
+        TestSource.probe[ByteString].runWith(StreamConverters.asInputStream())(
+          materializer)
+        materializer.asInstanceOf[ActorMaterializerImpl].supervisor.tell(
+          StreamSupervisor.GetChildren,
+          testActor)
+        val ref = expectMsgType[Children].children.find(
+          _.path.toString contains "inputStreamSink").get
         assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
       } finally shutdown(sys)
     }
@@ -260,12 +251,9 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
   "fail to materialize with zero sized input buffer" in {
     an[IllegalArgumentException] shouldBe thrownBy {
-      Source
-        .single(byteString)
-        .runWith(
-          StreamConverters
-            .asInputStream(timeout)
-            .withAttributes(inputBuffer(0, 0)))
+      Source.single(byteString)
+        .runWith(StreamConverters.asInputStream(timeout).withAttributes(
+          inputBuffer(0, 0)))
       /*
        With Source.single we test the code path in which the sink
        itself throws an exception when being materialized. If

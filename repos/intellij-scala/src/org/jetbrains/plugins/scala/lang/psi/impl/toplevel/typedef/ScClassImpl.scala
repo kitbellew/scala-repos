@@ -229,13 +229,8 @@ class ScClassImpl private (
 
   override def getConstructors: Array[PsiMethod] = {
     val buffer = new ArrayBuffer[PsiMethod]
-    buffer ++= functions
-      .filter(_.isConstructor)
-      .flatMap(
-        _.getFunctionWrappers(
-          isStatic = false,
-          isInterface = false,
-          Some(this)))
+    buffer ++= functions.filter(_.isConstructor).flatMap(
+      _.getFunctionWrappers(isStatic = false, isInterface = false, Some(this)))
     constructor match {
       case Some(x) => buffer ++= x.getFunctionWrappers
       case _       =>
@@ -248,11 +243,8 @@ class ScClassImpl private (
     if (isCase && !hasModifierProperty("abstract") && parameters.nonEmpty) {
       constructor match {
         case Some(x: ScPrimaryConstructor) =>
-          val hasCopy = !TypeDefinitionMembers
-            .getSignatures(this)
-            .forName("copy")
-            ._1
-            .isEmpty
+          val hasCopy = !TypeDefinitionMembers.getSignatures(this).forName(
+            "copy")._1.isEmpty
           val addCopy =
             !hasCopy && !x.parameterList.clauses.exists(_.hasRepeatedParam)
           if (addCopy) {
@@ -278,20 +270,16 @@ class ScClassImpl private (
     val x = constructor.getOrElse(return "")
     val paramString = (if (x.parameterList.clauses.length == 1 &&
                            x.parameterList.clauses.head.isImplicit) "()"
-                       else "") + x.parameterList.clauses
-      .map { c =>
-        val start = if (c.isImplicit) "(implicit " else "("
-        c.parameters
-          .map { p =>
-            val paramType = p.typeElement match {
-              case Some(te) => te.getText
-              case None     => "Any"
-            }
-            p.name + " : " + paramType + " = this." + p.name
-          }
-          .mkString(start, ", ", ")")
-      }
-      .mkString("")
+                       else "") + x.parameterList.clauses.map { c =>
+      val start = if (c.isImplicit) "(implicit " else "("
+      c.parameters.map { p =>
+        val paramType = p.typeElement match {
+          case Some(te) => te.getText
+          case None     => "Any"
+        }
+        p.name + " : " + paramType + " = this." + p.name
+      }.mkString(start, ", ", ")")
+    }.mkString("")
 
     val returnType = name + typeParameters.map(_.name).mkString("[", ",", "]")
     "def copy" + typeParamString + paramString + " : " + returnType + " = throw new Error(\"\")"
@@ -299,42 +287,34 @@ class ScClassImpl private (
 
   private def implicitMethodText: String = {
     val constr = constructor.getOrElse(return "")
-    val returnType = name + typeParametersClause
-      .map(clause => typeParameters.map(_.name).mkString("[", ",", "]"))
-      .getOrElse("")
-    val typeParametersText = typeParametersClause
-      .map(tp => {
-        tp.typeParameters
-          .map(tp => {
-            val baseText = tp.typeParameterText
-            if (tp.isContravariant) {
-              val i = baseText.indexOf('-')
-              baseText.substring(i + 1)
-            } else if (tp.isCovariant) {
-              val i = baseText.indexOf('+')
-              baseText.substring(i + 1)
-            } else baseText
-          })
-          .mkString("[", ", ", "]")
-      })
-      .getOrElse("")
+    val returnType = name + typeParametersClause.map(clause =>
+      typeParameters.map(_.name).mkString("[", ",", "]")).getOrElse("")
+    val typeParametersText = typeParametersClause.map(tp => {
+      tp.typeParameters.map(tp => {
+        val baseText = tp.typeParameterText
+        if (tp.isContravariant) {
+          val i = baseText.indexOf('-')
+          baseText.substring(i + 1)
+        } else if (tp.isCovariant) {
+          val i = baseText.indexOf('+')
+          baseText.substring(i + 1)
+        } else baseText
+      }).mkString("[", ", ", "]")
+    }).getOrElse("")
     val parametersText = constr.parameterList.clauses.map {
       case clause: ScParameterClause =>
-        clause.parameters
-          .map {
-            case parameter: ScParameter =>
-              val paramText =
-                s"${parameter.name} : ${parameter.typeElement.map(_.getText).getOrElse("Nothing")}"
-              parameter.getDefaultExpression match {
-                case Some(expr) => s"$paramText = ${expr.getText}"
-                case _          => paramText
-              }
-          }
-          .mkString(if (clause.isImplicit) "(implicit " else "(", ", ", ")")
+        clause.parameters.map {
+          case parameter: ScParameter =>
+            val paramText =
+              s"${parameter.name} : ${parameter.typeElement.map(_.getText).getOrElse("Nothing")}"
+            parameter.getDefaultExpression match {
+              case Some(expr) => s"$paramText = ${expr.getText}"
+              case _          => paramText
+            }
+        }.mkString(if (clause.isImplicit) "(implicit " else "(", ", ", ")")
     }.mkString
-    getModifierList.accessModifier
-      .map(am => am.getText + " ")
-      .getOrElse("") + "implicit def " + name +
+    getModifierList.accessModifier.map(am => am.getText + " ").getOrElse(
+      "") + "implicit def " + name +
       typeParametersText + parametersText + " : " + returnType +
       " = throw new Error(\"\")"
   }

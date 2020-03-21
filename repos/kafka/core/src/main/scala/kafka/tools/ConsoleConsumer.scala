@@ -101,15 +101,16 @@ object ConsoleConsumer extends Logging {
       System.exit(1)
     }
 
-    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config.options
-          .has(config.resetBeginningOpt) &&
+    if (!config.options.has(
+          config.deleteConsumerOffsetsOpt) && config.options.has(
+          config.resetBeginningOpt) &&
         checkZkPathExists(
           config.options.valueOf(config.zkConnectOpt),
           "/consumers/" + config.consumerProps.getProperty(
             "group.id") + "/offsets")) {
       System.err.println(
-        "Found previous offset information for this group " + config.consumerProps
-          .getProperty("group.id")
+        "Found previous offset information for this group " + config.consumerProps.getProperty(
+          "group.id")
           + ". Please use --delete-consumer-offsets to delete previous offsets metadata")
       System.exit(1)
     }
@@ -200,8 +201,9 @@ object ConsoleConsumer extends Logging {
       if (config.fromBeginning) "smallest" else "largest")
     props.put("zookeeper.connect", config.zkConnectionStr)
 
-    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config.options
-          .has(config.resetBeginningOpt) &&
+    if (!config.options.has(
+          config.deleteConsumerOffsetsOpt) && config.options.has(
+          config.resetBeginningOpt) &&
         checkZkPathExists(
           config.options.valueOf(config.zkConnectOpt),
           "/consumers/" + props.getProperty("group.id") + "/offsets")) {
@@ -247,46 +249,44 @@ object ConsoleConsumer extends Logging {
 
   class ConsumerConfig(args: Array[String]) {
     val parser = new OptionParser
-    val topicIdOpt = parser
-      .accepts("topic", "The topic id to consume on.")
+    val topicIdOpt = parser.accepts("topic", "The topic id to consume on.")
       .withRequiredArg
       .describedAs("topic")
       .ofType(classOf[String])
-    val whitelistOpt = parser
-      .accepts("whitelist", "Whitelist of topics to include for consumption.")
+    val whitelistOpt = parser.accepts(
+      "whitelist",
+      "Whitelist of topics to include for consumption.")
       .withRequiredArg
       .describedAs("whitelist")
       .ofType(classOf[String])
-    val blacklistOpt = parser
-      .accepts("blacklist", "Blacklist of topics to exclude from consumption.")
+    val blacklistOpt = parser.accepts(
+      "blacklist",
+      "Blacklist of topics to exclude from consumption.")
       .withRequiredArg
       .describedAs("blacklist")
       .ofType(classOf[String])
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
-          "Multiple URLS can be given to allow fail-over.")
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over.")
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
-    val consumerConfigOpt = parser
-      .accepts("consumer.config", "Consumer config properties file.")
-      .withRequiredArg
-      .describedAs("config file")
-      .ofType(classOf[String])
-    val messageFormatterOpt = parser
-      .accepts(
-        "formatter",
-        "The name of a class to use for formatting kafka messages for display.")
+    val consumerConfigOpt =
+      parser.accepts("consumer.config", "Consumer config properties file.")
+        .withRequiredArg
+        .describedAs("config file")
+        .ofType(classOf[String])
+    val messageFormatterOpt = parser.accepts(
+      "formatter",
+      "The name of a class to use for formatting kafka messages for display.")
       .withRequiredArg
       .describedAs("class")
       .ofType(classOf[String])
       .defaultsTo(classOf[DefaultMessageFormatter].getName)
-    val messageFormatterArgOpt = parser
-      .accepts(
-        "property",
-        "The properties to initialize the message formatter.")
+    val messageFormatterArgOpt = parser.accepts(
+      "property",
+      "The properties to initialize the message formatter.")
       .withRequiredArg
       .describedAs("prop")
       .ofType(classOf[String])
@@ -298,17 +298,15 @@ object ConsoleConsumer extends Logging {
       "If the consumer does not already have an established offset to consume from, " +
         "start with the earliest message present in the log rather than the latest message."
     )
-    val maxMessagesOpt = parser
-      .accepts(
-        "max-messages",
-        "The maximum number of messages to consume before exiting. If not set, consumption is continual.")
+    val maxMessagesOpt = parser.accepts(
+      "max-messages",
+      "The maximum number of messages to consume before exiting. If not set, consumption is continual.")
       .withRequiredArg
       .describedAs("num_messages")
       .ofType(classOf[java.lang.Integer])
-    val timeoutMsOpt = parser
-      .accepts(
-        "timeout-ms",
-        "If specified, exit if no message is available for consumption for the specified interval.")
+    val timeoutMsOpt = parser.accepts(
+      "timeout-ms",
+      "If specified, exit if no message is available for consumption for the specified interval.")
       .withRequiredArg
       .describedAs("timeout_ms")
       .ofType(classOf[java.lang.Integer])
@@ -319,28 +317,24 @@ object ConsoleConsumer extends Logging {
     val csvMetricsReporterEnabledOpt = parser.accepts(
       "csv-reporter-enabled",
       "If set, the CSV metrics reporter will be enabled")
-    val metricsDirectoryOpt = parser
-      .accepts(
-        "metrics-dir",
-        "If csv-reporter-enable is set, and this parameter is" +
-          "set, the csv metrics will be outputed here")
+    val metricsDirectoryOpt = parser.accepts(
+      "metrics-dir",
+      "If csv-reporter-enable is set, and this parameter is" +
+        "set, the csv metrics will be outputed here")
       .withRequiredArg
       .describedAs("metrics directory")
       .ofType(classOf[java.lang.String])
     val useNewConsumerOpt =
       parser.accepts("new-consumer", "Use the new consumer implementation.")
-    val bootstrapServerOpt = parser
-      .accepts("bootstrap-server")
+    val bootstrapServerOpt = parser.accepts("bootstrap-server")
       .withRequiredArg
       .describedAs("server to connect to")
       .ofType(classOf[String])
-    val keyDeserializerOpt = parser
-      .accepts("key-deserializer")
+    val keyDeserializerOpt = parser.accepts("key-deserializer")
       .withRequiredArg
       .describedAs("deserializer for key")
       .ofType(classOf[String])
-    val valueDeserializerOpt = parser
-      .accepts("value-deserializer")
+    val valueDeserializerOpt = parser.accepts("value-deserializer")
       .withRequiredArg
       .describedAs("deserializer for values")
       .ofType(classOf[String])
@@ -476,18 +470,12 @@ class DefaultMessageFormatter extends MessageFormatter {
       lineSeparator = props.getProperty("line.separator").getBytes
     // Note that `toString` will be called on the instance returned by `Deserializer.deserialize`
     if (props.containsKey("key.deserializer"))
-      keyDeserializer = Some(
-        Class
-          .forName(props.getProperty("key.deserializer"))
-          .newInstance()
-          .asInstanceOf[Deserializer[_]])
+      keyDeserializer = Some(Class.forName(props.getProperty(
+        "key.deserializer")).newInstance().asInstanceOf[Deserializer[_]])
     // Note that `toString` will be called on the instance returned by `Deserializer.deserialize`
     if (props.containsKey("value.deserializer"))
-      valueDeserializer = Some(
-        Class
-          .forName(props.getProperty("value.deserializer"))
-          .newInstance()
-          .asInstanceOf[Deserializer[_]])
+      valueDeserializer = Some(Class.forName(props.getProperty(
+        "value.deserializer")).newInstance().asInstanceOf[Deserializer[_]])
   }
 
   def writeTo(
@@ -499,9 +487,9 @@ class DefaultMessageFormatter extends MessageFormatter {
         sourceBytes: Array[Byte],
         separator: Array[Byte]) {
       val nonNullBytes = Option(sourceBytes).getOrElse("null".getBytes)
-      val convertedBytes = deserializer
-        .map(_.deserialize(null, nonNullBytes).toString.getBytes)
-        .getOrElse(nonNullBytes)
+      val convertedBytes = deserializer.map(
+        _.deserialize(null, nonNullBytes).toString.getBytes).getOrElse(
+        nonNullBytes)
       output.write(convertedBytes)
       output.write(separator)
     }

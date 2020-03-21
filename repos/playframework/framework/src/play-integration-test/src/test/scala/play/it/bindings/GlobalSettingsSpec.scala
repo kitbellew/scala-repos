@@ -44,8 +44,7 @@ trait GlobalSettingsSpec
             Ok(request.headers.get("X-Foo").getOrElse("null"))
           }
         case p"/java" => JAction(app, JavaAction)
-      }))
-      .build()
+      })).build()
     running(TestServer(port, app)) {
       val response = await(wsUrl(uri).get())
       block(response.body)

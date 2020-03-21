@@ -93,8 +93,7 @@ class ActorsLeakSpec
 
         val remoteSystem = ActorSystem(
           "remote",
-          ConfigFactory
-            .parseString("akka.remote.netty.tcp.port = 0")
+          ConfigFactory.parseString("akka.remote.netty.tcp.port = 0")
             .withFallback(config))
 
         try {
@@ -115,8 +114,7 @@ class ActorsLeakSpec
 
         val remoteSystem = ActorSystem(
           "remote",
-          ConfigFactory
-            .parseString("akka.remote.netty.tcp.port = 0")
+          ConfigFactory.parseString("akka.remote.netty.tcp.port = 0")
             .withFallback(config))
         val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
 
@@ -128,26 +126,25 @@ class ActorsLeakSpec
 
           // This will make sure that no SHUTDOWN message gets through
           Await.ready(
-            RARP(system).provider.transport
-              .managementCommand(ForceDisassociate(remoteAddress)),
+            RARP(system).provider.transport.managementCommand(
+              ForceDisassociate(remoteAddress)),
             3.seconds)
 
         } finally {
           remoteSystem.terminate()
         }
 
-        EventFilter
-          .warning(pattern = "Association with remote system", occurrences = 1)
-          .intercept {
-            Await.ready(remoteSystem.whenTerminated, 10.seconds)
-          }
+        EventFilter.warning(
+          pattern = "Association with remote system",
+          occurrences = 1).intercept {
+          Await.ready(remoteSystem.whenTerminated, 10.seconds)
+        }
       }
 
       // Remote idle for too long case
       val remoteSystem = ActorSystem(
         "remote",
-        ConfigFactory
-          .parseString("akka.remote.netty.tcp.port = 0")
+        ConfigFactory.parseString("akka.remote.netty.tcp.port = 0")
           .withFallback(config))
       val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
 
@@ -170,19 +167,19 @@ class ActorsLeakSpec
 
         // This will make sure that no SHUTDOWN message gets through
         Await.ready(
-          RARP(system).provider.transport
-            .managementCommand(ForceDisassociate(remoteAddress)),
+          RARP(system).provider.transport.managementCommand(
+            ForceDisassociate(remoteAddress)),
           3.seconds)
 
       } finally {
         remoteSystem.terminate()
       }
 
-      EventFilter
-        .warning(pattern = "Association with remote system", occurrences = 1)
-        .intercept {
-          Await.ready(remoteSystem.whenTerminated, 10.seconds)
-        }
+      EventFilter.warning(
+        pattern = "Association with remote system",
+        occurrences = 1).intercept {
+        Await.ready(remoteSystem.whenTerminated, 10.seconds)
+      }
 
       EventFilter[TimeoutException](occurrences = 1).intercept {}
 

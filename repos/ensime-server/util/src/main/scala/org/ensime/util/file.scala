@@ -59,12 +59,9 @@ package object file {
     def isJar: Boolean = file.getName.toLowerCase.endsWith(".jar")
 
     def parts: List[String] =
-      file.getPath
-        .split(
-          Pattern.quote(JFile.separator)
-        )
-        .toList
-        .filterNot(Set("", "."))
+      file.getPath.split(
+        Pattern.quote(JFile.separator)
+      ).toList.filterNot(Set("", "."))
 
     def outputStream(): OutputStream = new FileOutputStream(file)
 

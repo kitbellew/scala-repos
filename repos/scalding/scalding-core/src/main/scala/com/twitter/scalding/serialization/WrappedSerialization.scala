@@ -55,9 +55,8 @@ class WrappedSerialization[T] extends HSerialization[T] with Configurable {
   def accept(c: Class[_]): Boolean = serializations.contains(c)
 
   def getSerialization(c: Class[T]): Option[Serialization[T]] =
-    serializations
-      .get(c)
-      // This cast should never fail since we matched the class
+    serializations.get(c)
+    // This cast should never fail since we matched the class
       .asInstanceOf[Option[Serialization[T]]]
 
   def getSerializer(c: Class[T]): Serializer[T] =
@@ -116,9 +115,9 @@ object WrappedSerialization {
       fn: (String, String) => Unit) = {
     fn(
       confKey,
-      bufs
-        .map { case (cls, buf) => s"${cls.getName}:${serialize(buf)}" }
-        .mkString(","))
+      bufs.map {
+        case (cls, buf) => s"${cls.getName}:${serialize(buf)}"
+      }.mkString(","))
   }
   def setBinary(
       conf: Configuration,
@@ -126,7 +125,9 @@ object WrappedSerialization {
     rawSetBinary(bufs, { case (k, v) => conf.set(k, v) })
 
   def getBinary(conf: Configuration): Map[Class[_], Serialization[_]] =
-    conf.iterator.asScala
+    conf
+      .iterator
+      .asScala
       .map { it => (it.getKey, it.getValue) }
       .filter(_._1.startsWith(confKey))
       .map {
@@ -139,6 +140,5 @@ object WrappedSerialization {
               deser(conf.getClassByName(className))
             case _ => sys.error(s"ill formed bufferables: ${clsbuf}")
           }
-      }
-      .toMap
+      }.toMap
 }

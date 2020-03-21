@@ -27,32 +27,27 @@ final class LeaderboardApi(coll: Coll, maxPerPage: Int) {
   def chart(user: User): Fu[ChartData] = {
     import reactivemongo.bson._
     import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework._
-    coll
-      .aggregate(
-        Match(BSONDocument("u" -> user.id)),
-        List(
-          GroupField("v")(
-            "nb" -> SumValue(1),
-            "points" -> Push("s"),
-            "ratios" -> Push("w")))
-      )
-      .map {
-        _.documents map leaderboardAggregationResultBSONHandler.read
+    coll.aggregate(
+      Match(BSONDocument("u" -> user.id)),
+      List(
+        GroupField("v")(
+          "nb" -> SumValue(1),
+          "points" -> Push("s"),
+          "ratios" -> Push("w")))
+    ).map {
+      _.documents map leaderboardAggregationResultBSONHandler.read
+    }.map { aggs =>
+      ChartData {
+        aggs.flatMap { agg =>
+          PerfType.byId get agg._id map {
+            _ -> ChartData.PerfResult(
+              nb = agg.nb,
+              points = ChartData.Ints(agg.points),
+              rank = ChartData.Ints(agg.ratios))
+          }
+        }.sortLike(PerfType.leaderboardable, _._1)
       }
-      .map { aggs =>
-        ChartData {
-          aggs
-            .flatMap { agg =>
-              PerfType.byId get agg._id map {
-                _ -> ChartData.PerfResult(
-                  nb = agg.nb,
-                  points = ChartData.Ints(agg.points),
-                  rank = ChartData.Ints(agg.ratios))
-              }
-            }
-            .sortLike(PerfType.leaderboardable, _._1)
-        }
-      }
+    }
   }
 
   private def paginator(

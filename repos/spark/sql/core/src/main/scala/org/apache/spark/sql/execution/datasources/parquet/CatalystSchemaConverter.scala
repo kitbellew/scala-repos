@@ -72,11 +72,9 @@ private[parquet] class CatalystSchemaConverter(
         conf.get(SQLConf.PARQUET_BINARY_AS_STRING.key).toBoolean,
       assumeInt96IsTimestamp =
         conf.get(SQLConf.PARQUET_INT96_AS_TIMESTAMP.key).toBoolean,
-      writeLegacyParquetFormat = conf
-        .get(
-          SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key,
-          SQLConf.PARQUET_WRITE_LEGACY_FORMAT.defaultValue.get.toString)
-        .toBoolean)
+      writeLegacyParquetFormat = conf.get(
+        SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key,
+        SQLConf.PARQUET_WRITE_LEGACY_FORMAT.defaultValue.get.toString).toBoolean)
 
   /**
     * Converts Parquet [[MessageType]] `parquetSchema` to a Spark SQL [[StructType]].
@@ -518,11 +516,9 @@ private[parquet] class CatalystSchemaConverter(
         //   }
         // }
         Types
-          .buildGroup(repetition)
-          .as(LIST)
+          .buildGroup(repetition).as(LIST)
           .addField(
-            Types
-              .repeatedGroup()
+            Types.repeatedGroup()
               .addField(
                 convertField(StructField("element", elementType, containsNull)))
               .named("list"))
@@ -536,8 +532,7 @@ private[parquet] class CatalystSchemaConverter(
         //   }
         // }
         Types
-          .buildGroup(repetition)
-          .as(MAP)
+          .buildGroup(repetition).as(MAP)
           .addField(
             Types
               .repeatedGroup()
@@ -553,11 +548,9 @@ private[parquet] class CatalystSchemaConverter(
       // ===========
 
       case StructType(fields) =>
-        fields
-          .foldLeft(Types.buildGroup(repetition)) { (builder, field) =>
-            builder.addField(convertField(field))
-          }
-          .named(field.name)
+        fields.foldLeft(Types.buildGroup(repetition)) { (builder, field) =>
+          builder.addField(convertField(field))
+        }.named(field.name)
 
       case udt: UserDefinedType[_] =>
         convertField(field.copy(dataType = udt.sqlType))
@@ -606,11 +599,10 @@ private[parquet] object CatalystSchemaConverter {
 
   // Max precision of a decimal value stored in `numBytes` bytes
   def maxPrecisionForBytes(numBytes: Int): Int = {
-    Math
-      .round( // convert double to long
-        Math.floor(Math.log10( // number of base-10 digits
-          Math.pow(2, 8 * numBytes - 1) - 1))
-      ) // max value stored in numBytes
+    Math.round( // convert double to long
+      Math.floor(Math.log10( // number of base-10 digits
+        Math.pow(2, 8 * numBytes - 1) - 1))
+    ) // max value stored in numBytes
       .asInstanceOf[Int]
   }
 }

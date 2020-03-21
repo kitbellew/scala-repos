@@ -124,8 +124,9 @@ class Log(
   val topicAndPartition: TopicAndPartition = Log.parseTopicPartitionName(dir)
 
   info(
-    "Completed load of log %s with log end offset %d"
-      .format(name, logEndOffset))
+    "Completed load of log %s with log end offset %d".format(
+      name,
+      logEndOffset))
 
   val tags = Map(
     "topic" -> topicAndPartition.topic,
@@ -189,8 +190,10 @@ class Log(
         } else if (baseName.getPath.endsWith(LogFileSuffix)) {
           // delete the index
           val index = new File(
-            CoreUtils
-              .replaceSuffix(baseName.getPath, LogFileSuffix, IndexFileSuffix))
+            CoreUtils.replaceSuffix(
+              baseName.getPath,
+              LogFileSuffix,
+              IndexFileSuffix))
           index.delete()
           swapFiles += file
         }
@@ -206,8 +209,8 @@ class Log(
           file.getAbsolutePath.replace(IndexFileSuffix, LogFileSuffix))
         if (!logFile.exists) {
           warn(
-            "Found an orphaned index file, %s, with no corresponding log file."
-              .format(file.getAbsolutePath))
+            "Found an orphaned index file, %s, with no corresponding log file.".format(
+              file.getAbsolutePath))
           file.delete()
         }
       } else if (filename.endsWith(LogFileSuffix)) {
@@ -230,15 +233,15 @@ class Log(
           } catch {
             case e: java.lang.IllegalArgumentException =>
               warn(
-                "Found a corrupted index file, %s, deleting and rebuilding index..."
-                  .format(indexFile.getAbsolutePath))
+                "Found a corrupted index file, %s, deleting and rebuilding index...".format(
+                  indexFile.getAbsolutePath))
               indexFile.delete()
               segment.recover(config.maxMessageSize)
           }
         } else {
           error(
-            "Could not find index file corresponding to log file %s, rebuilding index..."
-              .format(segment.log.file.getAbsolutePath))
+            "Could not find index file corresponding to log file %s, rebuilding index...".format(
+              segment.log.file.getAbsolutePath))
           segment.recover(config.maxMessageSize)
         }
         segments.put(start, segment)
@@ -324,8 +327,9 @@ class Log(
     while (unflushed.hasNext) {
       val curr = unflushed.next
       info(
-        "Recovering unflushed segment %d in log %s."
-          .format(curr.baseOffset, name))
+        "Recovering unflushed segment %d in log %s.".format(
+          curr.baseOffset,
+          name))
       val truncatedBytes =
         try {
           curr.recover(config.maxMessageSize)
@@ -340,8 +344,10 @@ class Log(
       if (truncatedBytes > 0) {
         // we had an invalid message, delete all remaining log
         warn(
-          "Corruption found in segment %d of log %s, truncating to offset %d."
-            .format(curr.baseOffset, name, curr.nextOffset))
+          "Corruption found in segment %d of log %s, truncating to offset %d.".format(
+            curr.baseOffset,
+            name,
+            curr.nextOffset))
         unflushed.foreach(deleteSegment)
       }
     }
@@ -419,8 +425,8 @@ class Log(
             } catch {
               case e: IOException =>
                 throw new KafkaException(
-                  "Error in validating messages while appending to log '%s'"
-                    .format(name),
+                  "Error in validating messages while appending to log '%s'".format(
+                    name),
                   e)
             }
           validMessages = validatedMessages
@@ -436,12 +442,11 @@ class Log(
                     messageAndOffset.message) > config.maxMessageSize) {
                 // we record the original message set size instead of the trimmed size
                 // to be consistent with pre-compression bytesRejectedRate recording
-                BrokerTopicStats
-                  .getBrokerTopicStats(topicAndPartition.topic)
-                  .bytesRejectedRate
-                  .mark(messages.sizeInBytes)
-                BrokerTopicStats.getBrokerAllTopicsStats.bytesRejectedRate
-                  .mark(messages.sizeInBytes)
+                BrokerTopicStats.getBrokerTopicStats(
+                  topicAndPartition.topic).bytesRejectedRate.mark(
+                  messages.sizeInBytes)
+                BrokerTopicStats.getBrokerAllTopicsStats.bytesRejectedRate.mark(
+                  messages.sizeInBytes)
                 throw new RecordTooLargeException(
                   "Message size is %d bytes which exceeds the maximum configured message size of %d."
                     .format(
@@ -534,12 +539,10 @@ class Log(
       // Check if the message sizes are valid.
       val messageSize = MessageSet.entrySize(m)
       if (messageSize > config.maxMessageSize) {
-        BrokerTopicStats
-          .getBrokerTopicStats(topicAndPartition.topic)
-          .bytesRejectedRate
-          .mark(messages.sizeInBytes)
-        BrokerTopicStats.getBrokerAllTopicsStats.bytesRejectedRate
-          .mark(messages.sizeInBytes)
+        BrokerTopicStats.getBrokerTopicStats(
+          topicAndPartition.topic).bytesRejectedRate.mark(messages.sizeInBytes)
+        BrokerTopicStats.getBrokerAllTopicsStats.bytesRejectedRate.mark(
+          messages.sizeInBytes)
         throw new RecordTooLargeException(
           "Message size is %d bytes which exceeds the maximum configured message size of %d."
             .format(messageSize, config.maxMessageSize))
@@ -610,8 +613,11 @@ class Log(
       maxLength: Int,
       maxOffset: Option[Long] = None): FetchDataInfo = {
     trace(
-      "Reading %d bytes from offset %d in log %s of length %d bytes"
-        .format(maxLength, startOffset, name, size))
+      "Reading %d bytes from offset %d in log %s of length %d bytes".format(
+        maxLength,
+        startOffset,
+        name,
+        size))
 
     // Because we don't use lock for reading, the synchronization is a little bit tricky.
     // We create the local variables to avoid race conditions with updates to the log.
@@ -625,8 +631,10 @@ class Log(
     // attempt to read beyond the log end offset is an error
     if (startOffset > next || entry == null)
       throw new OffsetOutOfRangeException(
-        "Request for offset %d but we only have log segments in the range %d to %d."
-          .format(startOffset, segments.firstKey, next))
+        "Request for offset %d but we only have log segments in the range %d to %d.".format(
+          startOffset,
+          segments.firstKey,
+          next))
 
     // Do the read on the segment with a base offset less than the target offset
     // but if that segment doesn't contain any messages with an offset greater than that
@@ -794,8 +802,9 @@ class Log(
       val prev = addSegment(segment)
       if (prev != null)
         throw new KafkaException(
-          "Trying to roll a new log segment for topic partition %s with start offset %d while it already exists."
-            .format(name, newOffset))
+          "Trying to roll a new log segment for topic partition %s with start offset %d while it already exists.".format(
+            name,
+            newOffset))
       // We need to update the segment base offset and append position data of the metadata when log rolls.
       // The next offset should not change.
       updateLogEndOffset(nextOffsetMetadata.messageOffset)
@@ -863,8 +872,10 @@ class Log(
         "Cannot truncate to a negative offset (%d).".format(targetOffset))
     if (targetOffset > logEndOffset) {
       info(
-        "Truncating %s to %d has no effect as the largest offset in the log is %d."
-          .format(name, targetOffset, logEndOffset - 1))
+        "Truncating %s to %d has no effect as the largest offset in the log is %d.".format(
+          name,
+          targetOffset,
+          logEndOffset - 1))
       return
     }
     lock synchronized {
@@ -955,8 +966,9 @@ class Log(
     */
   private def deleteSegment(segment: LogSegment) {
     info(
-      "Scheduling log segment %d for log %s for deletion."
-        .format(segment.baseOffset, name))
+      "Scheduling log segment %d for log %s for deletion.".format(
+        segment.baseOffset,
+        name))
     lock synchronized {
       segments.remove(segment.baseOffset)
       asyncDeleteSegment(segment)

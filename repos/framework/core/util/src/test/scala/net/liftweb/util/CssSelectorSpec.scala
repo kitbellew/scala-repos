@@ -37,9 +37,8 @@ object CssSelectorSpec extends Specification with XmlMatchers {
     }
 
     "select an id" in {
-      CssSelectorParser
-        .parse("#foo")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("#foo").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         IdSelector("foo", Empty)
     }
 
@@ -52,100 +51,86 @@ object CssSelectorSpec extends Specification with XmlMatchers {
     }
 
     ":button must  parse" in {
-      CssSelectorParser
-        .parse(":button")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":button").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "button", Empty)
     }
 
     ":checkbox must  parse" in {
-      CssSelectorParser
-        .parse(":checkbox")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":checkbox").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "checkbox", Empty)
     }
 
     ":file must  parse" in {
-      CssSelectorParser
-        .parse(":file")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":file").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "file", Empty)
     }
 
     ":password must  parse" in {
-      CssSelectorParser
-        .parse(":password")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":password").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "password", Empty)
     }
 
     ":radio must  parse" in {
-      CssSelectorParser
-        .parse(":radio")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":radio").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "radio", Empty)
     }
 
     ":reset must  parse" in {
-      CssSelectorParser
-        .parse(":reset")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":reset").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "reset", Empty)
     }
 
     ":submit must  parse" in {
-      CssSelectorParser
-        .parse(":submit")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":submit").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "submit", Empty)
     }
 
     ":text must  parse" in {
-      CssSelectorParser
-        .parse(":text")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(":text").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         AttrSelector("type", "text", Empty)
     }
 
     "select an id with attr subnodes" in {
-      CssSelectorParser
-        .parse("#foo  *[dog] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("#foo  *[dog] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         IdSelector("foo", Full(AttrSubNode("dog")))
     }
 
     "select an id with no star attr subnodes" in {
-      CssSelectorParser
-        .parse("#foo  [woof] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("#foo  [woof] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         IdSelector("foo", Full(AttrSubNode("woof")))
     }
 
     "select an id with attr append subnodes" in {
-      CssSelectorParser
-        .parse("#foo  *[dog+] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("#foo  *[dog+] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         IdSelector("foo", Full(AttrAppendSubNode("dog")))
     }
 
     "select an id with no star attr append subnodes" in {
-      CssSelectorParser
-        .parse("#foo  [woof+] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("#foo  [woof+] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         IdSelector("foo", Full(AttrAppendSubNode("woof")))
     }
 
     "select an id with attr append subnodes" in {
-      CssSelectorParser
-        .parse("#foo  *[dog!] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("#foo  *[dog!] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         IdSelector("foo", Full(AttrRemoveSubNode("dog")))
     }
 
     "select an id with no star attr append subnodes" in {
-      CssSelectorParser
-        .parse("#foo  [woof!] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("#foo  [woof!] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         IdSelector("foo", Full(AttrRemoveSubNode("woof")))
     }
 
@@ -205,71 +190,61 @@ object CssSelectorSpec extends Specification with XmlMatchers {
     }
 
     "select a class" in {
-      CssSelectorParser
-        .parse(".foo")
-        .openOrThrowException(
-          "If the box is empty, we want a failure") must_== ClassSelector(
+      CssSelectorParser.parse(".foo").openOrThrowException(
+        "If the box is empty, we want a failure") must_== ClassSelector(
         "foo",
         Empty)
     }
 
     "select a class with subnodes" in {
-      CssSelectorParser
-        .parse(".foo  * ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(".foo  * ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         ClassSelector("foo", Full(KidsSubNode()))
     }
 
     "Support selecting this node" in {
-      CssSelectorParser
-        .parse(".foo  ^^ ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(".foo  ^^ ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         ClassSelector("foo", Full(SelectThisNode(false)))
     }
 
     "Support selecting this node" in {
-      CssSelectorParser
-        .parse(".foo  ^* ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(".foo  ^* ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         ClassSelector("foo", Full(SelectThisNode(true)))
     }
 
     "select a class with attr subnodes" in {
-      CssSelectorParser
-        .parse(".foo  *[dog] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(".foo  *[dog] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         ClassSelector("foo", Full(AttrSubNode("dog")))
     }
 
     "select an id with no star attr subnodes" in {
-      CssSelectorParser
-        .parse(".foo  [woof] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse(".foo  [woof] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         ClassSelector("foo", Full(AttrSubNode("woof")))
     }
 
     "select multiple depth" in {
-      CssSelectorParser
-        .parse("div .foo [woof] ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("div .foo [woof] ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         EnclosedSelector(
           ElemSelector("div", Empty),
           ClassSelector("foo", Full(AttrSubNode("woof"))))
     }
 
     "select multiple depth with star" in {
-      CssSelectorParser
-        .parse("div .foo * ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("div .foo * ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         EnclosedSelector(
           ElemSelector("div", Empty),
           ClassSelector("foo", Full(KidsSubNode())))
     }
 
     "select multiple super depth with star" in {
-      CssSelectorParser
-        .parse("span div .foo * ")
-        .openOrThrowException("If the box is empty, we want a failure") must_==
+      CssSelectorParser.parse("span div .foo * ").openOrThrowException(
+        "If the box is empty, we want a failure") must_==
         EnclosedSelector(
           ElemSelector("span", Empty),
           EnclosedSelector(
@@ -326,8 +301,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "Compound selector" in {
       val res =
-        (".foo [href]" #> "http://dog.com" & ".bar [id]" #> "moo")
-          .apply(<a class="foo bar" href="#"/>)
+        (".foo [href]" #> "http://dog.com" & ".bar [id]" #> "moo").apply(
+          <a class="foo bar" href="#"/>)
       (res \ "@href").text must_== "http://dog.com"
       (res \ "@id").text must_== "moo"
     }
@@ -721,8 +696,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "substitute by name" in {
-      val answer = ("name=moose" #> <input name="goof"/>)
-        .apply(<div><input name="moose" value="start" id="79"/></div>)
+      val answer = ("name=moose" #> <input name="goof"/>).apply(
+        <div><input name="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(<input name="goof" value="start" id="79"/>)
     }
@@ -738,23 +713,24 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "substitute by name" in {
-      val answer = ("name=moose" replaceWith <input name="goof"/>)
-        .apply(<div><input name="moose" value="start" id="79"/></div>)
+      val answer = ("name=moose" replaceWith <input name="goof"/>).apply(
+        <div><input name="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(<input name="goof" value="start" id="79"/>)
     }
 
     "substitute by name with attrs" in {
-      val answer = ("name=moose" #> <input name="goof" value="8" id="88"/>)
-        .apply(<div><input name="moose" value="start" id="79"/></div>)
+      val answer =
+        ("name=moose" #> <input name="goof" value="8" id="88"/>).apply(
+          <div><input name="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(<input name="goof" value="8" id="88"/>)
     }
 
     "substitute by name with attrs" in {
       val answer =
-        ("name=moose" replaceWith <input name="goof" value="8" id="88"/>)
-          .apply(<div><input name="moose" value="start" id="79"/></div>)
+        ("name=moose" replaceWith <input name="goof" value="8" id="88"/>).apply(
+          <div><input name="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(<input name="goof" value="8" id="88"/>)
     }
@@ -802,9 +778,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "merge classes" in {
       val answer =
-        ("cute=moose" #> <input class="a" name="goof" value="8" id="88"/>)
-          .apply(
-            <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
+        ("cute=moose" #> <input class="a" name="goof" value="8" id="88"/>).apply(
+          <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(
         <input class="a b" cute="moose" name="goof" value="8" id="88"/>)
@@ -812,9 +787,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "merge classes" in {
       val answer =
-        ("cute=moose" replaceWith <input class="a" name="goof" value="8" id="88"/>)
-          .apply(
-            <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
+        ("cute=moose" replaceWith <input class="a" name="goof" value="8" id="88"/>).apply(
+          <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(
         <input class="a b" cute="moose" name="goof" value="8" id="88"/>)

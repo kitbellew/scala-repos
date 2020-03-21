@@ -376,11 +376,10 @@ final class Algebraic private (val expr: Algebraic.Expr)
             .divide(rValue, new MathContext(digits + 2, roundingMode))
             .round(new MathContext(digits, roundingMode))
         case KRoot(sub, k) =>
-          Algebraic
-            .nroot(
-              rec(sub, digits + 2),
-              k,
-              new MathContext(digits + 2, roundingMode))
+          Algebraic.nroot(
+            rec(sub, digits + 2),
+            k,
+            new MathContext(digits + 2, roundingMode))
             .round(new MathContext(digits, roundingMode))
         case Pow(sub, k) =>
           val subValue = rec(sub, digits + ceil(log(k.toDouble)).toInt)
@@ -1310,7 +1309,8 @@ object Algebraic extends AlgebraicInstances {
     } else {
       val unscale = spire.math.pow(10L, cutoff.toLong)
       val Array(truncatedUnscaledValue, bigRemainder) =
-        approx.unscaledValue
+        approx
+          .unscaledValue
           .divideAndRemainder(BigInteger.valueOf(unscale))
       val truncated = new JBigDecimal(truncatedUnscaledValue, scale)
       def epsilon: JBigDecimal = new JBigDecimal(BigInteger.ONE, scale)
@@ -1325,9 +1325,8 @@ object Algebraic extends AlgebraicInstances {
           if (remainder >= dangerZoneStart && remainder <= dangerZoneStop) {
             val splitter = BigDecimal(
               new JBigDecimal(
-                truncatedUnscaledValue
-                  .multiply(BigInteger.TEN)
-                  .add(BigInteger.valueOf(5)),
+                truncatedUnscaledValue.multiply(BigInteger.TEN).add(
+                  BigInteger.valueOf(5)),
                 scale + 1
               ))
             val cmp = exact compare Algebraic(splitter)

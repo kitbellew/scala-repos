@@ -75,8 +75,7 @@ object RichXHandler {
     new XHandler(xMap, dVal)
 
   def apply(t: Throwable): String =
-    mapping
-      .get(peelUntilMappable(t))
+    mapping.get(peelUntilMappable(t))
       .map(_ + "\n")
       .getOrElse("") +
       "If you know what exactly caused this error, please consider contributing to GitHub via following link.\n" +

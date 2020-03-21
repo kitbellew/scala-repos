@@ -68,9 +68,11 @@ class TestConductorSpec
       expectMsg("start")
 
       runOn(master) {
-        testConductor
-          .throttle(slave, master, Direction.Send, rateMBit = 0.01)
-          .await
+        testConductor.throttle(
+          slave,
+          master,
+          Direction.Send,
+          rateMBit = 0.01).await
       }
 
       enterBarrier("throttled_send")
@@ -88,9 +90,11 @@ class TestConductorSpec
 
       runOn(master) {
         testConductor.throttle(slave, master, Direction.Send, -1).await
-        testConductor
-          .throttle(slave, master, Direction.Receive, rateMBit = 0.01)
-          .await
+        testConductor.throttle(
+          slave,
+          master,
+          Direction.Receive,
+          rateMBit = 0.01).await
       }
 
       enterBarrier("throttled_recv")

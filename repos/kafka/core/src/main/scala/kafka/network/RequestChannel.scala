@@ -85,10 +85,8 @@ object RequestChannel extends Logging {
 
     // TODO: this will be removed once we migrated to client-side format
     val requestObj =
-      keyToNameAndDeserializerMap
-        .get(requestId)
-        .map(readFrom => readFrom(buffer))
-        .orNull
+      keyToNameAndDeserializerMap.get(requestId).map(readFrom =>
+        readFrom(buffer)).orNull
 
     // if we failed to find a server-side mapping, then try using the
     // client-side request / response format

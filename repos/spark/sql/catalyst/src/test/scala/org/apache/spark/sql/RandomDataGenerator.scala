@@ -186,12 +186,10 @@ object RandomDataGenerator {
         })
       case DecimalType.Fixed(precision, scale) =>
         Some(() =>
-          BigDecimal
-            .apply(
-              rand.nextLong() % math.pow(10, precision).toLong,
-              scale,
-              new MathContext(precision))
-            .bigDecimal)
+          BigDecimal.apply(
+            rand.nextLong() % math.pow(10, precision).toLong,
+            scale,
+            new MathContext(precision)).bigDecimal)
       case DoubleType =>
         randomNumeric[Double](
           rand,
@@ -254,8 +252,8 @@ object RandomDataGenerator {
           () =>
             {
               val length = rand.nextInt(MAX_MAP_SIZE)
-              val keys = scala.collection.mutable
-                .HashSet(Seq.fill(length)(keyGenerator()): _*)
+              val keys = scala.collection.mutable.HashSet(
+                Seq.fill(length)(keyGenerator()): _*)
               // In case the number of different keys is not enough, set a max iteration to avoid
               // infinite loop.
               var count = 0

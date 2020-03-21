@@ -21,8 +21,7 @@ final class EmailAddress(disposable: DisposableEmailDomain) {
         name
           .replace(".", "") // remove all dots
           .takeWhile('+' !=) // skip everything after the first +
-          .some
-          .filter(_.nonEmpty) // make sure something remains
+          .some.filter(_.nonEmpty) // make sure something remains
           .map(radix => s"$radix@$domain") // okay
 
       // disposable addresses

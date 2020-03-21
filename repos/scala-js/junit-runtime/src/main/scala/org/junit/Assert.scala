@@ -181,8 +181,10 @@ object Assert {
       expecteds: Array[Double],
       actuals: Array[Double],
       delta: Double): Unit = {
-    new InexactComparisonCriteria(delta)
-      .arrayEquals(message, expecteds, actuals)
+    new InexactComparisonCriteria(delta).arrayEquals(
+      message,
+      expecteds,
+      actuals)
   }
 
   def assertArrayEquals(
@@ -197,8 +199,10 @@ object Assert {
       expecteds: Array[Float],
       actuals: Array[Float],
       delta: Float): Unit = {
-    new InexactComparisonCriteria(delta)
-      .arrayEquals(message, expecteds, actuals)
+    new InexactComparisonCriteria(delta).arrayEquals(
+      message,
+      expecteds,
+      actuals)
   }
 
   def assertArrayEquals(

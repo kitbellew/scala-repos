@@ -99,7 +99,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("simple csv test") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "false")
       .load(testFile(carsFile))
@@ -108,7 +109,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("simple csv test with calling another function to load") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .option("header", "false")
       .csv(testFile(carsFile))
 
@@ -116,7 +118,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("simple csv test with type inference") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "true")
       .option("inferSchema", "true")
@@ -148,7 +151,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
   test("bad encoding name") {
     val exception = intercept[UnsupportedCharsetException] {
-      sqlContext.read
+      sqlContext
+        .read
         .format("csv")
         .option("charset", "1-9588-osi")
         .load(testFile(carsFile8859))
@@ -171,7 +175,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
   test("test aliases sep and encoding for delimiter and charset") {
     // scalastyle:off
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "true")
       .option("encoding", "iso-8859-1")
@@ -204,11 +209,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
          |OPTIONS (path "${testFile(carsTsvFile)}", header "true", delimiter "\t")
       """.stripMargin.replaceAll("\n", " "))
 
-    assert(
-      sqlContext
-        .sql("SELECT makeName FROM carsTable where priceTag > 60000")
-        .collect()
-        .size === 1)
+    assert(sqlContext.sql(
+      "SELECT makeName FROM carsTable where priceTag > 60000").collect().size === 1)
   }
 
   test("test for DROPMALFORMED parsing mode") {
@@ -225,8 +227,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       sqlContext.read
         .format("csv")
         .options(Map("header" -> "true", "mode" -> "failfast"))
-        .load(testFile(carsFile))
-        .collect()
+        .load(testFile(carsFile)).collect()
     }
 
     assert(
@@ -235,7 +236,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("test for tokens more than the fields in the schema") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "false")
       .option("comment", "~")
@@ -308,9 +310,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         .option("header", "true")
         .load(testFile(carsFile))
 
-      cars
-        .coalesce(1)
-        .write
+      cars.coalesce(1).write
         .option("header", "true")
         .csv(csvDir)
 
@@ -331,9 +331,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         .option("header", "true")
         .load(testFile(carsFile))
 
-      cars
-        .coalesce(1)
-        .write
+      cars.coalesce(1).write
         .format("csv")
         .option("header", "true")
         .option("quote", "\"")
@@ -427,9 +425,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         .option("header", "true")
         .load(testFile(carsFile))
 
-      cars
-        .coalesce(1)
-        .write
+      cars.coalesce(1).write
         .format("csv")
         .option("header", "true")
         .option("compression", "gZiP")
@@ -472,9 +468,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
           .option("header", "true")
           .load(testFile(carsFile))
 
-        cars
-          .coalesce(1)
-          .write
+        cars.coalesce(1).write
           .format("csv")
           .option("header", "true")
           .option("compression", "none")
@@ -512,7 +506,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("old csv data source name works") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("com.databricks.spark.csv")
       .option("header", "false")
       .load(testFile(carsFile))

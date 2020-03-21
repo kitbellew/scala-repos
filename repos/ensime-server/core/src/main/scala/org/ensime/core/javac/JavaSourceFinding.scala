@@ -21,8 +21,8 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
   protected def findInCompiledUnit(
       info: CompilationInfo,
       fqn: JavaFqn): Option[SourcePosition] = {
-    Option(info.getElements().getTypeElement(fqn.toFqnString))
-      .flatMap(elementPosition(info, _))
+    Option(info.getElements().getTypeElement(fqn.toFqnString)).flatMap(
+      elementPosition(info, _))
   }
 
   private def elementPosition(
@@ -34,8 +34,7 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
       OffsetSourcePosition(
         new File(path.getCompilationUnit.getSourceFile.getName),
         info.getTrees.getSourcePositions
-          .getStartPosition(path.getCompilationUnit, path.getLeaf)
-          .toInt
+          .getStartPosition(path.getCompilationUnit, path.getLeaf).toInt
       )
     }
   }
@@ -43,9 +42,8 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
   protected def findDeclPos(
       info: CompilationInfo,
       path: TreePath): Option[SourcePosition] = {
-    element(info, path)
-      .flatMap(elementPosition(info, _))
-      .orElse(findInIndexer(info, path))
+    element(info, path).flatMap(elementPosition(info, _)).orElse(
+      findInIndexer(info, path))
   }
 
   private def findInIndexer(
@@ -55,16 +53,16 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
     val query = javaFqn.map(_.toFqnString).getOrElse("")
     val hit = search.findUnique(query)
     log.debug(s"search: '$query' = $hit")
-    hit
-      .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
-      .flatMap { sourcePos =>
+    hit.flatMap(
+      LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs)).flatMap {
+      sourcePos =>
         if (sourcePos.file.getName.endsWith(".java") && sourcePos.file.exists)
-          javaFqn
-            .flatMap(askLinkPos(_, SourceFileInfo(sourcePos.file, None, None)))
-            .orElse(Some(sourcePos))
+          javaFqn.flatMap(
+            askLinkPos(_, SourceFileInfo(sourcePos.file, None, None))).orElse(
+            Some(sourcePos))
         else
           Some(sourcePos)
-      }
+    }
   }
 
 }

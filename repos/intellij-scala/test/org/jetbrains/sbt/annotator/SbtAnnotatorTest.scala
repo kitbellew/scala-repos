@@ -45,10 +45,8 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
     addTestFileToModuleSources()
     setUpProjectSettings()
     inWriteAction(
-      StartupManager
-        .getInstance(getProject)
-        .asInstanceOf[StartupManagerImpl]
-        .startCacheUpdate())
+      StartupManager.getInstance(getProject).asInstanceOf[
+        StartupManagerImpl].startCacheUpdate())
   }
 
   override def loadTestFile(): SbtFileImpl = {
@@ -73,9 +71,8 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
   }
 
   private def setSbtVersion(sbtVersion: String): Unit = {
-    val projectSettings = SbtSystemSettings
-      .getInstance(getProject)
-      .getLinkedProjectSettings(getProject.getBasePath)
+    val projectSettings = SbtSystemSettings.getInstance(
+      getProject).getLinkedProjectSettings(getProject.getBasePath)
     assert(projectSettings != null)
     projectSettings.setSbtVersion(sbtVersion)
   }
@@ -90,9 +87,9 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
   private def createBuildModule(): Module =
     inWriteAction {
       val moduleName = getModule.getName + Sbt.BuildModuleSuffix + ".iml"
-      val module = ModuleManager
-        .getInstance(getProject)
-        .newModule(moduleName, SbtModuleType.instance.getId)
+      val module = ModuleManager.getInstance(getProject).newModule(
+        moduleName,
+        SbtModuleType.instance.getId)
       ModuleRootModificationUtil.setModuleSdk(module, getTestProjectJdk)
       module
     }

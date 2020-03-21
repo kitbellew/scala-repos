@@ -32,9 +32,8 @@ class ZKStoreTest
     mesosLoaded should be('defined)
     mesosLoaded.get.bytes should be(created.bytes)
 
-    persistentStore
-      .update(created.withNewContent("Hello again".getBytes))
-      .futureValue
+    persistentStore.update(
+      created.withNewContent("Hello again".getBytes)).futureValue
     val mesosLoadUpdated = mesosStore.load("foo").futureValue
     mesosLoadUpdated should be('defined)
     mesosLoadUpdated.get.bytes should be("Hello again".getBytes)
@@ -46,9 +45,8 @@ class ZKStoreTest
     zkLoaded should be('defined)
     zkLoaded.get.bytes should be(created.bytes)
 
-    mesosStore
-      .update(created.withNewContent("Hello again".getBytes))
-      .futureValue
+    mesosStore.update(
+      created.withNewContent("Hello again".getBytes)).futureValue
     val zkLoadUpdated = persistentStore.load("foo").futureValue
     zkLoadUpdated should be('defined)
     zkLoadUpdated.get.bytes should be("Hello again".getBytes)
@@ -82,11 +80,8 @@ class ZKStoreTest
       persistentStore.client("/compressed"),
       compress)
     store.initialize().futureValue
-    val content = 1
-      .to(100)
-      .map(num => s"Hello number $num!")
-      .mkString(", ")
-      .getBytes("UTF-8")
+    val content = 1.to(100).map(num => s"Hello number $num!").mkString(
+      ", ").getBytes("UTF-8")
 
     //entity content is not changed , regardless of comression
     val entity = store.create("big", content).futureValue
@@ -111,8 +106,8 @@ class ZKStoreTest
     implicit val timer = com.twitter.util.Timer.Nil
     val timeout =
       com.twitter.util.TimeConversions.intToTimeableNumber(10).minutes
-    val client = ZkClient(config.zkHostAndPort, timeout)
-      .withAcl(Ids.OPEN_ACL_UNSAFE.asScala)
+    val client = ZkClient(config.zkHostAndPort, timeout).withAcl(
+      Ids.OPEN_ACL_UNSAFE.asScala)
     new ZKStore(client, client(config.zkPath), conf)
   }
 

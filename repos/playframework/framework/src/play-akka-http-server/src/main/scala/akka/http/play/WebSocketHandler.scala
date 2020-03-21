@@ -45,8 +45,9 @@ object WebSocketHandler {
     // flow that we are wrapping, are sent to the client and the close procedure is implemented.
     Flow[FrameEvent]
       .transform(() => aggregateFrames(bufferLimit))
-      .via(handleProtocolFailures(
-        WebSocketFlowHandler.webSocketProtocol(bufferLimit).join(flow)))
+      .via(
+        handleProtocolFailures(
+          WebSocketFlowHandler.webSocketProtocol(bufferLimit).join(flow)))
       .map(messageToFrameEvent)
   }
 

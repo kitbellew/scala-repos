@@ -604,9 +604,8 @@ trait ProtoUser {
 
   def userMenu: List[Node] = {
     val li = loggedIn_?
-    ItemList
-      .filter(i => i.display && i.loggedIn == li)
-      .map(i => (<a href={i.pathStr}>{i.name}</a>))
+    ItemList.filter(i => i.display && i.loggedIn == li).map(i =>
+      (<a href={i.pathStr}>{i.name}</a>))
   }
 
   protected def snarfLastItem: String =
@@ -647,12 +646,11 @@ trait ProtoUser {
 
   def logUserIn(who: TheUserType, postLogin: () => Nothing): Nothing = {
     if (destroySessionOnLogin) {
-      S.session
-        .openOrThrowException("we have a session here")
-        .destroySessionAndContinueInNewSession(() => {
-          logUserIn(who)
-          postLogin()
-        })
+      S.session.openOrThrowException(
+        "we have a session here").destroySessionAndContinueInNewSession(() => {
+        logUserIn(who)
+        postLogin()
+      })
     } else {
       logUserIn(who)
       postLogin()
@@ -915,8 +913,8 @@ trait ProtoUser {
 
   def login = {
     if (S.post_?) {
-      S.param("username")
-        .flatMap(username => findUserByUserName(username)) match {
+      S.param("username").flatMap(username =>
+        findUserByUserName(username)) match {
         case Full(user)
             if user.validated_? &&
               user.testPassword(S.param("password")) => {

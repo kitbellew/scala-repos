@@ -286,8 +286,9 @@ class ApacheZooKeeperTest
   }
 
   "exists" should "handle synchronous error" in {
-    when(mockZK.exists(meq(path), meq(null), statCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+    when(
+      mockZK.exists(meq(path), meq(null), statCB.capture, meq(null))).thenThrow(
+      new IllegalArgumentException)
 
     val existed = zk.exists(path)
 
@@ -332,8 +333,12 @@ class ApacheZooKeeperTest
   }
 
   "existsWatch" should "handle synchronous error" in {
-    when(mockZK.exists(meq(path), watcher.capture, statCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+    when(
+      mockZK.exists(
+        meq(path),
+        watcher.capture,
+        statCB.capture,
+        meq(null))).thenThrow(new IllegalArgumentException)
     val existed = zk.existsWatch(path)
 
     verify(mockZK).exists(meq(path), watcher.capture, statCB.capture, meq(null))
@@ -377,8 +382,12 @@ class ApacheZooKeeperTest
   }
 
   "getData" should "handle synchronous error" in {
-    when(mockZK.getData(meq(path), meq(null), dataCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+    when(
+      mockZK.getData(
+        meq(path),
+        meq(null),
+        dataCB.capture,
+        meq(null))).thenThrow(new IllegalArgumentException)
     val nodeData = zk.getData(path)
 
     verify(mockZK).getData(meq(path), meq(null), dataCB.capture, meq(null))
@@ -434,8 +443,12 @@ class ApacheZooKeeperTest
   }
 
   "getDataWatch" should "handle synchronous error" in {
-    when(mockZK.getData(meq(path), watcher.capture, dataCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+    when(
+      mockZK.getData(
+        meq(path),
+        watcher.capture,
+        dataCB.capture,
+        meq(null))).thenThrow(new IllegalArgumentException)
     val nodeDataWatch = zk.getDataWatch(path)
 
     verify(mockZK).getData(
@@ -513,9 +526,13 @@ class ApacheZooKeeperTest
   }
 
   "setData" should "handle synchronous error" in {
-    when(mockZK
-      .setData(meq(path), meq(_data), meq(version), statCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+    when(
+      mockZK.setData(
+        meq(path),
+        meq(_data),
+        meq(version),
+        statCB.capture,
+        meq(null))).thenThrow(new IllegalArgumentException)
     val nodeStat = zk.setData(path, Some(data), Some(version))
 
     verify(mockZK).setData(
@@ -554,8 +571,9 @@ class ApacheZooKeeperTest
   }
 
   "getACL" should "handle synchronous error" in {
-    when(mockZK.getACL(meq(path), meq(null), aclCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+    when(
+      mockZK.getACL(meq(path), meq(null), aclCB.capture, meq(null))).thenThrow(
+      new IllegalArgumentException)
     val nodeACL = zk.getACL(path)
 
     verify(mockZK).getACL(meq(path), meq(null), aclCB.capture, meq(null))
@@ -678,8 +696,11 @@ class ApacheZooKeeperTest
 
   "getChildren" should "handle synchronous error" in {
     when(
-      mockZK.getChildren(meq(path), meq(null), childrenCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+      mockZK.getChildren(
+        meq(path),
+        meq(null),
+        childrenCB.capture,
+        meq(null))).thenThrow(new IllegalArgumentException)
     val nodeChildren = zk.getChildren(path)
 
     verify(mockZK).getChildren(
@@ -736,9 +757,11 @@ class ApacheZooKeeperTest
 
   "getChildrenWatch" should "handle synchronous error" in {
     when(
-      mockZK
-        .getChildren(meq(path), watcher.capture, childrenCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+      mockZK.getChildren(
+        meq(path),
+        watcher.capture,
+        childrenCB.capture,
+        meq(null))).thenThrow(new IllegalArgumentException)
     val nodeChildren = zk.getChildrenWatch(path)
 
     verify(mockZK).getChildren(

@@ -56,11 +56,9 @@ class CallGraphTest extends ClearAfterClass {
   }
 
   def callsInMethod(methodNode: MethodNode): List[MethodInsnNode] =
-    methodNode.instructions.iterator.asScala
-      .collect({
-        case call: MethodInsnNode => call
-      })
-      .toList
+    methodNode.instructions.iterator.asScala.collect({
+      case call: MethodInsnNode => call
+    }).toList
 
   def checkCallsite(
       call: MethodInsnNode,
@@ -192,13 +190,10 @@ class CallGraphTest extends ClearAfterClass {
     val List(c) = compile(code)
     val m = findAsmMethod(c, "m")
     val List(fn) = callsInMethod(m)
-    val forNameMeth = byteCodeRepository
-      .methodNode(
-        "java/lang/Class",
-        "forName",
-        "(Ljava/lang/String;)Ljava/lang/Class;")
-      .get
-      ._1
+    val forNameMeth = byteCodeRepository.methodNode(
+      "java/lang/Class",
+      "forName",
+      "(Ljava/lang/String;)Ljava/lang/Class;").get._1
     val classTp = classBTypeFromInternalName("java/lang/Class")
     val r = callGraph.callsites(m)(fn)
     checkCallsite(

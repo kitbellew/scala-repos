@@ -83,10 +83,9 @@ object Tracing {
       args: AnyRef*) {
     try {
       val argTypes = args map (_.getClass())
-      Class
-        .forName(clazz)
-        .getMethod(methodName, argTypes: _*)
-        .invoke(null, args: _*)
+      Class.forName(clazz).getMethod(methodName, argTypes: _*).invoke(
+        null,
+        args: _*)
     } catch {
       case e @ (_: NoSuchMethodException | _: SecurityException |
           _: IllegalAccessException | _: IllegalArgumentException |

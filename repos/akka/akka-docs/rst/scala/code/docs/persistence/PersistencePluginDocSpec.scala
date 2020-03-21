@@ -82,10 +82,8 @@ class PersistencePluginDocSpec extends WordSpec {
 
     val system = ActorSystem(
       "PersistencePluginDocSpec",
-      ConfigFactory
-        .parseString(providerConfig)
-        .withFallback(
-          ConfigFactory.parseString(PersistencePluginDocSpec.config)))
+      ConfigFactory.parseString(providerConfig).withFallback(
+        ConfigFactory.parseString(PersistencePluginDocSpec.config)))
     try {
       Persistence(system)
     } finally {
@@ -229,8 +227,8 @@ object PersistenceTCKDoc {
 
       val storageLocations = List(
         new File(
-          system.settings.config
-            .getString("akka.persistence.journal.leveldb.dir")),
+          system.settings.config.getString(
+            "akka.persistence.journal.leveldb.dir")),
         new File(config.getString("akka.persistence.snapshot-store.local.dir"))
       )
 

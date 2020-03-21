@@ -267,8 +267,10 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
         assert(summary.max === Vectors.dense(9.0, 7.0, 8.0), "max mismatch")
         assert(summary.min === Vectors.dense(0.0, 0.0, 1.0), "column mismatch.")
         assert(
-          summary.normL2 === Vectors
-            .dense(math.sqrt(126), math.sqrt(66), math.sqrt(94)),
+          summary.normL2 === Vectors.dense(
+            math.sqrt(126),
+            math.sqrt(66),
+            math.sqrt(94)),
           "magnitude mismatch.")
         assert(
           summary.normL1 === Vectors.dense(18.0, 12.0, 16.0),

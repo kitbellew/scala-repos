@@ -42,10 +42,8 @@ object FormatterUtil {
   def getNormalIndentString(project: Project) = {
     String.format(
       "%1$" +
-        ScalaCodeStyleSettings
-          .getInstance(project)
-          .getContainer
-          .getIndentSize(ScalaFileType.SCALA_FILE_TYPE) + "s",
+        ScalaCodeStyleSettings.getInstance(project).getContainer.getIndentSize(
+          ScalaFileType.SCALA_FILE_TYPE) + "s",
       " ")
   }
 }

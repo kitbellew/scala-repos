@@ -129,11 +129,9 @@ class SearchService(
       val basesWithChecks: Set[(FileObject, Option[FileCheck])] = bases.map {
         base => (base, checksLookup.get(base.getName().getURI()))
       }
-      Future
-        .sequence(basesWithChecks.map {
-          case (file, check) => indexBase(file, check)
-        })
-        .map(_.flatten.sum)
+      Future.sequence(basesWithChecks.map {
+        case (file, check) => indexBase(file, check)
+      }).map(_.flatten.sum)
     }
 
     def commitIndex(): Future[Unit] =
@@ -358,38 +356,36 @@ class IndexingQueueActor(searchService: SearchService)
 
       log.debug(s"Indexing ${batch.size} files")
 
-      Future
-        .sequence(batch.map {
-          case (_, f) =>
-            if (!f.exists()) Future.successful(f -> Nil)
-            else searchService.extractSymbolsFromClassOrJar(f).map(f ->)
-        })
-        .onComplete {
-          case Failure(t) =>
-            log.error(s"failed to index batch of ${batch.size} files", t)
-          case Success(indexed) =>
-            searchService
-              .delete(indexed.map(_._1)(collection.breakOut))
-              .onComplete {
-                case Failure(t) =>
-                  log.error(
-                    s"failed to remove stale entries in ${batch.size} files",
-                    t)
-                case Success(_) =>
-                  indexed.collect {
-                    case (file, syms) if syms.isEmpty =>
-                    case (file, syms) =>
-                      searchService
-                        .persist(FileCheck(file), syms, commitIndex = true)
-                        .onComplete {
-                          case Failure(t) =>
-                            log.error(s"failed to persist entries in $file", t)
-                          case Success(_) =>
-                        }
+      Future.sequence(batch.map {
+        case (_, f) =>
+          if (!f.exists()) Future.successful(f -> Nil)
+          else searchService.extractSymbolsFromClassOrJar(f).map(f ->)
+      }).onComplete {
+        case Failure(t) =>
+          log.error(s"failed to index batch of ${batch.size} files", t)
+        case Success(indexed) =>
+          searchService.delete(
+            indexed.map(_._1)(collection.breakOut)).onComplete {
+            case Failure(t) =>
+              log.error(
+                s"failed to remove stale entries in ${batch.size} files",
+                t)
+            case Success(_) =>
+              indexed.collect {
+                case (file, syms) if syms.isEmpty =>
+                case (file, syms) =>
+                  searchService.persist(
+                    FileCheck(file),
+                    syms,
+                    commitIndex = true).onComplete {
+                    case Failure(t) =>
+                      log.error(s"failed to persist entries in $file", t)
+                    case Success(_) =>
                   }
               }
+          }
 
-        }
+      }
   }
 
 }

@@ -108,8 +108,7 @@ class ConsumerIterator[K, V](
     }
     consumedOffset = item.nextOffset
 
-    item.message
-      .ensureValid() // validate checksum of message to ensure it is valid
+    item.message.ensureValid() // validate checksum of message to ensure it is valid
 
     new MessageAndMetadata(
       currentTopicInfo.topic,

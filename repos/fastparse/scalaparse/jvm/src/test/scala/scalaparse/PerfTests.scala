@@ -6,18 +6,15 @@ import utest._
 import scala.tools.nsc.{Global, Settings}
 
 object PerfTests extends TestSuite {
-  val genJsCodeSource = scala.io.Source
-    .fromInputStream(
-      getClass.getResourceAsStream("/scalaparse/GenJSCode.scala")
-    )
-    .mkString
+  val genJsCodeSource = scala.io.Source.fromInputStream(
+    getClass.getResourceAsStream("/scalaparse/GenJSCode.scala")
+  ).mkString
   val tests = TestSuite {
     'GenJSCode {
       var current = Thread.currentThread().getContextClassLoader
       val files = collection.mutable.Buffer.empty[java.io.File]
       files.appendAll(
-        System
-          .getProperty("sun.boot.class.path")
+        System.getProperty("sun.boot.class.path")
           .split(":")
           .map(new java.io.File(_))
       )

@@ -49,20 +49,18 @@ abstract class HiveQueryFileTest extends HiveComparisonTest {
   val whiteListProperty = "spark.hive.whitelist"
   // Allow the whiteList to be overridden by a system property
   val realWhiteList =
-    Option(System.getProperty(whiteListProperty))
-      .map(_.split(",").toSeq)
-      .getOrElse(whiteList)
+    Option(System.getProperty(whiteListProperty)).map(
+      _.split(",").toSeq).getOrElse(whiteList)
 
   // Go through all the test cases and add them to scala test.
   testCases.sorted.foreach {
     case (testCaseName, testCaseFile) =>
-      if (blackList
-            .map(_.r.pattern.matcher(testCaseName).matches())
-            .reduceLeft(_ || _)) {
+      if (blackList.map(_.r.pattern.matcher(testCaseName).matches()).reduceLeft(
+            _ || _)) {
         logDebug(s"Blacklisted test skipped $testCaseName")
-      } else if (realWhiteList
-                   .map(_.r.pattern.matcher(testCaseName).matches())
-                   .reduceLeft(_ || _) ||
+      } else if (realWhiteList.map(
+                   _.r.pattern.matcher(testCaseName).matches()).reduceLeft(
+                   _ || _) ||
                  runAll) {
         // Build a test case and submit it to scala test framework...
         val queriesString = fileToString(testCaseFile)

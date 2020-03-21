@@ -77,15 +77,12 @@ object Team extends LilaController {
       OptionFuResult(api team id) { team =>
         Owner(team) {
           implicit val req = ctx.body
-          forms
-            .edit(team)
-            .bindFromRequest
-            .fold(
-              err => BadRequest(html.team.edit(team, err)).fuccess,
-              data =>
-                api.update(team, data, me) inject Redirect(
-                  routes.Team.show(team.id))
-            )
+          forms.edit(team).bindFromRequest.fold(
+            err => BadRequest(html.team.edit(team, err)).fuccess,
+            data =>
+              api.update(team, data, me) inject Redirect(
+                routes.Team.show(team.id))
+          )
         }
       }
     }

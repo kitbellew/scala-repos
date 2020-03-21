@@ -265,9 +265,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           case SingleType(_, sym) => primitiveOrClassToBType(sym)
           case ConstantType(_)    => typeToBType(t.underlying)
           case RefinedType(parents, _) =>
-            parents
-              .map(typeToBType(_).asClassBType)
-              .reduceLeft((a, b) => a.jvmWiseLUB(b).get)
+            parents.map(typeToBType(_).asClassBType).reduceLeft((a, b) =>
+              a.jvmWiseLUB(b).get)
         }
     }
   }
@@ -419,8 +418,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         superClassSym == ObjectClass
       else
         // A ClassBType for a primitive class (scala.Boolean et al) is only created when compiling these classes.
-        ((superClassSym != NoSymbol) && !superClassSym.isInterface) || (isCompilingPrimitive && primitiveTypeToBType
-          .contains(classSym)),
+        ((superClassSym != NoSymbol) && !superClassSym.isInterface) || (isCompilingPrimitive && primitiveTypeToBType.contains(
+          classSym)),
       s"Bad superClass for $classSym: $superClassSym"
     )
     val superClass =

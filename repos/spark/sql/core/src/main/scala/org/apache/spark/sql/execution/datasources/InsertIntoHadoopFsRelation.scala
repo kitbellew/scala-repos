@@ -72,12 +72,9 @@ private[sql] case class InsertIntoHadoopFsRelation(
   override def run(sqlContext: SQLContext): Seq[Row] = {
     // Most formats don't do well with duplicate columns, so lets not allow that
     if (query.schema.fieldNames.length != query.schema.fieldNames.distinct.length) {
-      val duplicateColumns = query.schema.fieldNames
-        .groupBy(identity)
-        .collect {
-          case (x, ys) if ys.length > 1 => "\"" + x + "\""
-        }
-        .mkString(", ")
+      val duplicateColumns = query.schema.fieldNames.groupBy(identity).collect {
+        case (x, ys) if ys.length > 1 => "\"" + x + "\""
+      }.mkString(", ")
       throw new AnalysisException(
         s"Duplicate column(s) : $duplicateColumns found, " +
           s"cannot save to file.")
@@ -130,8 +127,11 @@ private[sql] case class InsertIntoHadoopFsRelation(
             sqlContext,
             dataColumns.toStructType,
             qualifiedOutputPath.toString,
-            fileFormat
-              .prepareWrite(sqlContext, _, options, dataColumns.toStructType),
+            fileFormat.prepareWrite(
+              sqlContext,
+              _,
+              options,
+              dataColumns.toStructType),
             bucketSpec)
 
         val writerContainer =
@@ -154,8 +154,9 @@ private[sql] case class InsertIntoHadoopFsRelation(
         writerContainer.driverSideSetup()
 
         try {
-          sqlContext.sparkContext
-            .runJob(queryExecution.toRdd, writerContainer.writeRows _)
+          sqlContext.sparkContext.runJob(
+            queryExecution.toRdd,
+            writerContainer.writeRows _)
           writerContainer.commitJob()
           refreshFunction()
         } catch {

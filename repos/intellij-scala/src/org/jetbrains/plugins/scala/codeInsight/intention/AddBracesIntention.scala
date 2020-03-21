@@ -25,8 +25,12 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
   override def getText = "Add braces around single line expression"
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) =
-    check(project, editor, element).isDefined && IntentionAvailabilityChecker
-      .checkIntention(this, element)
+    check(
+      project,
+      editor,
+      element).isDefined && IntentionAvailabilityChecker.checkIntention(
+      this,
+      element)
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     if (element == null || !element.isValid) return
@@ -59,9 +63,8 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
       case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
         Some(e)
       case ifStmt: ScIfStmt =>
-        ifStmt.thenBranch
-          .filter(isAncestorOfElement)
-          .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
+        ifStmt.thenBranch.filter(isAncestorOfElement).orElse(
+          ifStmt.elseBranch.filter(isAncestorOfElement))
       case funDef: ScFunctionDefinition =>
         funDef.body.filter(isAncestorOfElement)
       case tryBlock: ScTryBlock if !tryBlock.hasRBrace =>

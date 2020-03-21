@@ -194,14 +194,11 @@ object Duration extends TimeLikeOps[Duration] {
     TimeUnit.NANOSECONDS)
 
   private val nameToUnit: Map[String, TimeUnit] =
-    TimeUnit
-      .values()
-      .flatMap { u =>
-        val pluralK = u.toString.toLowerCase
-        val singularK = pluralK dropRight 1
-        Seq(pluralK -> u, singularK -> u)
-      }
-      .toMap
+    TimeUnit.values().flatMap { u =>
+      val pluralK = u.toString.toLowerCase
+      val singularK = pluralK dropRight 1
+      Seq(pluralK -> u, singularK -> u)
+    }.toMap
 
   private val SingleDurationRegex =
     """\s*([+-]?)\s*(?:([0-9]+)\.([a-z]+)|duration\.(top|bottom|undefined))""".r

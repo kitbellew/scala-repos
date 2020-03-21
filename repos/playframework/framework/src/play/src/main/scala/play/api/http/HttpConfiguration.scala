@@ -133,12 +133,10 @@ object HttpConfiguration {
     HttpConfiguration(
       context = context,
       parser = ParserConfiguration(
-        maxMemoryBuffer = config
-          .getDeprecated[ConfigMemorySize](
-            "play.http.parser.maxMemoryBuffer",
-            "parsers.text.maxLength")
-          .toBytes
-          .toInt,
+        maxMemoryBuffer = config.getDeprecated[ConfigMemorySize](
+          "play.http.parser.maxMemoryBuffer",
+          "parsers.text.maxLength")
+          .toBytes.toInt,
         maxDiskBuffer =
           config.get[ConfigMemorySize]("play.http.parser.maxDiskBuffer").toBytes
       ),
@@ -155,8 +153,9 @@ object HttpConfiguration {
         cookieName = config.getDeprecated[String](
           "play.http.session.cookieName",
           "session.cookieName"),
-        secure = config
-          .getDeprecated[Boolean]("play.http.session.secure", "session.secure"),
+        secure = config.getDeprecated[Boolean](
+          "play.http.session.secure",
+          "session.secure"),
         maxAge = config.getDeprecated[Option[FiniteDuration]](
           "play.http.session.maxAge",
           "session.maxAge"),

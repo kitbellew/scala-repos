@@ -161,8 +161,9 @@ case class TakeOrderedAndProject(
         SinglePartition,
         serializer))
     shuffled.mapPartitions { iter =>
-      val topK = org.apache.spark.util.collection.Utils
-        .takeOrdered(iter.map(_.copy()), limit)(ord)
+      val topK = org.apache.spark.util.collection.Utils.takeOrdered(
+        iter.map(_.copy()),
+        limit)(ord)
       if (projectList.isDefined) {
         val proj = UnsafeProjection.create(projectList.get, child.output)
         topK.map(r => proj(r))

@@ -45,9 +45,8 @@ object Config {
           case value     => Some(value)
         }
 
-        (envConf orElse systemConf)
-          .map("akka." + _ + ".conf")
-          .getOrElse("akka.conf")
+        (envConf orElse systemConf).map("akka." + _ + ".conf").getOrElse(
+          "akka.conf")
       }
 
       val newInstance =

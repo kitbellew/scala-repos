@@ -7,11 +7,8 @@ object Test extends InteractiveTest {
 
   override def runDefaultTests() {
     def resolveTypeTagHyperlink() {
-      val sym = compiler
-        .askForResponse(() => compiler.currentRun.runDefinitions.TypeTagClass)
-        .get
-        .left
-        .get
+      val sym = compiler.askForResponse(() =>
+        compiler.currentRun.runDefinitions.TypeTagClass).get.left.get
       val r = new Response[Position]
       compiler.askLinkPos(sym, new BatchSourceFile("", source), r)
       r.get

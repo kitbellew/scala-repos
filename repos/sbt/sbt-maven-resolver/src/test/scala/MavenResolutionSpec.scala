@@ -58,17 +58,23 @@ class MavenResolutionSpec extends BaseIvySpecification {
       "2.8.1",
       Some("plugin->default(compile)"))
   def sbtPlugin =
-    ModuleID("com.github.mpeltonen", "sbt-idea", "1.6.0", Some("compile"))
-      .extra(
-        PomExtraDependencyAttributes.SbtVersionKey -> "0.13",
-        PomExtraDependencyAttributes.ScalaVersionKey -> "2.10")
-      .copy(crossVersion = CrossVersion.Disabled)
+    ModuleID(
+      "com.github.mpeltonen",
+      "sbt-idea",
+      "1.6.0",
+      Some("compile")).extra(
+      PomExtraDependencyAttributes.SbtVersionKey -> "0.13",
+      PomExtraDependencyAttributes.ScalaVersionKey -> "2.10").copy(
+      crossVersion = CrossVersion.Disabled)
   def oldSbtPlugin =
-    ModuleID("com.github.mpeltonen", "sbt-idea", "1.6.0", Some("compile"))
-      .extra(
-        PomExtraDependencyAttributes.SbtVersionKey -> "0.12",
-        PomExtraDependencyAttributes.ScalaVersionKey -> "2.9.2")
-      .copy(crossVersion = CrossVersion.Disabled)
+    ModuleID(
+      "com.github.mpeltonen",
+      "sbt-idea",
+      "1.6.0",
+      Some("compile")).extra(
+      PomExtraDependencyAttributes.SbtVersionKey -> "0.12",
+      PomExtraDependencyAttributes.ScalaVersionKey -> "2.9.2").copy(
+      crossVersion = CrossVersion.Disabled)
   def majorConflictLib =
     ModuleID("com.joestelmach", "natty", "0.3", Some("compile"))
   // TODO - This snapshot and resolver should be something we own/control so it doesn't disappear on us.
@@ -369,10 +375,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
       )
     }
     val baseLocalMavenDir: java.io.File = Resolver.publishMavenLocal.rootFile
-    val allFiles: Seq[java.io.File] = sbt.io
-      .PathFinder(new java.io.File(baseLocalMavenDir, "com/example/test-it"))
-      .allPaths
-      .get
+    val allFiles: Seq[java.io.File] = sbt.io.PathFinder(
+      new java.io.File(baseLocalMavenDir, "com/example/test-it")).allPaths.get
     val metadataFiles =
       allFiles.filter(_.getName contains "maven-metadata-local")
     // TODO - maybe we check INSIDE the metadata, or make sure we can get a publication date on resolve...

@@ -48,9 +48,9 @@ abstract class TypeConformanceTestBase
     val declaredType = valueDecl.declaredType.getOrElse(
       sys.error("Must provide type annotation for LHS"))
 
-    valueDecl.expr
-      .getOrElse(throw new RuntimeException("Expression not found"))
-      .getType(TypingContext.empty) match {
+    valueDecl.expr.getOrElse(
+      throw new RuntimeException("Expression not found")).getType(
+      TypingContext.empty) match {
       case Success(rhsType, _) =>
         val res: Boolean = Conformance.conforms(declaredType, rhsType)
         val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)

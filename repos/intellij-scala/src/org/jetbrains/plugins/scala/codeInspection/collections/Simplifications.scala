@@ -67,9 +67,8 @@ class SimplificationBuilder private[collections] (
   }
 
   def toSimplification = {
-    val smartPointer = SmartPointerManager
-      .getInstance(exprToReplace.getProject)
-      .createSmartPsiElementPointer(exprToReplace)
+    val smartPointer = SmartPointerManager.getInstance(
+      exprToReplace.getProject).createSmartPsiElementPointer(exprToReplace)
     Simplification(smartPointer, replacementText, hint, rangeInParent)
   }
 }

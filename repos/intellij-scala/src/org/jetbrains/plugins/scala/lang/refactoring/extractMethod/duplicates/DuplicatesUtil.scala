@@ -100,9 +100,9 @@ object DuplicatesUtil {
 
     work
 
-    HighlightManager
-      .getInstance(project)
-      .removeSegmentHighlighter(editor, highlighter.get(0))
+    HighlightManager.getInstance(project).removeSegmentHighlighter(
+      editor,
+      highlighter.get(0))
   }
 
   private def invokeDuplicateProcessing(
@@ -200,9 +200,8 @@ object DuplicatesUtil {
       project: Project,
       editor: Editor,
       textRange: TextRange) {
-    val foldRegions: Array[FoldRegion] = CodeFoldingManager
-      .getInstance(project)
-      .getFoldRegionsAtOffset(editor, textRange.getStartOffset)
+    val foldRegions: Array[FoldRegion] = CodeFoldingManager.getInstance(
+      project).getFoldRegionsAtOffset(editor, textRange.getStartOffset)
     val anyCollapsed: Boolean = foldRegions.exists(!_.isExpanded)
     if (anyCollapsed) {
       editor.getFoldingModel.runBatchFoldingOperation(new Runnable {
@@ -218,18 +217,17 @@ object DuplicatesUtil {
       duplicate: DuplicateMatch,
       highlighters: util.Collection[RangeHighlighter]) {
     val colorsManager: EditorColorsManager = EditorColorsManager.getInstance
-    val attributes: TextAttributes = colorsManager.getGlobalScheme
-      .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
+    val attributes: TextAttributes =
+      colorsManager.getGlobalScheme.getAttributes(
+        EditorColors.SEARCH_RESULT_ATTRIBUTES)
     val range = duplicate.textRange
-    HighlightManager
-      .getInstance(project)
-      .addRangeHighlight(
-        editor,
-        range.getStartOffset,
-        range.getEndOffset,
-        attributes,
-        true,
-        highlighters)
+    HighlightManager.getInstance(project).addRangeHighlight(
+      editor,
+      range.getStartOffset,
+      range.getEndOffset,
+      attributes,
+      true,
+      highlighters)
   }
 
 }

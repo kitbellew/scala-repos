@@ -58,13 +58,10 @@ trait Loc[T] {
     * uses it.
     */
   protected lazy val cacheCssClassForMenuItem: Box[() => String] =
-    allParams
-      .flatMap {
-        case a: Loc.MenuCssClass => List(a)
-        case _                   => Nil
-      }
-      .headOption
-      .map(_.cssClass.func)
+    allParams.flatMap {
+      case a: Loc.MenuCssClass => List(a)
+      case _                   => Nil
+    }.headOption.map(_.cssClass.func)
 
   /**
     * Given a value calculate the HREF to this item
@@ -76,11 +73,8 @@ trait Loc[T] {
     * Calculate HREF to this item using currentValue
     */
   def calcDefaultHref: String =
-    currentValue
-      .map(p => link.createPath(p))
-      .toOption
-      .map(path => appendQueryParameters(path, currentValue))
-      .getOrElse("")
+    currentValue.map(p => link.createPath(p)).toOption.map(path =>
+      appendQueryParameters(path, currentValue)).getOrElse("")
 
   def defaultValue: Box[T]
 
@@ -165,16 +159,12 @@ trait Loc[T] {
   def siteMap: SiteMap = _menu.siteMap
 
   def createDefaultLink: Option[NodeSeq] =
-    currentValue
-      .flatMap(p => link.createLink(p))
-      .toOption
-      .map(ns => Text(appendQueryParameters(ns.text, currentValue)))
+    currentValue.flatMap(p => link.createLink(p)).toOption.map(ns =>
+      Text(appendQueryParameters(ns.text, currentValue)))
 
   def createLink(in: T): Option[NodeSeq] =
-    link
-      .createLink(in)
-      .toOption
-      .map(ns => Text(appendQueryParameters(ns.text, Full(in))))
+    link.createLink(in).toOption.map(ns =>
+      Text(appendQueryParameters(ns.text, Full(in))))
 
   override def toString =
     "Loc(" + name + ", " + link + ", " + text + ", " + params + ")"

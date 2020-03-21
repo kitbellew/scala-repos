@@ -38,19 +38,15 @@ class FlipComparisonInMethodCallExprIntention
     if (!methodCallExpr.getInvokedExpr.isInstanceOf[ScReferenceExpression])
       return false
 
-    val oper = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getText
+    val oper = methodCallExpr.getInvokedExpr.asInstanceOf[
+      ScReferenceExpression].nameId.getText
 
     if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" && oper != "ne" &&
         oper != ">" && oper != "<" && oper != ">=" && oper != "<=")
       return false
 
-    val range: TextRange = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
+    val range: TextRange = methodCallExpr.getInvokedExpr.asInstanceOf[
+      ScReferenceExpression].nameId.getTextRange
     val offset = editor.getCaretModel.getOffset
     if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
       return false
@@ -63,9 +59,8 @@ class FlipComparisonInMethodCallExprIntention
       setText("Flip '" + oper + "' to '" + replaceOper(oper) + "'")
     }
 
-    if (methodCallExpr.getInvokedExpr
-          .asInstanceOf[ScReferenceExpression]
-          .isQualified) return true
+    if (methodCallExpr.getInvokedExpr.asInstanceOf[
+          ScReferenceExpression].isQualified) return true
 
     false
   }
@@ -76,11 +71,9 @@ class FlipComparisonInMethodCallExprIntention
     if (methodCallExpr == null || !methodCallExpr.isValid) return
 
     val start = methodCallExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
-      .getStartOffset
+    val diff =
+      editor.getCaretModel.getOffset - methodCallExpr.getInvokedExpr.asInstanceOf[
+        ScReferenceExpression].nameId.getTextRange.getStartOffset
     val expr = new StringBuilder
     val qualBuilder = new StringBuilder
     val argsBuilder = new StringBuilder
@@ -99,10 +92,8 @@ class FlipComparisonInMethodCallExprIntention
 
     IntentionUtils.analyzeMethodCallArgs(methodCallExpr.args, argsBuilder)
 
-    val qual = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .qualifier
-      .get
+    val qual = methodCallExpr.getInvokedExpr.asInstanceOf[
+      ScReferenceExpression].qualifier.get
     qualBuilder.append(qual.getText)
     var newArgs = qual.getText
     if (!(newArgs.startsWith("(") && newArgs.endsWith(")"))) {
@@ -114,39 +105,27 @@ class FlipComparisonInMethodCallExprIntention
       newQual = argsBuilder.toString().drop(1).dropRight(1)
     }
 
-    val newQualExpr: ScExpression = ScalaPsiElementFactory
-      .createExpressionFromText(newQual, element.getManager)
+    val newQualExpr: ScExpression =
+      ScalaPsiElementFactory.createExpressionFromText(
+        newQual,
+        element.getManager)
 
-    expr
-      .append(methodCallExpr.args.getText)
-      .append(".")
-      .append(
-        replaceOper(
-          methodCallExpr.getInvokedExpr
-            .asInstanceOf[ScReferenceExpression]
-            .nameId
-            .getText))
-      .append(newArgs)
+    expr.append(methodCallExpr.args.getText).append(".").append(
+      replaceOper(methodCallExpr.getInvokedExpr.asInstanceOf[
+        ScReferenceExpression].nameId.getText)).append(newArgs)
 
     val newMethodCallExpr = ScalaPsiElementFactory.createExpressionFromText(
       expr.toString(),
       element.getManager)
 
-    newMethodCallExpr
-      .asInstanceOf[ScMethodCall]
-      .getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .qualifier
-      .get
-      .replaceExpression(newQualExpr, removeParenthesis = true)
+    newMethodCallExpr.asInstanceOf[ScMethodCall].getInvokedExpr.asInstanceOf[
+      ScReferenceExpression].qualifier.get.replaceExpression(
+      newQualExpr,
+      removeParenthesis = true)
 
-    val size = newMethodCallExpr
-      .asInstanceOf[ScMethodCall]
-      .getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
-      .getStartOffset - newMethodCallExpr.getTextRange.getStartOffset
+    val size =
+      newMethodCallExpr.asInstanceOf[ScMethodCall].getInvokedExpr.asInstanceOf[
+        ScReferenceExpression].nameId.getTextRange.getStartOffset - newMethodCallExpr.getTextRange.getStartOffset
 
     inWriteAction {
       methodCallExpr.replaceExpression(

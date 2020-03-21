@@ -100,12 +100,12 @@ object EventService {
             akka.util.Timeout(config[Long]("insert.timeout", 10000L)),
           ingestBatchSize = config[Int]("ingest.batch_size", 500),
           ingestMaxFields = config[Int]("ingest.max_fields", 1024),
-          ingestTmpDir = config
-            .get[String]("ingest.tmpdir")
-            .map(new File(_))
-            .orElse(
-              Option(File.createTempFile("ingest.tmpfile", null).getParentFile))
-            .get, //fail fast
+          ingestTmpDir =
+            config.get[String]("ingest.tmpdir").map(new File(_)).orElse(
+              Option(
+                File.createTempFile(
+                  "ingest.tmpfile",
+                  null).getParentFile)).get, //fail fast
           deleteTimeout =
             akka.util.Timeout(config[Long]("delete.timeout", 10000L))
         )
@@ -166,10 +166,8 @@ trait EventService
       Clock.System,
       eventStore,
       ingestTimeout)
-    val shardClient = (new HttpClientXLightWeb)
-      .protocol(shardLocation.protocol)
-      .host(shardLocation.host)
-      .port(shardLocation.port)
+    val shardClient = (new HttpClientXLightWeb).protocol(
+      shardLocation.protocol).host(shardLocation.host).port(shardLocation.port)
 
     EventService.State(
       apiKeyFinder,

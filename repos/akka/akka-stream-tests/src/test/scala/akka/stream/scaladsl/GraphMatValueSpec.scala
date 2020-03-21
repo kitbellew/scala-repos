@@ -28,14 +28,13 @@ class GraphMatValueSpec extends AkkaSpec {
 
         "expose the materialized value as source" in {
           val sub = TestSubscriber.manualProbe[Int]()
-          val f = RunnableGraph
-            .fromGraph(GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
+          val f = RunnableGraph.fromGraph(GraphDSL.create(foldSink) {
+            implicit b ⇒ fold ⇒
               Source(1 to 10) ~> fold
               b.materializedValue.mapAsync(4)(identity) ~> Sink.fromSubscriber(
                 sub)
               ClosedShape
-            })
-            .run()
+          }).run()
 
           val r1 = Await.result(f, 3.seconds)
           sub.expectSubscription().request(1)
@@ -47,8 +46,8 @@ class GraphMatValueSpec extends AkkaSpec {
         "expose the materialized value as source multiple times" in {
           val sub = TestSubscriber.manualProbe[Int]()
 
-          val f = RunnableGraph
-            .fromGraph(GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
+          val f = RunnableGraph.fromGraph(GraphDSL.create(foldSink) {
+            implicit b ⇒ fold ⇒
               val zip = b.add(ZipWith[Int, Int, Int](_ + _))
               Source(1 to 10) ~> fold
               b.materializedValue.mapAsync(4)(identity) ~> zip.in0
@@ -56,8 +55,7 @@ class GraphMatValueSpec extends AkkaSpec {
 
               zip.out ~> Sink.fromSubscriber(sub)
               ClosedShape
-            })
-            .run()
+          }).run()
 
           val r1 = Await.result(f, 3.seconds)
           sub.expectSubscription().request(1)
@@ -74,20 +72,15 @@ class GraphMatValueSpec extends AkkaSpec {
           })
 
         "allow exposing the materialized value as port" in {
-          val (f1, f2) = foldFeedbackSource
-            .mapAsync(4)(identity)
-            .map(_ + 100)
-            .toMat(Sink.head)(Keep.both)
-            .run()
+          val (f1, f2) = foldFeedbackSource.mapAsync(4)(identity).map(
+            _ + 100).toMat(Sink.head)(Keep.both).run()
           Await.result(f1, 3.seconds) should ===(55)
           Await.result(f2, 3.seconds) should ===(155)
         }
 
         "allow exposing the materialized value as port even if wrapped and the final materialized value is Unit" in {
-          val noMatSource: Source[Int, Unit] = foldFeedbackSource
-            .mapAsync(4)(identity)
-            .map(_ + 100)
-            .mapMaterializedValue((_) ⇒ ())
+          val noMatSource: Source[Int, Unit] = foldFeedbackSource.mapAsync(4)(
+            identity).map(_ + 100).mapMaterializedValue((_) ⇒ ())
           Await.result(noMatSource.runWith(Sink.head), 3.seconds) should ===(
             155)
         }
@@ -176,19 +169,15 @@ class GraphMatValueSpec extends AkkaSpec {
         }
 
         "produce NotUsed when starting from Flow.via" in {
-          Source.empty
-            .viaMat(Flow[Int].map(_ * 2))(Keep.right)
-            .to(Sink.ignore)
-            .run() should ===(akka.NotUsed)
+          Source.empty.viaMat(Flow[Int].map(_ * 2))(Keep.right).to(
+            Sink.ignore).run() should ===(akka.NotUsed)
         }
 
         "produce NotUsed when starting from Flow.via with transformation" in {
           var done = false
-          Source.empty
-            .viaMat(Flow[Int].via(Flow[Int].mapMaterializedValue(_ ⇒
-              done = true)))(Keep.right)
-            .to(Sink.ignore)
-            .run() should ===(akka.NotUsed)
+          Source.empty.viaMat(Flow[Int].via(Flow[Int].mapMaterializedValue(_ ⇒
+            done = true)))(Keep.right)
+            .to(Sink.ignore).run() should ===(akka.NotUsed)
           done should ===(true)
         }
 

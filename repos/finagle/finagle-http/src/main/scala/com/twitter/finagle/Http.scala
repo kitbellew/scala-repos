@@ -158,8 +158,7 @@ object Http
     protected def newTransporter(): Transporter[Any, Any] = {
       val com.twitter.finagle.param.Label(label) =
         params[com.twitter.finagle.param.Label]
-      val codec = param
-        .applyToCodec(params, http.Http())
+      val codec = param.applyToCodec(params, http.Http())
         .client(ClientCodecConfig(label))
       val Stats(stats) = params[Stats]
       val newTransport = (ch: Channel) => codec.newClientTransport(ch, stats)
@@ -278,8 +277,7 @@ object Http
       val com.twitter.finagle.param.Label(label) =
         params[com.twitter.finagle.param.Label]
       val httpPipeline =
-        param
-          .applyToCodec(params, http.Http())
+        param.applyToCodec(params, http.Http())
           .server(ServerCodecConfig(label, new SocketAddress {}))
           .pipelineFactory
       Netty3Listener(httpPipeline, params)

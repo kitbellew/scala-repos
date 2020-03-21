@@ -157,11 +157,9 @@ object PageRank extends Logging {
         (src: VertexId, id: VertexId) => resetProb
       }
 
-      rankGraph = rankGraph
-        .joinVertices(rankUpdates) {
-          (id, oldRank, msgSum) => rPrb(src, id) + (1.0 - resetProb) * msgSum
-        }
-        .cache()
+      rankGraph = rankGraph.joinVertices(rankUpdates) {
+        (id, oldRank, msgSum) => rPrb(src, id) + (1.0 - resetProb) * msgSum
+      }.cache()
 
       rankGraph.edges.foreachPartition(
         x => {}) // also materializes rankGraph.vertices

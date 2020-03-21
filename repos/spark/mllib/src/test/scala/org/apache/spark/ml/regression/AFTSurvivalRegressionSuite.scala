@@ -59,21 +59,16 @@ class AFTSurvivalRegressionSuite
     * so we can validate the training accuracy compared with R's survival package.
     */
   ignore("export test data into CSV format") {
-    datasetUnivariate.rdd
-      .map {
-        case Row(features: Vector, label: Double, censor: Double) =>
-          features.toArray.mkString(",") + "," + censor + "," + label
-      }
-      .repartition(1)
-      .saveAsTextFile("target/tmp/AFTSurvivalRegressionSuite/datasetUnivariate")
-    datasetMultivariate.rdd
-      .map {
-        case Row(features: Vector, label: Double, censor: Double) =>
-          features.toArray.mkString(",") + "," + censor + "," + label
-      }
-      .repartition(1)
-      .saveAsTextFile(
-        "target/tmp/AFTSurvivalRegressionSuite/datasetMultivariate")
+    datasetUnivariate.rdd.map {
+      case Row(features: Vector, label: Double, censor: Double) =>
+        features.toArray.mkString(",") + "," + censor + "," + label
+    }.repartition(1).saveAsTextFile(
+      "target/tmp/AFTSurvivalRegressionSuite/datasetUnivariate")
+    datasetMultivariate.rdd.map {
+      case Row(features: Vector, label: Double, censor: Double) =>
+        features.toArray.mkString(",") + "," + censor + "," + label
+    }.repartition(1).saveAsTextFile(
+      "target/tmp/AFTSurvivalRegressionSuite/datasetMultivariate")
   }
 
   test("params") {
@@ -92,16 +87,14 @@ class AFTSurvivalRegressionSuite
     assert(aftr.getFitIntercept)
     assert(aftr.getMaxIter === 100)
     assert(aftr.getTol === 1e-6)
-    val model = aftr
-      .setQuantileProbabilities(Array(0.1, 0.8))
+    val model = aftr.setQuantileProbabilities(Array(0.1, 0.8))
       .setQuantilesCol("quantiles")
       .fit(datasetUnivariate)
 
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
 
-    model
-      .transform(datasetUnivariate)
+    model.transform(datasetUnivariate)
       .select("label", "prediction", "quantiles")
       .collect()
     assert(model.getFeaturesCol === "features")
@@ -212,11 +205,11 @@ class AFTSurvivalRegressionSuite
     assert(model.predict(features) ~== responsePredictR relTol 1e-3)
     assert(model.predictQuantiles(features) ~== quantilePredictR relTol 1e-3)
 
-    model
-      .transform(datasetUnivariate)
-      .select("features", "prediction", "quantiles")
-      .collect()
-      .foreach {
+    model.transform(datasetUnivariate).select(
+      "features",
+      "prediction",
+      "quantiles")
+      .collect().foreach {
         case Row(features: Vector, prediction: Double, quantiles: Vector) =>
           assert(prediction ~== model.predict(features) relTol 1e-5)
           assert(quantiles ~== model.predictQuantiles(features) relTol 1e-5)
@@ -285,11 +278,11 @@ class AFTSurvivalRegressionSuite
     assert(model.predict(features) ~== responsePredictR relTol 1e-3)
     assert(model.predictQuantiles(features) ~== quantilePredictR relTol 1e-3)
 
-    model
-      .transform(datasetMultivariate)
-      .select("features", "prediction", "quantiles")
-      .collect()
-      .foreach {
+    model.transform(datasetMultivariate).select(
+      "features",
+      "prediction",
+      "quantiles")
+      .collect().foreach {
         case Row(features: Vector, prediction: Double, quantiles: Vector) =>
           assert(prediction ~== model.predict(features) relTol 1e-5)
           assert(quantiles ~== model.predictQuantiles(features) relTol 1e-5)
@@ -358,11 +351,11 @@ class AFTSurvivalRegressionSuite
     assert(model.predict(features) ~== responsePredictR relTol 1e-3)
     assert(model.predictQuantiles(features) ~== quantilePredictR relTol 1e-3)
 
-    model
-      .transform(datasetMultivariate)
-      .select("features", "prediction", "quantiles")
-      .collect()
-      .foreach {
+    model.transform(datasetMultivariate).select(
+      "features",
+      "prediction",
+      "quantiles")
+      .collect().foreach {
         case Row(features: Vector, prediction: Double, quantiles: Vector) =>
           assert(prediction ~== model.predict(features) relTol 1e-5)
           assert(quantiles ~== model.predictQuantiles(features) relTol 1e-5)
@@ -376,10 +369,8 @@ class AFTSurvivalRegressionSuite
 
     assert(outputDf.schema.fieldNames.contains("quantiles") === false)
 
-    outputDf
-      .select("features", "prediction")
-      .collect()
-      .foreach {
+    outputDf.select("features", "prediction")
+      .collect().foreach {
         case Row(features: Vector, prediction: Double) =>
           assert(prediction ~== model.predict(features) relTol 1e-5)
       }

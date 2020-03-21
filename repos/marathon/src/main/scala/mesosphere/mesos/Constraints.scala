@@ -129,7 +129,8 @@ object Constraints {
         field: String,
         value: String) =
       tasks.filter {
-        _.agentInfo.attributes.filter { y =>
+        _.agentInfo.attributes
+        .filter { y =>
           y.getName == field &&
           y.getText.getValue == value
         }.nonEmpty
@@ -172,9 +173,8 @@ object Constraints {
             constraint.getField match {
               case "hostname" => Some(task.agentInfo.host)
               case field: String =>
-                task.agentInfo.attributes
-                  .find(_.getName == field)
-                  .map(_.getText.getValue)
+                task.agentInfo.attributes.find(_.getName == field).map(
+                  _.getText.getValue)
             }
           val taskGroups: Seq[Map[Task.Id, Task]] =
             runningTasks.groupBy(groupFn).values.map(Task.tasksById(_)).toSeq
@@ -189,9 +189,7 @@ object Constraints {
     while (flag && toKillTasks.size != toKillCount) {
       val tried = distributions
       //sort all distributions in descending order based on distribution difference
-      .toSeq
-        .sortBy(_.distributionDifference(toKillTasks))
-        .reverseIterator
+        .toSeq.sortBy(_.distributionDifference(toKillTasks)).reverseIterator
         //select tasks to kill (without already selected ones)
         .flatMap(_.tasksToKillIterator(toKillTasks)) ++
         //fallback: if the distributions did not select a task, choose one of the not chosen ones
@@ -211,21 +209,16 @@ object Constraints {
 
     //log the selected tasks and why they were selected
     if (log.isInfoEnabled) {
-      val taskDesc = toKillTasks.values
-        .map { task =>
-          val attrs = task.agentInfo.attributes
-            .map(a => s"${a.getName}=${a.getText.getValue}")
-            .mkString(", ")
-          s"${task.taskId} host:${task.agentInfo.host} attrs:$attrs"
-        }
-        .mkString("Selected Tasks to kill:\n", "\n", "\n")
-      val distDesc = distributions
-        .map { d =>
-          val (before, after) =
-            (d.distributionDifference(), d.distributionDifference(toKillTasks))
-          s"${d.constraint.getField} changed from: $before to $after"
-        }
-        .mkString("Selected Constraint diff changed:\n", "\n", "\n")
+      val taskDesc = toKillTasks.values.map { task =>
+        val attrs = task.agentInfo.attributes.map(a =>
+          s"${a.getName}=${a.getText.getValue}").mkString(", ")
+        s"${task.taskId} host:${task.agentInfo.host} attrs:$attrs"
+      }.mkString("Selected Tasks to kill:\n", "\n", "\n")
+      val distDesc = distributions.map { d =>
+        val (before, after) =
+          (d.distributionDifference(), d.distributionDifference(toKillTasks))
+        s"${d.constraint.getField} changed from: $before to $after"
+      }.mkString("Selected Constraint diff changed:\n", "\n", "\n")
       log.info(s"$taskDesc$distDesc")
     }
 

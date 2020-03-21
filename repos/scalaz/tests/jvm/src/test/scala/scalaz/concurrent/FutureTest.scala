@@ -79,14 +79,12 @@ object FutureTest extends SpecLite {
       val times = Stream.iterate(100)(_ + 100).take(10)
 
       val start = System.currentTimeMillis()
-      val result = Future
-        .fork(Future.gatherUnordered(times.map { time =>
-          Future.fork {
-            Thread.sleep(time)
-            Future.now(time)
-          }
-        }))
-        .unsafePerformSync
+      val result = Future.fork(Future.gatherUnordered(times.map { time =>
+        Future.fork {
+          Thread.sleep(time)
+          Future.now(time)
+        }
+      })).unsafePerformSync
       val duration = System.currentTimeMillis() - start
 
       result.length must_== times.size and duration.toInt mustBe_< times.fold(

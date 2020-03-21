@@ -132,9 +132,8 @@ object Sink {
     * See also [[headOption]].
     */
   def head[T]: Sink[T, Future[T]] =
-    Sink
-      .fromGraph(new HeadOptionStage[T])
-      .withAttributes(DefaultAttributes.headSink)
+    Sink.fromGraph(new HeadOptionStage[T]).withAttributes(
+      DefaultAttributes.headSink)
       .mapMaterializedValue(e ⇒
         e.map(
           _.getOrElse(
@@ -149,9 +148,8 @@ object Sink {
     * See also [[head]].
     */
   def headOption[T]: Sink[T, Future[Option[T]]] =
-    Sink
-      .fromGraph(new HeadOptionStage[T])
-      .withAttributes(DefaultAttributes.headOptionSink)
+    Sink.fromGraph(new HeadOptionStage[T]).withAttributes(
+      DefaultAttributes.headOptionSink)
 
   /**
     * A `Sink` that materializes into a `Future` of the last value received.
@@ -161,9 +159,8 @@ object Sink {
     * See also [[lastOption]].
     */
   def last[T]: Sink[T, Future[T]] =
-    Sink
-      .fromGraph(new LastOptionStage[T])
-      .withAttributes(DefaultAttributes.lastSink)
+    Sink.fromGraph(new LastOptionStage[T]).withAttributes(
+      DefaultAttributes.lastSink)
       .mapMaterializedValue(e ⇒
         e.map(
           _.getOrElse(
@@ -178,9 +175,8 @@ object Sink {
     * See also [[last]].
     */
   def lastOption[T]: Sink[T, Future[Option[T]]] =
-    Sink
-      .fromGraph(new LastOptionStage[T])
-      .withAttributes(DefaultAttributes.lastOptionSink)
+    Sink.fromGraph(new LastOptionStage[T]).withAttributes(
+      DefaultAttributes.lastOptionSink)
 
   /**
     * A `Sink` that keeps on collecting incoming elements until upstream terminates.
@@ -271,9 +267,8 @@ object Sink {
     */
   def foreachParallel[T](parallelism: Int)(f: T ⇒ Unit)(implicit
       ec: ExecutionContext): Sink[T, Future[Done]] =
-    Flow[T]
-      .mapAsyncUnordered(parallelism)(t ⇒ Future(f(t)))
-      .toMat(Sink.ignore)(Keep.right)
+    Flow[T].mapAsyncUnordered(parallelism)(t ⇒ Future(f(t))).toMat(Sink.ignore)(
+      Keep.right)
 
   /**
     * A `Sink` that will invoke the given function for every received element, giving it its previous
@@ -322,10 +317,8 @@ object Sink {
       }
     }
 
-    Flow[T]
-      .transform(newOnCompleteStage)
-      .to(Sink.ignore)
-      .named("onCompleteSink")
+    Flow[T].transform(newOnCompleteStage).to(Sink.ignore).named(
+      "onCompleteSink")
   }
 
   /**

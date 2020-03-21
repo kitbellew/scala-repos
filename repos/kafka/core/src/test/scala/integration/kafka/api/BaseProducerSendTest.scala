@@ -42,14 +42,13 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     val overridingProps = new Properties()
     val numServers = 2
     overridingProps.put(KafkaConfig.NumPartitionsProp, 4.toString)
-    TestUtils
-      .createBrokerConfigs(
-        numServers,
-        zkConnect,
-        false,
-        interBrokerSecurityProtocol = Some(securityProtocol),
-        trustStoreFile = trustStoreFile)
-      .map(KafkaConfig.fromProps(_, overridingProps))
+    TestUtils.createBrokerConfigs(
+      numServers,
+      zkConnect,
+      false,
+      interBrokerSecurityProtocol = Some(securityProtocol),
+      trustStoreFile = trustStoreFile).map(
+      KafkaConfig.fromProps(_, overridingProps))
   }
 
   private var consumer1: SimpleConsumer = null
@@ -278,8 +277,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
             assertEquals(baseTimestamp + timestampDiff, metadata.timestamp())
           else
             assertTrue(
-              metadata.timestamp() >= startTime && metadata
-                .timestamp() <= System.currentTimeMillis())
+              metadata.timestamp() >= startTime && metadata.timestamp() <= System.currentTimeMillis())
           assertEquals(partition, metadata.partition())
           offset += 1
           timestampDiff += 1
@@ -405,14 +403,18 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       // make sure the fetched messages also respect the partitioning and ordering
       val fetchResponse1 = if (leader1.get == configs(0).brokerId) {
         consumer1.fetch(
-          new FetchRequestBuilder()
-            .addFetch(topic, partition, 0, Int.MaxValue)
-            .build())
+          new FetchRequestBuilder().addFetch(
+            topic,
+            partition,
+            0,
+            Int.MaxValue).build())
       } else {
         consumer2.fetch(
-          new FetchRequestBuilder()
-            .addFetch(topic, partition, 0, Int.MaxValue)
-            .build())
+          new FetchRequestBuilder().addFetch(
+            topic,
+            partition,
+            0,
+            Int.MaxValue).build())
       }
       val messageSet1 =
         fetchResponse1.messageSet(topic, partition).iterator.toBuffer
@@ -575,14 +577,18 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         // Check the messages received by broker.
         val fetchResponse = if (leader.get == configs(0).brokerId) {
           consumer1.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
-              .build())
+            new FetchRequestBuilder().addFetch(
+              topic,
+              0,
+              0,
+              Int.MaxValue).build())
         } else {
           consumer2.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
-              .build())
+            new FetchRequestBuilder().addFetch(
+              topic,
+              0,
+              0,
+              Int.MaxValue).build())
         }
         val expectedNumRecords = (i + 1) * numRecords
         assertEquals(
@@ -606,15 +612,13 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
 
     val producer = createProducer(brokerList = brokerList)
     try {
-      producer
-        .send(
-          new ProducerRecord(
-            topic,
-            0,
-            System.currentTimeMillis() - 1001,
-            "key".getBytes,
-            "value".getBytes))
-        .get()
+      producer.send(
+        new ProducerRecord(
+          topic,
+          0,
+          System.currentTimeMillis() - 1001,
+          "key".getBytes,
+          "value".getBytes)).get()
       fail("Should throw CorruptedRecordException")
     } catch {
       case e: ExecutionException =>
@@ -629,15 +633,13 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     val compressedProducer =
       createProducer(brokerList = brokerList, props = Some(producerProps))
     try {
-      compressedProducer
-        .send(
-          new ProducerRecord(
-            topic,
-            0,
-            System.currentTimeMillis() - 1001,
-            "key".getBytes,
-            "value".getBytes))
-        .get()
+      compressedProducer.send(
+        new ProducerRecord(
+          topic,
+          0,
+          System.currentTimeMillis() - 1001,
+          "key".getBytes,
+          "value".getBytes)).get()
       fail("Should throw CorruptedRecordException")
     } catch {
       case e: ExecutionException =>

@@ -349,9 +349,8 @@ class ScalaArrangementVisitor(
     val first = node.getFirstChild
     var currentNode: PsiElement = node
     var range =
-      if (first != null && first
-            .isInstanceOf[PsiComment] && prev != null && (!prev
-            .isInstanceOf[PsiWhiteSpace] ||
+      if (first != null && first.isInstanceOf[
+            PsiComment] && prev != null && (!prev.isInstanceOf[PsiWhiteSpace] ||
           prev.isInstanceOf[PsiWhiteSpace] && !prev.getText.contains(
             "\n") && prev.getPrevSibling != null)) {
         new TextRange(
@@ -414,8 +413,9 @@ class ScalaArrangementVisitor(
   private def parseProperties(
       method: ScFunction,
       entry: ScalaArrangementEntry) {
-    if (!(groupingRules.contains(JAVA_GETTERS_AND_SETTERS) || groupingRules
-          .contains(SCALA_GETTERS_AND_SETTERS)) ||
+    if (!(groupingRules.contains(
+          JAVA_GETTERS_AND_SETTERS) || groupingRules.contains(
+          SCALA_GETTERS_AND_SETTERS)) ||
         entry == null) {
       return
     }
@@ -459,16 +459,14 @@ class ScalaArrangementVisitor(
         if (!unseparableRanges.contains(entry)) {
           unseparableRanges += (entry -> mutable.Queue[ScalaArrangementEntry]())
         }
-        unseparableRanges
-          .get(entry)
-          .foreach(queue =>
-            queue.enqueue(
-              createNewEntry(
-                body,
-                new TextRange(newOffset, child.getTextRange.getEndOffset),
-                UNSEPARABLE_RANGE,
-                null,
-                canArrange = true)))
+        unseparableRanges.get(entry).foreach(queue =>
+          queue.enqueue(
+            createNewEntry(
+              body,
+              new TextRange(newOffset, child.getTextRange.getEndOffset),
+              UNSEPARABLE_RANGE,
+              null,
+              canArrange = true)))
         None
       } else startOffset
     })
@@ -486,9 +484,9 @@ object ScalaArrangementVisitor {
 
   private def hasJavaGetterName(method: ScFunction) = {
     val name = method.getName
-    if (nameStartsWith(name, "get") && !(nameStartsWith(name, "getAnd") && name
-          .charAt("getAnd".length)
-          .isUpper)) {
+    if (nameStartsWith(name, "get") && !(nameStartsWith(
+          name,
+          "getAnd") && name.charAt("getAnd".length).isUpper)) {
       method.returnType.getOrAny != Unit
     } else if (nameStartsWith(name, "is")) {
       method.returnType.getOrAny == Boolean

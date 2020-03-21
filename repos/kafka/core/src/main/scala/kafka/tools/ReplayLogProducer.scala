@@ -68,56 +68,53 @@ object ReplayLogProducer extends Logging {
 
   class Config(args: Array[String]) {
     val parser = new OptionParser
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
-          "Multiple URLS can be given to allow fail-over.")
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over.")
       .withRequiredArg
       .describedAs("zookeeper url")
       .ofType(classOf[String])
       .defaultsTo("127.0.0.1:2181")
-    val brokerListOpt = parser
-      .accepts("broker-list", "REQUIRED: the broker list must be specified.")
+    val brokerListOpt = parser.accepts(
+      "broker-list",
+      "REQUIRED: the broker list must be specified.")
       .withRequiredArg
       .describedAs("hostname:port")
       .ofType(classOf[String])
-    val inputTopicOpt = parser
-      .accepts("inputtopic", "REQUIRED: The topic to consume from.")
-      .withRequiredArg
-      .describedAs("input-topic")
-      .ofType(classOf[String])
-    val outputTopicOpt = parser
-      .accepts("outputtopic", "REQUIRED: The topic to produce to")
-      .withRequiredArg
-      .describedAs("output-topic")
-      .ofType(classOf[String])
-    val numMessagesOpt = parser
-      .accepts("messages", "The number of messages to send.")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(-1)
-    val numThreadsOpt = parser
-      .accepts("threads", "Number of sending threads.")
+    val inputTopicOpt =
+      parser.accepts("inputtopic", "REQUIRED: The topic to consume from.")
+        .withRequiredArg
+        .describedAs("input-topic")
+        .ofType(classOf[String])
+    val outputTopicOpt =
+      parser.accepts("outputtopic", "REQUIRED: The topic to produce to")
+        .withRequiredArg
+        .describedAs("output-topic")
+        .ofType(classOf[String])
+    val numMessagesOpt =
+      parser.accepts("messages", "The number of messages to send.")
+        .withRequiredArg
+        .describedAs("count")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(-1)
+    val numThreadsOpt = parser.accepts("threads", "Number of sending threads.")
       .withRequiredArg
       .describedAs("threads")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(1)
-    val reportingIntervalOpt = parser
-      .accepts(
-        "reporting-interval",
-        "Interval at which to print progress info.")
+    val reportingIntervalOpt = parser.accepts(
+      "reporting-interval",
+      "Interval at which to print progress info.")
       .withRequiredArg
       .describedAs("size")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(5000)
-    val propertyOpt = parser
-      .accepts(
-        "property",
-        "A mechanism to pass properties in the form key=value to the producer. " +
-          "This allows the user to override producer properties that are not exposed by the existing command line arguments"
-      )
+    val propertyOpt = parser.accepts(
+      "property",
+      "A mechanism to pass properties in the form key=value to the producer. " +
+        "This allows the user to override producer properties that are not exposed by the existing command line arguments"
+    )
       .withRequiredArg
       .describedAs("producer properties")
       .ofType(classOf[String])

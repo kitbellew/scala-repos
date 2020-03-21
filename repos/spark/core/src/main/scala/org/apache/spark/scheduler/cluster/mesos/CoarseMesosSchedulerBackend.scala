@@ -66,8 +66,7 @@ private[spark] class CoarseMesosSchedulerBackend(
   val maxCores = conf.get("spark.cores.max", Int.MaxValue.toString).toInt
 
   private[this] val shutdownTimeoutMS =
-    conf
-      .getTimeAsMs("spark.mesos.coarse.shutdownTimeout", "10s")
+    conf.getTimeAsMs("spark.mesos.coarse.shutdownTimeout", "10s")
       .ensuring(_ >= 0, "spark.mesos.coarse.shutdownTimeout must be >= 0")
 
   // Synchronization protected by stateLock
@@ -157,9 +156,8 @@ private[spark] class CoarseMesosSchedulerBackend(
       sc.sparkUser,
       sc.appName,
       sc.conf,
-      sc.conf
-        .getOption("spark.mesos.driver.webui.url")
-        .orElse(sc.ui.map(_.appUIAddress))
+      sc.conf.getOption("spark.mesos.driver.webui.url").orElse(
+        sc.ui.map(_.appUIAddress))
     )
     startScheduler(driver)
   }
@@ -168,8 +166,7 @@ private[spark] class CoarseMesosSchedulerBackend(
       offer: Offer,
       numCores: Int,
       taskId: String): CommandInfo = {
-    val executorSparkHome = conf
-      .getOption("spark.mesos.executor.home")
+    val executorSparkHome = conf.getOption("spark.mesos.executor.home")
       .orElse(sc.getSparkHome())
       .getOrElse {
         throw new SparkException(
@@ -179,24 +176,19 @@ private[spark] class CoarseMesosSchedulerBackend(
     val extraClassPath = conf.getOption("spark.executor.extraClassPath")
     extraClassPath.foreach { cp =>
       environment.addVariables(
-        Environment.Variable
-          .newBuilder()
-          .setName("SPARK_CLASSPATH")
-          .setValue(cp)
-          .build())
+        Environment.Variable.newBuilder().setName("SPARK_CLASSPATH").setValue(
+          cp).build())
     }
     val extraJavaOpts = conf.get("spark.executor.extraJavaOptions", "")
 
     // Set the environment variable through a command prefix
     // to append to the existing value of the variable
-    val prefixEnv = conf
-      .getOption("spark.executor.extraLibraryPath")
-      .map { p => Utils.libraryPathEnvPrefix(Seq(p)) }
-      .getOrElse("")
+    val prefixEnv = conf.getOption("spark.executor.extraLibraryPath").map { p =>
+      Utils.libraryPathEnvPrefix(Seq(p))
+    }.getOrElse("")
 
     environment.addVariables(
-      Environment.Variable
-        .newBuilder()
+      Environment.Variable.newBuilder()
         .setName("SPARK_EXECUTOR_OPTS")
         .setValue(extraJavaOpts)
         .build())
@@ -204,18 +196,15 @@ private[spark] class CoarseMesosSchedulerBackend(
     sc.executorEnvs.foreach {
       case (key, value) =>
         environment.addVariables(
-          Environment.Variable
-            .newBuilder()
+          Environment.Variable.newBuilder()
             .setName(key)
             .setValue(value)
             .build())
     }
-    val command = CommandInfo
-      .newBuilder()
+    val command = CommandInfo.newBuilder()
       .setEnvironment(environment)
 
-    val uri = conf
-      .getOption("spark.executor.uri")
+    val uri = conf.getOption("spark.executor.uri")
       .orElse(Option(System.getenv("SPARK_EXECUTOR_URI")))
 
     if (uri.isEmpty) {
@@ -313,10 +302,8 @@ private[spark] class CoarseMesosSchedulerBackend(
       val offerAttributes = toAttributeMap(offer.getAttributesList)
       val mem = getResource(offer.getResourcesList, "mem")
       val cpus = getResource(offer.getResourcesList, "cpus")
-      val filters = Filters
-        .newBuilder()
-        .setRefuseSeconds(rejectOfferDurationForUnmetConstraints)
-        .build()
+      val filters = Filters.newBuilder()
+        .setRefuseSeconds(rejectOfferDurationForUnmetConstraints).build()
 
       logDebug(
         s"Declining offer: $id with attributes: $offerAttributes mem: $mem cpu: $cpus"
@@ -407,18 +394,16 @@ private[spark] class CoarseMesosSchedulerBackend(
           val taskCPUs = executorCores(offerCPUs)
           val taskMemory = executorMemory(sc)
 
-          slaves
-            .getOrElseUpdate(slaveId, new Slave(offer.getHostname))
-            .taskIDs
-            .add(taskId)
+          slaves.getOrElseUpdate(
+            slaveId,
+            new Slave(offer.getHostname)).taskIDs.add(taskId)
 
           val (afterCPUResources, cpuResourcesToUse) =
             partitionResources(resources, "cpus", taskCPUs)
           val (resourcesLeft, memResourcesToUse) =
             partitionResources(afterCPUResources.asJava, "mem", taskMemory)
 
-          val taskBuilder = MesosTaskInfo
-            .newBuilder()
+          val taskBuilder = MesosTaskInfo.newBuilder()
             .setTaskId(TaskID.newBuilder().setValue(taskId.toString).build())
             .setSlaveId(offer.getSlaveId)
             .setCommand(

@@ -46,8 +46,9 @@ class Tutorial3(args: Args) extends Job(args) {
   val input = TextLine(args("input"))
   val output = TextLine("tutorial/data/output3.txt")
 
-  input.read
-  /**
+  input
+    .read
+    /**
     flatMap is like map, but instead of returning a single item from the
     function, we return a collection of items. Each of these items will create
     a new entry in the data stream; here, we'll end up with a new entry for each word.

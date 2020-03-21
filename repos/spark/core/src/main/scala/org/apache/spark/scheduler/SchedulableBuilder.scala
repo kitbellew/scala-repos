@@ -96,12 +96,11 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
         DEFAULT_WEIGHT)
       rootPool.addSchedulable(pool)
       logInfo(
-        "Created default pool %s, schedulingMode: %s, minShare: %d, weight: %d"
-          .format(
-            DEFAULT_POOL_NAME,
-            DEFAULT_SCHEDULING_MODE,
-            DEFAULT_MINIMUM_SHARE,
-            DEFAULT_WEIGHT))
+        "Created default pool %s, schedulingMode: %s, minShare: %d, weight: %d".format(
+          DEFAULT_POOL_NAME,
+          DEFAULT_SCHEDULING_MODE,
+          DEFAULT_MINIMUM_SHARE,
+          DEFAULT_WEIGHT))
     }
   }
 
@@ -137,8 +136,11 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
       val pool = new Pool(poolName, schedulingMode, minShare, weight)
       rootPool.addSchedulable(pool)
       logInfo(
-        "Created pool %s, schedulingMode: %s, minShare: %d, weight: %d"
-          .format(poolName, schedulingMode, minShare, weight))
+        "Created pool %s, schedulingMode: %s, minShare: %d, weight: %d".format(
+          poolName,
+          schedulingMode,
+          minShare,
+          weight))
     }
   }
 
@@ -159,12 +161,11 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
           DEFAULT_WEIGHT)
         rootPool.addSchedulable(parentPool)
         logInfo(
-          "Created pool %s, schedulingMode: %s, minShare: %d, weight: %d"
-            .format(
-              poolName,
-              DEFAULT_SCHEDULING_MODE,
-              DEFAULT_MINIMUM_SHARE,
-              DEFAULT_WEIGHT))
+          "Created pool %s, schedulingMode: %s, minShare: %d, weight: %d".format(
+            poolName,
+            DEFAULT_SCHEDULING_MODE,
+            DEFAULT_MINIMUM_SHARE,
+            DEFAULT_WEIGHT))
       }
     }
     parentPool.addSchedulable(manager)

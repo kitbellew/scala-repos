@@ -33,8 +33,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
       @NotNull element: PsiElement,
       @NotNull document: Document,
       quick: Boolean): Array[FoldingDescriptor] = {
-    if (!element
-          .isInstanceOf[ScalaFile] || quick || !ScalaI18nUtil.isFoldingsOn) {
+    if (!element.isInstanceOf[
+          ScalaFile] || quick || !ScalaI18nUtil.isFoldingsOn) {
       return FoldingDescriptor.EMPTY
     }
     val file: ScalaFile = element.asInstanceOf[ScalaFile]
@@ -84,8 +84,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
             val count: Int =
               ScalaI18nUtil.getPropertyValueParamsMaxCount(expression)
             val args: Array[ScExpression] = expressions.exprsArray
-            if (args.length == 1 + count && parent.getParent
-                  .isInstanceOf[ScMethodCall]) {
+            if (args.length == 1 + count && parent.getParent.isInstanceOf[
+                  ScMethodCall]) {
               var ok: Boolean = true
               var i: Int = 1
               while (i < count + 1 && ok) {

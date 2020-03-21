@@ -60,11 +60,9 @@ class ScValueDeclarationImpl private (
   def getIdList: ScIdList = {
     val stub = getStub
     if (stub != null) {
-      stub
-        .getChildrenByType(
-          ScalaElementTypes.IDENTIFIER_LIST,
-          JavaArrayFactoryUtil.ScIdListFactory)
-        .apply(0)
+      stub.getChildrenByType(
+        ScalaElementTypes.IDENTIFIER_LIST,
+        JavaArrayFactoryUtil.ScIdListFactory).apply(0)
     } else findChildByClass(classOf[ScIdList])
   }
 

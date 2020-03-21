@@ -123,8 +123,7 @@ class StreamTcpDocSpec extends AkkaSpec {
       //#repl-client
 
       val replParser =
-        Flow[String]
-          .takeWhile(_ != "q")
+        Flow[String].takeWhile(_ != "q")
           .concat(Source.single("BYE"))
           .map(elem => ByteString(s"$elem\n"))
 

@@ -145,9 +145,8 @@ object PlayDocsPlugin extends AutoPlugin {
       docsJarFile <<= docsJarFileSetting,
       PlayDocsKeys.resources := Seq(
         PlayDocsDirectoryResource(manualPath.value)) ++
-        docsJarFile.value
-          .map(jar => PlayDocsJarFileResource(jar, Some("play/docs/content")))
-          .toSeq,
+        docsJarFile.value.map(jar =>
+          PlayDocsJarFileResource(jar, Some("play/docs/content"))).toSeq,
       docsJarScalaBinaryVersion <<= scalaBinaryVersion,
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% docsName.value % PlayVersion.current,
@@ -225,8 +224,8 @@ object PlayDocsPlugin extends AutoPlugin {
         }
         val result = sbtFiles.map {
           sbtFile =>
-            val relativeFile = relativeTo(baseDirectory.value)(sbtFile)
-              .getOrElse(sbtFile.getAbsolutePath)
+            val relativeFile = relativeTo(baseDirectory.value)(
+              sbtFile).getOrElse(sbtFile.getAbsolutePath)
             try {
               EvaluateConfigurations.evaluateConfiguration(
                 eval(),
@@ -259,9 +258,8 @@ object PlayDocsPlugin extends AutoPlugin {
     )
 
   val docsJarFileSetting: Def.Initialize[Task[Option[File]]] = Def.task {
-    val jars = update.value
-      .matching(configurationFilter("docs") && artifactFilter(`type` = "jar"))
-      .toList
+    val jars = update.value.matching(
+      configurationFilter("docs") && artifactFilter(`type` = "jar")).toList
     jars match {
       case Nil =>
         streams.value.log.error("No docs jar was resolved")
@@ -305,12 +303,10 @@ object PlayDocsPlugin extends AutoPlugin {
       classOf[Array[String]])
 
     val files = allResources.map(_.file).toArray[File]
-    val baseDirs = allResources
-      .map {
-        case PlayDocsJarFileResource(_, base) => base.orNull
-        case PlayDocsDirectoryResource(_)     => null
-      }
-      .toArray[String]
+    val baseDirs = allResources.map {
+      case PlayDocsJarFileResource(_, base) => base.orNull
+      case PlayDocsDirectoryResource(_)     => null
+    }.toArray[String]
 
     val buildDocHandler = fromResourcesMethod.invoke(null, files, baseDirs)
 
@@ -326,40 +322,28 @@ object PlayDocsPlugin extends AutoPlugin {
 
     val translationReport = new Callable[File] {
       def call() =
-        Project
-          .runTask(cachedTranslationCodeSamplesReport, state.value)
-          .get
-          ._2
-          .toEither
-          .right
-          .get
+        Project.runTask(
+          cachedTranslationCodeSamplesReport,
+          state.value).get._2.toEither.right.get
     }
     val forceTranslationReport = new Callable[File] {
       def call() =
-        Project
-          .runTask(translationCodeSamplesReport, state.value)
-          .get
-          ._2
-          .toEither
-          .right
-          .get
+        Project.runTask(
+          translationCodeSamplesReport,
+          state.value).get._2.toEither.right.get
     }
     val docServerStart = constructor.newInstance()
-    val server: ServerWithStop = startMethod
-      .invoke(
-        docServerStart,
-        manualPath.value,
-        buildDocHandler,
-        translationReport,
-        forceTranslationReport,
-        new java.lang.Integer(port))
-      .asInstanceOf[ServerWithStop]
+    val server: ServerWithStop = startMethod.invoke(
+      docServerStart,
+      manualPath.value,
+      buildDocHandler,
+      translationReport,
+      forceTranslationReport,
+      new java.lang.Integer(port)).asInstanceOf[ServerWithStop]
 
     println()
-    println(
-      Colors.green(
-        "Documentation server started, you can now view the docs by going to http://" + server
-          .mainAddress()))
+    println(Colors.green(
+      "Documentation server started, you can now view the docs by going to http://" + server.mainAddress()))
     println()
 
     waitForKey()

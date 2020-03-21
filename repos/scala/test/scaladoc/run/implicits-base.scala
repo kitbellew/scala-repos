@@ -15,21 +15,13 @@ object Test extends ScaladocModelTest {
     import access._
 
     def isShadowed(mbr: MemberEntity): Boolean =
-      mbr.byConversion
-        .map(
-          _.source.implicitsShadowing
-            .get(mbr)
-            .map(_.isShadowed)
-            .getOrElse(false))
-        .getOrElse(false)
+      mbr.byConversion.map(
+        _.source.implicitsShadowing.get(mbr).map(_.isShadowed).getOrElse(
+          false)).getOrElse(false)
 
     // SEE THE test/resources/implicits-base-res.scala FOR THE EXPLANATION OF WHAT'S CHECKED HERE:
-    val base = root
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("implicits")
-      ._package("base")
+    val base = root._package("scala")._package("test")._package(
+      "scaladoc")._package("implicits")._package("base")
     var conv: ImplicitConversion = null
 
 //// class A ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,11 +81,8 @@ object Test extends ScaladocModelTest {
     assert(conv._member("convToManifestA").resultType.name == "T")
     assert(conv._member("convToTraversableOps").resultType.name == "T")
     assert(
-      conv
-        ._member("convToTraversableOps")
-        .flags
-        .toString
-        .indexOf("abstract") == -1)
+      conv._member("convToTraversableOps").flags.toString.indexOf(
+        "abstract") == -1)
 
 //// class B ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -145,11 +134,8 @@ object Test extends ScaladocModelTest {
     assert(conv._member("convToManifestA").resultType.name == "Double")
     assert(conv._member("convToTraversableOps").resultType.name == "Double")
     assert(
-      conv
-        ._member("convToTraversableOps")
-        .flags
-        .toString
-        .indexOf("abstract") == -1)
+      conv._member("convToTraversableOps").flags.toString.indexOf(
+        "abstract") == -1)
 
 //// class C ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -234,20 +234,23 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
   encodeDecodeTest(
     (PrimitiveData(1, 1, 1, 1, 1, 1, true), (3, 30L)),
     "tuple with 2 product encoders")(
-    ExpressionEncoder
-      .tuple(ExpressionEncoder[PrimitiveData], ExpressionEncoder[(Int, Long)]))
+    ExpressionEncoder.tuple(
+      ExpressionEncoder[PrimitiveData],
+      ExpressionEncoder[(Int, Long)]))
 
   encodeDecodeTest(
     (PrimitiveData(1, 1, 1, 1, 1, 1, true), 3),
     "tuple with flat encoder and product encoder")(
-    ExpressionEncoder
-      .tuple(ExpressionEncoder[PrimitiveData], ExpressionEncoder[Int]))
+    ExpressionEncoder.tuple(
+      ExpressionEncoder[PrimitiveData],
+      ExpressionEncoder[Int]))
 
   encodeDecodeTest(
     (3, PrimitiveData(1, 1, 1, 1, 1, 1, true)),
     "tuple with product encoder and flat encoder")(
-    ExpressionEncoder
-      .tuple(ExpressionEncoder[Int], ExpressionEncoder[PrimitiveData]))
+    ExpressionEncoder.tuple(
+      ExpressionEncoder[Int],
+      ExpressionEncoder[PrimitiveData]))
 
   encodeDecodeTest((1, (10, 100L)), "nested tuple encoder") {
     val intEnc = ExpressionEncoder[Int]
@@ -260,8 +263,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
   test("nullable of encoder schema") {
     def checkNullable[T: ExpressionEncoder](nullable: Boolean*): Unit = {
       assert(
-        implicitly[ExpressionEncoder[T]].schema
-          .map(_.nullable) === nullable.toSeq)
+        implicitly[ExpressionEncoder[T]].schema.map(
+          _.nullable) === nullable.toSeq)
     }
 
     // test for flat encoders
@@ -285,9 +288,9 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
     // test for tupled encoders
     {
-      val schema = ExpressionEncoder
-        .tuple(ExpressionEncoder[Int], ExpressionEncoder[(String, Int)])
-        .schema
+      val schema = ExpressionEncoder.tuple(
+        ExpressionEncoder[Int],
+        ExpressionEncoder[(String, Int)]).schema
       assert(schema(0).nullable === false)
       assert(schema(1).nullable === true)
       assert(schema(1).dataType.asInstanceOf[StructType](0).nullable === true)
@@ -348,27 +351,21 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
       if (!isCorrect) {
         val types = convertedBack match {
           case c: Product =>
-            c.productIterator
-              .filter(_ != null)
-              .map(_.getClass.getName)
-              .mkString(",")
+            c.productIterator.filter(_ != null).map(
+              _.getClass.getName).mkString(",")
           case other => other.getClass.getName
         }
 
         val encodedData =
           try {
-            row
-              .toSeq(encoder.schema)
-              .zip(schema)
-              .map {
-                case (
-                      a: ArrayData,
-                      AttributeReference(_, ArrayType(et, _), _, _)) =>
-                  a.toArray[Any](et).toSeq
-                case (other, _) =>
-                  other
-              }
-              .mkString("[", ",", "]")
+            row.toSeq(encoder.schema).zip(schema).map {
+              case (
+                    a: ArrayData,
+                    AttributeReference(_, ArrayType(et, _), _, _)) =>
+                a.toArray[Any](et).toSeq
+              case (other, _) =>
+                other
+            }.mkString("[", ",", "]")
           } catch {
             case e: Throwable => s"Failed to toSeq: $e"
           }

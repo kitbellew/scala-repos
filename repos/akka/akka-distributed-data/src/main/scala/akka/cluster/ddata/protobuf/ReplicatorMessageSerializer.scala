@@ -147,11 +147,9 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     with BaseSerializer {
   import ReplicatorMessageSerializer.SmallCache
 
-  private val cacheTimeToLive = system.settings.config
-    .getDuration(
-      "akka.cluster.distributed-data.serializer-cache-time-to-live",
-      TimeUnit.MILLISECONDS)
-    .millis
+  private val cacheTimeToLive = system.settings.config.getDuration(
+    "akka.cluster.distributed-data.serializer-cache-time-to-live",
+    TimeUnit.MILLISECONDS).millis
   private val readCache = new SmallCache[Read, Array[Byte]](
     4,
     cacheTimeToLive,
@@ -256,10 +254,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val entries = status.digests.foreach {
       case (key, digest) ⇒
         b.addEntries(
-          dm.Status.Entry
-            .newBuilder()
-            .setKey(key)
-            .setDigest(ByteString.copyFrom(digest.toArray)))
+          dm.Status.Entry.newBuilder().setKey(key).setDigest(
+            ByteString.copyFrom(digest.toArray)))
     }
     b.build()
   }
@@ -278,10 +274,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val entries = gossip.updatedData.foreach {
       case (key, data) ⇒
         b.addEntries(
-          dm.Gossip.Entry
-            .newBuilder()
-            .setKey(key)
-            .setEnvelope(dataEnvelopeToProto(data)))
+          dm.Gossip.Entry.newBuilder().setKey(key).setEnvelope(
+            dataEnvelopeToProto(data)))
     }
     b.build()
   }
@@ -302,11 +296,9 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
       case _: ReadAll ⇒ -1
     }
 
-    val b = dm.Get
-      .newBuilder()
-      .setKey(otherMessageToProto(get.key))
-      .setConsistency(consistencyValue)
-      .setTimeout(get.consistency.timeout.toMillis.toInt)
+    val b =
+      dm.Get.newBuilder().setKey(otherMessageToProto(get.key)).setConsistency(
+        consistencyValue).setTimeout(get.consistency.timeout.toMillis.toInt)
 
     get.request.foreach(o ⇒ b.setRequest(otherMessageToProto(o)))
     b.build()
@@ -329,10 +321,9 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def getSuccessToProto(getSuccess: GetSuccess[_]): dm.GetSuccess = {
-    val b = dm.GetSuccess
-      .newBuilder()
-      .setKey(otherMessageToProto(getSuccess.key))
-      .setData(otherMessageToProto(getSuccess.dataValue))
+    val b = dm.GetSuccess.newBuilder().setKey(
+      otherMessageToProto(getSuccess.key)).setData(
+      otherMessageToProto(getSuccess.dataValue))
 
     getSuccess.request.foreach(o ⇒ b.setRequest(otherMessageToProto(o)))
     b.build()
@@ -384,11 +375,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def subscribeToProto(subscribe: Subscribe[_]): dm.Subscribe =
-    dm.Subscribe
-      .newBuilder()
-      .setKey(otherMessageToProto(subscribe.key))
-      .setRef(Serialization.serializedActorPath(subscribe.subscriber))
-      .build()
+    dm.Subscribe.newBuilder().setKey(otherMessageToProto(subscribe.key)).setRef(
+      Serialization.serializedActorPath(subscribe.subscriber)).build()
 
   private def subscribeFromBinary(bytes: Array[Byte]): Subscribe[_] = {
     val subscribe = dm.Subscribe.parseFrom(bytes)
@@ -397,11 +385,9 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def unsubscribeToProto(unsubscribe: Unsubscribe[_]): dm.Unsubscribe =
-    dm.Unsubscribe
-      .newBuilder()
-      .setKey(otherMessageToProto(unsubscribe.key))
-      .setRef(Serialization.serializedActorPath(unsubscribe.subscriber))
-      .build()
+    dm.Unsubscribe.newBuilder().setKey(
+      otherMessageToProto(unsubscribe.key)).setRef(
+      Serialization.serializedActorPath(unsubscribe.subscriber)).build()
 
   private def unsubscribeFromBinary(bytes: Array[Byte]): Unsubscribe[_] = {
     val unsubscribe = dm.Unsubscribe.parseFrom(bytes)
@@ -410,11 +396,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def changedToProto(changed: Changed[_]): dm.Changed =
-    dm.Changed
-      .newBuilder()
-      .setKey(otherMessageToProto(changed.key))
-      .setData(otherMessageToProto(changed.dataValue))
-      .build()
+    dm.Changed.newBuilder().setKey(otherMessageToProto(changed.key)).setData(
+      otherMessageToProto(changed.dataValue)).build()
 
   private def changedFromBinary(bytes: Array[Byte]): Changed[_] = {
     val changed = dm.Changed.parseFrom(bytes)
@@ -426,21 +409,17 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
 
   private def dataEnvelopeToProto(
       dataEnvelope: DataEnvelope): dm.DataEnvelope = {
-    val dataEnvelopeBuilder = dm.DataEnvelope
-      .newBuilder()
-      .setData(otherMessageToProto(dataEnvelope.data))
+    val dataEnvelopeBuilder = dm.DataEnvelope.newBuilder().setData(
+      otherMessageToProto(dataEnvelope.data))
     dataEnvelope.pruning.foreach {
       case (removedAddress, state) ⇒
-        val b = dm.DataEnvelope.PruningEntry
-          .newBuilder()
-          .setRemovedAddress(uniqueAddressToProto(removedAddress))
-          .setOwnerAddress(uniqueAddressToProto(state.owner))
+        val b = dm.DataEnvelope.PruningEntry.newBuilder().setRemovedAddress(
+          uniqueAddressToProto(removedAddress)).setOwnerAddress(
+          uniqueAddressToProto(state.owner))
         state.phase match {
           case PruningState.PruningInitialized(seen) ⇒
-            seen.toVector
-              .sorted(Member.addressOrdering)
-              .map(addressToProto)
-              .foreach { a ⇒ b.addSeen(a) }
+            seen.toVector.sorted(Member.addressOrdering).map(
+              addressToProto).foreach { a ⇒ b.addSeen(a) }
             b.setPerformed(false)
           case PruningState.PruningPerformed ⇒
             b.setPerformed(true)
@@ -474,11 +453,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def writeToProto(write: Write): dm.Write =
-    dm.Write
-      .newBuilder()
-      .setKey(write.key)
-      .setEnvelope(dataEnvelopeToProto(write.envelope))
-      .build()
+    dm.Write.newBuilder().setKey(write.key).setEnvelope(
+      dataEnvelopeToProto(write.envelope)).build()
 
   private def writeFromBinary(bytes: Array[Byte]): Write = {
     val write = dm.Write.parseFrom(bytes)

@@ -70,8 +70,9 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
     // hence we add a filter operator.
     // See the optimizer rule `ConvertToLocalRelation`
     checkAnswer(
-      df.filter("isnotnull(a)")
-        .selectExpr("regexp_replace(a, b, c)", "regexp_extract(a, b, 1)"),
+      df.filter("isnotnull(a)").selectExpr(
+        "regexp_replace(a, b, c)",
+        "regexp_extract(a, b, 1)"),
       Row("300", "100") :: Row("400", "100") :: Row("400-400", "100") :: Nil
     )
   }

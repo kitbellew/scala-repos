@@ -33,33 +33,27 @@ class IncrementalLexerHighlightingTest
           "",
           null)
       case '\n' =>
-        CommandProcessor
-          .getInstance()
-          .executeCommand(
-            myFixture.getProject,
-            new Runnable {
-              def run() {
-                myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
-              }
-            },
-            "",
-            null)
+        CommandProcessor.getInstance().executeCommand(
+          myFixture.getProject,
+          new Runnable {
+            def run() {
+              myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
+            }
+          },
+          "",
+          null)
       case a => myFixture.`type`(a)
     }
 
-    val incSegments = myFixture.getEditor
-      .asInstanceOf[EditorImpl]
-      .getHighlighter
-      .asInstanceOf[LexerEditorHighlighter]
-      .getSegments
+    val incSegments =
+      myFixture.getEditor.asInstanceOf[EditorImpl].getHighlighter.asInstanceOf[
+        LexerEditorHighlighter].getSegments
 
     val secondText = myFixture.getFile.getText
     myFixture.configureByText("dummy.scala", secondText)
-    val segments = myFixture.getEditor
-      .asInstanceOf[EditorImpl]
-      .getHighlighter
-      .asInstanceOf[LexerEditorHighlighter]
-      .getSegments
+    val segments =
+      myFixture.getEditor.asInstanceOf[EditorImpl].getHighlighter.asInstanceOf[
+        LexerEditorHighlighter].getSegments
 
     assert(
       incSegments.getSegmentCount == segments.getSegmentCount,

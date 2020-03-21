@@ -38,11 +38,10 @@ private trait Updating[Req, Rep] extends Balancer[Req, Rep] with OnReady {
   }
 
   override def close(deadline: Time): Future[Unit] = {
-    observation
-      .close(deadline)
-      .transform { _ => super.close(deadline) }
-      .ensure {
-        ready.setDone()
-      }
+    observation.close(deadline).transform { _ =>
+      super.close(deadline)
+    }.ensure {
+      ready.setDone()
+    }
   }
 }

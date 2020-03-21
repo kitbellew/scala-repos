@@ -57,8 +57,7 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     // check if all replicas but the one that is shut down has deleted the log
     TestUtils.waitUntilTrue(
       () =>
-        servers
-          .filter(s => s.config.brokerId != follower.config.brokerId)
+        servers.filter(s => s.config.brokerId != follower.config.brokerId)
           .forall(_.getLogManager().getLog(topicAndPartition).isEmpty),
       "Replicas 0,1 have not deleted log."
     )
@@ -80,10 +79,8 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     val controllerId = zkUtils.getController()
     val controller = servers.filter(s => s.config.brokerId == controllerId).head
     val leaderIdOpt = zkUtils.getLeaderForPartition(topic, 0)
-    val follower = servers
-      .filter(s =>
-        s.config.brokerId != leaderIdOpt.get && s.config.brokerId != controllerId)
-      .last
+    val follower = servers.filter(s =>
+      s.config.brokerId != leaderIdOpt.get && s.config.brokerId != controllerId).last
     follower.shutdown()
 
     // start topic deletion
@@ -163,8 +160,8 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     val controller = servers.filter(s => s.config.brokerId == controllerId).head
     assertFalse(
       "Partition reassignment should fail",
-      controller.kafkaController.controllerContext.partitionsBeingReassigned
-        .contains(topicAndPartition))
+      controller.kafkaController.controllerContext.partitionsBeingReassigned.contains(
+        topicAndPartition))
     val assignedReplicas = zkUtils.getReplicasForPartition(topic, 0)
     assertEquals(
       "Partition should not be reassigned to 0, 1, 2",

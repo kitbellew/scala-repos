@@ -930,11 +930,9 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
       """.stripMargin.replaceAll("\r", "").trim()
 
     completeLookupItem(
-      activeLookup
-        .find(le =>
-          le.getLookupString == "Option" &&
-            le.getPsiElement.isInstanceOf[ScClass])
-        .get,
+      activeLookup.find(le =>
+        le.getLookupString == "Option" &&
+          le.getPsiElement.isInstanceOf[ScClass]).get,
       '[')
 
     checkResultByText(resultText)

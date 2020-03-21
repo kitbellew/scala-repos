@@ -62,8 +62,8 @@ trait ScReferenceElement
   }
 
   private def patternNeedBackticks(name: String) =
-    name != "" && name.charAt(0).isLower && getParent
-      .isInstanceOf[ScStableReferenceElementPattern]
+    name != "" && name.charAt(0).isLower && getParent.isInstanceOf[
+      ScStableReferenceElementPattern]
 
   def getElement = this
 
@@ -90,9 +90,8 @@ trait ScReferenceElement
   def isSoft: Boolean = false
 
   def handleElementRename(newElementName: String): PsiElement = {
-    val needBackticks =
-      patternNeedBackticks(newElementName) || ScalaNamesUtil.isKeyword(
-        newElementName)
+    val needBackticks = patternNeedBackticks(
+      newElementName) || ScalaNamesUtil.isKeyword(newElementName)
     val newName =
       if (needBackticks) "`" + newElementName + "`" else newElementName
     if (!ScalaNamesUtil.isIdentifier(newName)) return this
@@ -162,9 +161,8 @@ trait ScReferenceElement
               }
             }
 
-            if (!break && td.isInstanceOf[ScClass] && td
-                  .asInstanceOf[ScClass]
-                  .isCase && method.isSynthetic) {
+            if (!break && td.isInstanceOf[ScClass] && td.asInstanceOf[
+                  ScClass].isCase && method.isSynthetic) {
               ScalaPsiUtil.getCompanionModule(td) match {
                 case Some(typeDef) => return isReferenceTo(typeDef)
                 case _             =>
@@ -290,17 +288,16 @@ trait ScReferenceElement
       })
       !reject
     }
-    val prefixImport = ScalaCodeStyleSettings
-      .getInstance(getProject)
-      .hasImportWithPrefix(qualName)
+    val prefixImport = ScalaCodeStyleSettings.getInstance(
+      getProject).hasImportWithPrefix(qualName)
     if (!prefixImport && checkForPredefinedTypes()) {
       simpleImport
     } else {
       if (qualName.contains(".")) {
         var index =
-          if (ScalaCodeStyleSettings
-                .getInstance(getProject)
-                .isImportShortestPathForAmbiguousReferences) parts.length - 2
+          if (ScalaCodeStyleSettings.getInstance(
+                getProject).isImportShortestPathForAmbiguousReferences)
+            parts.length - 2
           else 0
         while (index >= 0) {
           val packagePart = parts.take(index + 1).mkString(".")
@@ -349,9 +346,9 @@ trait ScReferenceElement
             }
           }
           if (isOk) {
-            ScalaImportTypeFix
-              .getImportHolder(this, getProject)
-              .addImportForPath(packagePart, this)
+            ScalaImportTypeFix.getImportHolder(
+              this,
+              getProject).addImportForPath(packagePart, this)
             val ref = referenceCreator(toReplace, false)
             return this.replace(ref)
           }
@@ -375,14 +372,12 @@ trait ScReferenceElement
           val imported = importHolder.getAllImportUsed.exists {
             case ImportExprUsed(expr) =>
               expr.reference.exists { ref =>
-                ref
-                  .multiResolve(false)
-                  .exists(rr =>
-                    rr.getElement match {
-                      case p: ScPackage  => p.getQualifiedName == qualifiedName
-                      case p: PsiPackage => p.getQualifiedName == qualifiedName
-                      case _             => false
-                    })
+                ref.multiResolve(false).exists(rr =>
+                  rr.getElement match {
+                    case p: ScPackage  => p.getQualifiedName == qualifiedName
+                    case p: PsiPackage => p.getQualifiedName == qualifiedName
+                    case _             => false
+                  })
               }
             case _ => false
           }
@@ -393,12 +388,14 @@ trait ScReferenceElement
       this match {
         case stRef: ScStableCodeReferenceElement =>
           stRef.replace(
-            ScalaPsiElementFactory
-              .createReferenceFromText(refText, stRef.getManager))
+            ScalaPsiElementFactory.createReferenceFromText(
+              refText,
+              stRef.getManager))
         case ref: ScReferenceExpression =>
           ref.replace(
-            ScalaPsiElementFactory
-              .createExpressionFromText(refText, ref.getManager))
+            ScalaPsiElementFactory.createExpressionFromText(
+              refText,
+              ref.getManager))
         case _ => null
       }
     }

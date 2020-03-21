@@ -126,11 +126,9 @@ final case class Router(
 
   private def send(routee: Routee, msg: Any, sender: ActorRef): Unit = {
     if (routee == NoRoutee && sender.isInstanceOf[InternalActorRef])
-      sender
-        .asInstanceOf[InternalActorRef]
-        .provider
-        .deadLetters
-        .tell(unwrap(msg), sender)
+      sender.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+        unwrap(msg),
+        sender)
     else
       routee.send(unwrap(msg), sender)
   }

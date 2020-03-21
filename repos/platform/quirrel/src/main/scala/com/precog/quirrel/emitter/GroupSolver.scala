@@ -433,8 +433,8 @@ trait GroupSolver
         }
 
         case LetBinding(let) =>
-          pred(b, tv, free, enterLet(sigma, let, actuals))
-            .lift(let.left) getOrElse false
+          pred(b, tv, free, enterLet(sigma, let, actuals)).lift(
+            let.left) getOrElse false
 
         case _ => false
       }

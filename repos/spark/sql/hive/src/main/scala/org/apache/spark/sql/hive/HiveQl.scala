@@ -260,8 +260,9 @@ private[hive] class HiveQl(conf: ParserConf)
           // If users do not specify "noscan", it will be treated as a Hive native command.
           NativePlaceholder
         } else {
-          val tableName =
-            tableNameParts.map { case Token(p, Nil) => p }.mkString(".")
+          val tableName = tableNameParts.map {
+            case Token(p, Nil) => p
+          }.mkString(".")
           AnalyzeTable(tableName)
         }
 
@@ -278,18 +279,16 @@ private[hive] class HiveQl(conf: ParserConf)
             children)
 
         // if ALTER VIEW doesn't have query part, let hive to handle it.
-        maybeQuery
-          .map { query =>
-            createView(
-              view,
-              nameParts,
-              query,
-              Nil,
-              Map(),
-              allowExist = false,
-              replace = true)
-          }
-          .getOrElse(NativePlaceholder)
+        maybeQuery.map { query =>
+          createView(
+            view,
+            nameParts,
+            query,
+            Nil,
+            Map(),
+            allowExist = false,
+            replace = true)
+        }.getOrElse(NativePlaceholder)
 
       case view @ Token("TOK_CREATEVIEW", children) if children.collect {
             case t @ Token("TOK_QUERY", _) => t
@@ -320,13 +319,11 @@ private[hive] class HiveQl(conf: ParserConf)
         if (maybePartCols.isDefined) {
           NativePlaceholder
         } else {
-          val schema = maybeColumns
-            .map { cols =>
-              // We can't specify column types when create view, so fill it with null first, and
-              // update it after the schema has been resolved later.
-              nodeToColumns(cols, lowerCase = true).map(_.copy(dataType = null))
-            }
-            .getOrElse(Seq.empty[CatalogColumn])
+          val schema = maybeColumns.map { cols =>
+            // We can't specify column types when create view, so fill it with null first, and
+            // update it after the schema has been resolved later.
+            nodeToColumns(cols, lowerCase = true).map(_.copy(dataType = null))
+          }.getOrElse(Seq.empty[CatalogColumn])
 
           val properties = scala.collection.mutable.Map.empty[String, String]
 
@@ -489,20 +486,14 @@ private[hive] class HiveQl(conf: ParserConf)
             if (child.numChildren == 2) {
               // This is based on the readProps(..) method in
               // ql/src/java/org/apache/hadoop/hive/ql/parse/BaseSemanticAnalyzer.java:
-              val serdeParams = child
-                .children(1)
-                .children
-                .head
-                .children
-                .map {
-                  case Token(_, Token(prop, Nil) :: valueNode) =>
-                    val value = valueNode.headOption
-                      .map(_.text)
-                      .map(unescapeSQLString)
-                      .orNull
-                    (unescapeSQLString(prop), value)
-                }
-                .toMap
+              val serdeParams = child.children(1).children.head.children.map {
+                case Token(_, Token(prop, Nil) :: valueNode) =>
+                  val value = valueNode.headOption
+                    .map(_.text)
+                    .map(unescapeSQLString)
+                    .orNull
+                  (unescapeSQLString(prop), value)
+              }.toMap
               tableDesc = tableDesc.withNewStorage(
                 serdeProperties =
                   tableDesc.storage.serdeProperties ++ serdeParams)
@@ -780,8 +771,10 @@ private[hive] class HiveQl(conf: ParserConf)
     node match {
       case Token("TOK_FUNCTION", Token(functionName, Nil) :: children) =>
         val functionInfo: FunctionInfo =
-          Option(FunctionRegistry.getFunctionInfo(functionName.toLowerCase))
-            .getOrElse(sys.error(s"Couldn't find function $functionName"))
+          Option(
+            FunctionRegistry.getFunctionInfo(
+              functionName.toLowerCase)).getOrElse(
+            sys.error(s"Couldn't find function $functionName"))
         val functionClassName = functionInfo.getFunctionClass.getName
         HiveGenericUDTF(
           functionName,

@@ -53,28 +53,25 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
           editor.getCaretModel.moveCaretRelatively(1, 0, false, false, false)
         }
 
-        PsiDocumentManager
-          .getInstance(file.getProject)
-          .commitDocument(editor.getDocument)
+        PsiDocumentManager.getInstance(file.getProject).commitDocument(
+          editor.getDocument)
       }
-    } else if (element.getNode.getElementType == ScalaXmlTokenTypes.XML_NAME && element.getParent != null && element.getParent
-                 .isInstanceOf[ScXmlStartTag]) {
+    } else if (element.getNode.getElementType == ScalaXmlTokenTypes.XML_NAME && element.getParent != null && element.getParent.isInstanceOf[
+                 ScXmlStartTag]) {
       val openingTag = element.getParent.asInstanceOf[ScXmlStartTag]
       val closingTag = openingTag.getClosingTag
 
-      if (closingTag != null && closingTag.getTextLength > 3 && closingTag.getText
-            .substring(
-              2,
-              closingTag.getTextLength - 1) == openingTag.getTagName) {
+      if (closingTag != null && closingTag.getTextLength > 3 && closingTag.getText.substring(
+            2,
+            closingTag.getTextLength - 1) == openingTag.getTagName) {
         extensions.inWriteAction {
           val offsetInName =
             editor.getCaretModel.getOffset - element.getTextOffset + 1
           editor.getDocument.deleteString(
             closingTag.getTextOffset + offsetInName,
             closingTag.getTextOffset + offsetInName + 1)
-          PsiDocumentManager
-            .getInstance(file.getProject)
-            .commitDocument(editor.getDocument)
+          PsiDocumentManager.getInstance(file.getProject).commitDocument(
+            editor.getDocument)
         }
       }
     } else if (element.getNode.getElementType == ScalaTokenTypes.tMULTILINE_STRING && offset - element.getTextOffset == 3) {
@@ -82,11 +79,11 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
     } else if (element.getNode.getElementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_START_DELIMITER && element.getNextSibling != null &&
                element.getNextSibling.getNode.getElementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER) {
       extensions.inWriteAction {
-        editor.getDocument
-          .deleteString(element.getTextOffset + 1, element.getTextOffset + 2)
-        PsiDocumentManager
-          .getInstance(file.getProject)
-          .commitDocument(editor.getDocument)
+        editor.getDocument.deleteString(
+          element.getTextOffset + 1,
+          element.getTextOffset + 2)
+        PsiDocumentManager.getInstance(file.getProject).commitDocument(
+          editor.getDocument)
       }
     } else if (offset - element.getTextOffset == 3 &&
                element.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING &&
@@ -106,12 +103,12 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
 
     def correctMultilineString(closingQuotesOffset: Int) {
       extensions.inWriteAction {
-        editor.getDocument
-          .deleteString(closingQuotesOffset, closingQuotesOffset + 3)
+        editor.getDocument.deleteString(
+          closingQuotesOffset,
+          closingQuotesOffset + 3)
 //        editor.getCaretModel.moveCaretRelatively(-1, 0, false, false, false) //http://youtrack.jetbrains.com/issue/SCL-6490
-        PsiDocumentManager
-          .getInstance(file.getProject)
-          .commitDocument(editor.getDocument)
+        PsiDocumentManager.getInstance(file.getProject).commitDocument(
+          editor.getDocument)
       }
     }
 

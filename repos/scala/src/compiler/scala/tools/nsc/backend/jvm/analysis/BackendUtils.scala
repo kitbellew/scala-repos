@@ -168,12 +168,10 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   private val anonfunAdaptedName = """.*\$anonfun\$\d+\$adapted""".r
   def hasAdaptedImplMethod(closureInit: ClosureInstantiation): Boolean = {
     isrJFunctionType(
-      Type
-        .getReturnType(closureInit.lambdaMetaFactoryCall.indy.desc)
-        .getInternalName) &&
-    anonfunAdaptedName.pattern
-      .matcher(closureInit.lambdaMetaFactoryCall.implMethod.getName)
-      .matches
+      Type.getReturnType(
+        closureInit.lambdaMetaFactoryCall.indy.desc).getInternalName) &&
+    anonfunAdaptedName.pattern.matcher(
+      closureInit.lambdaMetaFactoryCall.implMethod.getName).matches
   }
 
   private def primitiveAsmTypeToBType(primitiveType: Type): PrimitiveBType =
@@ -212,8 +210,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   }
 
   def isScalaUnbox(insn: MethodInsnNode): Boolean = {
-    insn.owner == srBoxesRunTimeRef.internalName && (srBoxesRuntimeUnboxToMethods
-      .get(primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
+    insn.owner == srBoxesRunTimeRef.internalName && (srBoxesRuntimeUnboxToMethods.get(
+      primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
       case Some(MethodNameAndType(name, tp)) =>
         name == insn.name && tp.descriptor == insn.desc
       case _ => false

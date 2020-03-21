@@ -88,15 +88,13 @@ class HBPEvents(
     conf.set(TableInputFormat.SCAN, PIOHBaseUtil.convertScanToString(scan))
 
     // HBase is not accessed until this rdd is actually used.
-    val rdd = sc
-      .newAPIHadoopRDD(
-        conf,
-        classOf[TableInputFormat],
-        classOf[ImmutableBytesWritable],
-        classOf[Result])
-      .map {
-        case (key, row) => HBEventsUtil.resultToEvent(row, appId)
-      }
+    val rdd = sc.newAPIHadoopRDD(
+      conf,
+      classOf[TableInputFormat],
+      classOf[ImmutableBytesWritable],
+      classOf[Result]).map {
+      case (key, row) => HBEventsUtil.resultToEvent(row, appId)
+    }
 
     rdd
   }
@@ -115,12 +113,10 @@ class HBPEvents(
       classOf[TableOutputFormat[Object]],
       classOf[OutputFormat[Object, Writable]])
 
-    events
-      .map { event =>
-        val (put, rowKey) = HBEventsUtil.eventToPut(event, appId)
-        (new ImmutableBytesWritable(rowKey.toBytes), put)
-      }
-      .saveAsNewAPIHadoopDataset(conf)
+    events.map { event =>
+      val (put, rowKey) = HBEventsUtil.eventToPut(event, appId)
+      (new ImmutableBytesWritable(rowKey.toBytes), put)
+    }.saveAsNewAPIHadoopDataset(conf)
 
   }
 

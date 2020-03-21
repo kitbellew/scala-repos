@@ -105,10 +105,8 @@ class KillOverdueTasksActorTest
     val config = MarathonTestHelper.defaultConfig()
 
     def statusBuilder(id: String, state: TaskState) =
-      TaskStatus
-        .newBuilder()
-        .setTaskId(MesosProtos.TaskID.newBuilder().setValue(id))
-        .setState(state)
+      TaskStatus.newBuilder().setTaskId(
+        MesosProtos.TaskID.newBuilder().setValue(id)).setState(state)
 
     val overdueUnstagedTask = MarathonTestHelper.startingTaskProto("unstaged")
     assert(
@@ -172,15 +170,11 @@ class KillOverdueTasksActorTest
 
     And("All somehow overdue tasks are killed")
     verify(driver).killTask(
-      MesosProtos.TaskID
-        .newBuilder()
-        .setValue(unconfirmedOverdueTask.getId)
-        .build())
+      MesosProtos.TaskID.newBuilder().setValue(
+        unconfirmedOverdueTask.getId).build())
     verify(driver).killTask(
-      MesosProtos.TaskID
-        .newBuilder()
-        .setValue(overdueUnstagedTask.getId)
-        .build())
+      MesosProtos.TaskID.newBuilder().setValue(
+        overdueUnstagedTask.getId).build())
     verify(driver).killTask(
       MesosProtos.TaskID.newBuilder().setValue(overdueStagedTask.getId).build())
 

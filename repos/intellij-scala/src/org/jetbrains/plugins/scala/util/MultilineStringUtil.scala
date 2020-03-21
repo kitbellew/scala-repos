@@ -81,10 +81,8 @@ object MultilineStringUtil {
   }
 
   def hasMarginChars(element: PsiElement, marginChar: String) = {
-    element.getText
-      .replace("\r", "")
-      .split(s"\n[ \t]*${escapeForRegexp(marginChar)}")
-      .length > 1
+    element.getText.replace("\r", "").split(
+      s"\n[ \t]*${escapeForRegexp(marginChar)}").length > 1
   }
 
   def needAddStripMargin(element: PsiElement, marginChar: String): Boolean = {
@@ -126,11 +124,9 @@ object MultilineStringUtil {
 
   def getMarginChar(element: PsiElement): Char = {
     val calls = findAllMethodCallsOnMLString(element, "stripMargin")
-    val defaultMargin = CodeStyleSettingsManager
-      .getInstance(element.getProject)
-      .getCurrentSettings
-      .getCustomSettings(classOf[ScalaCodeStyleSettings])
-      .MARGIN_CHAR
+    val defaultMargin = CodeStyleSettingsManager.getInstance(
+      element.getProject).getCurrentSettings.getCustomSettings(
+      classOf[ScalaCodeStyleSettings]).MARGIN_CHAR
 
     if (calls.isEmpty) return defaultMargin
 
@@ -180,12 +176,9 @@ object MultilineStringUtil {
   }
 
   def findParentMLString(element: PsiElement): Option[ScLiteral] = {
-    (Iterator(element) ++ element.parentsInFile)
-      .collect {
-        case lit: ScLiteral if lit.isMultiLineString => lit
-      }
-      .toStream
-      .headOption
+    (Iterator(element) ++ element.parentsInFile).collect {
+      case lit: ScLiteral if lit.isMultiLineString => lit
+    }.toStream.headOption
   }
 
   def isMLString(element: PsiElement): Boolean =
@@ -231,9 +224,8 @@ object MultilineStringUtil {
         settings.getSmartSpaces(indent) + marginChar.getOrElse(""))
     }
 
-    PsiDocumentManager
-      .getInstance(element.getProject)
-      .doPostponedOperationsAndUnblockDocument(document)
+    PsiDocumentManager.getInstance(
+      element.getProject).doPostponedOperationsAndUnblockDocument(document)
 
     element match {
       case literal: ScLiteral if literal.isMultiLineString =>
@@ -248,10 +240,9 @@ object MultilineStringUtil {
           document.getLineStartOffset(startLineNumber),
           document.getLineEndOffset(startLineNumber))
 
-        val startsOnNewLine = document.getText
-          .substring(startLineOffset, startLineEndOffset)
-          .trim
-          .startsWith(firstMLQuote)
+        val startsOnNewLine = document.getText.substring(
+          startLineOffset,
+          startLineEndOffset).trim.startsWith(firstMLQuote)
         val multipleLines = endLineNumber != startLineNumber
         val needNewLineBefore =
           settings.quotesOnNewLine && multipleLines && !startsOnNewLine
@@ -312,8 +303,9 @@ class MultilineStringSettings(project: Project) {
 
   def getSmartSpaces(count: Int) =
     if (useTabs) {
-      StringUtil
-        .repeat("\t", count / tabSize) + StringUtil.repeat(" ", count % tabSize)
+      StringUtil.repeat("\t", count / tabSize) + StringUtil.repeat(
+        " ",
+        count % tabSize)
     } else {
       StringUtil.repeat(" ", count)
     }

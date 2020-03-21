@@ -39,21 +39,22 @@ class QueueResource @Inject() (
     authenticated(req) { implicit identity =>
       import Formats._
 
-      val queuedWithDelay = launchQueue.list
-        .filter(t => t.inProgress && isAuthorized(ViewApp, t.app))
-        .map {
-          case taskCount: LaunchQueue.QueuedTaskInfo =>
-            val timeLeft = clock.now() until taskCount.backOffUntil
-            Json.obj(
-              "app" -> taskCount.app,
-              "count" -> taskCount.tasksLeftToLaunch,
-              "delay" -> Json.obj(
-                "timeLeftSeconds" -> math
-                  .max(0, timeLeft.toSeconds), //deadlines can be negative
-                "overdue" -> (timeLeft < 0.seconds)
-              )
+      val queuedWithDelay = launchQueue.list.filter(t =>
+        t.inProgress && isAuthorized(ViewApp, t.app)).map {
+        case taskCount: LaunchQueue.QueuedTaskInfo =>
+          val timeLeft = clock.now() until taskCount.backOffUntil
+          Json.obj(
+            "app" -> taskCount.app,
+            "count" -> taskCount.tasksLeftToLaunch,
+            "delay" -> Json.obj(
+              "timeLeftSeconds" -> math.max(
+                0,
+                timeLeft.toSeconds
+              ), //deadlines can be negative
+              "overdue" -> (timeLeft < 0.seconds)
             )
-        }
+          )
+      }
       ok(Json.obj("queue" -> queuedWithDelay).toString())
     }
 

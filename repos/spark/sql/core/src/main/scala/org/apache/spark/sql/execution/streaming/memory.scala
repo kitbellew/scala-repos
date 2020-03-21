@@ -83,11 +83,8 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
     synchronized {
       val newBlocks =
         batches.drop(
-          start
-            .map(_.asInstanceOf[LongOffset])
-            .getOrElse(LongOffset(-1))
-            .offset
-            .toInt + 1)
+          start.map(_.asInstanceOf[LongOffset]).getOrElse(
+            LongOffset(-1)).offset.toInt + 1)
 
       if (newBlocks.nonEmpty) {
         logDebug(
@@ -125,8 +122,7 @@ class MemorySink(schema: StructType) extends Sink with Logging {
 
   override def addBatch(nextBatch: Batch): Unit =
     synchronized {
-      nextBatch.data
-        .collect() // 'compute' the batch's data and record the batch
+      nextBatch.data.collect() // 'compute' the batch's data and record the batch
       batches.append(nextBatch)
     }
 
@@ -152,15 +148,13 @@ class MemorySink(schema: StructType) extends Sink with Logging {
 
   def toDebugString: String =
     synchronized {
-      batches
-        .map { b =>
-          val dataStr =
-            try b.data.collect().mkString(" ")
-            catch {
-              case NonFatal(e) => "[Error converting to string]"
-            }
-          s"${b.end}: $dataStr"
-        }
-        .mkString("\n")
+      batches.map { b =>
+        val dataStr =
+          try b.data.collect().mkString(" ")
+          catch {
+            case NonFatal(e) => "[Error converting to string]"
+          }
+        s"${b.end}: $dataStr"
+      }.mkString("\n")
     }
 }

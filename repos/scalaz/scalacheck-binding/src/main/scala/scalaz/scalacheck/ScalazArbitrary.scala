@@ -89,8 +89,9 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
 
   import NonEmptyList._
   implicit def NonEmptyListArbitrary[A: Arbitrary]: Arbitrary[NonEmptyList[A]] =
-    Apply[Arbitrary]
-      .apply2[A, IList[A], NonEmptyList[A]](arb[A], ilistArbitrary)(nel(_, _))
+    Apply[Arbitrary].apply2[A, IList[A], NonEmptyList[A]](
+      arb[A],
+      ilistArbitrary)(nel(_, _))
 
   /** @since 7.0.3 */
   implicit def OneAndArbitrary[F[_], A](implicit
@@ -124,29 +125,24 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     oneOf(LT, EQ, GT))
 
   private[this] def withSize[A](size: Int)(f: Int => Gen[A]): Gen[Stream[A]] = {
-    Applicative[Gen]
-      .sequence(
-        Stream.fill(size)(Gen.choose(1, size))
-      )
-      .flatMap { s =>
-        val ns = Traverse[Stream]
-          .traverseS(s) { n =>
-            for {
-              sum <- State.get[Int]
-              r <- if (sum >= size) {
-                State.state[Int, Option[Int]](None)
-              } else if ((sum + n) > size) {
-                State((s: Int) => (s + n) -> Option(size - sum))
-              } else {
-                State((s: Int) => (s + n) -> Option(n))
-              }
-            } yield r
+    Applicative[Gen].sequence(
+      Stream.fill(size)(Gen.choose(1, size))
+    ).flatMap { s =>
+      val ns = Traverse[Stream].traverseS(s) { n =>
+        for {
+          sum <- State.get[Int]
+          r <- if (sum >= size) {
+            State.state[Int, Option[Int]](None)
+          } else if ((sum + n) > size) {
+            State((s: Int) => (s + n) -> Option(size - sum))
+          } else {
+            State((s: Int) => (s + n) -> Option(n))
           }
-          .eval(0)
-          .flatten
+        } yield r
+      }.eval(0).flatten
 
-        Applicative[Gen].sequence(ns.map(f))
-      }
+      Applicative[Gen].sequence(ns.map(f))
+    }
   }
 
   private[scalaz] def treeGenSized[A: NotNothing](size: Int)(implicit

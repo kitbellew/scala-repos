@@ -68,9 +68,9 @@ object ToHeadUsages extends Specification {
       jetty.browse(
         "/htmlFragmentWithHead",
         html =>
-          html
-            .getElementsByXPath("/html/body/script[@id='fromFrag']")
-            .size must (be_==(0) when jetty.running)
+          html.getElementsByXPath(
+            "/html/body/script[@id='fromFrag']").size must (be_==(
+            0) when jetty.running)
       )
     }
 
@@ -208,14 +208,14 @@ object ToHeadUsages extends Specification {
         }
 
       ((first \\ "a").filter(e =>
-        (e \ "@id").text == "foo") \ "@href").text must be_==("/wombat/foo")
-        .when(jetty.running)
+        (e \ "@id").text == "foo") \ "@href").text must be_==(
+        "/wombat/foo").when(jetty.running)
       ((first \\ "a").filter(e =>
-        (e \ "@id").text == "bar") \ "@href").text must be_==("/wombat/bar")
-        .when(jetty.running)
+        (e \ "@id").text == "bar") \ "@href").text must be_==(
+        "/wombat/bar").when(jetty.running)
       ((second \\ "a").filter(e =>
-        (e \ "@id").text == "foo") \ "@href").text must be_==("/wombat/foo")
-        .when(jetty.running)
+        (e \ "@id").text == "foo") \ "@href").text must be_==(
+        "/wombat/foo").when(jetty.running)
       ((second \\ "a").filter(e =>
         (e \ "@id").text == "bar") \ "@href").text must be_==("/bar").when(
         jetty.running)

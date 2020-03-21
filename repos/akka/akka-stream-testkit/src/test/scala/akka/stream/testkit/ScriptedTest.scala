@@ -113,9 +113,8 @@ trait ScriptedTest extends Matchers {
     def someInsPending: Boolean = !noInsPending
 
     def debug: String =
-      s"Script(pending=($pendingIns in, $pendingOuts out), remainingIns=${providedInputs
-        .drop(inputCursor)
-        .mkString("/")}, remainingOuts=${expectedOutputs.drop(outputCursor).mkString("/")})"
+      s"Script(pending=($pendingIns in, $pendingOuts out), remainingIns=${providedInputs.drop(inputCursor).mkString(
+        "/")}, remainingOuts=${expectedOutputs.drop(outputCursor).mkString("/")})"
   }
 
   class ScriptRunner[In, Out, M](
@@ -129,9 +128,10 @@ trait ScriptedTest extends Matchers {
 
     var _debugLog = Vector.empty[String]
     var currentScript = script
-    var remainingDemand = script.expectedOutputs.size + ThreadLocalRandom
-      .current()
-      .nextInt(1, maximumOverrun)
+    var remainingDemand =
+      script.expectedOutputs.size + ThreadLocalRandom.current().nextInt(
+        1,
+        maximumOverrun)
     debugLog(s"starting with remainingDemand=$remainingDemand")
     var pendingRequests = 0L
     var outstandingDemand = 0L

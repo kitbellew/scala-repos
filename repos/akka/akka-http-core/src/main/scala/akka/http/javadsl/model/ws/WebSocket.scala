@@ -21,9 +21,7 @@ object WebSocket {
     request.asScala.header[UpgradeToWebSocket] match {
       case Some(header) ⇒ header.handleMessagesWith(handler)
       case None ⇒
-        HttpResponse
-          .create()
-          .withStatus(StatusCodes.BAD_REQUEST)
-          .withEntity("Expected WebSocket request")
+        HttpResponse.create().withStatus(StatusCodes.BAD_REQUEST).withEntity(
+          "Expected WebSocket request")
     }
 }

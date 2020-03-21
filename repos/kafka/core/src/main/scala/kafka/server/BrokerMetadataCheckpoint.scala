@@ -28,8 +28,8 @@ case class BrokerMetadata(brokerId: Int)
   */
 class BrokerMetadataCheckpoint(val file: File) extends Logging {
   private val lock = new Object()
-  new File(file + ".tmp")
-    .delete() // try to delete any existing temp files for cleanliness
+  new File(
+    file + ".tmp").delete() // try to delete any existing temp files for cleanliness
 
   def write(brokerMetadata: BrokerMetadata) = {
     lock synchronized {
@@ -78,8 +78,9 @@ class BrokerMetadataCheckpoint(val file: File) extends Logging {
           None
         case e1: Exception =>
           error(
-            "Failed to read meta.properties file under dir %s due to %s"
-              .format(file.getAbsolutePath(), e1.getMessage))
+            "Failed to read meta.properties file under dir %s due to %s".format(
+              file.getAbsolutePath(),
+              e1.getMessage))
           throw e1
       }
     }

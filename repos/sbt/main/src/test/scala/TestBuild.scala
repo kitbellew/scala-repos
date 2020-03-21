@@ -48,8 +48,10 @@ object TestBuild {
       keyIndex: KeyIndex,
       keyMap: Map[String, AttributeKey[_]]) {
     override def toString =
-      env.toString + "\n" + "current: " + current + "\nSettings:\n\t" + showData + keyMap.keys
-        .mkString("All keys:\n\t", ", ", "")
+      env.toString + "\n" + "current: " + current + "\nSettings:\n\t" + showData + keyMap.keys.mkString(
+        "All keys:\n\t",
+        ", ",
+        "")
     def showKeys(map: AttributeMap): String =
       map.keys.mkString("\n\t   ", ",", "\n")
     def showData: String = {
@@ -107,8 +109,8 @@ object TestBuild {
   }
   final class Env(val builds: Seq[Build], val tasks: Seq[Taskk]) {
     override def toString =
-      "Env:\n  " + "  Tasks:\n    " + tasks.mkString("\n    ") + "\n" + builds
-        .mkString("\n  ")
+      "Env:\n  " + "  Tasks:\n    " + tasks.mkString(
+        "\n    ") + "\n" + builds.mkString("\n  ")
     val root = builds.head
     val buildMap = mapBy(builds)(_.uri)
     val taskMap = mapBy(tasks)(getKey)
@@ -177,9 +179,8 @@ object TestBuild {
   }
   final class Taskk(val key: AttributeKey[String], val delegates: Seq[Taskk]) {
     override def toString =
-      key.label + " (delegates: " + delegates
-        .map(_.key.label)
-        .mkString(", ") + ")"
+      key.label + " (delegates: " + delegates.map(_.key.label).mkString(
+        ", ") + ")"
   }
 
   def mapBy[K, T](s: Seq[T])(f: T => K): Map[K, T] =

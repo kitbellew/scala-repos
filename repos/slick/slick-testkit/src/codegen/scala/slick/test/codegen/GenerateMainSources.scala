@@ -40,9 +40,8 @@ object GenerateMainSources extends TestCodeGenerator {
       Seq("/dbs/sqlite.sql")),
     new Config("CG7", StandardTestDBs.H2Mem, "H2Mem", Seq("/dbs/h2.sql")) {
       override def generator =
-        tdb.profile
-          .createModel(ignoreInvalidDefaults = false)
-          .map(new MyGen(_) {
+        tdb.profile.createModel(ignoreInvalidDefaults = false).map(
+          new MyGen(_) {
             override def entityName = {
               case "COFFEES" => "Coff"
               case other     => super.entityName(other)
@@ -72,9 +71,8 @@ object GenerateMainSources extends TestCodeGenerator {
       "H2Mem",
       Seq("/dbs/h2-simple.sql")) {
       override def generator =
-        tdb.profile
-          .createModel(ignoreInvalidDefaults = false)
-          .map(new MyGen(_) {
+        tdb.profile.createModel(ignoreInvalidDefaults = false).map(
+          new MyGen(_) {
             override def Table =
               new Table(_) {
                 override def EntityType =
@@ -105,9 +103,8 @@ val  SimpleA = CustomTyping.SimpleA
     },
     new Config("CG9", StandardTestDBs.H2Mem, "H2Mem", Seq("/dbs/h2.sql")) {
       override def generator =
-        tdb.profile
-          .createModel(ignoreInvalidDefaults = false)
-          .map(new MyGen(_) {
+        tdb.profile.createModel(ignoreInvalidDefaults = false).map(
+          new MyGen(_) {
             override def Table =
               new Table(_) {
                 override def autoIncLastAsOption = true
@@ -129,9 +126,8 @@ val  SimpleA = CustomTyping.SimpleA
       }
       override def generator =
         TableQuery[A].schema.create >>
-          tdb.profile
-            .createModel(ignoreInvalidDefaults = false)
-            .map(new MyGen(_))
+          tdb.profile.createModel(ignoreInvalidDefaults = false).map(
+            new MyGen(_))
       override def testCode =
         """
           |  import java.sql.Blob
@@ -168,21 +164,19 @@ val  SimpleA = CustomTyping.SimpleA
       initScripts: Seq[String])
       extends Config(objectName, tdb, tdbName, initScripts) {
     override def generator =
-      tdb.profile
-        .createModel(ignoreInvalidDefaults = false)
-        .map(new MyGen(_) {
-          override def Table =
-            new Table(_) {
-              override def Column =
-                new Column(_) {
-                  override def defaultCode: (Any) => String = {
-                    case v: java.util.UUID =>
-                      s"""java.util.UUID.fromString("${v.toString}")"""
-                    case v => super.defaultCode(v)
-                  }
+      tdb.profile.createModel(ignoreInvalidDefaults = false).map(new MyGen(_) {
+        override def Table =
+          new Table(_) {
+            override def Column =
+              new Column(_) {
+                override def defaultCode: (Any) => String = {
+                  case v: java.util.UUID =>
+                    s"""java.util.UUID.fromString("${v.toString}")"""
+                  case v => super.defaultCode(v)
                 }
-              override def code = {
-                Seq("""
+              }
+            override def code = {
+              Seq("""
                 |  /* default UUID, which is the same as for 'uuid.sql' */
                 |  val defaultUUID = java.util.UUID.fromString("2f3f866c-d8e6-11e2-bb56-50e549c9b654")
                 |  /* convert UUID */
@@ -194,9 +188,9 @@ val  SimpleA = CustomTyping.SimpleA
                 |    def apply(rs: slick.jdbc.PositionedResult) = Option(rs.nextObject().asInstanceOf[java.util.UUID])
                 |  }
                 """.stripMargin) ++ super.code
-              }
             }
-        })
+          }
+      })
     override def testCode =
       """
           |  import java.util.UUID

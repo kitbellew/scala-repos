@@ -216,9 +216,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
         // We will remove the executor's state and cannot restore it. However, the connection
         // between the driver and the executor may be still alive so that the executor won't exit
         // automatically, so try to tell the executor to stop itself. See SPARK-13519.
-        executorDataMap
-          .get(executorId)
-          .foreach(_.executorEndpoint.send(StopExecutor))
+        executorDataMap.get(executorId).foreach(
+          _.executorEndpoint.send(StopExecutor))
         removeExecutor(executorId, reason)
         context.reply(true)
 
@@ -243,9 +242,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
         .foreach(
           removeExecutor(
             _,
-            SlaveLost("Remote RPC client disassociated. Likely due to " +
-              "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
-              "messages.")
+            SlaveLost(
+              "Remote RPC client disassociated. Likely due to " +
+                "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
+                "messages.")
           ))
     }
 
@@ -473,8 +473,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
           s"reached minRegisteredResourcesRatio: $minRegisteredRatio")
       return true
     }
-    if ((System
-          .currentTimeMillis() - createTime) >= maxRegisteredWaitingTimeMs) {
+    if ((System.currentTimeMillis() - createTime) >= maxRegisteredWaitingTimeMs) {
       logInfo(
         "SchedulerBackend is ready for scheduling beginning after waiting " +
           s"maxRegisteredResourcesWaitingTime: $maxRegisteredWaitingTimeMs(ms)")

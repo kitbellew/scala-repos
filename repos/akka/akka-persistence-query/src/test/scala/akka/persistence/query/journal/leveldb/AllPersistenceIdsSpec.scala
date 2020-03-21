@@ -30,8 +30,8 @@ class AllPersistenceIdsSpec
 
   implicit val mat = ActorMaterializer()(system)
 
-  val queries = PersistenceQuery(system)
-    .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
+  val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](
+    LeveldbReadJournal.Identifier)
 
   "Leveldb query AllPersistenceIds" must {
 
@@ -50,8 +50,7 @@ class AllPersistenceIdsSpec
       val src = queries.currentPersistenceIds()
       val probe = src.runWith(TestSink.probe[String])
       probe.within(10.seconds) {
-        probe
-          .request(5)
+        probe.request(5)
           .expectNextUnordered("a", "b", "c")
           .expectComplete()
       }
@@ -65,8 +64,7 @@ class AllPersistenceIdsSpec
       val src = queries.allPersistenceIds()
       val probe = src.runWith(TestSink.probe[String])
       probe.within(10.seconds) {
-        probe
-          .request(5)
+        probe.request(5)
           .expectNextUnorderedN(List("a", "b", "c", "d"))
 
         system.actorOf(TestActor.props("e")) ! "e1"

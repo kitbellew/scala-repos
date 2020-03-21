@@ -67,25 +67,21 @@ class ScAnnotationImpl private (
       attributeName: String): PsiAnnotationMemberValue = {
     constructor.args match {
       case Some(args) =>
-        args.exprs
-          .map(expr =>
-            expr match {
-              case ass: ScAssignStmt =>
-                ass.getLExpression match {
-                  case ref: ScReferenceExpression
-                      if ref.refName == attributeName =>
-                    ass.getRExpression match {
-                      case Some(expr) => (true, expr)
-                      case _          => (false, expr)
-                    }
-                  case _ => (false, expr)
-                }
-              case _ if attributeName == "value" => (true, expr)
-              case _                             => (false, expr)
-            })
-          .find(p => p._1)
-          .getOrElse(false, null)
-          ._2
+        args.exprs.map(expr =>
+          expr match {
+            case ass: ScAssignStmt =>
+              ass.getLExpression match {
+                case ref: ScReferenceExpression
+                    if ref.refName == attributeName =>
+                  ass.getRExpression match {
+                    case Some(expr) => (true, expr)
+                    case _          => (false, expr)
+                  }
+                case _ => (false, expr)
+              }
+            case _ if attributeName == "value" => (true, expr)
+            case _                             => (false, expr)
+          }).find(p => p._1).getOrElse(false, null)._2
       case None => null
     }
   }
@@ -129,8 +125,8 @@ class ScAnnotationImpl private (
         elem.getParent match {
           case arg: ScArgumentExprList =>
             var prev = elem.getPrevSibling
-            while (prev != null && (ScalaPsiUtil.isLineTerminator(prev) || prev
-                     .isInstanceOf[PsiWhiteSpace]))
+            while (prev != null && (ScalaPsiUtil.isLineTerminator(
+                     prev) || prev.isInstanceOf[PsiWhiteSpace]))
               prev = prev.getPrevSibling
             if (prev != null && prev.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
               elem.delete()

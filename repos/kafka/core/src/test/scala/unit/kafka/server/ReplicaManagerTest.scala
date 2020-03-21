@@ -197,10 +197,8 @@ class ReplicaManagerTest {
       val aliveBrokers =
         Seq(new Broker(0, "host0", 0), new Broker(1, "host1", 1))
       val metadataCache = EasyMock.createMock(classOf[MetadataCache])
-      EasyMock
-        .expect(metadataCache.getAliveBrokers)
-        .andReturn(aliveBrokers)
-        .anyTimes()
+      EasyMock.expect(metadataCache.getAliveBrokers).andReturn(
+        aliveBrokers).anyTimes()
       EasyMock.replay(metadataCache)
 
       val brokerList: java.util.List[Integer] = Seq[Integer](0, 1).asJava
@@ -212,16 +210,9 @@ class ReplicaManagerTest {
       val leaderAndIsrRequest1 = new LeaderAndIsrRequest(
         0,
         0,
-        collection.immutable
-          .Map(
-            new TopicPartition(topic, 0) -> new PartitionState(
-              0,
-              0,
-              0,
-              brokerList,
-              0,
-              brokerSet))
-          .asJava,
+        collection.immutable.Map(new TopicPartition(
+          topic,
+          0) -> new PartitionState(0, 0, 0, brokerList, 0, brokerSet)).asJava,
         Set(
           new BrokerEndPoint(0, "host1", 0),
           new BrokerEndPoint(1, "host2", 1)).asJava)
@@ -257,16 +248,9 @@ class ReplicaManagerTest {
       val leaderAndIsrRequest2 = new LeaderAndIsrRequest(
         0,
         0,
-        collection.immutable
-          .Map(
-            new TopicPartition(topic, 0) -> new PartitionState(
-              0,
-              1,
-              1,
-              brokerList,
-              0,
-              brokerSet))
-          .asJava,
+        collection.immutable.Map(new TopicPartition(
+          topic,
+          0) -> new PartitionState(0, 1, 1, brokerList, 0, brokerSet)).asJava,
         Set(
           new BrokerEndPoint(0, "host1", 0),
           new BrokerEndPoint(1, "host2", 1)).asJava)

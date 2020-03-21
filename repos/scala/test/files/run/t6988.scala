@@ -11,11 +11,9 @@ case class User()
 
 object Test extends App {
   println(
-    "#1 " + java.io.ObjectStreamClass
-      .lookup(IdentifyMessage1("hei", User(), 8).getClass)
-      .getSerialVersionUID)
+    "#1 " + java.io.ObjectStreamClass.lookup(
+      IdentifyMessage1("hei", User(), 8).getClass).getSerialVersionUID)
   println(
-    "#2 " + java.io.ObjectStreamClass
-      .lookup(IdentifyMessage2("hei", User(), 8).getClass)
-      .getSerialVersionUID)
+    "#2 " + java.io.ObjectStreamClass.lookup(
+      IdentifyMessage2("hei", User(), 8).getClass).getSerialVersionUID)
 }

@@ -75,8 +75,8 @@ class ScalaLineMarkerProvider(
       element.getTextRange,
       null,
       Pass.UPDATE_ALL,
-      NullableFunction.NULL
-        .asInstanceOf[com.intellij.util.Function[PsiElement, String]],
+      NullableFunction.NULL.asInstanceOf[
+        com.intellij.util.Function[PsiElement, String]],
       null,
       GutterIconRenderer.Alignment.RIGHT)
   }
@@ -130,9 +130,8 @@ class ScalaLineMarkerProvider(
       (parent, parent.getParent) match {
         case (method: ScFunction, _: ScTemplateBody)
             if method.nameId == element =>
-          val signatures: Seq[Signature] = mutable
-            .HashSet[Signature](method.superSignaturesIncludingSelfType: _*)
-            .toSeq
+          val signatures: Seq[Signature] = mutable.HashSet[Signature](
+            method.superSignaturesIncludingSelfType: _*).toSeq
           val icon =
             if (GutterUtil.isOverrides(method, signatures))
               OVERRIDING_METHOD_ICON
@@ -281,9 +280,8 @@ private object GutterUtil {
   def collectOverridingMembers(
       members: ArrayBuffer[PsiElement],
       result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
-    for (member <- members if !member.isInstanceOf[PsiMethod] || !member
-           .asInstanceOf[PsiMethod]
-           .isConstructor) {
+    for (member <- members if !member.isInstanceOf[
+           PsiMethod] || !member.asInstanceOf[PsiMethod].isConstructor) {
       ProgressManager.checkCanceled()
       val offset = member.getTextOffset
       val members = member match {

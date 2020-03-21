@@ -183,20 +183,11 @@ final class BaseLinker(
         if (!analyzerInfo.isAnySubclassInstantiated) None
         else Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
 
-      infoByName
-        .get(encodedName)
-        .map { info =>
-          val (tree, version) = getTree(encodedName)
-          val newVersion = version.map("real" + _) // avoid collision with dummy
-          linkedClassDef(
-            info,
-            tree,
-            analyzerInfo,
-            newVersion,
-            getTree,
-            analysis)
-        }
-        .orElse(optDummyParent)
+      infoByName.get(encodedName).map { info =>
+        val (tree, version) = getTree(encodedName)
+        val newVersion = version.map("real" + _) // avoid collision with dummy
+        linkedClassDef(info, tree, analyzerInfo, newVersion, getTree, analysis)
+      }.orElse(optDummyParent)
     }
 
     val linkedClassDefs = for {
@@ -484,14 +475,12 @@ final class BaseLinker(
       methodName: String,
       getTree: TreeProvider): MethodDef = {
     val (classDef, _) = getTree(classInfo.encodedName)
-    classDef.defs
-      .collectFirst {
-        case mDef: MethodDef if !mDef.static && mDef.name.name == methodName =>
-          mDef
-      }
-      .getOrElse {
-        throw new AssertionError(
-          s"Cannot find $methodName in ${classInfo.encodedName}")
-      }
+    classDef.defs.collectFirst {
+      case mDef: MethodDef if !mDef.static && mDef.name.name == methodName =>
+        mDef
+    }.getOrElse {
+      throw new AssertionError(
+        s"Cannot find $methodName in ${classInfo.encodedName}")
+    }
   }
 }

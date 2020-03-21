@@ -72,8 +72,9 @@ abstract class ScTypeDefinitionImpl protected (
         val mem: Option[ScMember] = member match {
           case method: PsiMethod =>
             Some(
-              ScalaPsiElementFactory
-                .createMethodFromText(newMemberText, getManager))
+              ScalaPsiElementFactory.createMethodFromText(
+                newMemberText,
+                getManager))
           case _ => None
         }
         mem match {
@@ -97,12 +98,10 @@ abstract class ScTypeDefinitionImpl protected (
   }
 
   override def isAnnotationType: Boolean = {
-    val annotation = ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(
-        "scala.annotation.Annotation",
-        getResolveScope,
-        ScalaPsiManager.ClassCategory.TYPE)
+    val annotation = ScalaPsiManager.instance(getProject).getCachedClass(
+      "scala.annotation.Annotation",
+      getResolveScope,
+      ScalaPsiManager.ClassCategory.TYPE)
     if (annotation == null) return false
     ScalaPsiManager.instance(getProject).cachedDeepIsInheritor(this, annotation)
   }
@@ -155,12 +154,10 @@ abstract class ScTypeDefinitionImpl protected (
     if (parentClazz != null) {
       val tpe: ScType =
         if (!thisProjections)
-          parentClazz
-            .getTypeWithProjections(
-              TypingContext.empty,
-              thisProjections = false)
-            .getOrElse(
-              return Failure("Cannot resolve parent class", Some(this)))
+          parentClazz.getTypeWithProjections(
+            TypingContext.empty,
+            thisProjections = false).getOrElse(
+            return Failure("Cannot resolve parent class", Some(this)))
         else ScThisType(parentClazz)
 
       val innerProjection = ScProjectionType(tpe, this, superReference = false)
@@ -254,14 +251,11 @@ abstract class ScTypeDefinitionImpl protected (
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   private def javaQualName(): String = {
-    var res = qualifiedName(".", encodeName = true)
-      .split('.')
-      .map { s =>
-        if (s.startsWith("`") && s.endsWith("`") && s.length > 2)
-          s.drop(1).dropRight(1)
-        else s
-      }
-      .mkString(".")
+    var res = qualifiedName(".", encodeName = true).split('.').map { s =>
+      if (s.startsWith("`") && s.endsWith("`") && s.length > 2)
+        s.drop(1).dropRight(1)
+      else s
+    }.mkString(".")
     this match {
       case o: ScObject =>
         if (o.isPackageObject) res = res + ".package$"
@@ -392,8 +386,9 @@ abstract class ScTypeDefinitionImpl protected (
   override def findMethodsAndTheirSubstitutorsByName(
       name: String,
       checkBases: Boolean): JList[IPair[PsiMethod, PsiSubstitutor]] = {
-    super[ScTypeDefinition]
-      .findMethodsAndTheirSubstitutorsByName(name, checkBases)
+    super[ScTypeDefinition].findMethodsAndTheirSubstitutorsByName(
+      name,
+      checkBases)
   }
 
   override def getAllMethodsAndTheirSubstitutors
@@ -421,10 +416,8 @@ abstract class ScTypeDefinitionImpl protected (
   override def delete() {
     var toDelete: PsiElement = this
     var parent: PsiElement = getParent
-    while (parent.isInstanceOf[ScToplevelElement] && parent
-             .asInstanceOf[ScToplevelElement]
-             .typeDefinitions
-             .length == 1) {
+    while (parent.isInstanceOf[ScToplevelElement] && parent.asInstanceOf[
+             ScToplevelElement].typeDefinitions.length == 1) {
       toDelete = parent
       parent = toDelete.getParent
     }
@@ -449,13 +442,10 @@ abstract class ScTypeDefinitionImpl protected (
     super[ScTypeDefinition].isInheritor(baseClass, deep)
 
   def signaturesByName(name: String): Seq[PhysicalSignature] = {
-    (for ((s: PhysicalSignature, _) <- TypeDefinitionMembers
-            .getSignatures(this)
-            .forName(name)
-            ._1) yield s) ++
-      syntheticMethodsNoOverride
-        .filter(_.name == name)
-        .map(new PhysicalSignature(_, ScSubstitutor.empty))
+    (for ((s: PhysicalSignature, _) <- TypeDefinitionMembers.getSignatures(
+            this).forName(name)._1) yield s) ++
+      syntheticMethodsNoOverride.filter(_.name == name).map(
+        new PhysicalSignature(_, ScSubstitutor.empty))
   }
 
   override def getNameIdentifier: PsiIdentifier = {
@@ -503,10 +493,8 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def getInnerClasses: Array[PsiClass] = {
     def ownInnerClasses =
-      members
-        .filter(_.isInstanceOf[PsiClass])
-        .map(_.asInstanceOf[PsiClass])
-        .toArray
+      members.filter(_.isInstanceOf[PsiClass]).map(
+        _.asInstanceOf[PsiClass]).toArray
 
     ScalaPsiUtil.getBaseCompanionModule(this) match {
       case Some(o: ScObject) =>

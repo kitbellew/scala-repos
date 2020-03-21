@@ -157,8 +157,7 @@ abstract class BaseYarnClusterSuite
       launcher.setMainClass(klass)
       launcher.setAppResource(fakeSparkJar.getAbsolutePath())
     }
-    launcher
-      .setSparkHome(sys.props("spark.test.home"))
+    launcher.setSparkHome(sys.props("spark.test.home"))
       .setMaster("yarn")
       .setDeployMode(deployMode)
       .setConf("spark.executor.instances", "1")

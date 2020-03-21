@@ -37,26 +37,24 @@ class CountVectorizerSuite
   private def split(s: String): Seq[String] = s.split("\\s+")
 
   test("CountVectorizerModel common cases") {
-    val df = sqlContext
-      .createDataFrame(
-        Seq(
-          (
-            0,
-            split("a b c d"),
-            Vectors.sparse(4, Seq((0, 1.0), (1, 1.0), (2, 1.0), (3, 1.0)))),
-          (
-            1,
-            split("a b b c d  a"),
-            Vectors.sparse(4, Seq((0, 2.0), (1, 2.0), (2, 1.0), (3, 1.0)))),
-          (2, split("a"), Vectors.sparse(4, Seq((0, 1.0)))),
-          (3, split(""), Vectors.sparse(4, Seq())), // empty string
-          (
-            4,
-            split("a notInDict d"),
-            Vectors.sparse(4, Seq((0, 1.0), (3, 1.0)))
-          ) // with words not in vocabulary
-        ))
-      .toDF("id", "words", "expected")
+    val df = sqlContext.createDataFrame(
+      Seq(
+        (
+          0,
+          split("a b c d"),
+          Vectors.sparse(4, Seq((0, 1.0), (1, 1.0), (2, 1.0), (3, 1.0)))),
+        (
+          1,
+          split("a b b c d  a"),
+          Vectors.sparse(4, Seq((0, 2.0), (1, 2.0), (2, 1.0), (3, 1.0)))),
+        (2, split("a"), Vectors.sparse(4, Seq((0, 1.0)))),
+        (3, split(""), Vectors.sparse(4, Seq())), // empty string
+        (
+          4,
+          split("a notInDict d"),
+          Vectors.sparse(4, Seq((0, 1.0), (3, 1.0)))
+        ) // with words not in vocabulary
+      )).toDF("id", "words", "expected")
     val cv = new CountVectorizerModel(Array("a", "b", "c", "d"))
       .setInputCol("words")
       .setOutputCol("features")
@@ -67,20 +65,18 @@ class CountVectorizerSuite
   }
 
   test("CountVectorizer common cases") {
-    val df = sqlContext
-      .createDataFrame(
-        Seq(
-          (
-            0,
-            split("a b c d e"),
-            Vectors.sparse(
-              5,
-              Seq((0, 1.0), (1, 1.0), (2, 1.0), (3, 1.0), (4, 1.0)))),
-          (1, split("a a a a a a"), Vectors.sparse(5, Seq((0, 6.0)))),
-          (2, split("c"), Vectors.sparse(5, Seq((2, 1.0)))),
-          (3, split("b b b b b"), Vectors.sparse(5, Seq((1, 5.0))))
-        ))
-      .toDF("id", "words", "expected")
+    val df = sqlContext.createDataFrame(
+      Seq(
+        (
+          0,
+          split("a b c d e"),
+          Vectors.sparse(
+            5,
+            Seq((0, 1.0), (1, 1.0), (2, 1.0), (3, 1.0), (4, 1.0)))),
+        (1, split("a a a a a a"), Vectors.sparse(5, Seq((0, 6.0)))),
+        (2, split("c"), Vectors.sparse(5, Seq((2, 1.0)))),
+        (3, split("b b b b b"), Vectors.sparse(5, Seq((1, 5.0))))
+      )).toDF("id", "words", "expected")
     val cv = new CountVectorizer()
       .setInputCol("words")
       .setOutputCol("features")
@@ -94,15 +90,13 @@ class CountVectorizerSuite
   }
 
   test("CountVectorizer vocabSize and minDF") {
-    val df = sqlContext
-      .createDataFrame(
-        Seq(
-          (0, split("a b c d"), Vectors.sparse(3, Seq((0, 1.0), (1, 1.0)))),
-          (1, split("a b c"), Vectors.sparse(3, Seq((0, 1.0), (1, 1.0)))),
-          (2, split("a b"), Vectors.sparse(3, Seq((0, 1.0), (1, 1.0)))),
-          (3, split("a"), Vectors.sparse(3, Seq((0, 1.0))))
-        ))
-      .toDF("id", "words", "expected")
+    val df = sqlContext.createDataFrame(
+      Seq(
+        (0, split("a b c d"), Vectors.sparse(3, Seq((0, 1.0), (1, 1.0)))),
+        (1, split("a b c"), Vectors.sparse(3, Seq((0, 1.0), (1, 1.0)))),
+        (2, split("a b"), Vectors.sparse(3, Seq((0, 1.0), (1, 1.0)))),
+        (3, split("a"), Vectors.sparse(3, Seq((0, 1.0))))
+      )).toDF("id", "words", "expected")
     val cvModel = new CountVectorizer()
       .setInputCol("words")
       .setOutputCol("features")
@@ -139,9 +133,10 @@ class CountVectorizerSuite
 
   test("CountVectorizer throws exception when vocab is empty") {
     intercept[IllegalArgumentException] {
-      val df = sqlContext
-        .createDataFrame(Seq((0, split("a a b b c c")), (1, split("aa bb cc"))))
-        .toDF("id", "words")
+      val df = sqlContext.createDataFrame(
+        Seq((0, split("a a b b c c")), (1, split("aa bb cc")))).toDF(
+        "id",
+        "words")
       val cvModel = new CountVectorizer()
         .setInputCol("words")
         .setOutputCol("features")
@@ -152,18 +147,16 @@ class CountVectorizerSuite
   }
 
   test("CountVectorizerModel with minTF count") {
-    val df = sqlContext
-      .createDataFrame(
-        Seq(
-          (
-            0,
-            split("a a a b b c c c d "),
-            Vectors.sparse(4, Seq((0, 3.0), (2, 3.0)))),
-          (1, split("c c c c c c"), Vectors.sparse(4, Seq((2, 6.0)))),
-          (2, split("a"), Vectors.sparse(4, Seq())),
-          (3, split("e e e e e"), Vectors.sparse(4, Seq()))
-        ))
-      .toDF("id", "words", "expected")
+    val df = sqlContext.createDataFrame(
+      Seq(
+        (
+          0,
+          split("a a a b b c c c d "),
+          Vectors.sparse(4, Seq((0, 3.0), (2, 3.0)))),
+        (1, split("c c c c c c"), Vectors.sparse(4, Seq((2, 6.0)))),
+        (2, split("a"), Vectors.sparse(4, Seq())),
+        (3, split("e e e e e"), Vectors.sparse(4, Seq()))
+      )).toDF("id", "words", "expected")
 
     // minTF: count
     val cv = new CountVectorizerModel(Array("a", "b", "c", "d"))
@@ -177,18 +170,16 @@ class CountVectorizerSuite
   }
 
   test("CountVectorizerModel with minTF freq") {
-    val df = sqlContext
-      .createDataFrame(
-        Seq(
-          (
-            0,
-            split("a a a b b c c c d "),
-            Vectors.sparse(4, Seq((0, 3.0), (2, 3.0)))),
-          (1, split("c c c c c c"), Vectors.sparse(4, Seq((2, 6.0)))),
-          (2, split("a"), Vectors.sparse(4, Seq((0, 1.0)))),
-          (3, split("e e e e e"), Vectors.sparse(4, Seq()))
-        ))
-      .toDF("id", "words", "expected")
+    val df = sqlContext.createDataFrame(
+      Seq(
+        (
+          0,
+          split("a a a b b c c c d "),
+          Vectors.sparse(4, Seq((0, 3.0), (2, 3.0)))),
+        (1, split("c c c c c c"), Vectors.sparse(4, Seq((2, 6.0)))),
+        (2, split("a"), Vectors.sparse(4, Seq((0, 1.0)))),
+        (3, split("e e e e e"), Vectors.sparse(4, Seq()))
+      )).toDF("id", "words", "expected")
 
     // minTF: set frequency
     val cv = new CountVectorizerModel(Array("a", "b", "c", "d"))
@@ -202,17 +193,15 @@ class CountVectorizerSuite
   }
 
   test("CountVectorizerModel with binary") {
-    val df = sqlContext
-      .createDataFrame(
-        Seq(
-          (
-            0,
-            split("a a a b b c"),
-            Vectors.sparse(4, Seq((0, 1.0), (1, 1.0), (2, 1.0)))),
-          (1, split("c c c"), Vectors.sparse(4, Seq((2, 1.0)))),
-          (2, split("a"), Vectors.sparse(4, Seq((0, 1.0))))
-        ))
-      .toDF("id", "words", "expected")
+    val df = sqlContext.createDataFrame(
+      Seq(
+        (
+          0,
+          split("a a a b b c"),
+          Vectors.sparse(4, Seq((0, 1.0), (1, 1.0), (2, 1.0)))),
+        (1, split("c c c"), Vectors.sparse(4, Seq((2, 1.0)))),
+        (2, split("a"), Vectors.sparse(4, Seq((0, 1.0))))
+      )).toDF("id", "words", "expected")
 
     val cv = new CountVectorizerModel(Array("a", "b", "c", "d"))
       .setInputCol("words")

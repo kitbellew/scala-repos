@@ -29,10 +29,11 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
       sharedAndExternalRootsIn(projects).partition(_.projects.length > 1)
 
     if (externalRoots.nonEmpty) {
-      val externalRootsStr = externalRoots
-        .map(_.root.directory)
-        .distinct
-        .mkString("<ul><li>", "</li><li>", "</li></ul>")
+      val externalRootsStr =
+        externalRoots.map(_.root.directory).distinct.mkString(
+          "<ul><li>",
+          "</li><li>",
+          "</li></ul>")
       val msg =
         s"""
           | <p>
@@ -75,9 +76,9 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
       val uniqueProjectDependencies =
         projects.flatMap(_.dependencies.projects).distinct
       uniqueProjectDependencies.foreach { dependencyId =>
-        val dependency = projectToModuleNode.values
-          .find(_.getId == dependencyId.project)
-          .getOrElse(throw new ExternalSystemException(
+        val dependency = projectToModuleNode.values.find(
+          _.getId == dependencyId.project).getOrElse(
+          throw new ExternalSystemException(
             "Cannot find project dependency: " + dependencyId.project))
 
         val dependencyNode = new ModuleDependencyNode(moduleNode, dependency)

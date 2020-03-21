@@ -90,9 +90,11 @@ class RuntimePickler(
       // println(s"creating runtime pickler to pickle $fldClass field of class ${picklee.getClass.getName}")
       val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
       // debug(s"!!! finding pickler for field with class ${fldClass.getName}")
-      val fldPickler = scala.pickling.internal.currentRuntime.picklers
-        .genPickler(classLoader, fldClass, fldTag)
-        .asInstanceOf[Pickler[Any]]
+      val fldPickler =
+        scala.pickling.internal.currentRuntime.picklers.genPickler(
+          classLoader,
+          fldClass,
+          fldTag).asInstanceOf[Pickler[Any]]
       //debug(s"looked up field pickler: $fldPickler")
 
       builder.putField(
@@ -175,9 +177,11 @@ class RuntimePickler(
       // the same decision.
       // debug(s"creating tag for field of class ${fldClass.getName}")
       val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
-      val fldPickler = scala.pickling.internal.currentRuntime.picklers
-        .genPickler(classLoader, fldClass, fldTag)
-        .asInstanceOf[Pickler[Any]]
+      val fldPickler =
+        scala.pickling.internal.currentRuntime.picklers.genPickler(
+          classLoader,
+          fldClass,
+          fldTag).asInstanceOf[Pickler[Any]]
       // debug(s"looked up field pickler: $fldPickler")
 
       builder.putField(

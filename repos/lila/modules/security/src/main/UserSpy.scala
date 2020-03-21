@@ -70,13 +70,10 @@ object UserSpy {
     }
 
   private def nextValues(field: String)(user: User): Fu[Set[Value]] =
-    storeColl
-      .find(
-        BSONDocument("user" -> user.id),
-        BSONDocument(field -> true)
-      )
-      .cursor[BSONDocument]()
-      .collect[List]() map {
+    storeColl.find(
+      BSONDocument("user" -> user.id),
+      BSONDocument(field -> true)
+    ).cursor[BSONDocument]().collect[List]() map {
       _.flatMap(_.getAs[Value](field)).toSet
     }
 

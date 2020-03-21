@@ -54,12 +54,12 @@ class ALSModel(
     sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/${id}/rank")
     userFeatures.saveAsObjectFile(s"/tmp/${id}/userFeatures")
     productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
-    sc.parallelize(Seq(userStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/userStringIntMap")
-    sc.parallelize(Seq(itemStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
-    sc.parallelize(Seq(categoryItemsMap))
-      .saveAsObjectFile(s"/tmp/${id}/categoryItemsMap")
+    sc.parallelize(Seq(userStringIntMap)).saveAsObjectFile(
+      s"/tmp/${id}/userStringIntMap")
+    sc.parallelize(Seq(itemStringIntMap)).saveAsObjectFile(
+      s"/tmp/${id}/itemStringIntMap")
+    sc.parallelize(Seq(categoryItemsMap)).saveAsObjectFile(
+      s"/tmp/${id}/categoryItemsMap")
     true
   }
 
@@ -84,14 +84,11 @@ object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
       rank = sc.get.objectFile[Int](s"/tmp/${id}/rank").first,
       userFeatures = sc.get.objectFile(s"/tmp/${id}/userFeatures"),
       productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"),
-      userStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/userStringIntMap")
-        .first,
-      itemStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
-        .first,
-      categoryItemsMap = sc.get
-        .objectFile[Map[String, Set[Int]]](s"/tmp/${id}/categoryItemsMap")
-        .first)
+      userStringIntMap = sc.get.objectFile[BiMap[String, Int]](
+        s"/tmp/${id}/userStringIntMap").first,
+      itemStringIntMap = sc.get.objectFile[BiMap[String, Int]](
+        s"/tmp/${id}/itemStringIntMap").first,
+      categoryItemsMap = sc.get.objectFile[Map[String, Set[Int]]](
+        s"/tmp/${id}/categoryItemsMap").first)
   }
 }

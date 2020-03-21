@@ -60,9 +60,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
           host,
           literals) || injectInInterpolation(registrar, host, literals)) return
 
-    if (ScalaProjectSettings
-          .getInstance(host.getProject)
-          .isDisableLangInjection) return
+    if (ScalaProjectSettings.getInstance(
+          host.getProject).isDisableLangInjection) return
 
     injectUsingAnnotation(registrar, host, literals) || injectUsingPatterns(
       registrar,
@@ -77,16 +76,12 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       case _ =>
     }
 
-    val expressions = host
-      .depthFirst {
-        case injectedExpr: ScExpression
-            if injectedExpr.getParent
-              .isInstanceOf[ScInterpolatedStringLiteral] =>
-          false
-        case _ => true
-      }
-      .filter(_.isInstanceOf[ScExpression])
-      .toList
+    val expressions = host.depthFirst {
+      case injectedExpr: ScExpression
+          if injectedExpr.getParent.isInstanceOf[ScInterpolatedStringLiteral] =>
+        false
+      case _ => true
+    }.filter(_.isInstanceOf[ScExpression]).toList
 
     val suitable = expressions forall {
       case l: ScLiteral if l.isString                   => true
@@ -255,11 +250,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
   def implicitAnnotationOwnerFor(
       literal: ScLiteral): Option[PsiAnnotationOwner] = {
-    literal
-      .getImplicitConversions()
-      ._2
-      .flatMap(_.asOptionOf[ScFunction])
-      .flatMap(_.parameters.headOption)
+    literal.getImplicitConversions()._2.flatMap(
+      _.asOptionOf[ScFunction]).flatMap(_.parameters.headOption)
   }
 
   private def injectInInterpolation(
@@ -269,9 +261,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     hostElement match {
       case host: PsiLanguageInjectionHost =>
         ScalaLanguageInjector withInjectionSupport { support =>
-          val mapping = ScalaProjectSettings
-            .getInstance(host.getProject)
-            .getIntInjectionMapping
+          val mapping = ScalaProjectSettings.getInstance(
+            host.getProject).getIntInjectionMapping
           val allInjections =
             new util.HashMap[
               InjectedLanguage,
@@ -335,8 +326,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     def getParameter(methodInv: MethodInvocation, index: Int) = {
       if (index == -1) None
       else
-        methodInv.getEffectiveInvokedExpr
-          .asOptionOf[ScReferenceExpression] flatMap {
+        methodInv.getEffectiveInvokedExpr.asOptionOf[
+          ScReferenceExpression] flatMap {
           ref =>
             ref.resolve().toOption match {
               case Some(f: ScFunction) =>
@@ -447,8 +438,11 @@ object ScalaLanguageInjector {
     val list = new util.ArrayList[
       Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
 
-    literals foreach (ScalaLanguageInjector
-      .handleInjectionImpl(_, injectedLanguage, injection, list))
+    literals foreach (ScalaLanguageInjector.handleInjectionImpl(
+      _,
+      injectedLanguage,
+      injection,
+      list))
 
     InjectorUtils.registerInjection(
       injectedLanguage.getLanguage,

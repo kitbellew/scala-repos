@@ -124,8 +124,9 @@ class AddScheduledQueryServiceHandler(
                   jv.validated[AddScheduledQueryRequest].disjunction leftMap {
                     err =>
                       badRequest(
-                        "Request body %s is not a valid scheduling query request: %s"
-                          .format(jv.renderCompact, err.message))
+                        "Request body %s is not a valid scheduling query request: %s".format(
+                          jv.renderCompact,
+                          err.message))
                   }
                 }
               }
@@ -154,11 +155,14 @@ class AddScheduledQueryServiceHandler(
                   clock.instant))
 
               readError = (!okToRead).option(
-                nels("The API Key does not have permission to execute %s"
-                  .format(sreq.source.path)))
+                nels(
+                  "The API Key does not have permission to execute %s".format(
+                    sreq.source.path)))
               writeError = (!okToWrite).option(
-                nels("The API Key does not have permission to write to %s as %s"
-                  .format(sreq.sink.path, authorities.render)))
+                nels(
+                  "The API Key does not have permission to write to %s as %s".format(
+                    sreq.sink.path,
+                    authorities.render)))
 
               taskId <- (readError |+| writeError) match {
                 case None =>
@@ -204,9 +208,8 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
   import com.precog.util._
   val service = (request: HttpRequest[A]) => {
     for {
-      idStr <- request.parameters
-        .get('scheduleId)
-        .toSuccess(DispatchError(BadRequest, "scheduleId parameter required"))
+      idStr <- request.parameters.get('scheduleId).toSuccess(
+        DispatchError(BadRequest, "scheduleId parameter required"))
       id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap {
         error =>
           DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
@@ -231,9 +234,8 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
   import com.precog.util._
   val service = (request: HttpRequest[A]) => {
     for {
-      idStr <- request.parameters
-        .get('scheduleId)
-        .toSuccess(DispatchError(BadRequest, "Missing schedule Id for status."))
+      idStr <- request.parameters.get('scheduleId).toSuccess(
+        DispatchError(BadRequest, "Missing schedule Id for status."))
       id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap { ex =>
         DispatchError(
           BadRequest,

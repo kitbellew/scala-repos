@@ -87,10 +87,8 @@ abstract class UseRoleIgnoredSpec
     }
 
   def currentRoutees(router: ActorRef) =
-    Await
-      .result(router ? GetRoutees, timeout.duration)
-      .asInstanceOf[Routees]
-      .routees
+    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[
+      Routees].routees
 
   "A cluster" must {
     "start cluster" taggedAs LongRunningTest in {

@@ -25,8 +25,7 @@ class TypedParquetTupleTest
         .arg("output", "output1")
         .sink[SampleClassB](TypedParquet[SampleClassB](Seq("output1"))) {
           toMap(_) shouldBe toMap(values)
-        }
-        .run
+        }.run
 
       HadoopPlatformJobTest(new ReadWithFilterPredicateJob(_), cluster)
         .arg("input", "output1")

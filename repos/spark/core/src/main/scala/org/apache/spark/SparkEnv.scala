@@ -130,9 +130,9 @@ class SparkEnv(
       envVars: Map[String, String]): java.net.Socket = {
     synchronized {
       val key = (pythonExec, envVars)
-      pythonWorkers
-        .getOrElseUpdate(key, new PythonWorkerFactory(pythonExec, envVars))
-        .create()
+      pythonWorkers.getOrElseUpdate(
+        key,
+        new PythonWorkerFactory(pythonExec, envVars)).create()
     }
   }
 
@@ -285,17 +285,14 @@ object SparkEnv extends Logging {
       // Look for a constructor taking a SparkConf and a boolean isDriver, then one taking just
       // SparkConf, then one taking no arguments
       try {
-        cls
-          .getConstructor(classOf[SparkConf], java.lang.Boolean.TYPE)
+        cls.getConstructor(classOf[SparkConf], java.lang.Boolean.TYPE)
           .newInstance(conf, new java.lang.Boolean(isDriver))
           .asInstanceOf[T]
       } catch {
         case _: NoSuchMethodException =>
           try {
-            cls
-              .getConstructor(classOf[SparkConf])
-              .newInstance(conf)
-              .asInstanceOf[T]
+            cls.getConstructor(classOf[SparkConf]).newInstance(
+              conf).asInstanceOf[T]
           } catch {
             case _: NoSuchMethodException =>
               cls.getConstructor().newInstance().asInstanceOf[T]

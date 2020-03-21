@@ -109,10 +109,9 @@ class ScMacroDefinitionImpl private (
   def doGetType() = {
     name match {
       case "doMacro" =>
-        ScalaPsiElementFactory
-          .createTypeElementFromText("(Int, String)", getManager)
-          .getType()
-          .get
+        ScalaPsiElementFactory.createTypeElementFromText(
+          "(Int, String)",
+          getManager).getType().get
       case _ => Any
     }
   }

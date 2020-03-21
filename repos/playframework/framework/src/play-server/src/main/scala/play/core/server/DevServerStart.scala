@@ -162,9 +162,8 @@ object DevServerStart {
                                   Option(
                                     buildLink.findSource(
                                       className,
-                                      line
-                                        .map(_.asInstanceOf[java.lang.Integer])
-                                        .orNull)).flatMap {
+                                      line.map(_.asInstanceOf[
+                                        java.lang.Integer]).orNull)).flatMap {
                                     case Array(file: java.io.File, null) =>
                                       Some((file, None))
                                     case Array(
@@ -227,13 +226,11 @@ object DevServerStart {
 
           override def handleWebCommand(
               request: play.api.mvc.RequestHeader): Option[Result] = {
-            buildDocHandler
-              .maybeHandleDocRequest(request)
-              .asInstanceOf[Option[Result]]
-              .orElse(
-                currentWebCommands.flatMap(
-                  _.handleWebCommand(request, buildLink, path))
-              )
+            buildDocHandler.maybeHandleDocRequest(request).asInstanceOf[Option[
+              Result]].orElse(
+              currentWebCommands.flatMap(
+                _.handleWebCommand(request, buildLink, path))
+            )
 
           }
 

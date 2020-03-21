@@ -33,8 +33,8 @@ object ScalaSuppressableInspectionTool {
     }
 
     extensions.inReadAction {
-      val iterator = (Iterator(element) ++ element.parentsInFile)
-        .flatMap(commentWithSuppression)
+      val iterator = (Iterator(element) ++ element.parentsInFile).flatMap(
+        commentWithSuppression)
       if (iterator.hasNext) Some(iterator.next())
       else None
     }

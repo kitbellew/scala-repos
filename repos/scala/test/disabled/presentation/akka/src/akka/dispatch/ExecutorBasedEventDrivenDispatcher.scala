@@ -198,8 +198,7 @@ class ExecutorBasedEventDrivenDispatcher(
             throw e
         }
       } else {
-        mbox.dispatcherLock
-          .unlock() //If the dispatcher isn't active or if the actor is suspended, unlock the dispatcher lock
+        mbox.dispatcherLock.unlock() //If the dispatcher isn't active or if the actor is suspended, unlock the dispatcher lock
       }
     }
   }

@@ -117,9 +117,9 @@ class DynamicTest {
     assertTrue(obj3_elem2)
 
     // Check backward binary compatibility with the 0.6.{0,1,2} codegen output
-    val obj4 = scala.scalajs.runtime
-      .newJSObjectWithVarargs(DynamicTestClassVarArgs, obj3Args.toJSArray)
-      .asInstanceOf[js.Dynamic]
+    val obj4 = scala.scalajs.runtime.newJSObjectWithVarargs(
+      DynamicTestClassVarArgs,
+      obj3Args.toJSArray).asInstanceOf[js.Dynamic]
     val obj4_count = obj4.count
     assertEquals(3, obj4_count)
     val obj4_elem0 = obj4.elem0
@@ -209,8 +209,9 @@ class DynamicTest {
       }
       dynamicLiteralNameEncoding_checkEvilProperties
     """).asInstanceOf[js.Function1[js.Any, Boolean]]
-    val obj1 = obj(".o[3√!|-pr()per7:3$];" -> " such eval ")
-      .asInstanceOf[js.Dictionary[js.Any]]
+    val obj1 =
+      obj(".o[3√!|-pr()per7:3$];" -> " such eval ").asInstanceOf[js.Dictionary[
+        js.Any]]
     assertEquals(" such eval ", obj1(".o[3√!|-pr()per7:3$];"))
     assertTrue(checkEvilProperties(obj1))
 

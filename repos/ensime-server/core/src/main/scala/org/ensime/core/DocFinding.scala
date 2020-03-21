@@ -50,21 +50,15 @@ trait DocFinding { self: RichPresentationCompiler =>
     (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
 
   private def fullPackage(sym: Symbol): String =
-    sym.ownerChain.reverse
-      .filterNot(isRoot)
-      .takeWhile(_.hasPackageFlag)
-      .map(_.nameString)
-      .mkString(".")
+    sym.ownerChain.reverse.filterNot(isRoot)
+      .takeWhile(_.hasPackageFlag).map(_.nameString).mkString(".")
 
   private def fullTypeName(
       sym: Symbol,
       nestedTypeSep: String,
       nameString: (Symbol => String)): String =
-    sym.ownerChain
-      .takeWhile(!_.hasPackageFlag)
-      .reverse
-      .map(nameString)
-      .mkString(nestedTypeSep)
+    sym.ownerChain.takeWhile(!_.hasPackageFlag).reverse.map(
+      nameString).mkString(nestedTypeSep)
 
   private val ScalaPrim =
     """^(Boolean|Byte|Char|Double|Float|Int|Long|Short)$""".r
@@ -82,12 +76,10 @@ trait DocFinding { self: RichPresentationCompiler =>
         DocFqn("", datatype.toLowerCase)
       case DocFqn("scala", ScalaAny(datatype)) => DocFqn("java.lang", "Object")
       case DocFqn("scala", "Array") =>
-        tpe.typeArgs.headOption
-          .map { tpe =>
-            val fqn = javaFqn(tpe)
-            fqn.copy(typeName = fqn.typeName + "[]")
-          }
-          .getOrElse(s)
+        tpe.typeArgs.headOption.map { tpe =>
+          val fqn = javaFqn(tpe)
+          fqn.copy(typeName = fqn.typeName + "[]")
+        }.getOrElse(s)
       case _ => s
     }
   }
@@ -114,9 +106,9 @@ trait DocFinding { self: RichPresentationCompiler =>
     sym.nameString + (if (java) {
                         if (sym.paramLists.isEmpty) ""
                         else
-                          sym.paramLists
-                            .flatMap(_.map { sym => javaFqn(sym.tpe).mkString })
-                            .mkString("(", ", ", ")")
+                          sym.paramLists.flatMap(_.map { sym =>
+                            javaFqn(sym.tpe).mkString
+                          }).mkString("(", ", ", ")")
                       } else sym.signatureString.replaceAll("[\\s]", ""))
   }
 

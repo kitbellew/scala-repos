@@ -64,11 +64,9 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
   private def fd(
       state: ClusterHeartbeatSenderState,
       node: UniqueAddress): FailureDetectorStub =
-    state.failureDetector
-      .asInstanceOf[DefaultFailureDetectorRegistry[Address]]
-      .failureDetector(node.address)
-      .get
-      .asInstanceOf[FailureDetectorStub]
+    state.failureDetector.asInstanceOf[
+      DefaultFailureDetectorRegistry[Address]].failureDetector(
+      node.address).get.asInstanceOf[FailureDetectorStub]
 
   "A ClusterHeartbeatSenderState" must {
 
@@ -97,39 +95,25 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
     }
 
     "use added members also when unreachable" in {
-      emptyState
-        .addMember(bb)
-        .addMember(cc)
-        .unreachableMember(bb)
-        .activeReceivers should ===(Set(bb, cc))
+      emptyState.addMember(bb).addMember(cc).unreachableMember(
+        bb).activeReceivers should ===(Set(bb, cc))
     }
 
     "not use removed members" in {
-      emptyState
-        .addMember(bb)
-        .addMember(cc)
-        .removeMember(bb)
-        .activeReceivers should ===(Set(cc))
+      emptyState.addMember(bb).addMember(cc).removeMember(
+        bb).activeReceivers should ===(Set(cc))
     }
 
     "use specified number of members" in {
       // they are sorted by the hash (uid) of the UniqueAddress
-      emptyState
-        .addMember(cc)
-        .addMember(dd)
-        .addMember(bb)
-        .addMember(ee)
-        .activeReceivers should ===(Set(bb, cc, dd))
+      emptyState.addMember(cc).addMember(dd).addMember(bb).addMember(
+        ee).activeReceivers should ===(Set(bb, cc, dd))
     }
 
     "use specified number of members + unreachable" in {
       // they are sorted by the hash (uid) of the UniqueAddress
-      emptyState
-        .addMember(cc)
-        .addMember(dd)
-        .addMember(bb)
-        .addMember(ee)
-        .unreachableMember(cc)
+      emptyState.addMember(cc).addMember(dd).addMember(bb).addMember(
+        ee).unreachableMember(cc)
         .activeReceivers should ===(Set(bb, cc, dd, ee))
     }
 
@@ -179,9 +163,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
 
     "behave correctly for random operations" in {
       val rnd = ThreadLocalRandom.current
-      val nodes = (1 to rnd.nextInt(10, 200))
-        .map(n ⇒ UniqueAddress(Address("akka.tcp", "sys", "n" + n, 2552), n))
-        .toVector
+      val nodes = (1 to rnd.nextInt(10, 200)).map(n ⇒
+        UniqueAddress(Address("akka.tcp", "sys", "n" + n, 2552), n)).toVector
       def rndNode() = nodes(rnd.nextInt(0, nodes.size))
       val selfUniqueAddress = rndNode()
       var state = emptyState(selfUniqueAddress)

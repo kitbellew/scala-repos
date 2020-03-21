@@ -21,9 +21,8 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
     val toFill: Array[T] =
       if (a.size >= size) a
       else
-        jlr.Array
-          .newInstance(a.getClass.getComponentType, size)
-          .asInstanceOf[Array[T]]
+        jlr.Array.newInstance(a.getClass.getComponentType, size).asInstanceOf[
+          Array[T]]
 
     val iter = iterator
     for (i <- 0 until size)

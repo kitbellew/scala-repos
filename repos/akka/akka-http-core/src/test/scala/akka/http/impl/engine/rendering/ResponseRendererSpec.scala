@@ -165,8 +165,10 @@ class ResponseRendererSpec
           requestMethod = HttpMethods.HEAD,
           response = HttpResponse(
             headers = List(Age(30)),
-            entity = HttpEntity
-              .Default(ContentTypes.`text/plain(UTF-8)`, 100, Source.empty))
+            entity = HttpEntity.Default(
+              ContentTypes.`text/plain(UTF-8)`,
+              100,
+              Source.empty))
         ) should renderTo(
           """HTTP/1.1 200 OK
               |Age: 30
@@ -667,8 +669,7 @@ class ResponseRendererSpec
             s"""${resProto.value} 200 OK
                  |Server: akka-http/1.0.0
                  |Date: Thu, 25 Aug 2011 09:10:29 GMT
-                 |${renCH
-              .fold("")(_ + "\n")}Content-Type: text/plain; charset=UTF-8
+                 |${renCH.fold("")(_ + "\n")}Content-Type: text/plain; charset=UTF-8
                  |${if (resCD) "" else "Content-Length: 6\n"}
                  |${if (headReq) "" else "ENTITY"}""",
             close
@@ -691,11 +692,12 @@ class ResponseRendererSpec
     def renderTo(
         expected: String,
         close: Boolean): Matcher[ResponseRenderingContext] =
-      equal(expected.stripMarginWithNewline("\r\n") -> close)
-        .matcher[(String, Boolean)] compose { ctx ⇒
+      equal(expected.stripMarginWithNewline("\r\n") -> close).matcher[(
+          String,
+          Boolean)] compose { ctx ⇒
         val (wasCompletedFuture, resultFuture) =
-          (Source.single(ctx) ++ Source
-            .maybe[ResponseRenderingContext]) // never send upstream completion
+          (Source.single(ctx) ++ Source.maybe[
+            ResponseRenderingContext]) // never send upstream completion
             .via(renderer.named("renderer"))
             .map {
               case ResponseRenderingOutput.HttpData(bytes) ⇒ bytes
@@ -706,8 +708,7 @@ class ResponseRendererSpec
             .groupedWithin(1000, 100.millis)
             .viaMat(StreamUtils.identityFinishReporter[Seq[ByteString]])(
               Keep.right)
-            .toMat(Sink.head)(Keep.both)
-            .run()
+            .toMat(Sink.head)(Keep.both).run()
 
         // we try to find out if the renderer has already flagged completion even without the upstream being completed
         val wasCompleted =
@@ -717,10 +718,8 @@ class ResponseRendererSpec
           } catch {
             case NonFatal(_) ⇒ false
           }
-        Await
-          .result(resultFuture, 250.millis)
-          .reduceLeft(_ ++ _)
-          .utf8String -> wasCompleted
+        Await.result(resultFuture, 250.millis).reduceLeft(
+          _ ++ _).utf8String -> wasCompleted
       }
 
     override def currentTimeMillis() =

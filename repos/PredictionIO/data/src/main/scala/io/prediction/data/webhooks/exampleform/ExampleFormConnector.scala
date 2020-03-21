@@ -114,12 +114,10 @@ private[prediction] object ExampleFormConnector extends FormConnector {
               ("prop1" -> data("context[prop1]").toDouble) ~
               ("prop2" -> data("context[prop2]"))
           )) ~
-            ("anotherPropertyA" -> data
-              .get("anotherPropertyA")
-              .map(_.toDouble)) ~
-            ("anotherPropertyB" -> data
-              .get("anotherPropertyB")
-              .map(_.toBoolean))
+            ("anotherPropertyA" -> data.get("anotherPropertyA").map(
+              _.toDouble)) ~
+            ("anotherPropertyB" -> data.get("anotherPropertyB").map(
+              _.toBoolean))
         ))
     json
   }

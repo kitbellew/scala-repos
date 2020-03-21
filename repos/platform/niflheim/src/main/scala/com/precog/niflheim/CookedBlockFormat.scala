@@ -60,9 +60,9 @@ object V1CookedBlockFormat extends CookedBlockFormat with Chunker {
 
   val FileCodec = Codec.Utf8Codec.as[File](_.getPath(), new File(_))
   val CPathCodec = Codec.Utf8Codec.as[CPath](_.toString, CPath(_))
-  val CTypeCodec = Codec
-    .ArrayCodec(Codec.ByteCodec)
-    .as[CType](CTypeFlags.getFlagFor, CTypeFlags.cTypeForFlag)
+  val CTypeCodec = Codec.ArrayCodec(Codec.ByteCodec).as[CType](
+    CTypeFlags.getFlagFor,
+    CTypeFlags.cTypeForFlag)
   val ColumnRefCodec = Codec.CompositeCodec[CPath, CType, (CPath, CType)](
     CPathCodec,
     CTypeCodec,

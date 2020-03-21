@@ -82,10 +82,9 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
     statements match {
       case statement +: _ =>
         val openSlashAsteriskIndex = statement.indexOf(START_COMMENT, 0)
-        if (openSlashAsteriskIndex == -1 || statement
-              .substring(0, openSlashAsteriskIndex)
-              .trim
-              .nonEmpty) {
+        if (openSlashAsteriskIndex == -1 || statement.substring(
+              0,
+              openSlashAsteriskIndex).trim.nonEmpty) {
           Some((statements, lineRange))
         } else {
           val closeSlashAsteriskLine =
@@ -126,10 +125,9 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       lines match {
         case statement +: _ =>
           val doubleSlashIndex = statement.indexOf("//")
-          if (doubleSlashIndex == -1 || statement
-                .substring(0, doubleSlashIndex)
-                .trim
-                .nonEmpty) {
+          if (doubleSlashIndex == -1 || statement.substring(
+                0,
+                doubleSlashIndex).trim.nonEmpty) {
             removeSlashAsterisk(lines, lineRange, REVERTED_LINES) match {
               case some @ Some((s, ln)) if ln == lineRange =>
                 some

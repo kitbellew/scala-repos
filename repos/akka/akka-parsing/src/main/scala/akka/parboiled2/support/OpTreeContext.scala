@@ -137,8 +137,10 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       RuleCall(
         Right(call),
         Literal(
-          Constant(callName(call) getOrElse c
-            .abort(call.pos, "Illegal rule call: " + call))))
+          Constant(
+            callName(call) getOrElse c.abort(
+              call.pos,
+              "Illegal rule call: " + call))))
   }
 
   def OpTree(tree: Tree): OpTree =
@@ -158,10 +160,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     require(ops.size >= 2)
     def ruleTraceNonTerminalKey = reify(RuleTrace.Sequence).tree
     def renderInner(wrapped: Boolean): Tree =
-      ops
-        .map(_.render(wrapped))
-        .reduceLeft((l, r) ⇒
-          q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
+      ops.map(_.render(wrapped)).reduceLeft((l, r) ⇒
+        q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
   }
 
   case class Cut(lhs: OpTree, rhs: OpTree) extends DefaultNonTerminalOpTree {
@@ -186,9 +186,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
   case class FirstOf(ops: Seq[OpTree]) extends DefaultNonTerminalOpTree {
     def ruleTraceNonTerminalKey = reify(RuleTrace.FirstOf).tree
     def renderInner(wrapped: Boolean): Tree =
-      q"""val mark = __saveState; ${ops
-        .map(_.render(wrapped))
-        .reduceLeft((l, r) ⇒
+      q"""val mark = __saveState; ${ops.map(_.render(wrapped)).reduceLeft(
+        (l, r) ⇒
           q"val l = $l; if (!l) { __restoreState(mark); $r } else true // work-around for https://issues.scala-lang.org/browse/SI-8657")}"""
   }
 
@@ -627,13 +626,10 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
                     expand(x, wrapped)
                   case x ⇒ q"__push($x)"
                 }
-              val valDefs = args
-                .zip(argTypeTrees)
-                .map {
-                  case (a, t) ⇒
-                    q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
-                }
-                .reverse
+              val valDefs = args.zip(argTypeTrees).map {
+                case (a, t) ⇒
+                  q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
+              }.reverse
               block(valDefs, rewrite(body))
 
             case x ⇒
@@ -868,9 +864,9 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       case CaseDef(pat, guard, body) ⇒
         CaseDef(pat, guard, expand(body, wrapped))
       case x ⇒
-        opTreePF
-          .andThen(_.render(wrapped))
-          .applyOrElse(tree, (t: Tree) ⇒ q"$t ne null")
+        opTreePF.andThen(_.render(wrapped)).applyOrElse(
+          tree,
+          (t: Tree) ⇒ q"$t ne null")
     }
 
   @tailrec

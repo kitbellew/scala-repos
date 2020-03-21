@@ -28,9 +28,8 @@ class MinIsrConfigTest extends KafkaServerTestHarness {
   val overridingProps = new Properties()
   overridingProps.put(KafkaConfig.MinInSyncReplicasProp, "5")
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(1, zkConnect)
-      .map(KafkaConfig.fromProps(_, overridingProps))
+    TestUtils.createBrokerConfigs(1, zkConnect).map(
+      KafkaConfig.fromProps(_, overridingProps))
 
   @Test
   def testDefaultKafkaConfig() {

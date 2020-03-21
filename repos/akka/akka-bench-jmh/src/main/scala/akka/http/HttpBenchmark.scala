@@ -72,10 +72,8 @@ class HttpBenchmark {
   def single_request_pool(): Unit = {
     import system.dispatcher
     val (response, id) = Await.result(
-      Source
-        .single(HttpRequest(uri = "/test") -> 42)
-        .via(pool)
-        .runWith(Sink.head),
+      Source.single(HttpRequest(uri = "/test") -> 42).via(pool).runWith(
+        Sink.head),
       1.second)
     Await.result(Unmarshal(response.get.entity).to[String], 1.second)
   }

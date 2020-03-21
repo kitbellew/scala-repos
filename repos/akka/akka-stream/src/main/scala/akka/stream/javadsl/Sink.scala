@@ -129,10 +129,8 @@ object Sink {
     */
   def headOption[In](): Sink[In, CompletionStage[Optional[In]]] =
     new Sink(
-      scaladsl.Sink
-        .headOption[In]
-        .mapMaterializedValue(
-          _.map(_.asJava)(ExecutionContexts.sameThreadExecutionContext).toJava))
+      scaladsl.Sink.headOption[In].mapMaterializedValue(
+        _.map(_.asJava)(ExecutionContexts.sameThreadExecutionContext).toJava))
 
   /**
     * A `Sink` that materializes into a `CompletionStage` of the last value received.
@@ -153,10 +151,8 @@ object Sink {
     */
   def lastOption[In](): Sink[In, CompletionStage[Optional[In]]] =
     new Sink(
-      scaladsl.Sink
-        .lastOption[In]
-        .mapMaterializedValue(
-          _.map(_.asJava)(ExecutionContexts.sameThreadExecutionContext).toJava))
+      scaladsl.Sink.lastOption[In].mapMaterializedValue(
+        _.map(_.asJava)(ExecutionContexts.sameThreadExecutionContext).toJava))
 
   /**
     * A `Sink` that keeps on collecting incoming elements until upstream terminates.
@@ -171,12 +167,9 @@ object Sink {
   def seq[In]: Sink[In, CompletionStage[java.util.List[In]]] = {
     import scala.collection.JavaConverters._
     new Sink(
-      scaladsl.Sink
-        .seq[In]
-        .mapMaterializedValue(fut ⇒
-          fut
-            .map(sq ⇒ sq.asJava)(ExecutionContexts.sameThreadExecutionContext)
-            .toJava))
+      scaladsl.Sink.seq[In].mapMaterializedValue(fut ⇒
+        fut.map(sq ⇒ sq.asJava)(
+          ExecutionContexts.sameThreadExecutionContext).toJava))
   }
 
   /**

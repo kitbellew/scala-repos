@@ -271,8 +271,9 @@ trait TypeDiagnostics {
                 // would be fruitless.
                 val suggestChange = "\nYou may wish to " + (
                   if (isScala || isJava)
-                    "investigate a wildcard type such as `_ %s %s`. (SLS 3.2.10)"
-                      .format(op, reqArg)
+                    "investigate a wildcard type such as `_ %s %s`. (SLS 3.2.10)".format(
+                      op,
+                      reqArg)
                   else
                     "define %s as %s%s instead. (SLS 4.5)".format(
                       param.name,
@@ -494,8 +495,9 @@ trait TypeDiagnostics {
     def permanentlyHiddenWarning(pos: Position, hidden: Name, defn: Symbol) =
       context.warning(
         pos,
-        "imported `%s' is permanently hidden by definition of %s"
-          .format(hidden, defn.fullLocationString))
+        "imported `%s' is permanently hidden by definition of %s".format(
+          hidden,
+          defn.fullLocationString))
 
     object checkUnused {
       val ignoreNames: Set[TermName] = Set(
@@ -540,8 +542,8 @@ trait TypeDiagnostics {
           // Only record type references which don't originate within the
           // definition of the class being referenced.
           if (t.tpe ne null) {
-            for (tp <- t.tpe; if !treeTypes(tp) && !currentOwner.ownerChain
-                   .contains(tp.typeSymbol)) {
+            for (tp <- t.tpe; if !treeTypes(
+                   tp) && !currentOwner.ownerChain.contains(tp.typeSymbol)) {
               tp match {
                 case NoType | NoPrefix    =>
                 case NullaryMethodType(_) =>

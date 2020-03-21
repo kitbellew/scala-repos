@@ -213,16 +213,14 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     // number of batches seen so far does not exceed testWindow, expect counts to continue growing
     for (i <- 0 until testWindow) {
       assert(
-        outputCounts
-          .slice(2 * i, 2 * i + 2)
-          .forall(_ == (i + 1) * pointsPerBatch / 2))
+        outputCounts.slice(2 * i, 2 * i + 2).forall(
+          _ == (i + 1) * pointsPerBatch / 2))
     }
 
     // number of batches seen exceeds testWindow, expect counts to be constant
     assert(
-      outputCounts
-        .drop(2 * (testWindow - 1))
-        .forall(_ == testWindow * pointsPerBatch / 2))
+      outputCounts.drop(2 * (testWindow - 1)).forall(
+        _ == testWindow * pointsPerBatch / 2))
   }
 
   test("entries in peace period are dropped") {

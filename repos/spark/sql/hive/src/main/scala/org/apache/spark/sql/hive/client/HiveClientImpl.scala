@@ -480,9 +480,8 @@ private[hive] class HiveClientImpl(
       predicates: Seq[Expression]): Seq[CatalogTablePartition] =
     withHiveState {
       val hiveTable = toHiveTable(table)
-      shim
-        .getPartitionsByFilter(client, hiveTable, predicates)
-        .map(fromHivePartition)
+      shim.getPartitionsByFilter(client, hiveTable, predicates).map(
+        fromHivePartition)
     }
 
   override def listTables(dbName: String): Seq[String] =
@@ -691,13 +690,11 @@ private[hive] class HiveClientImpl(
    * -------------------------------------------------------- */
 
   private def toInputFormat(name: String) =
-    Utils
-      .classForName(name)
-      .asInstanceOf[Class[_ <: org.apache.hadoop.mapred.InputFormat[_, _]]]
+    Utils.classForName(name).asInstanceOf[Class[
+      _ <: org.apache.hadoop.mapred.InputFormat[_, _]]]
 
   private def toOutputFormat(name: String) =
-    Utils
-      .classForName(name)
+    Utils.classForName(name)
       .asInstanceOf[Class[
         _ <: org.apache.hadoop.hive.ql.io.HiveOutputFormat[_, _]]]
 
@@ -748,12 +745,10 @@ private[hive] class HiveClientImpl(
     table.storage.locationUri.foreach { loc =>
       shim.setDataLocation(hiveTable, loc)
     }
-    table.storage.inputFormat
-      .map(toInputFormat)
-      .foreach(hiveTable.setInputFormatClass)
-    table.storage.outputFormat
-      .map(toOutputFormat)
-      .foreach(hiveTable.setOutputFormatClass)
+    table.storage.inputFormat.map(toInputFormat).foreach(
+      hiveTable.setInputFormatClass)
+    table.storage.outputFormat.map(toOutputFormat).foreach(
+      hiveTable.setOutputFormatClass)
     table.storage.serde.foreach(hiveTable.setSerializationLib)
     table.storage.serdeProperties.foreach {
       case (k, v) => hiveTable.setSerdeParam(k, v)

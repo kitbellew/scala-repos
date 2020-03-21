@@ -188,10 +188,11 @@ private[streaming] class ReceiverSchedulingPolicy {
     scheduledLocations ++= preferredLocation.map(TaskLocation(_))
 
     val executorWeights: Map[ExecutorCacheTaskLocation, Double] = {
-      receiverTrackingInfoMap.values
-        .flatMap(convertReceiverTrackingInfoToExecutorWeights)
-        .groupBy(_._1)
-        .mapValues(_.map(_._2).sum) // Sum weights for each executor
+      receiverTrackingInfoMap.values.flatMap(
+        convertReceiverTrackingInfoToExecutorWeights)
+        .groupBy(_._1).mapValues(
+          _.map(_._2).sum
+        ) // Sum weights for each executor
     }
 
     val idleExecutors = executors.toSet -- executorWeights.keys
@@ -202,9 +203,8 @@ private[streaming] class ReceiverSchedulingPolicy {
       val sortedExecutors = executorWeights.toSeq.sortBy(_._2)
       if (sortedExecutors.nonEmpty) {
         val minWeight = sortedExecutors(0)._2
-        scheduledLocations ++= sortedExecutors
-          .takeWhile(_._2 == minWeight)
-          .map(_._1)
+        scheduledLocations ++= sortedExecutors.takeWhile(_._2 == minWeight).map(
+          _._1)
       } else {
         // This should not happen since "executors" is not empty
       }
@@ -229,12 +229,11 @@ private[streaming] class ReceiverSchedulingPolicy {
         val scheduledLocations = receiverTrackingInfo.scheduledLocations.get
         // The probability that a scheduled receiver will run in an executor is
         // 1.0 / scheduledLocations.size
-        scheduledLocations
-          .filter(_.isInstanceOf[ExecutorCacheTaskLocation])
-          .map { location =>
-            location.asInstanceOf[
-              ExecutorCacheTaskLocation] -> (1.0 / scheduledLocations.size)
-          }
+        scheduledLocations.filter(
+          _.isInstanceOf[ExecutorCacheTaskLocation]).map { location =>
+          location.asInstanceOf[
+            ExecutorCacheTaskLocation] -> (1.0 / scheduledLocations.size)
+        }
       case ReceiverState.ACTIVE =>
         Seq(receiverTrackingInfo.runningExecutor.get -> 1.0)
     }

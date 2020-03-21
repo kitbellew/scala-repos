@@ -136,10 +136,8 @@ class OneHotEncoder(override val uid: String)
       transformSchema(dataset.schema)(outputColName))
     if (outputAttrGroup.size < 0) {
       // If the number of attributes is unknown, we check the values from the input column.
-      val numAttrs = dataset
-        .select(col(inputColName).cast(DoubleType))
-        .rdd
-        .map(_.getDouble(0))
+      val numAttrs = dataset.select(col(inputColName).cast(DoubleType)).rdd.map(
+        _.getDouble(0))
         .aggregate(0.0)(
           (m, x) => {
             assert(
@@ -153,8 +151,7 @@ class OneHotEncoder(override val uid: String)
           (m0, m1) => {
             math.max(m0, m1)
           }
-        )
-        .toInt + 1
+        ).toInt + 1
       val outputAttrNames = Array.tabulate(numAttrs)(_.toString)
       val filtered =
         if (shouldDropLast) outputAttrNames.dropRight(1) else outputAttrNames

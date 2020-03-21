@@ -217,8 +217,8 @@ class VectorIndexerSuite
           }
         }
         // Check numerical feature metadata.
-        Range(0, model.numFeatures)
-          .filter(feature => !categoricalFeatures.contains(feature))
+        Range(0, model.numFeatures).filter(feature =>
+          !categoricalFeatures.contains(feature))
           .foreach { feature: Int =>
             val featureAttr = featureAttrs(feature)
             featureAttr match {
@@ -256,12 +256,8 @@ class VectorIndexerSuite
       val vectorIndexer = getIndexer.setMaxCategories(maxCategories)
       val model = vectorIndexer.fit(data)
       val indexedPoints =
-        model
-          .transform(data)
-          .select("indexed")
-          .rdd
-          .map(_.getAs[Vector](0))
-          .collect()
+        model.transform(data).select("indexed").rdd.map(
+          _.getAs[Vector](0)).collect()
       points.zip(indexedPoints).foreach {
         case (orig: SparseVector, indexed: SparseVector) =>
           assert(orig.indices.length == indexed.indices.length)
@@ -290,10 +286,8 @@ class VectorIndexerSuite
     // Check that ML metadata are preserved.
     val indexedPoints = model.transform(densePoints1WithMeta)
     val transAttributes: Array[Attribute] =
-      AttributeGroup
-        .fromStructField(indexedPoints.schema("indexed"))
-        .attributes
-        .get
+      AttributeGroup.fromStructField(
+        indexedPoints.schema("indexed")).attributes.get
     featureAttributes.zip(transAttributes).foreach {
       case (orig, trans) =>
         assert(orig.name === trans.name)

@@ -55,12 +55,10 @@ private[ui] class GraphUIData(
   private var dataJavaScriptName: String = _
 
   def generateDataJs(jsCollector: JsCollector): Unit = {
-    val jsForData = data
-      .map {
-        case (x, y) =>
-          s"""{"x": $x, "y": $y}"""
-      }
-      .mkString("[", ",", "]")
+    val jsForData = data.map {
+      case (x, y) =>
+        s"""{"x": $x, "y": $y}"""
+    }.mkString("[", ",", "]")
     dataJavaScriptName = jsCollector.nextVariableName
     jsCollector.addPreparedStatement(s"var $dataJavaScriptName = $jsForData;")
   }
@@ -212,16 +210,14 @@ private[ui] class StreamingPage(parent: StreamingTab)
     * @param times all time values that will be used in the graphs.
     */
   private def generateTimeMap(times: Seq[Long]): Seq[Node] = {
-    val js = "var timeFormat = {};\n" + times
-      .map { time =>
-        val formattedTime =
-          UIUtils.formatBatchTime(
-            time,
-            listener.batchDuration,
-            showYYYYMMSS = false)
-        s"timeFormat[$time] = '$formattedTime';"
-      }
-      .mkString("\n")
+    val js = "var timeFormat = {};\n" + times.map { time =>
+      val formattedTime =
+        UIUtils.formatBatchTime(
+          time,
+          listener.batchDuration,
+          showYYYYMMSS = false)
+      s"timeFormat[$time] = '$formattedTime';"
+    }.mkString("\n")
 
     <script>{Unparsed(js)}</script>
   }
@@ -464,9 +460,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
       .map(_.ceil.toLong)
       .getOrElse(0L)
 
-    val content = listener.receivedEventRateWithBatchTime.toList
-      .sortBy(_._1)
-      .map {
+    val content =
+      listener.receivedEventRateWithBatchTime.toList.sortBy(_._1).map {
         case (streamId, eventRates) =>
           generateInputDStreamRow(
             jsCollector,
@@ -476,8 +471,7 @@ private[ui] class StreamingPage(parent: StreamingTab)
             maxX,
             minY,
             maxYCalculated)
-      }
-      .foldLeft[Seq[Node]](Nil)(_ ++ _)
+      }.foldLeft[Seq[Node]](Nil)(_ ++ _)
 
     // scalastyle:off
     <table class="table table-bordered" style="width: auto">
@@ -508,34 +502,26 @@ private[ui] class StreamingPage(parent: StreamingTab)
     // If this is a ReceiverInputDStream, we need to show the receiver info. Or we only need the
     // InputDStream name.
     val receiverInfo = listener.receiverInfo(streamId)
-    val receiverName = receiverInfo
-      .map(_.name)
-      .orElse(listener.streamName(streamId))
-      .getOrElse(s"Stream-$streamId")
-    val receiverActive = receiverInfo
-      .map { info => if (info.active) "ACTIVE" else "INACTIVE" }
-      .getOrElse(emptyCell)
-    val receiverLocation = receiverInfo
-      .map { info =>
-        val executorId =
-          if (info.executorId.isEmpty) emptyCell else info.executorId
-        val location = if (info.location.isEmpty) emptyCell else info.location
-        s"$executorId / $location"
-      }
-      .getOrElse(emptyCell)
-    val receiverLastError = receiverInfo
-      .map { info =>
-        val msg = s"${info.lastErrorMessage} - ${info.lastError}"
-        if (msg.length > 100) msg.take(97) + "..." else msg
-      }
-      .getOrElse(emptyCell)
-    val receiverLastErrorTime = receiverInfo
-      .map {
-        r =>
-          if (r.lastErrorTime < 0) "-"
-          else SparkUIUtils.formatDate(r.lastErrorTime)
-      }
-      .getOrElse(emptyCell)
+    val receiverName = receiverInfo.map(_.name).orElse(
+      listener.streamName(streamId)).getOrElse(s"Stream-$streamId")
+    val receiverActive = receiverInfo.map { info =>
+      if (info.active) "ACTIVE" else "INACTIVE"
+    }.getOrElse(emptyCell)
+    val receiverLocation = receiverInfo.map { info =>
+      val executorId =
+        if (info.executorId.isEmpty) emptyCell else info.executorId
+      val location = if (info.location.isEmpty) emptyCell else info.location
+      s"$executorId / $location"
+    }.getOrElse(emptyCell)
+    val receiverLastError = receiverInfo.map { info =>
+      val msg = s"${info.lastErrorMessage} - ${info.lastError}"
+      if (msg.length > 100) msg.take(97) + "..." else msg
+    }.getOrElse(emptyCell)
+    val receiverLastErrorTime = receiverInfo.map {
+      r =>
+        if (r.lastErrorTime < 0) "-"
+        else SparkUIUtils.formatDate(r.lastErrorTime)
+    }.getOrElse(emptyCell)
     val receivedRecords = new EventRateUIData(eventRates)
 
     val graphUIDataForEventRate =

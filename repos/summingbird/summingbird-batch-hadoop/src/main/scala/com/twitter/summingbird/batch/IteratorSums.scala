@@ -23,9 +23,8 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
 
   def sumWith[T](it: Iterator[T], summer: StatefulSummer[T]): Iterator[T] =
     // this is for MAXIMUM speed. Any ideas to speed it up, say so + benchmark
-    it.map(summer.put(_))
-      .filter(_.isDefined)
-      .map(_.get) ++ summer.flush.iterator
+    it.map(summer.put(_)).filter(_.isDefined).map(
+      _.get) ++ summer.flush.iterator
 
   // get a big block, but not so big to OOM
   def optimizedPairSemigroup[T1: Semigroup, T2: Semigroup](
@@ -112,8 +111,9 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
 
       def flush = {
         // sumOption is highly optimized
-        val res =
-          Semigroup.sumOption(buffer).flatMap { sv => lastK.map((_, sv)) }
+        val res = Semigroup.sumOption(buffer).flatMap { sv =>
+          lastK.map((_, sv))
+        }
         buffer.clear
         res
       }

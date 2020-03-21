@@ -67,9 +67,10 @@ class ResolveNaturalJoinSuite extends AnalysisTest {
     val naturalPlan = r1.join(r2, NaturalJoin(FullOuter), None)
     val usingPlan =
       r1.join(r2, UsingJoin(FullOuter, Seq(UnresolvedAttribute("a"))), None)
-    val expected = r1
-      .join(r2, FullOuter, Some(EqualTo(a, a)))
-      .select(Alias(Coalesce(Seq(a, a)), "a")(), b, c)
+    val expected = r1.join(r2, FullOuter, Some(EqualTo(a, a))).select(
+      Alias(Coalesce(Seq(a, a)), "a")(),
+      b,
+      c)
     checkAnalysis(naturalPlan, expected)
     checkAnalysis(usingPlan, expected)
   }
@@ -78,9 +79,10 @@ class ResolveNaturalJoinSuite extends AnalysisTest {
     val naturalPlan = r3.join(r4, NaturalJoin(Inner), None)
     val usingPlan =
       r3.join(r4, UsingJoin(Inner, Seq(UnresolvedAttribute("b"))), None)
-    val expected = r3
-      .join(r4, Inner, Some(EqualTo(bNotNull, bNotNull)))
-      .select(bNotNull, aNotNull, cNotNull)
+    val expected = r3.join(r4, Inner, Some(EqualTo(bNotNull, bNotNull))).select(
+      bNotNull,
+      aNotNull,
+      cNotNull)
     checkAnalysis(naturalPlan, expected)
     checkAnalysis(usingPlan, expected)
   }
@@ -89,9 +91,10 @@ class ResolveNaturalJoinSuite extends AnalysisTest {
     val naturalPlan = r3.join(r4, NaturalJoin(LeftOuter), None)
     val usingPlan =
       r3.join(r4, UsingJoin(LeftOuter, Seq(UnresolvedAttribute("b"))), None)
-    val expected = r3
-      .join(r4, LeftOuter, Some(EqualTo(bNotNull, bNotNull)))
-      .select(bNotNull, aNotNull, c)
+    val expected = r3.join(
+      r4,
+      LeftOuter,
+      Some(EqualTo(bNotNull, bNotNull))).select(bNotNull, aNotNull, c)
     checkAnalysis(naturalPlan, expected)
     checkAnalysis(usingPlan, expected)
   }
@@ -100,9 +103,10 @@ class ResolveNaturalJoinSuite extends AnalysisTest {
     val naturalPlan = r3.join(r4, NaturalJoin(RightOuter), None)
     val usingPlan =
       r3.join(r4, UsingJoin(RightOuter, Seq(UnresolvedAttribute("b"))), None)
-    val expected = r3
-      .join(r4, RightOuter, Some(EqualTo(bNotNull, bNotNull)))
-      .select(bNotNull, a, cNotNull)
+    val expected = r3.join(
+      r4,
+      RightOuter,
+      Some(EqualTo(bNotNull, bNotNull))).select(bNotNull, a, cNotNull)
     checkAnalysis(naturalPlan, expected)
     checkAnalysis(usingPlan, expected)
   }
@@ -111,9 +115,11 @@ class ResolveNaturalJoinSuite extends AnalysisTest {
     val naturalPlan = r3.join(r4, NaturalJoin(FullOuter), None)
     val usingPlan =
       r3.join(r4, UsingJoin(FullOuter, Seq(UnresolvedAttribute("b"))), None)
-    val expected = r3
-      .join(r4, FullOuter, Some(EqualTo(bNotNull, bNotNull)))
-      .select(Alias(Coalesce(Seq(bNotNull, bNotNull)), "b")(), a, c)
+    val expected =
+      r3.join(r4, FullOuter, Some(EqualTo(bNotNull, bNotNull))).select(
+        Alias(Coalesce(Seq(bNotNull, bNotNull)), "b")(),
+        a,
+        c)
     checkAnalysis(naturalPlan, expected)
     checkAnalysis(usingPlan, expected)
   }

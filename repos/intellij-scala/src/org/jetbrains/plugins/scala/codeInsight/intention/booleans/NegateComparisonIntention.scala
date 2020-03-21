@@ -71,12 +71,9 @@ class NegateComparisonIntention extends PsiElementBaseIntentionAction {
 
     val buf = new StringBuilder
 
-    buf
-      .append(infixExpr.getBaseExpr.getText)
-      .append(" ")
-      .append(replaceOper(infixExpr.operation.nameId.getText))
-      .append(" ")
-      .append(infixExpr.getArgExpr.getText)
+    buf.append(infixExpr.getBaseExpr.getText).append(" ").append(
+      replaceOper(infixExpr.operation.nameId.getText)).append(" ").append(
+      infixExpr.getArgExpr.getText)
 
     val res = IntentionUtils.negateAndValidateExpression(
       infixExpr,

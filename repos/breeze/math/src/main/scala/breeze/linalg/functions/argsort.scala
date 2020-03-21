@@ -39,9 +39,11 @@ object argtopk extends UFunc with LowPriorityArgTopK {
         implicit val orderingInt: Ordering[Int] =
           Ordering[T].on((x: Int) => v(x)).reverse
         val ints = VectorBuilder.range(v.length)
-        quickSelect
-          .implFromOrdering[Int, collection.mutable.IndexedSeq[Int]]
-          .apply(ints: collection.mutable.IndexedSeq[Int], k)
+        quickSelect.implFromOrdering[
+          Int,
+          collection.mutable.IndexedSeq[Int]].apply(
+          ints: collection.mutable.IndexedSeq[Int],
+          k)
         ints.take(k)
       }
     }

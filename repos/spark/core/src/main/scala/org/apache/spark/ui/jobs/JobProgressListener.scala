@@ -192,9 +192,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
           jobGroup = jobGroup,
           status = JobExecutionStatus.RUNNING)
       // A null jobGroupId is used for jobs that are run without a job group
-      jobGroupToJobIds
-        .getOrElseUpdate(jobGroup.orNull, new HashSet[JobId])
-        .add(jobStart.jobId)
+      jobGroupToJobIds.getOrElseUpdate(jobGroup.orNull, new HashSet[JobId]).add(
+        jobStart.jobId)
       jobStart.stageInfos.foreach(x => pendingStages(x.stageId) = x)
       // Compute (a potential underestimate of) the number of tasks that will be run by this job.
       // This may be an underestimate because the job start event references all of the result
@@ -209,9 +208,9 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       jobIdToData(jobStart.jobId) = jobData
       activeJobs(jobStart.jobId) = jobData
       for (stageId <- jobStart.stageIds) {
-        stageIdToActiveJobIds
-          .getOrElseUpdate(stageId, new HashSet[StageId])
-          .add(jobStart.jobId)
+        stageIdToActiveJobIds.getOrElseUpdate(
+          stageId,
+          new HashSet[StageId]).add(jobStart.jobId)
       }
       // If there's no information for a stage, store the StageInfo received from the scheduler
       // so that we can display stage descriptions for pending stages:
@@ -314,11 +313,9 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       val stage = stageSubmitted.stageInfo
       activeStages(stage.stageId) = stage
       pendingStages.remove(stage.stageId)
-      val poolName = Option(stageSubmitted.properties)
-        .map {
-          p => p.getProperty("spark.scheduler.pool", SparkUI.DEFAULT_POOL_NAME)
-        }
-        .getOrElse(SparkUI.DEFAULT_POOL_NAME)
+      val poolName = Option(stageSubmitted.properties).map {
+        p => p.getProperty("spark.scheduler.pool", SparkUI.DEFAULT_POOL_NAME)
+      }.getOrElse(SparkUI.DEFAULT_POOL_NAME)
 
       stageIdToInfo(stage.stageId) = stage
       val stageData = stageIdToData.getOrElseUpdate(
@@ -357,8 +354,9 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
             new StageUIData
           })
         stageData.numActiveTasks += 1
-        stageData.taskData
-          .put(taskInfo.taskId, new TaskUIData(taskInfo, Some(metrics)))
+        stageData.taskData.put(
+          taskInfo.taskId,
+          new TaskUIData(taskInfo, Some(metrics)))
       }
       for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(
              taskStart.stageId);
@@ -466,37 +464,29 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
 
     val shuffleWriteDelta =
       (taskMetrics.shuffleWriteMetrics.map(_.bytesWritten).getOrElse(0L)
-        - oldMetrics
-          .flatMap(_.shuffleWriteMetrics)
-          .map(_.bytesWritten)
-          .getOrElse(0L))
+        - oldMetrics.flatMap(_.shuffleWriteMetrics).map(
+          _.bytesWritten).getOrElse(0L))
     stageData.shuffleWriteBytes += shuffleWriteDelta
     execSummary.shuffleWrite += shuffleWriteDelta
 
     val shuffleWriteRecordsDelta =
       (taskMetrics.shuffleWriteMetrics.map(_.recordsWritten).getOrElse(0L)
-        - oldMetrics
-          .flatMap(_.shuffleWriteMetrics)
-          .map(_.recordsWritten)
-          .getOrElse(0L))
+        - oldMetrics.flatMap(_.shuffleWriteMetrics).map(
+          _.recordsWritten).getOrElse(0L))
     stageData.shuffleWriteRecords += shuffleWriteRecordsDelta
     execSummary.shuffleWriteRecords += shuffleWriteRecordsDelta
 
     val shuffleReadDelta =
       (taskMetrics.shuffleReadMetrics.map(_.totalBytesRead).getOrElse(0L)
-        - oldMetrics
-          .flatMap(_.shuffleReadMetrics)
-          .map(_.totalBytesRead)
-          .getOrElse(0L))
+        - oldMetrics.flatMap(_.shuffleReadMetrics).map(
+          _.totalBytesRead).getOrElse(0L))
     stageData.shuffleReadTotalBytes += shuffleReadDelta
     execSummary.shuffleRead += shuffleReadDelta
 
     val shuffleReadRecordsDelta =
       (taskMetrics.shuffleReadMetrics.map(_.recordsRead).getOrElse(0L)
-        - oldMetrics
-          .flatMap(_.shuffleReadMetrics)
-          .map(_.recordsRead)
-          .getOrElse(0L))
+        - oldMetrics.flatMap(_.shuffleReadMetrics).map(_.recordsRead).getOrElse(
+          0L))
     stageData.shuffleReadRecords += shuffleReadRecordsDelta
     execSummary.shuffleReadRecords += shuffleReadRecordsDelta
 
@@ -520,31 +510,26 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
 
     val outputRecordsDelta =
       (taskMetrics.outputMetrics.map(_.recordsWritten).getOrElse(0L)
-        - oldMetrics
-          .flatMap(_.outputMetrics)
-          .map(_.recordsWritten)
-          .getOrElse(0L))
+        - oldMetrics.flatMap(_.outputMetrics).map(_.recordsWritten).getOrElse(
+          0L))
     stageData.outputRecords += outputRecordsDelta
     execSummary.outputRecords += outputRecordsDelta
 
     val diskSpillDelta =
-      taskMetrics.diskBytesSpilled - oldMetrics
-        .map(_.diskBytesSpilled)
-        .getOrElse(0L)
+      taskMetrics.diskBytesSpilled - oldMetrics.map(
+        _.diskBytesSpilled).getOrElse(0L)
     stageData.diskBytesSpilled += diskSpillDelta
     execSummary.diskBytesSpilled += diskSpillDelta
 
     val memorySpillDelta =
-      taskMetrics.memoryBytesSpilled - oldMetrics
-        .map(_.memoryBytesSpilled)
-        .getOrElse(0L)
+      taskMetrics.memoryBytesSpilled - oldMetrics.map(
+        _.memoryBytesSpilled).getOrElse(0L)
     stageData.memoryBytesSpilled += memorySpillDelta
     execSummary.memoryBytesSpilled += memorySpillDelta
 
     val timeDelta =
-      taskMetrics.executorRunTime - oldMetrics
-        .map(_.executorRunTime)
-        .getOrElse(0L)
+      taskMetrics.executorRunTime - oldMetrics.map(_.executorRunTime).getOrElse(
+        0L)
     stageData.executorRunTime += timeDelta
   }
 
@@ -580,8 +565,7 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       environmentUpdate: SparkListenerEnvironmentUpdate) {
     synchronized {
       schedulingMode = environmentUpdate
-        .environmentDetails("Spark Properties")
-        .toMap
+        .environmentDetails("Spark Properties").toMap
         .get("spark.scheduler.mode")
         .map(SchedulingMode.withName)
     }

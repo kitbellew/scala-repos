@@ -30,8 +30,8 @@ class ScImportStmtStubImpl[ParentPsi <: PsiElement](
       importText: String) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.importText = StringRef.fromString(importText)
   }
 

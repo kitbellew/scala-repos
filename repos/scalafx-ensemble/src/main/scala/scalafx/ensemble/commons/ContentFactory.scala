@@ -130,10 +130,9 @@ object ContentFactory {
       </html>
 
     // Inject SyntaxHighlighter scripts
-    val htmlSource = html.mkString
-      .replace("@@shCoreJs@@", shCoreJs)
-      .replace("@@shBrushScala@@", shBrushScala)
-      .replace("@@shCoreDefaultCss@@", shCoreDefaultCss)
+    val htmlSource = html.mkString.replace("@@shCoreJs@@", shCoreJs).replace(
+      "@@shBrushScala@@",
+      shBrushScala).replace("@@shCoreDefaultCss@@", shCoreDefaultCss)
 
     //Border pane is sufficient to handle the content
     val borderPane = new BorderPane() {
@@ -156,8 +155,9 @@ object ContentFactory {
                   Option(fileChooser.showDialog(thisButton.scene.window()))
                 result match {
                   case Some(projectDir) =>
-                    SBTProjectBuilder
-                      .createSampleProject(projectDir, exampleInfo)
+                    SBTProjectBuilder.createSampleProject(
+                      projectDir,
+                      exampleInfo)
                     SBTProjectBuilder.parentDir =
                       projectDir.getCanonicalFile.getParentFile
                   case _ =>

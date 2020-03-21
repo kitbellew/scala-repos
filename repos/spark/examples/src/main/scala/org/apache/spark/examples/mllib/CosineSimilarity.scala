@@ -79,13 +79,10 @@ object CosineSimilarity {
     val sc = new SparkContext(conf)
 
     // Load and parse the data file.
-    val rows = sc
-      .textFile(params.inputFile)
-      .map { line =>
-        val values = line.split(' ').map(_.toDouble)
-        Vectors.dense(values)
-      }
-      .cache()
+    val rows = sc.textFile(params.inputFile).map { line =>
+      val values = line.split(' ').map(_.toDouble)
+      Vectors.dense(values)
+    }.cache()
     val mat = new RowMatrix(rows)
 
     // Compute similar columns perfectly, with brute force.
@@ -100,16 +97,12 @@ object CosineSimilarity {
     val approxEntries = approx.entries.map {
       case MatrixEntry(i, j, v) => ((i, j), v)
     }
-    val MAE = exactEntries
-      .leftOuterJoin(approxEntries)
-      .values
-      .map {
-        case (u, Some(v)) =>
-          math.abs(u - v)
-        case (u, None) =>
-          math.abs(u)
-      }
-      .mean()
+    val MAE = exactEntries.leftOuterJoin(approxEntries).values.map {
+      case (u, Some(v)) =>
+        math.abs(u - v)
+      case (u, None) =>
+        math.abs(u)
+    }.mean()
 
     println(s"Average absolute error in estimate is: $MAE")
 

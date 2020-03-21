@@ -95,8 +95,10 @@ class LogSegment(
   def append(offset: Long, messages: ByteBufferMessageSet) {
     if (messages.sizeInBytes > 0) {
       trace(
-        "Inserting %d bytes at offset %d at position %d"
-          .format(messages.sizeInBytes, offset, log.sizeInBytes()))
+        "Inserting %d bytes at offset %d at position %d".format(
+          messages.sizeInBytes,
+          offset,
+          log.sizeInBytes()))
       // append an entry to the index (if needed)
       if (bytesSinceLastIndexEntry > indexIntervalBytes) {
         index.append(offset, log.sizeInBytes())
@@ -177,8 +179,9 @@ class LogSegment(
           // there is a max offset, translate it to a file position and use that to calculate the max read size
           if (offset < startOffset)
             throw new IllegalArgumentException(
-              "Attempt to read with a maximum offset (%d) less than the start offset (%d)."
-                .format(offset, startOffset))
+              "Attempt to read with a maximum offset (%d) less than the start offset (%d).".format(
+                offset,
+                startOffset))
           val mapping = translateOffset(offset, startPosition.position)
           val endPosition =
             if (mapping == null)
@@ -229,8 +232,10 @@ class LogSegment(
     } catch {
       case e: CorruptRecordException =>
         logger.warn(
-          "Found invalid messages in log segment %s at byte offset %d: %s."
-            .format(log.file.getAbsolutePath, validBytes, e.getMessage))
+          "Found invalid messages in log segment %s at byte offset %d: %s.".format(
+            log.file.getAbsolutePath,
+            validBytes,
+            e.getMessage))
     }
     val truncated = log.sizeInBytes - validBytes
     log.truncateTo(validBytes)

@@ -56,9 +56,8 @@ trait CsrfTokenSupport { this: ScalatraBase =>
   protected def isForged: Boolean =
     !request.requestMethod.isSafe &&
       session.get(csrfKey) != params.get(csrfKey) &&
-      !CsrfTokenSupport.HeaderNames
-        .map(request.headers.get)
-        .contains(session.get(csrfKey))
+      !CsrfTokenSupport.HeaderNames.map(request.headers.get).contains(
+        session.get(csrfKey))
 
   /**
     * Take an action when a forgery is detected. The default action

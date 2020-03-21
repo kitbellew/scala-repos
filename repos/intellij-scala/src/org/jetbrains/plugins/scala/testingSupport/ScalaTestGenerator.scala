@@ -76,14 +76,14 @@ class ScalaTestGenerator extends TestGenerator {
     val fqName = d.getSuperClassName
     if (fqName != null) {
       val psiClass: Option[PsiClass] = Option(
-        ScalaPsiManager
-          .instance(project)
-          .getCachedClass(fqName, scope, ScalaPsiManager.ClassCategory.TYPE))
+        ScalaPsiManager.instance(project).getCachedClass(
+          fqName,
+          scope,
+          ScalaPsiManager.ClassCategory.TYPE))
       addSuperClass(typeDefinition, psiClass, fqName)
     }
-    val positionElement = typeDefinition.extendsBlock.templateBody
-      .map(_.getFirstChild)
-      .getOrElse(typeDefinition)
+    val positionElement = typeDefinition.extendsBlock.templateBody.map(
+      _.getFirstChild).getOrElse(typeDefinition)
     var editor: Editor =
       CodeInsightUtil.positionCursor(project, file, positionElement)
     addTestMethods(
@@ -91,7 +91,8 @@ class ScalaTestGenerator extends TestGenerator {
       typeDefinition,
       d.getSelectedTestFrameworkDescriptor,
       d.getSelectedMethods,
-      d.shouldGeneratedBefore,
+      d
+        .shouldGeneratedBefore,
       d.shouldGeneratedAfter,
       d.getClassName)
     file
@@ -103,8 +104,10 @@ class ScalaTestGenerator extends TestGenerator {
       fqName: String) = {
     val extendsBlock = typeDefinition.extendsBlock
     def addExtendsRef(refName: String) = {
-      val (extendsToken, classParents) = ScalaPsiElementFactory
-        .createClassTemplateParents(refName, typeDefinition.getManager)
+      val (extendsToken, classParents) =
+        ScalaPsiElementFactory.createClassTemplateParents(
+          refName,
+          typeDefinition.getManager)
       val extendsAdded =
         extendsBlock.addBefore(extendsToken, extendsBlock.getFirstChild)
       extendsBlock.addAfter(classParents, extendsAdded)
@@ -112,10 +115,8 @@ class ScalaTestGenerator extends TestGenerator {
     psiClass match {
       case Some(cls) =>
         val classParents = addExtendsRef(cls.name)
-        classParents.depthFirst
-          .filterByType(classOf[ScStableCodeReferenceElement])
-          .next()
-          .bindToElement(cls)
+        classParents.depthFirst.filterByType(
+          classOf[ScStableCodeReferenceElement]).next().bindToElement(cls)
       case None =>
         addExtendsRef(fqName)
     }
@@ -284,12 +285,10 @@ object ScalaTestGenerator {
     typeDef.extendsBlock.templateBody match {
       case Some(body) =>
         Option(
-          ScalaPsiManager
-            .instance(project)
-            .getCachedClass(
-              "org.scalatest.BeforeAndAfterEach",
-              GlobalSearchScope.allScope(project),
-              ScalaPsiManager.ClassCategory.TYPE)) match {
+          ScalaPsiManager.instance(project).getCachedClass(
+            "org.scalatest.BeforeAndAfterEach",
+            GlobalSearchScope.allScope(project),
+            ScalaPsiManager.ClassCategory.TYPE)) match {
           case Some(beforeAndAfterTypeDef)
               if beforeAndAfterTypeDef.isInstanceOf[ScTypeDefinition] =>
             ExtractSuperUtil.addExtendsTo(
@@ -329,12 +328,10 @@ object ScalaTestGenerator {
         val psiManager = PsiManager.getInstance(project)
         if (generateBefore) {
           val beforeOpt = Option(
-            ScalaPsiManager
-              .instance(project)
-              .getCachedClass(
-                "org.specs2.specification.BeforeEach",
-                GlobalSearchScope.allScope(project),
-                ScalaPsiManager.ClassCategory.TYPE))
+            ScalaPsiManager.instance(project).getCachedClass(
+              "org.specs2.specification.BeforeEach",
+              GlobalSearchScope.allScope(project),
+              ScalaPsiManager.ClassCategory.TYPE))
           beforeOpt match {
             case Some(beforeTypeDef) =>
               ExtractSuperUtil.addExtendsTo(
@@ -350,12 +347,10 @@ object ScalaTestGenerator {
         }
         if (generateAfter) {
           val afterOpt = Option(
-            ScalaPsiManager
-              .instance(project)
-              .getCachedClass(
-                "org.specs2.specification.AfterEach",
-                GlobalSearchScope.allScope(project),
-                ScalaPsiManager.ClassCategory.TYPE))
+            ScalaPsiManager.instance(project).getCachedClass(
+              "org.specs2.specification.AfterEach",
+              GlobalSearchScope.allScope(project),
+              ScalaPsiManager.ClassCategory.TYPE))
           afterOpt match {
             case Some(afterTypeDef) =>
               ExtractSuperUtil.addExtendsTo(
@@ -380,9 +375,9 @@ object ScalaTestGenerator {
     if (methods.nonEmpty) {
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
-          methods
-            .map("scenario (\"" + _.getMember.getName + "\"){\n\n}\n")
-            .fold("feature(\"Methods tests\") {")(_ + "\n" + _) + "}",
+          methods.map(
+            "scenario (\"" + _.getMember.getName + "\"){\n\n}\n").fold(
+            "feature(\"Methods tests\") {")(_ + "\n" + _) + "}",
           psiManager),
         templateBody.getLastChild
       )
@@ -404,10 +399,9 @@ object ScalaTestGenerator {
       templateBody.addBefore(
         ScalaPsiElementFactory.createNewLine(psiManager, "\n\n"),
         closingBrace)
-      methods
-        .map("it should \"" + _.getMember.getName + "\" in {\n\n}")
-        .map(ScalaPsiElementFactory.createExpressionFromText(_, psiManager))
-        .foreach(expr => {
+      methods.map("it should \"" + _.getMember.getName + "\" in {\n\n}").map(
+        ScalaPsiElementFactory.createExpressionFromText(_, psiManager)).foreach(
+        expr => {
           templateBody.addBefore(expr, closingBrace)
           templateBody.addBefore(
             ScalaPsiElementFactory.createNewLine(psiManager, "\n\n"),
@@ -423,9 +417,8 @@ object ScalaTestGenerator {
     if (methods.nonEmpty) {
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
-          methods
-            .map("\"" + _.getMember.getName + "\" in {\n\n}\n")
-            .fold("\"Methods tests\" - {")(_ + "\n" + _) + "\n}",
+          methods.map("\"" + _.getMember.getName + "\" in {\n\n}\n").fold(
+            "\"Methods tests\" - {")(_ + "\n" + _) + "\n}",
           psiManager),
         templateBody.getLastChild
       )
@@ -440,9 +433,9 @@ object ScalaTestGenerator {
     if (methods.nonEmpty) {
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
-          methods
-            .map("it(\"should " + _.getMember.getName + "\") {\n\n}\n")
-            .fold("describe(\"" + className + "\") {\n")(_ + "\n" + _) + "\n}",
+          methods.map(
+            "it(\"should " + _.getMember.getName + "\") {\n\n}\n").fold(
+            "describe(\"" + className + "\") {\n")(_ + "\n" + _) + "\n}",
           psiManager),
         templateBody.getLastChild
       )
@@ -455,10 +448,10 @@ object ScalaTestGenerator {
       templateBody: ScTemplateBody) {
     if (methods.nonEmpty) {
       val closingBrace = templateBody.getLastChild
-      methods
-        .map("test(\"test" + _.getMember.getName.capitalize + "\") {\n\n}")
-        .map(ScalaPsiElementFactory.createExpressionFromText(_, psiManager))
-        .foreach(expr => {
+      methods.map(
+        "test(\"test" + _.getMember.getName.capitalize + "\") {\n\n}").map(
+        ScalaPsiElementFactory.createExpressionFromText(_, psiManager)).foreach(
+        expr => {
           templateBody.addBefore(expr, closingBrace)
           templateBody.addBefore(
             ScalaPsiElementFactory.createNewLine(psiManager, "\n\n"),
@@ -473,10 +466,10 @@ object ScalaTestGenerator {
       templateBody: ScTemplateBody) {
     if (methods.nonEmpty) {
       val closingBrace = templateBody.getLastChild
-      methods
-        .map("property(\"" + _.getMember.getName + " property\"){\n\n}")
-        .map(ScalaPsiElementFactory.createExpressionFromText(_, psiManager))
-        .foreach(expr => {
+      methods.map(
+        "property(\"" + _.getMember.getName + " property\"){\n\n}").map(
+        ScalaPsiElementFactory.createExpressionFromText(_, psiManager)).foreach(
+        expr => {
           templateBody.addBefore(expr, closingBrace)
           templateBody.addBefore(
             ScalaPsiElementFactory.createNewLine(psiManager, "\n\n"),
@@ -493,9 +486,8 @@ object ScalaTestGenerator {
     if (methods.nonEmpty) {
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
-          methods
-            .map("\"" + _.getMember.getName + "\" in {\n\n}\n")
-            .fold("\"" + className + "\" should {\n")(_ + "\n" + _) + "\n}",
+          methods.map("\"" + _.getMember.getName + "\" in {\n\n}\n").fold(
+            "\"" + className + "\" should {\n")(_ + "\n" + _) + "\n}",
           psiManager),
         templateBody.getLastChild
       )
@@ -514,11 +506,10 @@ object ScalaTestGenerator {
 
     val checkMethodsString =
       if (methods.nonEmpty)
-        testNames
-          .map(testName => doubleIndent + testName + " $" + testName)
-          .fold(
-            "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
-            _ + "\n" + _)
+        testNames.map(testName =>
+          doubleIndent + testName + " $" + testName).fold(
+          "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
+          _ + "\n" + _)
       else ""
     val closingBrace = templateBody.getLastChild
     templateBody.addBefore(
@@ -529,8 +520,9 @@ object ScalaTestGenerator {
       closingBrace)
     testNames.map(testName =>
       templateBody.addBefore(
-        ScalaPsiElementFactory
-          .createMethodFromText("def " + testName + " = ok", psiManager),
+        ScalaPsiElementFactory.createMethodFromText(
+          "def " + testName + " = ok",
+          psiManager),
         closingBrace))
   }
 
@@ -542,12 +534,10 @@ object ScalaTestGenerator {
       project: Project,
       typeDef: ScTypeDefinition) {
     Option(
-      ScalaPsiManager
-        .instance(project)
-        .getCachedClass(
-          "org.specs2.specification.Groups",
-          GlobalSearchScope.allScope(project),
-          ScalaPsiManager.ClassCategory.TYPE)) match {
+      ScalaPsiManager.instance(project).getCachedClass(
+        "org.specs2.specification.Groups",
+        GlobalSearchScope.allScope(project),
+        ScalaPsiManager.ClassCategory.TYPE)) match {
       case Some(groupsTypeDef) =>
         ExtractSuperUtil.addExtendsTo(
           typeDef,
@@ -558,11 +548,9 @@ object ScalaTestGenerator {
         val doubleIndent = normalIndentString + normalIndentString
         val checkMethodsString =
           if (methods.nonEmpty)
-            testNames
-              .map(doubleIndent + "+ " + _)
-              .fold(
-                "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
-                _ + "\n" + _)
+            testNames.map(doubleIndent + "+ " + _).fold(
+              "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
+              _ + "\n" + _)
           else ""
         templateBody.addBefore(
           ScalaPsiElementFactory.createMethodFromText(
@@ -573,10 +561,8 @@ object ScalaTestGenerator {
         if (methods.nonEmpty) {
           templateBody.addBefore(
             ScalaPsiElementFactory.createExpressionFromText(
-              testNames
-                .map("eg := ok //" + _)
-                .fold("\"" + className + "\" - new group {")(
-                  _ + "\n" + _) + "\n}",
+              testNames.map("eg := ok //" + _).fold(
+                "\"" + className + "\" - new group {")(_ + "\n" + _) + "\n}",
               psiManager),
             closingBrace
           )
@@ -593,9 +579,8 @@ object ScalaTestGenerator {
     if (methods.nonEmpty) {
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
-          methods
-            .map("\"" + _.getMember.getName + "\" in {\nok\n}\n")
-            .fold("\"" + className + "\" should {")(_ + "\n" + _) + "\n}",
+          methods.map("\"" + _.getMember.getName + "\" in {\nok\n}\n").fold(
+            "\"" + className + "\" should {")(_ + "\n" + _) + "\n}",
           psiManager),
         templateBody.getLastChild
       )
@@ -610,16 +595,17 @@ object ScalaTestGenerator {
       project: Project) {
     val normalIndentString = FormatterUtil.getNormalIndentString(project)
     templateBody.addBefore(
-      ScalaPsiElementFactory
-        .createElement("val tests = TestSuite{}", psiManager, Def.parse(_)),
+      ScalaPsiElementFactory.createElement(
+        "val tests = TestSuite{}",
+        psiManager,
+        Def.parse(_)),
       templateBody.getLastChild)
     if (methods.nonEmpty) {
       templateBody.addBefore(
         ScalaPsiElementFactory.createElement(
-          methods
-            .map(normalIndentString + "\"" +
-              _.getMember.getName + "\" - {}\n")
-            .fold("val methodsTests = TestSuite{")(_ + "\n" + _) + "}",
+          methods.map(normalIndentString + "\"" +
+            _.getMember.getName + "\" - {}\n").fold(
+            "val methodsTests = TestSuite{")(_ + "\n" + _) + "}",
           psiManager,
           Def.parse(_)),
         templateBody.getLastChild

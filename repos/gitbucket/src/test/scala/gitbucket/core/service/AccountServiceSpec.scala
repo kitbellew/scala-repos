@@ -48,9 +48,8 @@ class AccountServiceSpec extends FunSuite with ServiceSpecBase {
     withTestDB { implicit session =>
       val root = "root"
       def user() =
-        AccountService
-          .getAccountByUserName(root)
-          .getOrElse(sys.error(s"user $root does not exists"))
+        AccountService.getAccountByUserName(root).getOrElse(
+          sys.error(s"user $root does not exists"))
 
       assert(user().lastLoginDate.isEmpty)
 
@@ -69,9 +68,8 @@ class AccountServiceSpec extends FunSuite with ServiceSpecBase {
     withTestDB { implicit session =>
       val root = "root"
       def user() =
-        AccountService
-          .getAccountByUserName(root)
-          .getOrElse(sys.error(s"user $root does not exists"))
+        AccountService.getAccountByUserName(root).getOrElse(
+          sys.error(s"user $root does not exists"))
 
       val newAddress = "new mail address"
       AccountService.updateAccount(user().copy(mailAddress = newAddress))

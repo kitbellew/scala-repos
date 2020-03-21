@@ -188,16 +188,14 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     assert(numReceiversOnExecutor === executors.map(_ -> 1).toMap)
     // Make sure we schedule the receivers to their preferredLocations
     val executorsForReceiversWithPreferredLocation =
-      scheduledLocations
-        .filter { case (receiverId, executors) => receiverId >= 3 }
-        .flatMap(_._2)
+      scheduledLocations.filter {
+        case (receiverId, executors) => receiverId >= 3
+      }.flatMap(_._2)
     // We can simply check the executor set because we only know each receiver only has 1 executor
     assert(
       executorsForReceiversWithPreferredLocation.toSet ===
-        (0 until 3)
-          .map(executorId =>
-            ExecutorCacheTaskLocation("localhost", executorId.toString))
-          .toSet)
+        (0 until 3).map(executorId =>
+          ExecutorCacheTaskLocation("localhost", executorId.toString)).toSet)
   }
 
   test("scheduleReceivers: return empty if no receiver") {

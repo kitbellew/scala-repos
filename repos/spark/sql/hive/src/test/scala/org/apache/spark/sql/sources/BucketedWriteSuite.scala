@@ -99,9 +99,8 @@ class BucketedWriteSuite
       numBuckets: Int,
       bucketCols: Seq[String],
       sortCols: Seq[String] = Nil): Unit = {
-    val allBucketFiles = dataDir
-      .listFiles()
-      .filterNot(f => f.getName.startsWith(".") || f.getName.startsWith("_"))
+    val allBucketFiles = dataDir.listFiles().filterNot(f =>
+      f.getName.startsWith(".") || f.getName.startsWith("_"))
 
     for (bucketFile <- allBucketFiles) {
       val bucketId = BucketingUtils.getBucketId(bucketFile.getName).getOrElse {
@@ -119,8 +118,7 @@ class BucketedWriteSuite
       }
 
       // Read the bucket file into a dataframe, so that it's easier to test.
-      val readBack = sqlContext.read
-        .format(source)
+      val readBack = sqlContext.read.format(source)
         .load(bucketFile.getAbsolutePath)
         .select(columns: _*)
 

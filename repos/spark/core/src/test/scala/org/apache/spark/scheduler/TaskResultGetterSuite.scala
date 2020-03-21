@@ -103,9 +103,8 @@ private class MyTaskResultGetter(env: SparkEnv, scheduler: TaskSchedulerImpl)
       data: ByteBuffer): Unit = {
     // work on a copy since the super class still needs to use the buffer
     val newBuffer = data.duplicate()
-    _taskResults += env.closureSerializer
-      .newInstance()
-      .deserialize[DirectTaskResult[_]](newBuffer)
+    _taskResults += env.closureSerializer.newInstance().deserialize[
+      DirectTaskResult[_]](newBuffer)
     super.enqueueSuccessfulTask(tsm, tid, data)
   }
 }
@@ -132,9 +131,8 @@ class TaskResultGetterSuite
     sc = new SparkContext("local", "test", conf)
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
     val result =
-      sc.parallelize(Seq(1), 1)
-        .map(x => 1.to(maxRpcMessageSize).toArray)
-        .reduce((x, y) => x)
+      sc.parallelize(Seq(1), 1).map(x =>
+        1.to(maxRpcMessageSize).toArray).reduce((x, y) => x)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
     val RESULT_BLOCK_ID = TaskResultBlockId(0)
@@ -160,9 +158,8 @@ class TaskResultGetterSuite
     scheduler.taskResultGetter = resultGetter
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
     val result =
-      sc.parallelize(Seq(1), 1)
-        .map(x => 1.to(maxRpcMessageSize).toArray)
-        .reduce((x, y) => x)
+      sc.parallelize(Seq(1), 1).map(x =>
+        1.to(maxRpcMessageSize).toArray).reduce((x, y) => x)
     assert(resultGetter.removeBlockSuccessfully)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
@@ -250,8 +247,10 @@ class TaskResultGetterSuite
     // Just run 1 task and capture the corresponding DirectTaskResult
     sc.parallelize(1 to 1, 1).count()
     val captor = ArgumentCaptor.forClass(classOf[DirectTaskResult[_]])
-    verify(spyScheduler, times(1))
-      .handleSuccessfulTask(any(), anyLong(), captor.capture())
+    verify(spyScheduler, times(1)).handleSuccessfulTask(
+      any(),
+      anyLong(),
+      captor.capture())
 
     // When a task finishes, the executor sends a serialized DirectTaskResult to the driver
     // without setting the result size so as to avoid serializing the result again. Instead,

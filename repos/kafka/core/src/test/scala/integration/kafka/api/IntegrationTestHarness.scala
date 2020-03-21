@@ -93,9 +93,8 @@ trait IntegrationTestHarness extends KafkaServerTestHarness {
       zkUtils,
       TopicConstants.GROUP_METADATA_TOPIC_NAME,
       serverConfig.getProperty(KafkaConfig.OffsetsTopicPartitionsProp).toInt,
-      serverConfig
-        .getProperty(KafkaConfig.OffsetsTopicReplicationFactorProp)
-        .toInt,
+      serverConfig.getProperty(
+        KafkaConfig.OffsetsTopicReplicationFactorProp).toInt,
       servers,
       servers(0).consumerCoordinator.offsetsTopicConfigs
     )

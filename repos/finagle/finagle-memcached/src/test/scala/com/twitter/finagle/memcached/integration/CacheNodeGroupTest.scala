@@ -141,8 +141,9 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     test("node key remap") {
       // turn on detecting key remapping
       val output: ByteArrayOutputStream = new ByteArrayOutputStream
-      CachePoolConfig.jsonCodec
-        .serialize(CachePoolConfig(5, detectKeyRemapping = true), output)
+      CachePoolConfig.jsonCodec.serialize(
+        CachePoolConfig(5, detectKeyRemapping = true),
+        output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
 
       // the cluster initially must have 5 members
@@ -161,8 +162,9 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       currentMembers = myPool.members
 
       // turn off detecting key remapping
-      CachePoolConfig.jsonCodec
-        .serialize(CachePoolConfig(5, detectKeyRemapping = false), output)
+      CachePoolConfig.jsonCodec.serialize(
+        CachePoolConfig(5, detectKeyRemapping = false),
+        output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
       assert(waitForMemberSize(myPool, 5, 5))
       assert(
@@ -176,8 +178,9 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
         myPool.members + " should equal to " + currentMembers)
 
       /***** remap shard key while adding keys should not take effect ******/
-      CachePoolConfig.jsonCodec
-        .serialize(CachePoolConfig(5, detectKeyRemapping = true), output)
+      CachePoolConfig.jsonCodec.serialize(
+        CachePoolConfig(5, detectKeyRemapping = true),
+        output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
       assert(waitForMemberSize(myPool, 5, 5))
       testServers(0)._2.leave()

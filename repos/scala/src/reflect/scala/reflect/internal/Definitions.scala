@@ -595,9 +595,8 @@ trait Definitions extends api.StandardDefinitions {
     def StructuralCallSite_bootstrap =
       getMemberMethod(StructuralCallSite.linkedClassOfClass, sn.Bootstrap)
     // Marker for invokedynamic runtime.StructuralCall.bootstrap
-    lazy val StructuralCallSite_dummy = NoSymbol
-      .newMethodSymbol(nme.apply)
-      .setInfo(NullaryMethodType(StructuralCallSite.tpe))
+    lazy val StructuralCallSite_dummy = NoSymbol.newMethodSymbol(
+      nme.apply).setInfo(NullaryMethodType(StructuralCallSite.tpe))
     def StructuralCallSite_find =
       getMemberIfDefined(StructuralCallSite, nme.find_)
     def StructuralCallSite_add =
@@ -608,9 +607,8 @@ trait Definitions extends api.StandardDefinitions {
     def SymbolLiteral_bootstrap =
       getMemberIfDefined(SymbolLiteral.linkedClassOfClass, sn.Bootstrap)
     def SymbolLiteral_dummy =
-      NoSymbol
-        .newMethodSymbol(nme.apply)
-        .setInfo(NullaryMethodType(SymbolModule.companionClass.tpe))
+      NoSymbol.newMethodSymbol(nme.apply).setInfo(
+        NullaryMethodType(SymbolModule.companionClass.tpe))
 
     // XML
     lazy val ScalaXmlTopScope = getModuleIfDefined("scala.xml.TopScope")
@@ -868,9 +866,9 @@ trait Definitions extends api.StandardDefinitions {
       ctor.paramss match {
         case List(List(c)) =>
           val sym = c.info.typeSymbol
-          val isContextCompatible =
-            sym.isNonBottomSubClass(BlackboxContextClass) || sym
-              .isNonBottomSubClass(WhiteboxContextClass)
+          val isContextCompatible = sym.isNonBottomSubClass(
+            BlackboxContextClass) || sym.isNonBottomSubClass(
+            WhiteboxContextClass)
           if (isContextCompatible) c.info else NoType
         case _ =>
           NoType

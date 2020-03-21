@@ -46,7 +46,7 @@ private[finagle] object PayloadSizeFilter {
       override def make(
           stats: Stats,
           next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] =
-        new PayloadSizeFilter(stats.statsReceiver, reqSize, repSize)
-          .andThen(next)
+        new PayloadSizeFilter(stats.statsReceiver, reqSize, repSize).andThen(
+          next)
     }
 }

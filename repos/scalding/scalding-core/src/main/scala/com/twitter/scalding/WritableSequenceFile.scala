@@ -35,9 +35,10 @@ trait WritableSequenceFileScheme extends SchemedSource {
 
   // TODO Cascading doesn't support local mode yet
   override def hdfsScheme =
-    HadoopSchemeInstance(
-      new CHWritableSequenceFile(fields, keyType, valueType)
-        .asInstanceOf[cascading.scheme.Scheme[_, _, _, _, _]])
+    HadoopSchemeInstance(new CHWritableSequenceFile(
+      fields,
+      keyType,
+      valueType).asInstanceOf[cascading.scheme.Scheme[_, _, _, _, _]])
 }
 
 object WritableSequenceFile {

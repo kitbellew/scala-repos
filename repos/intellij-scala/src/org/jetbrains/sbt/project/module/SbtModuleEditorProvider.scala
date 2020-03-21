@@ -15,8 +15,8 @@ class SbtModuleEditorProvider extends ModuleConfigurationEditorProvider {
       case _: SbtModuleType =>
         Array(
           new ContentEntriesEditor(module.getName, state),
-          new DefaultModuleConfigurationEditorFactoryImpl()
-            .createOutputEditor(state),
+          new DefaultModuleConfigurationEditorFactoryImpl().createOutputEditor(
+            state),
           new ClasspathEditor(state),
           new SbtModuleSettingsEditor(state)
         )

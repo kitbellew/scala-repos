@@ -79,8 +79,8 @@ class PMMLModelExportFactorySuite extends SparkFunSuite {
     val logisticRegressionModelExport =
       PMMLModelExportFactory.createPMMLModelExport(logisticRegressionModel)
     assert(
-      logisticRegressionModelExport
-        .isInstanceOf[BinaryClassificationPMMLModelExport])
+      logisticRegressionModelExport.isInstanceOf[
+        BinaryClassificationPMMLModelExport])
 
     val svmModel = new SVMModel(linearInput(0).features, linearInput(0).label)
     val svmModelExport = PMMLModelExportFactory.createPMMLModelExport(svmModel)

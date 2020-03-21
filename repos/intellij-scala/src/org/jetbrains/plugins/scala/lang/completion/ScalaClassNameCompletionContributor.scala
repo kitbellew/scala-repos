@@ -59,9 +59,8 @@ class ScalaClassNameCompletionContributor extends ScalaCompletionContributor {
   import org.jetbrains.plugins.scala.lang.completion.ScalaClassNameCompletionContributor._
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
-      .withParent(classOf[ScReferenceElement]),
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER).withParent(
+      classOf[ScReferenceElement]),
     new CompletionProvider[CompletionParameters] {
       def addCompletions(
           parameters: CompletionParameters,
@@ -141,9 +140,8 @@ object ScalaClassNameCompletionContributor {
       case _ => (dummyPosition, false)
     }
     val invocationCount = parameters.getInvocationCount
-    if (!inString && !ScalaPsiUtil
-          .fileContext(position)
-          .isInstanceOf[ScalaFile]) return true
+    if (!inString && !ScalaPsiUtil.fileContext(position).isInstanceOf[
+          ScalaFile]) return true
     val lookingForAnnotations: Boolean =
       psiElement.afterLeaf("@").accepts(position)
     val isInImport = ScalaPsiUtil.getContextOfType(
@@ -158,8 +156,9 @@ object ScalaClassNameCompletionContributor {
       position,
       false,
       classOf[ScReferenceElement])
-    val onlyClasses = stableRefElement != null && !stableRefElement.getContext
-      .isInstanceOf[ScConstructorPattern]
+    val onlyClasses =
+      stableRefElement != null && !stableRefElement.getContext.isInstanceOf[
+        ScConstructorPattern]
 
     val renamesMap = new mutable.HashMap[String, (String, PsiNamedElement)]()
     val reverseRenamesMap = new mutable.HashMap[String, PsiNamedElement]()
@@ -191,9 +190,8 @@ object ScalaClassNameCompletionContributor {
                 if (containingClass == null) return false
                 JavaCompletionUtil.isInExcludedPackage(containingClass, false)
               case PrefixPackageToImport(pack) =>
-                JavaProjectCodeInsightSettings
-                  .getSettings(pack.getProject)
-                  .isExcluded(pack.getQualifiedName)
+                JavaProjectCodeInsightSettings.getSettings(
+                  pack.getProject).isExcluded(pack.getQualifiedName)
             }
           }
         })
@@ -215,10 +213,8 @@ object ScalaClassNameCompletionContributor {
         case _: ScObject if !isInImport && onlyClasses => return
         case _                                         =>
       }
-      val renamed = renamesMap
-        .get(typeToImport.name)
-        .filter(_._2 == typeToImport.element)
-        .map(_._1)
+      val renamed = renamesMap.get(typeToImport.name).filter(
+        _._2 == typeToImport.element).map(_._1)
       for {
         el <- LookupElementManager.getLookupElement(
           new ScalaResolveResult(typeToImport.element, nameShadow = renamed),
@@ -246,9 +242,8 @@ object ScalaClassNameCompletionContributor {
 
     val project = position.getProject
 
-    val checkSynthetic = parameters.getOriginalFile.scalaLanguageLevel
-      .map(_ < Scala_2_9)
-      .getOrElse(true)
+    val checkSynthetic = parameters.getOriginalFile.scalaLanguageLevel.map(
+      _ < Scala_2_9).getOrElse(true)
 
     for {
       clazz <- SyntheticClasses.get(project).all.valuesIterator
@@ -266,9 +261,8 @@ object ScalaClassNameCompletionContributor {
         def consume(psiClass: PsiClass) {
           //todo: filter according to position
           if (psiClass.isInstanceOf[PsiClassWrapper]) return
-          ScalaPsiUtil
-            .getCompanionModule(psiClass)
-            .foreach(clazz => addTypeForCompletion(ClassTypeToImport(clazz)))
+          ScalaPsiUtil.getCompanionModule(psiClass).foreach(clazz =>
+            addTypeForCompletion(ClassTypeToImport(clazz)))
           addTypeForCompletion(ClassTypeToImport(psiClass))
         }
       }
@@ -277,9 +271,9 @@ object ScalaClassNameCompletionContributor {
     for {
       name <- ScalaPsiManager.instance(project).getStableTypeAliasesNames
       if prefixMatcher.prefixMatches(name)
-      alias <- ScalaPsiManager
-        .instance(project)
-        .getStableAliasesByName(name, position.getResolveScope)
+      alias <- ScalaPsiManager.instance(project).getStableAliasesByName(
+        name,
+        position.getResolveScope)
     } {
       addTypeForCompletion(TypeAliasToImport(alias))
     }

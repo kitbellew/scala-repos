@@ -136,7 +136,8 @@ class TaskStartActorTest
       verify(launchQueue, Mockito.timeout(3000)).add(app, app.instances - 1)
 
       for (i <- 0 until (app.instances - 1))
-        system.eventStream
+        system
+          .eventStream
           .publish(
             MesosStatusUpdateEvent(
               "",

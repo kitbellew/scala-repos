@@ -136,9 +136,8 @@ private[sql] class ExchangeCoordinator(
         // prevent maxPostShuffleInputSize from being set to 0.
         val maxPostShuffleInputSize =
           math.max(
-            math
-              .ceil(totalPostShuffleInputSize / numPartitions.toDouble)
-              .toLong,
+            math.ceil(
+              totalPostShuffleInputSize / numPartitions.toDouble).toLong,
             16)
         math.min(maxPostShuffleInputSize, advisoryTargetPostShuffleInputSize)
 

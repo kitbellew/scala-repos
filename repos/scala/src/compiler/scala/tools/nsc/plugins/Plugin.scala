@@ -206,8 +206,8 @@ object Plugin {
     *  the compiler it is to be used in.
     */
   def instantiate(clazz: AnyClass, global: Global): Plugin = {
-    (clazz getConstructor classOf[Global] newInstance global)
-      .asInstanceOf[Plugin]
+    (clazz getConstructor classOf[Global] newInstance global).asInstanceOf[
+      Plugin]
   }
 }
 

@@ -184,8 +184,8 @@ private[clustering] trait LDAParams
     this,
     "optimizer",
     "Optimizer or inference" +
-      " algorithm used to estimate the LDA model.  Supported: " + supportedOptimizers
-      .mkString(", "),
+      " algorithm used to estimate the LDA model.  Supported: " + supportedOptimizers.mkString(
+      ", "),
     (o: String) =>
       ParamValidators.inArray(supportedOptimizers).apply(o.toLowerCase))
 
@@ -275,8 +275,11 @@ private[clustering] trait LDAParams
     "subsamplingRate",
     "Fraction of the corpus" +
       " to be sampled and used in each iteration of mini-batch gradient descent, in range (0, 1].",
-    ParamValidators
-      .inRange(0.0, 1.0, lowerInclusive = false, upperInclusive = true))
+    ParamValidators.inRange(
+      0.0,
+      1.0,
+      lowerInclusive = false,
+      upperInclusive = true))
 
   /** @group getParam */
   @Since("1.6.0")
@@ -507,9 +510,10 @@ sealed abstract class LDAModel private[ml] (
       case ((termIndices, termWeights), topic) =>
         (topic, termIndices.toSeq, termWeights.toSeq)
     }
-    sqlContext
-      .createDataFrame(topics)
-      .toDF("topic", "termIndices", "termWeights")
+    sqlContext.createDataFrame(topics).toDF(
+      "topic",
+      "termIndices",
+      "termWeights")
   }
 
   @Since("1.6.0")
@@ -570,11 +574,8 @@ object LocalLDAModel extends MLReadable[LocalLDAModel] {
         oldModel.topicConcentration,
         oldModel.gammaShape)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -585,8 +586,7 @@ object LocalLDAModel extends MLReadable[LocalLDAModel] {
     override def load(path: String): LocalLDAModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
+      val data = sqlContext.read.parquet(dataPath)
         .select(
           "vocabSize",
           "topicsMatrix",

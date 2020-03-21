@@ -173,21 +173,16 @@ private[spark] object SSLOptions extends Logging {
     val enabled =
       conf.getBoolean(s"$ns.enabled", defaultValue = defaults.exists(_.enabled))
 
-    val keyStore = conf
-      .getOption(s"$ns.keyStore")
-      .map(new File(_))
+    val keyStore = conf.getOption(s"$ns.keyStore").map(new File(_))
       .orElse(defaults.flatMap(_.keyStore))
 
-    val keyStorePassword = conf
-      .getOption(s"$ns.keyStorePassword")
+    val keyStorePassword = conf.getOption(s"$ns.keyStorePassword")
       .orElse(defaults.flatMap(_.keyStorePassword))
 
-    val keyPassword = conf
-      .getOption(s"$ns.keyPassword")
+    val keyPassword = conf.getOption(s"$ns.keyPassword")
       .orElse(defaults.flatMap(_.keyPassword))
 
-    val keyStoreType = conf
-      .getOption(s"$ns.keyStoreType")
+    val keyStoreType = conf.getOption(s"$ns.keyStoreType")
       .orElse(defaults.flatMap(_.keyStoreType))
 
     val needClientAuth =
@@ -195,25 +190,19 @@ private[spark] object SSLOptions extends Logging {
         s"$ns.needClientAuth",
         defaultValue = defaults.exists(_.needClientAuth))
 
-    val trustStore = conf
-      .getOption(s"$ns.trustStore")
-      .map(new File(_))
+    val trustStore = conf.getOption(s"$ns.trustStore").map(new File(_))
       .orElse(defaults.flatMap(_.trustStore))
 
-    val trustStorePassword = conf
-      .getOption(s"$ns.trustStorePassword")
+    val trustStorePassword = conf.getOption(s"$ns.trustStorePassword")
       .orElse(defaults.flatMap(_.trustStorePassword))
 
-    val trustStoreType = conf
-      .getOption(s"$ns.trustStoreType")
+    val trustStoreType = conf.getOption(s"$ns.trustStoreType")
       .orElse(defaults.flatMap(_.trustStoreType))
 
-    val protocol = conf
-      .getOption(s"$ns.protocol")
+    val protocol = conf.getOption(s"$ns.protocol")
       .orElse(defaults.flatMap(_.protocol))
 
-    val enabledAlgorithms = conf
-      .getOption(s"$ns.enabledAlgorithms")
+    val enabledAlgorithms = conf.getOption(s"$ns.enabledAlgorithms")
       .map(_.split(",").map(_.trim).filter(_.nonEmpty).toSet)
       .orElse(defaults.map(_.enabledAlgorithms))
       .getOrElse(Set.empty)

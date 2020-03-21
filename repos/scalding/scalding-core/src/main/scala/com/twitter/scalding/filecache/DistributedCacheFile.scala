@@ -29,10 +29,9 @@ object URIHasher {
   def apply(uri: URI): String = {
     val (h1, h2) = HashFunc(uri.toASCIIString)
     val bytes = ByteBuffer.allocate(16).putLong(h1).putLong(h2).array()
-    bytes
-      .map(deSign)
-      .map("%02x".format(_))
-      .reduceLeft(_ + _) // lifted gently from com.twitter.util.U64
+    bytes.map(deSign).map("%02x".format(_)).reduceLeft(
+      _ + _
+    ) // lifted gently from com.twitter.util.U64
   }
 }
 
@@ -126,8 +125,8 @@ final case class UncachedFile private[scalding] (source: Either[String, URI]) {
       ) // uri.toString because hadoop 0.20.2 doesn't take a URI
 
     def makeQualified(p: Path, conf: Configuration): URI =
-      p.makeQualified(p.getFileSystem(conf))
-        .toUri // make sure we have fully-qualified URI
+      p.makeQualified(
+        p.getFileSystem(conf)).toUri // make sure we have fully-qualified URI
 
     val sourceUri =
       source match {

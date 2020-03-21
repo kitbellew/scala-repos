@@ -60,7 +60,8 @@ class TestService[K, V](
 
   /** The lasts are computed from the streams */
   lazy val lasts: Map[BatchID, Iterable[(Timestamp, (K, V))]] = {
-    (streams.toList
+    (streams
+      .toList
       .sortBy(_._1)
       .foldLeft(Map.empty[BatchID, Map[K, (Timestamp, V)]]) {
         case (

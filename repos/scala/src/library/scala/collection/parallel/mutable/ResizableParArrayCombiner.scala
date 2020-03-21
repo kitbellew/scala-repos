@@ -90,8 +90,9 @@ trait ResizableParArrayCombiner[T]
         new CopyChainToArray(array, offset + fp, howmany - fp))
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel
-        .thresholdFromSize(size, combinerTaskSupport.parallelismLevel)
+      howmany > scala.collection.parallel.thresholdFromSize(
+        size,
+        combinerTaskSupport.parallelismLevel)
   }
 }
 

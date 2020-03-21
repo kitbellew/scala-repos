@@ -144,22 +144,25 @@ final class Vector[+A] private[immutable] (
   override def updated[B >: A, That](index: Int, elem: B)(implicit
       bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF[A, B, That](bf))
-      updateAt(index, elem)
-        .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
+      updateAt(index, elem).asInstanceOf[
+        That
+      ] // ignore bf--it will just give a Vector, and slowly
     else super.updated(index, elem)(bf)
 
   override def +:[B >: A, That](elem: B)(implicit
       bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF[A, B, That](bf))
-      appendFront(elem)
-        .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
+      appendFront(elem).asInstanceOf[
+        That
+      ] // ignore bf--it will just give a Vector, and slowly
     else super.+:(elem)(bf)
 
   override def :+[B >: A, That](elem: B)(implicit
       bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF(bf))
-      appendBack(elem)
-        .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
+      appendBack(elem).asInstanceOf[
+        That
+      ] // ignore bf--it will just give a Vector, and slowly
     else super.:+(elem)(bf)
 
   override def take(n: Int): Vector[A] = {
@@ -241,8 +244,8 @@ final class Vector[+A] private[immutable] (
             for (x <- again) v = v :+ x
             v.asInstanceOf[That]
           case n
-              if this.size < (n >> Log2ConcatFaster) && again
-                .isInstanceOf[Vector[_]] =>
+              if this.size < (n >> Log2ConcatFaster) && again.isInstanceOf[
+                Vector[_]] =>
             var v = again.asInstanceOf[Vector[B]]
             val ri = this.reverseIterator
             while (ri.hasNext) v = ri.next +: v
@@ -847,35 +850,30 @@ private[immutable] trait VectorPointer[T] {
     if (xor < (1 << 5)) { // level = 0
       display0(index & 31).asInstanceOf[T]
     } else if (xor < (1 << 10)) { // level = 1
-      display1((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+      display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]](
+        index & 31).asInstanceOf[T]
     } else if (xor < (1 << 15)) { // level = 2
-      display2((index >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+      display2((index >> 10) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[
+        T]
     } else if (xor < (1 << 20)) { // level = 3
-      display3((index >> 15) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+      display3((index >> 15) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 10) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[
+        T]
     } else if (xor < (1 << 25)) { // level = 4
-      display4((index >> 20) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 15) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+      display4((index >> 20) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 15) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 10) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[
+        T]
     } else if (xor < (1 << 30)) { // level = 5
-      display5((index >> 25) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 20) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 15) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+      display5((index >> 25) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 20) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 15) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 10) & 31).asInstanceOf[Array[AnyRef]](
+        (index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[
+        T]
     } else { // level = 6
       throw new IllegalArgumentException()
     }
@@ -1074,44 +1072,59 @@ private[immutable] trait VectorPointer[T] {
     (depth - 1) match {
       case 5 =>
         display5 = copyOf(display5)
-        display4 = nullSlotAndCopy(display5, (newIndex >> 25) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display3 = nullSlotAndCopy(display4, (newIndex >> 20) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display2 = nullSlotAndCopy(display3, (newIndex >> 15) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-          .asInstanceOf[Array[AnyRef]]
+        display4 = nullSlotAndCopy(
+          display5,
+          (newIndex >> 25) & 31).asInstanceOf[Array[AnyRef]]
+        display3 = nullSlotAndCopy(
+          display4,
+          (newIndex >> 20) & 31).asInstanceOf[Array[AnyRef]]
+        display2 = nullSlotAndCopy(
+          display3,
+          (newIndex >> 15) & 31).asInstanceOf[Array[AnyRef]]
+        display1 = nullSlotAndCopy(
+          display2,
+          (newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
+        display0 =
+          nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+            AnyRef]]
       case 4 =>
         display4 = copyOf(display4)
-        display3 = nullSlotAndCopy(display4, (newIndex >> 20) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display2 = nullSlotAndCopy(display3, (newIndex >> 15) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-          .asInstanceOf[Array[AnyRef]]
+        display3 = nullSlotAndCopy(
+          display4,
+          (newIndex >> 20) & 31).asInstanceOf[Array[AnyRef]]
+        display2 = nullSlotAndCopy(
+          display3,
+          (newIndex >> 15) & 31).asInstanceOf[Array[AnyRef]]
+        display1 = nullSlotAndCopy(
+          display2,
+          (newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
+        display0 =
+          nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+            AnyRef]]
       case 3 =>
         display3 = copyOf(display3)
-        display2 = nullSlotAndCopy(display3, (newIndex >> 15) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-          .asInstanceOf[Array[AnyRef]]
+        display2 = nullSlotAndCopy(
+          display3,
+          (newIndex >> 15) & 31).asInstanceOf[Array[AnyRef]]
+        display1 = nullSlotAndCopy(
+          display2,
+          (newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
+        display0 =
+          nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+            AnyRef]]
       case 2 =>
         display2 = copyOf(display2)
-        display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-          .asInstanceOf[Array[AnyRef]]
-        display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-          .asInstanceOf[Array[AnyRef]]
+        display1 = nullSlotAndCopy(
+          display2,
+          (newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
+        display0 =
+          nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+            AnyRef]]
       case 1 =>
         display1 = copyOf(display1)
-        display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-          .asInstanceOf[Array[AnyRef]]
+        display0 =
+          nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+            AnyRef]]
       case 0 =>
         display0 = copyOf(display0)
     }
@@ -1133,10 +1146,12 @@ private[immutable] trait VectorPointer[T] {
       display2 = copyOf(display2)
       display1((oldIndex >> 5) & 31) = display0
       display2((oldIndex >> 10) & 31) = display1
-      display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]]
+      display1 =
+        nullSlotAndCopy(display2, (newIndex >> 10) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display0 =
+        nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+          AnyRef]]
     } else if (xor < (1 << 20)) { // level = 3
       display1 = copyOf(display1)
       display2 = copyOf(display2)
@@ -1144,12 +1159,15 @@ private[immutable] trait VectorPointer[T] {
       display1((oldIndex >> 5) & 31) = display0
       display2((oldIndex >> 10) & 31) = display1
       display3((oldIndex >> 15) & 31) = display2
-      display2 = nullSlotAndCopy(display3, (newIndex >> 15) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]]
+      display2 =
+        nullSlotAndCopy(display3, (newIndex >> 15) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display1 =
+        nullSlotAndCopy(display2, (newIndex >> 10) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display0 =
+        nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+          AnyRef]]
     } else if (xor < (1 << 25)) { // level = 4
       display1 = copyOf(display1)
       display2 = copyOf(display2)
@@ -1159,14 +1177,18 @@ private[immutable] trait VectorPointer[T] {
       display2((oldIndex >> 10) & 31) = display1
       display3((oldIndex >> 15) & 31) = display2
       display4((oldIndex >> 20) & 31) = display3
-      display3 = nullSlotAndCopy(display4, (newIndex >> 20) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display2 = nullSlotAndCopy(display3, (newIndex >> 15) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]]
+      display3 =
+        nullSlotAndCopy(display4, (newIndex >> 20) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display2 =
+        nullSlotAndCopy(display3, (newIndex >> 15) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display1 =
+        nullSlotAndCopy(display2, (newIndex >> 10) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display0 =
+        nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+          AnyRef]]
     } else if (xor < (1 << 30)) { // level = 5
       display1 = copyOf(display1)
       display2 = copyOf(display2)
@@ -1178,16 +1200,21 @@ private[immutable] trait VectorPointer[T] {
       display3((oldIndex >> 15) & 31) = display2
       display4((oldIndex >> 20) & 31) = display3
       display5((oldIndex >> 25) & 31) = display4
-      display4 = nullSlotAndCopy(display5, (newIndex >> 25) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display3 = nullSlotAndCopy(display4, (newIndex >> 20) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display2 = nullSlotAndCopy(display3, (newIndex >> 15) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display1 = nullSlotAndCopy(display2, (newIndex >> 10) & 31)
-        .asInstanceOf[Array[AnyRef]]
-      display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]]
+      display4 =
+        nullSlotAndCopy(display5, (newIndex >> 25) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display3 =
+        nullSlotAndCopy(display4, (newIndex >> 20) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display2 =
+        nullSlotAndCopy(display3, (newIndex >> 15) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display1 =
+        nullSlotAndCopy(display2, (newIndex >> 10) & 31).asInstanceOf[Array[
+          AnyRef]]
+      display0 =
+        nullSlotAndCopy(display1, (newIndex >> 5) & 31).asInstanceOf[Array[
+          AnyRef]]
     } else { // level = 6
       throw new IllegalArgumentException()
     }

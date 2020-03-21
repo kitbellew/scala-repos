@@ -277,10 +277,11 @@ class SyncQueryServiceHandler(
         val prefix = CharBuffer.wrap(
           """{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
         val result: StreamT[Future, CharBuffer] =
-          (prefix :: data) ++ (CharBuffer.wrap("}") :: StreamT
-            .empty[Future, CharBuffer])
-        HttpResponse[QueryResult](OK, content = Some(Right(result)))
-          .point[Future]
+          (prefix :: data) ++ (CharBuffer.wrap("}") :: StreamT.empty[
+            Future,
+            CharBuffer])
+        HttpResponse[QueryResult](OK, content = Some(Right(result))).point[
+          Future]
 
       case (Right(Detailed), Some(jobId), data0) =>
         val prefix = CharBuffer.wrap("""{ "data" : """)
@@ -317,8 +318,8 @@ class SyncQueryServiceHandler(
             M.point(None)
         }
 
-        HttpResponse[QueryResult](OK, content = Some(Right(result)))
-          .point[Future]
+        HttpResponse[QueryResult](OK, content = Some(Right(result))).point[
+          Future]
     }
   }
 
@@ -359,7 +360,7 @@ class AsyncQueryServiceHandler(val execution: Execution[Future, JobId])(implicit
       jobId: JobId,
       outputType: MimeType): Future[HttpResponse[QueryResult]] = {
     val result = JObject(JField("jobId", JString(jobId)) :: Nil)
-    HttpResponse[QueryResult](Accepted, content = Some(Left(result)))
-      .point[Future]
+    HttpResponse[QueryResult](Accepted, content = Some(Left(result))).point[
+      Future]
   }
 }

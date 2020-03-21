@@ -14,8 +14,7 @@ class ScalaSourcePositionHighlighter extends SourcePositionHighlighter {
     if (sourcePosition.getFile.getLanguage.isKindOf(ScalaLanguage.Instance)) {
       Option(sourcePosition.getElementAt)
         .flatMap(DebuggerUtil.getContainingMethod)
-        .map(_.getTextRange)
-        .orNull
+        .map(_.getTextRange).orNull
     } else null
   }
 }

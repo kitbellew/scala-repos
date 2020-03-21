@@ -189,9 +189,8 @@ abstract class GuiceBuilder[Self] protected (
     val overrideModules =
       GuiceableModule.guiced(environment, configuration, binderOptions)(
         overrides)
-    GuiceModules
-      .`override`(bindingModules.asJava)
-      .`with`(overrideModules.asJava)
+    GuiceModules.`override`(bindingModules.asJava).`with`(
+      overrideModules.asJava)
   }
 
   /**

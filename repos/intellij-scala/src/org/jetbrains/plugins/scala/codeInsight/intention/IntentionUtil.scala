@@ -24,13 +24,12 @@ object IntentionUtil {
 
     def getElements(it: Iterator[PsiElement]) = {
       def acceptableElem(elem: PsiElement) = {
-        (elem.isInstanceOf[PsiComment] || elem
-          .isInstanceOf[PsiWhiteSpace]) && !hasLineBreaks(elem)
+        (elem.isInstanceOf[PsiComment] || elem.isInstanceOf[
+          PsiWhiteSpace]) && !hasLineBreaks(elem)
       }
 
-      it.takeWhile { a => acceptableElem(a) }
-        .filter(a => a.isInstanceOf[PsiComment])
-        .toSeq
+      it.takeWhile { a => acceptableElem(a) }.filter(a =>
+        a.isInstanceOf[PsiComment]).toSeq
     }
 
     CommentsAroundElement(
@@ -43,8 +42,7 @@ object IntentionUtil {
       commentsAroundElement: CommentsAroundElement): Boolean = {
     val allComments =
       PsiTreeUtil.getChildrenOfTypeAsList(element, classOf[PsiComment])
-    allComments
-      .size() > commentsAroundElement.before.size + commentsAroundElement.after.size
+    allComments.size() > commentsAroundElement.before.size + commentsAroundElement.after.size
   }
 
   def addComments(
@@ -82,8 +80,8 @@ object IntentionUtil {
     val builder: TemplateBuilderImpl = new TemplateBuilderImpl(elem)
     builder.replaceElement(elem, expression)
     editor.getCaretModel.moveToOffset(elem.getNode.getStartOffset)
-    TemplateManager
-      .getInstance(project)
-      .startTemplate(editor, builder.buildInlineTemplate())
+    TemplateManager.getInstance(project).startTemplate(
+      editor,
+      builder.buildInlineTemplate())
   }
 }

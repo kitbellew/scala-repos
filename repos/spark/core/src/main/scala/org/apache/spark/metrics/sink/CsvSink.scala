@@ -56,8 +56,7 @@ private[spark] class CsvSink(
     case None    => CSV_DEFAULT_DIR
   }
 
-  val reporter: CsvReporter = CsvReporter
-    .forRegistry(registry)
+  val reporter: CsvReporter = CsvReporter.forRegistry(registry)
     .formatFor(Locale.US)
     .convertDurationsTo(TimeUnit.MILLISECONDS)
     .convertRatesTo(TimeUnit.SECONDS)

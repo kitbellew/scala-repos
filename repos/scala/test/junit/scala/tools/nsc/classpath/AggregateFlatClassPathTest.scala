@@ -144,10 +144,8 @@ class AggregateFlatClassPathTest {
     case class ClassPathWithPackages(packagesInPackage: EntryNamesInPackage*)
         extends TestFlatClassPath {
       override def packages(inPackage: String): Seq[PackageEntry] =
-        packagesInPackage
-          .find(_.inPackage == inPackage)
-          .map(_.names)
-          .getOrElse(Nil) map PackageEntryImpl
+        packagesInPackage.find(_.inPackage == inPackage).map(_.names).getOrElse(
+          Nil) map PackageEntryImpl
     }
 
     val partialClassPaths = Seq(

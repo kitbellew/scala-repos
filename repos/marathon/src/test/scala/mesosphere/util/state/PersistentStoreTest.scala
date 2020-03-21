@@ -69,14 +69,15 @@ trait PersistentStoreTest
     read2 should be('defined)
     read.get.bytes should be("Hello".getBytes)
     read2.get.bytes should be("Hello".getBytes)
-    persistentStore
-      .update(read.get.withNewContent("Hello again".getBytes))
-      .futureValue
-      .bytes should be("Hello again".getBytes)
+    persistentStore.update(
+      read.get.withNewContent(
+        "Hello again".getBytes)).futureValue.bytes should be(
+      "Hello again".getBytes)
     whenReady(
-      persistentStore
-        .update(read2.get.withNewContent("Will be None".getBytes))
-        .failed) { _ shouldBe a[StoreCommandFailedException] }
+      persistentStore.update(
+        read2.get.withNewContent("Will be None".getBytes)).failed) {
+      _ shouldBe a[StoreCommandFailedException]
+    }
     val readAgain = fetch("foo")
     readAgain.get.bytes should be("Hello again".getBytes)
   }

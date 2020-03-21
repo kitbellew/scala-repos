@@ -49,28 +49,22 @@ class JDBCPEvents(
       */
     val upper =
       untilTime.map(_.getMillis).getOrElse((DateTime.now + 1.years).getMillis)
-    val par = scala.math
-      .min(
-        new Duration(upper - lower).getStandardDays,
-        config.properties.getOrElse("PARTITIONS", "4").toLong)
-      .toInt
+    val par = scala.math.min(
+      new Duration(upper - lower).getStandardDays,
+      config.properties.getOrElse("PARTITIONS", "4").toLong).toInt
     val entityTypeClause =
       entityType.map(x => s"and entityType = '$x'").getOrElse("")
     val entityIdClause = entityId.map(x => s"and entityId = '$x'").getOrElse("")
     val eventNamesClause =
-      eventNames
-        .map("and (" + _.map(y => s"event = '$y'").mkString(" or ") + ")")
-        .getOrElse("")
-    val targetEntityTypeClause = targetEntityType
-      .map(
-        _.map(x => s"and targetEntityType = '$x'")
-          .getOrElse("and targetEntityType is null"))
-      .getOrElse("")
-    val targetEntityIdClause = targetEntityId
-      .map(
-        _.map(x => s"and targetEntityId = '$x'")
-          .getOrElse("and targetEntityId is null"))
-      .getOrElse("")
+      eventNames.map(
+        "and (" + _.map(y => s"event = '$y'").mkString(" or ") + ")").getOrElse(
+        "")
+    val targetEntityTypeClause = targetEntityType.map(
+      _.map(x => s"and targetEntityType = '$x'").getOrElse(
+        "and targetEntityType is null")).getOrElse("")
+    val targetEntityIdClause = targetEntityId.map(
+      _.map(x => s"and targetEntityId = '$x'").getOrElse(
+        "and targetEntityId is null")).getOrElse("")
     val q = s"""
       select
         id,
@@ -116,15 +110,13 @@ class JDBCPEvents(
           entityId = r.getString("entityId"),
           targetEntityType = Option(r.getString("targetEntityType")),
           targetEntityId = Option(r.getString("targetEntityId")),
-          properties = Option(r.getString("properties"))
-            .map(x => DataMap(Serialization.read[JObject](x)))
-            .getOrElse(DataMap()),
+          properties = Option(r.getString("properties")).map(x =>
+            DataMap(Serialization.read[JObject](x))).getOrElse(DataMap()),
           eventTime = new DateTime(
             r.getTimestamp("eventTime").getTime,
             DateTimeZone.forID(r.getString("eventTimeZone"))),
-          tags = Option(r.getString("tags"))
-            .map(x => x.split(",").toList)
-            .getOrElse(Nil),
+          tags = Option(r.getString("tags")).map(x =>
+            x.split(",").toList).getOrElse(Nil),
           prId = Option(r.getString("prId")),
           creationTime = new DateTime(
             r.getTimestamp("creationTime").getTime,
@@ -157,26 +149,24 @@ class JDBCPEvents(
       "creationTimeZone"
     )
 
-    val eventDF = events
-      .map { event =>
-        (
-          event.eventId.getOrElse(JDBCUtils.generateId),
-          event.event,
-          event.entityType,
-          event.entityId,
-          event.targetEntityType.orNull,
-          event.targetEntityId.orNull,
-          if (!event.properties.isEmpty)
-            Serialization.write(event.properties.toJObject)
-          else null,
-          new java.sql.Timestamp(event.eventTime.getMillis),
-          event.eventTime.getZone.getID,
-          if (event.tags.nonEmpty) Some(event.tags.mkString(",")) else null,
-          event.prId,
-          new java.sql.Timestamp(event.creationTime.getMillis),
-          event.creationTime.getZone.getID)
-      }
-      .toDF(eventTableColumns: _*)
+    val eventDF = events.map { event =>
+      (
+        event.eventId.getOrElse(JDBCUtils.generateId),
+        event.event,
+        event.entityType,
+        event.entityId,
+        event.targetEntityType.orNull,
+        event.targetEntityId.orNull,
+        if (!event.properties.isEmpty)
+          Serialization.write(event.properties.toJObject)
+        else null,
+        new java.sql.Timestamp(event.eventTime.getMillis),
+        event.eventTime.getZone.getID,
+        if (event.tags.nonEmpty) Some(event.tags.mkString(",")) else null,
+        event.prId,
+        new java.sql.Timestamp(event.creationTime.getMillis),
+        event.creationTime.getZone.getID)
+    }.toDF(eventTableColumns: _*)
 
     // spark version 1.4.0 or higher
     val prop = new java.util.Properties

@@ -189,9 +189,8 @@ private[hive] class SparkExecuteStatementOperation(
       try {
         // This submit blocks if no background threads are available to run this operation
         val backgroundHandle =
-          parentSession
-            .getSessionManager()
-            .submitBackgroundOperation(backgroundOperation)
+          parentSession.getSessionManager().submitBackgroundOperation(
+            backgroundOperation)
         setBackgroundHandle(backgroundHandle)
       } catch {
         case rejected: RejectedExecutionException =>
@@ -237,13 +236,14 @@ private[hive] class SparkExecuteStatementOperation(
             s"Setting spark.scheduler.pool=$value for future statements in this session.")
         case _ =>
       }
-      HiveThriftServer2.listener
-        .onStatementParsed(statementId, result.queryExecution.toString())
+      HiveThriftServer2.listener.onStatementParsed(
+        statementId,
+        result.queryExecution.toString())
       iter = {
         val useIncrementalCollect =
-          hiveContext
-            .getConf("spark.sql.thriftServer.incrementalCollect", "false")
-            .toBoolean
+          hiveContext.getConf(
+            "spark.sql.thriftServer.incrementalCollect",
+            "false").toBoolean
         if (useIncrementalCollect) {
           result.rdd.toLocalIterator
         } else {

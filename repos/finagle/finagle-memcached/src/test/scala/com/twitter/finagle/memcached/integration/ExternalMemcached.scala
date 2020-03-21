@@ -61,11 +61,9 @@ private[memcached] object ExternalMemcached { self =>
     if (address == None)
       sys.error("Couldn't get an address for the external memcached")
 
-    takenPorts += address
-      .getOrElse(
-        new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-      )
-      .getPort
+    takenPorts += address.getOrElse(
+      new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
+    ).getPort
     address
   }
 
@@ -140,14 +138,12 @@ private[memcached] object ExternalMemcached { self =>
   }
 
   // Make sure the process is always killed eventually
-  Runtime
-    .getRuntime()
-    .addShutdownHook(new Thread {
-      override def run() {
-        processes foreach { p =>
-          p.destroy()
-          p.waitFor()
-        }
+  Runtime.getRuntime().addShutdownHook(new Thread {
+    override def run() {
+      processes foreach { p =>
+        p.destroy()
+        p.waitFor()
       }
-    })
+    }
+  })
 }

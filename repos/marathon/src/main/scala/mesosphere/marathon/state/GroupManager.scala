@@ -201,8 +201,7 @@ class GroupManager @Singleton @Inject() (
       group: Group): Future[(Group, Seq[ResolveArtifacts])] = {
     def url2Path(url: String): Future[(String, String)] =
       contentPath(new URL(url)).map(url -> _)
-    Future
-      .sequence(group.transitiveApps.flatMap(_.storeUrls).map(url2Path))
+    Future.sequence(group.transitiveApps.flatMap(_.storeUrls).map(url2Path))
       .map(_.toMap)
       .map { paths =>
         //Filter out all items with already existing path.
@@ -220,9 +219,10 @@ class GroupManager @Singleton @Inject() (
               fetch = app.fetch ++ storageUrls.map(FetchUri.apply(_)),
               storeUrls = Seq.empty)
             val appDownloads: Map[URL, String] =
-              app.storeUrls.flatMap { url =>
-                downloads.remove(url).map { path => new URL(url) -> path }
-              }.toMap
+              app.storeUrls
+                .flatMap { url =>
+                  downloads.remove(url).map { path => new URL(url) -> path }
+                }.toMap
             if (appDownloads.nonEmpty)
               actions += ResolveArtifacts(resolved, appDownloads)
             resolved
@@ -236,13 +236,12 @@ class GroupManager @Singleton @Inject() (
       from: Group,
       to: Group): Group = {
     val portRange = Range(config.localPortMin(), config.localPortMax())
-    var taken = from.transitiveApps.flatMap(_.portNumbers) ++ to.transitiveApps
-      .flatMap(_.portNumbers)
+    var taken = from.transitiveApps.flatMap(
+      _.portNumbers) ++ to.transitiveApps.flatMap(_.portNumbers)
 
     def nextGlobalFreePort: Int =
       synchronized {
-        val port = portRange
-          .find(!taken.contains(_))
+        val port = portRange.find(!taken.contains(_))
           .getOrElse(
             throw new PortRangeExhaustedException(
               config.localPortMin(),
@@ -256,15 +255,13 @@ class GroupManager @Singleton @Inject() (
     def mergeServicePortsAndPortDefinitions(
         portDefinitions: Seq[PortDefinition],
         servicePorts: Seq[Int]) = {
-      portDefinitions
-        .zipAll(
-          servicePorts,
-          AppDefinition.RandomPortDefinition,
-          AppDefinition.RandomPortValue)
-        .map {
-          case (portDefinition, servicePort) =>
-            portDefinition.copy(port = servicePort)
-        }
+      portDefinitions.zipAll(
+        servicePorts,
+        AppDefinition.RandomPortDefinition,
+        AppDefinition.RandomPortValue).map {
+        case (portDefinition, servicePort) =>
+          portDefinition.copy(port = servicePort)
+      }
     }
 
     def assignPorts(app: AppDefinition): AppDefinition = {
@@ -272,8 +269,7 @@ class GroupManager @Singleton @Inject() (
       //all ports that are already assigned in old app definition, but not used in the new definition
       //if the app uses dynamic ports (0), it will get always the same ports assigned
       val assignedAndAvailable = mutable.Queue(
-        from
-          .app(app.id)
+        from.app(app.id)
           .map(_.portNumbers.filter(p =>
             portRange.contains(p) && !app.servicePorts.contains(p)))
           .getOrElse(Nil): _*

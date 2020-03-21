@@ -39,11 +39,9 @@ class RemoteDeployerSpec extends AkkaSpec(RemoteDeployerSpec.deployerConf) {
 
     "be able to parse 'akka.actor.deployment._' with specified remote nodes" in {
       val service = "/service2"
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
-        .lookup(service.split("/").drop(1))
+      val deployment =
+        system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(
+          service.split("/").drop(1))
 
       deployment should ===(
         Some(

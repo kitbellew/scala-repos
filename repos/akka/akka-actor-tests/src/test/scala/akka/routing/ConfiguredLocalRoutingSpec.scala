@@ -133,9 +133,8 @@ class ConfiguredLocalRoutingSpec
 
     "be overridable in explicit deployment" in {
       val actor = system.actorOf(
-        FromConfig
-          .props(routeeProps = Props[EchoProps])
-          .withDeploy(Deploy(routerConfig = RoundRobinPool(12))),
+        FromConfig.props(routeeProps = Props[EchoProps]).withDeploy(
+          Deploy(routerConfig = RoundRobinPool(12))),
         "someOther")
       routerConfig(actor) should ===(RoundRobinPool(12))
       Await.result(gracefulStop(actor, 3 seconds), 3 seconds)
@@ -143,9 +142,8 @@ class ConfiguredLocalRoutingSpec
 
     "be overridable in config even with explicit deployment" in {
       val actor = system.actorOf(
-        FromConfig
-          .props(routeeProps = Props[EchoProps])
-          .withDeploy(Deploy(routerConfig = RoundRobinPool(12))),
+        FromConfig.props(routeeProps = Props[EchoProps]).withDeploy(
+          Deploy(routerConfig = RoundRobinPool(12))),
         "config")
       routerConfig(actor) should ===(
         RandomPool(nrOfInstances = 4, usePoolDispatcher = true))

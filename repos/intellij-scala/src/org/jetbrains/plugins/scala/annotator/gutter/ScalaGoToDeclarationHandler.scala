@@ -112,10 +112,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
       case o: ScObject if o.isSyntheticObject =>
         Seq(ScalaPsiUtil.getCompanionModule(o).getOrElse(element))
       case param: ScParameter =>
-        ScalaPsiUtil
-          .parameterForSyntheticParameter(param)
-          .map(Seq[PsiElement](_))
-          .getOrElse(Seq[PsiElement](element))
+        ScalaPsiUtil.parameterForSyntheticParameter(param).map(
+          Seq[PsiElement](_)).getOrElse(Seq[PsiElement](element))
       case _ => Seq(element)
     }
   }

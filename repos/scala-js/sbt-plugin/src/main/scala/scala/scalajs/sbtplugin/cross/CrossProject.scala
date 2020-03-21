@@ -296,9 +296,8 @@ object CrossProject extends CrossProjectExtra {
 
     val jvm = Project(jvmId, crossType.jvmDir(base)).settings(sss: _*)
 
-    val js = Project(jsId, crossType.jsDir(base))
-      .settings(sss: _*)
-      .enablePlugins(ScalaJSPlugin)
+    val js = Project(jsId, crossType.jsDir(base)).settings(
+      sss: _*).enablePlugins(ScalaJSPlugin)
 
     new CrossProject(crossType, jvm, js)
   }

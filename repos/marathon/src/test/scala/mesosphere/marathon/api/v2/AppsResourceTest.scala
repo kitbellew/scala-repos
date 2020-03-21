@@ -72,9 +72,8 @@ class AppsResourceTest
       maybeCounts = Some(TaskCounts.zero),
       maybeDeployments = Some(immutable.Seq(Identifiable(plan.id)))
     )
-    JsonTestHelper
-      .assertThatJsonString(response.getEntity.asInstanceOf[String])
-      .correspondsToJsonOf(expected)
+    JsonTestHelper.assertThatJsonString(
+      response.getEntity.asInstanceOf[String]).correspondsToJsonOf(expected)
   }
 
   test("Create a new app fails with Validation errors for negative resources") {
@@ -162,9 +161,8 @@ class AppsResourceTest
       maybeCounts = Some(TaskCounts.zero),
       maybeDeployments = Some(immutable.Seq(Identifiable(plan.id)))
     )
-    JsonTestHelper
-      .assertThatJsonString(response.getEntity.asInstanceOf[String])
-      .correspondsToJsonOf(expected)
+    JsonTestHelper.assertThatJsonString(
+      response.getEntity.asInstanceOf[String]).correspondsToJsonOf(expected)
   }
 
   test("Create a new app fails with Validation errors") {
@@ -367,8 +365,9 @@ class AppsResourceTest
       app,
       maybeDeployments = Some(Seq(Identifiable("deployment-123"))),
       maybeCounts = Some(TaskCounts(1, 2, 3, 4)))
-    appInfoService.selectAppsBy(any, eq(expectedEmbeds)) returns Future
-      .successful(Seq(appInfo))
+    appInfoService.selectAppsBy(
+      any,
+      eq(expectedEmbeds)) returns Future.successful(Seq(appInfo))
 
     When("The the index is fetched without any filters")
     val response = appsResource.index(

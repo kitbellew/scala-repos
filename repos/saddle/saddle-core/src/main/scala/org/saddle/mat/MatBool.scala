@@ -91,8 +91,8 @@ class MatBool(r: Int, c: Int, values: Array[Boolean]) extends Mat[Boolean] {
           var i = 0
           var eq = true
           while (eq && i < length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag
-              .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
+            eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
+              apply(i)) && rv.scalarTag.isMissing(rv(i)))
             i += 1
           }
           eq

@@ -141,8 +141,10 @@ trait StaticInlinerSpecs[M[+_]]
           dag.AbsoluteLoad(Const(CString("/foo"))(line))(line),
           Const(CTrue)(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual dag
-          .AbsoluteLoad(Const(CString("/foo"))(line))(line)
+        inlineStatics(
+          input,
+          defaultEvaluationContext) mustEqual dag.AbsoluteLoad(
+          Const(CString("/foo"))(line))(line)
       }
 
       "false" >> {

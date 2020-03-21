@@ -156,9 +156,8 @@ object JsonExtractor {
       formats: Formats,
       clazz: Class[T]): T = {
 
-    Extraction
-      .extract(parse(json), TypeInfo(clazz, None))(formats)
-      .asInstanceOf[T]
+    Extraction.extract(parse(json), TypeInfo(clazz, None))(
+      formats).asInstanceOf[T]
   }
 
   private def extractWithGson[T](

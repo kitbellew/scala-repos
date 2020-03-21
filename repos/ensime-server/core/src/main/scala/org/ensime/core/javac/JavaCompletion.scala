@@ -133,13 +133,11 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
        }).getOrElse(List())
     CompletionInfoList(
       defaultPrefix,
-      candidates
-        .sortWith({ (c1, c2) =>
-          c1.relevance > c2.relevance ||
-          (c1.relevance == c2.relevance &&
-          c1.name.length < c2.name.length)
-        })
-        .take(maxResults))
+      candidates.sortWith({ (c1, c2) =>
+        c1.relevance > c2.relevance ||
+        (c1.relevance == c2.relevance &&
+        c1.name.length < c2.name.length)
+      }).take(maxResults))
   }
 
   private def getEnclosingMemberSelectTree(
@@ -281,22 +279,20 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       importing: Boolean,
       caseSense: Boolean
   ): List[CompletionInfo] = {
-    val candidates = typeElement(info, target)
-      .map { el =>
-        el match {
-          case tel: TypeElement => {
-            val elements: Elements = info.getElements()
-            elements.getAllMembers(tel).flatMap { e =>
-              filterElement(info, e, prefix, caseSense, importing, false)
-            }
-          }
-          case e => {
-            log.warn("Unrecognized type element " + e)
-            List()
+    val candidates = typeElement(info, target).map { el =>
+      el match {
+        case tel: TypeElement => {
+          val elements: Elements = info.getElements()
+          elements.getAllMembers(tel).flatMap { e =>
+            filterElement(info, e, prefix, caseSense, importing, false)
           }
         }
+        case e => {
+          log.warn("Unrecognized type element " + e)
+          List()
+        }
       }
-      .getOrElse(List())
+    }.getOrElse(List())
     candidates.toList
   }
 
@@ -307,10 +303,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     CompletionInfo(
       s,
       CompletionSignature(
-        List(
-          e.getParameters()
-            .map { p => (p.getSimpleName.toString, p.asType.toString) }
-            .toList),
+        List(e.getParameters().map { p =>
+          (p.getSimpleName.toString, p.asType.toString)
+        }.toList),
         e.getReturnType.toString,
         false
       ),
@@ -347,17 +342,15 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       e: TypeElement,
       relavence: Int): List[CompletionInfo] = {
     val s = e.getSimpleName.toString
-    ElementFilter
-      .constructorsIn(info.getElements().getAllMembers(e))
-      .map(methodInfo(_, relavence))
-      .map { m => m.copy(name = s) }
-      .toList
+    ElementFilter.constructorsIn(info.getElements().getAllMembers(e)).map(
+      methodInfo(_, relavence)).map { m => m.copy(name = s) }.toList
   }
 
   private def localTypeName(tm: TypeMirror) = {
     val s = tm.toString
-    val (front, back) =
-      s.split("\\.").partition { s => s.forall(Character.isLowerCase) }
+    val (front, back) = s.split("\\.").partition { s =>
+      s.forall(Character.isLowerCase)
+    }
     if (back.isEmpty) s else back.mkString(".")
   }
 

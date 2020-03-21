@@ -89,19 +89,17 @@ object SVDPlusPlus {
       ctx => { ctx.sendToSrc((1L, ctx.attr)); ctx.sendToDst((1L, ctx.attr)) },
       (g1, g2) => (g1._1 + g2._1, g1._2 + g2._2))
 
-    val gJoinT0 = g
-      .outerJoinVertices(t0) {
+    val gJoinT0 = g.outerJoinVertices(t0) {
+      (
+          vid: VertexId,
+          vd: (Array[Double], Array[Double], Double, Double),
+          msg: Option[(Long, Double)]) =>
         (
-            vid: VertexId,
-            vd: (Array[Double], Array[Double], Double, Double),
-            msg: Option[(Long, Double)]) =>
-          (
-            vd._1,
-            vd._2,
-            msg.get._2 / msg.get._1 - u,
-            1.0 / scala.math.sqrt(msg.get._1))
-      }
-      .cache()
+          vd._1,
+          vd._2,
+          msg.get._2 / msg.get._1 - u,
+          1.0 / scala.math.sqrt(msg.get._1))
+    }.cache()
     materialize(gJoinT0)
     g.unpersist()
     g = gJoinT0
@@ -146,21 +144,19 @@ object SVDPlusPlus {
           blas.daxpy(out.length, 1.0, g2, 1, out, 1)
           out
         })
-      val gJoinT1 = g
-        .outerJoinVertices(t1) {
-          (
-              vid: VertexId,
-              vd: (Array[Double], Array[Double], Double, Double),
-              msg: Option[Array[Double]]) =>
-            if (msg.isDefined) {
-              val out = vd._1.clone()
-              blas.daxpy(out.length, vd._4, msg.get, 1, out, 1)
-              (vd._1, out, vd._3, vd._4)
-            } else {
-              vd
-            }
-        }
-        .cache()
+      val gJoinT1 = g.outerJoinVertices(t1) {
+        (
+            vid: VertexId,
+            vd: (Array[Double], Array[Double], Double, Double),
+            msg: Option[Array[Double]]) =>
+          if (msg.isDefined) {
+            val out = vd._1.clone()
+            blas.daxpy(out.length, vd._4, msg.get, 1, out, 1)
+            (vd._1, out, vd._3, vd._4)
+          } else {
+            vd
+          }
+      }.cache()
       materialize(gJoinT1)
       g.unpersist()
       g = gJoinT1
@@ -179,21 +175,19 @@ object SVDPlusPlus {
           (out1, out2, g1._3 + g2._3)
         }
       )
-      val gJoinT2 = g
-        .outerJoinVertices(t2) {
-          (
-              vid: VertexId,
-              vd: (Array[Double], Array[Double], Double, Double),
-              msg: Option[(Array[Double], Array[Double], Double)]) =>
-            {
-              val out1 = vd._1.clone()
-              blas.daxpy(out1.length, 1.0, msg.get._1, 1, out1, 1)
-              val out2 = vd._2.clone()
-              blas.daxpy(out2.length, 1.0, msg.get._2, 1, out2, 1)
-              (out1, out2, vd._3 + msg.get._3, vd._4)
-            }
-        }
-        .cache()
+      val gJoinT2 = g.outerJoinVertices(t2) {
+        (
+            vid: VertexId,
+            vd: (Array[Double], Array[Double], Double, Double),
+            msg: Option[(Array[Double], Array[Double], Double)]) =>
+          {
+            val out1 = vd._1.clone()
+            blas.daxpy(out1.length, 1.0, msg.get._1, 1, out1, 1)
+            val out2 = vd._2.clone()
+            blas.daxpy(out2.length, 1.0, msg.get._2, 1, out2, 1)
+            (out1, out2, vd._3 + msg.get._3, vd._4)
+          }
+      }.cache()
       materialize(gJoinT2)
       g.unpersist()
       g = gJoinT2
@@ -216,15 +210,13 @@ object SVDPlusPlus {
 
     g.cache()
     val t3 = g.aggregateMessages[Double](sendMsgTestF(conf, u), _ + _)
-    val gJoinT3 = g
-      .outerJoinVertices(t3) {
-        (
-            vid: VertexId,
-            vd: (Array[Double], Array[Double], Double, Double),
-            msg: Option[Double]) =>
-          if (msg.isDefined) (vd._1, vd._2, vd._3, msg.get) else vd
-      }
-      .cache()
+    val gJoinT3 = g.outerJoinVertices(t3) {
+      (
+          vid: VertexId,
+          vd: (Array[Double], Array[Double], Double, Double),
+          msg: Option[Double]) =>
+        if (msg.isDefined) (vd._1, vd._2, vd._3, msg.get) else vd
+    }.cache()
     materialize(gJoinT3)
     g.unpersist()
     g = gJoinT3

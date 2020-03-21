@@ -29,14 +29,14 @@ object ScalaWebSockets extends PlaySpecification {
         // enough.
         val promise = Promise[List[Message]]()
         if (expectOut == 0) promise.success(Nil)
-        val flowResult = in via flow runWith Sink
-          .fold[(List[Message], Int), Message]((Nil, expectOut)) {
-            (state, out) =>
-              val (result, remaining) = state
-              if (remaining == 1) {
-                promise.success(result :+ out)
-              }
-              (result :+ out, remaining - 1)
+        val flowResult =
+          in via flow runWith Sink.fold[(List[Message], Int), Message](
+            (Nil, expectOut)) { (state, out) =>
+            val (result, remaining) = state
+            if (remaining == 1) {
+              promise.success(result :+ out)
+            }
+            (result :+ out, remaining - 1)
           }
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         await(
@@ -102,8 +102,12 @@ object ScalaWebSockets extends PlaySpecification {
       }
 
       "allow rejecting the WebSocket" in new WithApplication() {
-        runWebSocket(Samples.Controller2.socket, Source.empty, 0) must beLeft
-          .which { result => result.header.status must_== FORBIDDEN }
+        runWebSocket(
+          Samples.Controller2.socket,
+          Source.empty,
+          0) must beLeft.which { result =>
+          result.header.status must_== FORBIDDEN
+        }
       }
 
       "allow creating a json actor" in new WithApplication() {
@@ -133,13 +137,21 @@ object ScalaWebSockets extends PlaySpecification {
     "support iteratees" in {
 
       "iteratee1" in new WithApplication() {
-        runWebSocket(Samples.Controller6.socket, Source.empty, 1) must beRight
-          .which { out => out must_== List(TextMessage("Hello!")) }
+        runWebSocket(
+          Samples.Controller6.socket,
+          Source.empty,
+          1) must beRight.which { out =>
+          out must_== List(TextMessage("Hello!"))
+        }
       }
 
       "iteratee2" in new WithApplication() {
-        runWebSocket(Samples.Controller7.socket, Source.maybe, 1) must beRight
-          .which { out => out must_== List(TextMessage("Hello!")) }
+        runWebSocket(
+          Samples.Controller7.socket,
+          Source.maybe,
+          1) must beRight.which { out =>
+          out must_== List(TextMessage("Hello!"))
+        }
       }
 
       "iteratee3" in new WithApplication() {
@@ -297,8 +309,9 @@ object Samples {
     def socket =
       WebSocket.using[String] { request =>
         // Log events to the console
-        val in =
-          Iteratee.foreach[String](println).map { _ => println("Disconnected") }
+        val in = Iteratee.foreach[String](println).map { _ =>
+          println("Disconnected")
+        }
 
         // Send a single 'Hello!' message
         val out = Enumerator("Hello!")

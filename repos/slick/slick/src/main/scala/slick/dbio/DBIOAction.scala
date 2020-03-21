@@ -217,10 +217,9 @@ object DBIOAction {
           def run(context: BasicBackend#Context) = {
             val b = cbf()
             g.foreach(a =>
-              b += a
-                .asInstanceOf[
-                  SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                .run(context))
+              b += a.asInstanceOf[
+                SynchronousDatabaseAction[R, NoStream, BasicBackend, E]].run(
+                context))
             b.result()
           }
           override def nonFusedEquivalentAction = SequenceAction[R, M[R], E](g)
@@ -237,10 +236,9 @@ object DBIOAction {
             BasicBackend,
             E] {
             def run(context: BasicBackend#Context) =
-              g.head
-                .asInstanceOf[
-                  SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                .run(context) :: Nil
+              g.head.asInstanceOf[
+                SynchronousDatabaseAction[R, NoStream, BasicBackend, E]].run(
+                context) :: Nil
             override def nonFusedEquivalentAction = g.head.map(_ :: Nil)
           }
         } else g.head.map(_ :: Nil)
@@ -254,10 +252,9 @@ object DBIOAction {
             def run(context: BasicBackend#Context) = {
               val b = new ArrayBuffer[R](g.length)
               g.foreach(a =>
-                b += a
-                  .asInstanceOf[
-                    SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                  .run(context))
+                b += a.asInstanceOf[
+                  SynchronousDatabaseAction[R, NoStream, BasicBackend, E]].run(
+                  context))
               b
             }
             override def nonFusedEquivalentAction =
@@ -303,8 +300,8 @@ object DBIOAction {
         def run(context: BasicBackend#Context) = {
           g.foreach(
             _.asInstanceOf[
-              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]]
-              .run(context))
+              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]].run(
+              context))
         }
         override def nonFusedEquivalentAction =
           AndThenAction[Unit, NoStream, E](g)
@@ -315,8 +312,10 @@ object DBIOAction {
       val grouped = groupBySynchronicity[Any, E](actions :+ DBIO.successful(()))
       grouped.length match {
         case 1 =>
-          sequenceGroup(grouped.head, true)
-            .asInstanceOf[DBIOAction[Unit, NoStream, E]]
+          sequenceGroup(grouped.head, true).asInstanceOf[DBIOAction[
+            Unit,
+            NoStream,
+            E]]
         case n =>
           val last = grouped.length - 1
           val as = grouped.iterator.zipWithIndex.map {
@@ -588,9 +587,8 @@ trait SynchronousDatabaseAction[
         new SynchronousDatabaseAction.Fused[(R, R2), NoStream, B, E with E2] {
           def run(context: B#Context): (R, R2) = {
             val r1 = self.run(context)
-            val r2 = a
-              .asInstanceOf[SynchronousDatabaseAction[R2, NoStream, B, E2]]
-              .run(context)
+            val r2 = a.asInstanceOf[
+              SynchronousDatabaseAction[R2, NoStream, B, E2]].run(context)
             (r1, r2)
           }
           override def nonFusedEquivalentAction
@@ -611,15 +609,14 @@ trait SynchronousDatabaseAction[
               try self.run(context)
               catch {
                 case NonFatal(ex) =>
-                  try a
-                    .asInstanceOf[
-                      SynchronousDatabaseAction[Any, NoStream, B, E2]]
-                    .run(context)
+                  try a.asInstanceOf[
+                    SynchronousDatabaseAction[Any, NoStream, B, E2]].run(
+                    context)
                   catch ignoreFollowOnError
                   throw ex
               }
-            a.asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]]
-              .run(context)
+            a.asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]].run(
+              context)
             res
           }
           override def nonFusedEquivalentAction: DBIOAction[R, S, E with E2] =
@@ -736,13 +733,14 @@ object SynchronousDatabaseAction {
           if ec eq DBIO.sameThreadExecutionContext =>
         new SynchronousDatabaseAction.Fused[R, S, BasicBackend, E] {
           def run(context: BasicBackend#Context): R = {
-            val b = base
-              .asInstanceOf[
-                SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
-              .run(context)
+            val b = base.asInstanceOf[SynchronousDatabaseAction[
+              Any,
+              NoStream,
+              BasicBackend,
+              Effect]].run(context)
             val a2 = f(b)
-            a2.asInstanceOf[SynchronousDatabaseAction[R, S, BasicBackend, E]]
-              .run(context)
+            a2.asInstanceOf[
+              SynchronousDatabaseAction[R, S, BasicBackend, E]].run(context)
           }
           override def nonFusedEquivalentAction = a
         }
@@ -756,27 +754,27 @@ object SynchronousDatabaseAction {
           def run(context: BasicBackend#Context): R = {
             val res =
               try {
-                base
-                  .asInstanceOf[
-                    SynchronousDatabaseAction[R, S, BasicBackend, Effect]]
-                  .run(context)
+                base.asInstanceOf[
+                  SynchronousDatabaseAction[R, S, BasicBackend, Effect]].run(
+                  context)
               } catch {
                 case NonFatal(ex) =>
                   try {
                     val a2 = f(Some(ex))
                     a2.asInstanceOf[SynchronousDatabaseAction[
-                        Any,
-                        NoStream,
-                        BasicBackend,
-                        Effect]]
-                      .run(context)
+                      Any,
+                      NoStream,
+                      BasicBackend,
+                      Effect]].run(context)
                   } catch { case NonFatal(_) if keepFailure => () }
                   throw ex
               }
             val a2 = f(None)
-            a2.asInstanceOf[
-                SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
-              .run(context)
+            a2.asInstanceOf[SynchronousDatabaseAction[
+              Any,
+              NoStream,
+              BasicBackend,
+              Effect]].run(context)
             res
           }
           override def nonFusedEquivalentAction = a

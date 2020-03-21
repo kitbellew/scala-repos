@@ -60,9 +60,10 @@ class NullableColumnAccessorSuite extends SparkFunSuite {
     STRUCT(StructType(StructField("a", StringType) :: Nil)),
     ARRAY(ArrayType(IntegerType)),
     MAP(MapType(IntegerType, StringType))
-  ).foreach {
-    testNullableColumnAccessor(_)
-  }
+  )
+    .foreach {
+      testNullableColumnAccessor(_)
+    }
 
   def testNullableColumnAccessor[JvmType](
       columnType: ColumnType[JvmType]): Unit = {

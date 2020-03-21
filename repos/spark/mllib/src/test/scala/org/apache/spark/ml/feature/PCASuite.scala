@@ -53,9 +53,9 @@ class PCASuite
     val pc = mat.computePrincipalComponents(3)
     val expected = mat.multiply(pc).rows
 
-    val df = sqlContext
-      .createDataFrame(dataRDD.zip(expected))
-      .toDF("features", "expected")
+    val df = sqlContext.createDataFrame(dataRDD.zip(expected)).toDF(
+      "features",
+      "expected")
 
     val pca = new PCA()
       .setInputCol("features")

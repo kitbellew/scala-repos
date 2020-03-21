@@ -92,9 +92,10 @@ trait KafkaMetricsGroup extends Logging {
       eventType: String,
       timeUnit: TimeUnit,
       tags: scala.collection.Map[String, String] = Map.empty) =
-    Metrics
-      .defaultRegistry()
-      .newMeter(metricName(name, tags), eventType, timeUnit)
+    Metrics.defaultRegistry().newMeter(
+      metricName(name, tags),
+      eventType,
+      timeUnit)
 
   def newHistogram(
       name: String,
@@ -107,9 +108,10 @@ trait KafkaMetricsGroup extends Logging {
       durationUnit: TimeUnit,
       rateUnit: TimeUnit,
       tags: scala.collection.Map[String, String] = Map.empty) =
-    Metrics
-      .defaultRegistry()
-      .newTimer(metricName(name, tags), durationUnit, rateUnit)
+    Metrics.defaultRegistry().newTimer(
+      metricName(name, tags),
+      durationUnit,
+      rateUnit)
 
   def removeMetric(
       name: String,
@@ -251,8 +253,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
       .filter { case (tagKey, tagValue) => tagValue != "" }
     if (filteredTags.nonEmpty) {
       // convert dot to _ since reporters like Graphite typically use dot to represent hierarchy
-      val tagsString = filteredTags.toList
-        .sortWith((t1, t2) => t1._1 < t2._1)
+      val tagsString = filteredTags
+        .toList.sortWith((t1, t2) => t1._1 < t2._1)
         .map {
           case (key, value) => "%s.%s".format(key, value.replaceAll("\\.", "_"))
         }
@@ -265,8 +267,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
   }
 
   def removeAllConsumerMetrics(clientId: String) {
-    FetchRequestAndResponseStatsRegistry
-      .removeConsumerFetchRequestAndResponseStats(clientId)
+    FetchRequestAndResponseStatsRegistry.removeConsumerFetchRequestAndResponseStats(
+      clientId)
     ConsumerTopicStatsRegistry.removeConsumerTopicStat(clientId)
     ProducerRequestStatsRegistry.removeProducerRequestStats(clientId)
     removeAllMetricsInList(KafkaMetricsGroup.consumerMetricNameList, clientId)
@@ -287,8 +289,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
       clientId: String) {
     metricNameList.foreach(metric => {
       val pattern = (".*clientId=" + clientId + ".*").r
-      val registeredMetrics = scala.collection.JavaConversions
-        .asScalaSet(Metrics.defaultRegistry().allMetrics().keySet())
+      val registeredMetrics = scala.collection.JavaConversions.asScalaSet(
+        Metrics.defaultRegistry().allMetrics().keySet())
       for (registeredMetric <- registeredMetrics) {
         if (registeredMetric.getGroup == metric.getGroup &&
             registeredMetric.getName == metric.getName &&
@@ -300,8 +302,11 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
               Metrics.defaultRegistry().removeMetric(registeredMetric)
               val afterRemovalSize =
                 Metrics.defaultRegistry().allMetrics().keySet().size
-              trace("Removing metric %s. Metrics registry size reduced from %d to %d"
-                .format(registeredMetric, beforeRemovalSize, afterRemovalSize))
+              trace(
+                "Removing metric %s. Metrics registry size reduced from %d to %d".format(
+                  registeredMetric,
+                  beforeRemovalSize,
+                  afterRemovalSize))
             }
             case _ =>
           }

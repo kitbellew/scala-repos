@@ -90,9 +90,10 @@ object Dependencies {
     "org.eclipse.aether" % "aether-transport-http" % aetherVersion
   val aetherConnectorBasic =
     "org.eclipse.aether" % "aether-connector-basic" % aetherVersion
-  val sisuPlexus = ("org.eclipse.sisu" % "org.eclipse.sisu.plexus" % "0.3.0.M1")
-    .exclude("javax.enterprise", "cdi-api")
-    .exclude("com.google.code.findbugs", "jsr305")
+  val sisuPlexus =
+    ("org.eclipse.sisu" % "org.eclipse.sisu.plexus" % "0.3.0.M1").exclude(
+      "javax.enterprise",
+      "cdi-api").exclude("com.google.code.findbugs", "jsr305")
   val guice = "com.google.inject" % "guice" % "3.0"
   val guava = "com.google.guava" % "guava" % "18.0"
   val javaxInject = "javax.inject" % "javax.inject" % "1"

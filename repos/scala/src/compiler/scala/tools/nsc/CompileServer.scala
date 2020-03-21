@@ -49,8 +49,10 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
   def printMemoryStats() {
     def mb(bytes: Long) = "%dMB".format(bytes / 1000000)
     info(
-      "New session: total memory = %s, max memory = %s, free memory = %s"
-        .format(mb(totalMemory), mb(maxMemory), mb(freeMemory)))
+      "New session: total memory = %s, max memory = %s, free memory = %s".format(
+        mb(totalMemory),
+        mb(maxMemory),
+        mb(freeMemory)))
   }
 
   def isMemoryFullEnough() = {

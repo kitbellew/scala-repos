@@ -24,8 +24,9 @@ object Test extends ScaladocModelTest {
 
     for (template <- templates) {
       testDiagram(template, template.contentDiagram, 8, 7)
-      val subtemplates = List("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-        .map(template._object(_))
+      val subtemplates =
+        List("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").map(
+          template._object(_))
       for (subtemplate <- subtemplates)
         testDiagram(subtemplate, subtemplate.inheritanceDiagram, 2, 1)
     }

@@ -39,9 +39,8 @@ class InsertIntoHiveTableSuite
   import hiveContext.implicits._
   import hiveContext.sql
 
-  val testData = hiveContext.sparkContext
-    .parallelize((1 to 100).map(i => TestData(i, i.toString)))
-    .toDF()
+  val testData = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
+    TestData(i, i.toString))).toDF()
 
   before {
     // Since every we are doing tests for DDL statements,
@@ -230,14 +229,12 @@ class InsertIntoHiveTableSuite
   }
 
   test("SPARK-5498:partition schema does not match table schema") {
-    val testData = hiveContext.sparkContext
-      .parallelize((1 to 10).map(i => TestData(i, i.toString)))
-      .toDF()
+    val testData = hiveContext.sparkContext.parallelize((1 to 10).map(i =>
+      TestData(i, i.toString))).toDF()
     testData.registerTempTable("testData")
 
-    val testDatawithNull = hiveContext.sparkContext
-      .parallelize((1 to 10).map(i => ThreeCloumntable(i, i.toString, null)))
-      .toDF()
+    val testDatawithNull = hiveContext.sparkContext.parallelize(
+      (1 to 10).map(i => ThreeCloumntable(i, i.toString, null))).toDF()
 
     val tmpDir = Utils.createTempDir()
     sql(s"""

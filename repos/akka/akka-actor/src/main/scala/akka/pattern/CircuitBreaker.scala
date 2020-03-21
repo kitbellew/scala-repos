@@ -125,9 +125,9 @@ class CircuitBreaker(
     */
   @inline
   private[this] def currentState: State =
-    Unsafe.instance
-      .getObjectVolatile(this, AbstractCircuitBreaker.stateOffset)
-      .asInstanceOf[State]
+    Unsafe.instance.getObjectVolatile(
+      this,
+      AbstractCircuitBreaker.stateOffset).asInstanceOf[State]
 
   /**
     * Wraps invocations of asynchronous calls that need to be protected
@@ -495,9 +495,8 @@ class CircuitBreaker(
       * @return Future containing result of protected call
       */
     override def invoke[T](body: ⇒ Future[T]): Future[T] =
-      Promise
-        .failed[T](new CircuitBreakerOpenException(remainingDuration()))
-        .future
+      Promise.failed[T](
+        new CircuitBreakerOpenException(remainingDuration())).future
 
     /**
       * Calculate remaining duration until reset to inform the caller in case a backoff algorithm is useful

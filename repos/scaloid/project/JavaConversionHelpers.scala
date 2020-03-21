@@ -80,10 +80,8 @@ trait JavaConversionHelpers {
               bounds = t.getBounds.map(step(_, nextLevel)).toList,
               isVar = true)
           case w: WildcardType =>
-            val bs = w.getUpperBounds
-              .map(step(_, nextLevel))
-              .toList
-              .filter(_.name != "Any")
+            val bs = w.getUpperBounds.map(step(_, nextLevel)).toList.filter(
+              _.name != "Any")
             ScalaType("_", Nil, bounds = bs)
           case c: Class[_] => {
             if (c.isArray) {

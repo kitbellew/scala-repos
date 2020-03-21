@@ -66,9 +66,9 @@ abstract class BaseJavaConvertersIntention(methodName: String)
 
   def invoke(p: Project, e: Editor, element: PsiElement) {
     def addImport() {
-      val importsHolder: ScImportsHolder =
-        Option(PsiTreeUtil.getParentOfType(element, classOf[ScPackaging]))
-          .getOrElse(element.getContainingFile.asInstanceOf[ScImportsHolder])
+      val importsHolder: ScImportsHolder = Option(
+        PsiTreeUtil.getParentOfType(element, classOf[ScPackaging])).getOrElse(
+        element.getContainingFile.asInstanceOf[ScImportsHolder])
       val path = "scala.collection.JavaConverters._"
       importsHolder.addImportForPath(path)
     }

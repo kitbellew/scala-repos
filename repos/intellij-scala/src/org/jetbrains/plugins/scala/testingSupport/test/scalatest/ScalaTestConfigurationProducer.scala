@@ -65,8 +65,8 @@ class ScalaTestConfigurationProducer extends {
     val element = location.getPsiElement
     if (element == null) return None
 
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] || element.isInstanceOf[
+          PsiDirectory]) {
       val name = element match {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
@@ -78,16 +78,16 @@ class ScalaTestConfigurationProducer extends {
             element,
             location,
             confFactory,
-            ScalaBundle
-              .message("test.in.scope.scalatest.presentable.text", name))))
+            ScalaBundle.message(
+              "test.in.scope.scalatest.presentable.text",
+              name))))
     }
 
     val (testClass, testName) = getLocationClassAndTest(location)
     if (testClass == null) return None
     val testClassPath = testClass.qualifiedName
-    val settings = RunManager
-      .getInstance(location.getProject)
-      .createRunConfiguration(
+    val settings =
+      RunManager.getInstance(location.getProject).createRunConfiguration(
         StringUtil.getShortName(testClassPath) +
           (if (testName != null) "." + testName else ""),
         confFactory)
@@ -106,8 +106,9 @@ class ScalaTestConfigurationProducer extends {
     } catch {
       case e: Exception =>
     }
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(runConfiguration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      runConfiguration,
+      location)
     Some((testClass, settings))
   }
 
@@ -116,8 +117,8 @@ class ScalaTestConfigurationProducer extends {
       location: Location[_ <: PsiElement]): Boolean = {
     val element = location.getPsiElement
     if (element == null) return false
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] || element.isInstanceOf[
+          PsiDirectory]) {
       if (!configuration.isInstanceOf[ScalaTestRunConfiguration]) return false
       return TestConfigurationUtil.isPackageConfiguration(
         element,
@@ -424,8 +425,10 @@ class ScalaTestConfigurationProducer extends {
           var call = _call
           while (call != null) {
             checkCall(
-              PsiTreeUtil
-                .getParentOfType(call, classOf[MethodInvocation], true),
+              PsiTreeUtil.getParentOfType(
+                call,
+                classOf[MethodInvocation],
+                true),
               Map("describe" -> fqn)) match {
               case SuccessResult(invoc, featureName, _) =>
                 testName = featureName + " " + testName
@@ -445,16 +448,20 @@ class ScalaTestConfigurationProducer extends {
       def checkFreeSpecInner(innerClassName: String): Option[String] = {
         val ifqn = fqn + innerClassName
         checkInfix(
-          PsiTreeUtil
-            .getParentOfType(element, classOf[MethodInvocation], false),
+          PsiTreeUtil.getParentOfType(
+            element,
+            classOf[MethodInvocation],
+            false),
           Map("in" -> ifqn, "is" -> ifqn, "ignore" -> ifqn)) match {
           case SuccessResult(_call, _testName, _) =>
             var testName = _testName
             var call = _call
             while (call != null) {
               checkInfix(
-                PsiTreeUtil
-                  .getParentOfType(call, classOf[MethodInvocation], true),
+                PsiTreeUtil.getParentOfType(
+                  call,
+                  classOf[MethodInvocation],
+                  true),
                 Map("-" -> (fqn + ".FreeSpecStringWrapper"))) match {
                 case SuccessResult(invoc, tName, _) =>
                   call = invoc
@@ -486,8 +493,10 @@ class ScalaTestConfigurationProducer extends {
         val ifqn = fqn + innerClassName
         val wfqn = fqn + ".WordSpecStringWrapper"
         checkInfixTagged(
-          PsiTreeUtil
-            .getParentOfType(element, classOf[MethodInvocation], false),
+          PsiTreeUtil.getParentOfType(
+            element,
+            classOf[MethodInvocation],
+            false),
           Map("in" -> ifqn, "is" -> ifqn, "ignore" -> ifqn),
           wfqn) match {
           case SuccessResult(_call, _testName, _) =>
@@ -495,8 +504,10 @@ class ScalaTestConfigurationProducer extends {
             var call = _call
             while (call != null) {
               val checkInfixResult2 = checkInfix(
-                PsiTreeUtil
-                  .getParentOfType(call, classOf[MethodInvocation], true),
+                PsiTreeUtil.getParentOfType(
+                  call,
+                  classOf[MethodInvocation],
+                  true),
                 Map(
                   "when" -> wfqn,
                   "that" -> ifqn,
@@ -506,8 +517,10 @@ class ScalaTestConfigurationProducer extends {
                 checkFirstArgIsUnitOrString = true
               )
               lazy val checkInfixResult = checkInfix(
-                PsiTreeUtil
-                  .getParentOfType(call, classOf[MethodInvocation], true),
+                PsiTreeUtil.getParentOfType(
+                  call,
+                  classOf[MethodInvocation],
+                  true),
                 Map(
                   "when" -> wfqn,
                   "that" -> ifqn,
@@ -543,8 +556,8 @@ class ScalaTestConfigurationProducer extends {
     def endupWithIt(it: ScReferenceExpression): Option[String] = {
       var elem: PsiElement = it
       var parent = it.getParent
-      while (parent != null && (!parent
-               .isInstanceOf[ScTemplateBody] || parent != tb)) {
+      while (parent != null && (!parent.isInstanceOf[
+               ScTemplateBody] || parent != tb)) {
         elem = parent
         parent = parent.getParent
       }
@@ -768,8 +781,8 @@ class ScalaTestConfigurationProducer extends {
         classOf[ScFunctionDefinition],
         false)
       while (fun != null) {
-        if (fun.getParent
-              .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
+        if (fun.getParent.isInstanceOf[
+              ScTemplateBody] && fun.containingClass == clazz) {
           if (fun.name.startsWith("test")) {
             return Some(fun.name)
           }
@@ -787,8 +800,8 @@ class ScalaTestConfigurationProducer extends {
         classOf[ScFunctionDefinition],
         false)
       while (fun != null) {
-        if (fun.getParent
-              .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
+        if (fun.getParent.isInstanceOf[
+              ScTemplateBody] && fun.containingClass == clazz) {
           if (fun.hasAnnotation(annot) != None) {
             return Some(fun.name)
           }
@@ -819,30 +832,18 @@ class ScalaTestConfigurationProducer extends {
     import ScalaTestUtil._
     val oldResult = (
       clazz,
-      (getFunSuiteBases.toStream
-        .map(checkFunSuite)
-        .find(_.isDefined)
-        .getOrElse(None) ++
-        getFeatureSpecBases.toStream
-          .map(checkFeatureSpec)
-          .find(_.isDefined)
-          .getOrElse(None) ++
-        getFreeSpecBases.toStream
-          .map(checkFreeSpec)
-          .find(_.isDefined)
-          .getOrElse(None) ++
-        getJUnit3SuiteBases.toStream
-          .map(checkJUnit3Suite)
-          .find(_.isDefined)
-          .getOrElse(None) ++
-        getJUnitSuiteBases.toStream
-          .map(checkJUnitSuite)
-          .find(_.isDefined)
-          .getOrElse(None) ++
-        getPropSpecBases.toStream
-          .map(checkPropSpec)
-          .find(_.isDefined)
-          .getOrElse(None) ++
+      (getFunSuiteBases.toStream.map(checkFunSuite).find(_.isDefined).getOrElse(
+        None) ++
+        getFeatureSpecBases.toStream.map(checkFeatureSpec).find(
+          _.isDefined).getOrElse(None) ++
+        getFreeSpecBases.toStream.map(checkFreeSpec).find(
+          _.isDefined).getOrElse(None) ++
+        getJUnit3SuiteBases.toStream.map(checkJUnit3Suite).find(
+          _.isDefined).getOrElse(None) ++
+        getJUnitSuiteBases.toStream.map(checkJUnitSuite).find(
+          _.isDefined).getOrElse(None) ++
+        getPropSpecBases.toStream.map(checkPropSpec).find(
+          _.isDefined).getOrElse(None) ++
         /**
               //TODO: actually implement checkSpec for scalatest 2.0 Spec
         checkSpec("org.scalatest.Spec") ++
@@ -851,28 +852,18 @@ class ScalaTestConfigurationProducer extends {
         checkSpec("org.scalatest.fixture.SpecLike") ++
           */
         //this is intended for scalatest versions < 2.0
-        getFunSpecBasesPre2_0.toStream
-          .map(checkFunSpec)
-          .find(_.isDefined)
-          .getOrElse(None) ++
+        getFunSpecBasesPre2_0.toStream.map(checkFunSpec).find(
+          _.isDefined).getOrElse(None) ++
         //this is intended for scalatest version 2.0
-        getFunSpecBasesPost2_0.toStream
-          .map(checkFunSpec)
-          .find(_.isDefined)
-          .getOrElse(None) ++
+        getFunSpecBasesPost2_0.toStream.map(checkFunSpec).find(
+          _.isDefined).getOrElse(None) ++
         //---
-        getTestNGSuiteBases.toStream
-          .map(checkTestNGSuite)
-          .find(_.isDefined)
-          .getOrElse(None) ++
-        getFlatSpecBases.toStream
-          .map(checkFlatSpec)
-          .find(_.isDefined)
-          .getOrElse(None) ++
-        getWordSpecBases.toStream
-          .map(checkWordSpec)
-          .find(_.isDefined)
-          .getOrElse(None)).orNull)
+        getTestNGSuiteBases.toStream.map(checkTestNGSuite).find(
+          _.isDefined).getOrElse(None) ++
+        getFlatSpecBases.toStream.map(checkFlatSpec).find(
+          _.isDefined).getOrElse(None) ++
+        getWordSpecBases.toStream.map(checkWordSpec).find(
+          _.isDefined).getOrElse(None)).orNull)
 
     val astTransformer = new ScalaTestAstTransformer()
     val selection = astTransformer.testSelection(location)

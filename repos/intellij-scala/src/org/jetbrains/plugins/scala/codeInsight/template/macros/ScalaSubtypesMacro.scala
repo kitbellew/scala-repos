@@ -44,18 +44,13 @@ class ScalaSubtypesMacro extends Macro {
         ScType.extractClass(scTypeRes.myType, Some(context.getProject)) match {
           case Some(x: ScTypeDefinition) =>
             import scala.collection.JavaConversions._
-            ClassInheritorsSearch
-              .search(
-                x,
-                GlobalSearchScope.projectScope(context.getProject),
-                true)
-              .findAll()
-              .filter(_.isInstanceOf[ScTypeDefinition])
-              .map(
-                _.asInstanceOf[ScTypeDefinition].getType(TypingContext.empty))
-              .flatMap(_.toOption)
-              .flatMap(MacroUtil.getTypeLookupItem(_, project))
-              .toArray
+            ClassInheritorsSearch.search(
+              x,
+              GlobalSearchScope.projectScope(context.getProject),
+              true).findAll().filter(_.isInstanceOf[ScTypeDefinition]).map(
+              _.asInstanceOf[ScTypeDefinition].getType(
+                TypingContext.empty)).flatMap(_.toOption).flatMap(
+              MacroUtil.getTypeLookupItem(_, project)).toArray
           case _ => Array[LookupElement]()
         }
       case _ => Array[LookupElement]()

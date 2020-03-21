@@ -53,13 +53,10 @@ trait StringHelpers {
     * The result is a Map[String, String]
     */
   def splitNameValuePairs(props: String): Map[String, String] = {
-    val list = props
-      .split(",")
-      .toList
-      .map(in => {
-        val pair = in.roboSplit("=")
-        (pair(0), unquote(pair(1)))
-      })
+    val list = props.split(",").toList.map(in => {
+      val pair = in.roboSplit("=")
+      (pair(0), unquote(pair(1)))
+    })
     val map: Map[String, String] = Map.empty
 
     (map /: list)((m, next) => m + (next))
@@ -93,10 +90,9 @@ trait StringHelpers {
     * @return the underscored string
     */
   def snakify(name: String) =
-    name
-      .replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
-      .replaceAll("([a-z\\d])([A-Z])", "$1_$2")
-      .toLowerCase
+    name.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").replaceAll(
+      "([a-z\\d])([A-Z])",
+      "$1_$2").toLowerCase
 
   /**
     * Turns a string of format "foo_bar" into camel case "FooBar"

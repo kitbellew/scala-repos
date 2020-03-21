@@ -99,8 +99,8 @@ private[akka] abstract class FanoutOutputs(
 
 private[akka] object FanoutProcessorImpl {
   def props(actorMaterializerSettings: ActorMaterializerSettings): Props =
-    Props(new FanoutProcessorImpl(actorMaterializerSettings))
-      .withDeploy(Deploy.local)
+    Props(new FanoutProcessorImpl(actorMaterializerSettings)).withDeploy(
+      Deploy.local)
 }
 
 /**

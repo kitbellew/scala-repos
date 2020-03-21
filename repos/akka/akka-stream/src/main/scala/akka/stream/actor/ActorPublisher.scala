@@ -357,8 +357,10 @@ trait ActorPublisher[T] extends Actor {
 
     subscriptionTimeout match {
       case timeout: FiniteDuration ⇒
-        scheduledSubscriptionTimeout = context.system.scheduler
-          .scheduleOnce(timeout, self, SubscriptionTimeoutExceeded)
+        scheduledSubscriptionTimeout = context.system.scheduler.scheduleOnce(
+          timeout,
+          self,
+          SubscriptionTimeoutExceeded)
       case _ ⇒
       // ignore...
     }

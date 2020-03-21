@@ -91,8 +91,8 @@ class RoutingSpec
         }
       }
       val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
-          .props(routeeProps = Props[TestActor]))
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
+          routeeProps = Props[TestActor]))
       watch(router)
       Await.ready(latch, remainingOrDefault)
       router ! GetRoutees
@@ -133,8 +133,8 @@ class RoutingSpec
         }
       }
       val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
-          .props(routeeProps = Props[TestActor]),
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
+          routeeProps = Props[TestActor]),
         "router3")
       Await.ready(latch, remainingOrDefault)
       router ! GetRoutees
@@ -150,8 +150,8 @@ class RoutingSpec
         //#custom-strategy
       }
       val router = system.actorOf(
-        RoundRobinPool(1, supervisorStrategy = escalator)
-          .props(routeeProps = Props[TestActor]))
+        RoundRobinPool(1, supervisorStrategy = escalator).props(
+          routeeProps = Props[TestActor]))
       //#supervision
       router ! GetRoutees
       EventFilter[ActorKilledException](occurrences = 1) intercept {
@@ -160,9 +160,8 @@ class RoutingSpec
       expectMsgType[ActorKilledException]
 
       val router2 = system.actorOf(
-        RoundRobinPool(1)
-          .withSupervisorStrategy(escalator)
-          .props(routeeProps = Props[TestActor]))
+        RoundRobinPool(1).withSupervisorStrategy(escalator).props(
+          routeeProps = Props[TestActor]))
       router2 ! GetRoutees
       EventFilter[ActorKilledException](occurrences = 1) intercept {
         expectMsgType[Routees].routees.head.send(Kill, testActor)
@@ -175,9 +174,8 @@ class RoutingSpec
         case e ⇒ testActor ! e; SupervisorStrategy.Escalate
       }
       val router = system.actorOf(
-        FromConfig
-          .withSupervisorStrategy(escalator)
-          .props(routeeProps = Props[TestActor]),
+        FromConfig.withSupervisorStrategy(escalator).props(
+          routeeProps = Props[TestActor]),
         "router1")
       router ! GetRoutees
       EventFilter[ActorKilledException](occurrences = 1) intercept {

@@ -63,13 +63,11 @@ class ScalaDocEscapeTagQuickFix(s: ScDocSyntaxElement)
         MyScaladocParsing.escapeSequencesForWiki.get("=").get,
         syntElem.getFirstChild.getText.length())
     } else {
-      MyScaladocParsing.escapeSequencesForWiki
-        .get(syntElem.getFirstChild.getText)
-        .get
+      MyScaladocParsing.escapeSequencesForWiki.get(
+        syntElem.getFirstChild.getText).get
     }
-    val doc = FileDocumentManager
-      .getInstance()
-      .getDocument(syntElem.getContainingFile.getVirtualFile)
+    val doc = FileDocumentManager.getInstance().getDocument(
+      syntElem.getContainingFile.getVirtualFile)
     val range: TextRange = syntElem.getFirstChild.getTextRange
     doc.replaceString(range.getStartOffset, range.getEndOffset, replaceText)
   }

@@ -101,9 +101,10 @@ class VectorsSuite extends SparkFunSuite with Logging {
   }
 
   test("sparse argmax") {
-    val vec = Vectors
-      .sparse(0, Array.empty[Int], Array.empty[Double])
-      .asInstanceOf[SparseVector]
+    val vec = Vectors.sparse(
+      0,
+      Array.empty[Int],
+      Array.empty[Double]).asInstanceOf[SparseVector]
     assert(vec.argmax === -1)
 
     val vec2 = Vectors.sparse(n, indices, values).asInstanceOf[SparseVector]
@@ -284,8 +285,9 @@ class VectorsSuite extends SparkFunSuite with Logging {
 
       // SparseVector vs. SparseVector
       assert(
-        Vectors
-          .sqdist(sparseVector1, sparseVector2) ~== squaredDist relTol 1e-8)
+        Vectors.sqdist(
+          sparseVector1,
+          sparseVector2) ~== squaredDist relTol 1e-8)
       // DenseVector  vs. SparseVector
       assert(
         Vectors.sqdist(denseVector1, sparseVector2) ~== squaredDist relTol 1e-8)
@@ -333,13 +335,11 @@ class VectorsSuite extends SparkFunSuite with Logging {
         a + v * v)) relTol 1e-8)
 
     assert(
-      Vectors.norm(dv, Double.PositiveInfinity) ~== dv.toArray
-        .map(math.abs)
-        .max relTol 1e-8)
+      Vectors.norm(dv, Double.PositiveInfinity) ~== dv.toArray.map(
+        math.abs).max relTol 1e-8)
     assert(
-      Vectors.norm(sv, Double.PositiveInfinity) ~== sv.toArray
-        .map(math.abs)
-        .max relTol 1e-8)
+      Vectors.norm(sv, Double.PositiveInfinity) ~== sv.toArray.map(
+        math.abs).max relTol 1e-8)
 
     assert(
       Vectors.norm(dv, 3.7) ~== math.pow(

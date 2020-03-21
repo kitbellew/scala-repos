@@ -93,8 +93,9 @@ class ReplaceExpressionWithSAMQuickFix(elem: PsiElement, replacement: => String)
     val element = getElement
     if (!element.isValid) return
     element.replace(
-      ScalaPsiElementFactory
-        .createExpressionFromText(replacement, element.getManager))
+      ScalaPsiElementFactory.createExpressionFromText(
+        replacement,
+        element.getManager))
   }
 }
 

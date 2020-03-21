@@ -32,6 +32,6 @@ private[parser] trait AcceptEncodingHeader {
   private val getEncoding: String ⇒ HttpEncodingRange =
     name ⇒
       HttpEncodingRange(
-        HttpEncodings.getForKeyCaseInsensitive(name) getOrElse HttpEncoding
-          .custom(name))
+        HttpEncodings.getForKeyCaseInsensitive(
+          name) getOrElse HttpEncoding.custom(name))
 }

@@ -82,8 +82,10 @@ class ClientQuotaManager(
 
   private val delayQueueSensor = metrics.sensor(apiKey + "-delayQueue")
   delayQueueSensor.add(
-    metrics
-      .metricName("queue-size", apiKey, "Tracks the size of the delay queue"),
+    metrics.metricName(
+      "queue-size",
+      apiKey,
+      "Tracks the size of the delay queue"),
     new Total())
 
   /**
@@ -136,8 +138,9 @@ class ClientQuotaManager(
         delayQueue.add(new ThrottledResponse(time, throttleTimeMs, callback))
         delayQueueSensor.record()
         logger.debug(
-          "Quota violated for sensor (%s). Delay time: (%d)"
-            .format(clientSensors.quotaSensor.name(), throttleTimeMs))
+          "Quota violated for sensor (%s). Delay time: (%d)".format(
+            clientSensors.quotaSensor.name(),
+            throttleTimeMs))
     }
     throttleTimeMs
   }

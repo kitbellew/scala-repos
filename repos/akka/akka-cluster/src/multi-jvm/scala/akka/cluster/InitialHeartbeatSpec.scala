@@ -20,11 +20,10 @@ object InitialHeartbeatMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(
-        ConfigFactory.parseString("""
-      akka.cluster.failure-detector.threshold = 4"""))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    debugConfig(on = false).withFallback(
+      ConfigFactory.parseString("""
+      akka.cluster.failure-detector.threshold = 4""")).withFallback(
+      MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)
 }
@@ -53,8 +52,8 @@ abstract class InitialHeartbeatSpec
           awaitAssert(
             {
               cluster.sendCurrentClusterState(testActor)
-              expectMsgType[CurrentClusterState].members
-                .map(_.address) should contain(secondAddress)
+              expectMsgType[CurrentClusterState].members.map(
+                _.address) should contain(secondAddress)
             },
             interval = 50.millis)
         }
@@ -65,8 +64,8 @@ abstract class InitialHeartbeatSpec
           awaitAssert(
             {
               cluster.sendCurrentClusterState(testActor)
-              expectMsgType[CurrentClusterState].members
-                .map(_.address) should contain(firstAddress)
+              expectMsgType[CurrentClusterState].members.map(
+                _.address) should contain(firstAddress)
             },
             interval = 50.millis)
         }

@@ -20,17 +20,13 @@ class ScalaComponentTypeOfMacro extends Macro {
     if (params.length != 1) return null
     params.head.calculateResult(context) match {
       case scTypeRes: ScalaTypeResult =>
-        MacroUtil
-          .getComponentFromArrayType(scTypeRes.myType)
-          .map(new ScalaTypeResult(_))
-          .orNull
+        MacroUtil.getComponentFromArrayType(scTypeRes.myType).map(
+          new ScalaTypeResult(_)).orNull
       case otherRes: Result =>
-        MacroUtil
-          .resultToScExpr(otherRes, context)
-          .flatMap(_.getType().toOption)
-          .flatMap(MacroUtil.getComponentFromArrayType)
-          .map(new ScalaTypeResult(_))
-          .orNull
+        MacroUtil.resultToScExpr(otherRes, context).flatMap(
+          _.getType().toOption).flatMap(
+          MacroUtil.getComponentFromArrayType).map(
+          new ScalaTypeResult(_)).orNull
     }
   }
 
@@ -41,22 +37,17 @@ class ScalaComponentTypeOfMacro extends Macro {
     val outerItems = params(0).calculateLookupItems(context)
     if (outerItems == null) return null
 
-    outerItems
-      .flatMap {
-        case lookupItem: ScalaLookupItem =>
-          lookupItem.element match {
-            case typeDef: ScTypeDefinition =>
-              typeDef
-                .getType(TypingContext.empty)
-                .toOption
-                .flatMap(MacroUtil.getComponentFromArrayType)
-                .map(MacroUtil.getTypeLookupItem(_, context.getProject))
-            case _ => None
-          }
-        case _ => None
-      }
-      .filter(_.isDefined)
-      .map(_.get)
+    outerItems.flatMap {
+      case lookupItem: ScalaLookupItem =>
+        lookupItem.element match {
+          case typeDef: ScTypeDefinition =>
+            typeDef.getType(TypingContext.empty).toOption.flatMap(
+              MacroUtil.getComponentFromArrayType).map(
+              MacroUtil.getTypeLookupItem(_, context.getProject))
+          case _ => None
+        }
+      case _ => None
+    }.filter(_.isDefined).map(_.get)
   }
 
   def getName: String = MacroUtil.scalaIdPrefix + "componentTypeOf"

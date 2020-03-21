@@ -33,8 +33,9 @@ class Tutorial2(args: Args) extends Job(args) {
   val input = TextLine("tutorial/data/hello.txt")
   val output = TextLine("tutorial/data/output2.txt")
 
-  input.read
-  /**
+  input
+    .read
+    /**
     As with a scala collection, you can map over a pipe, where each
     item gets passed into an anonymous function, and we create a new
     pipe with the results.

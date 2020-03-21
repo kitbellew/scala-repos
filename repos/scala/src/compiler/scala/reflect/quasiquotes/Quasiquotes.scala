@@ -63,7 +63,8 @@ abstract class Quasiquotes
     debug(s"parsed:\n${showRaw(tree)}\n$tree\n")
     val reified = reify(tree)
     def sreified =
-      reified.toString
+      reified
+        .toString
         .replace(
           "scala.reflect.runtime.`package`.universe.internal.reificationSupport.",
           "")

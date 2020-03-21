@@ -209,8 +209,8 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
             val startTimeMs = System.currentTimeMillis()
             val blocks = readBlocks().flatMap(_.getChunks())
             logInfo(
-              "Reading broadcast variable " + id + " took" + Utils
-                .getUsedTimeMs(startTimeMs))
+              "Reading broadcast variable " + id + " took" + Utils.getUsedTimeMs(
+                startTimeMs))
 
             val obj = TorrentBroadcast.unBlockifyObject[T](
               blocks,
@@ -295,7 +295,9 @@ private object TorrentBroadcast extends Logging {
       removeFromDriver: Boolean,
       blocking: Boolean): Unit = {
     logDebug(s"Unpersisting TorrentBroadcast $id")
-    SparkEnv.get.blockManager.master
-      .removeBroadcast(id, removeFromDriver, blocking)
+    SparkEnv.get.blockManager.master.removeBroadcast(
+      id,
+      removeFromDriver,
+      blocking)
   }
 }

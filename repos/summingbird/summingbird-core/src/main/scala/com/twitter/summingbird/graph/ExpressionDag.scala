@@ -132,8 +132,7 @@ sealed trait ExpressionDag[N[_]] { self =>
         }
       }
       // Note this Stream must always be non-empty as long as roots are
-      idToExp
-        .collect[IdSet](partial)
+      idToExp.collect[IdSet](partial)
         .reduce(_ ++ _)
     }
     // call expand while we are still growing
@@ -264,8 +263,9 @@ sealed trait ExpressionDag[N[_]] { self =>
               */
             assert(
               n == node,
-              "Equality or nodeToLiteral is incorrect: nodeToLit(%s) = ConstLit(%s)"
-                .format(node, n))
+              "Equality or nodeToLiteral is incorrect: nodeToLit(%s) = ConstLit(%s)".format(
+                node,
+                n))
             addExp(node, Const(n))
           case UnaryLit(prev, fn) =>
             val (exp1, idprev) = ensure(prev.evaluate)

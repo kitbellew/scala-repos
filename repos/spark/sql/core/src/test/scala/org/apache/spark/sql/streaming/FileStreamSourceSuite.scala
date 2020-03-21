@@ -74,10 +74,8 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       } else {
         sqlContext.read.format(format)
       }
-    reader
-      .stream(path)
-      .queryExecution
-      .analyzed
+    reader.stream(path)
+      .queryExecution.analyzed
       .collect { case StreamingRelation(s: FileStreamSource, _) => s }
       .head
   }
@@ -175,12 +173,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
 
   test("FileStreamSource schema: parquet, existing files, no schema") {
     withTempDir { src =>
-      Seq("a", "b", "c")
-        .toDS()
-        .as("userColumn")
-        .toDF()
-        .write
-        .parquet(new File(src, "1").getCanonicalPath)
+      Seq("a", "b", "c").toDS().as("userColumn").toDF()
+        .write.parquet(new File(src, "1").getCanonicalPath)
       val schema = createFileStreamSourceAndGetSchema(
         format = Some("parquet"),
         path = Some(src.getCanonicalPath),
@@ -191,12 +185,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
 
   test("FileStreamSource schema: parquet, existing files, schema") {
     withTempPath { src =>
-      Seq("a", "b", "c")
-        .toDS()
-        .as("oldUserColumn")
-        .toDF()
-        .write
-        .parquet(new File(src, "1").getCanonicalPath)
+      Seq("a", "b", "c").toDS().as("oldUserColumn").toDF()
+        .write.parquet(new File(src, "1").getCanonicalPath)
       val userSchema = new StructType().add("userColumn", StringType)
       val schema = createFileStreamSourceAndGetSchema(
         format = Some("parquet"),

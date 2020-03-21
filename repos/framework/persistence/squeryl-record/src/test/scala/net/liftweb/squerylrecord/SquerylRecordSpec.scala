@@ -91,10 +91,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
         // NOTE: This circumvents implicit conversion for the contents on List
         // ids must containInOrder(
         //   td.allCompanies.sortBy(_.name.get).map(_.id))
-        ids.mkString("(", ",", ")") must_== td.allCompanies
-          .sortBy(_.name.get)
-          .map(_.id)
-          .mkString("(", ",", ")")
+        ids.mkString("(", ",", ")") must_== td.allCompanies.sortBy(
+          _.name.get).map(_.id).mkString("(", ",", ")")
       }
     }
 
@@ -336,11 +334,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
     "support the CRUDify trait" >> {
       transaction {
-        val company = Company.create
-          .name("CRUDify Company")
-          .created(Calendar.getInstance())
-          .country(Countries.USA)
-          .postCode("90210")
+        val company = Company.create.name("CRUDify Company").created(
+          Calendar.getInstance()).country(Countries.USA).postCode("90210")
         val bridge = Company.buildBridge(company)
         bridge.save
         val id = company.id
@@ -362,11 +357,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
     }
 
     "Support Optimistic Locking" >> {
-      val company = Company.create
-        .name("Optimistic Company")
-        .created(Calendar.getInstance())
-        .country(Countries.USA)
-        .postCode("90210")
+      val company = Company.create.name("Optimistic Company").created(
+        Calendar.getInstance()).country(Countries.USA).postCode("90210")
       //First insert the company in one transaction
       transaction {
         companies.insert(company)
@@ -397,8 +389,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
           from(companies)(c =>
             where(c.name === "First Company USA")
               select (&(toChar(c.created, "EEE, d MMM yyyy"))))
-        created.head must_== new SimpleDateFormat("EEE, d MMM yyyy")
-          .format(Calendar.getInstance().getTime())
+        created.head must_== new SimpleDateFormat("EEE, d MMM yyyy").format(
+          Calendar.getInstance().getTime())
       }
     }
 
@@ -406,11 +398,12 @@ class SquerylRecordSpec extends Specification with AroundExample {
       val posoMetaData = companies.posoMetaData
       val fieldMetaData =
         posoMetaData.findFieldMetaDataForProperty("employeeSatisfaction").get
-      val columnDefinition = new PostgreSqlAdapter()
-        .writeColumnDeclaration(fieldMetaData, false, MySchema)
+      val columnDefinition = new PostgreSqlAdapter().writeColumnDeclaration(
+        fieldMetaData,
+        false,
+        MySchema)
       columnDefinition.endsWith(
-        "numeric(" + Company.employeeSatisfaction.context
-          .getPrecision() + "," + Company.employeeSatisfaction.scale + ")") must_== true
+        "numeric(" + Company.employeeSatisfaction.context.getPrecision() + "," + Company.employeeSatisfaction.scale + ")") must_== true
     }
 
     "Properly reset the dirty_? flag after loading entities" >> inTransaction {

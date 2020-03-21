@@ -52,8 +52,8 @@ class EnsembleImageCreation extends EnsembleExample {
       children = List(
         new ImageView {
           image = new Image(
-            this.getClass
-              .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+            this.getClass.getResourceAsStream(
+              "/scalafx/ensemble/images/icon-48x48.png"))
           fitHeight = 50
           fitWidth = 150
           preserveRatio = true

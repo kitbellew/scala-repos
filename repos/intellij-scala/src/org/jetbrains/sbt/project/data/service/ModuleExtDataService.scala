@@ -75,8 +75,9 @@ object ModuleExtDataService {
       if (scalaLibraries.nonEmpty) {
         val scalaLibrary = scalaLibraries
           .find(_.scalaVersion.contains(compilerVersion))
-          .orElse(scalaLibraries.find(_.scalaVersion.exists(
-            _.toLanguageLevel == compilerVersion.toLanguageLevel)))
+          .orElse(
+            scalaLibraries.find(_.scalaVersion.exists(
+              _.toLanguageLevel == compilerVersion.toLanguageLevel)))
 
         scalaLibrary match {
           case Some(library) if !library.isScalaSdk =>
@@ -108,8 +109,7 @@ object ModuleExtDataService {
         javacOptions: Seq[String]): Unit = {
       val model = getModifiableRootModel(module)
       val moduleSdk = Option(model.getSdk)
-      val languageLevel = SdkUtils
-        .javaLanguageLevelFrom(javacOptions)
+      val languageLevel = SdkUtils.javaLanguageLevelFrom(javacOptions)
         .orElse(moduleSdk.flatMap(SdkUtils.defaultJavaLanguageLevelIn))
       languageLevel.foreach { level =>
         val extension =
@@ -138,9 +138,9 @@ object ModuleExtDataService {
         NotificationCategory.WARNING,
         NotificationSource.PROJECT_SYNC)
       notification.setBalloonGroup(SbtBundle("sbt.notificationGroupName"))
-      ExternalSystemNotificationManager
-        .getInstance(project)
-        .showNotification(SbtProjectSystem.Id, notification)
+      ExternalSystemNotificationManager.getInstance(project).showNotification(
+        SbtProjectSystem.Id,
+        notification)
     }
   }
 }

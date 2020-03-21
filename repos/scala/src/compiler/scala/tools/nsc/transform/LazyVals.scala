@@ -285,9 +285,9 @@ abstract class LazyVals
         s"crete slow compute path $defSym with owner ${defSym.owner} for lazy val $lzyVal")
       if (bitmaps.contains(lzyVal))
         bitmaps(lzyVal).map(_.owner = defSym)
-      val rhs: Tree = gen
-        .mkSynchronizedCheck(clazz, cond, syncBody, stats)
-        .changeOwner(currentOwner -> defSym)
+      val rhs: Tree =
+        gen.mkSynchronizedCheck(clazz, cond, syncBody, stats).changeOwner(
+          currentOwner -> defSym)
 
       DefDef(defSym, addBitmapDefs(lzyVal, BLOCK(rhs, retVal)))
     }
@@ -387,9 +387,9 @@ abstract class LazyVals
       if (bmps.length > n)
         bmps(n)
       else {
-        val sym = meth
-          .newVariable(nme.newBitmapName(nme.BITMAP_NORMAL, n), meth.pos)
-          .setInfo(ByteTpe)
+        val sym = meth.newVariable(
+          nme.newBitmapName(nme.BITMAP_NORMAL, n),
+          meth.pos).setInfo(ByteTpe)
         enteringTyper {
           sym addAnnotation VolatileAttr
         }

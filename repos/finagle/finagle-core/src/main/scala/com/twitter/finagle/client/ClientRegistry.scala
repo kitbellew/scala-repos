@@ -91,19 +91,17 @@ private[finagle] object RegistryEntryLifecycle {
         val registeredParams = params + LoadBalancerFactory.Dest(va)
         ClientRegistry.register(shown, next, registeredParams)
 
-        CanStackFrom
-          .fromFun[ServiceFactory[Req, Rep]]
-          .toStackable(
-            role,
-            { factory: ServiceFactory[Req, Rep] =>
-              new ServiceFactoryProxy[Req, Rep](factory) {
-                override def close(deadline: Time): Future[Unit] = {
-                  ClientRegistry.unregister(shown, next, params)
-                  self.close(deadline)
-                }
+        CanStackFrom.fromFun[ServiceFactory[Req, Rep]].toStackable(
+          role,
+          { factory: ServiceFactory[Req, Rep] =>
+            new ServiceFactoryProxy[Req, Rep](factory) {
+              override def close(deadline: Time): Future[Unit] = {
+                ClientRegistry.unregister(shown, next, params)
+                self.close(deadline)
               }
             }
-          ) +: next
+          }
+        ) +: next
       }
     }
 }

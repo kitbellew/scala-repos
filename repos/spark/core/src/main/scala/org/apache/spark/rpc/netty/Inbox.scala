@@ -105,14 +105,12 @@ private[netty] class Inbox(
         message match {
           case RpcMessage(_sender, content, context) =>
             try {
-              endpoint
-                .receiveAndReply(context)
-                .applyOrElse[Any, Unit](
-                  content,
-                  { msg =>
-                    throw new SparkException(
-                      s"Unsupported message $message from ${_sender}")
-                  })
+              endpoint.receiveAndReply(context).applyOrElse[Any, Unit](
+                content,
+                { msg =>
+                  throw new SparkException(
+                    s"Unsupported message $message from ${_sender}")
+                })
             } catch {
               case NonFatal(e) =>
                 context.sendFailure(e)

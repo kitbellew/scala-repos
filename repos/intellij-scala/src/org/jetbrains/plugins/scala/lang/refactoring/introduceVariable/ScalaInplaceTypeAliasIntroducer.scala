@@ -23,9 +23,8 @@ object ScalaInplaceTypeAliasIntroducer {
       oldName: String,
       scopeItem: ScopeItem): ScalaInplaceTypeAliasIntroducer = {
 
-    editor
-      .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
-      .addScopeElement(scopeItem)
+    editor.getUserData(
+      IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO).addScopeElement(scopeItem)
     new ScalaInplaceTypeAliasIntroducer(
       scNamedElement,
       substituted,
@@ -48,16 +47,17 @@ object ScalaInplaceTypeAliasIntroducer {
           val document = myEditor.getDocument
           if (revertInfo != null) {
             extensions.inWriteAction {
-              document
-                .replaceString(0, document.getTextLength, revertInfo.fileText)
+              document.replaceString(
+                0,
+                document.getTextLength,
+                revertInfo.fileText)
               PsiDocumentManager.getInstance(myProject).commitDocument(document)
             }
             val offset = revertInfo.caretOffset
             myEditor.getCaretModel.moveToOffset(offset)
             myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-            PsiDocumentManager
-              .getInstance(myEditor.getProject)
-              .commitDocument(document)
+            PsiDocumentManager.getInstance(myEditor.getProject).commitDocument(
+              document)
           }
           if (!myProject.isDisposed && myProject.isOpen) {
             PsiDocumentManager.getInstance(myProject).commitDocument(document)
@@ -92,15 +92,14 @@ class ScalaInplaceTypeAliasIntroducer(
       handler: RefactoringActionHandler,
       element: PsiElement): Boolean = {
     def checkEquals(typeAliasDefinition: ScTypeAliasDefinition) = {
-      editor
-        .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
-        .getNamedElement == element
+      editor.getUserData(
+        IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO).getNamedElement == element
     }
 
     element match {
       case typeAliasDefinition: ScTypeAliasDefinition =>
-        checkEquals(typeAliasDefinition) && handler
-          .isInstanceOf[ScalaIntroduceVariableHandler]
+        checkEquals(typeAliasDefinition) && handler.isInstanceOf[
+          ScalaIntroduceVariableHandler]
       case _ => false
     }
   }
@@ -112,20 +111,17 @@ class ScalaInplaceTypeAliasIntroducer(
   protected override def moveOffsetAfter(success: Boolean): Unit = {
     if (success) {
       // don't know about element to refactor place
-    } else if (myInsertedName != null && !UndoManager
-                 .getInstance(myProject)
-                 .isUndoInProgress
-               && !editor
-                 .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
-                 .isCallModalDialogInProgress) {
+    } else if (myInsertedName != null && !UndoManager.getInstance(
+                 myProject).isUndoInProgress
+               && !editor.getUserData(
+                 IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO).isCallModalDialogInProgress) {
 
       val revertInfo =
         myEditor.getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
       if (revertInfo != null) {
         extensions.inWriteAction {
-          val myFile: PsiFile = PsiDocumentManager
-            .getInstance(myEditor.getProject)
-            .getPsiFile(myEditor.getDocument)
+          val myFile: PsiFile = PsiDocumentManager.getInstance(
+            myEditor.getProject).getPsiFile(myEditor.getDocument)
           myEditor.getDocument.replaceString(
             0,
             myFile.getTextLength,

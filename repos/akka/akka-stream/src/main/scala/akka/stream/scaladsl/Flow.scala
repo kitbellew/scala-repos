@@ -121,8 +121,7 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
   def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(
       combine: (Mat, Mat2) ⇒ Mat3): Sink[In, Mat3] = {
     if (isIdentity)
-      Sink
-        .fromGraph(sink.asInstanceOf[Graph[SinkShape[In], Mat2]])
+      Sink.fromGraph(sink.asInstanceOf[Graph[SinkShape[In], Mat2]])
         .mapMaterializedValue(combine(NotUsed.asInstanceOf[Mat], _))
     else {
       val sinkCopy = sink.module.carbonCopy
@@ -241,9 +240,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     if (this.isIdentity) new Flow(op).asInstanceOf[Repr[U]]
     else
       new Flow(
-        module
-          .fuse(op, shape.out, op.inPort)
-          .replaceShape(FlowShape(shape.in, op.outPort)))
+        module.fuse(op, shape.out, op.inPort).replaceShape(
+          FlowShape(shape.in, op.outPort)))
   }
 
   // FIXME: Only exists to keep old stuff alive
@@ -254,9 +252,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     if (this.isIdentity) new Flow(op).asInstanceOf[ReprMat[U, Mat2]]
     else
       new Flow[In, U, Mat2](
-        module
-          .fuse(op, shape.out, op.inPort, Keep.right)
-          .replaceShape(FlowShape(shape.in, op.outPort)))
+        module.fuse(op, shape.out, op.inPort, Keep.right).replaceShape(
+          FlowShape(shape.in, op.outPort)))
   }
 
   /**
@@ -310,11 +307,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     */
   def toProcessor: RunnableGraph[
     Processor[In @uncheckedVariance, Out @uncheckedVariance]] =
-    Source
-      .asSubscriber[In]
-      .via(this)
-      .toMat(Sink.asPublisher[Out](false))(
-        Keep.both[Subscriber[In], Publisher[Out]])
+    Source.asSubscriber[In].via(this).toMat(Sink.asPublisher[Out](false))(
+      Keep.both[Subscriber[In], Publisher[Out]])
       .mapMaterializedValue {
         case (sub, pub) ⇒
           new Processor[In, Out] {
@@ -1061,8 +1055,8 @@ trait FlowOps[+Out, +Mat] {
     */
   def conflateWithSeed[S](seed: Out ⇒ S)(aggregate: (S, Out) ⇒ S): Repr[S] =
     via(
-      Batch(1L, ConstantFun.zeroLong, seed, aggregate)
-        .withAttributes(DefaultAttributes.conflate))
+      Batch(1L, ConstantFun.zeroLong, seed, aggregate).withAttributes(
+        DefaultAttributes.conflate))
 
   /**
     * Allows a faster upstream to progress independently of a slower subscriber by conflating elements into a summary
@@ -1114,8 +1108,8 @@ trait FlowOps[+Out, +Mat] {
     */
   def batch[S](max: Long, seed: Out ⇒ S)(aggregate: (S, Out) ⇒ S): Repr[S] =
     via(
-      Batch(max, ConstantFun.oneLong, seed, aggregate)
-        .withAttributes(DefaultAttributes.batch))
+      Batch(max, ConstantFun.oneLong, seed, aggregate).withAttributes(
+        DefaultAttributes.batch))
 
   /**
     * Allows a faster upstream to progress independently of a slower subscriber by aggregating elements into batches

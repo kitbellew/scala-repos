@@ -17,14 +17,14 @@ final case class SingletonClusterMultiNodeConfig(failureDetectorPuppet: Boolean)
   val second = role("second")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("""
+    debugConfig(on = false).withFallback(
+      ConfigFactory.parseString("""
       akka.cluster {
         auto-down-unreachable-after = 0s
         failure-detector.threshold = 4
       }
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
+    """)).withFallback(
+      MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
 
 }
 

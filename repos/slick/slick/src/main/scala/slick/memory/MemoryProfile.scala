@@ -115,9 +115,9 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
             val b =
               cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
             b ++= fromV.map(v =>
-              converter
-                .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
-                .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
+              converter.asInstanceOf[
+                ResultConverter[MemoryResultConverterDomain, _]].read(
+                v.asInstanceOf[QueryInterpreter.ProductValue]))
             b.result()
           case n => super.run(n)
         }
@@ -139,9 +139,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     def +=(value: T)(implicit session: Backend#Session) {
       val htable = session.database.getTable(table.tableName)
       val buf = htable.createInsertRow
-      converter
-        .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]
-        .set(value, buf)
+      converter.asInstanceOf[
+        ResultConverter[MemoryResultConverterDomain, Any]].set(value, buf)
       htable.append(buf)
     }
 
@@ -178,14 +177,11 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     protected[this] def getIterator(ctx: Backend#Context): Iterator[T] = {
       val inter = createInterpreter(ctx.session.database, param)
       val ResultSetMapping(_, from, CompiledMapping(converter, _)) = tree
-      val pvit = inter
-        .run(from)
-        .asInstanceOf[TraversableOnce[QueryInterpreter.ProductValue]]
-        .toIterator
+      val pvit = inter.run(from).asInstanceOf[TraversableOnce[
+        QueryInterpreter.ProductValue]].toIterator
       pvit.map(
-        converter
-          .asInstanceOf[ResultConverter[MemoryResultConverterDomain, T]]
-          .read _)
+        converter.asInstanceOf[
+          ResultConverter[MemoryResultConverterDomain, T]].read _)
     }
     def run(ctx: Backend#Context): R =
       createInterpreter(ctx.session.database, param).run(tree).asInstanceOf[R]
@@ -229,8 +225,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       param: Any)
       extends super.QueryActionExtensionMethodsImpl[R, S] {
     def result: ProfileAction[R, S, Effect.Read] =
-      new StreamingQueryAction[R, Nothing](tree, param)
-        .asInstanceOf[ProfileAction[R, S, Effect.Read]]
+      new StreamingQueryAction[R, Nothing](tree, param).asInstanceOf[
+        ProfileAction[R, S, Effect.Read]]
   }
 
   class StreamingQueryActionExtensionMethodsImpl[R, T](tree: Node, param: Any)

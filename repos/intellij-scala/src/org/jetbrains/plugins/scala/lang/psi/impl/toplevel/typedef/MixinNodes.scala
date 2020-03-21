@@ -57,8 +57,9 @@ abstract class MixinNodes {
       mutable.HashMap.empty
     def addToMap(key: T, node: Node) {
       val name = ScalaPsiUtil.convertMemberName(elemName(key))
-      (if (!isPrivate(key)) this else privatesMap)
-        .getOrElseUpdate(name, new ArrayBuffer) += ((key, node))
+      (if (!isPrivate(key)) this else privatesMap).getOrElseUpdate(
+        name,
+        new ArrayBuffer) += ((key, node))
       if (isImplicit(key)) implicitNames.add(name)
     }
 
@@ -93,9 +94,9 @@ abstract class MixinNodes {
         _.privatesMap.getOrElse(convertedName, new ArrayBuffer[(T, Node)]))
       val supersPrivates = toNodesSeq(list)
       val thisPrivates = toNodesSeq(
-        privatesMap
-          .getOrElse(convertedName, new ArrayBuffer[(T, Node)])
-          .toList ::: list)
+        privatesMap.getOrElse(
+          convertedName,
+          new ArrayBuffer[(T, Node)]).toList ::: list)
       val thisAllNodes = new AllNodes(thisMap, thisPrivates)
       val supersAllNodes = new AllNodes(supers, supersPrivates)
       synchronized {
@@ -402,9 +403,8 @@ abstract class MixinNodes {
                 zSubst)
             case template: ScTemplateDefinition =>
               place = Option(
-                template
-                  .asInstanceOf[ScalaStubBasedElementImpl[_]]
-                  .getLastChildStub)
+                template.asInstanceOf[
+                  ScalaStubBasedElementImpl[_]].getLastChildStub)
               processScala(
                 template,
                 ScSubstitutor.empty,
@@ -466,18 +466,16 @@ abstract class MixinNodes {
                 new ScSubstitutor(proj).followed(p.actualSubst)
               case _ => ScSubstitutor.empty
             }
-            val newSubst = combine(s, subst, superClass)
-              .followed(thisTypeSubst)
-              .followed(dependentSubst)
+            val newSubst = combine(s, subst, superClass).followed(
+              thisTypeSubst).followed(dependentSubst)
             val newMap = new Map
             superClass match {
               case template: ScTemplateDefinition =>
                 processScala(template, newSubst, newMap, place, base = false)
               case syn: ScSyntheticClass =>
                 //it's required to do like this to have possibility mix Synthetic types
-                val clazz = ScalaPsiManager
-                  .instance(syn.getProject)
-                  .getCachedClass(
+                val clazz =
+                  ScalaPsiManager.instance(syn.getProject).getCachedClass(
                     syn.getQualifiedName,
                     GlobalSearchScope.allScope(syn.getProject),
                     ScalaPsiManager.ClassCategory.TYPE)

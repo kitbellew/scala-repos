@@ -133,18 +133,16 @@ class JobServiceSpec extends TestJobService {
     val client0 = after map { id =>
       jobsClient.query("after", id.toInt.toString)
     } getOrElse jobsClient
-    client0
-      .contentType[ByteChunk](JSON)
-      .get[JValue]("/jobs/%s/messages/%s" format (jobId, channel))
+    client0.contentType[ByteChunk](JSON).get[JValue](
+      "/jobs/%s/messages/%s" format (jobId, channel))
   }
 
   def putStatusRaw(jobId: String, prev: Option[BigDecimal])(obj: JValue) = {
     val client0 = prev map { id =>
       jobsClient.query("prevStatusId", id.toLong.toString)
     } getOrElse jobsClient
-    client0
-      .contentType[ByteChunk](JSON)
-      .put[JValue]("/jobs/%s/status".format(jobId))(obj)
+    client0.contentType[ByteChunk](JSON).put[JValue](
+      "/jobs/%s/status".format(jobId))(obj)
   }
 
   def putStatus(

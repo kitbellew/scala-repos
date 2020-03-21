@@ -35,13 +35,11 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       javaSetter: Option[JavaProperty] = None) {
     def field = accessor.map(_.accessed.asTerm)
     def getter =
-      accessor
-        .map(_.getter)
-        .flatMap(sym => if (sym != NoSymbol) Some(sym) else None)
+      accessor.map(_.getter).flatMap(sym =>
+        if (sym != NoSymbol) Some(sym) else None)
     def setter =
-      accessor
-        .map(_.setter)
-        .flatMap(sym => if (sym != NoSymbol) Some(sym) else None)
+      accessor.map(_.setter).flatMap(sym =>
+        if (sym != NoSymbol) Some(sym) else None)
     def isParam = param.map(_.owner.name == nme.CONSTRUCTOR).getOrElse(false)
 
     def isPublic = param.nonEmpty || accessor.map(_.isPublic).getOrElse(false)
@@ -107,9 +105,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       tpe.declarations.flatMap {
         case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
           val shortName = sym.name.toString.substring(3)
-          if (candidates
-                .find(_ == shortName)
-                .nonEmpty && shortName.length > 0) {
+          if (candidates.find(
+                _ == shortName).nonEmpty && shortName.length > 0) {
             val rawSymTpe = sym.typeSignatureIn(rawTpeOfOwner) match {
               case MethodType(List(param), _) => param.typeSignature
               case _ =>

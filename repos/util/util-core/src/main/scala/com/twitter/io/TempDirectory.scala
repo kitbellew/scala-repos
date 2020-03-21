@@ -15,13 +15,11 @@ object TempDirectory {
     val path = java.nio.file.Files.createTempDirectory("TempDirectory")
 
     if (deleteAtExit)
-      Runtime
-        .getRuntime()
-        .addShutdownHook(new Thread {
-          override def run() {
-            Files.delete(path.toFile)
-          }
-        })
+      Runtime.getRuntime().addShutdownHook(new Thread {
+        override def run() {
+          Files.delete(path.toFile)
+        }
+      })
 
     path.toFile
   }

@@ -93,8 +93,7 @@ class FlowSpec
         materializer.asInstanceOf[ActorMaterializerImpl])
 
       val props = Props(new BrokenActorInterpreter(shell, "a3"))
-        .withDispatcher("akka.test.stream-dispatcher")
-        .withDeploy(Deploy.local)
+        .withDispatcher("akka.test.stream-dispatcher").withDeploy(Deploy.local)
       val impl = system.actorOf(props, "borken-stage-actor")
 
       val subscriber =
@@ -118,9 +117,8 @@ class FlowSpec
       elasticity: Int): (Source[Out, _], ActorMaterializer) ⇒ Publisher[Out] =
     (f, m) ⇒
       f.runWith(
-        Sink
-          .asPublisher(true)
-          .withAttributes(Attributes.inputBuffer(elasticity, elasticity)))(m)
+        Sink.asPublisher(true).withAttributes(
+          Attributes.inputBuffer(elasticity, elasticity)))(m)
 
   def materializeIntoSubscriberAndPublisher[In, Out](
       flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) = {
@@ -615,17 +613,14 @@ class FlowSpec
         val downstream2 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream2)
         // IllegalStateException shut down
-        downstream2
-          .expectSubscriptionAndError()
-          .isInstanceOf[IllegalStateException] should be(true)
+        downstream2.expectSubscriptionAndError().isInstanceOf[
+          IllegalStateException] should be(true)
       }
     }
 
     "should be created from a function easily" in {
-      Source(0 to 9)
-        .via(Flow.fromFunction(_ + 1))
-        .runWith(Sink.seq)
-        .futureValue should ===(1 to 10)
+      Source(0 to 9).via(Flow.fromFunction(_ + 1)).runWith(
+        Sink.seq).futureValue should ===(1 to 10)
     }
   }
 

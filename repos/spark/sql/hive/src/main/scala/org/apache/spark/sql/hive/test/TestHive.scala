@@ -161,9 +161,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   private def rewritePaths(cmd: String): String =
     if (cmd.toUpperCase contains "LOAD DATA") {
       val testDataLocation =
-        hiveDevHome
-          .map(_.getCanonicalPath)
-          .getOrElse(inRepoTests.getCanonicalPath)
+        hiveDevHome.map(_.getCanonicalPath).getOrElse(
+          inRepoTests.getCanonicalPath)
       cmd.replaceAll("\\.\\./\\.\\./", testDataLocation + "/")
     } else {
       cmd
@@ -175,9 +174,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   ShutdownHookManager.registerShutdownDeleteDir(hiveFilesTemp)
 
   val inRepoTests =
-    if (System
-          .getProperty("user.dir")
-          .endsWith("sql" + File.separator + "hive")) {
+    if (System.getProperty("user.dir").endsWith(
+          "sql" + File.separator + "hive")) {
       new File(
         "src" + File.separator + "test" + File.separator + "resources" + File.separator)
     } else {
@@ -432,10 +430,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       loadedTables += name
       logDebug(s"Loading test table $name")
       val createCmds =
-        testTables
-          .get(name)
-          .map(_.commands)
-          .getOrElse(sys.error(s"Unknown test table $name"))
+        testTables.get(name).map(_.commands).getOrElse(
+          sys.error(s"Unknown test table $name"))
       createCmds.foreach(_())
 
       if (cacheTables) {
@@ -471,9 +467,10 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       sessionState.catalog.client.reset()
       sessionState.catalog.unregisterAllTables()
 
-      FunctionRegistry.getFunctionNames.asScala
-        .filterNot(originalUDFs.contains(_))
-        .foreach { udfName => FunctionRegistry.unregisterTemporaryUDF(udfName) }
+      FunctionRegistry.getFunctionNames.asScala.filterNot(
+        originalUDFs.contains(_)).foreach { udfName =>
+        FunctionRegistry.unregisterTemporaryUDF(udfName)
+      }
 
       // Some tests corrupt this value on purpose, which breaks the RESET call below.
       hiveconf.set("fs.default.name", new File(".").toURI.toString)
@@ -510,8 +507,9 @@ private[hive] class TestHiveFunctionRegistry(
     extends HiveFunctionRegistry(fr, client) {
 
   private val removedFunctions =
-    collection.mutable.ArrayBuffer
-      .empty[(String, (ExpressionInfo, FunctionBuilder))]
+    collection.mutable.ArrayBuffer.empty[(
+        String,
+        (ExpressionInfo, FunctionBuilder))]
 
   def unregisterFunction(name: String): Unit = {
     fr.functionBuilders.remove(name).foreach(f => removedFunctions += name -> f)

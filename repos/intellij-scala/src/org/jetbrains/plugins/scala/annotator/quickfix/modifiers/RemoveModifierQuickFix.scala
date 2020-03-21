@@ -25,12 +25,10 @@ class RemoveModifierQuickFix(method: ScModifierListOwner, modifier: String)
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     method.setModifierProperty(modifier, value = false)
     //Should be handled by autoformatting
-    CodeStyleManager
-      .getInstance(method.getProject)
-      .reformatText(
-        method.getContainingFile,
-        method.getModifierList.getTextRange.getStartOffset,
-        method.getModifierList.getTextRange.getEndOffset)
+    CodeStyleManager.getInstance(method.getProject).reformatText(
+      method.getContainingFile,
+      method.getModifierList.getTextRange.getStartOffset,
+      method.getModifierList.getTextRange.getEndOffset)
   }
 
   def getFamilyName: String =

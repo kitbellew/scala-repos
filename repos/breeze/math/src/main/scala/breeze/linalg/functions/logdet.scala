@@ -26,8 +26,9 @@ object logdet extends UFunc {
         //  indices, we have to compare them against their position within the array.  A
         //  final complication is that the array indices are 1-based, due to the LU call
         //  into LAPACK.
-        val numExchangedRows =
-          ipiv.map(_ - 1).zipWithIndex.count { piv => piv._1 != piv._2 }
+        val numExchangedRows = ipiv.map(_ - 1).zipWithIndex.count { piv =>
+          piv._1 != piv._2
+        }
 
         var sign = if (numExchangedRows % 2 == 1) -1.0 else 1.0
 

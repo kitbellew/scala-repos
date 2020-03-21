@@ -72,16 +72,15 @@ class StressTest {
     (new ThreadFactoryBuilder()).setNameFormat("HOWL-sched-%03d").build())
 
   def newNihdb(workDir: File, threshold: Int = 1000): NIHDB =
-    NIHDB
-      .create(
-        chef,
-        authorities,
-        workDir,
-        threshold,
-        Duration(60, "seconds"),
-        txLogScheduler)(actorSystem)
-      .unsafePerformIO
-      .valueOr { e => throw new Exception(e.message) }
+    NIHDB.create(
+      chef,
+      authorities,
+      workDir,
+      threshold,
+      Duration(60, "seconds"),
+      txLogScheduler)(actorSystem).unsafePerformIO.valueOr { e =>
+      throw new Exception(e.message)
+    }
 
   implicit val M = new FutureMonad(actorSystem.dispatcher)
 
@@ -156,11 +155,9 @@ class StressTest {
       import scalaz._
       val length = NIHDBProjection.wrap(nihdb).flatMap { projection =>
         val stream = StreamT.unfoldM[Future, Unit, Option[Long]](None) { key =>
-          projection
-            .getBlockAfter(key, None)
-            .map(_.map {
-              case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
-            })
+          projection.getBlockAfter(key, None).map(_.map {
+            case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
+          })
         }
         stream.length
       }

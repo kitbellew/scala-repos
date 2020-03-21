@@ -266,9 +266,11 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       coll.update(qry, o2, false, false).isUpdateOfExisting must_== true
 
       // this update query won't find any docs to update
-      coll
-        .update(new BasicDBObject("name", "None"), o2, false, false)
-        .getN must_== 0
+      coll.update(
+        new BasicDBObject("name", "None"),
+        o2,
+        false,
+        false).getN must_== 0
 
       // regex query example
       val key = "name"
@@ -279,10 +281,9 @@ class MongoDirectSpec extends Specification with MongoTestKit {
 
       // use regex and another dbobject
       val cur2 = coll.find(
-        BasicDBObjectBuilder.start
-          .add(key, Pattern.compile(regex))
-          .add("count", 1)
-          .get)
+        BasicDBObjectBuilder.start.add(key, Pattern.compile(regex)).add(
+          "count",
+          1).get)
       cur2.count must_== 1
 
       if (!debug) {

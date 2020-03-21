@@ -107,15 +107,14 @@ trait RangeDirectives {
               for (range ← coalescedRanges) {
                 val flow =
                   StreamUtils.sliceBytesTransformer(range.start, range.length)
-                bcast ~> flow
-                  .buffer(16, OverflowStrategy.backpressure)
-                  .prefixAndTail(0)
-                  .map {
-                    case (_, bytes) ⇒
-                      Multipart.ByteRanges.BodyPart(
-                        range.contentRange(length),
-                        HttpEntity(entity.contentType, range.length, bytes))
-                  } ~> merge
+                bcast ~> flow.buffer(
+                  16,
+                  OverflowStrategy.backpressure).prefixAndTail(0).map {
+                  case (_, bytes) ⇒
+                    Multipart.ByteRanges.BodyPart(
+                      range.contentRange(length),
+                      HttpEntity(entity.contentType, range.length, bytes))
+                } ~> merge
               }
               entity.dataBytes ~> bcast
               SourceShape(merge.out)

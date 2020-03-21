@@ -437,9 +437,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
 
     val maxStrLen = (a: Int, b: String) => a.max(b.length)
     val maxColLen = (c: Vec[A]) =>
-      (c.head(halfr) concat c.tail(halfr))
-        .map(scalarTag.show(_))
-        .foldLeft(0)(maxStrLen)
+      (c.head(halfr) concat c.tail(halfr)).map(scalarTag.show(_)).foldLeft(0)(
+        maxStrLen)
     val colIdx = util.grab(Range(0, numCols), halfc)
     val lenSeq = colIdx.map { c => c -> maxColLen(col(c)) }
     val lenMap = lenSeq.toMap.withDefault(_ => 1)
@@ -486,8 +485,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
           var i = 0
           var eq = true
           while (eq && i < length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag
-              .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
+            eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
+              apply(i)) && rv.scalarTag.isMissing(rv(i)))
             i += 1
           }
           eq

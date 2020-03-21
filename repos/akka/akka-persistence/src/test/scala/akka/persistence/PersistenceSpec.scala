@@ -57,10 +57,8 @@ object PersistenceSpec {
       test: String,
       serialization: String = "on",
       extraConfig: Option[String] = None) =
-    extraConfig
-      .map(ConfigFactory.parseString(_))
-      .getOrElse(ConfigFactory.empty())
-      .withFallback(ConfigFactory.parseString(s"""
+    extraConfig.map(ConfigFactory.parseString(_)).getOrElse(
+      ConfigFactory.empty()).withFallback(ConfigFactory.parseString(s"""
       akka.actor.serialize-creators = ${serialization}
       akka.actor.serialize-messages = ${serialization}
       akka.actor.warn-about-java-serializer-usage = off

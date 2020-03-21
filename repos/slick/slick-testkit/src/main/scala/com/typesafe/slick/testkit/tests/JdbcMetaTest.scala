@@ -35,8 +35,8 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
   def testMeta =
     ifCap(tcap.jdbcMeta)(
       DBIO.seq(
-        (users.schema ++ orders.schema).create
-          .named("DDL used to create tables"),
+        (users.schema ++ orders.schema).create.named(
+          "DDL used to create tables"),
         MTypeInfo.getTypeInfo.named("Type info from DatabaseMetaData"),
         ifCap(tcap.jdbcMetaGetFunctions) {
           /* Not supported by PostgreSQL and H2. */
@@ -45,42 +45,35 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
           }
         }.named("Functions from DatabaseMetaData"),
         MUDT.getUDTs(MQName.local("%")).named("UDTs from DatabaseMetaData"),
-        MProcedure
-          .getProcedures(MQName.local("%"))
-          .flatMap { ps => DBIO.sequence(ps.map(_.getProcedureColumns())) }
-          .named("Procedures from DatabaseMetaData"),
-        MTable
-          .getTables(None, None, None, None)
-          .flatMap { ts =>
-            DBIO.sequence(
-              ts.filter(t => Set("users", "orders") contains t.name.name).map {
-                t =>
-                  DBIO.seq(
-                    t.getColumns.flatMap { cs =>
-                      val as = cs.map(_.getColumnPrivileges)
-                      DBIO.sequence(as)
-                    },
-                    t.getVersionColumns,
-                    t.getPrimaryKeys,
-                    t.getImportedKeys,
-                    t.getExportedKeys,
-                    ifCap(tcap.jdbcMetaGetIndexInfo)(t.getIndexInfo()),
-                    t.getTablePrivileges,
-                    t.getBestRowIdentifier(
-                      MBestRowIdentifierColumn.Scope.Session)
-                  )
-              })
-          }
-          .named("Tables from DatabaseMetaData"),
+        MProcedure.getProcedures(MQName.local("%")).flatMap { ps =>
+          DBIO.sequence(ps.map(_.getProcedureColumns()))
+        }.named("Procedures from DatabaseMetaData"),
+        MTable.getTables(None, None, None, None).flatMap { ts =>
+          DBIO.sequence(
+            ts.filter(t => Set("users", "orders") contains t.name.name).map {
+              t =>
+                DBIO.seq(
+                  t.getColumns.flatMap { cs =>
+                    val as = cs.map(_.getColumnPrivileges)
+                    DBIO.sequence(as)
+                  },
+                  t.getVersionColumns,
+                  t.getPrimaryKeys,
+                  t.getImportedKeys,
+                  t.getExportedKeys,
+                  ifCap(tcap.jdbcMetaGetIndexInfo)(t.getIndexInfo()),
+                  t.getTablePrivileges,
+                  t.getBestRowIdentifier(MBestRowIdentifierColumn.Scope.Session)
+                )
+            })
+        }.named("Tables from DatabaseMetaData"),
         MSchema.getSchemas.named("Schemas from DatabaseMetaData"),
         ifCap(tcap.jdbcMetaGetClientInfoProperties)(
           MClientInfoProperty.getClientInfoProperties)
           .named("Client Info Properties from DatabaseMetaData"),
-        MTable
-          .getTables(None, None, None, None)
-          .map(_.should(ts =>
-            Set("orders_xx", "users_xx") subsetOf ts.map(_.name.name).toSet))
-          .named("Tables before deleting")
+        MTable.getTables(None, None, None, None).map(_.should(ts =>
+          Set("orders_xx", "users_xx") subsetOf ts.map(
+            _.name.name).toSet)).named("Tables before deleting")
 
         /* ,
     if(tdb.canGetLocalTables) {

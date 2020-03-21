@@ -400,9 +400,7 @@ class HttpServerSpec
           dataProbe.expectNext(ByteString("abcdef"))
           dataProbe.expectNoMsg(50.millis)
           closeNetworkInput()
-          dataProbe
-            .expectError()
-            .getMessage shouldEqual "Entity stream truncation"
+          dataProbe.expectError().getMessage shouldEqual "Entity stream truncation"
       }
     }
 
@@ -423,9 +421,7 @@ class HttpServerSpec
           dataProbe.expectNext(Chunk(ByteString("abcdef")))
           dataProbe.expectNoMsg(50.millis)
           closeNetworkInput()
-          dataProbe
-            .expectError()
-            .getMessage shouldEqual "Entity stream truncation"
+          dataProbe.expectError().getMessage shouldEqual "Entity stream truncation"
       }
     }
 
@@ -463,8 +459,9 @@ class HttpServerSpec
       inside(expectRequest()) {
         case HttpRequest(GET, _, _, _, _) ⇒
           responses.sendNext(
-            HttpResponse(entity = HttpEntity
-              .Strict(ContentTypes.`text/plain(UTF-8)`, ByteString("abcd"))))
+            HttpResponse(entity = HttpEntity.Strict(
+              ContentTypes.`text/plain(UTF-8)`,
+              ByteString("abcd"))))
           expectResponseWithWipedDate("""|HTTP/1.1 200 OK
                |Server: akka-http/test
                |Date: XXXX
@@ -818,9 +815,8 @@ class HttpServerSpec
       "are programmatically increased (not expiring)" in new RequestTimeoutTestSetup(
         10.millis) {
         send("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-        expectRequest()
-          .header[`Timeout-Access`]
-          .foreach(_.timeoutAccess.updateTimeout(50.millis))
+        expectRequest().header[`Timeout-Access`].foreach(
+          _.timeoutAccess.updateTimeout(50.millis))
         netOut.expectNoBytes(30.millis)
         responses.sendNext(HttpResponse())
         expectResponseWithWipedDate("""HTTP/1.1 200 OK
@@ -834,9 +830,8 @@ class HttpServerSpec
       "are programmatically increased (expiring)" in new RequestTimeoutTestSetup(
         10.millis) {
         send("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-        expectRequest()
-          .header[`Timeout-Access`]
-          .foreach(_.timeoutAccess.updateTimeout(50.millis))
+        expectRequest().header[`Timeout-Access`].foreach(
+          _.timeoutAccess.updateTimeout(50.millis))
         netOut.expectNoBytes(30.millis)
         expectResponseWithWipedDate(
           """HTTP/1.1 503 Service Unavailable
@@ -852,9 +847,8 @@ class HttpServerSpec
       "are programmatically decreased" in new RequestTimeoutTestSetup(
         50.millis) {
         send("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-        expectRequest()
-          .header[`Timeout-Access`]
-          .foreach(_.timeoutAccess.updateTimeout(10.millis))
+        expectRequest().header[`Timeout-Access`].foreach(
+          _.timeoutAccess.updateTimeout(10.millis))
         val mark = System.nanoTime()
         expectResponseWithWipedDate(
           """HTTP/1.1 503 Service Unavailable
@@ -873,9 +867,8 @@ class HttpServerSpec
         send("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
         val timeoutResponse =
           HttpResponse(StatusCodes.InternalServerError, entity = "OOPS!")
-        expectRequest()
-          .header[`Timeout-Access`]
-          .foreach(_.timeoutAccess.updateHandler(_ ⇒ timeoutResponse))
+        expectRequest().header[`Timeout-Access`].foreach(
+          _.timeoutAccess.updateHandler(_ ⇒ timeoutResponse))
         expectResponseWithWipedDate("""HTTP/1.1 500 Internal Server Error
             |Server: akka-http/test
             |Date: XXXX
@@ -949,11 +942,8 @@ class HttpServerSpec
           def expectEntity[T <: HttpEntity: ClassTag](bytes: Int) =
             inside(request) {
               case HttpRequest(POST, _, _, entity: T, _) ⇒
-                entity
-                  .toStrict(100.millis)
-                  .awaitResult(100.millis)
-                  .data
-                  .utf8String shouldEqual entityBase.take(bytes)
+                entity.toStrict(100.millis).awaitResult(
+                  100.millis).data.utf8String shouldEqual entityBase.take(bytes)
             }
 
           def expectDefaultEntityWithSizeError(limit: Int, actualSize: Int) =
@@ -965,10 +955,8 @@ class HttpServerSpec
                     entity @ HttpEntity.Default(_, `actualSize`, _),
                     _) ⇒
                 val error = the[Exception]
-                  .thrownBy(
-                    entity.dataBytes
-                      .runFold(ByteString.empty)(_ ++ _)
-                      .awaitResult(100.millis))
+                  .thrownBy(entity.dataBytes.runFold(ByteString.empty)(
+                    _ ++ _).awaitResult(100.millis))
                   .getCause
                 error shouldEqual EntityStreamSizeException(
                   limit,
@@ -993,10 +981,8 @@ class HttpServerSpec
             inside(request) {
               case HttpRequest(POST, _, _, entity: HttpEntity.Chunked, _) ⇒
                 val error = the[Exception]
-                  .thrownBy(
-                    entity.dataBytes
-                      .runFold(ByteString.empty)(_ ++ _)
-                      .awaitResult(100.millis))
+                  .thrownBy(entity.dataBytes.runFold(ByteString.empty)(
+                    _ ++ _).awaitResult(100.millis))
                   .getCause
                 error shouldEqual EntityStreamSizeException(limit, None)
                 error.getMessage should include("exceeded content length limit")
@@ -1025,8 +1011,9 @@ class HttpServerSpec
         // entities that would be strict but have a Content-Length > the configured maximum are delivered
         // as single element Default entities!
         sendStrictRequestWithLength(11)
-        expectRequest()
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "the config setting (default entity)" in new LengthVerificationTest(
@@ -1035,8 +1022,9 @@ class HttpServerSpec
         expectRequest().expectEntity[HttpEntity.Default](10)
 
         sendDefaultRequestWithLength(11)
-        expectRequest()
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "the config setting (chunked entity)" in new LengthVerificationTest(
@@ -1051,42 +1039,40 @@ class HttpServerSpec
       "a smaller programmatically-set limit (strict entity)" in new LengthVerificationTest(
         maxContentLength = 12) {
         sendStrictRequestWithLength(10)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectEntity[HttpEntity.Strict](10)
+        expectRequest().mapEntity(_ withSizeLimit 10).expectEntity[
+          HttpEntity.Strict](10)
 
         // entities that would be strict but have a Content-Length > the configured maximum are delivered
         // as single element Default entities!
         sendStrictRequestWithLength(11)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().mapEntity(
+          _ withSizeLimit 10).expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "a smaller programmatically-set limit (default entity)" in new LengthVerificationTest(
         maxContentLength = 12) {
         sendDefaultRequestWithLength(10)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectEntity[HttpEntity.Default](10)
+        expectRequest().mapEntity(_ withSizeLimit 10).expectEntity[
+          HttpEntity.Default](10)
 
         sendDefaultRequestWithLength(11)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().mapEntity(
+          _ withSizeLimit 10).expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "a smaller programmatically-set limit (chunked entity)" in new LengthVerificationTest(
         maxContentLength = 12) {
         sendChunkedRequestWithLength(10)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectEntity[HttpEntity.Chunked](10)
+        expectRequest().mapEntity(_ withSizeLimit 10).expectEntity[
+          HttpEntity.Chunked](10)
 
         sendChunkedRequestWithLength(11)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectChunkedEntityWithSizeError(limit = 10)
+        expectRequest().mapEntity(
+          _ withSizeLimit 10).expectChunkedEntityWithSizeError(limit = 10)
       }
 
       "a larger programmatically-set limit (strict entity)" in new LengthVerificationTest(
@@ -1094,40 +1080,38 @@ class HttpServerSpec
         // entities that would be strict but have a Content-Length > the configured maximum are delivered
         // as single element Default entities!
         sendStrictRequestWithLength(10)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectEntity[HttpEntity.Default](10)
+        expectRequest().mapEntity(_ withSizeLimit 10).expectEntity[
+          HttpEntity.Default](10)
 
         sendStrictRequestWithLength(11)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().mapEntity(
+          _ withSizeLimit 10).expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "a larger programmatically-set limit (default entity)" in new LengthVerificationTest(
         maxContentLength = 8) {
         sendDefaultRequestWithLength(10)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectEntity[HttpEntity.Default](10)
+        expectRequest().mapEntity(_ withSizeLimit 10).expectEntity[
+          HttpEntity.Default](10)
 
         sendDefaultRequestWithLength(11)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().mapEntity(
+          _ withSizeLimit 10).expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "a larger programmatically-set limit (chunked entity)" in new LengthVerificationTest(
         maxContentLength = 8) {
         sendChunkedRequestWithLength(10)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectEntity[HttpEntity.Chunked](10)
+        expectRequest().mapEntity(_ withSizeLimit 10).expectEntity[
+          HttpEntity.Chunked](10)
 
         sendChunkedRequestWithLength(11)
-        expectRequest()
-          .mapEntity(_ withSizeLimit 10)
-          .expectChunkedEntityWithSizeError(limit = 10)
+        expectRequest().mapEntity(
+          _ withSizeLimit 10).expectChunkedEntityWithSizeError(limit = 10)
       }
 
       "the config setting applied before another attribute (default entity)" in new LengthVerificationTest(
@@ -1137,14 +1121,14 @@ class HttpServerSpec
           case _ ⇒ ??? // prevent a compile-time warning
         }
         sendDefaultRequestWithLength(10)
-        expectRequest()
-          .mapEntity(nameDataSource("foo"))
-          .expectEntity[HttpEntity.Default](10)
+        expectRequest().mapEntity(nameDataSource("foo")).expectEntity[
+          HttpEntity.Default](10)
 
         sendDefaultRequestWithLength(11)
-        expectRequest()
-          .mapEntity(nameDataSource("foo"))
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().mapEntity(
+          nameDataSource("foo")).expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
     }
   }

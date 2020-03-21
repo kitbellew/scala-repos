@@ -49,8 +49,7 @@ private[spark] class ConsoleSink(
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 
-  val reporter: ConsoleReporter = ConsoleReporter
-    .forRegistry(registry)
+  val reporter: ConsoleReporter = ConsoleReporter.forRegistry(registry)
     .convertDurationsTo(TimeUnit.MILLISECONDS)
     .convertRatesTo(TimeUnit.SECONDS)
     .build()

@@ -43,23 +43,20 @@ object ScalaStubsUtil {
     if (name == null) return Seq.empty
     val inheritors = new ArrayBuffer[ScTemplateDefinition]
     val iterator: java.util.Iterator[ScExtendsBlock] =
-      StubIndex
-        .getElements(
-          ScDirectInheritorsIndex.KEY,
-          name,
-          clazz.getProject,
-          new ScalaSourceFilterScope(scope, clazz.getProject),
-          classOf[ScExtendsBlock])
-        .iterator
+      StubIndex.getElements(
+        ScDirectInheritorsIndex.KEY,
+        name,
+        clazz.getProject,
+        new ScalaSourceFilterScope(scope, clazz.getProject),
+        classOf[ScExtendsBlock]).iterator
     while (iterator.hasNext) {
       val extendsBlock: PsiElement = iterator.next
       val stub = extendsBlock.asInstanceOf[ScExtendsBlockImpl].getStub
       if (stub != null) {
-        if (stub.getParentStub.getStubType
-              .isInstanceOf[ScTemplateDefinitionElementType[
-                _ <: ScTemplateDefinition]]) {
-          inheritors += stub.getParentStub.getPsi
-            .asInstanceOf[ScTemplateDefinition]
+        if (stub.getParentStub.getStubType.isInstanceOf[
+              ScTemplateDefinitionElementType[_ <: ScTemplateDefinition]]) {
+          inheritors += stub.getParentStub.getPsi.asInstanceOf[
+            ScTemplateDefinition]
         }
       } else {
         extendsBlock.getParent match {
@@ -80,14 +77,12 @@ object ScalaStubsUtil {
     def processClass(inheritedClazz: PsiClass) {
       inReadAction {
         val iterator: java.util.Iterator[ScSelfTypeElement] =
-          StubIndex
-            .getElements(
-              ScSelfTypeInheritorsIndex.KEY,
-              name,
-              inheritedClazz.getProject,
-              scope,
-              classOf[ScSelfTypeElement])
-            .iterator
+          StubIndex.getElements(
+            ScSelfTypeInheritorsIndex.KEY,
+            name,
+            inheritedClazz.getProject,
+            scope,
+            classOf[ScSelfTypeElement]).iterator
         while (iterator.hasNext) {
           val selfTypeElement = iterator.next
           selfTypeElement.typeElement match {
@@ -123,9 +118,8 @@ object ScalaStubsUtil {
       }
     }
     processClass(clazz)
-    ClassInheritorsSearch
-      .search(clazz, scope, true)
-      .forEach(new Processor[PsiClass] {
+    ClassInheritorsSearch.search(clazz, scope, true).forEach(
+      new Processor[PsiClass] {
         def process(t: PsiClass) = {
           processClass(t)
           true

@@ -103,13 +103,10 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
   override def toString: String =
     if (terms.isEmpty) "e"
     else
-      terms
-        .filter(_._2 != 0)
-        .map {
-          case (a, n) if n == 1 => a.toString
-          case (a, n) if n != 0 => s"($a)^$n"
-        }
-        .mkString(" |+| ")
+      terms.filter(_._2 != 0).map {
+        case (a, n) if n == 1 => a.toString
+        case (a, n) if n != 0 => s"($a)^$n"
+      }.mkString(" |+| ")
 }
 
 object FreeAbGroup { companion =>

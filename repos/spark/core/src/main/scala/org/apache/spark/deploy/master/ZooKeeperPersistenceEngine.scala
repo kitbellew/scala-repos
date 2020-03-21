@@ -51,11 +51,8 @@ private[master] class ZooKeeperPersistenceEngine(
   }
 
   override def read[T: ClassTag](prefix: String): Seq[T] = {
-    zk.getChildren
-      .forPath(WORKING_DIR)
-      .asScala
-      .filter(_.startsWith(prefix))
-      .flatMap(deserializeFromFile[T])
+    zk.getChildren.forPath(WORKING_DIR).asScala
+      .filter(_.startsWith(prefix)).flatMap(deserializeFromFile[T])
   }
 
   override def close() {

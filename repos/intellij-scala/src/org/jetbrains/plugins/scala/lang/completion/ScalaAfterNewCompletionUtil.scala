@@ -152,9 +152,10 @@ object ScalaAfterNewCompletionUtil {
       var tailText: String = ""
       val itemText: String = psiClass.name + (tp match {
         case ScParameterizedType(_, tps) =>
-          tps
-            .map(tp => ScType.presentableText(subst.subst(tp)))
-            .mkString("[", ", ", "]")
+          tps.map(tp => ScType.presentableText(subst.subst(tp))).mkString(
+            "[",
+            ", ",
+            "]")
         case _ => ""
       })
       psiClass match {
@@ -185,12 +186,9 @@ object ScalaAfterNewCompletionUtil {
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
       : ScalaLookupItem = {
     val name: String = psiClass.name
-    val isRenamed = renamesMap
-      .filter {
-        case (aName, (renamed, aClazz)) => aName == name && aClazz == psiClass
-      }
-      .map(_._2._1)
-      .headOption
+    val isRenamed = renamesMap.filter {
+      case (aName, (renamed, aClazz)) => aName == name && aClazz == psiClass
+    }.map(_._2._1).headOption
     val lookupElement: ScalaLookupItem =
       new ScalaLookupItem(psiClass, isRenamed.getOrElse(name)) {
         override def renderElement(presentation: LookupElementPresentation) {
@@ -211,9 +209,8 @@ object ScalaAfterNewCompletionUtil {
           AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE
         else AutoCompletionPolicy.NEVER_AUTOCOMPLETE)
     val qualName = psiClass.qualifiedName
-    if (ScalaCodeStyleSettings
-          .getInstance(psiClass.getProject)
-          .hasImportWithPrefix(qualName)) {
+    if (ScalaCodeStyleSettings.getInstance(
+          psiClass.getProject).hasImportWithPrefix(qualName)) {
       lookupElement.prefixCompletion = true
     }
     lookupElement.setInsertHandler(new ScalaConstructorInsertHandler)
@@ -246,8 +243,8 @@ object ScalaAfterNewCompletionUtil {
           case _ =>
         }
         //todo: filter inner classes smarter (how? don't forget deep inner classes)
-        if (clazz.containingClass != null && (!clazz.containingClass
-              .isInstanceOf[ScObject] ||
+        if (clazz.containingClass != null && (!clazz.containingClass.isInstanceOf[
+              ScObject] ||
             clazz.hasModifierPropertyScala("static"))) return null
         if (!ResolveUtils.isAccessible(clazz, place, forCompletion = true))
           return null
@@ -282,9 +279,8 @@ object ScalaAfterNewCompletionUtil {
           if (clazz.getUseScope.isInstanceOf[LocalSearchScope])
             GlobalSearchScope.allScope(place.getProject)
           else clazz.getUseScope
-        ClassInheritorsSearch
-          .search(clazz, searchScope, true)
-          .forEach(new Processor[PsiClass] {
+        ClassInheritorsSearch.search(clazz, searchScope, true).forEach(
+          new Processor[PsiClass] {
             def process(clazz: PsiClass): Boolean = {
               if (clazz.name == null || clazz.name == "") return true
               val undefines: Seq[ScUndefinedType] =

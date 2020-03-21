@@ -18,35 +18,23 @@ class OracleExtraTests extends AsyncTest[JdbcTestDB] {
     DBIO.seq(
       as.schema.create,
       as += (1, Some(Array[Byte](1, 2, 3))),
-      as.filter(_ => LiteralColumn[Option[Int]](None).isDefined)
-        .map(_.id)
-        .result
-        .map(_ shouldBe Nil),
-      as.filter(_ => LiteralColumn[Option[Int]](None).bind.isDefined)
-        .map(_.id)
-        .result
-        .map(_ shouldBe Nil),
+      as.filter(_ => LiteralColumn[Option[Int]](None).isDefined).map(
+        _.id).result.map(_ shouldBe Nil),
+      as.filter(_ => LiteralColumn[Option[Int]](None).bind.isDefined).map(
+        _.id).result.map(_ shouldBe Nil),
       as.filter(_.a.isEmpty).map(_.id).result.map(_ shouldBe Nil),
-      as.filter(_.a === (Some(Array[Byte](1, 2, 3)): Option[Array[Byte]]))
-        .map(_.id)
-        .result
-        .map(_ shouldBe Seq(1)),
-      as.filter(_.a === (None: Option[Array[Byte]]))
-        .map(_.id)
-        .result
-        .map(_ shouldBe Nil),
-      as.filter(_.a === (Some(Array[Byte](1, 2, 3)): Option[Array[Byte]]).bind)
-        .map(_.id)
-        .result
-        .map(_ shouldBe Seq(1)),
-      as.filter(_.a === (None: Option[Array[Byte]]).bind)
-        .map(_.id)
-        .result
-        .map(_ shouldBe Nil),
-      as.filter(_ => LiteralColumn[Option[Int]](None) === (None: Option[Int]))
-        .map(_.id)
-        .result
-        .map(_ shouldBe Nil)
+      as.filter(_.a === (Some(Array[Byte](1, 2, 3)): Option[Array[Byte]])).map(
+        _.id).result.map(_ shouldBe Seq(1)),
+      as.filter(_.a === (None: Option[Array[Byte]])).map(_.id).result.map(
+        _ shouldBe Nil),
+      as.filter(
+        _.a === (Some(Array[Byte](1, 2, 3)): Option[Array[Byte]]).bind).map(
+        _.id).result.map(_ shouldBe Seq(1)),
+      as.filter(_.a === (None: Option[Array[Byte]]).bind).map(_.id).result.map(
+        _ shouldBe Nil),
+      as.filter(_ =>
+        LiteralColumn[Option[Int]](None) === (None: Option[Int])).map(
+        _.id).result.map(_ shouldBe Nil)
     )
   }
 
@@ -65,10 +53,10 @@ class OracleExtraTests extends AsyncTest[JdbcTestDB] {
     val as = TableQuery[A]
 
     //as.schema.createStatements.foreach(println)
-    as.schema.createStatements
-      .should(_.find(_.contains("sequence \"SEQ_SEQTRG\"")).isDefined)
-    as.schema.createStatements
-      .should(_.find(_.contains("trigger \"TRG_SEQTRG\"")).isDefined)
+    as.schema.createStatements.should(
+      _.find(_.contains("sequence \"SEQ_SEQTRG\"")).isDefined)
+    as.schema.createStatements.should(
+      _.find(_.contains("trigger \"TRG_SEQTRG\"")).isDefined)
 
     DBIO.seq(
       as.schema.create,

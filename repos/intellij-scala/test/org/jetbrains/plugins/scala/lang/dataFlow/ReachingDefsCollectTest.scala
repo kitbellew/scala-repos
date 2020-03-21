@@ -37,13 +37,10 @@ class ReachingDefsCollectTest extends LightScalaTestCase {
       if (model.hasSelection) model.getSelectionEnd - 1
       else file.getTextLength - 1)
     val range = ScalaPsiUtil.getElementsRange(start, end)
-    val scope = PsiTreeUtil
-      .getParentOfType(
-        PsiTreeUtil.findCommonParent(start, end),
-        classOf[ScControlFlowOwner],
-        false)
-      .getParent
-      .asInstanceOf[ScalaPsiElement]
+    val scope = PsiTreeUtil.getParentOfType(
+      PsiTreeUtil.findCommonParent(start, end),
+      classOf[ScControlFlowOwner],
+      false).getParent.asInstanceOf[ScalaPsiElement]
 
     import org.jetbrains.plugins.scala.lang.psi.dataFlow.impl.reachingDefs.ReachingDefintionsCollector._
     val infos = collectVariableInfo(range, scope)

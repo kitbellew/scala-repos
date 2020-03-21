@@ -53,10 +53,12 @@ final class PostApi(
               (env.recent.invalidate inject post) >>-
               ctx.userId.?? { userId =>
                 shutup ! post.isTeam.fold(
-                  lila.hub.actorApi.shutup
-                    .RecordTeamForumMessage(userId, post.text),
-                  lila.hub.actorApi.shutup
-                    .RecordPublicForumMessage(userId, post.text))
+                  lila.hub.actorApi.shutup.RecordTeamForumMessage(
+                    userId,
+                    post.text),
+                  lila.hub.actorApi.shutup.RecordPublicForumMessage(
+                    userId,
+                    post.text))
               } >>- {
               (ctx.userId ifFalse post.troll) ?? { userId =>
                 timeline ! Propagate(

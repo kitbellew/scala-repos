@@ -58,10 +58,8 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
     if (user.count.rated == 0) fuccess(none)
     else {
       (user.count.rated >= maxGames) ??
-        pimpQB($query(gameQuery(user)))
-          .sort(Query.sortCreated)
-          .skip(maxGames - 1)
-          .one[Game]
+        pimpQB($query(gameQuery(user))).sort(Query.sortCreated).skip(
+          maxGames - 1).one[Game]
     } orElse
       pimpQB($query(gameQuery(user))).sort(Query.sortChronological).one[Game]
 

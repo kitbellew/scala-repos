@@ -27,10 +27,8 @@ private[hive] object ReflectionUtils {
       level: Int,
       fieldName: String,
       fieldValue: AnyRef) {
-    val ancestor = Iterator
-      .iterate[Class[_]](obj.getClass)(_.getSuperclass)
-      .drop(level)
-      .next()
+    val ancestor = Iterator.iterate[Class[_]](obj.getClass)(
+      _.getSuperclass).drop(level).next()
     val field = ancestor.getDeclaredField(fieldName)
     field.setAccessible(true)
     field.set(obj, fieldValue)
@@ -41,10 +39,8 @@ private[hive] object ReflectionUtils {
   }
 
   def getAncestorField[T](clazz: Object, level: Int, fieldName: String): T = {
-    val ancestor = Iterator
-      .iterate[Class[_]](clazz.getClass)(_.getSuperclass)
-      .drop(level)
-      .next()
+    val ancestor = Iterator.iterate[Class[_]](clazz.getClass)(
+      _.getSuperclass).drop(level).next()
     val field = ancestor.getDeclaredField(fieldName)
     field.setAccessible(true)
     field.get(clazz).asInstanceOf[T]

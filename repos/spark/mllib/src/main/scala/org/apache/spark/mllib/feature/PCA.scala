@@ -107,9 +107,12 @@ class PCAModel private[spark] (
         pc.transpose.multiply(dv)
       case SparseVector(size, indices, values) =>
         /* SparseVector -> single row SparseMatrix */
-        val sm = Matrices
-          .sparse(size, 1, Array(0, indices.length), indices, values)
-          .transpose
+        val sm = Matrices.sparse(
+          size,
+          1,
+          Array(0, indices.length),
+          indices,
+          values).transpose
         val projection = sm.multiply(pc)
         Vectors.dense(projection.values)
       case _ =>

@@ -38,8 +38,8 @@ class ScImportSelectorStubImpl[ParentPsi <: PsiElement](
       isAliasedImport: Boolean) {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.referenceText = StringRef.fromString(refText)
     this.name = StringRef.fromString(importedName)
     this.aliasImport = isAliasedImport

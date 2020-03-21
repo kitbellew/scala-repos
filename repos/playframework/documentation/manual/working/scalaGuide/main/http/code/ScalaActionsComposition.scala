@@ -232,8 +232,7 @@ package scalaguide.http.scalaactionscomposition {
           new ActionRefiner[UserRequest, ItemRequest] {
             def refine[A](input: UserRequest[A]) =
               Future.successful {
-                ItemDao
-                  .findById(itemId)
+                ItemDao.findById(itemId)
                   .map(new ItemRequest(_, input))
                   .toRight(NotFound)
               }

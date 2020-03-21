@@ -103,8 +103,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
   }
 
   def addMethod(methodNode: MethodNode, definingClass: ClassBType): Unit = {
-    if (!BytecodeUtils.isAbstractMethod(methodNode) && !BytecodeUtils
-          .isNativeMethod(methodNode)) {
+    if (!BytecodeUtils.isAbstractMethod(
+          methodNode) && !BytecodeUtils.isNativeMethod(methodNode)) {
       // TODO: run dataflow analyses to make the call graph more precise
       //  - producers to get forwarded parameters (ForwardedParam)
       //  - typeAnalysis for more precise argument types, more precise callee
@@ -114,8 +114,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       // It is also used to get the stack height at the call site.
 
       val analyzer = {
-        if (compilerSettings.YoptNullnessTracking && AsmAnalyzer
-              .sizeOKForNullness(methodNode)) {
+        if (compilerSettings.YoptNullnessTracking && AsmAnalyzer.sizeOKForNullness(
+              methodNode)) {
           Some(
             new AsmAnalyzer(
               methodNode,
@@ -153,10 +153,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                 call.owner,
                 call.name,
                 call.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
-              (declarationClassNode, source) <- byteCodeRepository
-                .classNodeAndSource(declarationClass): Either[
-                OptimizerWarning,
-                (ClassNode, Source)]
+              (
+                declarationClassNode,
+                source) <- byteCodeRepository.classNodeAndSource(
+                declarationClass): Either[OptimizerWarning, (ClassNode, Source)]
             } yield {
               val declarationClassBType =
                 classBTypeFromClassNode(declarationClassNode)
@@ -237,9 +237,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       prodCons: => ProdConsAnalyzer): IntMap[ArgInfo] = {
     if (callee.isLeft) IntMap.empty
     else {
-      lazy val numArgs = Type
-        .getArgumentTypes(callsiteInsn.desc)
-        .length + (if (callsiteInsn.getOpcode == Opcodes.INVOKESTATIC) 0 else 1)
+      lazy val numArgs =
+        Type.getArgumentTypes(callsiteInsn.desc).length + (if (callsiteInsn.getOpcode == Opcodes.INVOKESTATIC)
+                                                             0
+                                                           else 1)
       argInfosForSams(callee.get.samParamTypes, callsiteInsn, numArgs, prodCons)
     }
   }
@@ -291,11 +292,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       methodNode: MethodNode,
       receiverType: ClassBType): IntMap[ClassBType] = {
     val paramTypes = {
-      val params = Type
-        .getMethodType(methodNode.desc)
-        .getArgumentTypes
-        .map(t =>
-          bTypeForDescriptorOrInternalNameFromClassfile(t.getDescriptor))
+      val params = Type.getMethodType(methodNode.desc).getArgumentTypes.map(t =>
+        bTypeForDescriptorOrInternalNameFromClassfile(t.getDescriptor))
       val isStatic = BytecodeUtils.isStaticMethod(methodNode)
       if (isStatic) params else receiverType +: params
     }
@@ -303,9 +301,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
   }
 
   def capturedSamTypes(lmf: LambdaMetaFactoryCall): IntMap[ClassBType] = {
-    val capturedTypes = Type
-      .getArgumentTypes(lmf.indy.desc)
-      .map(t => bTypeForDescriptorOrInternalNameFromClassfile(t.getDescriptor))
+    val capturedTypes = Type.getArgumentTypes(lmf.indy.desc).map(t =>
+      bTypeForDescriptorOrInternalNameFromClassfile(t.getDescriptor))
     samTypes(capturedTypes)
   }
 
@@ -348,8 +345,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       // The inlineInfo.methodInfos of a ClassBType holds an InlineInfo for each method *declared*
       // within a class (not for inherited methods). Since we already have the  classBType of the
       // callee, we only check there for the methodInlineInfo, we should find it there.
-      calleeDeclarationClassBType.info.orThrow.inlineInfo.methodInfos
-        .get(methodSignature) match {
+      calleeDeclarationClassBType.info.orThrow.inlineInfo.methodInfos.get(
+        methodSignature) match {
         case Some(methodInlineInfo) =>
           val canInlineFromSource =
             compilerSettings.YoptInlineGlobal || calleeSource == CompilationUnit
@@ -477,7 +474,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
     override def toString =
       "Invocation of" +
-        s" ${callee.map(_.calleeDeclarationClass.internalName).getOrElse("?")}.${callsiteInstruction.name + callsiteInstruction.desc}" +
+        s" ${callee.map(_.calleeDeclarationClass.internalName).getOrElse(
+          "?")}.${callsiteInstruction.name + callsiteInstruction.desc}" +
         s"@${callsiteMethod.instructions.indexOf(callsiteInstruction)}" +
         s" in ${callsiteClass.internalName}.${callsiteMethod.name}"
   }

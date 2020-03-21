@@ -88,11 +88,9 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
 
     def colWidth(col: Int) =
       if (showRows > 0)
-        (0 until showRows)
-          .map(row =>
-            if (this(row, col) != null) this(row, col).toString.length + 2
-            else 3)
-          .max
+        (0 until showRows).map(row =>
+          if (this(row, col) != null) this(row, col).toString.length + 2
+          else 3).max
       else 0
 
     val colWidths = new scala.collection.mutable.ArrayBuffer[Int]

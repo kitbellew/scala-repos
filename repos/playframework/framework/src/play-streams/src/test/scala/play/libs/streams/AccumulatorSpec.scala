@@ -103,9 +103,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
           })
 
         sawait(
-          play.api.libs.streams
-            .Accumulator(sink.asScala)
-            .run(source.asScala)) must_== 6
+          play.api.libs.streams.Accumulator(sink.asScala).run(
+            source.asScala)) must_== 6
       }
     }
   }

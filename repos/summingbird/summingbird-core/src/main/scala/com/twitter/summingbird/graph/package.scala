@@ -32,8 +32,9 @@ package object graph {
       stack match {
         case Nil => deps
         case h :: tail =>
-          val newStack =
-            nf(h).filterNot(acc).foldLeft(tail) { (s, it) => it :: s }
+          val newStack = nf(h).filterNot(acc).foldLeft(tail) { (s, it) =>
+            it :: s
+          }
           val newDeps = if (acc(h)) deps else h :: deps
           loop(newStack, newDeps, acc + h)
       }
@@ -76,8 +77,9 @@ package object graph {
         def withParents(n: T) =
           (n :: (nf(n).toList)).filterNot(acc.contains(_)).distinct
 
-        val (doneThisStep, rest) =
-          todo.map { withParents(_) }.partition { _.size == 1 }
+        val (doneThisStep, rest) = todo.map { withParents(_) }.partition {
+          _.size == 1
+        }
 
         acc ++= (doneThisStep.flatten.map { n =>
           val depth = nf(n) //n is done now, so all it's neighbors must be too.

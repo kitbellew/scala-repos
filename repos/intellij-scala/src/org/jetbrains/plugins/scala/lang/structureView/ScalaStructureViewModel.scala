@@ -42,8 +42,8 @@ class ScalaStructureViewModel(
     with StructureViewModel.ElementInfoProvider {
   def isAlwaysLeaf(element: StructureViewTreeElement): Boolean =
     !(isAlwaysShowsPlus(element) ||
-      element.isInstanceOf[TestStructureViewElement] || element
-      .isInstanceOf[ScalaValueStructureViewElement])
+      element.isInstanceOf[TestStructureViewElement] || element.isInstanceOf[
+      ScalaValueStructureViewElement])
 
   def isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean = {
     element match {
@@ -76,9 +76,8 @@ class ScalaStructureViewModel(
               case (_, test: TestStructureViewElement) => -1
               case (test: TestStructureViewElement, _) => 1
               case _ =>
-                SorterUtil
-                  .getStringPresentation(o1)
-                  .compareToIgnoreCase(SorterUtil.getStringPresentation(o2))
+                SorterUtil.getStringPresentation(o1).compareToIgnoreCase(
+                  SorterUtil.getStringPresentation(o2))
             }
         }
 
@@ -137,6 +136,7 @@ class ScalaStructureViewModel(
 
 object ScalaStructureViewModel {
   private val NODE_PROVIDERS: util.Collection[NodeProvider[_ <: TreeElement]] =
-    util.Arrays
-      .asList(new ScalaInheritedMembersNodeProvider, new TestNodeProvider)
+    util.Arrays.asList(
+      new ScalaInheritedMembersNodeProvider,
+      new TestNodeProvider)
 }

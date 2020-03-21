@@ -341,12 +341,9 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
 
   private def shallowValidBytes: Int = {
     if (shallowValidByteCount < 0) {
-      this.shallowValidByteCount = this
-        .internalIterator(isShallow = true)
-        .map { messageAndOffset =>
-          MessageSet.entrySize(messageAndOffset.message)
-        }
-        .sum
+      this.shallowValidByteCount = this.internalIterator(isShallow = true).map {
+        messageAndOffset => MessageSet.entrySize(messageAndOffset.message)
+      }.sum
     }
     shallowValidByteCount
   }
@@ -596,12 +593,11 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       timestampType: TimestampType,
       messageTimestampDiffMaxMs: Long,
       toMagicValue: Byte): ByteBufferMessageSet = {
-    val sizeInBytesAfterConversion = shallowValidBytes + this
-      .internalIterator(isShallow = true)
-      .map { messageAndOffset =>
-        Message.headerSizeDiff(messageAndOffset.message.magic, toMagicValue)
-      }
-      .sum
+    val sizeInBytesAfterConversion =
+      shallowValidBytes + this.internalIterator(isShallow = true).map {
+        messageAndOffset =>
+          Message.headerSizeDiff(messageAndOffset.message.magic, toMagicValue)
+      }.sum
     val newBuffer = ByteBuffer.allocate(sizeInBytesAfterConversion)
     var newMessagePosition = 0
     this.internalIterator(isShallow = true).foreach {
@@ -619,8 +615,11 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         newBuffer.putInt(newMessageSize)
         val newMessageBuffer = newBuffer.slice()
         newMessageBuffer.limit(newMessageSize)
-        message
-          .convertToBuffer(toMagicValue, newMessageBuffer, now, timestampType)
+        message.convertToBuffer(
+          toMagicValue,
+          newMessageBuffer,
+          now,
+          timestampType)
 
         newMessagePosition += MessageSet.LogOverhead + newMessageSize
     }

@@ -93,8 +93,8 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
     val gold = QuadraticMinimizer(n, BOX).minimize(H, f :* (-1.0))
     val lb = DenseVector.zeros[Double](n)
     val ub = DenseVector.ones[Double](n)
-    val nlResult = new NonlinearMinimizer(ProjectBox(lb, ub))
-      .minimizeAndReturnState(cost, init)
+    val nlResult = new NonlinearMinimizer(
+      ProjectBox(lb, ub)).minimizeAndReturnState(cost, init)
     println(s"Bounds proximal iter ${nlResult.iter}")
     assert(norm(nlResult.z - gold) < 1e-4)
   }
@@ -216,8 +216,10 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
       -1056.458015, -1058.791892)
     val cost = QuadraticMinimizer.Cost(Hml, fml)
 
-    val nlResult = NonlinearMinimizer(25, PROBABILITYSIMPLEX, 1.0)
-      .minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
+    val nlResult = NonlinearMinimizer(
+      25,
+      PROBABILITYSIMPLEX,
+      1.0).minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
 
     val golden = DenseVector(0.3131862265452959, 0.0, 0.01129486116330884, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.060642310566736704,
@@ -352,8 +354,9 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
       0.00000, 0.11215, 0.24778, 0.04082)
 
     val s = octaveL1.foldLeft(0.0) { case (agg, entry) => agg + abs(entry) }
-    val nlResult = NonlinearMinimizer(25, SPARSE, s)
-      .minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
+    val nlResult = NonlinearMinimizer(25, SPARSE, s).minimizeAndReturnState(
+      cost,
+      DenseVector.zeros[Double](25))
 
     println(s"L1 projection iter ${nlResult.iter}")
     assert(norm(nlResult.x - octaveL1, 2) < 1e-4)

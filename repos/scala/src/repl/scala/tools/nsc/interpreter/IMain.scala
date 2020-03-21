@@ -114,9 +114,8 @@ class IMain(
     (
       if (isInitializeComplete) global.classPath.asURLs
       else
-        PathResolverFactory
-          .create(settings)
-          .resultAsURLs // the compiler's classpath
+        PathResolverFactory.create(
+          settings).resultAsURLs // the compiler's classpath
     )
   def settings = initialSettings
   // Run the code body with the given boolean settings flipped to true.
@@ -941,8 +940,10 @@ class IMain(
         case Array(method) => method
         case xs =>
           sys.error(
-            "Internal error: eval object " + evalClass + ", " + xs
-              .mkString("\n", "\n", ""))
+            "Internal error: eval object " + evalClass + ", " + xs.mkString(
+              "\n",
+              "\n",
+              ""))
       }
     private def compileAndSaveRun(label: String, code: String) = {
       showCodeIfDebugging(code)
@@ -1195,8 +1196,8 @@ class IMain(
   @throws[ScriptException]
   def compile(script: String): CompiledScript =
     eval(
-      "new javax.script.CompiledScript { def eval(context: javax.script.ScriptContext): Object = { " + script + " }.asInstanceOf[Object]; def getEngine: javax.script.ScriptEngine = engine }")
-      .asInstanceOf[CompiledScript]
+      "new javax.script.CompiledScript { def eval(context: javax.script.ScriptContext): Object = { " + script + " }.asInstanceOf[Object]; def getEngine: javax.script.ScriptEngine = engine }").asInstanceOf[
+      CompiledScript]
 
   @throws[ScriptException]
   def compile(reader: java.io.Reader): CompiledScript =
@@ -1253,9 +1254,8 @@ class IMain(
       def value() = {
         val sym0 = symbolOfTerm(id)
         val sym = (importToRuntime importSymbol sym0).asTerm
-        val module = runtimeMirror
-          .reflectModule(sym.owner.companionSymbol.asModule)
-          .instance
+        val module = runtimeMirror.reflectModule(
+          sym.owner.companionSymbol.asModule).instance
         val module1 = runtimeMirror.reflect(module)
         val invoker = module1.reflectField(sym)
 

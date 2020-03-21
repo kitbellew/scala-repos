@@ -267,8 +267,10 @@ class ActorSelectionSpec
           askNode(
             c1,
             SelectString(
-              "../.." + target.path.elements
-                .mkString("/", "/", "/"))) should ===(Some(target))
+              "../.." + target.path.elements.mkString(
+                "/",
+                "/",
+                "/"))) should ===(Some(target))
       }
       for (target ← Seq(root, syst, user)) check(target)
     }
@@ -384,9 +386,8 @@ class ActorSelectionSpec
     "have a stringly serializable path" in {
       system.actorSelection(system / "c2").toSerializationFormat should ===(
         "akka://ActorSelectionSpec/user/c2")
-      system
-        .actorSelection(system / "c2" / "c21")
-        .toSerializationFormat should ===(
+      system.actorSelection(
+        system / "c2" / "c21").toSerializationFormat should ===(
         "akka://ActorSelectionSpec/user/c2/c21")
       ActorSelection(c2, "/").toSerializationFormat should ===(
         "akka://ActorSelectionSpec/user/c2")

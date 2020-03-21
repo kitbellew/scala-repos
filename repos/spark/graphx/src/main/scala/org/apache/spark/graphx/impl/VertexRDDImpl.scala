@@ -114,13 +114,14 @@ class VertexRDDImpl[VD] private[graphx] (
     other match {
       case other: VertexRDD[_] if this.partitioner == other.partitioner =>
         this.withPartitionsRDD[VD](
-          partitionsRDD
-            .zipPartitions(other.partitionsRDD, preservesPartitioning = true) {
-              (thisIter, otherIter) =>
-                val thisPart = thisIter.next()
-                val otherPart = otherIter.next()
-                Iterator(thisPart.minus(otherPart))
-            })
+          partitionsRDD.zipPartitions(
+            other.partitionsRDD,
+            preservesPartitioning = true) {
+            (thisIter, otherIter) =>
+              val thisPart = thisIter.next()
+              val otherPart = otherIter.next()
+              Iterator(thisPart.minus(otherPart))
+          })
       case _ =>
         this.withPartitionsRDD[VD](
           partitionsRDD.zipPartitions(

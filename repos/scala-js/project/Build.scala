@@ -105,8 +105,8 @@ object Build extends sbt.Build {
             .cross(previousCrossVersion)
             .extra(prevExtraAttributes.toSeq: _*)
         Some(
-          CrossVersion(scalaV, scalaBinaryV)(prevProjectID)
-            .cross(CrossVersion.Disabled))
+          CrossVersion(scalaV, scalaBinaryV)(prevProjectID).cross(
+            CrossVersion.Disabled))
       }
     }
   }
@@ -149,11 +149,9 @@ object Build extends sbt.Build {
     // Add Java Scaladoc mapping
     apiMappings += {
       val rtJar = {
-        System
-          .getProperty("sun.boot.class.path")
+        System.getProperty("sun.boot.class.path")
           .split(java.io.File.pathSeparator)
-          .find(_.endsWith(java.io.File.separator + "rt.jar"))
-          .get
+          .find(_.endsWith(java.io.File.separator + "rt.jar")).get
       }
 
       file(rtJar) -> url(javaDocBaseURL)
@@ -430,40 +428,38 @@ object Build extends sbt.Build {
     settings = commonSettings ++ Seq(
       name := "Scala.js",
       publishArtifact in Compile := false,
-      clean := clean
-        .dependsOn(
-          clean in compiler,
-          clean in irProject,
-          clean in irProjectJS,
-          clean in tools,
-          clean in toolsJS,
-          clean in jsEnvs,
-          clean in testAdapter,
-          clean in plugin,
-          clean in javalanglib,
-          clean in javalib,
-          clean in scalalib,
-          clean in libraryAux,
-          clean in library,
-          clean in javalibEx,
-          clean in stubs,
-          clean in cli,
-          clean in testInterface,
-          clean in jasmineTestFramework,
-          clean in jUnitRuntime,
-          clean in jUnitPlugin,
-          clean in examples,
-          clean in helloworld,
-          clean in reversi,
-          clean in testingExample,
-          clean in testSuite,
-          clean in testSuiteJVM,
-          clean in noIrCheckTest,
-          clean in javalibExTestSuite,
-          clean in partest,
-          clean in partestSuite
-        )
-        .value,
+      clean := clean.dependsOn(
+        clean in compiler,
+        clean in irProject,
+        clean in irProjectJS,
+        clean in tools,
+        clean in toolsJS,
+        clean in jsEnvs,
+        clean in testAdapter,
+        clean in plugin,
+        clean in javalanglib,
+        clean in javalib,
+        clean in scalalib,
+        clean in libraryAux,
+        clean in library,
+        clean in javalibEx,
+        clean in stubs,
+        clean in cli,
+        clean in testInterface,
+        clean in jasmineTestFramework,
+        clean in jUnitRuntime,
+        clean in jUnitPlugin,
+        clean in examples,
+        clean in helloworld,
+        clean in reversi,
+        clean in testingExample,
+        clean in testSuite,
+        clean in testSuiteJVM,
+        clean in noIrCheckTest,
+        clean in javalibExTestSuite,
+        clean in partest,
+        clean in partestSuite
+      ).value,
       publish := {},
       publishLocal := {}
     )
@@ -615,8 +611,10 @@ object Build extends sbt.Build {
         runner.run(streams.value.log, scalaJSConsole.value)
       }
     }
-  ).withScalaJSCompiler
-    .dependsOn(javalibEx, testSuite % "test->test", irProjectJS)
+  ).withScalaJSCompiler.dependsOn(
+    javalibEx,
+    testSuite % "test->test",
+    irProjectJS)
 
   lazy val jsEnvs: Project = Project(
     id = "jsEnvs",
@@ -776,15 +774,12 @@ object Build extends sbt.Build {
         val trgDir = (artifactPath in fetchScalaSource).value
 
         val report = updateClassifiers.value
-        val scalaLibSourcesJar = report
-          .select(
-            configuration = Set("compile"),
-            module = moduleFilter(name = "scala-library"),
-            artifact = artifactFilter(`type` = "src"))
-          .headOption
-          .getOrElse {
-            sys.error(s"Could not fetch scala-library sources for version $ver")
-          }
+        val scalaLibSourcesJar = report.select(
+          configuration = Set("compile"),
+          module = moduleFilter(name = "scala-library"),
+          artifact = artifactFilter(`type` = "src")).headOption.getOrElse {
+          sys.error(s"Could not fetch scala-library sources for version $ver")
+        }
 
         FileFunction.cached(
           cacheDir / s"fetchScalaSource-$ver",
@@ -1271,9 +1266,8 @@ object Build extends sbt.Build {
 
         val outFile = dir / "SourceMapTest.scala"
         val unitTests =
-          (0 until i)
-            .map(i => s"@Test def workTest$i(): Unit = test($i)")
-            .mkString("; ")
+          (0 until i).map(i =>
+            s"@Test def workTest$i(): Unit = test($i)").mkString("; ")
         IO.write(
           outFile,
           replaced.replace(
@@ -1312,8 +1306,8 @@ object Build extends sbt.Build {
     base = file("no-ir-check-test"),
     settings = commonSettings ++ myScalaJSSettings ++ testTagSettings ++ Seq(
       name := "Scala.js not IR checked tests",
-      scalaJSOptimizerOptions ~= (_.withCheckScalaJSIR(false)
-        .withBypassLinkingErrors(true)),
+      scalaJSOptimizerOptions ~= (_.withCheckScalaJSIR(
+        false).withBypassLinkingErrors(true)),
       publishArtifact in Compile := false
     )
   ).withScalaJSCompiler.dependsOn(library, jasmineTestFramework % "test")

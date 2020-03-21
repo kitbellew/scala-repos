@@ -271,13 +271,11 @@ case class AhcWSRequest(
     // The builder has a bunch of mutable state and is VERY fiddly, so
     // should not be exposed to the outside world.
 
-    val builder = disableUrlEncoding
-      .map { disableEncodingFlag =>
-        new RequestBuilder(method, disableEncodingFlag)
-      }
-      .getOrElse {
-        new RequestBuilder(method)
-      }
+    val builder = disableUrlEncoding.map { disableEncodingFlag =>
+      new RequestBuilder(method, disableEncodingFlag)
+    }.getOrElse {
+      new RequestBuilder(method)
+    }
 
     // Set the URL.
     builder.setUrl(url)
@@ -324,11 +322,9 @@ case class AhcWSRequest(
 
               // extract the content type and the charset
               val charsetOption = Option(HttpUtils.parseCharset(ct))
-              val charset = charsetOption
-                .getOrElse {
-                  StandardCharsets.UTF_8
-                }
-                .name()
+              val charset = charsetOption.getOrElse {
+                StandardCharsets.UTF_8
+              }.name()
 
               // Get the string body given the given charset...
               val stringBody = bytes.decodeString(charset)
@@ -404,9 +400,8 @@ case class AhcWSRequest(
       val realmBuilder = new Realm.Builder(
         wsProxyServer.principal.orNull,
         wsProxyServer.password.orNull)
-      val scheme: Realm.AuthScheme = wsProxyServer.protocol
-        .getOrElse("http")
-        .toLowerCase(java.util.Locale.ENGLISH) match {
+      val scheme: Realm.AuthScheme = wsProxyServer.protocol.getOrElse(
+        "http").toLowerCase(java.util.Locale.ENGLISH) match {
         case "http" | "https" => Realm.AuthScheme.BASIC
         case "kerberos"       => Realm.AuthScheme.KERBEROS
         case "ntlm"           => Realm.AuthScheme.NTLM
@@ -631,8 +626,10 @@ trait AhcWSComponents {
   lazy val wsClientConfig: WSClientConfig =
     new WSConfigParser(configuration, environment).parse()
   lazy val ahcWsClientConfig: AhcWSClientConfig =
-    new AhcWSClientConfigParser(wsClientConfig, configuration, environment)
-      .parse()
+    new AhcWSClientConfigParser(
+      wsClientConfig,
+      configuration,
+      environment).parse()
   lazy val wsApi: WSAPI =
     new AhcWSAPI(environment, ahcWsClientConfig, applicationLifecycle)(
       materializer)

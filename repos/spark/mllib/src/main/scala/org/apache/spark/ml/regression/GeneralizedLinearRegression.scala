@@ -222,15 +222,11 @@ class GeneralizedLinearRegression @Since("2.0.0") (
     }
     val familyAndLink = new FamilyAndLink(familyObj, linkObj)
 
-    val numFeatures = dataset
-      .select(col($(featuresCol)))
-      .limit(1)
-      .rdd
+    val numFeatures = dataset.select(col($(featuresCol))).limit(1).rdd
       .map {
         case Row(features: Vector) =>
           features.size
-      }
-      .first()
+      }.first()
     if (numFeatures > WeightedLeastSquares.MAX_NUM_FEATURES) {
       val msg =
         "Currently, GeneralizedLinearRegression only supports number of features" +
@@ -239,13 +235,12 @@ class GeneralizedLinearRegression @Since("2.0.0") (
     }
 
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
-    val instances: RDD[Instance] = dataset
-      .select(col($(labelCol)), w, col($(featuresCol)))
-      .rdd
-      .map {
-        case Row(label: Double, weight: Double, features: Vector) =>
-          Instance(label, weight, features)
-      }
+    val instances: RDD[Instance] =
+      dataset.select(col($(labelCol)), w, col($(featuresCol))).rdd
+        .map {
+          case Row(label: Double, weight: Double, features: Vector) =>
+            Instance(label, weight, features)
+        }
 
     if (familyObj == Gaussian && linkObj == Identity) {
       // TODO: Make standardizeFeatures and standardizeLabel configurable.
@@ -388,9 +383,9 @@ object GeneralizedLinearRegression
           val eta = model.predict(instance.features)
           val mu = fitted(eta)
           val offset = eta + (instance.label - mu) * link.deriv(mu)
-          val weight =
-            instance.weight / (math.pow(this.link.deriv(mu), 2.0) * family
-              .variance(mu))
+          val weight = instance.weight / (math.pow(
+            this.link.deriv(mu),
+            2.0) * family.variance(mu))
           (offset, weight)
         }
     }
@@ -514,12 +509,10 @@ object GeneralizedLinearRegression
         deviance: Double,
         numInstances: Double,
         weightSum: Double): Double = {
-      -2.0 * predictions
-        .map {
-          case (y: Double, mu: Double, weight: Double) =>
-            weight * dist.Binomial(1, mu).logProbabilityOf(math.round(y).toInt)
-        }
-        .sum()
+      -2.0 * predictions.map {
+        case (y: Double, mu: Double, weight: Double) =>
+          weight * dist.Binomial(1, mu).logProbabilityOf(math.round(y).toInt)
+      }.sum()
     }
 
     override def project(mu: Double): Double = {
@@ -560,12 +553,10 @@ object GeneralizedLinearRegression
         deviance: Double,
         numInstances: Double,
         weightSum: Double): Double = {
-      -2.0 * predictions
-        .map {
-          case (y: Double, mu: Double, weight: Double) =>
-            weight * dist.Poisson(mu).logProbabilityOf(y.toInt)
-        }
-        .sum()
+      -2.0 * predictions.map {
+        case (y: Double, mu: Double, weight: Double) =>
+          weight * dist.Poisson(mu).logProbabilityOf(y.toInt)
+      }.sum()
     }
 
     override def project(mu: Double): Double = {
@@ -607,12 +598,10 @@ object GeneralizedLinearRegression
         numInstances: Double,
         weightSum: Double): Double = {
       val disp = deviance / weightSum
-      -2.0 * predictions
-        .map {
-          case (y: Double, mu: Double, weight: Double) =>
-            weight * dist.Gamma(1.0 / disp, mu * disp).logPdf(y)
-        }
-        .sum() + 2.0
+      -2.0 * predictions.map {
+        case (y: Double, mu: Double, weight: Double) =>
+          weight * dist.Gamma(1.0 / disp, mu * disp).logPdf(y)
+      }.sum() + 2.0
     }
 
     override def project(mu: Double): Double = {
@@ -839,11 +828,8 @@ object GeneralizedLinearRegressionModel
       // Save model data: intercept, coefficients
       val data = Data(instance.intercept, instance.coefficients)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write.parquet(
+        dataPath)
     }
   }
 
@@ -857,10 +843,8 @@ object GeneralizedLinearRegressionModel
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("intercept", "coefficients")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("intercept", "coefficients").head()
       val intercept = data.getDouble(0)
       val coefficients = data.getAs[Vector](1)
 
@@ -941,8 +925,8 @@ class GeneralizedLinearRegressionSummary private[regression] (
     val w =
       if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
     predictions.select(
-      drUDF(col(model.getLabelCol), col(predictionCol), w)
-        .as("devianceResiduals"))
+      drUDF(col(model.getLabelCol), col(predictionCol), w).as(
+        "devianceResiduals"))
   }
 
   private lazy val pearsonResiduals: DataFrame = {
@@ -950,11 +934,9 @@ class GeneralizedLinearRegressionSummary private[regression] (
     val w =
       if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
     predictions.select(
-      col(model.getLabelCol)
-        .minus(col(predictionCol))
-        .multiply(sqrt(w))
-        .divide(sqrt(prUDF(col(predictionCol))))
-        .as("pearsonResiduals"))
+      col(model.getLabelCol).minus(col(predictionCol))
+        .multiply(sqrt(w)).divide(sqrt(prUDF(col(predictionCol)))).as(
+          "pearsonResiduals"))
   }
 
   private lazy val workingResiduals: DataFrame = {
@@ -1006,14 +988,10 @@ class GeneralizedLinearRegressionSummary private[regression] (
     } else {
       link.unlink(0.0)
     }
-    predictions
-      .select(col(model.getLabelCol), w)
-      .rdd
-      .map {
-        case Row(y: Double, weight: Double) =>
-          family.deviance(y, wtdmu, weight)
-      }
-      .sum()
+    predictions.select(col(model.getLabelCol), w).rdd.map {
+      case Row(y: Double, weight: Double) =>
+        family.deviance(y, wtdmu, weight)
+    }.sum()
   }
 
   /**
@@ -1023,14 +1001,10 @@ class GeneralizedLinearRegressionSummary private[regression] (
   lazy val deviance: Double = {
     val w =
       if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
-    predictions
-      .select(col(model.getLabelCol), col(predictionCol), w)
-      .rdd
-      .map {
-        case Row(label: Double, pred: Double, weight: Double) =>
-          family.deviance(label, pred, weight)
-      }
-      .sum()
+    predictions.select(col(model.getLabelCol), col(predictionCol), w).rdd.map {
+      case Row(label: Double, pred: Double, weight: Double) =>
+        family.deviance(label, pred, weight)
+    }.sum()
   }
 
   /**
@@ -1044,10 +1018,8 @@ class GeneralizedLinearRegressionSummary private[regression] (
     if (model.getFamily == Binomial.name || model.getFamily == Poisson.name) {
       1.0
     } else {
-      val rss = pearsonResiduals
-        .agg(sum(pow(col("pearsonResiduals"), 2.0)))
-        .first()
-        .getDouble(0)
+      val rss = pearsonResiduals.agg(
+        sum(pow(col("pearsonResiduals"), 2.0))).first().getDouble(0)
       rss / degreesOfFreedom
     }
 
@@ -1057,13 +1029,13 @@ class GeneralizedLinearRegressionSummary private[regression] (
     val w =
       if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
     val weightSum = predictions.select(w).agg(sum(w)).first().getDouble(0)
-    val t = predictions
-      .select(col(model.getLabelCol), col(predictionCol), w)
-      .rdd
-      .map {
-        case Row(label: Double, pred: Double, weight: Double) =>
-          (label, pred, weight)
-      }
+    val t = predictions.select(
+      col(model.getLabelCol),
+      col(predictionCol),
+      w).rdd.map {
+      case Row(label: Double, pred: Double, weight: Double) =>
+        (label, pred, weight)
+    }
     family.aic(t, deviance, numInstances, weightSum) + 2 * rank
   }
 

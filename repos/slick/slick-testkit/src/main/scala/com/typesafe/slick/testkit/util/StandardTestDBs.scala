@@ -28,8 +28,9 @@ object StandardTestDBs {
     override def isPersistent = false
     override val profile = new H2Profile {
       override protected def computeQueryCompiler =
-        super.computeQueryCompiler
-          .addAfter(Phase.removeTakeDrop, Phase.expandSums)
+        super.computeQueryCompiler.addAfter(
+          Phase.removeTakeDrop,
+          Phase.expandSums)
     }
   }
 
@@ -91,9 +92,8 @@ object StandardTestDBs {
       val dropUrl = "jdbc:derby:memory:" + dbName + ";drop=true"
       try {
         await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
-            .run(SimpleJdbcAction(_.connection)))
+          profile.backend.Database.forURL(dropUrl, driver = jdbcDriver).run(
+            SimpleJdbcAction(_.connection)))
       } catch { case e: SQLException => }
     }
   }
@@ -107,9 +107,8 @@ object StandardTestDBs {
         "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
       try {
         await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
-            .run(SimpleJdbcAction(_.connection)))
+          profile.backend.Database.forURL(dropUrl, driver = jdbcDriver).run(
+            SimpleJdbcAction(_.connection)))
       } catch { case e: SQLException => }
       TestDB.deleteDBFiles(dbName)
     }
@@ -180,9 +179,8 @@ object StandardTestDBs {
     def dropSchema: DBIO[Unit] = {
       import ExecutionContext.Implicits.global
       for {
-        schema <- sql"select schemaname from syscat.schemata where schemaname = '#$schema'"
-          .as[String]
-          .headOption
+        schema <- sql"select schemaname from syscat.schemata where schemaname = '#$schema'".as[
+          String].headOption
         _ <- if (schema.isDefined) {
           println(s"[Dropping DB2 schema '$schema']")
           sqlu"call sysproc.admin_drop_schema($schema, null, ${"ERRORSCHEMA"}, ${"ERRORTABLE"})"
@@ -225,8 +223,8 @@ object StandardTestDBs {
     override def dropUserArtifacts(implicit session: profile.Backend#Session) =
       blockingRunOnSession { implicit ec =>
         for {
-          constraints <- sql"""select constraint_name, table_name from information_schema.table_constraints where constraint_type = 'FOREIGN KEY'"""
-            .as[(String, String)]
+          constraints <- sql"""select constraint_name, table_name from information_schema.table_constraints where constraint_type = 'FOREIGN KEY'""".as[
+            (String, String)]
           constraintStatements = constraints.collect {
             case (c, t) if !c.startsWith("SQL") =>
               sqlu"alter table #${profile.quoteIdentifier(

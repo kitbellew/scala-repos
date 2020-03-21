@@ -42,8 +42,9 @@ object Handler {
             ids.split(' ').toSet)
         }
       case ("moveLat", o) =>
-        hub.channel.roundMoveTime ! (~(o boolean "d"))
-          .fold(Channel.Sub(member), Channel.UnSub(member))
+        hub.channel.roundMoveTime ! (~(o boolean "d")).fold(
+          Channel.Sub(member),
+          Channel.UnSub(member))
       case ("anaMove", o) =>
         AnaRateLimit(uid) {
           AnaMove parse o foreach { anaMove =>
@@ -56,8 +57,9 @@ object Handler {
                     "path" -> anaMove.path
                   ))
               case scalaz.Failure(err) =>
-                member push lila.socket.Socket
-                  .makeMessage("stepFailure", err.toString)
+                member push lila.socket.Socket.makeMessage(
+                  "stepFailure",
+                  err.toString)
             }
           }
         }
@@ -73,8 +75,9 @@ object Handler {
                     "path" -> anaDrop.path
                   ))
               case scalaz.Failure(err) =>
-                member push lila.socket.Socket
-                  .makeMessage("stepFailure", err.toString)
+                member push lila.socket.Socket.makeMessage(
+                  "stepFailure",
+                  err.toString)
             }
           }
         }
@@ -89,8 +92,9 @@ object Handler {
                   "path" -> req.path
                 ) ++ req.opening.?? { o => Json.obj("opening" -> o) })
             case None =>
-              member push lila.socket.Socket
-                .makeMessage("destsFailure", "Bad dests request")
+              member push lila.socket.Socket.makeMessage(
+                "destsFailure",
+                "Bad dests request")
           }
         }
       case _ => // logwarn("Unhandled msg: " + msg)
@@ -98,12 +102,10 @@ object Handler {
 
     def iteratee(controller: Controller, member: SocketMember): JsIteratee = {
       val control = controller orElse baseController(member)
-      Iteratee
-        .foreach[JsValue](jsv =>
-          jsv.asOpt[JsObject] foreach { obj =>
-            obj str "t" foreach { t => control.lift(t -> obj) }
-          })
-        .map(_ => socket ! Quit(uid))
+      Iteratee.foreach[JsValue](jsv =>
+        jsv.asOpt[JsObject] foreach { obj =>
+          obj str "t" foreach { t => control.lift(t -> obj) }
+        }).map(_ => socket ! Quit(uid))
     }
 
     socket ? join map connecter map {

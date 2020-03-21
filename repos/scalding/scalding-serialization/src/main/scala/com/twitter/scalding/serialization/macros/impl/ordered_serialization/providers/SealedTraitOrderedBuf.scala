@@ -62,11 +62,9 @@ object SealedTraitOrderedBuf {
     val subClasses: List[Type] =
       knownDirectSubclasses.map(_.asType.toType).toList
 
-    val subData: List[(Int, Type, TreeOrderedBuf[c.type])] = subClasses
-      .map { t => (t, dispatcher(t)) }
-      .zipWithIndex
-      .map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }
-      .toList
+    val subData: List[(Int, Type, TreeOrderedBuf[c.type])] = subClasses.map {
+      t => (t, dispatcher(t))
+    }.zipWithIndex.map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }.toList
 
     require(
       subData.nonEmpty,

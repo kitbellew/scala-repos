@@ -23,25 +23,24 @@ class SpringScalatraBootstrapTest
   bootstrapper.setApplicationContext(applicationContext)
 
   val reg = mock[ServletRegistration.Dynamic]
-  Mockito
-    .when(
-      servletContext.addServlet(Matchers.anyString, Matchers.any[HttpServlet]))
-    .thenReturn(reg)
+  Mockito.when(
+    servletContext.addServlet(
+      Matchers.anyString,
+      Matchers.any[HttpServlet])).thenReturn(reg)
 
   val resource = new CustomerResource
 
   val beans = new util.HashMap[String, AnyRef]
   beans.put("resource", resource)
 
-  Mockito
-    .when(applicationContext.getBeansWithAnnotation(classOf[Path]))
-    .thenReturn(beans)
+  Mockito.when(
+    applicationContext.getBeansWithAnnotation(classOf[Path])).thenReturn(beans)
 
   test("resource beans are registered with the servlet context") {
     bootstrapper.bootstrap()
-    Mockito
-      .verify(servletContext)
-      .addServlet(classOf[CustomerResource].getName, resource)
+    Mockito.verify(servletContext).addServlet(
+      classOf[CustomerResource].getName,
+      resource)
   }
 
   test("resource beans use mapping from @Path") {

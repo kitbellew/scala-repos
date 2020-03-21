@@ -260,9 +260,9 @@ class StateMapSuite extends SparkFunSuite {
       3 // to test seq of ops like update -> remove -> update in same set
     val numTotalOps = numOpsPerSet * numSets
     val numKeys =
-      math
-        .pow(numTypeMapOps, numTotalOps)
-        .toInt // to get all combinations of ops
+      math.pow(
+        numTypeMapOps,
+        numTotalOps).toInt // to get all combinations of ops
 
     val refMap = new mutable.HashMap[Int, (Int, Long)]()
     var prevSetRefMap: immutable.Map[Int, (Int, Long)] = null
@@ -281,9 +281,9 @@ class StateMapSuite extends SparkFunSuite {
           // This is similar to finding the nth bit value of a binary number
           // E.g.  nth bit from the right of any binary number B is [ B / (2 ^ (n - 1)) ] % 2
           val opCode =
-            (keyId / math
-              .pow(numTypeMapOps, numTotalOps - opId - 1)
-              .toInt) % numTypeMapOps
+            (keyId / math.pow(
+              numTypeMapOps,
+              numTotalOps - opId - 1).toInt) % numTypeMapOps
           opCode match {
             case 0 =>
               val value = Random.nextInt()
@@ -384,8 +384,9 @@ class StateMapSuite extends SparkFunSuite {
 
       // Assert that get on every key returns the right value
       for (keyId <- refMapToTestWith.keys) {
-        assert(
-          mapToTest.get(keyId) === refMapToTestWith.get(keyId).map { _._1 })
+        assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId).map {
+          _._1
+        })
       }
 
       // Assert that every time threshold returns the correct data
@@ -413,11 +414,11 @@ class StateMapSuite extends SparkFunSuite {
     val map = StateMap.empty[KryoState, KryoState]
     // Since EmptyStateMap doesn't contains any date, KryoState won't break JavaSerializer.
     assert(
-      serializeAndDeserialize(new JavaSerializer(conf), map)
-        .isInstanceOf[EmptyStateMap[KryoState, KryoState]])
+      serializeAndDeserialize(new JavaSerializer(conf), map).isInstanceOf[
+        EmptyStateMap[KryoState, KryoState]])
     assert(
-      serializeAndDeserialize(new KryoSerializer(conf), map)
-        .isInstanceOf[EmptyStateMap[KryoState, KryoState]])
+      serializeAndDeserialize(new KryoSerializer(conf), map).isInstanceOf[
+        EmptyStateMap[KryoState, KryoState]])
   }
 
   test(

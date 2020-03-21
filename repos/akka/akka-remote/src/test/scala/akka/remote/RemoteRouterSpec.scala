@@ -100,8 +100,8 @@ class RemoteRouterSpec
       val router = masterSystem.actorOf(
         new RemoteRouterConfig(
           RoundRobinPool(2),
-          Seq(Address("akka.tcp", sysName, "localhost", port)))
-          .props(Props[Echo]),
+          Seq(Address("akka.tcp", sysName, "localhost", port))).props(
+          Props[Echo]),
         "blub2")
       val replies = for (i ← 1 to 5) yield {
         router.tell("", probe.ref)
@@ -154,8 +154,7 @@ class RemoteRouterSpec
     "deploy remote routers based on explicit deployment" in {
       val probe = TestProbe()(masterSystem)
       val router = masterSystem.actorOf(
-        RoundRobinPool(2)
-          .props(Props[Echo])
+        RoundRobinPool(2).props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
             AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
         "remote-blub2"
@@ -179,8 +178,7 @@ class RemoteRouterSpec
     "let remote deployment be overridden by local configuration" in {
       val probe = TestProbe()(masterSystem)
       val router = masterSystem.actorOf(
-        RoundRobinPool(2)
-          .props(Props[Echo])
+        RoundRobinPool(2).props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
             AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
         "local-blub"
@@ -204,8 +202,7 @@ class RemoteRouterSpec
     "let remote deployment router be overridden by local configuration" in {
       val probe = TestProbe()(masterSystem)
       val router = masterSystem.actorOf(
-        RoundRobinPool(2)
-          .props(Props[Echo])
+        RoundRobinPool(2).props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
             AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
         "local-blub2"
@@ -229,8 +226,7 @@ class RemoteRouterSpec
     "let remote deployment be overridden by remote configuration" in {
       val probe = TestProbe()(masterSystem)
       val router = masterSystem.actorOf(
-        RoundRobinPool(2)
-          .props(Props[Echo])
+        RoundRobinPool(2).props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
             AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
         "remote-override"
@@ -259,8 +255,8 @@ class RemoteRouterSpec
       val router = masterSystem.actorOf(
         new RemoteRouterConfig(
           RoundRobinPool(1, supervisorStrategy = escalator),
-          Seq(Address("akka.tcp", sysName, "localhost", port)))
-          .props(Props.empty),
+          Seq(Address("akka.tcp", sysName, "localhost", port))).props(
+          Props.empty),
         "blub3")
 
       router.tell(GetRoutees, probe.ref)

@@ -27,9 +27,8 @@ private[akka] object RemoteMetricsExtension
   override def lookup = RemoteMetricsExtension
 
   override def createExtension(system: ExtendedActorSystem): RemoteMetrics =
-    if (system.settings.config
-          .getString("akka.remote.log-frame-size-exceeding")
-          .toLowerCase == "off")
+    if (system.settings.config.getString(
+          "akka.remote.log-frame-size-exceeding").toLowerCase == "off")
       new RemoteMetricsOff
     else
       new RemoteMetricsOn(system)
@@ -61,9 +60,8 @@ private[akka] class RemoteMetricsOff extends RemoteMetrics {
 private[akka] class RemoteMetricsOn(system: ExtendedActorSystem)
     extends RemoteMetrics {
 
-  private val logFrameSizeExceeding: Int = system.settings.config
-    .getBytes("akka.remote.log-frame-size-exceeding")
-    .toInt
+  private val logFrameSizeExceeding: Int = system.settings.config.getBytes(
+    "akka.remote.log-frame-size-exceeding").toInt
   private val log = Logging(system, this.getClass)
   private val maxPayloadBytes: ConcurrentHashMap[Class[_], Integer] =
     new ConcurrentHashMap

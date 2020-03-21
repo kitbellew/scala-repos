@@ -31,9 +31,8 @@ object ScalaPsiImplementationHelper {
     val orderEntries: List[OrderEntry] = idx.getOrderEntriesForFile(vFile)
     val fqn: String = psiClass.qualifiedName
     if (fqn == null) return psiClass
-    val classes: Array[PsiClass] = ScalaPsiManager
-      .instance(project)
-      .getCachedClasses(
+    val classes: Array[PsiClass] =
+      ScalaPsiManager.instance(project).getCachedClasses(
         new GlobalSearchScope((project)) {
           def compare(file1: VirtualFile, file2: VirtualFile): Int = 0
           def contains(file: VirtualFile): Boolean = {
@@ -58,9 +57,9 @@ object ScalaPsiImplementationHelper {
     else {
       psiClass match {
         case _: ScTrait | _: ScClass =>
-          classes
-            .find(td => td.isInstanceOf[ScTrait] || td.isInstanceOf[ScClass])
-            .getOrElse(classes(0))
+          classes.find(td =>
+            td.isInstanceOf[ScTrait] || td.isInstanceOf[ScClass]).getOrElse(
+            classes(0))
         case _: ScObject =>
           classes.find(td => td.isInstanceOf[ScObject]).getOrElse(classes(0))
         case _ => classes(0)

@@ -67,8 +67,8 @@ class WriterTTests extends CatsSuite {
 
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      SemigroupKTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .semigroupK[Int])
+      SemigroupKTests[WriterT[ListWrapper, ListWrapper[Int], ?]].semigroupK[
+        Int])
     checkAll(
       "SemigroupK[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -96,8 +96,10 @@ class WriterTTests extends CatsSuite {
 
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      FunctorTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .functor[Int, Int, Int])
+      FunctorTests[WriterT[ListWrapper, ListWrapper[Int], ?]].functor[
+        Int,
+        Int,
+        Int])
     checkAll(
       "Functor[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -112,16 +114,21 @@ class WriterTTests extends CatsSuite {
 
     checkAll(
       "WriterT[ListWrapper, ?, ?]",
-      BifunctorTests[WriterT[ListWrapper, ?, ?]]
-        .bifunctor[Int, Int, Int, Int, Int, Int])
+      BifunctorTests[WriterT[ListWrapper, ?, ?]].bifunctor[
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int])
     checkAll(
       "Bifunctor[WriterT[ListWrapper, ?, ?]]",
       SerializableTests.serializable(Bifunctor[WriterT[ListWrapper, ?, ?]]))
   }
 
-  implicit val iso = CartesianTests.Isomorphisms
-    .invariant[WriterT[ListWrapper, ListWrapper[Int], ?]](
-      WriterT.writerTFunctor(ListWrapper.functor))
+  implicit val iso = CartesianTests.Isomorphisms.invariant[
+    WriterT[ListWrapper, ListWrapper[Int], ?]](
+    WriterT.writerTFunctor(ListWrapper.functor))
 
   // We have varying instances available depending on `F` and `L`.
   // We also battle some inference issues with `Id`.
@@ -135,8 +142,10 @@ class WriterTTests extends CatsSuite {
     Functor[WriterT[ListWrapper, ListWrapper[Int], ?]]
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      ApplyTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .apply[Int, Int, Int])
+      ApplyTests[WriterT[ListWrapper, ListWrapper[Int], ?]].apply[
+        Int,
+        Int,
+        Int])
     checkAll(
       "Apply[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -161,8 +170,10 @@ class WriterTTests extends CatsSuite {
     Apply[WriterT[ListWrapper, ListWrapper[Int], ?]]
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      FlatMapTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .flatMap[Int, Int, Int])
+      FlatMapTests[WriterT[ListWrapper, ListWrapper[Int], ?]].flatMap[
+        Int,
+        Int,
+        Int])
     checkAll(
       "FlatMap[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -190,8 +201,10 @@ class WriterTTests extends CatsSuite {
     Apply[WriterT[ListWrapper, ListWrapper[Int], ?]]
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      ApplicativeTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .applicative[Int, Int, Int])
+      ApplicativeTests[WriterT[ListWrapper, ListWrapper[Int], ?]].applicative[
+        Int,
+        Int,
+        Int])
     checkAll(
       "Applicative[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -221,8 +234,10 @@ class WriterTTests extends CatsSuite {
     FlatMap[WriterT[ListWrapper, ListWrapper[Int], ?]]
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      MonadTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .monad[Int, Int, Int])
+      MonadTests[WriterT[ListWrapper, ListWrapper[Int], ?]].monad[
+        Int,
+        Int,
+        Int])
     checkAll(
       "Monad[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -257,8 +272,10 @@ class WriterTTests extends CatsSuite {
     Applicative[WriterT[ListWrapper, ListWrapper[Int], ?]]
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      AlternativeTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .alternative[Int, Int, Int])
+      AlternativeTests[WriterT[ListWrapper, ListWrapper[Int], ?]].alternative[
+        Int,
+        Int,
+        Int])
     checkAll(
       "Alternative[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -277,8 +294,10 @@ class WriterTTests extends CatsSuite {
     Monad[WriterT[ListWrapper, ListWrapper[Int], ?]]
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      MonadFilterTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .monadFilter[Int, Int, Int])
+      MonadFilterTests[WriterT[ListWrapper, ListWrapper[Int], ?]].monadFilter[
+        Int,
+        Int,
+        Int])
     checkAll(
       "MonadFilter[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(
@@ -301,8 +320,10 @@ class WriterTTests extends CatsSuite {
     MonoidK[WriterT[ListWrapper, ListWrapper[Int], ?]]
     checkAll(
       "WriterT[ListWrapper, ListWrapper[Int], ?]",
-      MonadCombineTests[WriterT[ListWrapper, ListWrapper[Int], ?]]
-        .monadCombine[Int, Int, Int])
+      MonadCombineTests[WriterT[ListWrapper, ListWrapper[Int], ?]].monadCombine[
+        Int,
+        Int,
+        Int])
     checkAll(
       "MonadCombine[WriterT[ListWrapper, ListWrapper[Int], ?]]",
       SerializableTests.serializable(

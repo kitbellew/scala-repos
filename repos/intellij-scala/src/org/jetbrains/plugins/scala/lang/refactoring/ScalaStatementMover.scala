@@ -48,11 +48,10 @@ class ScalaStatementMover extends LineMover {
         source: PsiElement,
         predicate: PsiElement => Boolean): Option[LineRange] = {
       val siblings = if (down) source.nextSiblings else source.prevSiblings
-      siblings
-        .filter(!_.isInstanceOf[PsiComment])
+      siblings.filter(!_.isInstanceOf[PsiComment])
         .takeWhile(it =>
-          it.isInstanceOf[PsiWhiteSpace] || it.isInstanceOf[PsiComment] || it
-            .isInstanceOf[ScImportStmt] || predicate(it))
+          it.isInstanceOf[PsiWhiteSpace] || it.isInstanceOf[
+            PsiComment] || it.isInstanceOf[ScImportStmt] || predicate(it))
         .find(predicate)
         .map(rangeOf(_, editor))
     }
@@ -120,8 +119,7 @@ class ScalaStatementMover extends LineMover {
     val right =
       edges._2.flatMap(PsiTreeUtil.getParentOfType(_, cl, false).toOption)
 
-    left
-      .zip(right)
+    left.zip(right)
       .filter(p => p._1 == p._2 || p._1.parentsInFile.contains(p._2))
       .map(_._2)
       .find(it => editor.offsetToLogicalPosition(it.getTextOffset).line == line)
@@ -139,11 +137,8 @@ class ScalaStatementMover extends LineMover {
     val span = start.to(end)
 
     def firstLeafOf(seq: Seq[Int]) =
-      seq.view
-        .flatMap(file.getNode.findLeafElementAt(_).toOption.toSeq)
-        .filter(!_.getPsi.isInstanceOf[PsiWhiteSpace])
-        .map(_.getPsi)
-        .headOption
+      seq.view.flatMap(file.getNode.findLeafElementAt(_).toOption.toSeq)
+        .filter(!_.getPsi.isInstanceOf[PsiWhiteSpace]).map(_.getPsi).headOption
 
     (firstLeafOf(span), firstLeafOf(span.reverse))
   }

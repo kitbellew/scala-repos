@@ -78,8 +78,9 @@ object DependencyResolver {
     val resolvedLibs = Map.newBuilder[String, String]
 
     for ((resourceName, origins) <- allResourceNames) {
-      resolveResourceName(resourceName, origins, relPaths)
-        .fold[Unit](problems += _, resolvedLibs += resourceName -> _)
+      resolveResourceName(resourceName, origins, relPaths).fold[Unit](
+        problems += _,
+        resolvedLibs += resourceName -> _)
     }
 
     if (problems.nonEmpty)

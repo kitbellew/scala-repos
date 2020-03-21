@@ -57,27 +57,23 @@ class ScDocTagImpl(node: ASTNode)
 
   def setName(name: String): PsiElement = {
     if (findChildByType[PsiElement](ScalaDocTokenType.DOC_TAG_NAME) != null) {
-      findChildByType[PsiElement](ScalaDocTokenType.DOC_TAG_NAME)
-        .replace(ScalaPsiElementFactory.createDocTagName(name, getManager))
+      findChildByType[PsiElement](ScalaDocTokenType.DOC_TAG_NAME).replace(
+        ScalaPsiElementFactory.createDocTagName(name, getManager))
     }
 
     this
   }
 
   override def getCommentDataText(): String =
-    getNode
-      .getChildren(TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA))
-      .map(_.getText)
-      .mkString("\n")
+    getNode.getChildren(
+      TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA)).map(
+      _.getText).mkString("\n")
 
   override def getAllText(handler: PsiElement => String): String =
-    getNode
-      .getChildren(
-        TokenSet.orSet(
-          TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA),
-          ScalaDocTokenType.ALL_SCALADOC_SYNTAX_ELEMENTS))
-      .map {
-        case nd => handler(nd.getPsi)
-      }
-      .mkString(" ")
+    getNode.getChildren(
+      TokenSet.orSet(
+        TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA),
+        ScalaDocTokenType.ALL_SCALADOC_SYNTAX_ELEMENTS)).map {
+      case nd => handler(nd.getPsi)
+    }.mkString(" ")
 }

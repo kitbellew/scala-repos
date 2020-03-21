@@ -53,9 +53,8 @@ abstract class PlanTest extends SparkFunSuite with PredicateHelper {
     plan transform {
       case filter @ Filter(condition: Expression, child: LogicalPlan) =>
         Filter(
-          splitConjunctivePredicates(condition)
-            .sortBy(_.hashCode())
-            .reduce(And),
+          splitConjunctivePredicates(condition).sortBy(_.hashCode()).reduce(
+            And),
           child)
     }
   }
@@ -67,8 +66,9 @@ abstract class PlanTest extends SparkFunSuite with PredicateHelper {
     if (normalized1 != normalized2) {
       fail(s"""
           |== FAIL: Plans do not match ===
-          |${sideBySide(normalized1.treeString, normalized2.treeString)
-                .mkString("\n")}
+          |${sideBySide(
+                normalized1.treeString,
+                normalized2.treeString).mkString("\n")}
          """.stripMargin)
     }
   }

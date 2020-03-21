@@ -36,14 +36,12 @@ object FreeApUsage extends App {
       def apply[A](fa: ParseOp[A]) =
         fa match {
           case ParseInt(key) =>
-            input
-              .get(key)
-              .flatMap(parseOpt[java.lang.Integer](_).map(x => (x: Int)))
+            input.get(key).flatMap(parseOpt[java.lang.Integer](_).map(x =>
+              (x: Int)))
           case ParseString(key) => input.get(key).flatMap(parseOpt[String])
           case ParseBool(key) =>
-            input
-              .get(key)
-              .flatMap(parseOpt[java.lang.Boolean](_).map(x => (x: Boolean)))
+            input.get(key).flatMap(parseOpt[java.lang.Boolean](_).map(x =>
+              (x: Boolean)))
         }
     }
 

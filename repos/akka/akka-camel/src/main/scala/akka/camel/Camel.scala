@@ -103,15 +103,12 @@ class CamelSettings private[camel] (
         case (m, (key, fqcn)) ⇒
           m.updated(
             key,
-            dynamicAccess
-              .getClassFor[AnyRef](fqcn)
-              .recover {
-                case e ⇒
-                  throw new ConfigurationException(
-                    "Could not find/load Camel Converter class [" + fqcn + "]",
-                    e)
-              }
-              .get
+            dynamicAccess.getClassFor[AnyRef](fqcn).recover {
+              case e ⇒
+                throw new ConfigurationException(
+                  "Could not find/load Camel Converter class [" + fqcn + "]",
+                  e)
+            }.get
           )
       }
 
@@ -124,15 +121,14 @@ class CamelSettings private[camel] (
     */
   final val ContextProvider: ContextProvider = {
     val fqcn = config.getString("akka.camel.context-provider")
-    dynamicAccess
-      .createInstanceFor[ContextProvider](fqcn, immutable.Seq.empty)
-      .recover {
-        case e ⇒
-          throw new ConfigurationException(
-            "Could not find/load Context Provider class [" + fqcn + "]",
-            e)
-      }
-      .get
+    dynamicAccess.createInstanceFor[ContextProvider](
+      fqcn,
+      immutable.Seq.empty).recover {
+      case e ⇒
+        throw new ConfigurationException(
+          "Could not find/load Context Provider class [" + fqcn + "]",
+          e)
+    }.get
   }
 }
 

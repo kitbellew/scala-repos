@@ -39,9 +39,11 @@ object Validation {
       allowLocalHost: Boolean,
       messageFormat: String = "%s must be a valid absolute url.",
       schemes: Seq[String] = Seq("http", "https")) =
-    Validators
-      .validAbsoluteUrl(fieldName, allowLocalHost, messageFormat, schemes)
-      .validate(value)
+    Validators.validAbsoluteUrl(
+      fieldName,
+      allowLocalHost,
+      messageFormat,
+      schemes).validate(value)
 
   def validUrl(
       fieldName: String,
@@ -49,9 +51,11 @@ object Validation {
       allowLocalHost: Boolean,
       messageFormat: String = "%s must be a valid url.",
       schemes: Seq[String] = Seq("http", "https")) =
-    Validators
-      .validUrl(fieldName, allowLocalHost, messageFormat, schemes)
-      .validate(value)
+    Validators.validUrl(
+      fieldName,
+      allowLocalHost,
+      messageFormat,
+      schemes).validate(value)
 
   def validFormat(
       fieldName: String,
@@ -66,13 +70,11 @@ object Validation {
       confirmationFieldName: String,
       confirmationValue: => String,
       messageFormat: String = "%%s must match %s."): FieldValidation[String] =
-    Validators
-      .validConfirmation(
-        fieldName,
-        confirmationFieldName,
-        confirmationValue,
-        messageFormat)
-      .validate(value)
+    Validators.validConfirmation(
+      fieldName,
+      confirmationFieldName,
+      confirmationValue,
+      messageFormat).validate(value)
 
   def greaterThan[T <% Ordered[T]](
       fieldName: String,
@@ -95,9 +97,8 @@ object Validation {
       min: T,
       messageFormat: String = "%%s must be greater than or equal to %s.")
       : FieldValidation[T] =
-    Validators
-      .greaterThanOrEqualTo(fieldName, min, messageFormat)
-      .validate(value)
+    Validators.greaterThanOrEqualTo(fieldName, min, messageFormat).validate(
+      value)
 
   def lessThanOrEqualTo[T <% Ordered[T]](
       fieldName: String,

@@ -321,35 +321,32 @@ class LocalLDAModel private[spark] (
     // Sum bound components for each document:
     //  component for prob(tokens) + component for prob(document-topic distribution)
     val corpusPart =
-      documents
-        .filter(_._2.numNonzeros > 0)
-        .map {
-          case (id: Long, termCounts: Vector) =>
-            val localElogbeta = ElogbetaBc.value
-            var docBound = 0.0d
-            val (gammad: BDV[Double], _) =
-              OnlineLDAOptimizer.variationalTopicInference(
-                termCounts,
-                exp(localElogbeta),
-                brzAlpha,
-                gammaShape,
-                k)
-            val Elogthetad: BDV[Double] = LDAUtils.dirichletExpectation(gammad)
+      documents.filter(_._2.numNonzeros > 0).map {
+        case (id: Long, termCounts: Vector) =>
+          val localElogbeta = ElogbetaBc.value
+          var docBound = 0.0d
+          val (gammad: BDV[Double], _) =
+            OnlineLDAOptimizer.variationalTopicInference(
+              termCounts,
+              exp(localElogbeta),
+              brzAlpha,
+              gammaShape,
+              k)
+          val Elogthetad: BDV[Double] = LDAUtils.dirichletExpectation(gammad)
 
-            // E[log p(doc | theta, beta)]
-            termCounts.foreachActive {
-              case (idx, count) =>
-                docBound += count * LDAUtils.logSumExp(
-                  Elogthetad + localElogbeta(idx, ::).t)
-            }
-            // E[log p(theta | alpha) - log q(theta | gamma)]
-            docBound += sum((brzAlpha - gammad) :* Elogthetad)
-            docBound += sum(lgamma(gammad) - lgamma(brzAlpha))
-            docBound += lgamma(sum(brzAlpha)) - lgamma(sum(gammad))
+          // E[log p(doc | theta, beta)]
+          termCounts.foreachActive {
+            case (idx, count) =>
+              docBound += count * LDAUtils.logSumExp(
+                Elogthetad + localElogbeta(idx, ::).t)
+          }
+          // E[log p(theta | alpha) - log q(theta | gamma)]
+          docBound += sum((brzAlpha - gammad) :* Elogthetad)
+          docBound += sum(lgamma(gammad) - lgamma(brzAlpha))
+          docBound += lgamma(sum(brzAlpha)) - lgamma(sum(gammad))
 
-            docBound
-        }
-        .sum()
+          docBound
+      }.sum()
 
     // Bound component for prob(topic-term distributions):
     //   E[log p(beta | eta) - log q(beta | lambda)]
@@ -619,13 +616,10 @@ class DistributedLDAModel private[clustering] (
   override lazy val topicsMatrix: Matrix = {
     // Collect row-major topics
     val termTopicCounts: Array[(Int, TopicCounts)] =
-      graph.vertices
-        .filter(_._1 < 0)
-        .map {
-          case (termIndex, cnts) =>
-            (index2term(termIndex), cnts)
-        }
-        .collect()
+      graph.vertices.filter(_._1 < 0).map {
+        case (termIndex, cnts) =>
+          (index2term(termIndex), cnts)
+      }.collect()
     // Convert to Matrix
     val brzTopics = BDM.zeros[Double](vocabSize, k)
     termTopicCounts.foreach {
@@ -647,8 +641,7 @@ class DistributedLDAModel private[clustering] (
     //       to a distribution over terms.
     val N_k: TopicCounts = globalTopicTotals
     val topicsInQueues: Array[BoundedPriorityQueue[(Double, Int)]] =
-      graph.vertices
-        .filter(isTermVertex)
+      graph.vertices.filter(isTermVertex)
         .mapPartitions { termVertices =>
           // For this partition, collect the most common terms for each topic in queues:
           //  queues(topic) = queue of (term weight, term index).
@@ -665,8 +658,7 @@ class DistributedLDAModel private[clustering] (
             }
           }
           Iterator(queues)
-        }
-        .reduce { (q1, q2) =>
+        }.reduce { (q1, q2) =>
           q1.zip(q2).foreach { case (a, b) => a ++= b }
           q1
         }
@@ -689,26 +681,24 @@ class DistributedLDAModel private[clustering] (
       maxDocumentsPerTopic: Int): Array[(Array[Long], Array[Double])] = {
     val numTopics = k
     val topicsInQueues: Array[BoundedPriorityQueue[(Double, Long)]] =
-      topicDistributions
-        .mapPartitions { docVertices =>
-          // For this partition, collect the most common docs for each topic in queues:
-          //  queues(topic) = queue of (doc topic, doc ID).
-          val queues =
-            Array.fill(numTopics)(
-              new BoundedPriorityQueue[(Double, Long)](maxDocumentsPerTopic))
-          for ((docId, docTopics) <- docVertices) {
-            var topic = 0
-            while (topic < numTopics) {
-              queues(topic) += (docTopics(topic) -> docId)
-              topic += 1
-            }
+      topicDistributions.mapPartitions { docVertices =>
+        // For this partition, collect the most common docs for each topic in queues:
+        //  queues(topic) = queue of (doc topic, doc ID).
+        val queues =
+          Array.fill(numTopics)(
+            new BoundedPriorityQueue[(Double, Long)](maxDocumentsPerTopic))
+        for ((docId, docTopics) <- docVertices) {
+          var topic = 0
+          while (topic < numTopics) {
+            queues(topic) += (docTopics(topic) -> docId)
+            topic += 1
           }
-          Iterator(queues)
         }
-        .treeReduce { (q1, q2) =>
-          q1.zip(q2).foreach { case (a, b) => a ++= b }
-          q1
-        }
+        Iterator(queues)
+      }.treeReduce { (q1, q2) =>
+        q1.zip(q2).foreach { case (a, b) => a ++= b }
+        q1
+      }
     topicsInQueues.map { q =>
       val (docTopics, docs) = q.toArray.sortBy(-_._1).unzip
       (docs.toArray, docTopics.toArray)
@@ -760,9 +750,9 @@ class DistributedLDAModel private[clustering] (
       }
     // M-STEP: Aggregation computes new N_{kj}, N_{wk} counts.
     val perDocAssignments =
-      graph
-        .aggregateMessages[(Array[Int], Array[Int])](sendMsg, mergeMsg)
-        .filter(isDocumentVertex)
+      graph.aggregateMessages[(Array[Int], Array[Int])](
+        sendMsg,
+        mergeMsg).filter(isDocumentVertex)
     perDocAssignments.map {
       case (docID: Long, (terms: Array[Int], topics: Array[Int])) =>
         // TODO: Avoid zip, which is inefficient.
@@ -775,9 +765,8 @@ class DistributedLDAModel private[clustering] (
   @Since("1.5.0")
   lazy val javaTopicAssignments
       : JavaRDD[(java.lang.Long, Array[Int], Array[Int])] = {
-    topicAssignments
-      .asInstanceOf[RDD[(java.lang.Long, Array[Int], Array[Int])]]
-      .toJavaRDD()
+    topicAssignments.asInstanceOf[
+      RDD[(java.lang.Long, Array[Int], Array[Int])]].toJavaRDD()
   }
 
   // TODO
@@ -814,10 +803,8 @@ class DistributedLDAModel private[clustering] (
         val tokenLogLikelihood = N_wj * math.log(phi_wk.dot(theta_kj))
         edgeContext.sendToDst(tokenLogLikelihood)
       }
-    graph
-      .aggregateMessages[Double](sendMsg, _ + _)
-      .map(_._2)
-      .fold(0.0)(_ + _)
+    graph.aggregateMessages[Double](sendMsg, _ + _)
+      .map(_._2).fold(0.0)(_ + _)
   }
 
   /**
@@ -900,9 +887,8 @@ class DistributedLDAModel private[clustering] (
   def javaTopTopicsPerDocument(
       k: Int): JavaRDD[(java.lang.Long, Array[Int], Array[Double])] = {
     val topics = topTopicsPerDocument(k)
-    topics
-      .asInstanceOf[RDD[(java.lang.Long, Array[Int], Array[Double])]]
-      .toJavaRDD()
+    topics.asInstanceOf[
+      RDD[(java.lang.Long, Array[Int], Array[Double])]].toJavaRDD()
   }
 
   // TODO:
@@ -974,32 +960,22 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
 
       val newPath =
         new Path(Loader.dataPath(path), "globalTopicTotals").toUri.toString
-      sc.parallelize(Seq(Data(Vectors.fromBreeze(globalTopicTotals))))
-        .toDF()
-        .write
-        .parquet(newPath)
+      sc.parallelize(Seq(Data(Vectors.fromBreeze(globalTopicTotals)))).toDF()
+        .write.parquet(newPath)
 
       val verticesPath =
         new Path(Loader.dataPath(path), "topicCounts").toUri.toString
-      graph.vertices
-        .map {
-          case (ind, vertex) =>
-            VertexData(ind, Vectors.fromBreeze(vertex))
-        }
-        .toDF()
-        .write
-        .parquet(verticesPath)
+      graph.vertices.map {
+        case (ind, vertex) =>
+          VertexData(ind, Vectors.fromBreeze(vertex))
+      }.toDF().write.parquet(verticesPath)
 
       val edgesPath =
         new Path(Loader.dataPath(path), "tokenCounts").toUri.toString
-      graph.edges
-        .map {
-          case Edge(srcId, dstId, prop) =>
-            EdgeData(srcId, dstId, prop)
-        }
-        .toDF()
-        .write
-        .parquet(edgesPath)
+      graph.edges.map {
+        case Edge(srcId, dstId, prop) =>
+          EdgeData(srcId, dstId, prop)
+      }.toDF().write.parquet(edgesPath)
     }
 
     def load(

@@ -114,9 +114,8 @@ class Matrix2RowRowHad(args: Args) extends Job(args) {
 
   val row1 = mat1.getRow(1)
   val rowSum = row1 #*# row1
-  rowSum.toTypedPipe
-    .map { case (x, idx, v) => (idx, v) }
-    .write(TypedText.tsv[(Int, Double)]("rowRowHad"))
+  rowSum.toTypedPipe.map { case (x, idx, v) => (idx, v) }.write(
+    TypedText.tsv[(Int, Double)]("rowRowHad"))
 }
 
 class Matrix2ZeroHad(args: Args) extends Job(args) {
@@ -231,17 +230,12 @@ class Matrix2PropJob(args: Args) extends Job(args) {
     TypedPipe.from(tsv3).map { case (idx, v) => ((), idx, v) },
     NoClue)
 
-  mat
-    .binarizeAs[Boolean]
-    .propagate(col)
-    .toTypedPipe
-    .map { case (idx, x, v) => (idx, v) }
-    .write(TypedText.tsv[(Int, Double)]("prop-col"))
-  row
-    .propagateRow(mat.binarizeAs[Boolean])
-    .toTypedPipe
-    .map { case (x, idx, v) => (idx, v) }
-    .write(TypedText.tsv[(Int, Double)]("prop-row"))
+  mat.binarizeAs[Boolean].propagate(col).toTypedPipe.map {
+    case (idx, x, v) => (idx, v)
+  }.write(TypedText.tsv[(Int, Double)]("prop-col"))
+  row.propagateRow(mat.binarizeAs[Boolean]).toTypedPipe.map {
+    case (x, idx, v) => (idx, v)
+  }.write(TypedText.tsv[(Int, Double)]("prop-row"))
 }
 
 class Matrix2Cosine(args: Args) extends Job(args) {

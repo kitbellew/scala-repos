@@ -56,9 +56,12 @@ trait FileDeclarationsHolder
       case _ => false
     }
 
-    if (isScriptProcessed && !super[ScDeclarationSequenceHolder]
-          .processDeclarations(processor, state, lastParent, place))
-      return false
+    if (isScriptProcessed && !super[
+          ScDeclarationSequenceHolder].processDeclarations(
+          processor,
+          state,
+          lastParent,
+          place)) return false
 
     if (!super[ScImportsHolder].processDeclarations(
           processor,
@@ -132,9 +135,8 @@ trait FileDeclarationsHolder
               PsiMigrationManager.getInstance(getProject).getCurrentMigration
             if (migration != null) {
               val list = migration.getMigrationPackages("")
-              val packages = list
-                .toArray(new Array[PsiPackage](list.size))
-                .map(ScPackageImpl(_))
+              val packages = list.toArray(new Array[PsiPackage](list.size)).map(
+                ScPackageImpl(_))
               val iterator = packages.iterator
               while (iterator.hasNext) {
                 val pack = iterator.next()
@@ -143,10 +145,8 @@ trait FileDeclarationsHolder
             }
           } else {
             val aPackage: PsiPackage = ScPackageImpl(
-              ScalaPsiManager
-                .instance(getProject)
-                .getCachedPackage(name)
-                .orNull)
+              ScalaPsiManager.instance(getProject).getCachedPackage(
+                name).orNull)
             if (aPackage != null && !processor.execute(aPackage, state))
               return false
           }
@@ -236,9 +236,9 @@ trait FileDeclarationsHolder
       val scalaPack = ScPackageImpl.findPackage(getProject, "scala")
       val namesSet =
         if (scalaPack != null)
-          ScalaShortNamesCacheManager
-            .getInstance(getProject)
-            .getClassNames(scalaPack, scope)
+          ScalaShortNamesCacheManager.getInstance(getProject).getClassNames(
+            scalaPack,
+            scope)
         else Set.empty[String]
 
       def alreadyContains(className: String) = namesSet.contains(className)
@@ -287,9 +287,9 @@ trait FileDeclarationsHolder
       objects: Seq[String]): Seq[PsiClass] = {
     val res = new ArrayBuffer[PsiClass]
     for (obj <- objects) {
-      res ++= ScalaPsiManager
-        .instance(manager.getProject)
-        .getCachedClasses(scope, obj)
+      res ++= ScalaPsiManager.instance(manager.getProject).getCachedClasses(
+        scope,
+        obj)
     }
     res.toSeq
   }

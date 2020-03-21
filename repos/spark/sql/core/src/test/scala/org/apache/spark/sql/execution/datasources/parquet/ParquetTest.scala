@@ -104,11 +104,8 @@ private[sql] trait ParquetTest extends SQLTestUtils {
   protected def makeParquetFile[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
       path: File): Unit = {
-    sqlContext
-      .createDataFrame(data)
-      .write
-      .mode(SaveMode.Overwrite)
-      .parquet(path.getCanonicalPath)
+    sqlContext.createDataFrame(data).write.mode(SaveMode.Overwrite).parquet(
+      path.getCanonicalPath)
   }
 
   protected def makeParquetFile[T <: Product: ClassTag: TypeTag](
@@ -174,10 +171,9 @@ private[sql] trait ParquetTest extends SQLTestUtils {
       path: Path,
       configuration: Configuration): Seq[Footer] = {
     val fs = path.getFileSystem(configuration)
-    ParquetFileReader
-      .readAllFootersInParallel(configuration, fs.getFileStatus(path))
-      .asScala
-      .toSeq
+    ParquetFileReader.readAllFootersInParallel(
+      configuration,
+      fs.getFileStatus(path)).asScala.toSeq
   }
 
   protected def readFooter(

@@ -451,8 +451,8 @@ trait WSRequest {
       : WSRequest = {
     val boundary = Multipart.randomBoundary()
     val contentType = s"multipart/form-data; boundary=$boundary"
-    withBody(StreamedBody(Multipart.transform(body, boundary)))
-      .withHeaders("Content-Type" -> contentType)
+    withBody(StreamedBody(Multipart.transform(body, boundary))).withHeaders(
+      "Content-Type" -> contentType)
   }
 
   /**

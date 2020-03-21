@@ -23,10 +23,8 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
     byteStringUnmarshaller mapWithInput { (entity, bytes) ⇒
       if (entity.isKnownEmpty) Array.emptyCharArray
       else {
-        val charBuffer = Unmarshaller
-          .bestUnmarshallingCharsetFor(entity)
-          .nioCharset
-          .decode(bytes.asByteBuffer)
+        val charBuffer = Unmarshaller.bestUnmarshallingCharsetFor(
+          entity).nioCharset.decode(bytes.asByteBuffer)
         val array = new Array[Char](charBuffer.length())
         charBuffer.get(array)
         array

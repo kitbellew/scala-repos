@@ -368,8 +368,8 @@ abstract class ComplexFilteredQuery extends FilteredQuery with DefNode {
     val this2 = mapChildren { ch =>
       if (ch eq from) from2 else ch.infer(genScope, typeChildren)
     }
-    (this2 :@ (if (!hasType) this2.from.nodeType else nodeType))
-      .asInstanceOf[Self]
+    (this2 :@ (if (!hasType) this2.from.nodeType else nodeType)).asInstanceOf[
+      Self]
   }
 }
 
@@ -684,8 +684,9 @@ final case class Select(in: Node, field: TermSymbol)
   override def getDumpInfo =
     Path.unapply(this) match {
       case Some(l) =>
-        super.getDumpInfo
-          .copy(name = "Path", mainInfo = l.reverseIterator.mkString("."))
+        super.getDumpInfo.copy(
+          name = "Path",
+          mainInfo = l.reverseIterator.mkString("."))
       case None => super.getDumpInfo
     }
   protected def buildType = in.nodeType.select(field)

@@ -30,9 +30,8 @@ class ScalaCompilerConfiguration(project: Project)
   var customProfiles: Seq[ScalaCompilerSettingsProfile] = Seq.empty
 
   def getSettingsForModule(module: Module): ScalaCompilerSettings = {
-    val profile = customProfiles
-      .find(_.getModuleNames.contains(module.getName))
-      .getOrElse(defaultProfile)
+    val profile = customProfiles.find(
+      _.getModuleNames.contains(module.getName)).getOrElse(defaultProfile)
     profile.getSettings
   }
 
@@ -54,10 +53,8 @@ class ScalaCompilerConfiguration(project: Project)
     customProfiles.find(_.getSettings.getState == settings.getState) match {
       case Some(profile) => profile.addModuleName(module.getName)
       case None =>
-        val profileNames = customProfiles.iterator
-          .map(_.getName)
-          .filter(_.startsWith(source))
-          .toSet
+        val profileNames = customProfiles.iterator.map(_.getName).filter(
+          _.startsWith(source)).toSet
         @tailrec def firstFreeName(i: Int): String = {
           val name = source + " " + i
           if (profileNames.contains(name)) firstFreeName(i + 1) else name
@@ -100,15 +97,16 @@ class ScalaCompilerConfiguration(project: Project)
   }
 
   def loadState(configurationElement: Element) {
-    incrementalityType = configurationElement
-      .getChildren("option")
-      .asScala
+    incrementalityType = configurationElement.getChildren("option").asScala
       .find(_.getAttributeValue("name") == "incrementalityType")
       .map(it => IncrementalityType.valueOf(it.getAttributeValue("value")))
       .getOrElse(IncrementalityType.IDEA)
 
-    defaultProfile.setSettings(new ScalaCompilerSettings(XmlSerializer
-      .deserialize(configurationElement, classOf[ScalaCompilerSettingsState])))
+    defaultProfile.setSettings(
+      new ScalaCompilerSettings(
+        XmlSerializer.deserialize(
+          configurationElement,
+          classOf[ScalaCompilerSettingsState])))
 
     customProfiles = configurationElement.getChildren("profile").asScala.map {
       profileElement =>
@@ -116,14 +114,13 @@ class ScalaCompilerConfiguration(project: Project)
           profileElement.getAttributeValue("name"))
 
         val settings = new ScalaCompilerSettings(
-          XmlSerializer
-            .deserialize(profileElement, classOf[ScalaCompilerSettingsState]))
+          XmlSerializer.deserialize(
+            profileElement,
+            classOf[ScalaCompilerSettingsState]))
         profile.setSettings(settings)
 
-        val moduleNames = profileElement
-          .getAttributeValue("modules")
-          .split(",")
-          .filter(!_.isEmpty)
+        val moduleNames = profileElement.getAttributeValue("modules").split(
+          ",").filter(!_.isEmpty)
         moduleNames.foreach(profile.addModuleName)
 
         profile

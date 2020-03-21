@@ -107,13 +107,11 @@ object TestUtils extends Logging {
     val f = Files.createTempDirectory(parentFile.toPath, "kafka-").toFile
     f.deleteOnExit()
 
-    Runtime
-      .getRuntime()
-      .addShutdownHook(new Thread() {
-        override def run() = {
-          CoreUtils.rm(f)
-        }
-      })
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      override def run() = {
+        CoreUtils.rm(f)
+      }
+    })
     f
   }
 
@@ -123,10 +121,9 @@ object TestUtils extends Logging {
     */
   def randomPartitionLogDir(parentDir: File): File = {
     val attempts = 1000
-    val f = Iterator
-      .continually(new File(parentDir, "kafka-" + random.nextInt(1000000)))
-      .take(attempts)
-      .find(_.mkdir())
+    val f = Iterator.continually(
+      new File(parentDir, "kafka-" + random.nextInt(1000000)))
+      .take(attempts).find(_.mkdir())
       .getOrElse(
         sys.error(s"Failed to create directory after $attempts attempts"))
     f.deleteOnExit()
@@ -196,9 +193,8 @@ object TestUtils extends Logging {
   def getBrokerListStrFromServers(
       servers: Seq[KafkaServer],
       protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): String = {
-    servers
-      .map(s => formatAddress(s.config.hostName, s.boundPort(protocol)))
-      .mkString(",")
+    servers.map(s =>
+      formatAddress(s.config.hostName, s.boundPort(protocol))).mkString(",")
   }
 
   /**
@@ -236,12 +232,10 @@ object TestUtils extends Logging {
     if (enableSaslSsl || shouldEnable(SecurityProtocol.SASL_SSL))
       protocolAndPorts += SecurityProtocol.SASL_SSL -> saslSslPort
 
-    val listeners = protocolAndPorts
-      .map {
-        case (protocol, port) =>
-          s"${protocol.name}://localhost:$port"
-      }
-      .mkString(",")
+    val listeners = protocolAndPorts.map {
+      case (protocol, port) =>
+        s"${protocol.name}://localhost:$port"
+    }.mkString(",")
 
     val props = new Properties
     if (nodeId >= 0) props.put("broker.id", nodeId.toString)
@@ -829,8 +823,9 @@ object TestUtils extends Logging {
           } catch {
             case oe: Throwable =>
               error(
-                "Error while electing leader for partition [%s,%d]"
-                  .format(topic, partition),
+                "Error while electing leader for partition [%s,%d]".format(
+                  topic,
+                  partition),
                 oe)
           }
         }
@@ -862,36 +857,45 @@ object TestUtils extends Logging {
         .format(topic, partition, oldLeaderOpt, newLeaderOpt))
 
     var leader: Option[Int] = None
-    while (!isLeaderElectedOrChanged && System
-             .currentTimeMillis() < startTime + timeoutMs) {
+    while (!isLeaderElectedOrChanged && System.currentTimeMillis() < startTime + timeoutMs) {
       // check if leader is elected
       leader = zkUtils.getLeaderForPartition(topic, partition)
       leader match {
         case Some(l) =>
           if (newLeaderOpt.isDefined && newLeaderOpt.get == l) {
             trace(
-              "Expected new leader %d is elected for partition [%s,%d]"
-                .format(l, topic, partition))
+              "Expected new leader %d is elected for partition [%s,%d]".format(
+                l,
+                topic,
+                partition))
             isLeaderElectedOrChanged = true
           } else if (oldLeaderOpt.isDefined && oldLeaderOpt.get != l) {
             trace(
-              "Leader for partition [%s,%d] is changed from %d to %d"
-                .format(topic, partition, oldLeaderOpt.get, l))
+              "Leader for partition [%s,%d] is changed from %d to %d".format(
+                topic,
+                partition,
+                oldLeaderOpt.get,
+                l))
             isLeaderElectedOrChanged = true
           } else if (!oldLeaderOpt.isDefined) {
             trace(
-              "Leader %d is elected for partition [%s,%d]"
-                .format(l, topic, partition))
+              "Leader %d is elected for partition [%s,%d]".format(
+                l,
+                topic,
+                partition))
             isLeaderElectedOrChanged = true
           } else {
             trace(
-              "Current leader for partition [%s,%d] is %d"
-                .format(topic, partition, l))
+              "Current leader for partition [%s,%d] is %d".format(
+                topic,
+                partition,
+                l))
           }
         case None =>
           trace(
-            "Leader for partition [%s,%d] is not elected yet"
-              .format(topic, partition))
+            "Leader for partition [%s,%d] is not elected yet".format(
+              topic,
+              partition))
       }
       Thread.sleep(timeoutMs.min(100L))
     }
@@ -1002,8 +1006,10 @@ object TestUtils extends Logging {
                 result && Request.isValidBrokerId(leader)
             }
         },
-      "Partition [%s,%d] metadata not propagated after %d ms"
-        .format(topic, partition, timeout),
+      "Partition [%s,%d] metadata not propagated after %d ms".format(
+        topic,
+        partition,
+        timeout),
       waitTime = timeout
     )
 
@@ -1018,12 +1024,13 @@ object TestUtils extends Logging {
     TestUtils.waitUntilTrue(
       () =>
         servers.exists { server =>
-          server.replicaManager
-            .getPartition(topic, partition)
-            .exists(_.leaderReplicaIfLocal().isDefined)
+          server.replicaManager.getPartition(topic, partition).exists(
+            _.leaderReplicaIfLocal().isDefined)
         },
-      "Partition [%s,%d] leaders not made yet after %d ms"
-        .format(topic, partition, timeout),
+      "Partition [%s,%d] leaders not made yet after %d ms".format(
+        topic,
+        partition,
+        timeout),
       waitTime = timeout
     )
   }
@@ -1053,8 +1060,9 @@ object TestUtils extends Logging {
     // in sync replicas should not have any replica that is not in the new assigned replicas
     val phantomInSyncReplicas = inSyncReplicas.toSet -- assignedReplicas.toSet
     assertTrue(
-      "All in sync replicas %s must be in the assigned replica list %s"
-        .format(inSyncReplicas, assignedReplicas),
+      "All in sync replicas %s must be in the assigned replica list %s".format(
+        inSyncReplicas,
+        assignedReplicas),
       phantomInSyncReplicas.size == 0)
   }
 
@@ -1070,8 +1078,9 @@ object TestUtils extends Logging {
           zkUtils.getInSyncReplicasForPartition(topic, partitionToBeReassigned)
         inSyncReplicas.size == assignedReplicas.size
       },
-      "Reassigned partition [%s,%d] is under replicated"
-        .format(topic, partitionToBeReassigned)
+      "Reassigned partition [%s,%d] is under replicated".format(
+        topic,
+        partitionToBeReassigned)
     )
     var leader: Option[Int] = None
     TestUtils.waitUntilTrue(
@@ -1079,8 +1088,9 @@ object TestUtils extends Logging {
         leader = zkUtils.getLeaderForPartition(topic, partitionToBeReassigned)
         leader.isDefined
       },
-      "Reassigned partition [%s,%d] is unavailable"
-        .format(topic, partitionToBeReassigned)
+      "Reassigned partition [%s,%d] is unavailable".format(
+        topic,
+        partitionToBeReassigned)
     )
     TestUtils.waitUntilTrue(
       () => {
@@ -1088,8 +1098,10 @@ object TestUtils extends Logging {
           servers.filter(s => s.config.brokerId == leader.get).head
         leaderBroker.replicaManager.underReplicatedPartitionCount() == 0
       },
-      "Reassigned partition [%s,%d] is under-replicated as reported by the leader %d"
-        .format(topic, partitionToBeReassigned, leader.get)
+      "Reassigned partition [%s,%d] is under-replicated as reported by the leader %d".format(
+        topic,
+        partitionToBeReassigned,
+        leader.get)
     )
   }
 
@@ -1100,9 +1112,7 @@ object TestUtils extends Logging {
   def verifyNonDaemonThreadsStatus(threadNamePrefix: String) {
     assertEquals(
       0,
-      Thread.getAllStackTraces
-        .keySet()
-        .toArray
+      Thread.getAllStackTraces.keySet().toArray
         .map(_.asInstanceOf[Thread])
         .count(t =>
           !t.isDaemon && t.isAlive && t.getName.startsWith(threadNamePrefix)))
@@ -1158,8 +1168,10 @@ object TestUtils extends Logging {
       producer.send(
         ms.map(m => new KeyedMessage[Int, String](topic, partition, m)): _*)
       debug(
-        "Sent %d messages for partition [%s,%d]"
-          .format(ms.size, topic, partition))
+        "Sent %d messages for partition [%s,%d]".format(
+          ms.size,
+          topic,
+          partition))
       producer.close()
       ms.toList
     } else {
@@ -1212,9 +1224,8 @@ object TestUtils extends Logging {
       retries = 5,
       requestTimeoutMs = 2000
     )
-    producer
-      .send(new ProducerRecord(topic, topic.getBytes, message.getBytes))
-      .get
+    producer.send(
+      new ProducerRecord(topic, topic.getBytes, message.getBytes)).get
     producer.close()
   }
 
@@ -1238,8 +1249,7 @@ object TestUtils extends Logging {
         val iterator = messageStream.iterator()
         try {
           var i = 0
-          while ((shouldGetAllMessages && iterator
-                   .hasNext()) || (i < nMessagesPerThread)) {
+          while ((shouldGetAllMessages && iterator.hasNext()) || (i < nMessagesPerThread)) {
             assertTrue(iterator.hasNext)
             val message =
               iterator.next.message // will throw a timeout exception if the message isn't there
@@ -1273,21 +1283,23 @@ object TestUtils extends Logging {
     // wait until admin path for delete topic is deleted, signaling completion of topic deletion
     TestUtils.waitUntilTrue(
       () => !zkUtils.pathExists(getDeleteTopicPath(topic)),
-      "Admin path /admin/delete_topic/%s path not deleted even after a replica is restarted"
-        .format(topic)
+      "Admin path /admin/delete_topic/%s path not deleted even after a replica is restarted".format(
+        topic)
     )
     TestUtils.waitUntilTrue(
       () => !zkUtils.pathExists(getTopicPath(topic)),
-      "Topic path /brokers/topics/%s not deleted after /admin/delete_topic/%s path is deleted"
-        .format(topic, topic)
+      "Topic path /brokers/topics/%s not deleted after /admin/delete_topic/%s path is deleted".format(
+        topic,
+        topic)
     )
     // ensure that the topic-partition has been deleted from all brokers' replica managers
     TestUtils.waitUntilTrue(
       () =>
         servers.forall(server =>
           topicAndPartitions.forall(tp =>
-            server.replicaManager
-              .getPartition(tp.topic, tp.partition) == None)),
+            server.replicaManager.getPartition(
+              tp.topic,
+              tp.partition) == None)),
       "Replica manager's should have deleted all of this topic's partitions"
     )
     // ensure that logs from all replicas are deleted if delete topic is marked successful in zookeeper
@@ -1399,9 +1411,10 @@ object TestUtils extends Logging {
           override def call(): Unit = function()
         }
       }.asJava
-      val futures = threadPool
-        .invokeAll(runnables, timeoutMs, TimeUnit.MILLISECONDS)
-        .asScala
+      val futures = threadPool.invokeAll(
+        runnables,
+        timeoutMs,
+        TimeUnit.MILLISECONDS).asScala
       futures.foreach { future =>
         if (future.isCancelled)
           failWithTimeout()

@@ -3,8 +3,7 @@ package com.twitter.scalding.examples
 import com.twitter.scalding._
 
 class WordCountJob(args: Args) extends Job(args) {
-  TypedPipe
-    .from(TextLine(args("input")))
+  TypedPipe.from(TextLine(args("input")))
     .flatMap { line => line.split("\\s+") }
     .map { word => (word, 1L) }
     .sumByKey

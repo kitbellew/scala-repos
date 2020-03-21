@@ -162,15 +162,13 @@ abstract class SuperAccessors
         // SI-4989 Check if an intermediate class between `clazz` and `sym.owner` redeclares the method as abstract.
         val intermediateClasses =
           clazz.info.baseClasses.tail.takeWhile(_ != sym.owner)
-        intermediateClasses
-          .map(sym.overridingSymbol)
-          .find(s => s.isDeferred && !s.isAbstractOverride && !s.owner.isTrait)
-          .foreach {
-            absSym =>
-              reporter.error(
-                sel.pos,
-                s"${sym.fullLocationString} cannot be directly accessed from ${clazz} because ${absSym.owner} redeclares it as abstract")
-          }
+        intermediateClasses.map(sym.overridingSymbol).find(s =>
+          s.isDeferred && !s.isAbstractOverride && !s.owner.isTrait).foreach {
+          absSym =>
+            reporter.error(
+              sel.pos,
+              s"${sym.fullLocationString} cannot be directly accessed from ${clazz} because ${absSym.owner} redeclares it as abstract")
+        }
       }
 
       def mixIsTrait =
@@ -325,13 +323,9 @@ abstract class SuperAccessors
                 // ... but, only if accessible (SI-6793)
                 if (sym.isParamAccessor && sym.alias != NoSymbol && isAccessibleFromSuper(
                       sym.alias)) {
-                  val result = (localTyper
-                    .typedPos(tree.pos) {
-                      Select(
-                        Super(qual, tpnme.EMPTY) setPos qual.pos,
-                        sym.alias)
-                    })
-                    .asInstanceOf[Select]
+                  val result = (localTyper.typedPos(tree.pos) {
+                    Select(Super(qual, tpnme.EMPTY) setPos qual.pos, sym.alias)
+                  }).asInstanceOf[Select]
                   debuglog(
                     s"alias replacement: $sym --> ${sym.alias} / $tree ==> $result"
                   ); //debug
@@ -505,9 +499,8 @@ abstract class SuperAccessors
               memberType.cloneInfo(protAcc).asSeenFrom(qual.tpe, sym.owner))
         }
 
-      val protAcc = clazz.info
-        .decl(accName)
-        .suchThat(s => s == NoSymbol || s.tpe =:= accType(s)) orElse {
+      val protAcc = clazz.info.decl(accName).suchThat(s =>
+        s == NoSymbol || s.tpe =:= accType(s)) orElse {
         val newAcc = clazz.newMethod(
           nme.protName(sym.unexpandedName),
           tree.pos,
@@ -629,8 +622,10 @@ abstract class SuperAccessors
             restrictionError(
               pos,
               unit,
-              "%s accesses protected %s from self type %s."
-                .format(clazz, sym, host.typeOfThis))
+              "%s accesses protected %s from self type %s.".format(
+                clazz,
+                sym,
+                host.typeOfThis))
           true
         }
       def isJavaProtected =

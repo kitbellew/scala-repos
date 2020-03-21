@@ -66,9 +66,7 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
   }
 
   def message(members: (String, String)*) = {
-    "Object creation impossible, since %s".format(
-      members
-        .map(p => " member %s in %s is not defined".format(p._1, p._2))
-        .mkString("; "))
+    "Object creation impossible, since %s".format(members.map(p =>
+      " member %s in %s is not defined".format(p._1, p._2)).mkString("; "))
   }
 }

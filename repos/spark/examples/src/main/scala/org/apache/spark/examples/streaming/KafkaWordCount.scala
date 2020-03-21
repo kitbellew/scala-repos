@@ -62,8 +62,7 @@ object KafkaWordCount {
     val lines =
       KafkaUtils.createStream(ssc, zkQuorum, group, topicMap).map(_._2)
     val words = lines.flatMap(_.split(" "))
-    val wordCounts = words
-      .map(x => (x, 1L))
+    val wordCounts = words.map(x => (x, 1L))
       .reduceByKeyAndWindow(_ + _, _ - _, Minutes(10), Seconds(2), 2)
     wordCounts.print()
 
@@ -100,8 +99,8 @@ object KafkaWordCountProducer {
     // Send some messages
     while (true) {
       (1 to messagesPerSec.toInt).foreach { messageNum =>
-        val str = (1 to wordsPerMessage.toInt)
-          .map(x => scala.util.Random.nextInt(10).toString)
+        val str = (1 to wordsPerMessage.toInt).map(x =>
+          scala.util.Random.nextInt(10).toString)
           .mkString(" ")
 
         val message = new ProducerRecord[String, String](topic, null, str)

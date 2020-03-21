@@ -90,7 +90,8 @@ class FatContainer {
 case class IntCaseClass(firstValue: Int, secondValue: Int)
 
 class ContainerPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) => v }
     .pack[IntContainer](('firstValue, 'secondValue) -> 'combined)
     .project('combined)
@@ -100,13 +101,15 @@ class ContainerPopulationJob(args: Args) extends Job(args) {
 }
 
 class ContainerToPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) => v }
     .packTo[IntContainer](('firstValue, 'secondValue) -> 'combined)
     .unpackTo[IntContainer]('combined -> ('firstValue, 'secondValue))
     .write(Tsv("output"))
 
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) => v }
     .packTo[IntCaseClass](('firstValue, 'secondValue) -> 'combined)
     .unpackTo[IntCaseClass]('combined -> ('firstValue, 'secondValue))
@@ -114,7 +117,8 @@ class ContainerToPopulationJob(args: Args) extends Job(args) {
 }
 
 class FatContainerPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) => v }
     .map(('firstValue, 'secondValue) -> 'fatContainer) { v: (Int, Int) =>
       FatContainer.fromFibonacci(v._1, v._2)
@@ -125,7 +129,8 @@ class FatContainerPopulationJob(args: Args) extends Job(args) {
 }
 
 class FatContainerToPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) => v }
     .map(('firstValue, 'secondValue) -> 'fatContainer) { v: (Int, Int) =>
       FatContainer.fromFibonacci(v._1, v._2)

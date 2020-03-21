@@ -198,8 +198,11 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   private def startRedeliverTask(): Unit = {
     val interval = redeliverInterval / 2
     redeliverTask = Some(
-      context.system.scheduler
-        .schedule(interval, interval, self, RedeliveryTick)(context.dispatcher))
+      context.system.scheduler.schedule(
+        interval,
+        interval,
+        self,
+        RedeliveryTick)(context.dispatcher))
   }
 
   private def nextDeliverySequenceNr(): Long = {
@@ -301,7 +304,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     val deadline = now - redeliverInterval.toNanos
     var warnings = Vector.empty[UnconfirmedDelivery]
 
-    unconfirmed.iterator
+    unconfirmed
+      .iterator
       .filter { case (_, delivery) ⇒ delivery.timestamp <= deadline }
       .take(redeliveryBurstLimit)
       .foreach {

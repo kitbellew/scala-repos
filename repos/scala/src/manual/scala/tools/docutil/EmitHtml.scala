@@ -13,8 +13,7 @@ object EmitHtml {
   val out = Console
 
   def escape(text: String) =
-    text
-      .replaceAll("&", "&amp;")
+    text.replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
 

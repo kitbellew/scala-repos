@@ -36,11 +36,9 @@ trait JavaResultsHandlingSpec
   "Java results handling" should {
     def makeRequest[T](controller: MockController)(block: WSResponse => T) = {
       implicit val port = testServerPort
-      lazy val app: Application = GuiceApplicationBuilder()
-        .routes {
-          case _ => JAction(app, controller)
-        }
-        .build()
+      lazy val app: Application = GuiceApplicationBuilder().routes {
+        case _ => JAction(app, controller)
+      }.build()
 
       running(TestServer(port, app)) {
         val response = await(wsUrl("/").get())
@@ -52,10 +50,9 @@ trait JavaResultsHandlingSpec
       def action = {
         response.setHeader("Server", "foo")
         response.setHeader("server", "bar")
-        Results
-          .ok("Hello world")
-          .withHeader("Other", "foo")
-          .withHeader("other", "bar")
+        Results.ok("Hello world").withHeader("Other", "foo").withHeader(
+          "other",
+          "bar")
       }
     }) { response =>
       response.header("Server") must beSome("bar")

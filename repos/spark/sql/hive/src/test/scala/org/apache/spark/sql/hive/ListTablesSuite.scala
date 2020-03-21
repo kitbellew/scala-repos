@@ -31,14 +31,15 @@ class ListTablesSuite
   import hiveContext._
   import hiveContext.implicits._
 
-  val df = sparkContext
-    .parallelize((1 to 10).map(i => (i, s"str$i")))
-    .toDF("key", "value")
+  val df = sparkContext.parallelize((1 to 10).map(i => (i, s"str$i"))).toDF(
+    "key",
+    "value")
 
   override def beforeAll(): Unit = {
     // The catalog in HiveContext is a case insensitive one.
-    sessionState.catalog
-      .registerTable(TableIdentifier("ListTablesSuiteTable"), df.logicalPlan)
+    sessionState.catalog.registerTable(
+      TableIdentifier("ListTablesSuiteTable"),
+      df.logicalPlan)
     sql("CREATE TABLE HiveListTablesSuiteTable (key int, value string)")
     sql("CREATE DATABASE IF NOT EXISTS ListTablesSuiteDB")
     sql(
@@ -64,26 +65,25 @@ class ListTablesSuite
           allTables.filter("tableName = 'hivelisttablessuitetable'"),
           Row("hivelisttablessuitetable", false))
         assert(
-          allTables
-            .filter("tableName = 'hiveindblisttablessuitetable'")
-            .count() === 0)
+          allTables.filter(
+            "tableName = 'hiveindblisttablessuitetable'").count() === 0)
     }
   }
 
   test("getting all tables with a database name") {
-    Seq(tables("listtablessuiteDb"), sql("SHOW TABLes in listTablesSuitedb"))
-      .foreach {
-        case allTables =>
-          checkAnswer(
-            allTables.filter("tableName = 'listtablessuitetable'"),
-            Row("listtablessuitetable", true))
-          assert(
-            allTables
-              .filter("tableName = 'hivelisttablessuitetable'")
-              .count() === 0)
-          checkAnswer(
-            allTables.filter("tableName = 'hiveindblisttablessuitetable'"),
-            Row("hiveindblisttablessuitetable", false))
-      }
+    Seq(
+      tables("listtablessuiteDb"),
+      sql("SHOW TABLes in listTablesSuitedb")).foreach {
+      case allTables =>
+        checkAnswer(
+          allTables.filter("tableName = 'listtablessuitetable'"),
+          Row("listtablessuitetable", true))
+        assert(
+          allTables.filter(
+            "tableName = 'hivelisttablessuitetable'").count() === 0)
+        checkAnswer(
+          allTables.filter("tableName = 'hiveindblisttablessuitetable'"),
+          Row("hiveindblisttablessuitetable", false))
+    }
   }
 }

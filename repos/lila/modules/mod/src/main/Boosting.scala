@@ -26,14 +26,14 @@ final class BoostingApi(
     variant.ThreeCheck)
 
   def getBoostingRecord(id: String): Fu[Option[BoostingRecord]] =
-    collBoosting
-      .find(BSONDocument("_id" -> id))
+    collBoosting.find(BSONDocument("_id" -> id))
       .one[BoostingRecord]
 
   def createBoostRecord(record: BoostingRecord) =
-    collBoosting
-      .update(BSONDocument("_id" -> record.id), record, upsert = true)
-      .void
+    collBoosting.update(
+      BSONDocument("_id" -> record.id),
+      record,
+      upsert = true).void
 
   def determineBoosting(
       record: BoostingRecord,
@@ -41,11 +41,13 @@ final class BoostingApi(
       loser: User): Funit =
     (record.games >= nbGamesToMark) ?? {
       {
-        (record.games >= (winner.count.rated * ratioGamesToMark)) ?? modApi
-          .autoBooster(winner.id, loser.id)
+        (record.games >= (winner.count.rated * ratioGamesToMark)) ?? modApi.autoBooster(
+          winner.id,
+          loser.id)
       } >> {
-        (record.games >= (loser.count.rated * ratioGamesToMark)) ?? modApi
-          .autoBooster(loser.id, winner.id)
+        (record.games >= (loser.count.rated * ratioGamesToMark)) ?? modApi.autoBooster(
+          loser.id,
+          winner.id)
       }
     }
 

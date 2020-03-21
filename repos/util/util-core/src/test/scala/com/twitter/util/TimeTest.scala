@@ -608,9 +608,10 @@ with Eventually with IntegrationPatience {
       val tolerance = 2.microseconds // we permit 1us slop
 
       forAll { i: Int =>
-        assert(Time
-          .fromSeconds(i)
-          .moreOrLessEquals(Time.fromFractionalSeconds(i.toDouble), tolerance))
+        assert(
+          Time.fromSeconds(i).moreOrLessEquals(
+            Time.fromFractionalSeconds(i.toDouble),
+            tolerance))
       }
 
       forAll { d: Double =>
@@ -618,18 +619,18 @@ with Eventually with IntegrationPatience {
         val microseconds = d * 1.second.inMicroseconds
         whenever(microseconds > -magic && microseconds < magic) {
           assert(
-            Time
-              .fromMicroseconds(microseconds.toLong)
-              .moreOrLessEquals(Time.fromFractionalSeconds(d), tolerance))
+            Time.fromMicroseconds(microseconds.toLong).moreOrLessEquals(
+              Time.fromFractionalSeconds(d),
+              tolerance))
         }
       }
 
       forAll { l: Long =>
         val seconds: Double = l.toDouble / 1.second.inNanoseconds
         assert(
-          Time
-            .fromFractionalSeconds(seconds)
-            .moreOrLessEquals(Time.fromNanoseconds(l), tolerance))
+          Time.fromFractionalSeconds(seconds).moreOrLessEquals(
+            Time.fromNanoseconds(l),
+            tolerance))
       }
     }
 
@@ -645,10 +646,8 @@ with Eventually with IntegrationPatience {
       assert(Time.fromMicroseconds(Long.MinValue + 1) == Time.Bottom)
 
       val currentTimeMicros = System.currentTimeMillis() * 1000
-      assert(
-        Time
-          .fromMicroseconds(currentTimeMicros)
-          .inNanoseconds == currentTimeMicros.microseconds.inNanoseconds)
+      assert(Time.fromMicroseconds(
+        currentTimeMicros).inNanoseconds == currentTimeMicros.microseconds.inNanoseconds)
     }
 
     "fromMillis" in {
@@ -664,9 +663,8 @@ with Eventually with IntegrationPatience {
 
       val currentTimeMs = System.currentTimeMillis
       assert(
-        Time
-          .fromMilliseconds(currentTimeMs)
-          .inNanoseconds == currentTimeMs * 1000000L)
+        Time.fromMilliseconds(
+          currentTimeMs).inNanoseconds == currentTimeMs * 1000000L)
     }
 
     "until" in {

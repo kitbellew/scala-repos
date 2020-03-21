@@ -663,10 +663,8 @@ object SparkSubmit {
     // For YARN cluster mode, the jar is already distributed on each node as "app.jar"
     // For python and R files, the primary resource is already distributed as a regular file
     if (!isYarnCluster && !args.isPython && !args.isR) {
-      var jars = sysProps
-        .get("spark.jars")
-        .map(x => x.split(",").toSeq)
-        .getOrElse(Seq.empty)
+      var jars = sysProps.get("spark.jars").map(x =>
+        x.split(",").toSeq).getOrElse(Seq.empty)
       if (isUserJar(args.primaryResource)) {
         jars = jars ++ Seq(args.primaryResource)
       }
@@ -825,9 +823,9 @@ object SparkSubmit {
     // scalastyle:on println
 
     val loader =
-      if (sysProps
-            .getOrElse("spark.driver.userClassPathFirst", "false")
-            .toBoolean) {
+      if (sysProps.getOrElse(
+            "spark.driver.userClassPathFirst",
+            "false").toBoolean) {
         new ChildFirstURLClassLoader(
           new Array[URL](0),
           Thread.currentThread.getContextClassLoader)
@@ -978,8 +976,7 @@ object SparkSubmit {
     * no files, into a single comma-separated string.
     */
   private def mergeFileLists(lists: String*): String = {
-    val merged = lists
-      .filterNot(StringUtils.isBlank)
+    val merged = lists.filterNot(StringUtils.isBlank)
       .flatMap(_.split(","))
       .mkString(",")
     if (merged == "") null else merged
@@ -1125,13 +1122,11 @@ private[spark] object SparkSubmitUtils {
   def resolveDependencyPaths(
       artifacts: Array[AnyRef],
       cacheDirectory: File): String = {
-    artifacts
-      .map { artifactInfo =>
-        val artifact = artifactInfo.asInstanceOf[Artifact].getModuleRevisionId
-        cacheDirectory.getAbsolutePath + File.separator +
-          s"${artifact.getOrganisation}_${artifact.getName}-${artifact.getRevision}.jar"
-      }
-      .mkString(",")
+    artifacts.map { artifactInfo =>
+      val artifact = artifactInfo.asInstanceOf[Artifact].getModuleRevisionId
+      cacheDirectory.getAbsolutePath + File.separator +
+        s"${artifact.getOrganisation}_${artifact.getName}-${artifact.getRevision}.jar"
+    }.mkString(",")
   }
 
   /** Adds the given maven coordinates to Ivy's module descriptor. */
@@ -1189,8 +1184,10 @@ private[spark] object SparkSubmitUtils {
   /** A nice function to use in tests as well. Values are dummy strings. */
   def getModuleDescriptor: DefaultModuleDescriptor =
     DefaultModuleDescriptor.newDefaultInstance(
-      ModuleRevisionId
-        .newInstance("org.apache.spark", "spark-submit-parent", "1.0"))
+      ModuleRevisionId.newInstance(
+        "org.apache.spark",
+        "spark-submit-parent",
+        "1.0"))
 
   /**
     * Resolves any dependencies that were supplied through maven coordinates

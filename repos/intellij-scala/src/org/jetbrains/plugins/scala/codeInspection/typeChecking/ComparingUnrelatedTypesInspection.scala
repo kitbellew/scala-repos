@@ -42,17 +42,17 @@ object ComparingUnrelatedTypesInspection {
 
     if (isNumericType(unboxed1) && isNumericType(unboxed2)) return false
 
-    ComparingUtil.isNeverSubType(unboxed1, unboxed2) && ComparingUtil
-      .isNeverSubType(unboxed2, unboxed1)
+    ComparingUtil.isNeverSubType(
+      unboxed1,
+      unboxed2) && ComparingUtil.isNeverSubType(unboxed2, unboxed1)
   }
 
   def isNumericType(tp: ScType) = {
     tp match {
       case Byte | Char | Short | Int | Long | Float | Double => true
       case ScDesignatorType(c: ScClass) =>
-        c.supers.headOption
-          .map(_.qualifiedName)
-          .contains("scala.math.ScalaNumber")
+        c.supers.headOption.map(_.qualifiedName).contains(
+          "scala.math.ScalaNumber")
       case _ => false
     }
   }
@@ -110,9 +110,8 @@ class ComparingUnrelatedTypesInspection
           Some(ResolvesTo(fun: ScFunction)),
           Seq(arg, _*)) if mayNeedHighlighting(fun) =>
       for {
-        ScParameterizedType(_, Seq(elemType)) <- baseExpr
-          .getType()
-          .map(tryExtractSingletonType)
+        ScParameterizedType(_, Seq(elemType)) <- baseExpr.getType().map(
+          tryExtractSingletonType)
         argType <- arg.getType()
         if cannotBeCompared(elemType, argType)
       } {

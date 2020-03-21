@@ -39,11 +39,9 @@ import org.jetbrains.plugins.scala.lang.refactoring.namesSuggester.NameSuggester
 object CreateFromUsageUtil {
 
   def uniqueNames(names: Seq[String]) = {
-    names
-      .foldLeft(List[String]()) { (r, h) =>
-        (h #:: Stream.from(1).map(h + _)).find(!r.contains(_)).get :: r
-      }
-      .reverse
+    names.foldLeft(List[String]()) { (r, h) =>
+      (h #:: Stream.from(1).map(h + _)).find(!r.contains(_)).get :: r
+    }.reverse
   }
 
   def nameByType(tp: ScType) =
@@ -65,9 +63,8 @@ object CreateFromUsageUtil {
 
   def paramsText(args: Seq[PsiElement]) = {
     val (names, types) = args.map(nameAndTypeForArg).unzip
-    (uniqueNames(names), types).zipped
-      .map((name, tpe) => s"$name: ${tpe.canonicalText}")
-      .mkString("(", ", ", ")")
+    (uniqueNames(names), types).zipped.map((name, tpe) =>
+      s"$name: ${tpe.canonicalText}").mkString("(", ", ", ")")
   }
 
   def parametersText(ref: ScReferenceElement) = {
@@ -121,9 +118,8 @@ object CreateFromUsageUtil {
 
   def addQmarksToTemplate(elem: PsiElement, builder: TemplateBuilder): Unit = {
     val Q_MARKS = "???"
-    elem.depthFirst
-      .filterByType(classOf[ScReferenceExpression])
-      .filter(_.getText == Q_MARKS)
+    elem.depthFirst.filterByType(classOf[ScReferenceExpression]).filter(
+      _.getText == Q_MARKS)
       .foreach { qmarks => builder.replaceElement(qmarks, Q_MARKS) }
   }
 
@@ -158,9 +154,8 @@ object CreateFromUsageUtil {
   }
 
   def unapplyMethodTypeText(pattern: ScPattern) = {
-    val types = CreateFromUsageUtil
-      .patternArgs(pattern)
-      .map(_.getType(TypingContext.empty).getOrAny)
+    val types = CreateFromUsageUtil.patternArgs(pattern).map(
+      _.getType(TypingContext.empty).getOrAny)
     val typesText = types.map(_.canonicalText).mkString(", ")
     types.size match {
       case 0 => "Boolean"
@@ -188,9 +183,8 @@ object TypeAsClass {
     scType match {
       case ScType.ExtractClass(aClass) => Some(aClass)
       case t: ScType =>
-        ScType
-          .extractDesignatorSingletonType(t)
-          .flatMap(ScType.extractClass(_, None))
+        ScType.extractDesignatorSingletonType(t).flatMap(
+          ScType.extractClass(_, None))
       case _ => None
     }
 }

@@ -259,9 +259,8 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       val data = sc.parallelize(Seq(1, 2, 3), 1).map(identity).groupBy(identity)
       val shuffleHandle =
-        data.dependencies.head
-          .asInstanceOf[ShuffleDependency[_, _, _]]
-          .shuffleHandle
+        data.dependencies.head.asInstanceOf[
+          ShuffleDependency[_, _, _]].shuffleHandle
       // Simulate fetch failures:
       val mappedData = data.map { x =>
         val taskContext = TaskContext.get
@@ -335,17 +334,11 @@ class UISeleniumSuite
     "job details page should display useful information for stages that haven't started") {
     withSpark(newSparkContext()) { sc =>
       // Create a multi-stage job with a long delay in the first stage:
-      val rdd = sc
-        .parallelize(Seq(1, 2, 3))
-        .map { x =>
-          // This long sleep call won't slow down the tests because we don't actually need to wait
-          // for the job to finish.
-          Thread.sleep(20000)
-        }
-        .groupBy(identity)
-        .map(identity)
-        .groupBy(identity)
-        .map(identity)
+      val rdd = sc.parallelize(Seq(1, 2, 3)).map { x =>
+        // This long sleep call won't slow down the tests because we don't actually need to wait
+        // for the job to finish.
+        Thread.sleep(20000)
+      }.groupBy(identity).map(identity).groupBy(identity).map(identity)
       // Start the job:
       rdd.countAsync()
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -367,12 +360,9 @@ class UISeleniumSuite
   test("job progress bars / cells reflect skipped stages / tasks") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
-      val rdd = sc
-        .parallelize(1 to 8, 8)
-        .map(x => x)
-        .groupBy((x: Int) => x, numPartitions = 8)
-        .flatMap(x => x._2)
-        .groupBy((x: Int) => x, numPartitions = 8)
+      val rdd = sc.parallelize(1 to 8, 8)
+        .map(x => x).groupBy((x: Int) => x, numPartitions = 8)
+        .flatMap(x => x._2).groupBy((x: Int) => x, numPartitions = 8)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
       rdd.count()
@@ -400,11 +390,8 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
       val rdd =
-        sc.parallelize(Seq(1, 2, 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
+        sc.parallelize(Seq(1, 2, 3)).map(identity).groupBy(identity).map(
+          identity).groupBy(identity)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
       rdd.count()
@@ -433,11 +420,8 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
       val rdd =
-        sc.parallelize(Seq(1, 2, 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
+        sc.parallelize(Seq(1, 2, 3)).map(identity).groupBy(identity).map(
+          identity).groupBy(identity)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
       rdd.count()
@@ -510,8 +494,8 @@ class UISeleniumSuite
       sc.parallelize(1 to 10).map { x => Thread.sleep(10000); x }.countAsync()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         val url = new URL(
-          sc.ui.get.appUIAddress
-            .stripSuffix("/") + "/stages/stage/kill/?id=0&terminate=true")
+          sc.ui.get.appUIAddress.stripSuffix(
+            "/") + "/stages/stage/kill/?id=0&terminate=true")
         // SPARK-6846: should be POST only but YARN AM doesn't proxy POST
         getResponseCode(url, "GET") should be(200)
         getResponseCode(url, "POST") should be(200)
@@ -536,12 +520,9 @@ class UISeleniumSuite
         // NOTE: if we reverse the order, things don't really behave nicely
         // we lose the stage for a job we keep, and then the job doesn't know
         // about its last stage
-        sc.parallelize(idx to (idx + 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
-          .count()
+        sc.parallelize(idx to (idx + 3)).map(identity).groupBy(identity).map(
+          identity)
+          .groupBy(identity).count()
         sc.parallelize(idx to (idx + 3)).collect()
       }
 
@@ -679,18 +660,13 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       // Create a multi-stage job
       val rdd =
-        sc.parallelize(Seq(1, 2, 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
+        sc.parallelize(Seq(1, 2, 3)).map(identity).groupBy(identity).map(
+          identity).groupBy(identity)
       rdd.count()
 
-      val stage0 = Source
-        .fromURL(
-          sc.ui.get.appUIAddress +
-            "/stages/stage/?id=0&attempt=0&expandDagViz=true")
-        .mkString
+      val stage0 = Source.fromURL(
+        sc.ui.get.appUIAddress +
+          "/stages/stage/?id=0&attempt=0&expandDagViz=true").mkString
       assert(
         stage0.contains("digraph G {\n  subgraph clusterstage_0 {\n    " +
           "label=&quot;Stage 0&quot;;\n    subgraph "))
@@ -704,11 +680,9 @@ class UISeleniumSuite
         stage0.contains("{\n      label=&quot;groupBy&quot;;\n      " +
           "2 [label=&quot;MapPartitionsRDD [2]"))
 
-      val stage1 = Source
-        .fromURL(
-          sc.ui.get.appUIAddress +
-            "/stages/stage/?id=1&attempt=0&expandDagViz=true")
-        .mkString
+      val stage1 = Source.fromURL(
+        sc.ui.get.appUIAddress +
+          "/stages/stage/?id=1&attempt=0&expandDagViz=true").mkString
       assert(
         stage1.contains("digraph G {\n  subgraph clusterstage_1 {\n    " +
           "label=&quot;Stage 1&quot;;\n    subgraph "))
@@ -722,11 +696,9 @@ class UISeleniumSuite
         stage1.contains("{\n      label=&quot;groupBy&quot;;\n      " +
           "5 [label=&quot;MapPartitionsRDD [5]"))
 
-      val stage2 = Source
-        .fromURL(
-          sc.ui.get.appUIAddress +
-            "/stages/stage/?id=2&attempt=0&expandDagViz=true")
-        .mkString
+      val stage2 = Source.fromURL(
+        sc.ui.get.appUIAddress +
+          "/stages/stage/?id=2&attempt=0&expandDagViz=true").mkString
       assert(
         stage2.contains("digraph G {\n  subgraph clusterstage_2 {\n    " +
           "label=&quot;Stage 2&quot;;\n    subgraph "))

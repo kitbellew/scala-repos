@@ -67,13 +67,11 @@ class JdbcRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     // bounds are inclusive, hence the + 1 here and - 1 on end
     val length = BigInt(1) + upperBound - lowerBound
-    (0 until numPartitions)
-      .map(i => {
-        val start = lowerBound + ((i * length) / numPartitions)
-        val end = lowerBound + (((i + 1) * length) / numPartitions) - 1
-        new JdbcPartition(i, start.toLong, end.toLong)
-      })
-      .toArray
+    (0 until numPartitions).map(i => {
+      val start = lowerBound + ((i * length) / numPartitions)
+      val end = lowerBound + (((i + 1) * length) / numPartitions) - 1
+      new JdbcPartition(i, start.toLong, end.toLong)
+    }).toArray
   }
 
   override def compute(thePart: Partition, context: TaskContext): Iterator[T] =

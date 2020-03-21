@@ -38,9 +38,10 @@ class WrappedArrayTest extends FunSuite {
                 elemClass,
                 mirror
               ) // slow: `mkRaw` is called for each element
-            val pickler = internal.currentRuntime.picklers
-              .genPickler(classLoader, elemClass, elemTag)
-              .asInstanceOf[Pickler[AnyRef]]
+            val pickler = internal.currentRuntime.picklers.genPickler(
+              classLoader,
+              elemClass,
+              elemTag).asInstanceOf[Pickler[AnyRef]]
             pickler.pickle(elem, b)
           }
         }
@@ -52,9 +53,9 @@ class WrappedArrayTest extends FunSuite {
         val reader = preader.beginCollection()
         val length = reader.readLength()
         val elemClass = (new Object).getClass
-        val newArray = java.lang.reflect.Array
-          .newInstance(elemClass, length)
-          .asInstanceOf[Array[AnyRef]]
+        val newArray = java.lang.reflect.Array.newInstance(
+          elemClass,
+          length).asInstanceOf[Array[AnyRef]]
         var i = 0
         while (i < length) {
           val r = reader.readElement()

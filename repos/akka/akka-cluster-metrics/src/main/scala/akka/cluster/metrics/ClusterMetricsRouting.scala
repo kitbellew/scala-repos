@@ -411,15 +411,14 @@ abstract class MixMetricsSelectorBase(
     val combined: immutable.IndexedSeq[(Address, Double)] =
       selectors.flatMap(_.capacity(nodeMetrics).toSeq)
     // aggregated average of the capacities by address
-    combined
-      .foldLeft(Map.empty[Address, (Double, Int)].withDefaultValue((0.0, 0))) {
-        case (acc, (address, capacity)) ⇒
-          val (sum, count) = acc(address)
-          acc + (address -> ((sum + capacity, count + 1)))
-      }
-      .map {
-        case (addr, (sum, count)) ⇒ (addr -> sum / count)
-      }
+    combined.foldLeft(
+      Map.empty[Address, (Double, Int)].withDefaultValue((0.0, 0))) {
+      case (acc, (address, capacity)) ⇒
+        val (sum, count) = acc(address)
+        acc + (address -> ((sum + capacity, count + 1)))
+    }.map {
+      case (addr, (sum, count)) ⇒ (addr -> sum / count)
+    }
   }
 
 }
@@ -433,17 +432,14 @@ object MetricsSelector {
       case "load" ⇒ SystemLoadAverageMetricsSelector
       case fqn ⇒
         val args = List(classOf[Config] -> config)
-        dynamicAccess
-          .createInstanceFor[MetricsSelector](fqn, args)
-          .recover({
-            case exception ⇒
-              throw new IllegalArgumentException(
-                (s"Cannot instantiate metrics-selector [$fqn], " +
-                  "make sure it extends [akka.cluster.routing.MetricsSelector] and " +
-                  "has constructor with [com.typesafe.config.Config] parameter"),
-                exception)
-          })
-          .get
+        dynamicAccess.createInstanceFor[MetricsSelector](fqn, args).recover({
+          case exception ⇒
+            throw new IllegalArgumentException(
+              (s"Cannot instantiate metrics-selector [$fqn], " +
+                "make sure it extends [akka.cluster.routing.MetricsSelector] and " +
+                "has constructor with [com.typesafe.config.Config] parameter"),
+              exception)
+        }).get
     }
 }
 

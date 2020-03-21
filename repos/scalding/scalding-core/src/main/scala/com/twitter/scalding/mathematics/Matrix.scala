@@ -76,15 +76,14 @@ class MatrixPipeExtensions(pipe: Pipe) {
   }
 
   private def groupPipeIntoMap[ColT, ValT](pipe: Pipe): Pipe = {
-    pipe
-      .groupBy('group, 'row) {
-        _.mapReduceMap[(ColT, ValT), Map[ColT, ValT], Map[ColT, ValT]](
-          ('col, 'val) -> 'val) { (colval: (ColT, ValT)) =>
-          Map(colval._1 -> colval._2)
-        } { (l: Map[ColT, ValT], r: Map[ColT, ValT]) => l ++ r } {
-          (red: Map[ColT, ValT]) => red
-        }
+    pipe.groupBy('group, 'row) {
+      _.mapReduceMap[(ColT, ValT), Map[ColT, ValT], Map[ColT, ValT]](
+        ('col, 'val) -> 'val) { (colval: (ColT, ValT)) =>
+        Map(colval._1 -> colval._2)
+      } { (l: Map[ColT, ValT], r: Map[ColT, ValT]) => l ++ r } {
+        (red: Map[ColT, ValT]) => red
       }
+    }
       .rename('group, 'col)
   }
   def toBlockMatrix[GroupT, RowT, ColT, ValT](fields: Fields)(implicit
@@ -395,8 +394,8 @@ class Matrix[RowT, ColT, ValT](
         // Matrices are generally huge and cascading has problems with diverse key spaces and
         // mapside operations
         // TODO continually evaluate if this is needed to avoid OOM
-          .reducers(MatrixProduct.numOfReducers(sizeHint))
-          .forceToReducers
+        .reducers(MatrixProduct.numOfReducers(sizeHint))
+        .forceToReducers
       }
     }
     val newHint = sizeHint.setRows(1L)
@@ -416,10 +415,9 @@ class Matrix[RowT, ColT, ValT](
     val newListSym = Symbol(colSym.name + "_" + valSym.name + "_list")
     // TODO, I think we can count the rows/cols for free here
     val newPipe = filterOutZeros(valSym, mon) {
-      pipe
-        .groupBy(rowSym) {
-          _.toList[(ColT, ValT)]((colSym, valSym) -> newListSym)
-        }
+      pipe.groupBy(rowSym) {
+        _.toList[(ColT, ValT)]((colSym, valSym) -> newListSym)
+      }
         .flatMapTo((rowSym, newListSym) -> (rowSym, colSym, valSym)) {
           tup: (RowT, List[(ColT, ValT)]) =>
             val row = tup._1
@@ -436,11 +434,11 @@ class Matrix[RowT, ColT, ValT](
     if (k < 1000) {
       topRowWithTiny(k)
     } else {
-      val newPipe = pipe
-        .groupBy(rowSym) {
-          _.sortBy(valSym).reverse
-            .take(k)
-        }
+      val newPipe = pipe.groupBy(rowSym) {
+        _.sortBy(valSym)
+        .reverse
+        .take(k)
+      }
         .project(rowSym, colSym, valSym)
       new Matrix[RowT, ColT, ValT](
         rowSym,
@@ -454,11 +452,10 @@ class Matrix[RowT, ColT, ValT](
   protected def topRowWithTiny(k: Int)(implicit
       ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
     val topSym = Symbol(colSym.name + "_topK")
-    val newPipe = pipe
-      .groupBy(rowSym) {
-        _.sortWithTake((colSym, valSym) -> 'top_vals, k)(
-          (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
-      }
+    val newPipe = pipe.groupBy(rowSym) {
+      _.sortWithTake((colSym, valSym) -> 'top_vals, k)(
+        (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
+    }
       .flatMapTo((0, 1) -> (rowSym, topSym, valSym)) {
         imp: (RowT, List[(ColT, ValT)]) =>
           val row = imp._1
@@ -475,7 +472,10 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL0Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (matD.mapValues { x => 1.0 }.sumColVectors.diag.inverse) * matD
+    (matD.mapValues { x => 1.0 }
+      .sumColVectors
+      .diag
+      .inverse) * matD
   }
 
   def rowL0Normalize(implicit
@@ -483,7 +483,10 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL1Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (matD.mapValues { x => x.abs }.sumColVectors.diag.inverse) * matD
+    (matD.mapValues { x => x.abs }
+      .sumColVectors
+      .diag
+      .inverse) * matD
   }
 
   // Row L1 normalization, only makes sense for Doubles
@@ -493,8 +496,7 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL2Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (matD
-      .mapValues { x => x * x }
+    (matD.mapValues { x => x * x }
       .sumColVectors
       .diag
       .mapValues { x => scala.math.sqrt(x) }
@@ -649,8 +651,7 @@ class Matrix[RowT, ColT, ValT](
       monT: Monoid[ColValT]): ColVector[RowT, ColValT] = {
     //This cast will always succeed:
     val boolMat = this.asInstanceOf[Matrix[RowT, ColT, Boolean]]
-    boolMat
-      .zip(vec.transpose)
+    boolMat.zip(vec.transpose)
       .mapValues { boolT => if (boolT._1) boolT._2 else monT.zero }
       .sumColVectors
   }
@@ -677,8 +678,9 @@ class Matrix[RowT, ColT, ValT](
 
   // This should only be called by def diagonal, which verifies that RowT == ColT
   protected lazy val mainDiagonal: DiagonalMatrix[RowT, ValT] = {
-    val diagPipe = pipe
-      .filter(rowSym, colSym) { input: (RowT, RowT) => (input._1 == input._2) }
+    val diagPipe = pipe.filter(rowSym, colSym) { input: (RowT, RowT) =>
+      (input._1 == input._2)
+    }
       .project(rowSym, valSym)
     new DiagonalMatrix[RowT, ValT](
       rowSym,
@@ -734,8 +736,7 @@ class Matrix[RowT, ColT, ValT](
       that: Scalar[ValU]): Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, that.valSym, that.pipe)
-    val newPipe = inPipe
-      .crossWithTiny(newRPipe)
+    val newPipe = inPipe.crossWithTiny(newRPipe)
       .map(valSym.append(getField(newRFields, 0)) -> valSym) {
         leftRight: (ValT, ValU) => Tuple1(leftRight)
       }
@@ -751,10 +752,9 @@ class Matrix[RowT, ColT, ValT](
   // Similar to zip, but combine the scalar on the right with all non-zeros in this matrix:
   def nonZerosWith[ValU](
       that: LiteralScalar[ValU]): Matrix[RowT, ColT, (ValT, ValU)] = {
-    val newPipe = inPipe
-      .map(valSym -> valSym) { left: Tuple1[ValT] =>
-        Tuple1((left._1, that.value))
-      }
+    val newPipe = inPipe.map(valSym -> valSym) { left: Tuple1[ValT] =>
+      Tuple1((left._1, that.value))
+    }
       .project(rowColValSymbols)
     new Matrix[RowT, ColT, (ValT, ValU)](
       rowSym,
@@ -855,9 +855,8 @@ class Matrix[RowT, ColT, ValT](
 
   def toBlockMatrix[G](
       grouping: (RowT) => (G, RowT)): BlockMatrix[G, RowT, ColT, ValT] = {
-    inPipe
-      .map('row -> ('group, 'row))(grouping)
-      .toBlockMatrix(('group, 'row, 'col, 'val))
+    inPipe.map('row -> ('group, 'row))(grouping).toBlockMatrix(
+      ('group, 'row, 'col, 'val))
   }
 
   /**
@@ -948,8 +947,7 @@ class Matrix[RowT, ColT, ValT](
       rowSym,
       colSym,
       valSym,
-      joined
-        .filter(index) { x: RowT => null == x }
+      joined.filter(index) { x: RowT => null == x }
         .project(rowSym, colSym, valSym))
   }
 
@@ -967,8 +965,7 @@ class Matrix[RowT, ColT, ValT](
       rowSym,
       colSym,
       valSym,
-      joined
-        .filter(index) { x: ColT => null == x }
+      joined.filter(index) { x: ColT => null == x }
         .project(rowSym, colSym, valSym))
   }
 
@@ -1043,8 +1040,7 @@ class DiagonalMatrix[IdxT, ValT](
   // Inverse of this matrix *IGNORING ZEROS*
   def inverse(implicit field: Field[ValT]): DiagonalMatrix[IdxT, ValT] = {
     val diagPipe = inPipe.flatMap(valSym -> valSym) { element: ValT =>
-      field
-        .nonZeroOption(element)
+      field.nonZeroOption(element)
         .map { field.inverse }
     }
     new DiagonalMatrix[IdxT, ValT](idxSym, valSym, diagPipe, sizeHint)
@@ -1114,10 +1110,9 @@ class RowVector[ColT, ValT](
     */
   def mapWithIndex[ValNew](fn: (ValT, ColT) => ValNew)(implicit
       mon: Monoid[ValNew]): RowVector[ColT, ValNew] = {
-    val newPipe = pipe
-      .mapTo((valS, colS) -> (valS, colS)) { tup: (ValT, ColT) =>
-        (fn(tup._1, tup._2), tup._2)
-      }
+    val newPipe = pipe.mapTo((valS, colS) -> (valS, colS)) {
+      tup: (ValT, ColT) => (fn(tup._1, tup._2), tup._2)
+    }
       .filter(valS) { (v: ValNew) => mon.isNonZero(v) }
     new RowVector(colS, valS, newPipe, sizeH)
   }
@@ -1174,12 +1169,11 @@ class RowVector[ColT, ValT](
       val ordValS = new Fields(fieldName)
       ordValS.setComparator(fieldName, ord)
 
-      val newPipe = pipe
-        .groupAll {
-          _.sortBy(ordValS).reverse
-            .take(k)
-        }
-        .project(colS, valS)
+      val newPipe = pipe.groupAll {
+        _.sortBy(ordValS)
+        .reverse
+        .take(k)
+      }.project(colS, valS)
       new RowVector[ColT, ValT](
         colS,
         valS,
@@ -1191,11 +1185,10 @@ class RowVector[ColT, ValT](
   protected def topWithTiny(k: Int)(implicit
       ord: Ordering[ValT]): RowVector[ColT, ValT] = {
     val topSym = Symbol(colS.name + "_topK")
-    val newPipe = pipe
-      .groupAll {
-        _.sortWithTake((colS, valS) -> 'top_vals, k)(
-          (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
-      }
+    val newPipe = pipe.groupAll {
+      _.sortWithTake((colS, valS) -> 'top_vals, k)(
+        (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
+    }
       .flatMap('top_vals -> (topSym, valS)) { imp: List[(ColT, ValT)] => imp }
     new RowVector[ColT, ValT](
       topSym,
@@ -1207,8 +1200,7 @@ class RowVector[ColT, ValT](
   def toMatrix[RowT](rowId: RowT): Matrix[RowT, ColT, ValT] = {
     val rowSym =
       newSymbol(Set(colS, valS), 'row) //Matrix.newSymbol(Set(colS, valS), 'row)
-    val newPipe = inPipe
-      .map(() -> rowSym) { u: Unit => rowId }
+    val newPipe = inPipe.map(() -> rowSym) { u: Unit => rowId }
       .project(rowSym, colS, valS)
     new Matrix[RowT, ColT, ValT](rowSym, colS, valS, newPipe, sizeH.setRows(1L))
   }
@@ -1312,12 +1304,11 @@ class ColVector[RowT, ValT](
   def topElems(k: Int)(implicit ord: Ordering[ValT]): ColVector[RowT, ValT] = {
     if (k < 1000) { topWithTiny(k) }
     else {
-      val newPipe = pipe
-        .groupAll {
-          _.sortBy(valS).reverse
-            .take(k)
-        }
-        .project(rowS, valS)
+      val newPipe = pipe.groupAll {
+        _.sortBy(valS)
+        .reverse
+        .take(k)
+      }.project(rowS, valS)
       new ColVector[RowT, ValT](
         rowS,
         valS,
@@ -1329,11 +1320,10 @@ class ColVector[RowT, ValT](
   protected def topWithTiny(k: Int)(implicit
       ord: Ordering[ValT]): ColVector[RowT, ValT] = {
     val topSym = Symbol(rowS.name + "_topK")
-    val newPipe = pipe
-      .groupAll {
-        _.sortWithTake((rowS, valS) -> 'top_vals, k)(
-          (t0: (RowT, ValT), t1: (RowT, ValT)) => ord.gt(t0._2, t1._2))
-      }
+    val newPipe = pipe.groupAll {
+      _.sortWithTake((rowS, valS) -> 'top_vals, k)(
+        (t0: (RowT, ValT), t1: (RowT, ValT)) => ord.gt(t0._2, t1._2))
+    }
       .flatMap('top_vals -> (topSym, valS)) { imp: List[(RowT, ValT)] => imp }
     new ColVector[RowT, ValT](
       topSym,
@@ -1345,8 +1335,7 @@ class ColVector[RowT, ValT](
   def toMatrix[ColT](colIdx: ColT): Matrix[RowT, ColT, ValT] = {
     val colSym =
       newSymbol(Set(rowS, valS), 'col) //Matrix.newSymbol(Set(rowS, valS), 'col)
-    val newPipe = inPipe
-      .map(() -> colSym) { u: Unit => colIdx }
+    val newPipe = inPipe.map(() -> colSym) { u: Unit => colIdx }
       .project(rowS, colSym, valS)
     new Matrix[RowT, ColT, ValT](rowS, colSym, valS, newPipe, sizeH.setCols(1L))
   }

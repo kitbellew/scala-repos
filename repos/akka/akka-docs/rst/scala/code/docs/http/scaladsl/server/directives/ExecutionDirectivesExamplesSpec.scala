@@ -32,8 +32,7 @@ class ExecutionDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "handleRejections" in {
-    val totallyMissingHandler = RejectionHandler
-      .newBuilder()
+    val totallyMissingHandler = RejectionHandler.newBuilder()
       .handleNotFound {
         complete(
           (

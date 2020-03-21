@@ -88,10 +88,8 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
           && r.getMethod != null
           && !HttpMethod(r.getMethod).isSafe
           && r.getHeader("Content-Type") != null
-          && r
-            .getHeader("Content-Type")
-            .split(";")(0)
-            .equalsIgnoreCase("APPLICATION/X-WWW-FORM-URLENCODED")) {
+          && r.getHeader("Content-Type").split(";")(0).equalsIgnoreCase(
+            "APPLICATION/X-WWW-FORM-URLENCODED")) {
         rl.MapQueryString.parseString(body)
       } else {
         Map.empty
@@ -240,12 +238,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     * value of the map is the empty sequence.
     */
   def multiCookies: MultiMap = {
-    val rr = Option(r.getCookies)
-      .getOrElse(Array())
-      .toSeq
-      .groupBy { _.getName }
-      .transform { case (k, v) => v map { _.getValue } }
-      .withDefaultValue(Seq.empty)
+    val rr = Option(r.getCookies).getOrElse(Array()).toSeq.groupBy {
+      _.getName
+    }.transform { case (k, v) => v map { _.getValue } }.withDefaultValue(
+      Seq.empty)
     MultiMap(rr)
   }
 

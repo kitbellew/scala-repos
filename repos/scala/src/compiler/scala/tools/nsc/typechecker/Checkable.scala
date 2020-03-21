@@ -255,8 +255,9 @@ trait Checkable {
           || isEffectivelyFinal(sym2)
           || !sym1.isTrait && !sym2.isTrait
           || isSealedOrFinal(sym1) && isSealedOrFinal(
-            sym2) && allChildrenAreIrreconcilable(sym1, sym2) && !currentRun
-            .compiles(sym1) && !currentRun.compiles(sym2)
+            sym2) && allChildrenAreIrreconcilable(
+            sym1,
+            sym2) && !currentRun.compiles(sym1) && !currentRun.compiles(sym2)
       )
     private def isSealedOrFinal(sym: Symbol) = sym.isSealed || sym.isFinal
     private def isEffectivelyFinal(sym: Symbol): Boolean =

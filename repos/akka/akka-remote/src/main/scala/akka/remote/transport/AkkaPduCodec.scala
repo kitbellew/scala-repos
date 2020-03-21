@@ -155,25 +155,19 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
 
   override def constructPureAck(ack: Ack): ByteString =
     ByteString.ByteString1C(
-      AckAndEnvelopeContainer.newBuilder
-        .setAck(ackBuilder(ack))
-        .build()
-        .toByteArray
+      AckAndEnvelopeContainer.newBuilder.setAck(
+        ackBuilder(ack)).build().toByteArray
     ) //Reuse Byte Array (naughty!)
 
   override def constructPayload(payload: ByteString): ByteString =
     ByteString.ByteString1C(
-      AkkaProtocolMessage
-        .newBuilder()
-        .setPayload(PByteString.copyFrom(payload.asByteBuffer))
-        .build
-        .toByteArray
+      AkkaProtocolMessage.newBuilder().setPayload(
+        PByteString.copyFrom(payload.asByteBuffer)).build.toByteArray
     ) //Reuse Byte Array (naughty!)
 
   override def constructAssociate(info: HandshakeInfo): ByteString = {
-    val handshakeInfo = AkkaHandshakeInfo.newBuilder
-      .setOrigin(serializeAddress(info.origin))
-      .setUid(info.uid)
+    val handshakeInfo = AkkaHandshakeInfo.newBuilder.setOrigin(
+      serializeAddress(info.origin)).setUid(info.uid)
     info.cookie foreach handshakeInfo.setCookie
     constructControlMessagePdu(
       WireFormats.CommandType.ASSOCIATE,
@@ -295,22 +289,17 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     handshakeInfo foreach controlMessageBuilder.setHandshakeInfo
 
     ByteString.ByteString1C(
-      AkkaProtocolMessage
-        .newBuilder()
-        .setInstruction(controlMessageBuilder.build)
-        .build
-        .toByteArray
+      AkkaProtocolMessage.newBuilder().setInstruction(
+        controlMessageBuilder.build).build.toByteArray
     ) //Reuse Byte Array (naughty!)
   }
 
   private def serializeActorRef(
       defaultAddress: Address,
       ref: ActorRef): ActorRefData = {
-    ActorRefData.newBuilder
-      .setPath(
-        if (ref.path.address.host.isDefined) ref.path.toSerializationFormat
-        else ref.path.toSerializationFormatWithAddress(defaultAddress))
-      .build()
+    ActorRefData.newBuilder.setPath(
+      if (ref.path.address.host.isDefined) ref.path.toSerializationFormat
+      else ref.path.toSerializationFormatWithAddress(defaultAddress)).build()
   }
 
   private def serializeAddress(address: Address): AddressData =

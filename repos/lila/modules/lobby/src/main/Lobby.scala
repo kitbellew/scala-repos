@@ -36,8 +36,9 @@ private[lobby] final class Lobby(
       (userOption.map(_.id) ?? blocking) foreach { blocks =>
         val lobbyUser = userOption map { LobbyUser.make(_, blocks) }
         replyTo ! HookRepo.vector.filter { hook =>
-          ~(hook.userId |@| lobbyUser.map(_.id))
-            .apply(_ == _) || Biter.canJoin(hook, lobbyUser)
+          ~(hook.userId |@| lobbyUser.map(_.id)).apply(_ == _) || Biter.canJoin(
+            hook,
+            lobbyUser)
         }
       }
 

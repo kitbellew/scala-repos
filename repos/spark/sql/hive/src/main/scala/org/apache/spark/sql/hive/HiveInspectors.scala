@@ -310,12 +310,10 @@ private[hive] trait HiveInspectors {
       case mi: StandardConstantMapObjectInspector =>
         // take the value from the map inspector object, rather than the input data
         val keyValues = mi.getWritableConstantValue.asScala.toSeq
-        val keys = keyValues
-          .map(kv => unwrap(kv._1, mi.getMapKeyObjectInspector))
-          .toArray
-        val values = keyValues
-          .map(kv => unwrap(kv._2, mi.getMapValueObjectInspector))
-          .toArray
+        val keys = keyValues.map(kv =>
+          unwrap(kv._1, mi.getMapKeyObjectInspector)).toArray
+        val values = keyValues.map(kv =>
+          unwrap(kv._2, mi.getMapValueObjectInspector)).toArray
         ArrayBasedMapData(keys, values)
       case li: StandardConstantListObjectInspector =>
         // take the value from the list inspector object, rather than the input data
@@ -376,23 +374,23 @@ private[hive] trait HiveInspectors {
           case _ => pi.getPrimitiveJavaObject(data)
         }
       case li: ListObjectInspector =>
-        Option(li.getList(data)).map { l =>
-          val values =
-            l.asScala.map(unwrap(_, li.getListElementObjectInspector)).toArray
-          new GenericArrayData(values)
-        }.orNull
+        Option(li.getList(data))
+          .map { l =>
+            val values =
+              l.asScala.map(unwrap(_, li.getListElementObjectInspector)).toArray
+            new GenericArrayData(values)
+          }
+          .orNull
       case mi: MapObjectInspector =>
         val map = mi.getMap(data)
         if (map == null) {
           null
         } else {
           val keyValues = map.asScala.toSeq
-          val keys = keyValues
-            .map(kv => unwrap(kv._1, mi.getMapKeyObjectInspector))
-            .toArray
-          val values = keyValues
-            .map(kv => unwrap(kv._2, mi.getMapValueObjectInspector))
-            .toArray
+          val keys = keyValues.map(kv =>
+            unwrap(kv._1, mi.getMapKeyObjectInspector)).toArray
+          val values = keyValues.map(kv =>
+            unwrap(kv._2, mi.getMapValueObjectInspector)).toArray
           ArrayBasedMapData(keys, values)
         }
       // currently, hive doesn't provide the ConstantStructObjectInspector
@@ -463,16 +461,14 @@ private[hive] trait HiveInspectors {
           if (o != null) {
             val struct = soi.create()
             val row = o.asInstanceOf[InternalRow]
-            soi.getAllStructFieldRefs.asScala
-              .zip(wrappers)
-              .zipWithIndex
-              .foreach {
-                case ((field, wrapper), i) =>
-                  soi.setStructFieldData(
-                    struct,
-                    field,
-                    wrapper(row.get(i, schema(i).dataType)))
-              }
+            soi.getAllStructFieldRefs.asScala.zip(
+              wrappers).zipWithIndex.foreach {
+              case ((field, wrapper), i) =>
+                soi.setStructFieldData(
+                  struct,
+                  field,
+                  wrapper(row.get(i, schema(i).dataType)))
+            }
             struct
           } else {
             null
@@ -658,12 +654,11 @@ private[hive] trait HiveInspectors {
       case x: ListObjectInspector =>
         val list = new java.util.ArrayList[Object]
         val tpe = dataType.asInstanceOf[ArrayType].elementType
-        a.asInstanceOf[ArrayData]
-          .foreach(
-            tpe,
-            (_, e) => {
-              list.add(wrap(e, x.getListElementObjectInspector, tpe))
-            })
+        a.asInstanceOf[ArrayData].foreach(
+          tpe,
+          (_, e) => {
+            list.add(wrap(e, x.getListElementObjectInspector, tpe))
+          })
         list
       case x: MapObjectInspector =>
         val keyType = dataType.asInstanceOf[MapType].keyType
@@ -793,13 +788,11 @@ private[hive] trait HiveInspectors {
             null)
         } else {
           val list = new java.util.ArrayList[Object]()
-          value
-            .asInstanceOf[ArrayData]
-            .foreach(
-              dt,
-              (_, e) => {
-                list.add(wrap(e, listObjectInspector, dt))
-              })
+          value.asInstanceOf[ArrayData].foreach(
+            dt,
+            (_, e) => {
+              list.add(wrap(e, listObjectInspector, dt))
+            })
           ObjectInspectorFactory.getStandardConstantListObjectInspector(
             listObjectInspector,
             list)

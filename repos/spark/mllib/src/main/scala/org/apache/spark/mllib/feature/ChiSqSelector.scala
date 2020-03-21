@@ -170,11 +170,9 @@ object ChiSqSelectorModel extends Loader[ChiSqSelectorModel] {
       // Check schema explicitly since erasure makes it hard to use match-case for checking.
       Loader.checkSchema[Data](dataFrame.schema)
 
-      val features = dataArray.rdd
-        .map {
-          case Row(feature: Int) => (feature)
-        }
-        .collect()
+      val features = dataArray.rdd.map {
+        case Row(feature: Int) => (feature)
+      }.collect()
 
       return new ChiSqSelectorModel(features)
     }
@@ -201,10 +199,8 @@ class ChiSqSelector @Since("1.3.0") (@Since("1.3.0") val numTopFeatures: Int)
     */
   @Since("1.3.0")
   def fit(data: RDD[LabeledPoint]): ChiSqSelectorModel = {
-    val indices = Statistics
-      .chiSqTest(data)
-      .zipWithIndex
-      .sortBy { case (res, _) => -res.statistic }
+    val indices = Statistics.chiSqTest(data)
+      .zipWithIndex.sortBy { case (res, _) => -res.statistic }
       .take(numTopFeatures)
       .map { case (_, indices) => indices }
       .sorted

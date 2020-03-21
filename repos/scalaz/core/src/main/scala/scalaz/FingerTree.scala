@@ -1368,12 +1368,8 @@ final class IndSeq[A](val self: FingerTree[Int, A]) {
 
   implicit def sizer[A] = UnitReducer((a: A) => 1)
   def apply(i: Int): A =
-    self
-      .split(_ > i)
-      ._2
-      .viewl
-      .headOption
-      .getOrElse(sys.error("Index " + i + " > " + self.measure))
+    self.split(_ > i)._2.viewl.headOption.getOrElse(
+      sys.error("Index " + i + " > " + self.measure))
   def replace(i: Int, a: => A): IndSeq[A] = {
     val (l, r) = self.split(_ > i)
     indSeq(l <++> (a |-: r))

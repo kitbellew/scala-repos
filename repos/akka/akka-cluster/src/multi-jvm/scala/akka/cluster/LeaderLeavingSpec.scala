@@ -20,11 +20,9 @@ object LeaderLeavingMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        "akka.cluster.auto-down-unreachable-after = 0s"))
-      .withFallback(
-        MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      "akka.cluster.auto-down-unreachable-after = 0s")).withFallback(
+      MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 class LeaderLeavingMultiJvmNode1 extends LeaderLeavingSpec

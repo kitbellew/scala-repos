@@ -250,10 +250,9 @@ object FirstOrderMinimizer {
         state: State[T, _, _],
         info: IndexedSeq[ConvergenceCheck[T]#Info])
         : Option[ConvergenceReason] = {
-      (checks zip info).iterator
-        .flatMap { case (c, i) => c(state, i.asInstanceOf[c.Info]) }
-        .toStream
-        .headOption
+      (checks zip info).iterator.flatMap {
+        case (c, i) => c(state, i.asInstanceOf[c.Info])
+      }.toStream.headOption
     }
   }
 
@@ -510,13 +509,13 @@ object FirstOrderMinimizer {
         space: MutableEnumeratedCoordinateField[T, K, Double])
         : Iterator[LBFGS[T]#State] = {
       if (useL1)
-        new OWLQN[K, T](maxIterations, 5, regularization, tolerance)(space)
-          .iterations(f, init)
+        new OWLQN[K, T](maxIterations, 5, regularization, tolerance)(
+          space).iterations(f, init)
       else
-        (new LBFGS[T](maxIterations, 5, tolerance = tolerance)(space))
-          .iterations(
-            DiffFunction.withL2Regularization(f, regularization),
-            init)
+        (new LBFGS[T](maxIterations, 5, tolerance = tolerance)(
+          space)).iterations(
+          DiffFunction.withL2Regularization(f, regularization),
+          init)
     }
   }
 }

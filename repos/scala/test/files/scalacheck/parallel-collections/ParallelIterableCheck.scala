@@ -219,8 +219,9 @@ abstract class ParallelIterableCheck[T](collName: String)
   property("flatMaps must be equal") = forAll(collectionPairs) {
     case (t, coll) =>
       (for ((f, ind) <- flatMapFunctions.zipWithIndex)
-        yield ("op index: " + ind) |: areEqual(t.flatMap(f), coll.flatMap(f)))
-        .reduceLeft(_ && _)
+        yield ("op index: " + ind) |: areEqual(
+          t.flatMap(f),
+          coll.flatMap(f))).reduceLeft(_ && _)
   }
 
   property("filters must be equal") = forAll(collectionPairs) {

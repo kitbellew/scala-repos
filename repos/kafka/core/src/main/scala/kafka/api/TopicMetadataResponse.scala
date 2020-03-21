@@ -40,9 +40,8 @@ case class TopicMetadataResponse(
     correlationId: Int)
     extends RequestOrResponse() {
   val sizeInBytes: Int = {
-    4 + 4 + brokers.map(_.sizeInBytes).sum + 4 + topicsMetadata
-      .map(_.sizeInBytes)
-      .sum
+    4 + 4 + brokers.map(_.sizeInBytes).sum + 4 + topicsMetadata.map(
+      _.sizeInBytes).sum
   }
 
   def writeTo(buffer: ByteBuffer) {

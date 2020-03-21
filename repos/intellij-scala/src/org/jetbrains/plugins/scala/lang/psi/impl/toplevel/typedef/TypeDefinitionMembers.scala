@@ -133,9 +133,9 @@ object TypeDefinitionMembers {
 
       if (template.qualifiedName == "scala.AnyVal") {
         //we need to add Object members
-        val obj = ScalaPsiManager
-          .instance(template.getProject)
-          .getCachedClass(template.getResolveScope, "java.lang.Object")
+        val obj = ScalaPsiManager.instance(template.getProject).getCachedClass(
+          template.getResolveScope,
+          "java.lang.Object")
         obj.map { obj =>
           for (method <- obj.getMethods) {
             method.getName match {
@@ -449,9 +449,9 @@ object TypeDefinitionMembers {
 
       if (template.qualifiedName == "scala.AnyVal") {
         //we need to add Object members
-        val obj = ScalaPsiManager
-          .instance(template.getProject)
-          .getCachedClass(template.getResolveScope, "java.lang.Object")
+        val obj = ScalaPsiManager.instance(template.getProject).getCachedClass(
+          template.getResolveScope,
+          "java.lang.Object")
         obj.map { obj =>
           for (method <- obj.getMethods) {
             method.getName match {
@@ -759,27 +759,27 @@ object TypeDefinitionMembers {
       tp: ScCompoundType,
       compoundTypeThisType: Option[ScType],
       place: PsiElement): PMap = {
-    ScalaPsiManager
-      .instance(place.getProject)
-      .getParameterlessSignatures(tp, compoundTypeThisType)
+    ScalaPsiManager.instance(place.getProject).getParameterlessSignatures(
+      tp,
+      compoundTypeThisType)
   }
 
   def getTypes(
       tp: ScCompoundType,
       compoundTypeThisType: Option[ScType],
       place: PsiElement): TMap = {
-    ScalaPsiManager
-      .instance(place.getProject)
-      .getTypes(tp, compoundTypeThisType)
+    ScalaPsiManager.instance(place.getProject).getTypes(
+      tp,
+      compoundTypeThisType)
   }
 
   def getSignatures(
       tp: ScCompoundType,
       compoundTypeThisType: Option[ScType],
       place: PsiElement): SMap = {
-    ScalaPsiManager
-      .instance(place.getProject)
-      .getSignatures(tp, compoundTypeThisType)
+    ScalaPsiManager.instance(place.getProject).getSignatures(
+      tp,
+      compoundTypeThisType)
   }
 
   def getSelfTypeSignatures(clazz: PsiClass): SMap = {
@@ -865,8 +865,8 @@ object TypeDefinitionMembers {
       }
     }
 
-    if (BaseProcessor.isImplicitProcessor(processor) && !clazz
-          .isInstanceOf[ScTemplateDefinition]) return true
+    if (BaseProcessor.isImplicitProcessor(processor) && !clazz.isInstanceOf[
+          ScTemplateDefinition]) return true
 
     if (!privateProcessDeclarations(
           processor,
@@ -882,15 +882,18 @@ object TypeDefinitionMembers {
           syntheticMethods = () => syntheticMethods
         )) return false
 
-    if (!(types.AnyRef
-          .asClass(clazz.getProject)
-          .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
-            .asClass(clazz.getProject)
-            .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
-      return false
+    if (!(types.AnyRef.asClass(clazz.getProject).getOrElse(
+          return true).processDeclarations(
+          processor,
+          state,
+          lastParent,
+          place) &&
+          types.Any.asClass(clazz.getProject).getOrElse(
+            return true).processDeclarations(
+            processor,
+            state,
+            lastParent,
+            place))) return false
 
     if (shouldProcessMethods(processor) && !processEnum(
           clazz,
@@ -916,15 +919,18 @@ object TypeDefinitionMembers {
           isObject = td.isInstanceOf[ScObject]
         )) return false
 
-    if (!(types.AnyRef
-          .asClass(td.getProject)
-          .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
-            .asClass(td.getProject)
-            .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
-      return false
+    if (!(types.AnyRef.asClass(td.getProject).getOrElse(
+          return true).processDeclarations(
+          processor,
+          state,
+          lastParent,
+          place) &&
+          types.Any.asClass(td.getProject).getOrElse(
+            return true).processDeclarations(
+            processor,
+            state,
+            lastParent,
+            place))) return false
     true
   }
 
@@ -952,14 +958,17 @@ object TypeDefinitionMembers {
       if (lastParent != null) lastParent.getProject
       else if (place != null) place.getProject
       else return true
-    if (!(types.AnyRef
-          .asClass(project)
-          .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
-            .asClass(project)
-            .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
+    if (!(types.AnyRef.asClass(project).getOrElse(
+          return true).processDeclarations(
+          processor,
+          state,
+          lastParent,
+          place) &&
+          types.Any.asClass(project).getOrElse(return true).processDeclarations(
+            processor,
+            state,
+            lastParent,
+            place)))
       return false
 
     true
@@ -1037,8 +1046,8 @@ object TypeDefinitionMembers {
                 p,
                 true,
                 classOf[ScTemplateDefinition])
-              if (clazz != null && clazz
-                    .isInstanceOf[ScClass] && !p.isEffectiveVal) {
+              if (clazz != null && clazz.isInstanceOf[
+                    ScClass] && !p.isEffectiveVal) {
                 //this is member only for class scope
                 if (PsiTreeUtil.isContextAncestor(
                       clazz,
@@ -1054,11 +1063,8 @@ object TypeDefinitionMembers {
                 } else {
                   if (n.supers.nonEmpty &&
                       !processor.execute(
-                        n.supers
-                          .apply(0)
-                          .info
-                          .asInstanceOf[Signature]
-                          .namedElement,
+                        n.supers.apply(0).info.asInstanceOf[
+                          Signature].namedElement,
                         state.put(
                           ScSubstitutor.key,
                           n.supers.apply(0).substitutor followed subst)))
@@ -1168,8 +1174,8 @@ object TypeDefinitionMembers {
                     if (!addMethod(phys.method)) return false
                   case phys: PhysicalSignature => //do nothing
                   case s: Signature
-                      if processMethods && s.namedElement
-                        .isInstanceOf[PsiMethod] =>
+                      if processMethods && s.namedElement.isInstanceOf[
+                        PsiMethod] =>
                     //this is compound type case
                     if (!addMethod(s.namedElement)) return false
                   case _ if processValsForScala =>

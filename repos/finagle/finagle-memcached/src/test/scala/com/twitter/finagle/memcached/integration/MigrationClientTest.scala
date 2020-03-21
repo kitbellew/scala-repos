@@ -66,8 +66,10 @@ class MigrationClientTest
 
     // set-up old pool
     val oldPoolCluster = new ZookeeperServerSetCluster(
-      ServerSets
-        .create(zookeeperClient, ZooKeeperUtils.OPEN_ACL_UNSAFE, oldPoolPath))
+      ServerSets.create(
+        zookeeperClient,
+        ZooKeeperUtils.OPEN_ACL_UNSAFE,
+        oldPoolPath))
     (0 to 1) foreach { _ =>
       TestMemcachedServer.start() match {
         case Some(server) =>
@@ -79,8 +81,10 @@ class MigrationClientTest
 
     // set-up new pool
     val newPoolCluster = new ZookeeperServerSetCluster(
-      ServerSets
-        .create(zookeeperClient, ZooKeeperUtils.OPEN_ACL_UNSAFE, newPoolPath))
+      ServerSets.create(
+        zookeeperClient,
+        ZooKeeperUtils.OPEN_ACL_UNSAFE,
+        newPoolPath))
     (0 to 1) foreach { _ =>
       TestMemcachedServer.start() match {
         case Some(server) =>
@@ -100,9 +104,8 @@ class MigrationClientTest
 
     val migrationConfig =
       MigrationConstants.MigrationConfig("Pending", false, false)
-    val migrationDataArray = MigrationConstants.jsonMapper
-      .writeValueAsString(migrationConfig)
-      .getBytes()
+    val migrationDataArray = MigrationConstants.jsonMapper.writeValueAsString(
+      migrationConfig).getBytes()
     zookeeperClient.get().setData(basePath, migrationDataArray, -1)
   }
 
@@ -125,8 +128,7 @@ class MigrationClientTest
       val migrationClient = MigrationClient.newMigrationClient(
         "localhost:" + zookeeperServerPort,
         basePath)
-      migrationClient
-        .loadZKData() // force loading the config to fully set-up the client
+      migrationClient.loadZKData() // force loading the config to fully set-up the client
 
       eventually { Await.result(migrationClient.get("test")) }
 
@@ -155,8 +157,7 @@ class MigrationClientTest
       val migrationClient = MigrationClient.newMigrationClient(
         "localhost:" + zookeeperServerPort,
         basePath)
-      migrationClient
-        .loadZKData() // force loading the config to fully set-up the client
+      migrationClient.loadZKData() // force loading the config to fully set-up the client
 
       eventually { Await.result(migrationClient.get("test")) }
 
@@ -191,8 +192,7 @@ class MigrationClientTest
       val migrationClient = MigrationClient.newMigrationClient(
         "localhost:" + zookeeperServerPort,
         basePath)
-      migrationClient
-        .loadZKData() // force loading the config to fully set-up the client
+      migrationClient.loadZKData() // force loading the config to fully set-up the client
 
       eventually { Await.result(migrationClient.get("test")) }
 
@@ -229,8 +229,7 @@ class MigrationClientTest
       val migrationClient = MigrationClient.newMigrationClient(
         "localhost:" + zookeeperServerPort,
         basePath)
-      migrationClient
-        .loadZKData() // force loading the config to fully set-up the client
+      migrationClient.loadZKData() // force loading the config to fully set-up the client
 
       eventually { Await.result(migrationClient.get("test")) }
 
@@ -262,8 +261,7 @@ class MigrationClientTest
       val migrationClient = MigrationClient.newMigrationClient(
         "localhost:" + zookeeperServerPort,
         basePath)
-      migrationClient
-        .loadZKData() // force loading the config to fully set-up the client
+      migrationClient.loadZKData() // force loading the config to fully set-up the client
 
       eventually { Await.result(migrationClient.get("test")) }
 

@@ -69,11 +69,8 @@ class ReactiveStreamsDocSpec extends AkkaSpec {
     val storage = impl.storage
 
     //#connect-all
-    Source
-      .fromPublisher(tweets)
-      .via(authors)
-      .to(Sink.fromSubscriber(storage))
-      .run()
+    Source.fromPublisher(tweets).via(authors).to(
+      Sink.fromSubscriber(storage)).run()
     //#connect-all
 
     assertResult(storage)
@@ -99,10 +96,8 @@ class ReactiveStreamsDocSpec extends AkkaSpec {
 
     //#source-publisher
     val authorPublisher: Publisher[Author] =
-      Source
-        .fromPublisher(tweets)
-        .via(authors)
-        .runWith(Sink.asPublisher(fanout = false))
+      Source.fromPublisher(tweets).via(authors).runWith(
+        Sink.asPublisher(fanout = false))
 
     authorPublisher.subscribe(storage)
     //#source-publisher
@@ -117,9 +112,7 @@ class ReactiveStreamsDocSpec extends AkkaSpec {
 
     //#source-fanoutPublisher
     val authorPublisher: Publisher[Author] =
-      Source
-        .fromPublisher(tweets)
-        .via(authors)
+      Source.fromPublisher(tweets).via(authors)
         .runWith(Sink.asPublisher(fanout = true))
 
     authorPublisher.subscribe(storage)
@@ -137,9 +130,8 @@ class ReactiveStreamsDocSpec extends AkkaSpec {
 
     //#sink-subscriber
     val tweetSubscriber: Subscriber[Tweet] =
-      authors
-        .to(Sink.fromSubscriber(storage))
-        .runWith(Source.asSubscriber[Tweet])
+      authors.to(Sink.fromSubscriber(storage)).runWith(
+        Source.asSubscriber[Tweet])
 
     tweets.subscribe(tweetSubscriber)
     //#sink-subscriber

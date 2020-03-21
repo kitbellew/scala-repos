@@ -280,30 +280,28 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
 
         while (keepOnDoingHighPriory) {
           val hiPriPfBox = highPriorityReceive
-          hiPriPfBox
-            .map {
-              hiPriPf =>
-                findMailboxItem(
-                  baseMailbox.next,
-                  mb => testTranslate(hiPriPf.isDefinedAt)(mb.item)) match {
-                  case Full(mb) =>
-                    mb.remove()
-                    try {
-                      execTranslate(hiPriPf)(mb.item)
-                    } catch {
-                      case e: Exception => if (eh.isDefinedAt(e)) eh(e)
+          hiPriPfBox.map {
+            hiPriPf =>
+              findMailboxItem(
+                baseMailbox.next,
+                mb => testTranslate(hiPriPf.isDefinedAt)(mb.item)) match {
+                case Full(mb) =>
+                  mb.remove()
+                  try {
+                    execTranslate(hiPriPf)(mb.item)
+                  } catch {
+                    case e: Exception => if (eh.isDefinedAt(e)) eh(e)
+                  }
+                case _ =>
+                  baseMailbox.synchronized {
+                    if (msgList.isEmpty) {
+                      keepOnDoingHighPriory = false
+                    } else {
+                      putListIntoMB()
                     }
-                  case _ =>
-                    baseMailbox.synchronized {
-                      if (msgList.isEmpty) {
-                        keepOnDoingHighPriory = false
-                      } else {
-                        putListIntoMB()
-                      }
-                    }
-                }
-            }
-            .openOr { keepOnDoingHighPriory = false }
+                  }
+              }
+          }.openOr { keepOnDoingHighPriory = false }
         }
 
         val pf = messageHandler

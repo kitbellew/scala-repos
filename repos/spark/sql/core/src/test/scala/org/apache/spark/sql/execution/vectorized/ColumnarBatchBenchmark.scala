@@ -366,10 +366,8 @@ object ColumnarBatchBenchmark {
     val maxString = 32
     val count = 4 * 1000
 
-    val data = Seq
-      .fill(count)(randomString(minString, maxString))
-      .map(_.getBytes(StandardCharsets.UTF_8))
-      .toArray
+    val data = Seq.fill(count)(randomString(minString, maxString))
+      .map(_.getBytes(StandardCharsets.UTF_8)).toArray
 
     def column(memoryMode: MemoryMode) = { i: Int =>
       val column = ColumnVector.allocate(count, BinaryType, memoryMode)

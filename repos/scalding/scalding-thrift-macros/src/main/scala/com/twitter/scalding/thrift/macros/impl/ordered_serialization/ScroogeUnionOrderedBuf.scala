@@ -46,21 +46,17 @@ object ScroogeUnionOrderedBuf {
     val dispatcher = buildDispatcher
 
     val subClasses: List[Type] =
-      outerType.typeSymbol.asClass.knownDirectSubclasses
-        .map(_.asType.toType)
-        .toList
+      outerType.typeSymbol.asClass.knownDirectSubclasses.map(
+        _.asType.toType).toList
 
-    val subData: List[(Int, Type, Option[TreeOrderedBuf[c.type]])] = subClasses
-      .map { t =>
+    val subData: List[(Int, Type, Option[TreeOrderedBuf[c.type]])] =
+      subClasses.map { t =>
         if (t.typeSymbol.name.toString == "UnknownUnionField") {
           (t, None)
         } else {
           (t, Some(dispatcher(t)))
         }
-      }
-      .zipWithIndex
-      .map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }
-      .toList
+      }.zipWithIndex.map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }.toList
 
     require(subData.size > 0, "Must have some sub types on a union?")
 

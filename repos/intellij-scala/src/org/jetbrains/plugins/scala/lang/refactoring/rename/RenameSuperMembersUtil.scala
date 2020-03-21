@@ -78,10 +78,8 @@ object RenameSuperMembersUtil {
       allRenames.put(elem, newName)
       superMembersToRename -= elem
       import scala.collection.JavaConverters._
-      RenamePsiElementProcessor
-        .allForElement(elem)
-        .asScala
-        .foreach(_.prepareRenaming(elem, newName, allRenames))
+      RenamePsiElementProcessor.allForElement(elem).asScala.foreach(
+        _.prepareRenaming(elem, newName, allRenames))
     }
   }
 
@@ -115,10 +113,8 @@ object RenameSuperMembersUtil {
         else {
           val mainOne = classesToNamed(classes(0))
           superMembersToRename.clear()
-          superMembersToRename ++= classes
-            .dropRight(1)
-            .drop(1)
-            .map(classesToNamed)
+          superMembersToRename ++= classes.dropRight(1).drop(1).map(
+            classesToNamed)
           action(mainOne)
         }
         false

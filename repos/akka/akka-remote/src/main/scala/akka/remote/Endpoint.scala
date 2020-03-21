@@ -88,8 +88,8 @@ private[remote] class DefaultMessageDispatcher(
           case sel: ActorSelectionMessage ⇒
             if (UntrustedMode && (!TrustedSelectionPaths.contains(
                   sel.elements.mkString("/", "/", "")) ||
-                sel.msg
-                  .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
+                sel.msg.isInstanceOf[
+                  PossiblyHarmful] || l != provider.rootGuardian))
               log.debug(
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
                   "allow it by adding the path to 'akka.remote.trusted-selection-paths' configuration",
@@ -400,8 +400,10 @@ private[remote] class ReliableDeliverySupervisor(
       if (earlyUngateRequested)
         self ! Ungate
       else
-        context.system.scheduler
-          .scheduleOnce(settings.RetryGateClosedFor, self, Ungate)
+        context.system.scheduler.scheduleOnce(
+          settings.RetryGateClosedFor,
+          self,
+          Ungate)
       context.become(gated(writerTerminated = true, earlyUngateRequested))
     case IsIdle ⇒ sender() ! Idle
     case Ungate ⇒
@@ -517,19 +519,17 @@ private[remote] class ReliableDeliverySupervisor(
   private def createWriter(): ActorRef = {
     context.watch(
       context.actorOf(
-        RARP(context.system)
-          .configureDispatcher(EndpointWriter.props(
-            handleOrActive = currentHandle,
-            localAddress = localAddress,
-            remoteAddress = remoteAddress,
-            refuseUid,
-            transport = transport,
-            settings = settings,
-            AkkaPduProtobufCodec,
-            receiveBuffers = receiveBuffers,
-            reliableDeliverySupervisor = Some(self)
-          ))
-          .withDeploy(Deploy.local),
+        RARP(context.system).configureDispatcher(EndpointWriter.props(
+          handleOrActive = currentHandle,
+          localAddress = localAddress,
+          remoteAddress = remoteAddress,
+          refuseUid,
+          transport = transport,
+          settings = settings,
+          AkkaPduProtobufCodec,
+          receiveBuffers = receiveBuffers,
+          reliableDeliverySupervisor = Some(self)
+        )).withDeploy(Deploy.local),
         "endpointWriter"
       ))
   }
@@ -771,8 +771,10 @@ private[remote] class EndpointWriter(
     case FlushAndStop ⇒
       // Flushing is postponed after the pending writes
       buffer offer FlushAndStop
-      context.system.scheduler
-        .scheduleOnce(settings.FlushWait, self, FlushAndStopTimeout)
+      context.system.scheduler.scheduleOnce(
+        settings.FlushWait,
+        self,
+        FlushAndStopTimeout)
     case FlushAndStopTimeout ⇒
       // enough
       flushAndStop()
@@ -887,8 +889,10 @@ private[remote] class EndpointWriter(
     if (fullBackoff) {
       fullBackoffCount += 1
       fullBackoff = false
-      context.system.scheduler
-        .scheduleOnce(settings.BackoffPeriod, self, BackoffTimer)
+      context.system.scheduler.scheduleOnce(
+        settings.BackoffPeriod,
+        self,
+        BackoffTimer)
     } else {
       smallBackoffCount += 1
       val s = self
@@ -930,8 +934,7 @@ private[remote] class EndpointWriter(
         case Some(h) ⇒
           if (provider.remoteSettings.LogSend) {
             def msgLog =
-              s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption
-                .getOrElse(extendedSystem.deadLetters)}]"
+              s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption.getOrElse(extendedSystem.deadLetters)}]"
             log.debug("sending message {}", msgLog)
           }
 
@@ -1038,22 +1041,20 @@ private[remote] class EndpointWriter(
     val newReader =
       context.watch(
         context.actorOf(
-          RARP(context.system)
-            .configureDispatcher(
-              EndpointReader.props(
-                localAddress,
-                remoteAddress,
-                transport,
-                settings,
-                codec,
-                msgDispatch,
-                inbound,
-                handle.handshakeInfo.uid,
-                reliableDeliverySupervisor,
-                receiveBuffers))
-            .withDeploy(Deploy.local),
-          "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId
-            .next()
+          RARP(context.system).configureDispatcher(
+            EndpointReader.props(
+              localAddress,
+              remoteAddress,
+              transport,
+              settings,
+              codec,
+              msgDispatch,
+              inbound,
+              handle.handshakeInfo.uid,
+              reliableDeliverySupervisor,
+              receiveBuffers)).withDeploy(Deploy.local),
+          "endpointReader-" + AddressUrlEncoder(
+            remoteAddress) + "-" + readerId.next()
         ))
     handle.readHandlerPromise.success(ActorHandleEventListener(newReader))
     Some(newReader)
@@ -1064,8 +1065,9 @@ private[remote] class EndpointWriter(
       case Some(h) ⇒
         Serialization.currentTransportInformation.withValue(
           Serialization.Information(h.localAddress, extendedSystem)) {
-          (MessageSerializer
-            .serialize(extendedSystem, msg.asInstanceOf[AnyRef]))
+          (MessageSerializer.serialize(
+            extendedSystem,
+            msg.asInstanceOf[AnyRef]))
         }
       case None ⇒
         throw new EndpointException(

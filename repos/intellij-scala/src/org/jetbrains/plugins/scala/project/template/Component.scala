@@ -27,9 +27,8 @@ sealed class Artifact(val prefix: String, resource: Option[String] = None) {
   }
 
   private def internalVersionOf(file: File): Option[Version] =
-    resource
-      .flatMap(it => Artifact.readProperty(file, it, "version.number"))
-      .map(Version(_))
+    resource.flatMap(it =>
+      Artifact.readProperty(file, it, "version.number")).map(Version(_))
 }
 
 object Artifact {

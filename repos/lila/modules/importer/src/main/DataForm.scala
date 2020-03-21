@@ -47,9 +47,8 @@ case class ImportData(pgn: String, analyse: Option[String]) {
             val fromPosition =
               initBoard.nonEmpty && tag(_.FEN) != Forsyth.initial.some
             val variant = {
-              tag(_.Variant)
-                .map(Chess960.fixVariantName)
-                .flatMap(chess.variant.Variant.byName) | {
+              tag(_.Variant).map(Chess960.fixVariantName).flatMap(
+                chess.variant.Variant.byName) | {
                 fromPosition.fold(
                   chess.variant.FromPosition,
                   chess.variant.Standard)
@@ -74,21 +73,18 @@ case class ImportData(pgn: String, analyse: Option[String]) {
                 n + ~tag(whichRating).map(e => " (%s)" format e)
               }
 
-            val dbGame = Game
-              .make(
-                game = replay.state,
-                whitePlayer = Player.white withName name(_.White, _.WhiteElo),
-                blackPlayer = Player.black withName name(_.Black, _.BlackElo),
-                mode = Mode.Casual,
-                variant = variant,
-                source = Source.Import,
-                pgnImport =
-                  PgnImport.make(user = user, date = date, pgn = pgn).some
-              )
-              .copy(
-                binaryPgn = BinaryFormat.pgn write replay.state.pgnMoves
-              )
-              .start
+            val dbGame = Game.make(
+              game = replay.state,
+              whitePlayer = Player.white withName name(_.White, _.WhiteElo),
+              blackPlayer = Player.black withName name(_.Black, _.BlackElo),
+              mode = Mode.Casual,
+              variant = variant,
+              source = Source.Import,
+              pgnImport =
+                PgnImport.make(user = user, date = date, pgn = pgn).some
+            ).copy(
+              binaryPgn = BinaryFormat.pgn write replay.state.pgnMoves
+            ).start
 
             Preprocessed(dbGame, replay, result)
         }

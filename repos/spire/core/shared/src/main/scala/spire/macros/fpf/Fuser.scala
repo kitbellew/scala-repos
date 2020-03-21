@@ -84,8 +84,11 @@ private[spire] trait Fuser[C <: Context, A] {
           case bounded =>
             val tmp = freshTermName(c)("fpf$tmp$")
             val stats0 = stats :+ q"val $tmp = ${bounded.expr}"
-            Approx(q"$tmp.apx", q"$tmp.mes", Left(q"$tmp.ind"), q"$tmp.exact")
-              .fused(stats0)
+            Approx(
+              q"$tmp.apx",
+              q"$tmp.mes",
+              Left(q"$tmp.ind"),
+              q"$tmp.exact").fused(stats0)
         }
 
       case q"$constr($apx, $mes, $ind, $exact)" =>
@@ -108,8 +111,11 @@ private[spire] trait Fuser[C <: Context, A] {
       case expr =>
         val tmp = freshTermName(c)("fpf$tmp$")
         val assign = q"val $tmp = $tree"
-        Approx(q"$tmp.apx", q"$tmp.mes", Left(q"$tmp.ind"), q"$tmp.exact")
-          .fused(assign :: Nil)
+        Approx(
+          q"$tmp.apx",
+          q"$tmp.mes",
+          Left(q"$tmp.ind"),
+          q"$tmp.exact").fused(assign :: Nil)
     }
 
   // Returns true if `tree` is lifting an exact type tpe

@@ -59,11 +59,10 @@ class QuotasTest extends KafkaServerTestHarness {
     "2500")
 
   override def generateConfigs() = {
-    FixedPortTestUtils
-      .createBrokerConfigs(
-        numServers,
-        zkConnect,
-        enableControlledShutdown = false)
+    FixedPortTestUtils.createBrokerConfigs(
+      numServers,
+      zkConnect,
+      enableControlledShutdown = false)
       .map(KafkaConfig.fromProps(_, overridingProps))
   }
 
@@ -175,10 +174,9 @@ class QuotasTest extends KafkaServerTestHarness {
     // Consumer should read in a bursty manner and get throttled immediately
     consume(consumers.head, numRecords)
     // The replica consumer should not be throttled also. Create a fetch request which will exceed the quota immediately
-    val request = new FetchRequestBuilder()
-      .addFetch(topic1, 0, 0, 1024 * 1024)
-      .replicaId(followerNode.config.brokerId)
-      .build()
+    val request =
+      new FetchRequestBuilder().addFetch(topic1, 0, 0, 1024 * 1024).replicaId(
+        followerNode.config.brokerId).build()
     replicaConsumers.head.fetch(request)
     val consumerMetricName = leaderNode.metrics.metricName(
       "throttle-time",
@@ -238,10 +236,9 @@ class QuotasTest extends KafkaServerTestHarness {
     // The "client" consumer does not get throttled.
     consume(consumers(1), numRecords)
     // The replica consumer should not be throttled also. Create a fetch request which will exceed the quota immediately
-    val request = new FetchRequestBuilder()
-      .addFetch(topic1, 0, 0, 1024 * 1024)
-      .replicaId(followerNode.config.brokerId)
-      .build()
+    val request =
+      new FetchRequestBuilder().addFetch(topic1, 0, 0, 1024 * 1024).replicaId(
+        followerNode.config.brokerId).build()
     replicaConsumers(1).fetch(request)
     val consumerMetricName = leaderNode.metrics.metricName(
       "throttle-time",
@@ -262,13 +259,12 @@ class QuotasTest extends KafkaServerTestHarness {
       val payload = i.toString.getBytes
       numBytesProduced += payload.length
       p.send(
-          new ProducerRecord[Array[Byte], Array[Byte]](
-            topic1,
-            null,
-            null,
-            payload),
-          new ErrorLoggingCallback(topic1, null, null, true))
-        .get()
+        new ProducerRecord[Array[Byte], Array[Byte]](
+          topic1,
+          null,
+          null,
+          payload),
+        new ErrorLoggingCallback(topic1, null, null, true)).get()
       Thread.sleep(1)
     }
     numBytesProduced

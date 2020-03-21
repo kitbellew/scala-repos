@@ -31,12 +31,9 @@ object ReplicatedMetrics {
 
   case class UsedHeap(percentPerNode: Map[String, Double]) {
     override def toString =
-      percentPerNode.toSeq
-        .sortBy(_._1)
-        .map {
-          case (key, value) ⇒ key + " --> " + value + " %"
-        }
-        .mkString("\n")
+      percentPerNode.toSeq.sortBy(_._1).map {
+        case (key, value) ⇒ key + " --> " + value + " %"
+      }.mkString("\n")
   }
 
   def nodeKey(address: Address): String =

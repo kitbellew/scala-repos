@@ -233,17 +233,11 @@ private trait CofreeZipApply[F[_]]
     Tags.Zip(
       Cofree.applyT(
         Tag.unwrap(f).head(Tag.unwrap(fa).head),
-        Tag
-          .unwrap(fa)
-          .t
-          .flatMap(fat =>
-            Tag
-              .unwrap(f)
-              .t
-              .map(fab =>
-                F.apply2(Tags.Zip.subst(fat), Tags.Zip.subst(fab)) { (a, b) =>
-                  Tag.unwrap(ap(a)(b))
-                }))
+        Tag.unwrap(fa).t.flatMap(fat =>
+          Tag.unwrap(f).t.map(fab =>
+            F.apply2(Tags.Zip.subst(fat), Tags.Zip.subst(fab)) { (a, b) =>
+              Tag.unwrap(ap(a)(b))
+            }))
       )
     )
 }
@@ -334,8 +328,7 @@ private trait CofreeTraverse[F[_]]
 
   override def traverse1Impl[G[_], A, B](fa: Cofree[F, A])(f: A => G[B])(
       implicit G: Apply[G]): G[Cofree[F, B]] =
-    G.applyApplicative
-      .traverse(fa.tail)(a => -\/(traverse1(a)(f)))
+    G.applyApplicative.traverse(fa.tail)(a => -\/(traverse1(a)(f)))
       .fold(
         ftl => G.apply2(f(fa.head), ftl)(Cofree(_, _)),
         tl => G.map(f(fa.head))(Cofree.apply(_, tl)))

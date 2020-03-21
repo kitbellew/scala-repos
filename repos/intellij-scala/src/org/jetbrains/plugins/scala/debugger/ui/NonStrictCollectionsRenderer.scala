@@ -183,10 +183,10 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       context: DebuggerContext): PsiExpression = {
     node.getDescriptor match {
       case watch: WatchItemDescriptor =>
-        JavaPsiFacade
-          .getInstance(node.getProject)
-          .getElementFactory
-          .createExpressionFromText(watch.calcValueName(), null)
+        JavaPsiFacade.getInstance(
+          node.getProject).getElementFactory.createExpressionFromText(
+          watch.calcValueName(),
+          null)
       case collectionItem: CollectionElementNodeDescriptor =>
         collectionItem.getDescriptorEvaluation(context)
       case _ => null
@@ -301,12 +301,10 @@ object NonStrictCollectionsRenderer {
 
     def getDescriptorEvaluation(context: DebuggerContext): PsiExpression = {
       try {
-        JavaPsiFacade
-          .getInstance(project)
-          .getElementFactory
-          .createExpressionFromText(
-            name,
-            PositionUtil getContextElement context)
+        JavaPsiFacade.getInstance(
+          project).getElementFactory.createExpressionFromText(
+          name,
+          PositionUtil getContextElement context)
       } catch {
         case e: IncorrectOperationException => null
       }

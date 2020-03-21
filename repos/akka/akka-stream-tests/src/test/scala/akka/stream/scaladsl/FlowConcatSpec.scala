@@ -18,10 +18,8 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
 
   override def setup(p1: Publisher[Int], p2: Publisher[Int]) = {
     val subscriber = TestSubscriber.probe[Outputs]()
-    Source
-      .fromPublisher(p1)
-      .concat(Source.fromPublisher(p2))
-      .runWith(Sink.fromSubscriber(subscriber))
+    Source.fromPublisher(p1).concat(Source.fromPublisher(p2)).runWith(
+      Sink.fromSubscriber(subscriber))
     subscriber
   }
 
@@ -128,9 +126,8 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
     "correctly handle async errors in secondary upstream" in assertAllStagesStopped {
       val promise = Promise[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
-      Source(List(1, 2, 3))
-        .concat(Source.fromFuture(promise.future))
-        .runWith(Sink.fromSubscriber(subscriber))
+      Source(List(1, 2, 3)).concat(Source.fromFuture(promise.future)).runWith(
+        Sink.fromSubscriber(subscriber))
 
       val subscription = subscriber.expectSubscription()
       subscription.request(4)
@@ -176,25 +173,22 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
         Source(1 to 5).viaMat(testFlow)(Keep.both).runWith(Sink.head),
         3.seconds) should ===(1 to 10)
 
-      val sink = testFlow
-        .concatMat(Source(1 to 5))(Keep.both)
-        .to(Sink.ignore)
-        .mapMaterializedValue[String] {
-          case ((m1, m2), m3) ⇒
-            m1.isInstanceOf[NotUsed] should be(true)
-            m2.isInstanceOf[NotUsed] should be(true)
-            m3.isInstanceOf[NotUsed] should be(true)
-            "boo"
-        }
+      val sink = testFlow.concatMat(Source(1 to 5))(Keep.both).to(
+        Sink.ignore).mapMaterializedValue[String] {
+        case ((m1, m2), m3) ⇒
+          m1.isInstanceOf[NotUsed] should be(true)
+          m2.isInstanceOf[NotUsed] should be(true)
+          m3.isInstanceOf[NotUsed] should be(true)
+          "boo"
+      }
       Source(10 to 15).runWith(sink) should be("boo")
     }
 
     "subscribe at once to initial source and to one that it's concat to" in {
       val publisher1 = TestPublisher.probe[Int]()
       val publisher2 = TestPublisher.probe[Int]()
-      val probeSink = Source
-        .fromPublisher(publisher1)
-        .concat(Source.fromPublisher(publisher2))
+      val probeSink = Source.fromPublisher(publisher1).concat(
+        Source.fromPublisher(publisher2))
         .runWith(TestSink.probe[Int])
 
       val sub1 = publisher1.expectSubscription()

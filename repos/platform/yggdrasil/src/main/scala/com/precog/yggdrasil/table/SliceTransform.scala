@@ -494,9 +494,8 @@ trait SliceTransforms[M[+_]]
                       val result = emptyObjects ++ nonemptyObjects
 
                       result lazyMapValues { col =>
-                        cf.util
-                          .filter(0, sl.size max sr.size, nonemptyBits)(col)
-                          .get
+                        cf.util.filter(0, sl.size max sr.size, nonemptyBits)(
+                          col).get
                       }
                     }
                   }
@@ -582,9 +581,8 @@ trait SliceTransforms[M[+_]]
                       val result = emptyArrays ++ nonemptyArrays
 
                       result lazyMapValues { col =>
-                        cf.util
-                          .filter(0, sl.size max sr.size, nonemptyBits)(col)
-                          .get
+                        cf.util.filter(0, sl.size max sr.size, nonemptyBits)(
+                          col).get
                       }
                     }
                   }
@@ -770,9 +768,9 @@ trait SliceTransforms[M[+_]]
                           val right2 =
                             cf.util.filter(0, size, rightMask)(right).get
 
-                          ref -> cf.util
-                            .MaskedUnion(leftMask)(left2, right2)
-                            .get // safe because types are grouped
+                          ref -> cf.util.MaskedUnion(leftMask)(
+                            left2,
+                            right2).get // safe because types are grouped
                         }
                       })(collection.breakOut)
 
@@ -1432,12 +1430,10 @@ trait ConcatHelpers {
       size: Int,
       filter: Map[ColumnRef, Column] => Map[ColumnRef, Column],
       filterEmpty: Map[ColumnRef, Column] => Map[ColumnRef, Column]) = {
-    val definedBits = filter(columns).values
-      .map(_.definedAt(0, size))
-      .reduceOption(_ | _) getOrElse new BitSet
-    val emptyBits = filterEmpty(columns).values
-      .map(_.definedAt(0, size))
-      .reduceOption(_ | _) getOrElse new BitSet
+    val definedBits = filter(columns).values.map(
+      _.definedAt(0, size)).reduceOption(_ | _) getOrElse new BitSet
+    val emptyBits = filterEmpty(columns).values.map(
+      _.definedAt(0, size)).reduceOption(_ | _) getOrElse new BitSet
     (definedBits, emptyBits)
   }
 

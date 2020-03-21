@@ -107,15 +107,19 @@ class Hakker(name: String, chair: Int) extends Actor {
       waitingForLeft: Boolean): Receive = {
     case Taken(`left`) if waitingForLeft =>
       log.info(
-        "%s has picked up %s and %s and starts to eat"
-          .format(name, left.path.name, right.path.name))
+        "%s has picked up %s and %s and starts to eat".format(
+          name,
+          left.path.name,
+          right.path.name))
       pubStateChange("waiting", "eating")
       become(eating(left, right) orElse (managementEvents))
       system.scheduler.scheduleOnce(5 seconds, self, Think)
     case Taken(`right`) if !waitingForLeft =>
       log.info(
-        "%s has picked up %s and %s and starts to eat"
-          .format(name, left.path.name, right.path.name))
+        "%s has picked up %s and %s and starts to eat".format(
+          name,
+          left.path.name,
+          right.path.name))
       pubStateChange("waiting", "eating")
       become(eating(left, right) orElse (managementEvents))
       system.scheduler.scheduleOnce(5 seconds, self, Think)

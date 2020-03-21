@@ -144,8 +144,8 @@ private class SinkAccumulator[-E, +A](wrappedSink: => Sink[E, Future[A]])
   import scala.annotation.unchecked.{uncheckedVariance => uV}
 
   def asJava: play.libs.streams.Accumulator[E @uV, A @uV] = {
-    play.libs.streams.Accumulator
-      .fromSink(sink.mapMaterializedValue(FutureConverters.toJava).asJava)
+    play.libs.streams.Accumulator.fromSink(
+      sink.mapMaterializedValue(FutureConverters.toJava).asJava)
   }
 }
 
@@ -211,18 +211,14 @@ object Accumulator {
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 
     Sink.asPublisher[E](fanout = false).mapMaterializedValue { publisher =>
-      future
-        .recover {
-          case error =>
-            new SinkAccumulator(
-              Sink.cancelled[E].mapMaterializedValue(_ => Future.failed(error)))
-        }
-        .flatMap { accumulator =>
-          Source
-            .fromPublisher(publisher)
-            .toMat(accumulator.toSink)(Keep.right)
-            .run()
-        }
+      future.recover {
+        case error =>
+          new SinkAccumulator(
+            Sink.cancelled[E].mapMaterializedValue(_ => Future.failed(error)))
+      }.flatMap { accumulator =>
+        Source.fromPublisher(publisher).toMat(accumulator.toSink)(
+          Keep.right).run()
+      }
     }
   }
 
@@ -263,10 +259,8 @@ object Accumulator {
     // If Akka streams ever provides Sink.source(), we should use that instead.
     // https://github.com/akka/akka/issues/18406
     new SinkAccumulator(
-      Sink
-        .asPublisher[E](fanout = false)
-        .mapMaterializedValue(publisher =>
-          Future.successful(Source.fromPublisher(publisher))))
+      Sink.asPublisher[E](fanout = false).mapMaterializedValue(publisher =>
+        Future.successful(Source.fromPublisher(publisher))))
   }
 
   /**

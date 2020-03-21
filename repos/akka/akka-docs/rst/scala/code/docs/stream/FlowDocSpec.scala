@@ -237,8 +237,7 @@ class FlowDocSpec extends AkkaSpec {
     val flow = Flow[Int].map(_ * 2).filter(_ > 500)
     val fused = Fusing.aggressive(flow)
 
-    Source
-      .fromIterator { () => Iterator from 0 }
+    Source.fromIterator { () => Iterator from 0 }
       .via(fused)
       .take(1000)
     //#explicit-fusing
@@ -247,8 +246,7 @@ class FlowDocSpec extends AkkaSpec {
   "defining asynchronous boundaries" in {
     //#flow-async
     Source(List(1, 2, 3))
-      .map(_ + 1)
-      .async
+      .map(_ + 1).async
       .map(_ * 2)
       .to(Sink.ignore)
     //#flow-async

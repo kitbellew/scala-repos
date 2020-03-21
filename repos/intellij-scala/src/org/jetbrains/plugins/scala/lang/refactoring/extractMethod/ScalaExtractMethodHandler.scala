@@ -138,14 +138,12 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       result
     }
 
-    val (lastReturn, lastExprType) = elements.reverse
-      .collectFirst {
-        case expr: ScExpression =>
-          (
-            checkLastReturn(expr),
-            Some(expr.getType(TypingContext.empty).getOrAny))
-      }
-      .getOrElse((false, None))
+    val (lastReturn, lastExprType) = elements.reverse.collectFirst {
+      case expr: ScExpression =>
+        (
+          checkLastReturn(expr),
+          Some(expr.getType(TypingContext.empty).getOrAny))
+    }.getOrElse((false, None))
 
     val hasReturn: Option[ScType] = returnType
     val stopAtScope: PsiElement = findScopeBound(elements).getOrElse(file)
@@ -271,9 +269,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           }
         case local @ Some(_) => local
         case _ =>
-          PsiTreeUtil
-            .getParentOfType(commonParent, classOf[ScPackaging])
-            .toOption
+          PsiTreeUtil.getParentOfType(
+            commonParent,
+            classOf[ScPackaging]).toOption
             .orElse(commonParent.containingFile)
       }
     }
@@ -338,9 +336,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           val text = editor.getDocument.getText
           val isCase = text.startsWith("//case class")
           val isInner = text.startsWith("//inner class")
-          val out = output
-            .map(ScalaExtractMethodUtils.convertVariableData(_, elements))
-            .map(ExtractMethodOutput.from)
+          val out = output.map(
+            ScalaExtractMethodUtils.convertVariableData(_, elements)).map(
+            ExtractMethodOutput.from)
           InnerClassSettings(
             isCase || isInner,
             "TestMethodNameResult",
@@ -458,9 +456,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         param => param.oldName,
         output => output.paramName)
 
-    PsiDocumentManager
-      .getInstance(editor.getProject)
-      .commitDocument(editor.getDocument)
+    PsiDocumentManager.getInstance(editor.getProject).commitDocument(
+      editor.getDocument)
 
     inWriteCommandAction(editor.getProject, REFACTORING_NAME) {
 

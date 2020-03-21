@@ -187,10 +187,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
           project)) return
 
     try {
-      val aClass = GenerationUtil
-        .classAtCaret(editor, file)
-        .getOrElse(return
-        )
+      val aClass = GenerationUtil.classAtCaret(editor, file).getOrElse(return
+      )
       val isOk = chooseOriginalMembers(aClass, project, editor)
       if (!isOk) return
 
@@ -260,12 +258,12 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   private def overrideModifier(
       aClass: ScTemplateDefinition,
       signature: Signature): String = {
-    val needModifier = ScalaOIUtil
-      .methodSignaturesToOverride(aClass, withSelfType = false)
-      .exists {
-        case sign: PhysicalSignature => sign.equiv(signature)
-        case _                       => false
-      }
+    val needModifier = ScalaOIUtil.methodSignaturesToOverride(
+      aClass,
+      withSelfType = false).exists {
+      case sign: PhysicalSignature => sign.equiv(signature)
+      case _                       => false
+    }
     if (needModifier) ScalaKeyword.OVERRIDE else ""
   }
 

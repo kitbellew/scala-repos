@@ -44,17 +44,17 @@ class ConstructorParamsInConstructorPatternSearcher
           def process(t: PsiReference): Boolean =
             t match {
               case correspondingSubpatternWithBindings(Seq(only)) =>
-                ReferencesSearch
-                  .search(only, scope, false)
-                  .forEach(new Processor[PsiReference] {
+                ReferencesSearch.search(only, scope, false).forEach(
+                  new Processor[PsiReference] {
                     def process(t: PsiReference): Boolean = {
                       inReadAction {
                         val descriptor =
                           new UsageInfoToUsageConverter.TargetElementsDescriptor(
                             Array(),
                             Array(only))
-                        val usage = UsageInfoToUsageConverter
-                          .convert(descriptor, new UsageInfo(t))
+                        val usage = UsageInfoToUsageConverter.convert(
+                          descriptor,
+                          new UsageInfo(t))
                         processor0.process(usage)
                       }
                     }

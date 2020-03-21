@@ -11,23 +11,19 @@ private[api] final class AnalysisApi {
   def game(analysis: Analysis, pgn: Pgn) =
     JsArray(analysis.infoAdvices zip pgn.moves map {
       case ((info, adviceOption), move) =>
-        Json
-          .obj(
-            "eval" -> info.score.map(_.centipawns),
-            "mate" -> info.mate,
-            "variation" -> info.variation.isEmpty
-              .fold(JsNull, info.variation mkString " "),
-            "comment" -> adviceOption.map(_.makeComment(false, true))
-          )
-          .noNull
+        Json.obj(
+          "eval" -> info.score.map(_.centipawns),
+          "mate" -> info.mate,
+          "variation" -> info.variation.isEmpty.fold(
+            JsNull,
+            info.variation mkString " "),
+          "comment" -> adviceOption.map(_.makeComment(false, true))
+        ).noNull
     })
 
   def player(color: chess.Color)(analysis: Analysis) =
-    analysis.summary
-      .find(_._1 == color)
-      .map(_._2)
-      .map(s =>
-        JsObject(s map {
-          case (nag, nb) => nag.toString.toLowerCase -> JsNumber(nb)
-        }))
+    analysis.summary.find(_._1 == color).map(_._2).map(s =>
+      JsObject(s map {
+        case (nag, nb) => nag.toString.toLowerCase -> JsNumber(nb)
+      }))
 }

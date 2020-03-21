@@ -182,18 +182,17 @@ abstract class Task(settings: Settings) extends Specification {
       prop map ("property" -> _)
     ).flatten
     val req = f(metadata / "fs") <<? params
-    Http(req OK as.String).either
-      .apply()
-      .fold(
-        error => JUndefined,
-        json => JParser.parseFromString(json).valueOr(throw _)
-      )
+    Http(req OK as.String).either.apply().fold(
+      error => JUndefined,
+      json => JParser.parseFromString(json).valueOr(throw _)
+    )
   }
 
   def listGrantsFor(targetApiKey: String, authApiKey: String): ApiResult =
     http(
-      (security / targetApiKey / "grants" / "")
-        .addQueryParameter("apiKey", authApiKey))()
+      (security / targetApiKey / "grants" / "").addQueryParameter(
+        "apiKey",
+        authApiKey))()
 
   def grantBody(perms: List[(String, String, List[String])]): String =
     JObject("permissions" -> JArray(perms.map {
@@ -217,8 +216,9 @@ abstract class Task(settings: Settings) extends Specification {
       grantId: String,
       perms: List[(String, String, List[String])]): ApiResult =
     http(
-      (grants / grantId / "children" / "").POST
-        .addQueryParameter("apiKey", apiKey) << grantBody(perms))()
+      (grants / grantId / "children" / "").POST.addQueryParameter(
+        "apiKey",
+        apiKey) << grantBody(perms))()
 
   def addToGrant(
       targetApiKey: String,

@@ -78,29 +78,28 @@ class ServerActor(
     // async start the HTTP Server
     val selfRef = self
     val preferredHttpPort = PortUtil.port(config.cacheDir, "http")
-    Http()(context.system)
-      .bindAndHandle(webserver.route, interface, preferredHttpPort.getOrElse(0))
-      .onComplete {
-        case Failure(ex) =>
-          log.error(s"Error binding http endpoint ${ex.getMessage}", ex)
-          selfRef ! ShutdownRequest(
-            s"http endpoint failed to bind ($preferredHttpPort)",
-            isError = true)
+    Http()(context.system).bindAndHandle(
+      webserver.route,
+      interface,
+      preferredHttpPort.getOrElse(0)).onComplete {
+      case Failure(ex) =>
+        log.error(s"Error binding http endpoint ${ex.getMessage}", ex)
+        selfRef ! ShutdownRequest(
+          s"http endpoint failed to bind ($preferredHttpPort)",
+          isError = true)
 
-        case Success(ServerBinding(addr)) =>
-          log.info(s"ENSIME HTTP on ${addr.getAddress}")
-          try {
-            PortUtil.writePort(config.cacheDir, addr.getPort, "http")
-          } catch {
-            case ex: Throwable =>
-              log.error(
-                s"Error initializing http endpoint ${ex.getMessage}",
-                ex)
-              selfRef ! ShutdownRequest(
-                s"http endpoint failed to initialise: ${ex.getMessage}",
-                isError = true)
-          }
-      }(context.system.dispatcher)
+      case Success(ServerBinding(addr)) =>
+        log.info(s"ENSIME HTTP on ${addr.getAddress}")
+        try {
+          PortUtil.writePort(config.cacheDir, addr.getPort, "http")
+        } catch {
+          case ex: Throwable =>
+            log.error(s"Error initializing http endpoint ${ex.getMessage}", ex)
+            selfRef ! ShutdownRequest(
+              s"http endpoint failed to initialise: ${ex.getMessage}",
+              isError = true)
+        }
+    }(context.system.dispatcher)
 
     Environment.info foreach log.info
   }

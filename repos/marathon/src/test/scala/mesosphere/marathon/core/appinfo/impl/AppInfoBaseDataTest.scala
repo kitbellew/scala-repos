@@ -82,8 +82,10 @@ class AppInfoBaseDataTest
     import scala.concurrent.ExecutionContext.Implicits.global
     f.taskTracker.tasksByApp()(global) returns
       Future.successful(
-        TaskTracker.TasksByApp.of(TaskTracker.AppTasks
-          .forTasks(app.id, Iterable(running1, running2, running3))))
+        TaskTracker.TasksByApp.of(
+          TaskTracker.AppTasks.forTasks(
+            app.id,
+            Iterable(running1, running2, running3))))
 
     val alive = Health(running2.taskId, lastSuccess = Some(Timestamp(1)))
     val unhealthy = Health(running3.taskId, lastFailure = Some(Timestamp(1)))
@@ -186,12 +188,11 @@ class AppInfoBaseDataTest
       DeploymentPlan(emptyGroup, emptyGroup.copy(apps = Set(app)))
     val unrelatedDeployment =
       DeploymentPlan(emptyGroup, emptyGroup.copy(apps = Set(other)))
-    f.marathonSchedulerService.listRunningDeployments() returns Future
-      .successful(
-        Seq[DeploymentStepInfo](
-          DeploymentStepInfo(relatedDeployment, DeploymentStep(Seq.empty), 1),
-          DeploymentStepInfo(unrelatedDeployment, DeploymentStep(Seq.empty), 1)
-        ))
+    f.marathonSchedulerService.listRunningDeployments() returns Future.successful(
+      Seq[DeploymentStepInfo](
+        DeploymentStepInfo(relatedDeployment, DeploymentStep(Seq.empty), 1),
+        DeploymentStepInfo(unrelatedDeployment, DeploymentStep(Seq.empty), 1)
+      ))
 
     When("Getting AppInfos without counts")
     val appInfo =
@@ -216,10 +217,9 @@ class AppInfoBaseDataTest
   test("requesting deployments does work if no deployments are running") {
     val f = new Fixture
     Given("No deployments")
-    f.marathonSchedulerService.listRunningDeployments() returns Future
-      .successful(
-        Seq.empty[DeploymentStepInfo]
-      )
+    f.marathonSchedulerService.listRunningDeployments() returns Future.successful(
+      Seq.empty[DeploymentStepInfo]
+    )
 
     When("Getting AppInfos with deployments")
     val appInfo =
@@ -248,9 +248,9 @@ class AppInfoBaseDataTest
       Some(TaskFailureTestHelper.taskFailure))
 
     When("Getting AppInfos with last task failures")
-    val appInfo = f.baseData
-      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
-      .futureValue
+    val appInfo = f.baseData.appInfoFuture(
+      app,
+      Set(AppInfo.Embed.LastTaskFailure)).futureValue
 
     Then("we get the failure in the app info")
     appInfo should be(
@@ -274,9 +274,9 @@ class AppInfoBaseDataTest
     f.taskFailureRepository.current(app.id) returns Future.successful(None)
 
     When("Getting AppInfos with last task failures")
-    val appInfo = f.baseData
-      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
-      .futureValue
+    val appInfo = f.baseData.appInfoFuture(
+      app,
+      Set(AppInfo.Embed.LastTaskFailure)).futureValue
 
     Then("we get no failure in the app info")
     appInfo should be(AppInfo(app))
@@ -356,17 +356,14 @@ class AppInfoBaseDataTest
     Given("One last taskFailure and no deployments")
     f.taskFailureRepository.current(app.id) returns Future.successful(
       Some(TaskFailureTestHelper.taskFailure))
-    f.marathonSchedulerService.listRunningDeployments() returns Future
-      .successful(
-        Seq.empty[DeploymentStepInfo]
-      )
+    f.marathonSchedulerService.listRunningDeployments() returns Future.successful(
+      Seq.empty[DeploymentStepInfo]
+    )
 
     When("Getting AppInfos with last task failures and deployments")
-    val appInfo = f.baseData
-      .appInfoFuture(
-        app,
-        Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Deployments))
-      .futureValue
+    val appInfo = f.baseData.appInfoFuture(
+      app,
+      Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Deployments)).futureValue
 
     Then("we get the failure in the app info")
     appInfo should be(

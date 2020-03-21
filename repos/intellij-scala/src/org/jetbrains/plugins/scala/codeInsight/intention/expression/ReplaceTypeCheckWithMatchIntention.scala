@@ -60,9 +60,9 @@ class ReplaceTypeCheckWithMatchIntention extends PsiElementBaseIntentionAction {
         buildMatchStmt(ifStmt, iioCall, onlyFirst = false)
       for (matchStmt <- matchStmtOption) {
         val newMatch = inWriteAction {
-          ifStmt
-            .replaceExpression(matchStmt, removeParenthesis = true)
-            .asInstanceOf[ScMatchStmt]
+          ifStmt.replaceExpression(
+            matchStmt,
+            removeParenthesis = true).asInstanceOf[ScMatchStmt]
         }
         if (!ApplicationManager.getApplication.isUnitTestMode) {
           val renameHelper = new InplaceRenameHelper(newMatch)

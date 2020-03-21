@@ -918,8 +918,9 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
   ) =
     this(
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(numFailures, Backoff.fromFunction(markDeadFor)),
+      FailureAccrualPolicy.consecutiveFailures(
+        numFailures,
+        Backoff.fromFunction(markDeadFor)),
       timer,
       key,
       healthBroker,
@@ -938,12 +939,14 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
     reqRep.response match {
       case Return(_) => true
       case Throw(f: Failure)
-          if f.cause.exists(_.isInstanceOf[CancelledRequestException]) && f
-            .isFlagged(Failure.Interrupted) =>
+          if f.cause.exists(
+            _.isInstanceOf[CancelledRequestException]) && f.isFlagged(
+            Failure.Interrupted) =>
         true
       case Throw(f: Failure)
-          if f.cause.exists(_.isInstanceOf[CancelledConnectionException]) && f
-            .isFlagged(Failure.Interrupted) =>
+          if f.cause.exists(
+            _.isInstanceOf[CancelledConnectionException]) && f.isFlagged(
+            Failure.Interrupted) =>
         true
       // Failure.InterruptedBy(_) would subsume all these eventually after rb/334371
       case Throw(WriteException(_: CancelledRequestException))    => true
@@ -1297,9 +1300,8 @@ case class KetamaClientBuilder private[memcached] (
 
   def build(): Client = {
     val stackBasedClient =
-      (_clientBuilder getOrElse ClientBuilder()
-        .hostConnectionLimit(1)
-        .daemon(true))
+      (_clientBuilder getOrElse ClientBuilder().hostConnectionLimit(1).daemon(
+        true))
         .codec(text.Memcached())
         .underlying
 
@@ -1308,11 +1310,8 @@ case class KetamaClientBuilder private[memcached] (
     val (numFailures, markDeadFor) = _failureAccrualParams
 
     val label = stackBasedClient.params[finagle.param.Label].label
-    val stats = stackBasedClient
-      .params[finagle.param.Stats]
-      .statsReceiver
-      .scope(label)
-      .scope("memcached_client")
+    val stats = stackBasedClient.params[finagle.param.Stats]
+      .statsReceiver.scope(label).scope("memcached_client")
 
     val healthBroker = new Broker[NodeHealth]
 
@@ -1329,9 +1328,7 @@ case class KetamaClientBuilder private[memcached] (
             stk.replace(
               FailureAccrualFactory.role,
               KetamaFailureAccrualFactory.module[Cmd, Rep](key, healthBroker))
-        })
-        .newClient(mkDestination(node.host, node.port))
-        .toService
+        }).newClient(mkDestination(node.host, node.port)).toService
 
     new KetamaPartitionedClient(
       _group,
@@ -1392,9 +1389,8 @@ case class RubyMemCacheClientBuilder(
     copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {
-    val builder = _clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1)
-      .daemon(true)
+    val builder = _clientBuilder getOrElse ClientBuilder().hostConnectionLimit(
+      1).daemon(true)
     val clients = _nodes.map {
       case (hostname, port, weight) =>
         require(weight == 1, "Ruby memcache node weight must be 1")
@@ -1446,22 +1442,15 @@ case class PHPMemCacheClientBuilder(
     copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {
-    val builder = _clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1)
-      .daemon(true)
+    val builder = _clientBuilder getOrElse ClientBuilder().hostConnectionLimit(
+      1).daemon(true)
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("crc32-itu"))
-    val clients = _nodes
-      .map {
-        case (hostname, port, weight) =>
-          val client = Client(
-            builder
-              .hosts(hostname + ":" + port)
-              .codec(text.Memcached())
-              .build())
-          for (i <- (1 to weight)) yield client
-      }
-      .flatten
-      .toArray
+    val clients = _nodes.map {
+      case (hostname, port, weight) =>
+        val client = Client(
+          builder.hosts(hostname + ":" + port).codec(text.Memcached()).build())
+        for (i <- (1 to weight)) yield client
+    }.flatten.toArray
     new PHPMemCacheClient(clients, keyHasher)
   }
 }

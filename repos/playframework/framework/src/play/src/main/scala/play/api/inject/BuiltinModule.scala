@@ -42,8 +42,8 @@ class BuiltinModule extends Module {
       bind[Environment] to env,
       bind[ConfigurationProvider].to(new ConfigurationProvider(configuration)),
       bind[Configuration].toProvider[ConfigurationProvider],
-      bind[HttpConfiguration]
-        .toProvider[HttpConfiguration.HttpConfigurationProvider],
+      bind[HttpConfiguration].toProvider[
+        HttpConfiguration.HttpConfigurationProvider],
       // Application lifecycle, bound both to the interface, and its implementation, so that Application can access it
       // to shut it down.
       bind[DefaultApplicationLifecycle].toSelf,
@@ -88,8 +88,7 @@ class RoutesProvider @Inject() (
   lazy val get = {
     val prefix = httpConfig.context
 
-    val router = Router
-      .load(environment, configuration)
+    val router = Router.load(environment, configuration)
       .fold[Router](Router.empty)(injector.instanceOf(_))
     router.withPrefix(prefix)
   }

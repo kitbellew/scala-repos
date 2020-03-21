@@ -52,8 +52,11 @@ object StatsFilter {
         if (statsReceiver.isNull)
           next
         else
-          new StatsFilter(statsReceiver, classifier, handler, _param.unit)
-            .andThen(next)
+          new StatsFilter(
+            statsReceiver,
+            classifier,
+            handler,
+            _param.unit).andThen(next)
       }
     }
 

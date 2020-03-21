@@ -24,9 +24,9 @@ object PlayCommands {
     val extracted = Project.extract(state)
     import extracted._
 
-    (name in currentRef get structure.data)
-      .map { name => "[" + Colors.cyan(name) + "] $ " }
-      .getOrElse("> ")
+    (name in currentRef get structure.data).map { name =>
+      "[" + Colors.cyan(name) + "] $ "
+    }.getOrElse("> ")
 
   }
 
@@ -80,9 +80,9 @@ object PlayCommands {
       val commonLoader =
         Project.runTask(playCommonClassloader, state).get._2.toEither.right.get
       val h2ServerClass = commonLoader.loadClass("org.h2.tools.Server")
-      h2ServerClass
-        .getMethod("main", classOf[Array[String]])
-        .invoke(null, Array.empty[String])
+      h2ServerClass.getMethod("main", classOf[Array[String]]).invoke(
+        null,
+        Array.empty[String])
     } catch {
       case e: Exception => e.printStackTrace
     }

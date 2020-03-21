@@ -52,8 +52,9 @@ case class TungstenAggregate(
       aggregateExpressions.flatMap(_.aggregateFunction.inputAggBufferAttributes)
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"),
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"),
     "dataSize" -> SQLMetrics.createSizeMetric(sparkContext, "data size"),
     "spillSize" -> SQLMetrics.createSizeMetric(sparkContext, "spill size")
   )
@@ -255,13 +256,11 @@ case class TungstenAggregate(
     val updateExpr = aggregateExpressions.flatMap { e =>
       e.mode match {
         case Partial | Complete =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
-            .updateExpressions
+          e.aggregateFunction.asInstanceOf[
+            DeclarativeAggregate].updateExpressions
         case PartialMerge | Final =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
-            .mergeExpressions
+          e.aggregateFunction.asInstanceOf[
+            DeclarativeAggregate].mergeExpressions
       }
     }
     ctx.currentVars = bufVars ++ input
@@ -286,8 +285,7 @@ case class TungstenAggregate(
 
   private val groupingAttributes = groupingExpressions.map(_.toAttribute)
   private val groupingKeySchema = StructType.fromAttributes(groupingAttributes)
-  private val declFunctions = aggregateExpressions
-    .map(_.aggregateFunction)
+  private val declFunctions = aggregateExpressions.map(_.aggregateFunction)
     .filter(_.isInstanceOf[DeclarativeAggregate])
     .map(_.asInstanceOf[DeclarativeAggregate])
   private val bufferSchema =
@@ -555,13 +553,11 @@ case class TungstenAggregate(
     val updateExpr = aggregateExpressions.flatMap { e =>
       e.mode match {
         case Partial | Complete =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
-            .updateExpressions
+          e.aggregateFunction.asInstanceOf[
+            DeclarativeAggregate].updateExpressions
         case PartialMerge | Final =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
-            .mergeExpressions
+          e.aggregateFunction.asInstanceOf[
+            DeclarativeAggregate].mergeExpressions
       }
     }
 

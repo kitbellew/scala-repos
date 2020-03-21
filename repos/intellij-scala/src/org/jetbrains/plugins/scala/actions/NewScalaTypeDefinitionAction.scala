@@ -61,9 +61,8 @@ class NewScalaTypeDefinitionAction
     builder.setTitle("Create New Scala Class")
     builder.setValidator(new InputValidatorEx {
       def getErrorText(inputString: String): String = {
-        if (inputString.length > 0 && !PsiNameHelper
-              .getInstance(project)
-              .isQualifiedName(inputString)) {
+        if (inputString.length > 0 && !PsiNameHelper.getInstance(
+              project).isQualifiedName(inputString)) {
           return "This is not a valid Scala qualified name"
         }
         null
@@ -81,8 +80,9 @@ class NewScalaTypeDefinitionAction
   }
 
   private def isScalaTemplate(template: FileTemplate): Boolean = {
-    val fileType: FileType = FileTypeManagerEx.getInstanceEx
-      .getFileTypeByExtension(template.getExtension)
+    val fileType: FileType =
+      FileTypeManagerEx.getInstanceEx.getFileTypeByExtension(
+        template.getExtension)
     fileType == ScalaFileType.SCALA_FILE_TYPE
   }
 
@@ -191,8 +191,8 @@ object NewScalaTypeDefinitionAction {
     } catch {
       case e: Exception =>
         throw new RuntimeException(
-          "Unable to load template for " + FileTemplateManager.getInstance
-            .internalTemplateToSubject(templateName),
+          "Unable to load template for " + FileTemplateManager.getInstance.internalTemplateToSubject(
+            templateName),
           e)
     }
     val factory: PsiFileFactory = PsiFileFactory.getInstance(project)

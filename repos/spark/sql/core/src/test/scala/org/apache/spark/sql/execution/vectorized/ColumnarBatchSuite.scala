@@ -431,18 +431,14 @@ class ColumnarBatchSuite extends SparkFunSuite {
         column.putArray(2, 2, 0)
         column.putArray(3, 3, 3)
 
-        val a1 = ColumnVectorUtils
-          .toPrimitiveJavaArray(column.getArray(0))
-          .asInstanceOf[Array[Int]]
-        val a2 = ColumnVectorUtils
-          .toPrimitiveJavaArray(column.getArray(1))
-          .asInstanceOf[Array[Int]]
-        val a3 = ColumnVectorUtils
-          .toPrimitiveJavaArray(column.getArray(2))
-          .asInstanceOf[Array[Int]]
-        val a4 = ColumnVectorUtils
-          .toPrimitiveJavaArray(column.getArray(3))
-          .asInstanceOf[Array[Int]]
+        val a1 = ColumnVectorUtils.toPrimitiveJavaArray(
+          column.getArray(0)).asInstanceOf[Array[Int]]
+        val a2 = ColumnVectorUtils.toPrimitiveJavaArray(
+          column.getArray(1)).asInstanceOf[Array[Int]]
+        val a3 = ColumnVectorUtils.toPrimitiveJavaArray(
+          column.getArray(2)).asInstanceOf[Array[Int]]
+        val a4 = ColumnVectorUtils.toPrimitiveJavaArray(
+          column.getArray(3)).asInstanceOf[Array[Int]]
         assert(a1 === Array(0))
         assert(a2 === Array(1, 2))
         assert(a3 === Array.empty[Int])
@@ -472,9 +468,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
         data.putInts(0, array.length, array, 0)
         column.putArray(0, 0, array.length)
         assert(
-          ColumnVectorUtils
-            .toPrimitiveJavaArray(column.getArray(0))
-            .asInstanceOf[Array[Int]]
+          ColumnVectorUtils.toPrimitiveJavaArray(
+            column.getArray(0)).asInstanceOf[Array[Int]]
             === array)
       }
     }
@@ -533,9 +528,9 @@ class ColumnarBatchSuite extends SparkFunSuite {
         batch.column(0).putInt(0, 1)
         batch.column(1).putDouble(0, 1.1)
         batch.column(2).putNull(0)
-        batch
-          .column(3)
-          .putByteArray(0, "Hello".getBytes(StandardCharsets.UTF_8))
+        batch.column(3).putByteArray(
+          0,
+          "Hello".getBytes(StandardCharsets.UTF_8))
         batch.setNumRows(1)
 
         // Verify the results of the row.
@@ -591,9 +586,9 @@ class ColumnarBatchSuite extends SparkFunSuite {
         batch.column(0).putInt(2, 4)
         batch.column(1).putDouble(2, 4.4)
         batch.column(2).putInt(2, 4)
-        batch
-          .column(3)
-          .putByteArray(2, "world".getBytes(StandardCharsets.UTF_8))
+        batch.column(3).putByteArray(
+          2,
+          "world".getBytes(StandardCharsets.UTF_8))
         batch.setNumRows(3)
 
         def rowEquals(x: InternalRow, y: Row): Unit = {
@@ -683,9 +678,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
               assert(r1.getString(v._2) == r2.getString(v._2), "Seed = " + seed)
             case CalendarIntervalType =>
               assert(
-                r1.getInterval(v._2) === r2
-                  .get(v._2)
-                  .asInstanceOf[CalendarInterval])
+                r1.getInterval(v._2) === r2.get(v._2).asInstanceOf[
+                  CalendarInterval])
             case ArrayType(childType, n) =>
               val a1 = r1.getArray(v._2).array
               val a2 = r2.getList(v._2).toArray

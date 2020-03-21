@@ -119,9 +119,8 @@ object SwankProtocolCommon {
     def read(sexp: Sexp): RefactorType =
       sexp match {
         case SexpSymbol(name) =>
-          RefactorType.allTypes
-            .find(_.symbol.name == name)
-            .getOrElse(deserializationError(sexp))
+          RefactorType.allTypes.find(_.symbol.name == name).getOrElse(
+            deserializationError(sexp))
         case _ =>
           deserializationError(sexp)
       }
@@ -132,9 +131,8 @@ object SwankProtocolCommon {
     def read(sexp: Sexp): DeclaredAs =
       sexp match {
         case SexpSymbol(name) =>
-          DeclaredAs.allDeclarations
-            .find(_.symbol.name == name)
-            .getOrElse(deserializationError(sexp))
+          DeclaredAs.allDeclarations.find(_.symbol.name == name).getOrElse(
+            deserializationError(sexp))
         case _ =>
           deserializationError(sexp)
       }
@@ -868,21 +866,17 @@ object SwankProtocolRequest {
     def read(sexp: Sexp): RefactorDesc =
       sexp match {
         case SexpList(params) =>
-          params
-            .grouped(2)
-            .collect {
-              case List(SexpSymbol("qualifiedName"), value) =>
-                (Loc.QualifiedName, value)
-              case List(SexpSymbol("file"), value)    => (Loc.File, value)
-              case List(SexpSymbol("newName"), value) => (Loc.NewName, value)
-              case List(SexpSymbol("name"), value)    => (Loc.Name, value)
-              case List(SexpSymbol("start"), value)   => (Loc.Start, value)
-              case List(SexpSymbol("end"), value)     => (Loc.End, value)
-              case List(SexpSymbol("methodName"), value) =>
-                (Loc.MethodName, value)
-            }
-            .toList
-            .sortBy(_._1.symbol.name) match {
+          params.grouped(2).collect {
+            case List(SexpSymbol("qualifiedName"), value) =>
+              (Loc.QualifiedName, value)
+            case List(SexpSymbol("file"), value)    => (Loc.File, value)
+            case List(SexpSymbol("newName"), value) => (Loc.NewName, value)
+            case List(SexpSymbol("name"), value)    => (Loc.Name, value)
+            case List(SexpSymbol("start"), value)   => (Loc.Start, value)
+            case List(SexpSymbol("end"), value)     => (Loc.End, value)
+            case List(SexpSymbol("methodName"), value) =>
+              (Loc.MethodName, value)
+          }.toList.sortBy(_._1.symbol.name) match {
             case List(
                   (Loc.End, SexpNumber(end)),
                   (Loc.File, SexpString(f)),

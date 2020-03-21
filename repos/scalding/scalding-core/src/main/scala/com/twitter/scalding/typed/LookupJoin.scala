@@ -139,8 +139,7 @@ object LookupJoin extends Serializable {
 
     val joined: TypedPipe[
       (K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] =
-      left
-        .map { case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV])) }
+      left.map { case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV])) }
         .++(right.map {
           case (t, (k, joinedV)) =>
             (k, (t, Right(joinedV): Either[V, JoinedV]))
@@ -196,8 +195,7 @@ object LookupJoin extends Serializable {
               if (gate(time, oldt)) Semigroup.plus(oldJ, joined) else joined
             (Some((time, nextJoined)), None)
           }
-        }
-        .toTypedPipe
+        }.toTypedPipe
 
     // Now, get rid of residual state from the scanLeft above:
     joined.flatMap {

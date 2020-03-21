@@ -86,36 +86,32 @@ object RoutesFileParser {
 
       route.path.parts.collect {
         case part @ DynamicPart(name, regex, _) => {
-          route.call.parameters
-            .getOrElse(Nil)
-            .find(_.name == name)
-            .map { p =>
-              if (p.fixed.isDefined || p.default.isDefined) {
-                errors += RoutesCompilationError(
-                  file,
-                  "It is not allowed to specify a fixed or default value for parameter: '" + name + "' extracted from the path",
-                  Some(p.pos.line),
-                  Some(p.pos.column))
-              }
-              try {
-                java.util.regex.Pattern.compile(regex)
-              } catch {
-                case e: Exception => {
-                  errors += RoutesCompilationError(
-                    file,
-                    e.getMessage,
-                    Some(part.pos.line),
-                    Some(part.pos.column))
-                }
-              }
-            }
-            .getOrElse {
+          route.call.parameters.getOrElse(Nil).find(_.name == name).map { p =>
+            if (p.fixed.isDefined || p.default.isDefined) {
               errors += RoutesCompilationError(
                 file,
-                "Missing parameter in call definition: " + name,
-                Some(part.pos.line),
-                Some(part.pos.column))
+                "It is not allowed to specify a fixed or default value for parameter: '" + name + "' extracted from the path",
+                Some(p.pos.line),
+                Some(p.pos.column))
             }
+            try {
+              java.util.regex.Pattern.compile(regex)
+            } catch {
+              case e: Exception => {
+                errors += RoutesCompilationError(
+                  file,
+                  e.getMessage,
+                  Some(part.pos.line),
+                  Some(part.pos.column))
+              }
+            }
+          }.getOrElse {
+            errors += RoutesCompilationError(
+              file,
+              "Missing parameter in call definition: " + name,
+              Some(part.pos.line),
+              Some(part.pos.column))
+          }
         }
       }
 
@@ -384,20 +380,18 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def parser: Parser[List[Rule]] =
     phrase((blankLine | sentence *) <~ end) ^^ {
       case routes =>
-        routes.reverse
-          .foldLeft(List[(Option[Rule], List[Comment])]()) {
-            case (s, r @ Route(_, _, _, _)) => (Some(r), List()) :: s
-            case (s, i @ Include(_, _))     => (Some(i), List()) :: s
-            case (s, c @ ())                => (None, List()) :: s
-            case ((r, comments) :: others, c @ Comment(_)) =>
-              (r, c :: comments) :: others
-            case (s, _) => s
-          }
-          .collect {
-            case (Some(r @ Route(_, _, _, _)), comments) =>
-              r.copy(comments = comments).setPos(r.pos)
-            case (Some(i @ Include(_, _)), _) => i
-          }
+        routes.reverse.foldLeft(List[(Option[Rule], List[Comment])]()) {
+          case (s, r @ Route(_, _, _, _)) => (Some(r), List()) :: s
+          case (s, i @ Include(_, _))     => (Some(i), List()) :: s
+          case (s, c @ ())                => (None, List()) :: s
+          case ((r, comments) :: others, c @ Comment(_)) =>
+            (r, c :: comments) :: others
+          case (s, _) => s
+        }.collect {
+          case (Some(r @ Route(_, _, _, _)), comments) =>
+            r.copy(comments = comments).setPos(r.pos)
+          case (Some(i @ Include(_, _)), _) => i
+        }
     }
 
   def parse(text: String): ParseResult[List[Rule]] = {

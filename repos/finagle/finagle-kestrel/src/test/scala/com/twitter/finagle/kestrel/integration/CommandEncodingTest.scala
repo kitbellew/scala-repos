@@ -62,13 +62,11 @@ class CommandEncodingTest extends FunSuite {
     val qName = "MyQueue"
     val data = "hi"
     val time = Time.now
-    val msg = encoder
-      .encode(
-        null,
-        null,
-        Set(Buf.Utf8(qName), time, Buf.Utf8(data))
-      )
-      .asInstanceOf[TokensWithData]
+    val msg = encoder.encode(
+      null,
+      null,
+      Set(Buf.Utf8(qName), time, Buf.Utf8(data))
+    ).asInstanceOf[TokensWithData]
 
     val Set(Buf.Utf8(queueName), expiry, Buf.Utf8(dataOut)) =
       decoder.parseStorageCommand(msg.tokens, msg.data)

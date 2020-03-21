@@ -23,8 +23,9 @@ private[round] final class Cli(
             Game.BSONFields.status -> chess.Status.Started.id,
             Game.BSONFields.clock -> $exists(true)
           ))) { game =>
-        roundMap ! lila.hub.actorApi.map
-          .Tell(game.id, actorApi.round.AbortForMaintenance)
+        roundMap ! lila.hub.actorApi.map.Tell(
+          game.id,
+          actorApi.round.AbortForMaintenance)
       } inject "done"
   }
 

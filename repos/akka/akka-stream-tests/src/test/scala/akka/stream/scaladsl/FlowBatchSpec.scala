@@ -27,11 +27,8 @@ class FlowBatchSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source
-        .fromPublisher(publisher)
-        .batch(max = 2, seed = i ⇒ i)(aggregate = _ + _)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).batch(max = 2, seed = i ⇒ i)(aggregate =
+        _ + _).to(Sink.fromSubscriber(subscriber)).run()
       val sub = subscriber.expectSubscription()
 
       for (i ← 1 to 100) {
@@ -47,12 +44,10 @@ class FlowBatchSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[List[Int]]()
 
-      Source
-        .fromPublisher(publisher)
-        .batch(max = Long.MaxValue, seed = i ⇒ List(i))(aggregate =
-          (ints, i) ⇒ i :: ints)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).batch(
+        max = Long.MaxValue,
+        seed = i ⇒ List(i))(aggregate = (ints, i) ⇒ i :: ints).to(
+        Sink.fromSubscriber(subscriber)).run()
       val sub = subscriber.expectSubscription()
 
       for (i ← 1 to 10) {
@@ -78,11 +73,8 @@ class FlowBatchSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source
-        .fromPublisher(publisher)
-        .batch(max = 2, seed = i ⇒ i)(aggregate = _ + _)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).batch(max = 2, seed = i ⇒ i)(aggregate =
+        _ + _).to(Sink.fromSubscriber(subscriber)).run()
       val sub = subscriber.expectSubscription()
 
       sub.request(1)

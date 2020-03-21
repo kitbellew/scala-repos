@@ -120,9 +120,8 @@ class JobGeneratorSuite extends TestSuiteBase {
 
       // Wait for 3rd batch to start
       eventually(testTimeout) {
-        ssc.scheduler
-          .getPendingTimes()
-          .contains(Time(numBatches * batchDuration.milliseconds))
+        ssc.scheduler.getPendingTimes().contains(
+          Time(numBatches * batchDuration.milliseconds))
       }
 
       // Verify that the 3rd batch's block data is still present while the 3rd batch is incomplete

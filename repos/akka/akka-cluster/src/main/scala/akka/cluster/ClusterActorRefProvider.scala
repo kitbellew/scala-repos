@@ -95,11 +95,9 @@ private[akka] class ClusterDeployer(
     val config2 =
       if (config.hasPath("cluster.enabled") && config.getBoolean(
             "cluster.enabled") && !config.hasPath("nr-of-instances")) {
-        val maxTotalNrOfInstances = config
-          .withFallback(default)
-          .getInt("cluster.max-total-nr-of-instances")
-        ConfigFactory
-          .parseString("nr-of-instances=" + maxTotalNrOfInstances)
+        val maxTotalNrOfInstances = config.withFallback(default).getInt(
+          "cluster.max-total-nr-of-instances")
+        ConfigFactory.parseString("nr-of-instances=" + maxTotalNrOfInstances)
           .withFallback(config)
       } else config
 

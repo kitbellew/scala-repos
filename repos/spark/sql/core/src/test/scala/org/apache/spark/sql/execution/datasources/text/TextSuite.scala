@@ -69,11 +69,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
     }
 
     intercept[AnalysisException] {
-      sqlContext
-        .range(2)
-        .select(df("id"), df("id") + 1)
-        .write
-        .text(tempFile.getCanonicalPath)
+      sqlContext.range(2).select(df("id"), df("id") + 1).write.text(
+        tempFile.getCanonicalPath)
     }
   }
 
@@ -86,10 +83,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
       case (codecName, extension) =>
         val tempDir = Utils.createTempDir()
         val tempDirPath = tempDir.getAbsolutePath
-        testDf.write
-          .option("compression", codecName)
-          .mode(SaveMode.Overwrite)
-          .text(tempDirPath)
+        testDf.write.option("compression", codecName).mode(
+          SaveMode.Overwrite).text(tempDirPath)
         val compressedFiles = new File(tempDirPath).listFiles()
         assert(compressedFiles.exists(_.getName.endsWith(s".txt$extension")))
         verifyFrame(sqlContext.read.text(tempDirPath).toDF())
@@ -97,10 +92,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
 
     val errMsg = intercept[IllegalArgumentException] {
       val tempDirPath = Utils.createTempDir().getAbsolutePath
-      testDf.write
-        .option("compression", "illegal")
-        .mode(SaveMode.Overwrite)
-        .text(tempDirPath)
+      testDf.write.option("compression", "illegal").mode(
+        SaveMode.Overwrite).text(tempDirPath)
     }
     assert(
       errMsg.getMessage.contains("Codec [illegal] is not available. " +
@@ -129,10 +122,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
         val testDf = sqlContext.read.text(testFile)
         val tempDir = Utils.createTempDir()
         val tempDirPath = tempDir.getAbsolutePath
-        testDf.write
-          .option("compression", "none")
-          .mode(SaveMode.Overwrite)
-          .text(tempDirPath)
+        testDf.write.option("compression", "none").mode(
+          SaveMode.Overwrite).text(tempDirPath)
         val compressedFiles = new File(tempDirPath).listFiles()
         assert(compressedFiles.exists(!_.getName.endsWith(".txt.gz")))
         verifyFrame(sqlContext.read.text(tempDirPath).toDF())
@@ -146,11 +137,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
   }
 
   private def testFile: String = {
-    Thread
-      .currentThread()
-      .getContextClassLoader
-      .getResource("text-suite.txt")
-      .toString
+    Thread.currentThread().getContextClassLoader.getResource(
+      "text-suite.txt").toString
   }
 
   /** Verifies data and schema. */

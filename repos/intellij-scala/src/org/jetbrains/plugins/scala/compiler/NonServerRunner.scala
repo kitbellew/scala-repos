@@ -27,9 +27,8 @@ class NonServerRunner(
     "org.jetbrains.jps.incremental.scala.remote.Main"
 
   private def classPath(jdk: JDK) =
-    (jdk.tools +: CompileServerLauncher.compilerJars)
-      .map(file => FileUtil toCanonicalPath file.getPath)
-      .mkString(File.pathSeparator)
+    (jdk.tools +: CompileServerLauncher.compilerJars).map(file =>
+      FileUtil toCanonicalPath file.getPath).mkString(File.pathSeparator)
 
   private val jvmParameters = CompileServerLauncher.jvmParameters
 

@@ -45,13 +45,13 @@ object CompilationData {
     val output = target.getOutputDir
     checkOrCreate(output)
 
-    val classpath = ProjectPaths
-      .getCompilationClasspathFiles(chunk, chunk.containsTests, false, true)
-      .asScala
-      .toSeq
-    val compilerSettings = SettingsManager
-      .getProjectSettings(module.getProject)
-      .getCompilerSettings(chunk)
+    val classpath = ProjectPaths.getCompilationClasspathFiles(
+      chunk,
+      chunk.containsTests,
+      false,
+      true).asScala.toSeq
+    val compilerSettings = SettingsManager.getProjectSettings(
+      module.getProject).getCompilerSettings(chunk)
     val noBootCp =
       if (CompilerData.isDotty(chunk)) Nil
       else Seq("-nobootcp", "-javabootclasspath", File.pathSeparator)
@@ -68,8 +68,9 @@ object CompilationData {
         (outputToCacheMap - output).filter(p => classpath.contains(p._1))
 
       val commonOptions = {
-        val encoding = context.getProjectDescriptor.getEncodingConfiguration
-          .getPreferredModuleChunkEncoding(chunk)
+        val encoding =
+          context.getProjectDescriptor.getEncodingConfiguration.getPreferredModuleChunkEncoding(
+            chunk)
         Option(encoding).map(Seq("-encoding", _)).getOrElse(Seq.empty)
       }
 
@@ -108,8 +109,7 @@ object CompilationData {
   }
 
   def outputsNotSpecified(chunk: ModuleChunk): Option[String] = {
-    chunk.getTargets.asScala
-      .find(_.getOutputDir == null)
+    chunk.getTargets.asScala.find(_.getOutputDir == null)
       .map("Output directory not specified for module " + _.getModule.getName)
   }
 
@@ -193,8 +193,8 @@ object CompilationData {
     }
 
     val buildTargetIndex = context.getProjectDescriptor.getBuildTargetIndex
-    val targets = JavaModuleBuildTargetType.ALL_TYPES.asScala
-      .flatMap(buildTargetIndex.getAllTargets(_).asScala)
+    val targets = JavaModuleBuildTargetType.ALL_TYPES.asScala.flatMap(
+      buildTargetIndex.getAllTargets(_).asScala)
 
     targets.distinct.filterNot { target =>
       buildTargetIndex.isDummy(target) || isExcluded(target)

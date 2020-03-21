@@ -65,18 +65,13 @@ trait SnapshotStore extends Actor with ActorLogging {
       } finally senderPersistentActor() ! evt // sender is persistentActor
 
     case d @ DeleteSnapshot(metadata) ⇒
-      breaker
-        .withCircuitBreaker(deleteAsync(metadata))
-        .map {
-          case _ ⇒ DeleteSnapshotSuccess(metadata)
-        }
-        .recover {
-          case e ⇒ DeleteSnapshotFailure(metadata, e)
-        }
-        .pipeTo(self)(senderPersistentActor())
-        .onComplete {
-          case _ ⇒ if (publish) context.system.eventStream.publish(d)
-        }
+      breaker.withCircuitBreaker(deleteAsync(metadata)).map {
+        case _ ⇒ DeleteSnapshotSuccess(metadata)
+      }.recover {
+        case e ⇒ DeleteSnapshotFailure(metadata, e)
+      }.pipeTo(self)(senderPersistentActor()).onComplete {
+        case _ ⇒ if (publish) context.system.eventStream.publish(d)
+      }
 
     case evt: DeleteSnapshotSuccess ⇒
       try tryReceivePluginInternal(evt)
@@ -86,18 +81,13 @@ trait SnapshotStore extends Actor with ActorLogging {
       finally senderPersistentActor() ! evt
 
     case d @ DeleteSnapshots(persistenceId, criteria) ⇒
-      breaker
-        .withCircuitBreaker(deleteAsync(persistenceId, criteria))
-        .map {
-          case _ ⇒ DeleteSnapshotsSuccess(criteria)
-        }
-        .recover {
-          case e ⇒ DeleteSnapshotsFailure(criteria, e)
-        }
-        .pipeTo(self)(senderPersistentActor())
-        .onComplete {
-          case _ ⇒ if (publish) context.system.eventStream.publish(d)
-        }
+      breaker.withCircuitBreaker(deleteAsync(persistenceId, criteria)).map {
+        case _ ⇒ DeleteSnapshotsSuccess(criteria)
+      }.recover {
+        case e ⇒ DeleteSnapshotsFailure(criteria, e)
+      }.pipeTo(self)(senderPersistentActor()).onComplete {
+        case _ ⇒ if (publish) context.system.eventStream.publish(d)
+      }
 
     case evt: DeleteSnapshotsFailure ⇒
       try tryReceivePluginInternal(evt)

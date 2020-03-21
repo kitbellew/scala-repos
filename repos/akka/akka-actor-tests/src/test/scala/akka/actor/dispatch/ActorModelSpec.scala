@@ -247,12 +247,8 @@ object ActorModelSpec {
       system: ActorSystem) {
     val stats = statsFor(
       actorRef,
-      Option(dispatcher).getOrElse(
-        actorRef
-          .asInstanceOf[ActorRefWithCell]
-          .underlying
-          .asInstanceOf[ActorCell]
-          .dispatcher))
+      Option(dispatcher).getOrElse(actorRef.asInstanceOf[
+        ActorRefWithCell].underlying.asInstanceOf[ActorCell].dispatcher))
     val deadline = System.currentTimeMillis + 1000
     try {
       await(deadline)(stats.suspensions.get() == suspensions)
@@ -503,9 +499,8 @@ abstract class ActorModelSpec(config: String)
                     case cell: ActorCell ⇒
                       System.err.println(
                         " - " + cell.self.path + " " + cell.isTerminated + " " + cell.mailbox.currentStatus + " "
-                          + cell.mailbox.numberOfMessages + " " + cell.mailbox
-                          .systemDrain(SystemMessageList.LNil)
-                          .size)
+                          + cell.mailbox.numberOfMessages + " " + cell.mailbox.systemDrain(
+                          SystemMessageList.LNil).size)
                   }
 
                   System.err.println(
@@ -673,9 +668,9 @@ class DispatcherModelSpec extends ActorModelSpec(DispatcherModelSpec.config) {
 
   override def interceptedDispatcher(): MessageDispatcherInterceptor = {
     // use new id for each test, since the MessageDispatcherInterceptor holds state
-    system.dispatchers
-      .lookup("test-dispatcher-" + dispatcherCount.incrementAndGet())
-      .asInstanceOf[MessageDispatcherInterceptor]
+    system.dispatchers.lookup(
+      "test-dispatcher-" + dispatcherCount.incrementAndGet()).asInstanceOf[
+      MessageDispatcherInterceptor]
   }
 
   override def dispatcherType = "Dispatcher"
@@ -769,9 +764,9 @@ class BalancingDispatcherModelSpec
 
   override def interceptedDispatcher(): MessageDispatcherInterceptor = {
     // use new id for each test, since the MessageDispatcherInterceptor holds state
-    system.dispatchers
-      .lookup("test-balancing-dispatcher-" + dispatcherCount.incrementAndGet())
-      .asInstanceOf[MessageDispatcherInterceptor]
+    system.dispatchers.lookup(
+      "test-balancing-dispatcher-" + dispatcherCount.incrementAndGet()).asInstanceOf[
+      MessageDispatcherInterceptor]
   }
 
   override def dispatcherType = "Balancing Dispatcher"

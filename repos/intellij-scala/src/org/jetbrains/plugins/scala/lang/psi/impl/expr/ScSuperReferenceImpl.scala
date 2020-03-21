@@ -50,9 +50,8 @@ class ScSuperReferenceImpl(node: ASTNode)
               case comment: PsiComment =>
                 val commentText = comment.getText
                 val path = commentText.substring(2, commentText.length - 2)
-                val classes = ScalaPsiManager
-                  .instance(getProject)
-                  .getCachedClasses(getResolveScope, path)
+                val classes = ScalaPsiManager.instance(
+                  getProject).getCachedClasses(getResolveScope, path)
                 if (classes.length == 1) {
                   drvTemplate.exists(td =>
                     !ScalaPsiUtil.cachedDeepIsInheritor(td, classes(0)))
@@ -95,8 +94,8 @@ class ScSuperReferenceImpl(node: ASTNode)
       new PsiReference {
         def getElement = ScSuperReferenceImpl.this
         def getRangeInElement =
-          new TextRange(0, id.getTextLength)
-            .shiftRight(id.getStartOffsetInParent)
+          new TextRange(0, id.getTextLength).shiftRight(
+            id.getStartOffsetInParent)
         def getCanonicalText =
           resolve match {
             case c: PsiClass => c.qualifiedName
@@ -148,14 +147,12 @@ class ScSuperReferenceImpl(node: ASTNode)
                   case comment: PsiComment =>
                     val commentText = comment.getText
                     val path = commentText.substring(2, commentText.length - 2)
-                    val classes = ScalaPsiManager
-                      .instance(getProject)
-                      .getCachedClasses(getResolveScope, path)
+                    val classes = ScalaPsiManager.instance(
+                      getProject).getCachedClasses(getResolveScope, path)
                     if (classes.length == 1) classes(0)
                     else
-                      classes
-                        .find(!_.isInstanceOf[ScObject])
-                        .getOrElse(resolveNoHack)
+                      classes.find(!_.isInstanceOf[ScObject]).getOrElse(
+                        resolveNoHack)
                   case _ => resolveNoHack
                 }
             case _ => resolveNoHack

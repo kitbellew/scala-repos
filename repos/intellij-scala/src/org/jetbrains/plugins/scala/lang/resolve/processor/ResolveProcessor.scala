@@ -40,8 +40,8 @@ object ResolveProcessor {
       result: ScalaResolveResult,
       place: PsiElement): String = {
     def defaultForTypeAlias(t: ScTypeAlias): String = {
-      if (t.getParent
-            .isInstanceOf[ScTemplateBody] && t.containingClass != null) {
+      if (t.getParent.isInstanceOf[
+            ScTemplateBody] && t.containingClass != null) {
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
       } else null
     }
@@ -56,8 +56,8 @@ object ResolveProcessor {
             ScType.extractClass(tp, Option(place).map(_.getProject)) match {
               case Some(c: ScObject) => defaultForTypeAlias(t)
               case Some(td: ScTypeDefinition)
-                  if td.typeParameters.length == 0 && ScalaPsiUtil
-                    .hasStablePath(td) =>
+                  if td.typeParameters.length == 0 && ScalaPsiUtil.hasStablePath(
+                    td) =>
                 "Class:" + td.qualifiedName
               case Some(c: PsiClass) if c.getTypeParameters.length == 0 =>
                 "Class:" + c.qualifiedName
@@ -167,9 +167,8 @@ class ResolveProcessor(
       if (accessibility && !accessible) return true
       named match {
         case o: ScObject
-            if o.isPackageObject && JavaPsiFacade
-              .getInstance(element.getProject)
-              .findPackage(o.qualifiedName) != null =>
+            if o.isPackageObject && JavaPsiFacade.getInstance(
+              element.getProject).findPackage(o.qualifiedName) != null =>
         case pack: PsiPackage =>
           val resolveResult: ScalaResolveResult =
             new ScalaResolveResult(
@@ -272,9 +271,8 @@ class ResolveProcessor(
                   _: ScTypeAlias | _: ScClass | _: ScTrait,
                   _)) =>
             rr.element.name != r.element.name ||
-              ScalaPsiUtil
-                .superTypeMembers(rr.element)
-                .find(_ == r.element) == None
+              ScalaPsiUtil.superTypeMembers(rr.element).find(
+                _ == r.element) == None
           case (true, _) => true
         }
       case _ => true

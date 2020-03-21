@@ -76,8 +76,7 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
       (flowMode: (FlowDef, Mode)) =>
         val left = getKeys(flowMode)
         val earliestInLast = batcher.earliestTimeOf(last._1)
-        val liftedLast: KeyValuePipe[K, Option[V]] = last
-          ._2(flowMode)
+        val liftedLast: KeyValuePipe[K, Option[V]] = last._2(flowMode)
           .map { case (k, w) => (earliestInLast, (k, Some(w))) }
         // TODO (https://github.com/twitter/summingbird/issues/91): we
         // could not bother to load streams outside the covers, but
@@ -115,13 +114,15 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
           } else {
             val inBatches = List(startingBatch) ++ existing.map { _._1 }
             val bInt =
-              BatchID
-                .toInterval(inBatches)
-                .get // by construction this is an interval, so this can't throw
+              BatchID.toInterval(
+                inBatches).get // by construction this is an interval, so this can't throw
             val toRead =
-              batchOps
-                .intersect(bInt, timeSpan) // No need to read more than this
-            getKeys((toRead, mode)).right
+              batchOps.intersect(
+                bInt,
+                timeSpan
+              ) // No need to read more than this
+            getKeys((toRead, mode))
+              .right
               .map {
                 case ((available, outM), getFlow) =>
                   /*

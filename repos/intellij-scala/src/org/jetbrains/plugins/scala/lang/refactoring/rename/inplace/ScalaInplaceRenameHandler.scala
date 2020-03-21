@@ -72,8 +72,7 @@ trait ScalaInplaceRenameHandler {
         subst: => PsiNamedElement): Unit = {
       val cancel = ScalaBundle.message("rename.cancel")
       val list = JListCompatibility.createJBListFromListData(positive, cancel)
-      JBPopupFactory.getInstance
-        .createListPopupBuilder(list)
+      JBPopupFactory.getInstance.createListPopupBuilder(list)
         .setTitle(title)
         .setMovable(false)
         .setResizable(false)
@@ -93,9 +92,7 @@ trait ScalaInplaceRenameHandler {
               case s: String if s == cancel =>
             }
           }
-        })
-        .createPopup
-        .showInBestPositionFor(editor)
+        }).createPopup.showInBestPositionFor(editor)
     }
 
     def specialMethodPopup(fun: ScFunction): Unit = {

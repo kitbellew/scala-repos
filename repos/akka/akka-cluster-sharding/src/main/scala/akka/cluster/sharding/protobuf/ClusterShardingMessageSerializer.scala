@@ -205,19 +205,15 @@ private[akka] class ClusterShardingMessageSerializer(
     }
 
   private def coordinatorStateToProto(state: State): sm.CoordinatorState = {
-    val regions = state.regions
-      .map {
-        case (regionRef, _) ⇒ Serialization.serializedActorPath(regionRef)
-      }
-      .toVector
-      .asJava
+    val regions = state.regions.map {
+      case (regionRef, _) ⇒ Serialization.serializedActorPath(regionRef)
+    }.toVector.asJava
 
     val builder = sm.CoordinatorState.newBuilder()
 
     state.shards.foreach {
       case (shardId, regionRef) ⇒
-        val b = sm.CoordinatorState.ShardEntry
-          .newBuilder()
+        val b = sm.CoordinatorState.ShardEntry.newBuilder()
           .setShardId(shardId)
           .setRegionRef(Serialization.serializedActorPath(regionRef))
         builder.addShards(b)
@@ -244,8 +240,8 @@ private[akka] class ClusterShardingMessageSerializer(
       }(breakOut)
 
     val regionsZero: Map[ActorRef, Vector[String]] =
-      state.getRegionsList.asScala.toVector
-        .map(resolveActorRef(_) -> Vector.empty[String])(breakOut)
+      state.getRegionsList.asScala.toVector.map(
+        resolveActorRef(_) -> Vector.empty[String])(breakOut)
     val regions: Map[ActorRef, Vector[String]] =
       shards.foldLeft(regionsZero) {
         case (acc, (shardId, regionRef)) ⇒
@@ -262,10 +258,8 @@ private[akka] class ClusterShardingMessageSerializer(
   }
 
   private def actorRefMessageToProto(ref: ActorRef): sm.ActorRefMessage =
-    sm.ActorRefMessage
-      .newBuilder()
-      .setRef(Serialization.serializedActorPath(ref))
-      .build()
+    sm.ActorRefMessage.newBuilder().setRef(
+      Serialization.serializedActorPath(ref)).build()
 
   private def actorRefMessageFromBinary(bytes: Array[Byte]): ActorRef =
     resolveActorRef(sm.ActorRefMessage.parseFrom(bytes).getRef)
@@ -278,11 +272,8 @@ private[akka] class ClusterShardingMessageSerializer(
 
   private def shardHomeAllocatedToProto(
       evt: ShardHomeAllocated): sm.ShardHomeAllocated =
-    sm.ShardHomeAllocated
-      .newBuilder()
-      .setShard(evt.shard)
-      .setRegion(Serialization.serializedActorPath(evt.region))
-      .build()
+    sm.ShardHomeAllocated.newBuilder().setShard(evt.shard)
+      .setRegion(Serialization.serializedActorPath(evt.region)).build()
 
   private def shardHomeAllocatedFromBinary(
       bytes: Array[Byte]): ShardHomeAllocated = {
@@ -291,11 +282,8 @@ private[akka] class ClusterShardingMessageSerializer(
   }
 
   private def shardHomeToProto(m: ShardHome): sm.ShardHome =
-    sm.ShardHome
-      .newBuilder()
-      .setShard(m.shard)
-      .setRegion(Serialization.serializedActorPath(m.ref))
-      .build()
+    sm.ShardHome.newBuilder().setShard(m.shard)
+      .setRegion(Serialization.serializedActorPath(m.ref)).build()
 
   private def shardHomeFromBinary(bytes: Array[Byte]): ShardHome = {
     val m = sm.ShardHome.parseFrom(bytes)
@@ -324,11 +312,8 @@ private[akka] class ClusterShardingMessageSerializer(
     EntityStopped(sm.EntityStopped.parseFrom(bytes).getEntityId)
 
   private def shardStatsToProto(evt: ShardStats): sm.ShardStats =
-    sm.ShardStats
-      .newBuilder()
-      .setShard(evt.shardId)
-      .setEntityCount(evt.entityCount)
-      .build()
+    sm.ShardStats.newBuilder().setShard(evt.shardId).setEntityCount(
+      evt.entityCount).build()
 
   private def shardStatsFromBinary(bytes: Array[Byte]): ShardStats = {
     val parsed = sm.ShardStats.parseFrom(bytes)

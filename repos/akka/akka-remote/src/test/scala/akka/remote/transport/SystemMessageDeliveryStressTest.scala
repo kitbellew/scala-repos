@@ -113,9 +113,8 @@ object SystemMessageDeliveryStressTest {
 
 abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
     extends AkkaSpec(
-      ConfigFactory
-        .parseString(cfg)
-        .withFallback(SystemMessageDeliveryStressTest.baseConfig))
+      ConfigFactory.parseString(cfg).withFallback(
+        SystemMessageDeliveryStressTest.baseConfig))
     with ImplicitSender
     with DefaultTimeout {
   import SystemMessageDeliveryStressTest._

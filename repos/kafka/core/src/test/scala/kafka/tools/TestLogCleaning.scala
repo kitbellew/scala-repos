@@ -50,56 +50,54 @@ object TestLogCleaning {
 
   def main(args: Array[String]) {
     val parser = new OptionParser
-    val numMessagesOpt = parser
-      .accepts("messages", "The number of messages to send or consume.")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Long])
-      .defaultsTo(Long.MaxValue)
-    val messageCompressionOpt = parser
-      .accepts("compression-type", "message compression type")
-      .withOptionalArg()
-      .describedAs("compressionType")
-      .ofType(classOf[java.lang.String])
-      .defaultsTo("none")
-    val numDupsOpt = parser
-      .accepts("duplicates", "The number of duplicates for each key.")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(5)
-    val brokerOpt = parser
-      .accepts("broker", "Url to connect to.")
+    val numMessagesOpt =
+      parser.accepts("messages", "The number of messages to send or consume.")
+        .withRequiredArg
+        .describedAs("count")
+        .ofType(classOf[java.lang.Long])
+        .defaultsTo(Long.MaxValue)
+    val messageCompressionOpt =
+      parser.accepts("compression-type", "message compression type")
+        .withOptionalArg()
+        .describedAs("compressionType")
+        .ofType(classOf[java.lang.String])
+        .defaultsTo("none")
+    val numDupsOpt =
+      parser.accepts("duplicates", "The number of duplicates for each key.")
+        .withRequiredArg
+        .describedAs("count")
+        .ofType(classOf[java.lang.Integer])
+        .defaultsTo(5)
+    val brokerOpt = parser.accepts("broker", "Url to connect to.")
       .withRequiredArg
       .describedAs("url")
       .ofType(classOf[String])
-    val topicsOpt = parser
-      .accepts("topics", "The number of topics to test.")
+    val topicsOpt = parser.accepts("topics", "The number of topics to test.")
       .withRequiredArg
       .describedAs("count")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(1)
-    val percentDeletesOpt = parser
-      .accepts("percent-deletes", "The percentage of updates that are deletes.")
+    val percentDeletesOpt = parser.accepts(
+      "percent-deletes",
+      "The percentage of updates that are deletes.")
       .withRequiredArg
       .describedAs("percent")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(0)
-    val zkConnectOpt = parser
-      .accepts("zk", "Zk url.")
+    val zkConnectOpt = parser.accepts("zk", "Zk url.")
       .withRequiredArg
       .describedAs("url")
       .ofType(classOf[String])
-    val sleepSecsOpt = parser
-      .accepts("sleep", "Time to sleep between production and consumption.")
+    val sleepSecsOpt = parser.accepts(
+      "sleep",
+      "Time to sleep between production and consumption.")
       .withRequiredArg
       .describedAs("ms")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(0)
-    val dumpOpt = parser
-      .accepts(
-        "dump",
-        "Dump the message contents of a topic partition that contains test data from this test to standard out.")
+    val dumpOpt = parser.accepts(
+      "dump",
+      "Dump the message contents of a topic partition that contains test data from this test to standard out.")
       .withRequiredArg
       .describedAs("directory")
       .ofType(classOf[String])
@@ -154,8 +152,10 @@ object TestLogCleaning {
     val consumedLines = lineCount(consumedDataFile)
     val reduction = 1.0 - consumedLines.toDouble / producedLines.toDouble
     println(
-      "%d rows of data produced, %d rows of data consumed (%.1f%% reduction)."
-        .format(producedLines, consumedLines, 100 * reduction))
+      "%d rows of data produced, %d rows of data consumed (%.1f%% reduction).".format(
+        producedLines,
+        consumedLines,
+        100 * reduction))
 
     println("De-duplicating and validating output files...")
     validateOutput(producedDataFile, consumedDataFile)
@@ -175,8 +175,10 @@ object TestLogCleaning {
           else
             TestUtils.readString(entry.message.payload)
         println(
-          "offset = %s, key = %s, content = %s"
-            .format(entry.offset, key, content))
+          "offset = %s, key = %s, content = %s".format(
+            entry.offset,
+            key,
+            content))
       }
     }
   }

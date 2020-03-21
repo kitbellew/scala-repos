@@ -135,8 +135,10 @@ abstract class TreeCheckers extends Analyzer {
         val s2 = wholetreestr(tree)
         if (s1 contains s2) ()
         else
-          movedMsgs += ("\n** %s moved:\n** Previously:\n%s\n** Currently:\n%s"
-            .format(ownerstr(sym), s1 mkString ", ", s2))
+          movedMsgs += ("\n** %s moved:\n** Previously:\n%s\n** Currently:\n%s".format(
+            ownerstr(sym),
+            s1 mkString ", ",
+            s2))
       }
     }
 
@@ -158,8 +160,10 @@ abstract class TreeCheckers extends Analyzer {
       // duplicate defs
       for ((sym, defs) <- defSyms; if defs.size > 1) {
         errorFn(
-          "%s DefTrees with symbol '%s': %s"
-            .format(defs.size, ownerstr(sym), defs map beststr mkString ", "))
+          "%s DefTrees with symbol '%s': %s".format(
+            defs.size,
+            ownerstr(sym),
+            defs map beststr mkString ", "))
       }
       defSyms.clear()
     }

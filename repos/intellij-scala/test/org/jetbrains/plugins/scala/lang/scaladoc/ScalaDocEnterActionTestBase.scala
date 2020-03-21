@@ -14,9 +14,8 @@ abstract class ScalaDocEnterActionTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   override protected def setUp(): Unit = {
     super.setUp()
-    getCurrentCodeStyleSettings
-      .getCustomSettings(classOf[ScalaCodeStyleSettings])
-      .USE_SCALADOC2_FORMATTING = false
+    getCurrentCodeStyleSettings.getCustomSettings(
+      classOf[ScalaCodeStyleSettings]).USE_SCALADOC2_FORMATTING = false
   }
 
   protected def checkGeneratedTextFromString(
@@ -33,9 +32,8 @@ abstract class ScalaDocEnterActionTestBase
       transform: String => String) {
     configureFromFileTextAdapter("dummy.scala", header + footer)
     getEditorAdapter.getCaretModel.moveToOffset(header.length - 1)
-    val enterHandler = EditorActionManager
-      .getInstance()
-      .getActionHandler(IdeActions.ACTION_EDITOR_ENTER)
+    val enterHandler = EditorActionManager.getInstance().getActionHandler(
+      IdeActions.ACTION_EDITOR_ENTER)
 
     enterHandler.execute(
       getEditorAdapter,

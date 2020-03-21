@@ -277,9 +277,8 @@ case class RawBuffer(
   }
 
   override def toString = {
-    "RawBuffer(inMemory=" + Option(inMemory)
-      .map(_.size)
-      .orNull + ", backedByTemporaryFile=" + backedByTemporaryFile + ")"
+    "RawBuffer(inMemory=" + Option(inMemory).map(
+      _.size).orNull + ", backedByTemporaryFile=" + backedByTemporaryFile + ")"
   }
 
 }
@@ -304,8 +303,7 @@ trait BodyParsers {
     private[play] val ApplicationXmlMatcher = """application/.*\+xml.*""".r
 
     private def config =
-      Play.privateMaybeApplication
-        .map(app => hcCache(app).parser)
+      Play.privateMaybeApplication.map(app => hcCache(app).parser)
         .getOrElse(ParserConfiguration())
 
     /**
@@ -524,21 +522,19 @@ trait BodyParsers {
           // Encoding notes: RFC 3023 is the RFC for XML content types.  Comments below reflect what it says.
 
           // An externally declared charset takes precedence
-          request.charset
-            .orElse(
-              // If omitted, maybe select a default charset, based on the media type.
-              request.mediaType.collect {
-                // According to RFC 3023, the default encoding for text/xml is us-ascii. This contradicts RFC 2616, which
-                // states that the default for text/* is ISO-8859-1.  An RFC 3023 conforming client will send US-ASCII,
-                // in that case it is safe for us to use US-ASCII or ISO-8859-1.  But a client that knows nothing about
-                // XML, and therefore nothing about RFC 3023, but rather conforms to RFC 2616, will send ISO-8859-1.
-                // Since decoding as ISO-8859-1 works for both clients that conform to RFC 3023, and clients that conform
-                // to RFC 2616, we use that.
-                case mt if mt.mediaType == "text" => "iso-8859-1"
-                // Otherwise, there should be no default, it will be detected by the XML parser.
-              }
-            )
-            .foreach { charset => inputSource.setEncoding(charset) }
+          request.charset.orElse(
+            // If omitted, maybe select a default charset, based on the media type.
+            request.mediaType.collect {
+              // According to RFC 3023, the default encoding for text/xml is us-ascii. This contradicts RFC 2616, which
+              // states that the default for text/* is ISO-8859-1.  An RFC 3023 conforming client will send US-ASCII,
+              // in that case it is safe for us to use US-ASCII or ISO-8859-1.  But a client that knows nothing about
+              // XML, and therefore nothing about RFC 3023, but rather conforms to RFC 2616, will send ISO-8859-1.
+              // Since decoding as ISO-8859-1 works for both clients that conform to RFC 3023, and clients that conform
+              // to RFC 2616, we use that.
+              case mt if mt.mediaType == "text" => "iso-8859-1"
+              // Otherwise, there should be no default, it will be detected by the XML parser.
+            }
+          ).foreach { charset => inputSource.setEncoding(charset) }
           Play.XML.load(inputSource)
       }
 
@@ -557,9 +553,8 @@ trait BodyParsers {
         _.contentType.exists { t =>
           val tl = t.toLowerCase(Locale.ENGLISH)
           tl.startsWith("text/xml") || tl.startsWith(
-            "application/xml") || ApplicationXmlMatcher.pattern
-            .matcher(tl)
-            .matches()
+            "application/xml") || ApplicationXmlMatcher.pattern.matcher(
+            tl).matches()
         },
         tolerantXml(maxLength),
         createBadResult("Expecting xml body", UNSUPPORTED_MEDIA_TYPE)
@@ -701,14 +696,13 @@ trait BodyParsers {
             logger.trace("Parsing AnyContent as multipartFormData")
             multipartFormData(
               Multipart.handleFilePartAsTemporaryFile,
-              maxLengthOrDefaultLarge)
-              .apply(request)
+              maxLengthOrDefaultLarge).apply(request)
               .map(_.right.map(m => AnyContentAsMultipartFormData(m)))
 
           case _ =>
             logger.trace("Parsing AnyContent as raw")
-            raw(DefaultMaxTextLength, maxLengthOrDefaultLarge)(request)
-              .map(_.right.map(r => AnyContentAsRaw(r)))
+            raw(DefaultMaxTextLength, maxLengthOrDefaultLarge)(request).map(
+              _.right.map(r => AnyContentAsRaw(r)))
         }
       }
 
@@ -732,9 +726,9 @@ trait BodyParsers {
       BodyParser("multipartFormData") { request =>
         val app = Play.privateMaybeApplication.get // throw exception
         implicit val mat = app.materializer
-        val bodyAccumulator = Multipart
-          .multipartParser(DefaultMaxTextLength, filePartHandler)
-          .apply(request)
+        val bodyAccumulator = Multipart.multipartParser(
+          DefaultMaxTextLength,
+          filePartHandler).apply(request)
         enforceMaxLength(request, maxLength, bodyAccumulator)
       }
     }
@@ -826,12 +820,10 @@ trait BodyParsers {
 
           statusFuture.flatMap {
             case MaxSizeExceeded(_) =>
-              val badResult = Future
-                .successful(())
-                .flatMap(_ =>
-                  createBadResult(
-                    "Request Entity Too Large",
-                    REQUEST_ENTITY_TOO_LARGE)(request))(defaultCtx)
+              val badResult = Future.successful(()).flatMap(_ =>
+                createBadResult(
+                  "Request Entity Too Large",
+                  REQUEST_ENTITY_TOO_LARGE)(request))(defaultCtx)
               badResult.map(Left(_))
             case MaxSizeNotExceeded => resultFuture
           }
@@ -866,8 +858,8 @@ trait BodyParsers {
             } catch {
               case NonFatal(e) =>
                 logger.debug(errorMessage, e)
-                createBadResult(errorMessage + ": " + e.getMessage)(request)
-                  .map(Left(_))
+                createBadResult(errorMessage + ": " + e.getMessage)(
+                  request).map(Left(_))
             }
           }
         )

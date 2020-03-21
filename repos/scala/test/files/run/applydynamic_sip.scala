@@ -18,8 +18,10 @@ object Test extends App {
     }
     def applyDynamicNamed[T](n: String)(as: (String, Any)*) = {
       println(
-        "qual.applyDynamicNamed(" + n + ")" + as.toList
-          .mkString("(", ", ", ")")); stub
+        "qual.applyDynamicNamed(" + n + ")" + as.toList.mkString(
+          "(",
+          ", ",
+          ")")); stub
     }
     def selectDynamic[T](n: String) = {
       println("qual.selectDynamic(" + n + ")"); stub

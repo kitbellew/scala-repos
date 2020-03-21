@@ -19,8 +19,7 @@ class CompositionDocSpec extends AkkaSpec {
 
   "nonnested flow" in {
     //#non-nested-flow
-    Source
-      .single(0)
+    Source.single(0)
       .map(_ + 1)
       .filter(_ != 0)
       .map(_ - 2)
@@ -33,22 +32,21 @@ class CompositionDocSpec extends AkkaSpec {
   "nested flow" in {
     //#nested-flow
     val nestedSource =
-      Source
-        .single(0) // An atomic source
+      Source.single(0) // An atomic source
         .map(_ + 1) // an atomic processing stage
         .named(
           "nestedSource"
         ) // wraps up the current Source and gives it a name
 
     val nestedFlow =
-      Flow[Int]
-        .filter(_ != 0) // an atomic processing stage
+      Flow[Int].filter(_ != 0) // an atomic processing stage
         .map(_ - 2) // another atomic processing stage
         .named("nestedFlow") // wraps up the Flow, and gives it a name
 
     val nestedSink =
-      nestedFlow
-        .to(Sink.fold(0)(_ + _)) // wire an atomic sink to the nestedFlow
+      nestedFlow.to(
+        Sink.fold(0)(_ + _)
+      ) // wire an atomic sink to the nestedFlow
         .named("nestedSink") // wrap it up
 
     // Create a RunnableGraph
@@ -58,22 +56,21 @@ class CompositionDocSpec extends AkkaSpec {
 
   "reusing components" in {
     val nestedSource =
-      Source
-        .single(0) // An atomic source
+      Source.single(0) // An atomic source
         .map(_ + 1) // an atomic processing stage
         .named(
           "nestedSource"
         ) // wraps up the current Source and gives it a name
 
     val nestedFlow =
-      Flow[Int]
-        .filter(_ != 0) // an atomic processing stage
+      Flow[Int].filter(_ != 0) // an atomic processing stage
         .map(_ - 2) // another atomic processing stage
         .named("nestedFlow") // wraps up the Flow, and gives it a name
 
     val nestedSink =
-      nestedFlow
-        .to(Sink.fold(0)(_ + _)) // wire an atomic sink to the nestedFlow
+      nestedFlow.to(
+        Sink.fold(0)(_ + _)
+      ) // wire an atomic sink to the nestedFlow
         .named("nestedSink") // wrap it up
 
     //#reuse
@@ -250,20 +247,19 @@ class CompositionDocSpec extends AkkaSpec {
     //#attributes-inheritance
     import Attributes._
     val nestedSource =
-      Source
-        .single(0)
+      Source.single(0)
         .map(_ + 1)
         .named("nestedSource") // Wrap, no inputBuffer set
 
     val nestedFlow =
-      Flow[Int]
-        .filter(_ != 0)
+      Flow[Int].filter(_ != 0)
         .via(Flow[Int].map(_ - 2).withAttributes(inputBuffer(4, 4))) // override
         .named("nestedFlow") // Wrap, no inputBuffer set
 
     val nestedSink =
-      nestedFlow
-        .to(Sink.fold(0)(_ + _)) // wire an atomic sink to the nestedFlow
+      nestedFlow.to(
+        Sink.fold(0)(_ + _)
+      ) // wire an atomic sink to the nestedFlow
         .withAttributes(name("nestedSink") and inputBuffer(3, 3)) // override
     //#attributes-inheritance
   }

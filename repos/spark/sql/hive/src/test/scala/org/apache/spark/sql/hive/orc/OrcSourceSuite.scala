@@ -183,14 +183,11 @@ class OrcSourceSuite extends OrcSuite {
         |expr = leaf-0
       """.stripMargin.trim
     ) {
-      OrcFilters
-        .createFilter(
-          Array(
-            LessThan("a", 10),
-            StringContains("b", "prefix")
-          ))
-        .get
-        .toString
+      OrcFilters.createFilter(
+        Array(
+          LessThan("a", 10),
+          StringContains("b", "prefix")
+        )).get.toString
     }
 
     // The `LessThan` should be converted while the whole inner `And` shouldn't
@@ -199,18 +196,15 @@ class OrcSourceSuite extends OrcSuite {
         |expr = leaf-0
       """.stripMargin.trim
     ) {
-      OrcFilters
-        .createFilter(
-          Array(
-            LessThan("a", 10),
-            Not(
-              And(
-                GreaterThan("a", 1),
-                StringContains("b", "prefix")
-              ))
-          ))
-        .get
-        .toString
+      OrcFilters.createFilter(
+        Array(
+          LessThan("a", 10),
+          Not(
+            And(
+              GreaterThan("a", 1),
+              StringContains("b", "prefix")
+            ))
+        )).get.toString
     }
   }
 }

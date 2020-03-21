@@ -62,8 +62,11 @@ trait NIHDBSnapshot {
     val j = if (i < 0) -i - 1 else i + 1
     if (logger.isTraceEnabled) {
       logger.trace(
-        "findReaderAfter(%s) has i = %d, j = %d with blockIds.length = %d"
-          .format(id0, i, j, blockIds.length))
+        "findReaderAfter(%s) has i = %d, j = %d with blockIds.length = %d".format(
+          id0,
+          i,
+          j,
+          blockIds.length))
     }
     if (j >= blockIds.length) None else Some(readers(j))
   }
@@ -74,26 +77,24 @@ trait NIHDBSnapshot {
   def getBlockAfter(
       id0: Option[Long],
       cols: Option[Set[ColumnRef]]): Option[Block] =
-    findReaderAfter(id0)
-      .map { reader =>
-        val snapshot = reader.snapshotRef(cols)
-        if (logger.isTraceEnabled) {
-          logger.trace(
-            "Block after %s, %s (%s)\nSnapshot on %s:\n  %s".format(
-              id0,
-              reader,
-              reader.hashCode,
-              cols,
-              snapshot.segments.map(_.toString).mkString("\n  ")))
-        }
-        snapshot
+    findReaderAfter(id0).map { reader =>
+      val snapshot = reader.snapshotRef(cols)
+      if (logger.isTraceEnabled) {
+        logger.trace(
+          "Block after %s, %s (%s)\nSnapshot on %s:\n  %s".format(
+            id0,
+            reader,
+            reader.hashCode,
+            cols,
+            snapshot.segments.map(_.toString).mkString("\n  ")))
       }
-      .orElse {
-        if (logger.isTraceEnabled) {
-          logger.trace("No block after " + id0)
-        }
-        None
+      snapshot
+    }.orElse {
+      if (logger.isTraceEnabled) {
+        logger.trace("No block after " + id0)
       }
+      None
+    }
 
   def structure: Set[ColumnRef] =
     readers.flatMap(_.structure)(collection.breakOut)
@@ -112,12 +113,10 @@ trait NIHDBSnapshot {
     */
   def count(id: Option[Long], paths0: Option[Set[CPath]]): Option[Long] = {
     def countSegments(segs: Seq[Segment]): Long =
-      segs
-        .foldLeft(new BitSet) { (acc, seg) =>
-          acc.or(seg.defined)
-          acc
-        }
-        .cardinality
+      segs.foldLeft(new BitSet) { (acc, seg) =>
+        acc.or(seg.defined)
+        acc
+      }.cardinality
 
     findReader(id).map { reader =>
       paths0 map { paths =>

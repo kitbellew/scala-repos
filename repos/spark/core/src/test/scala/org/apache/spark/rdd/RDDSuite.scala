@@ -56,11 +56,9 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       nums.glom().map(_.toList).collect().toList === List(
         List(1, 2),
         List(3, 4)))
-    assert(
-      nums
-        .collect({ case i if i >= 3 => i.toString })
-        .collect()
-        .toList === List("3", "4"))
+    assert(nums.collect({
+      case i if i >= 3 => i.toString
+    }).collect().toList === List("3", "4"))
     assert(
       nums.keyBy(_.toString).collect().toList === List(
         ("1", 1),
@@ -161,9 +159,11 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     val nums2 = makeRDDWithPartitioner(5 to 8)
     assert(nums1.partitioner == nums2.partitioner)
     assert(
-      new PartitionerAwareUnionRDD(sc, Seq(nums1))
-        .collect()
-        .toSet === Set(1, 2, 3, 4))
+      new PartitionerAwareUnionRDD(sc, Seq(nums1)).collect().toSet === Set(
+        1,
+        2,
+        3,
+        4))
 
     val union = new PartitionerAwareUnionRDD(sc, Seq(nums1, nums2))
     assert(union.collect().toSet === Set(1, 2, 3, 4, 5, 6, 7, 8))
@@ -318,9 +318,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       val partitions = repartitioned.glom().collect()
       // assert all elements are present
       assert(
-        repartitioned.collect().sortWith(_ > _).toSeq === input.toSeq
-          .sortWith(_ > _)
-          .toSeq)
+        repartitioned.collect().sortWith(_ > _).toSeq === input.toSeq.sortWith(
+          _ > _).toSeq)
       // assert no bucket is overloaded
       for (partition <- partitions) {
         val avg = input.size / finalPartitions
@@ -344,16 +343,12 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
     // Check that the narrow dependency is also specified correctly
     assert(
-      coalesced1.dependencies.head
-        .asInstanceOf[NarrowDependency[_]]
-        .getParents(0)
-        .toList ===
+      coalesced1.dependencies.head.asInstanceOf[NarrowDependency[_]].getParents(
+        0).toList ===
         List(0, 1, 2, 3, 4))
     assert(
-      coalesced1.dependencies.head
-        .asInstanceOf[NarrowDependency[_]]
-        .getParents(1)
-        .toList ===
+      coalesced1.dependencies.head.asInstanceOf[NarrowDependency[_]].getParents(
+        1).toList ===
         List(5, 6, 7, 8, 9))
 
     val coalesced2 = data.coalesce(3)
@@ -378,8 +373,9 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
     // we can optionally shuffle to keep the upstream parallel
     val coalesced5 = data.coalesce(1, shuffle = true)
-    val isEquals = coalesced5.dependencies.head.rdd.dependencies.head.rdd
-      .asInstanceOf[ShuffledRDD[_, _, _]] != null
+    val isEquals =
+      coalesced5.dependencies.head.rdd.dependencies.head.rdd.asInstanceOf[
+        ShuffledRDD[_, _, _]] != null
     assert(isEquals)
 
     // when shuffling, we can increase the number of partitions
@@ -461,8 +457,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
         "Expected 100 +/- 20 per partition, but got " + maxImbalance)
 
       val data3 =
-        sc.makeRDD(blocks)
-          .map(i => i * 2) // derived RDD to test *current* pref locs
+        sc.makeRDD(blocks).map(i =>
+          i * 2) // derived RDD to test *current* pref locs
       val coalesced3 = data3.coalesce(numMachines * 2)
       val minLocality2 = coalesced3.partitions
         .map(part => part.asInstanceOf[CoalescedRDDPartition].localFraction)
@@ -518,10 +514,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   test("collect large number of empty partitions") {
     // Regression test for SPARK-4019
     assert(
-      sc.makeRDD(0 until 10, 1000)
-        .repartition(2001)
-        .collect()
-        .toSet === (0 until 10).toSet)
+      sc.makeRDD(0 until 10, 1000).repartition(
+        2001).collect().toSet === (0 until 10).toSet)
   }
 
   test("take") {
@@ -773,13 +767,13 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
     import scala.reflect.classTag
     assert(
-      data
-        .sortBy(parse, true, 2)(AgeOrdering, classTag[Person])
-        .collect() === ageOrdered)
+      data.sortBy(parse, true, 2)(
+        AgeOrdering,
+        classTag[Person]).collect() === ageOrdered)
     assert(
-      data
-        .sortBy(parse, true, 2)(NameOrdering, classTag[Person])
-        .collect() === nameOrdered)
+      data.sortBy(parse, true, 2)(
+        NameOrdering,
+        classTag[Person]).collect() === nameOrdered)
   }
 
   test("repartitionAndSortWithinPartitions") {

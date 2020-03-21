@@ -131,13 +131,11 @@ object FileSource {
       conf: Configuration,
       filter: PathFilter = AcceptAllPathFilter): Iterable[FileStatus] = {
     val path = new Path(glob)
-    Option(path.getFileSystem(conf).globStatus(path, filter))
-      .map {
-        _.toIterable // convert java Array to scala Iterable
-      }
-      .getOrElse {
-        Iterable.empty
-      }
+    Option(path.getFileSystem(conf).globStatus(path, filter)).map {
+      _.toIterable // convert java Array to scala Iterable
+    }.getOrElse {
+      Iterable.empty
+    }
   }
 
   /**
@@ -185,8 +183,7 @@ object FileSource {
       }
 
     // OR by key
-    val uniqueUsedDirs = MapAlgebra
-      .sumByKey(usedDirs)
+    val uniqueUsedDirs = MapAlgebra.sumByKey(usedDirs)
       .filter {
         case (_, (_, _, hasNonHidden)) => (!hiddenFilter || hasNonHidden.get)
       }
@@ -244,19 +241,16 @@ abstract class FileSource
             CastHfsTap(createHfsTap(hdfsScheme, hdfsWritePath, sinkMode))
         }
       case _ => {
-        val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode))
-          .map {
-            // these java types are invariant, so we cast here
+        val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode)).map {
+          // these java types are invariant, so we cast here
+          _.createTap(readOrWrite)
+          .asInstanceOf[Tap[Any, Any, Any]]
+        }.orElse {
+          Try(TestTapFactory(this, localScheme.getSourceFields, sinkMode)).map {
             _.createTap(readOrWrite)
-              .asInstanceOf[Tap[Any, Any, Any]]
+            .asInstanceOf[Tap[Any, Any, Any]]
           }
-          .orElse {
-            Try(TestTapFactory(this, localScheme.getSourceFields, sinkMode))
-              .map {
-                _.createTap(readOrWrite)
-                  .asInstanceOf[Tap[Any, Any, Any]]
-              }
-          }
+        }
 
         tryTtp match {
           case Success(s) => s
@@ -298,8 +292,9 @@ abstract class FileSource
         val files = localPaths.map { p => new java.io.File(p) }
         if (strict && !files.forall(_.exists)) {
           throw new InvalidSourceException(
-            "[" + this.toString + s"] Data is missing from: ${localPaths
-              .filterNot { p => new java.io.File(p).exists }}")
+            "[" + this.toString + s"] Data is missing from: ${localPaths.filterNot {
+              p => new java.io.File(p).exists
+            }}")
         } else if (!files.exists(_.exists)) {
           throw new InvalidSourceException(
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)
@@ -323,9 +318,10 @@ abstract class FileSource
 
   protected def createHdfsReadTap(hdfsMode: Hdfs): Tap[JobConf, _, _] = {
     val taps: List[Tap[JobConf, RecordReader[_, _], OutputCollector[_, _]]] =
-      goodHdfsPaths(hdfsMode).toList.map { path =>
-        CastHfsTap(createHfsTap(hdfsScheme, path, sinkMode))
-      }
+      goodHdfsPaths(hdfsMode)
+        .toList.map { path =>
+          CastHfsTap(createHfsTap(hdfsScheme, path, sinkMode))
+        }
     taps.size match {
       case 0 => {
         // This case is going to result in an error, but we don't want to throw until
@@ -407,8 +403,8 @@ trait DelimitedScheme extends SchemedSource {
   override def hdfsScheme = {
     assert(
       types == null || fields.size == types.size,
-      "Fields [" + fields + "] of different size than types array [" + types
-        .mkString(",") + "]")
+      "Fields [" + fields + "] of different size than types array [" + types.mkString(
+        ",") + "]")
     HadoopSchemeInstance(
       new CHTextDelimited(
         fields,
@@ -464,8 +460,10 @@ trait SuccessFileSource extends FileSource {
 trait LocalTapSource extends LocalSourceOverride {
   override def createLocalTap(sinkMode: SinkMode): Tap[JobConf, _, _] = {
     val taps = localPaths.map { p =>
-      new LocalTap(p, hdfsScheme, sinkMode)
-        .asInstanceOf[Tap[JobConf, RecordReader[_, _], OutputCollector[_, _]]]
+      new LocalTap(p, hdfsScheme, sinkMode).asInstanceOf[Tap[
+        JobConf,
+        RecordReader[_, _],
+        OutputCollector[_, _]]]
     }.toSeq
 
     taps match {

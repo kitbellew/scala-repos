@@ -348,8 +348,10 @@ private object FaultToleranceTest extends App with Logging {
   }
 
   logInfo(
-    "Ran %s tests, %s passed and %s failed"
-      .format(numPassed + numFailed, numPassed, numFailed))
+    "Ran %s tests, %s passed and %s failed".format(
+      numPassed + numFailed,
+      numPassed,
+      numFailed))
 }
 
 private class TestMasterInfo(
@@ -379,10 +381,8 @@ private class TestMasterInfo(
       // on containers is a weird hash instead of the actual IP address.
       liveWorkerIPs = liveWorkers.map {
         w =>
-          (w \ "webuiaddress")
-            .extract[String]
-            .stripPrefix("http://")
-            .stripSuffix(":8081")
+          (w \ "webuiaddress").extract[String].stripPrefix(
+            "http://").stripSuffix(":8081")
       }
 
       numLiveApps = (json \ "activeapps").children.size

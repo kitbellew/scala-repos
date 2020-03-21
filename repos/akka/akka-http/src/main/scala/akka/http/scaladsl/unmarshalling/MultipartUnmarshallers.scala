@@ -62,10 +62,9 @@ trait MultipartUnmarshallers {
         Multipart.General.BodyPart(entity, headers).toFormDataBodyPart.get,
       createStreamed = (_, parts) ⇒ Multipart.FormData(parts),
       createStrictBodyPart = (entity, headers) ⇒
-        Multipart.General.BodyPart
-          .Strict(entity, headers)
-          .toFormDataBodyPart
-          .get,
+        Multipart.General.BodyPart.Strict(
+          entity,
+          headers).toFormDataBodyPart.get,
       createStrict = (_, parts) ⇒ Multipart.FormData.Strict(parts)
     )
 
@@ -89,10 +88,9 @@ trait MultipartUnmarshallers {
         Multipart.General.BodyPart(entity, headers).toByteRangesBodyPart.get,
       createStreamed = (_, parts) ⇒ Multipart.ByteRanges(parts),
       createStrictBodyPart = (entity, headers) ⇒
-        Multipart.General.BodyPart
-          .Strict(entity, headers)
-          .toByteRangesBodyPart
-          .get,
+        Multipart.General.BodyPart.Strict(
+          entity,
+          headers).toByteRangesBodyPart.get,
       createStrict = (_, parts) ⇒ Multipart.ByteRanges.Strict(parts)
     )
 
@@ -171,8 +169,8 @@ trait MultipartUnmarshallers {
                     }
                     .concatSubstreams
                   createStreamed(
-                    entity.contentType.mediaType
-                      .asInstanceOf[MediaType.Multipart],
+                    entity.contentType.mediaType.asInstanceOf[
+                      MediaType.Multipart],
                     bodyParts)
               }
             }

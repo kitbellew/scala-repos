@@ -215,8 +215,9 @@ class PriorityMailboxSpec extends MailboxSpec {
     case UnboundedMailbox() ⇒
       new UnboundedPriorityMailbox(comparator).create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) ⇒
-      new BoundedPriorityMailbox(comparator, capacity, pushTimeOut)
-        .create(None, None)
+      new BoundedPriorityMailbox(comparator, capacity, pushTimeOut).create(
+        None,
+        None)
   }
 }
 
@@ -227,8 +228,10 @@ class StablePriorityMailboxSpec extends MailboxSpec {
     case UnboundedMailbox() ⇒
       new UnboundedStablePriorityMailbox(comparator).create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) ⇒
-      new BoundedStablePriorityMailbox(comparator, capacity, pushTimeOut)
-        .create(None, None)
+      new BoundedStablePriorityMailbox(
+        comparator,
+        capacity,
+        pushTimeOut).create(None, None)
   }
 }
 
@@ -275,12 +278,8 @@ class CustomMailboxSpec extends AkkaSpec(CustomMailboxSpec.config) {
         },
         1 second,
         10 millis)
-      val queue = actor
-        .asInstanceOf[ActorRefWithCell]
-        .underlying
-        .asInstanceOf[ActorCell]
-        .mailbox
-        .messageQueue
+      val queue = actor.asInstanceOf[ActorRefWithCell].underlying.asInstanceOf[
+        ActorCell].mailbox.messageQueue
       queue.getClass should ===(classOf[CustomMailboxSpec.MyMailbox])
     }
   }

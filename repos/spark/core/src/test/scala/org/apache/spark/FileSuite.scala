@@ -504,9 +504,9 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   test(
     "allow user to disable the output directory existence checking (old Hadoop API") {
     val sf = new SparkConf()
-    sf.setAppName("test")
-      .setMaster("local")
-      .set("spark.hadoop.validateOutputSpecs", "false")
+    sf.setAppName("test").setMaster("local").set(
+      "spark.hadoop.validateOutputSpecs",
+      "false")
     sc = new SparkContext(sf)
     val randomRDD =
       sc.parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")), 1)
@@ -545,9 +545,9 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   test(
     "allow user to disable the output directory existence checking (new Hadoop API") {
     val sf = new SparkConf()
-    sf.setAppName("test")
-      .setMaster("local")
-      .set("spark.hadoop.validateOutputSpecs", "false")
+    sf.setAppName("test").setMaster("local").set(
+      "spark.hadoop.validateOutputSpecs",
+      "false")
     sc = new SparkContext(sf)
     val randomRDD = sc.parallelize(
       Array(("key1", "a"), ("key2", "a"), ("key3", "b"), ("key4", "c")),
@@ -574,8 +574,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     job.set("mapred.output.dir", tempDir.getPath + "/outputDataset_old")
     randomRDD.saveAsHadoopDataset(job)
     assert(
-      new File(tempDir.getPath + "/outputDataset_old/part-00000")
-        .exists() === true)
+      new File(
+        tempDir.getPath + "/outputDataset_old/part-00000").exists() === true)
   }
 
   test("save Hadoop Dataset through new Hadoop API") {
@@ -591,8 +591,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     jobConfig.set("mapred.output.dir", tempDir.getPath + "/outputDataset_new")
     randomRDD.saveAsNewAPIHadoopDataset(jobConfig)
     assert(
-      new File(tempDir.getPath + "/outputDataset_new/part-r-00000")
-        .exists() === true)
+      new File(
+        tempDir.getPath + "/outputDataset_new/part-r-00000").exists() === true)
   }
 
   test("Get input files via old Hadoop API") {
@@ -602,15 +602,14 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
 
     val inputPaths =
       sc.hadoopFile(
-          outDir,
-          classOf[TextInputFormat],
-          classOf[LongWritable],
-          classOf[Text])
+        outDir,
+        classOf[TextInputFormat],
+        classOf[LongWritable],
+        classOf[Text])
         .asInstanceOf[HadoopRDD[_, _]]
         .mapPartitionsWithInputSplit { (split, part) =>
           Iterator(split.asInstanceOf[FileSplit].getPath.toUri.getPath)
-        }
-        .collect()
+        }.collect()
     assert(
       inputPaths.toSet === Set(s"$outDir/part-00000", s"$outDir/part-00001"))
   }
@@ -622,15 +621,14 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
 
     val inputPaths =
       sc.newAPIHadoopFile(
-          outDir,
-          classOf[NewTextInputFormat],
-          classOf[LongWritable],
-          classOf[Text])
+        outDir,
+        classOf[NewTextInputFormat],
+        classOf[LongWritable],
+        classOf[Text])
         .asInstanceOf[NewHadoopRDD[_, _]]
         .mapPartitionsWithInputSplit { (split, part) =>
           Iterator(split.asInstanceOf[NewFileSplit].getPath.toUri.getPath)
-        }
-        .collect()
+        }.collect()
     assert(
       inputPaths.toSet === Set(s"$outDir/part-00000", s"$outDir/part-00001"))
   }

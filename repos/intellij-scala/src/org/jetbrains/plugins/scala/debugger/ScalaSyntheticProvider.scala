@@ -90,8 +90,8 @@ object ScalaSyntheticProvider {
       else if (instr == DecompilerUtil.Opcodes.invokeStatic) {
         val nextIdx = i + 3
         val nextInstr = bytecodes(nextIdx)
-        return nextIdx == (bytecodes.length - 1) && BytecodeUtil.returnCodes
-          .contains(nextInstr)
+        return nextIdx == (bytecodes.length - 1) && BytecodeUtil.returnCodes.contains(
+          nextInstr)
       } else return false
     }
     false
@@ -107,8 +107,9 @@ object ScalaSyntheticProvider {
         for {
           interface <- interfaces
           traitImpl <- allTraitImpls
-          if traitImpl.name().stripSuffix("$class") == interface
-            .name() && !traitImpl.methodsByName(m.name).isEmpty
+          if traitImpl.name().stripSuffix(
+            "$class") == interface.name() && !traitImpl.methodsByName(
+            m.name).isEmpty
         } {
           return true
         }

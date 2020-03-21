@@ -737,17 +737,15 @@ class TreeTableView[S](
       delegate.columnResizePolicyProperty.value.call(features))
   def columnResizePolicy_=(
       p: TreeTableView.ResizeFeatures[_] => Boolean): Unit = {
-    delegate
-      .columnResizePolicyProperty()
-      .setValue(
-        new jfxu.Callback[
-          jfxsc.TreeTableView.ResizeFeatures[_],
-          java.lang.Boolean] {
-          def call(
-              v: jfxsc.TreeTableView.ResizeFeatures[_]): java.lang.Boolean = {
-            p(v)
-          }
-        })
+    delegate.columnResizePolicyProperty().setValue(
+      new jfxu.Callback[
+        jfxsc.TreeTableView.ResizeFeatures[_],
+        java.lang.Boolean] {
+        def call(
+            v: jfxsc.TreeTableView.ResizeFeatures[_]): java.lang.Boolean = {
+          p(v)
+        }
+      })
   }
   def columnResizePolicy_=(
       p: jfxu.Callback[

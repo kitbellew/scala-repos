@@ -409,12 +409,10 @@ private[tree] sealed class TreeEnsembleModel(
     */
   def toDebugString: String = {
     val header = toString + "\n"
-    header + trees.zipWithIndex
-      .map {
-        case (tree, treeIndex) =>
-          s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
-      }
-      .fold("")(_ + _)
+    header + trees.zipWithIndex.map {
+      case (tree, treeIndex) =>
+        s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
+    }.fold("")(_ + _)
   }
 
   /**
@@ -467,8 +465,7 @@ private[tree] object TreeEnsembleModel extends Logging {
       // TODO: Fix this issue for real.
       val memThreshold = 768
       if (sc.isLocal) {
-        val driverMemory = sc.getConf
-          .getOption("spark.driver.memory")
+        val driverMemory = sc.getConf.getOption("spark.driver.memory")
           .orElse(Option(System.getenv("SPARK_DRIVER_MEMORY")))
           .map(Utils.memoryStringToMb)
           .getOrElse(Utils.DEFAULT_DRIVER_MEM_MB)
@@ -501,14 +498,10 @@ private[tree] object TreeEnsembleModel extends Logging {
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.
-      val dataRDD = sc
-        .parallelize(model.trees.zipWithIndex)
-        .flatMap {
-          case (tree, treeId) =>
-            tree.topNode.subtreeIterator.toSeq.map(node =>
-              NodeData(treeId, node))
-        }
-        .toDF()
+      val dataRDD = sc.parallelize(model.trees.zipWithIndex).flatMap {
+        case (tree, treeId) =>
+          tree.topNode.subtreeIterator.toSeq.map(node => NodeData(treeId, node))
+      }.toDF()
       dataRDD.write.parquet(Loader.dataPath(path))
     }
 

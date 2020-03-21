@@ -105,14 +105,16 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     while (valIterator.hasNext) {
       res += valIterator.next()
     }
-    val varNames = StubIndex.getInstance
-      .getAllKeys(ScalaIndexKeys.VARIABLE_NAME_KEY, project)
+    val varNames = StubIndex.getInstance.getAllKeys(
+      ScalaIndexKeys.VARIABLE_NAME_KEY,
+      project)
     val varIterator = varNames.iterator()
     while (varIterator.hasNext) {
       res += varIterator.next()
     }
-    val classParamNames = StubIndex.getInstance
-      .getAllKeys(ScalaIndexKeys.CLASS_PARAMETER_NAME_KEY, project)
+    val classParamNames = StubIndex.getInstance.getAllKeys(
+      ScalaIndexKeys.CLASS_PARAMETER_NAME_KEY,
+      project)
     val classParamIterator = classParamNames.iterator()
     while (classParamIterator.hasNext) {
       res += classParamIterator.next()
@@ -198,15 +200,13 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
       list.toSeq
     }
     def javaMethods: Seq[PsiMethod] = {
-      PsiShortNamesCache
-        .getInstance(project)
-        .getMethodsByName(name, scope)
-        .filter {
-          case f: ScFunction       => false
-          case f: LightScalaMethod => false
-          case _                   => true
-        }
-        .toSeq
+      PsiShortNamesCache.getInstance(project).getMethodsByName(
+        name,
+        scope).filter {
+        case f: ScFunction       => false
+        case f: LightScalaMethod => false
+        case _                   => true
+      }.toSeq
     }
     scalaMethods ++ javaMethods
   }

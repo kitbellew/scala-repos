@@ -219,9 +219,8 @@ object LiftedEmbedding extends App {
           criteriaRoast.map(
             coffee.name === _
           ) // not a condition as `criteriaRoast` evaluates to `None`
-        ).collect({ case Some(criteria) => criteria })
-          .reduceLeftOption(_ || _)
-          .getOrElse(true: Rep[Boolean])
+        ).collect({ case Some(criteria) => criteria }).reduceLeftOption(
+          _ || _).getOrElse(true: Rep[Boolean])
       }
       // compiles to SQL (simplified):
       //   select "COF_NAME", "SUP_ID", "PRICE", "SALES", "TOTAL"
@@ -488,9 +487,8 @@ object LiftedEmbedding extends App {
 
       // Use the lifted function in a query to group by day of week
       val q1 = for {
-        (dow, q) <- salesPerDay
-          .map(s => (dayOfWeek(s.day), s.count))
-          .groupBy(_._1)
+        (dow, q) <- salesPerDay.map(s => (dayOfWeek(s.day), s.count)).groupBy(
+          _._1)
       } yield (dow, q.map(_._2).sum)
       //#simplefunction1
 
@@ -500,20 +498,18 @@ object LiftedEmbedding extends App {
       //#simplefunction2
 
       assert {
-        Await
-          .result(
-            db.run(
-              salesPerDay.schema.create >>
-                (salesPerDay += ((new Date(999999999), 999))) >> {
-                //#simpleliteral
-                val current_date = SimpleLiteral[java.sql.Date]("CURRENT_DATE")
-                salesPerDay.map(_ => current_date)
-                //#simpleliteral
-              }.result.head
-            ),
-            Duration.Inf
-          )
-          .isInstanceOf[java.sql.Date]
+        Await.result(
+          db.run(
+            salesPerDay.schema.create >>
+              (salesPerDay += ((new Date(999999999), 999))) >> {
+              //#simpleliteral
+              val current_date = SimpleLiteral[java.sql.Date]("CURRENT_DATE")
+              salesPerDay.map(_ => current_date)
+              //#simpleliteral
+            }.result.head
+          ),
+          Duration.Inf
+        ).isInstanceOf[java.sql.Date]
       }
     }
 

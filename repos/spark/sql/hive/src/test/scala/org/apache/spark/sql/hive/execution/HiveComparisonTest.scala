@@ -79,12 +79,14 @@ abstract class HiveComparisonTest
     * in [[passedDirectory]] or [[hiveFailedDirectory]] will be skipped.
     */
   val skipDirectories =
-    Option(System.getProperty("spark.hive.skiptests")).toSeq
+    Option(System.getProperty("spark.hive.skiptests"))
+      .toSeq
       .flatMap(_.split(","))
       .map(name => new File(targetDir, s"$suiteName.$name"))
 
   val runOnlyDirectories =
-    Option(System.getProperty("spark.hive.runonlytests")).toSeq
+    Option(System.getProperty("spark.hive.runonlytests"))
+      .toSeq
       .flatMap(_.split(","))
       .map(name => new File(targetDir, s"$suiteName.$name"))
 
@@ -131,9 +133,8 @@ abstract class HiveComparisonTest
   protected def getMd5(str: String): String = {
     val digest = java.security.MessageDigest.getInstance("MD5")
     digest.update(
-      str
-        .replaceAll(System.lineSeparator(), "\n")
-        .getBytes(StandardCharsets.UTF_8))
+      str.replaceAll(System.lineSeparator(), "\n").getBytes(
+        StandardCharsets.UTF_8))
     new java.math.BigInteger(1, digest.digest).toString(16)
   }
 
@@ -267,16 +268,11 @@ abstract class HiveComparisonTest
       logDebug(s"=== HIVE TEST: $testCaseName ===")
 
       val sqlWithoutComment =
-        sql
-          .split("\n")
-          .filterNot(l => l.matches("--.*(?<=[^\\\\]);"))
-          .mkString("\n")
+        sql.split("\n").filterNot(l => l.matches("--.*(?<=[^\\\\]);")).mkString(
+          "\n")
       val allQueries =
-        sqlWithoutComment
-          .split("(?<=[^\\\\]);")
-          .map(_.trim)
-          .filterNot(q => q == "")
-          .toSeq
+        sqlWithoutComment.split("(?<=[^\\\\]);").map(_.trim).filterNot(q =>
+          q == "").toSeq
 
       // TODO: DOCUMENT UNSUPPORTED
       val queryList =
@@ -294,20 +290,16 @@ abstract class HiveComparisonTest
 
       lazy val consoleTestCase = {
         val quotes = "\"\"\""
-        queryList.zipWithIndex
-          .map {
-            case (query, i) =>
-              s"""val q$i = sql($quotes$query$quotes); q$i.collect()"""
-          }
-          .mkString("\n== Console version of this test ==\n", "\n", "\n")
+        queryList.zipWithIndex.map {
+          case (query, i) =>
+            s"""val q$i = sql($quotes$query$quotes); q$i.collect()"""
+        }.mkString("\n== Console version of this test ==\n", "\n", "\n")
       }
 
       def doTest(reset: Boolean, isSpeculative: Boolean = false): Unit = {
         // Clear old output for this testcase.
-        outputDirectories
-          .map(new File(_, testCaseName))
-          .filter(_.exists())
-          .foreach(_.delete())
+        outputDirectories.map(new File(_, testCaseName)).filter(
+          _.exists()).foreach(_.delete())
 
         if (reset) {
           TestHive.reset()
@@ -338,21 +330,19 @@ abstract class HiveComparisonTest
             new File(answerCache, cachedAnswerName)
         }
 
-        val hiveCachedResults = hiveCacheFiles
-          .flatMap { cachedAnswerFile =>
-            logDebug(s"Looking for cached answer file $cachedAnswerFile.")
-            if (cachedAnswerFile.exists) {
-              Some(fileToString(cachedAnswerFile))
-            } else {
-              logDebug(s"File $cachedAnswerFile not found")
-              None
-            }
+        val hiveCachedResults = hiveCacheFiles.flatMap { cachedAnswerFile =>
+          logDebug(s"Looking for cached answer file $cachedAnswerFile.")
+          if (cachedAnswerFile.exists) {
+            Some(fileToString(cachedAnswerFile))
+          } else {
+            logDebug(s"File $cachedAnswerFile not found")
+            None
           }
-          .map {
-            case ""    => Nil
-            case "\n"  => Seq("")
-            case other => other.split("\n").toSeq
-          }
+        }.map {
+          case ""    => Nil
+          case "\n"  => Seq("")
+          case other => other.split("\n").toSeq
+        }
 
         val hiveResults: Seq[Seq[String]] =
           if (hiveCachedResults.size == queryList.size) {
@@ -371,9 +361,8 @@ abstract class HiveComparisonTest
                   try {
                     // Hooks often break the harness and don't really affect our test anyway, don't
                     // even try running them.
-                    if (installHooksCommand
-                          .findAllMatchIn(queryString)
-                          .nonEmpty) {
+                    if (installHooksCommand.findAllMatchIn(
+                          queryString).nonEmpty) {
                       sys.error("hive exec hooks not supported for tests.")
                     }
 
@@ -415,29 +404,27 @@ abstract class HiveComparisonTest
           }
 
         // Run w/ catalyst
-        val catalystResults = queryList
-          .zip(hiveResults)
-          .map {
-            case (queryString, hive) =>
-              var query: TestHive.QueryExecution = null
-              try {
-                query = {
-                  val originalQuery = new TestHive.QueryExecution(queryString)
-                  val containsCommands = originalQuery.analyzed.collectFirst {
-                    case _: Command                    => ()
-                    case _: LogicalInsertIntoHiveTable => ()
-                  }.nonEmpty
+        val catalystResults = queryList.zip(hiveResults).map {
+          case (queryString, hive) =>
+            var query: TestHive.QueryExecution = null
+            try {
+              query = {
+                val originalQuery = new TestHive.QueryExecution(queryString)
+                val containsCommands = originalQuery.analyzed.collectFirst {
+                  case _: Command                    => ()
+                  case _: LogicalInsertIntoHiveTable => ()
+                }.nonEmpty
 
-                  if (containsCommands) {
-                    originalQuery
-                  } else {
-                    val convertedSQL =
-                      try {
-                        new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
-                      } catch {
-                        case NonFatal(e) =>
-                          fail(
-                            s"""Cannot convert the following HiveQL query plan back to SQL query string:
+                if (containsCommands) {
+                  originalQuery
+                } else {
+                  val convertedSQL =
+                    try {
+                      new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
+                    } catch {
+                      case NonFatal(e) =>
+                        fail(
+                          s"""Cannot convert the following HiveQL query plan back to SQL query string:
                         |
                         |# Original HiveQL query string:
                         |$queryString
@@ -445,20 +432,20 @@ abstract class HiveComparisonTest
                         |# Resolved query plan:
                         |${originalQuery.analyzed.treeString}
                      """.stripMargin,
-                            e
-                          )
-                      }
+                          e
+                        )
+                    }
 
-                    try {
-                      val queryExecution =
-                        new TestHive.QueryExecution(convertedSQL)
-                      // Trigger the analysis of this converted SQL query.
-                      queryExecution.analyzed
-                      queryExecution
-                    } catch {
-                      case NonFatal(e) =>
-                        fail(
-                          s"""Failed to analyze the converted SQL string:
+                  try {
+                    val queryExecution =
+                      new TestHive.QueryExecution(convertedSQL)
+                    // Trigger the analysis of this converted SQL query.
+                    queryExecution.analyzed
+                    queryExecution
+                  } catch {
+                    case NonFatal(e) =>
+                      fail(
+                        s"""Failed to analyze the converted SQL string:
                         |
                         |# Original HiveQL query string:
                         |$queryString
@@ -469,17 +456,17 @@ abstract class HiveComparisonTest
                         |# Converted SQL query string:
                         |$convertedSQL
                      """.stripMargin,
-                          e
-                        )
-                    }
+                        e
+                      )
                   }
                 }
+              }
 
-                (query, prepareAnswer(query, query.stringResult()))
-              } catch {
-                case e: Throwable =>
-                  val errorMessage =
-                    s"""
+              (query, prepareAnswer(query, query.stringResult()))
+            } catch {
+              case e: Throwable =>
+                val errorMessage =
+                  s"""
                   |Failed to execute query using catalyst:
                   |Error: ${e.getMessage}
                   |${stackTraceToString(e)}
@@ -488,13 +475,12 @@ abstract class HiveComparisonTest
                   |== HIVE - ${hive.size} row(s) ==
                   |${hive.mkString("\n")}
                 """.stripMargin
-                  stringToFile(
-                    new File(failedDirectory, testCaseName),
-                    errorMessage + consoleTestCase)
-                  fail(errorMessage)
-              }
-          }
-          .toSeq
+                stringToFile(
+                  new File(failedDirectory, testCaseName),
+                  errorMessage + consoleTestCase)
+                fail(errorMessage)
+            }
+        }.toSeq
 
         (queryList, hiveResults, catalystResults).zipped.foreach {
           case (query, hive, (hiveQuery, catalyst)) =>
@@ -542,18 +528,16 @@ abstract class HiveComparisonTest
                       }
                   }
 
-                  tablesGenerated
-                    .map {
-                      case (hiveql, execution, insert) =>
-                        s"""
+                  tablesGenerated.map {
+                    case (hiveql, execution, insert) =>
+                      s"""
                      |=== Generated Table ===
                      |$hiveql
                      |$execution
                      |== Results ==
                      |${insert.child.execute().collect().mkString("\n")}
                    """.stripMargin
-                    }
-                    .mkString("\n")
+                  }.mkString("\n")
 
                 } catch {
                   case NonFatal(e) =>
@@ -564,9 +548,8 @@ abstract class HiveComparisonTest
               val errorMessage =
                 s"""
                   |Results do not match for $testCaseName:
-                  |$hiveQuery\n${hiveQuery.analyzed.output
-                     .map(_.name)
-                     .mkString("\t")}
+                  |$hiveQuery\n${hiveQuery.analyzed.output.map(_.name).mkString(
+                     "\t")}
                   |$resultComparison
                   |$computedTablesMessages
                 """.stripMargin

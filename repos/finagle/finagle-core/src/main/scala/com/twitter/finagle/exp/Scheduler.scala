@@ -39,12 +39,9 @@ private[finagle] object FinagleScheduler {
 
   private def switchToBridged(numWorkers: Int) {
     val queue =
-      try Class
-        .forName(
-          "java.util.concurrent.LinkedTransferQueue"
-        )
-        .newInstance
-        .asInstanceOf[BlockingQueue[Runnable]]
+      try Class.forName(
+        "java.util.concurrent.LinkedTransferQueue"
+      ).newInstance.asInstanceOf[BlockingQueue[Runnable]]
       catch {
         case _: ClassNotFoundException => {
           log.info(

@@ -204,19 +204,16 @@ private[streaming] object MapWithStateRDD {
       partitioner: Partitioner,
       updateTime: Time): MapWithStateRDD[K, V, S, E] = {
 
-    val stateRDD = pairRDD
-      .partitionBy(partitioner)
-      .mapPartitions(
-        { iterator =>
-          val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
-          iterator.foreach {
-            case (key, state) =>
-              stateMap.put(key, state, updateTime.milliseconds)
-          }
-          Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
-        },
-        preservesPartitioning = true
-      )
+    val stateRDD = pairRDD.partitionBy(partitioner).mapPartitions(
+      { iterator =>
+        val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
+        iterator.foreach {
+          case (key, state) => stateMap.put(key, state, updateTime.milliseconds)
+        }
+        Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
+      },
+      preservesPartitioning = true
+    )
 
     val emptyDataRDD =
       pairRDD.sparkContext.emptyRDD[(K, V)].partitionBy(partitioner)
@@ -238,19 +235,17 @@ private[streaming] object MapWithStateRDD {
       updateTime: Time): MapWithStateRDD[K, V, S, E] = {
 
     val pairRDD = rdd.map { x => (x._1, (x._2, x._3)) }
-    val stateRDD = pairRDD
-      .partitionBy(partitioner)
-      .mapPartitions(
-        { iterator =>
-          val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
-          iterator.foreach {
-            case (key, (state, updateTime)) =>
-              stateMap.put(key, state, updateTime)
-          }
-          Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
-        },
-        preservesPartitioning = true
-      )
+    val stateRDD = pairRDD.partitionBy(partitioner).mapPartitions(
+      { iterator =>
+        val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
+        iterator.foreach {
+          case (key, (state, updateTime)) =>
+            stateMap.put(key, state, updateTime)
+        }
+        Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
+      },
+      preservesPartitioning = true
+    )
 
     val emptyDataRDD =
       pairRDD.sparkContext.emptyRDD[(K, V)].partitionBy(partitioner)

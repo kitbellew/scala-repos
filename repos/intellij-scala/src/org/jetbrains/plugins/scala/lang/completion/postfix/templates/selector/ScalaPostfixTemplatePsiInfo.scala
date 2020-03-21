@@ -29,10 +29,8 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
           case literal: ScLiteral if literal.getText == "false" => "true"
           case id: ScReferenceExpression
               if id.getNode.getChildren(null).length == 1 &&
-                id.getNode
-                  .getChildren(null)
-                  .apply(0)
-                  .getElementType == ScalaTokenTypes.tIDENTIFIER =>
+                id.getNode.getChildren(null).apply(
+                  0).getElementType == ScalaTokenTypes.tIDENTIFIER =>
             "!" + id.getText
           case _ => super.getTemplateAsString(elements)
         }

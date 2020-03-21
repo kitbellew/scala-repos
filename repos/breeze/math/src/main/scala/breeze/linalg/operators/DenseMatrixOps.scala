@@ -77,12 +77,14 @@ trait DenseMatrixMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Double] =
-        if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
+        if (_a.majorStride < math.max(
+              if (_a.isTranspose) _a.cols else _a.rows,
+              1)) _a.copy
         else _a
       val b: DenseMatrix[Double] =
-        if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
+        if (_b.majorStride < math.max(
+              if (_b.isTranspose) _b.cols else _b.rows,
+              1)) _b.copy
         else _b
 
       blas.dgemm(
@@ -305,8 +307,9 @@ trait DenseMatrixMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math.min(A.rows, A.cols) + math.max(
+                math.min(A.rows, A.cols),
+                nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }
@@ -381,12 +384,14 @@ trait DenseMatrixFloatMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Float] =
-        if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
+        if (_a.majorStride < math.max(
+              if (_a.isTranspose) _a.cols else _a.rows,
+              1)) _a.copy
         else _a
       val b: DenseMatrix[Float] =
-        if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
+        if (_b.majorStride < math.max(
+              if (_b.isTranspose) _b.cols else _b.rows,
+              1)) _b.copy
         else _b
 
       blas.sgemm(
@@ -605,8 +610,9 @@ trait DenseMatrixFloatMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math.min(A.rows, A.cols) + math.max(
+                math.min(A.rows, A.cols),
+                nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }
@@ -734,8 +740,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         }
       }
 
-      implicitly[BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type]].register(
+        this)
     }
   }
 
@@ -776,8 +782,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
       }
 
-      implicitly[BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type]].register(
+        this)
     }
   }
   // </editor-fold>
@@ -902,8 +908,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         uop(c, b)
         c
       }
-      implicitly[BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]]].register(
+        this)
     }
   }
 
@@ -927,8 +933,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         uop(c, b)
         c
       }
-      implicitly[BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]]].register(
+        this)
     }
   }
 
@@ -978,8 +984,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         res
       }
 
-      implicitly[BinaryRegistry[T, Matrix[T], Op.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[T, Matrix[T], Op.type, Matrix[T]]].register(
+        this)
     }
 
   // </editor-fold>
@@ -1002,8 +1008,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         c
       }
 
-      implicitly[BinaryRegistry[Matrix[T], Matrix[T], Op.type, Matrix[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Matrix[T], Matrix[T], Op.type, Matrix[T]]].register(this)
     }
   }
 
@@ -1019,12 +1025,16 @@ trait DenseMatrixOpsLowPrio { this: DenseMatrixOps =>
       bb: B <:< Vector[T],
       op: OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]) =
     (
-      implicitly[OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]]
-        .asInstanceOf[breeze.linalg.operators.OpMulMatrix.Impl2[
+      implicitly[
+        OpMulMatrix.Impl2[
+          DenseMatrix[T],
+          Vector[T],
+          DenseVector[T]]].asInstanceOf[
+        breeze.linalg.operators.OpMulMatrix.Impl2[
           DenseMatrix[T],
           B,
           DenseVector[T]]]
-      )
+    )
 
   // ibid.
   implicit def canMulM_M_def[T, B <: Matrix[T]](implicit
@@ -1077,9 +1087,11 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
         res
       }
 
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Vector[T],
+        OpMulMatrix.type,
+        Vector[T]]].register(this)
     }
 
   @expand
@@ -1129,9 +1141,11 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
         res
       }
 
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Matrix[T],
+        OpMulMatrix.type,
+        Matrix[T]]].register(this)
     }
 
   // </editor-fold>
@@ -1248,9 +1262,11 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Matrix[T],
+        Matrix[T],
+        OpMulMatrix.type,
+        Matrix[T]]].register(this)
       implicitly[BinaryRegistry[
         DenseMatrix[T],
         Matrix[T],

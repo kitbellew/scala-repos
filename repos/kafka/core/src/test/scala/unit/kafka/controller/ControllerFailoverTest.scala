@@ -46,8 +46,7 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
   overridingProps.put(KafkaConfig.NumPartitionsProp, numParts.toString)
 
   override def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect)
+    TestUtils.createBrokerConfigs(numNodes, zkConnect)
       .map(KafkaConfig.fromProps(_, overridingProps))
 
   @Before
@@ -80,16 +79,17 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     // Create topic with one partition
     kafka.admin.AdminUtils.createTopic(controller.zkUtils, topic, 1, 1)
     val topicPartition = TopicAndPartition("topic1", 0)
-    var partitions = controller.kafkaController.partitionStateMachine
-      .partitionsInState(OnlinePartition)
+    var partitions =
+      controller.kafkaController.partitionStateMachine.partitionsInState(
+        OnlinePartition)
     while (!partitions.contains(topicPartition)) {
-      partitions = controller.kafkaController.partitionStateMachine
-        .partitionsInState(OnlinePartition)
+      partitions =
+        controller.kafkaController.partitionStateMachine.partitionsInState(
+          OnlinePartition)
       Thread.sleep(100)
     }
     // Replace channel manager with our mock manager
-    controller.kafkaController.controllerContext.controllerChannelManager
-      .shutdown()
+    controller.kafkaController.controllerContext.controllerChannelManager.shutdown()
     val channelManager = new MockChannelManager(
       controller.kafkaController.controllerContext,
       controller.kafkaController.config,
@@ -104,14 +104,16 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     val thread = new Thread(new Runnable {
       def run() {
         try {
-          controller.kafkaController
-            .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
+          controller.kafkaController.sendUpdateMetadataRequest(
+            Seq(0),
+            Set(topicPartition))
           log.info(
             "Queue state %d %d".format(
               channelManager.queueCapacity(0),
               channelManager.queueSize(0)))
-          controller.kafkaController
-            .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
+          controller.kafkaController.sendUpdateMetadataRequest(
+            Seq(0),
+            Set(topicPartition))
           log.info(
             "Queue state %d %d".format(
               channelManager.queueCapacity(0),
@@ -161,8 +163,9 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     }
     // Give it a shot to make sure that sending isn't blocking
     try {
-      controller.kafkaController
-        .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
+      controller.kafkaController.sendUpdateMetadataRequest(
+        Seq(0),
+        Set(topicPartition))
     } catch {
       case e: Throwable => {
         fail(e)
@@ -191,8 +194,9 @@ class MockChannelManager(
   def shrinkBlockingQueue(brokerId: Int) {
     val messageQueue = new LinkedBlockingQueue[QueueItem](1)
     val brokerInfo = this.brokerStateInfo(brokerId)
-    this.brokerStateInfo
-      .put(brokerId, brokerInfo.copy(messageQueue = messageQueue))
+    this.brokerStateInfo.put(
+      brokerId,
+      brokerInfo.copy(messageQueue = messageQueue))
   }
 
   def resumeSendThread(brokerId: Int) {

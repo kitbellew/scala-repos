@@ -155,16 +155,12 @@ object CreateWorkflow extends Logging {
       }
     }
 
-    val pioEnvVars = wfc.env
-      .map(e =>
-        e.split(',')
-          .flatMap(p =>
-            p.split('=') match {
-              case Array(k, v) => List(k -> v)
-              case _           => Nil
-            })
-          .toMap)
-      .getOrElse(Map())
+    val pioEnvVars = wfc.env.map(e =>
+      e.split(',').flatMap(p =>
+        p.split('=') match {
+          case Array(k, v) => List(k -> v)
+          case _           => Nil
+        }).toMap).getOrElse(Map())
 
     if (evaluation.isEmpty) {
       val variantJson = parse(stringFromFile(wfc.engineVariant))
@@ -233,17 +229,21 @@ object CreateWorkflow extends Logging {
         env = pioEnvVars,
         sparkConf = workflowParams.sparkEnv,
         dataSourceParams =
-          JsonExtractor
-            .paramToJson(wfc.jsonExtractor, engineParams.dataSourceParams),
+          JsonExtractor.paramToJson(
+            wfc.jsonExtractor,
+            engineParams.dataSourceParams),
         preparatorParams =
-          JsonExtractor
-            .paramToJson(wfc.jsonExtractor, engineParams.preparatorParams),
+          JsonExtractor.paramToJson(
+            wfc.jsonExtractor,
+            engineParams.preparatorParams),
         algorithmsParams =
-          JsonExtractor
-            .paramsToJson(wfc.jsonExtractor, engineParams.algorithmParamsList),
+          JsonExtractor.paramsToJson(
+            wfc.jsonExtractor,
+            engineParams.algorithmParamsList),
         servingParams =
-          JsonExtractor
-            .paramToJson(wfc.jsonExtractor, engineParams.servingParams)
+          JsonExtractor.paramToJson(
+            wfc.jsonExtractor,
+            engineParams.servingParams)
       )
 
       val engineInstanceId =

@@ -20,9 +20,8 @@ final class HyperLogLogClientIntegrationSuite extends RedisClientTest {
 
   test("Correctly perform the PFCOUNT command", RedisTest, ClientTest) {
     withRedisClient { client =>
-      val pfCountResult = client
-        .pfAdd(foo, List(bar, baz))
-        .flatMap(_ => client.pfCount(List(foo)))
+      val pfCountResult = client.pfAdd(foo, List(bar, baz)).flatMap(_ =>
+        client.pfCount(List(foo)))
       assert(Await.result(pfCountResult) == 2)
     }
   }

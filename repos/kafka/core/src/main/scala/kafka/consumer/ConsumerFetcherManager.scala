@@ -73,14 +73,12 @@ class ConsumerFetcherManager(
         trace("Partitions without leader %s".format(noLeaderPartitionSet))
         val brokers =
           zkUtils.getAllBrokerEndPointsForChannel(SecurityProtocol.PLAINTEXT)
-        val topicsMetadata = ClientUtils
-          .fetchTopicMetadata(
-            noLeaderPartitionSet.map(m => m.topic).toSet,
-            brokers,
-            config.clientId,
-            config.socketTimeoutMs,
-            correlationId.getAndIncrement)
-          .topicsMetadata
+        val topicsMetadata = ClientUtils.fetchTopicMetadata(
+          noLeaderPartitionSet.map(m => m.topic).toSet,
+          brokers,
+          config.clientId,
+          config.socketTimeoutMs,
+          correlationId.getAndIncrement).topicsMetadata
         if (logger.isDebugEnabled)
           topicsMetadata.foreach(topicMetadata =>
             debug(topicMetadata.toString()))
@@ -139,8 +137,10 @@ class ConsumerFetcherManager(
       fetcherId: Int,
       sourceBroker: BrokerEndPoint): AbstractFetcherThread = {
     new ConsumerFetcherThread(
-      "ConsumerFetcherThread-%s-%d-%d"
-        .format(consumerIdString, fetcherId, sourceBroker.id),
+      "ConsumerFetcherThread-%s-%d-%d".format(
+        consumerIdString,
+        fetcherId,
+        sourceBroker.id),
       config,
       sourceBroker,
       partitionMap,
@@ -155,9 +155,8 @@ class ConsumerFetcherManager(
     leaderFinderThread.start()
 
     inLock(lock) {
-      partitionMap = topicInfos
-        .map(tpi => (TopicAndPartition(tpi.topic, tpi.partitionId), tpi))
-        .toMap
+      partitionMap = topicInfos.map(tpi =>
+        (TopicAndPartition(tpi.topic, tpi.partitionId), tpi)).toMap
       this.cluster = cluster
       noLeaderPartitionSet ++= topicInfos.map(tpi =>
         TopicAndPartition(tpi.topic, tpi.partitionId))

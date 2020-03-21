@@ -322,16 +322,12 @@ class TableView[S](
     ObjectProperty((features: TableView.ResizeFeatures[S]) =>
       delegate.columnResizePolicyProperty.value.call(features))
   def columnResizePolicy_=(p: TableView.ResizeFeatures[_] => Boolean) {
-    delegate
-      .columnResizePolicyProperty()
-      .setValue(
-        new jfxu.Callback[
-          jfxsc.TableView.ResizeFeatures[_],
-          java.lang.Boolean] {
-          def call(v: jfxsc.TableView.ResizeFeatures[_]): java.lang.Boolean = {
-            p(v)
-          }
-        })
+    delegate.columnResizePolicyProperty().setValue(
+      new jfxu.Callback[jfxsc.TableView.ResizeFeatures[_], java.lang.Boolean] {
+        def call(v: jfxsc.TableView.ResizeFeatures[_]): java.lang.Boolean = {
+          p(v)
+        }
+      })
   }
   def columnResizePolicy_=(
       p: jfxu.Callback[jfxsc.TableView.ResizeFeatures[_], java.lang.Boolean]) {
@@ -452,10 +448,8 @@ class TableView[S](
       : ObjectProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]] =
     delegate.onScrollToProperty
   def onScrollTo_=(v: jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]) {
-    ObjectProperty
-      .fillProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]](
-        onScrollTo,
-        v)
+    ObjectProperty.fillProperty[
+      jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]](onScrollTo, v)
   }
 
   /**
@@ -477,10 +471,8 @@ class TableView[S](
       : ObjectProperty[jfxe.EventHandler[jfxsc.SortEvent[jfxsc.TableView[S]]]] =
     delegate.onSortProperty
   def onSort_=(v: jfxe.EventHandler[jfxsc.SortEvent[jfxsc.TableView[S]]]) {
-    ObjectProperty
-      .fillProperty[jfxe.EventHandler[jfxsc.SortEvent[jfxsc.TableView[S]]]](
-        onSort,
-        v)
+    ObjectProperty.fillProperty[
+      jfxe.EventHandler[jfxsc.SortEvent[jfxsc.TableView[S]]]](onSort, v)
   }
 
   /** Scrolls the TableView so that the given object is visible within the viewport. */
@@ -493,10 +485,8 @@ class TableView[S](
       : ObjectProperty[jfxu.Callback[jfxsc.TableView[S], java.lang.Boolean]] =
     delegate.sortPolicyProperty
   def sortPolicy_=(v: jfxu.Callback[jfxsc.TableView[S], java.lang.Boolean]) {
-    ObjectProperty
-      .fillProperty[jfxu.Callback[jfxsc.TableView[S], java.lang.Boolean]](
-        sortPolicy,
-        v)
+    ObjectProperty.fillProperty[
+      jfxu.Callback[jfxsc.TableView[S], java.lang.Boolean]](sortPolicy, v)
   }
 
 }

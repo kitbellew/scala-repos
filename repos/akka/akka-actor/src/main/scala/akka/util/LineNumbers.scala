@@ -281,13 +281,15 @@ object LineNumbers {
     val count = d.readUnsignedShort()
     if (debug) println(s"LNB: reading $count methods")
     if (c.contains("Code") && c.contains("LineNumberTable")) {
-      (1 to count)
-        .map(_ ⇒ readMethod(d, c("Code"), c("LineNumberTable"), filter))
-        .flatten
-        .foldLeft(Int.MaxValue -> 0) {
-          case ((low, high), (start, end)) ⇒
-            (Math.min(low, start), Math.max(high, end))
-        } match {
+      (1 to count).map(_ ⇒
+        readMethod(
+          d,
+          c("Code"),
+          c("LineNumberTable"),
+          filter)).flatten.foldLeft(Int.MaxValue -> 0) {
+        case ((low, high), (start, end)) ⇒
+          (Math.min(low, start), Math.max(high, end))
+      } match {
         case (Int.MaxValue, 0) ⇒ None
         case other ⇒ Some(other)
       }

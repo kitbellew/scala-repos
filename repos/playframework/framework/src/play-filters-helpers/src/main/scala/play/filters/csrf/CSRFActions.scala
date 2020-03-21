@@ -159,37 +159,35 @@ class CSRFAction(
     // which we can then map to execute and feed into our action.
     // CSRF check failures are used by failing the stream with a NoTokenInBody exception.
     Accumulator(
-      Flow[ByteString]
-        .transform(() =>
-          new BodyHandler(
-            config,
-            { body =>
-              if (extractor(body, tokenName).fold(false)(
-                    tokenProvider.compareTokens(_, tokenFromHeader))) {
-                filterLogger.trace("[CSRF] Valid token found in body")
-                true
-              } else {
-                filterLogger.trace(
-                  "[CSRF] Check failed because no or invalid token found in body")
-                false
-              }
-            }))
+      Flow[ByteString].transform(() =>
+        new BodyHandler(
+          config,
+          { body =>
+            if (extractor(body, tokenName).fold(false)(
+                  tokenProvider.compareTokens(_, tokenFromHeader))) {
+              filterLogger.trace("[CSRF] Valid token found in body")
+              true
+            } else {
+              filterLogger.trace(
+                "[CSRF] Check failed because no or invalid token found in body")
+              false
+            }
+          }))
         .splitWhen(_ => false)
         .prefixAndTail(0)
         .map(_._2)
         .concatSubstreams
         .toMat(Sink.head[Source[ByteString, _]])(Keep.right)
     ).mapFuture { validatedBodySource =>
-        action(request).run(validatedBodySource)
-      }
-      .recoverWith {
-        case NoTokenInBody =>
-          clearTokenIfInvalid(
-            request,
-            config,
-            errorHandler,
-            "No CSRF token found in body")
-      }
+      action(request).run(validatedBodySource)
+    }.recoverWith {
+      case NoTokenInBody =>
+        clearTokenIfInvalid(
+          request,
+          config,
+          errorHandler,
+          "No CSRF token found in body")
+    }
   }
 
   /**
@@ -213,9 +211,11 @@ class CSRFAction(
       if (index == -1) {
         None
       } else {
-        Some(URLDecoder.decode(
-          body.drop(index + andTokenEquals.size).takeWhile(_ != '&').utf8String,
-          "utf-8"))
+        Some(
+          URLDecoder.decode(
+            body.drop(index + andTokenEquals.size).takeWhile(
+              _ != '&').utf8String,
+            "utf-8"))
       }
     }
   }
@@ -260,8 +260,8 @@ class CSRFAction(
               extractHeaders(nextCrlf + 2)
             case Array(key, value) =>
               val (endIndex, headers) = extractHeaders(nextCrlf + 2)
-              endIndex -> ((key.trim().toLowerCase(Locale.ENGLISH) -> value
-                .trim()) :: headers)
+              endIndex -> ((key.trim().toLowerCase(
+                Locale.ENGLISH) -> value.trim()) :: headers)
           }
         }
       }
@@ -448,9 +448,8 @@ object CSRFAction {
         if (config.signTokens) {
           // Extract the signed token, and then resign it. This makes the token random per request, preventing the BREACH
           // vulnerability
-          val newTokenValue = tokenSigner
-            .extractSignedToken(token.value)
-            .map(tokenSigner.signToken)
+          val newTokenValue = tokenSigner.extractSignedToken(token.value).map(
+            tokenSigner.signToken)
           newTokenValue.fold(newReq)(
             newReq.withTag(Token.ReSignedRequestTag, _))
         } else {
@@ -538,9 +537,8 @@ object CSRFAction {
   }
 
   private[csrf] def isCached(result: Result): Boolean =
-    result.header.headers
-      .get(CACHE_CONTROL)
-      .fold(false)(!_.contains("no-cache"))
+    result.header.headers.get(CACHE_CONTROL).fold(false)(
+      !_.contains("no-cache"))
 
   private[csrf] def clearTokenIfInvalid(
       request: RequestHeader,
@@ -550,24 +548,20 @@ object CSRFAction {
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 
     errorHandler.handle(request, msg) map { result =>
-      CSRF
-        .getToken(request)
-        .fold(
-          config.cookieName
-            .flatMap { cookie =>
-              request.cookies.get(cookie).map { token =>
-                result.discardingCookies(
-                  DiscardingCookie(
-                    cookie,
-                    domain = Session.domain,
-                    path = Session.path,
-                    secure = config.secureCookie))
-              }
-            }
-            .getOrElse {
-              result.withSession(result.session(request) - config.tokenName)
-            }
-        )(_ => result)
+      CSRF.getToken(request).fold(
+        config.cookieName.flatMap { cookie =>
+          request.cookies.get(cookie).map { token =>
+            result.discardingCookies(
+              DiscardingCookie(
+                cookie,
+                domain = Session.domain,
+                path = Session.path,
+                secure = config.secureCookie))
+          }
+        }.getOrElse {
+          result.withSession(result.session(request) - config.tokenName)
+        }
+      )(_ => result)
     }
   }
 }
@@ -592,18 +586,17 @@ case class CSRFCheck @Inject() (
         CSRFAction.tagRequestFromHeader(untaggedRequest, config, tokenSigner)
 
       // Maybe bypass
-      if (!CSRFAction.requiresCsrfCheck(request, config) || !config
-            .checkContentType(request.contentType)) {
+      if (!CSRFAction.requiresCsrfCheck(
+            request,
+            config) || !config.checkContentType(request.contentType)) {
         wrapped(request)
       } else {
         // Get token from header
-        CSRFAction
-          .getTokenToValidate(request, config, tokenSigner)
-          .flatMap { headerToken =>
+        CSRFAction.getTokenToValidate(request, config, tokenSigner).flatMap {
+          headerToken =>
             // Get token from query string
-            CSRFAction
-              .getHeaderToken(request, config)
-              // Or from body if not found
+            CSRFAction.getHeaderToken(request, config)
+            // Or from body if not found
               .orElse({
                 val form = request.body match {
                   case body: play.api.mvc.AnyContent
@@ -626,14 +619,13 @@ case class CSRFCheck @Inject() (
                     if tokenProvider.compareTokens(queryToken, headerToken) =>
                   wrapped(request)
               }
-          }
-          .getOrElse {
-            CSRFAction.clearTokenIfInvalid(
-              request,
-              config,
-              errorHandler,
-              "CSRF token check failed")
-          }
+        }.getOrElse {
+          CSRFAction.clearTokenIfInvalid(
+            request,
+            config,
+            errorHandler,
+            "CSRF token check failed")
+        }
       }
     }
   }

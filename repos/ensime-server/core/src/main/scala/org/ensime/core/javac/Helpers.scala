@@ -23,8 +23,10 @@ case class JavaFqn(
     DocSig(DocFqn(pack.getOrElse(""), typename.getOrElse("")), fieldOrMethod)
   def toFqnString = Array(pack, typename, fieldOrMethod).flatten.mkString(".")
   def toQueryString =
-    Array(pack, typename.map(_.replace(".", "$")), fieldOrMethod).flatten
-      .mkString(".")
+    Array(
+      pack,
+      typename.map(_.replace(".", "$")),
+      fieldOrMethod).flatten.mkString(".")
 }
 
 object JavaFqn {
@@ -44,9 +46,8 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
 
   def typeMirror(info: CompilationInfo, t: Tree): Option[TypeMirror] = {
     Option(
-      info
-        .getTrees()
-        .getTypeMirror(info.getTrees().getPath(info.getCompilationUnit(), t)))
+      info.getTrees().getTypeMirror(
+        info.getTrees().getPath(info.getCompilationUnit(), t)))
   }
 
   def typeElement(info: CompilationInfo, t: Tree): Option[Element] = {
@@ -54,18 +55,18 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
   }
 
   def element(info: CompilationInfo, path: TreePath): Option[Element] = {
-    Option(info.getTrees.getElement(path))
-      .orElse(unsafeGetElement(info, path.getLeaf))
-      .orElse {
-        Option(info.getTrees().getTypeMirror(path)).flatMap { t =>
-          Option(info.getTypes.asElement(t))
-        }
+    Option(info.getTrees.getElement(path)).orElse(
+      unsafeGetElement(info, path.getLeaf)).orElse {
+      Option(info.getTrees().getTypeMirror(path)).flatMap { t =>
+        Option(info.getTypes.asElement(t))
       }
+    }
   }
 
   private def parseFqnAsClass(s: String): Option[JavaFqn] = {
-    val (front, back) =
-      s.split("\\.").partition { s => s.forall(Character.isLowerCase) }
+    val (front, back) = s.split("\\.").partition { s =>
+      s.forall(Character.isLowerCase)
+    }
     Some(JavaFqn(front.mkString("."), back.mkString("."), None))
   }
 
@@ -75,25 +76,21 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
       Some(JavaFqn(None, None, Some(el.getSimpleName.toString)))
     } else if (kind == ElementKind.CONSTRUCTOR || kind == ElementKind.ENUM_CONSTANT ||
                kind == ElementKind.METHOD || kind == ElementKind.FIELD) {
-      Option(el.getEnclosingElement)
-        .flatMap(fqn(info, _))
-        .map(_.copy(fieldOrMethod = Some(el.toString)))
+      Option(el.getEnclosingElement).flatMap(fqn(info, _)).map(
+        _.copy(fieldOrMethod = Some(el.toString)))
     } else {
       parseFqnAsClass(el.toString)
     }
   }
 
   def fqn(info: CompilationInfo, p: TreePath): Option[JavaFqn] = {
-    element(info, p)
-      .flatMap(fqn(info, _))
-      .orElse({
-        p.getLeaf match {
-          case t: IdentifierTree =>
-            Some(JavaFqn(None, None, Some(t.getName.toString)))
-          case t => None
-        }
-      })
-      .orElse(fqn(info, info.getTrees().getTypeMirror(p)))
+    element(info, p).flatMap(fqn(info, _)).orElse({
+      p.getLeaf match {
+        case t: IdentifierTree =>
+          Some(JavaFqn(None, None, Some(t.getName.toString)))
+        case t => None
+      }
+    }).orElse(fqn(info, info.getTrees().getTypeMirror(p)))
   }
 
   def fqn(info: CompilationInfo, t: Tree): Option[JavaFqn] = {

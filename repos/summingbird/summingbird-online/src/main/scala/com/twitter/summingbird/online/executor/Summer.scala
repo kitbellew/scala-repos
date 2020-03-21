@@ -112,19 +112,15 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
 
   private def handleResult(kvs: Map[Key, (Seq[InputState[S]], Value)])
       : TraversableOnce[(Seq[InputState[S]], Future[TraversableOnce[Event]])] =
-    store
-      .multiMerge(kvs.mapValues(_._2))
-      .iterator
-      .map {
-        case (k, beforeF) =>
-          val (tups, delta) = kvs(k)
-          (
-            tups,
-            beforeF
-              .flatMap { before => lockedOp.get.apply((k, (before, delta))) }
-              .onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
-      }
-      .toList
+    store.multiMerge(kvs.mapValues(_._2)).iterator.map {
+      case (k, beforeF) =>
+        val (tups, delta) = kvs(k)
+        (
+          tups,
+          beforeF.flatMap { before =>
+            lockedOp.get.apply((k, (before, delta)))
+          }.onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
+    }.toList
 
   override def tick = sSummer.tick.map(handleResult(_))
 

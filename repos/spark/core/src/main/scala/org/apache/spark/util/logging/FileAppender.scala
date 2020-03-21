@@ -151,18 +151,16 @@ private[spark] object FileAppender extends Logging {
               s"rolling logs not enabled")
           None
       }
-      validatedParams
-        .map {
-          case (interval, pattern) =>
-            new RollingFileAppender(
-              inputStream,
-              file,
-              new TimeBasedRollingPolicy(interval, pattern),
-              conf)
-        }
-        .getOrElse {
-          new FileAppender(inputStream, file)
-        }
+      validatedParams.map {
+        case (interval, pattern) =>
+          new RollingFileAppender(
+            inputStream,
+            file,
+            new TimeBasedRollingPolicy(interval, pattern),
+            conf)
+      }.getOrElse {
+        new FileAppender(inputStream, file)
+      }
     }
 
     def createSizeBasedAppender(): FileAppender = {

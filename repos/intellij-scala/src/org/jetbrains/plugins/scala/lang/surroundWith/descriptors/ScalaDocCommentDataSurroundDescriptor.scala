@@ -101,12 +101,14 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
     do {
       if (nextElement == null) return PsiElement.EMPTY_ARRAY
 
-      if ((!Set(DOC_COMMENT_DATA, DOC_COMMENT_LEADING_ASTERISKS, DOC_WHITESPACE)
-            .contains(nextElement.getNode.getElementType) &&
-          !nextElement.getNode.getElementType
-            .isInstanceOf[ScaladocSyntaxElementType]) ||
-          (nextElement.getNode.getElementType == DOC_WHITESPACE && nextElement.getText
-            .indexOf("\n") != nextElement.getText.lastIndexOf("\n"))) {
+      if ((!Set(
+            DOC_COMMENT_DATA,
+            DOC_COMMENT_LEADING_ASTERISKS,
+            DOC_WHITESPACE).contains(nextElement.getNode.getElementType) &&
+          !nextElement.getNode.getElementType.isInstanceOf[
+            ScaladocSyntaxElementType]) ||
+          (nextElement.getNode.getElementType == DOC_WHITESPACE && nextElement.getText.indexOf(
+            "\n") != nextElement.getText.lastIndexOf("\n"))) {
         return PsiElement.EMPTY_ARRAY
       } else if (nextElement.getNode.getElementType == DOC_COMMENT_LEADING_ASTERISKS) {
         if (hasAsterisk) return PsiElement.EMPTY_ARRAY

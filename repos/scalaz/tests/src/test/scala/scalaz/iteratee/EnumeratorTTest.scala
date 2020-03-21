@@ -101,8 +101,8 @@ object EnumeratorTTest extends SpecLite {
   "allow for nesting of monads" in {
     type OIO[α] = OptionT[IO, α]
     val enum = enumIterator[Int, OIO](List(1, 2, 3).iterator)
-    (consume[Int, OIO, List] &= enum.map(_ * 2)).run.run
-      .unsafePerformIO() must_=== (Some(List(2, 4, 6)))
+    (consume[Int, OIO, List] &= enum.map(
+      _ * 2)).run.run.unsafePerformIO() must_=== (Some(List(2, 4, 6)))
   }
 
   "drain" in {

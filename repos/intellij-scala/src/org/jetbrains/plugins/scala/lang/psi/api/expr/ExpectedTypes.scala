@@ -107,8 +107,7 @@ private[expr] object ExpectedTypes {
       resolves.zip(types).map {
         case (r: ScalaResolveResult, tp) =>
           val isNamedDynamic =
-            r.isDynamic && r.name == ResolvableReferenceExpression
-              .APPLY_DYNAMIC_NAMED
+            r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
           (tp, isNamedDynamic)
         case (_, tp) => (tp, false)
       }
@@ -135,9 +134,8 @@ private[expr] object ExpectedTypes {
       case tb: ScTryBlock =>
         tb.lastExpr match {
           case Some(e) if e == expr =>
-            tb.getContext
-              .asInstanceOf[ScTryStmt]
-              .expectedTypesEx(fromUnderscore = true)
+            tb.getContext.asInstanceOf[ScTryStmt].expectedTypesEx(
+              fromUnderscore = true)
           case _ => Array.empty
         }
       case wh: ScWhileStmt
@@ -154,9 +152,10 @@ private[expr] object ExpectedTypes {
       case cb: ScCatchBlock   => Array.empty
       case te: ScThrowStmt    =>
         // Not in the SLS, but in the implementation.
-        val throwableClass = ScalaPsiManager
-          .instance(te.getProject)
-          .getCachedClass(te.getResolveScope, "java.lang.Throwable")
+        val throwableClass =
+          ScalaPsiManager.instance(te.getProject).getCachedClass(
+            te.getResolveScope,
+            "java.lang.Throwable")
         val throwableType =
           throwableClass.map(new ScDesignatorType(_)).getOrElse(Any)
         Array((throwableType, None))
@@ -165,12 +164,11 @@ private[expr] object ExpectedTypes {
         c.getContext.getContext match {
           case m: ScMatchStmt => m.expectedTypesEx(fromUnderscore = true)
           case b: ScBlockExpr if b.isInCatchBlock =>
-            b.getContext.getContext
-              .asInstanceOf[ScTryStmt]
-              .expectedTypesEx(fromUnderscore = true)
+            b.getContext.getContext.asInstanceOf[ScTryStmt].expectedTypesEx(
+              fromUnderscore = true)
           case b: ScBlockExpr if b.isAnonymousFunction =>
-            b.expectedTypesEx(fromUnderscore = true)
-              .flatMap(tp => fromFunction(tp))
+            b.expectedTypesEx(fromUnderscore = true).flatMap(tp =>
+              fromFunction(tp))
           case _ => Array.empty
         }
       //see SLS[6.23]
@@ -192,10 +190,9 @@ private[expr] object ExpectedTypes {
         a.getLExpression match {
           case ref: ScReferenceExpression
               if (!a.getContext.isInstanceOf[ScArgumentExprList] && !(
-                a.getContext
-                  .isInstanceOf[ScInfixArgumentExpression] && a.getContext
-                  .asInstanceOf[ScInfixArgumentExpression]
-                  .isCall)) ||
+                a.getContext.isInstanceOf[
+                  ScInfixArgumentExpression] && a.getContext.asInstanceOf[
+                  ScInfixArgumentExpression].isCall)) ||
                 ref.qualifier.isDefined ||
                 ScUnderScoreSectionUtil.isUnderscore(
                   expr
@@ -210,25 +207,21 @@ private[expr] object ExpectedTypes {
                     Array(
                       (
                         subst.subst(
-                          named
-                            .asInstanceOf[ScTypedDefinition]
-                            .getType(TypingContext.empty)
-                            .getOrAny),
+                          named.asInstanceOf[ScTypedDefinition].getType(
+                            TypingContext.empty).getOrAny),
                         v.typeElement))
                   case v: ScVariable =>
                     Array(
                       (
                         subst.subst(
-                          named
-                            .asInstanceOf[ScTypedDefinition]
-                            .getType(TypingContext.empty)
-                            .getOrAny),
+                          named.asInstanceOf[ScTypedDefinition].getType(
+                            TypingContext.empty).getOrAny),
                         v.typeElement))
                   case f: ScFunction if f.paramClauses.clauses.isEmpty =>
                     a.mirrorMethodCall match {
                       case Some(call) =>
-                        call.args.exprs.head
-                          .expectedTypesEx(fromUnderscore = fromUnderscore)
+                        call.args.exprs.head.expectedTypesEx(fromUnderscore =
+                          fromUnderscore)
                       case None => Array.empty
                     }
                   case p: ScParameter =>
@@ -238,10 +231,14 @@ private[expr] object ExpectedTypes {
                         subst.subst(p.getType(TypingContext.empty).getOrAny),
                         p.typeElement))
                   case f: PsiField =>
-                    Array((
-                      subst.subst(ScType
-                        .create(f.getType, f.getProject, expr.getResolveScope)),
-                      None))
+                    Array(
+                      (
+                        subst.subst(
+                          ScType.create(
+                            f.getType,
+                            f.getProject,
+                            expr.getResolveScope)),
+                        None))
                   case _ => Array.empty
                 }
               case _ => Array.empty
@@ -250,8 +247,8 @@ private[expr] object ExpectedTypes {
           case call: ScMethodCall =>
             a.mirrorMethodCall match {
               case Some(mirrorCall) =>
-                mirrorCall.args.exprs.last
-                  .expectedTypesEx(fromUnderscore = fromUnderscore)
+                mirrorCall.args.exprs.last.expectedTypesEx(fromUnderscore =
+                  fromUnderscore)
               case _ => Array.empty
             }
           case _ => Array.empty
@@ -301,8 +298,8 @@ private[expr] object ExpectedTypes {
         buffer.toArray
       case infix: ScInfixExpr
           if ((infix.isLeftAssoc && infix.lOp == expr.getSameElementInContext) ||
-            (!infix.isLeftAssoc && infix.rOp == expr.getSameElementInContext)) && !expr
-            .isInstanceOf[ScTuple] =>
+            (!infix.isLeftAssoc && infix.rOp == expr.getSameElementInContext)) && !expr.isInstanceOf[
+            ScTuple] =>
         val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
         val zExpr: ScExpression = expr match {
           case p: ScParenthesisedExpr => p.expr.getOrElse(return Array.empty)
@@ -389,14 +386,12 @@ private[expr] object ExpectedTypes {
             case gen: ScGenericCall =>
               if (!withResolvedFunction) {
                 val multiType = gen.shapeMultiType
-                gen.shapeMultiResolve
-                  .map(mapResolves(_, multiType))
-                  .getOrElse(multiType.map((_, false)))
+                gen.shapeMultiResolve.map(mapResolves(_, multiType)).getOrElse(
+                  multiType.map((_, false)))
               } else {
                 val multiType = gen.multiType
-                gen.multiResolve
-                  .map(mapResolves(_, multiType))
-                  .getOrElse(multiType.map((_, false)))
+                gen.multiResolve.map(mapResolves(_, multiType)).getOrElse(
+                  multiType.map((_, false)))
               }
             case _ =>
               Array(
@@ -434,11 +429,11 @@ private[expr] object ExpectedTypes {
             case s: ScSelfInvocation =>
               val j = s.arguments.indexOf(args)
               if (!withResolvedFunction)
-                s.shapeMultiType(j)
-                  .foreach(processArgsExpected(res, expr, i, _, exprs))
+                s.shapeMultiType(j).foreach(
+                  processArgsExpected(res, expr, i, _, exprs))
               else
-                s.multiType(j)
-                  .foreach(processArgsExpected(res, expr, i, _, exprs))
+                s.multiType(j).foreach(
+                  processArgsExpected(res, expr, i, _, exprs))
             case _ =>
           }
         }
@@ -530,10 +525,10 @@ private[expr] object ExpectedTypes {
           }
         case typedStmt: ScTypedStmt
             if typedStmt.isSequenceArg && params.nonEmpty =>
-          val seqClass: Array[PsiClass] = ScalaPsiManager
-            .instance(expr.getProject)
-            .getCachedClasses(expr.getResolveScope, "scala.collection.Seq")
-            .filter(!_.isInstanceOf[ScObject])
+          val seqClass: Array[PsiClass] =
+            ScalaPsiManager.instance(expr.getProject).getCachedClasses(
+              expr.getResolveScope,
+              "scala.collection.Seq").filter(!_.isInstanceOf[ScObject])
           if (seqClass.length != 0) {
             val tp = ScParameterizedType(
               ScType.designator(seqClass(0)),
@@ -573,9 +568,10 @@ private[expr] object ExpectedTypes {
         } else applyForParams(newParams)
       case Success(t @ ScTypePolymorphicType(anotherType, typeParams), _)
           if !forApply =>
-        val cand = call
-          .getOrElse(expr)
-          .applyShapeResolveForExpectedType(anotherType, exprs, call)
+        val cand = call.getOrElse(expr).applyShapeResolveForExpectedType(
+          anotherType,
+          exprs,
+          call)
         if (cand.length == 1) {
           cand(0) match {
             case r @ ScalaResolveResult(fun: ScFunction, s) =>
@@ -609,9 +605,10 @@ private[expr] object ExpectedTypes {
           }
         }
       case Success(anotherType, _) if !forApply =>
-        val cand = call
-          .getOrElse(expr)
-          .applyShapeResolveForExpectedType(anotherType, exprs, call)
+        val cand = call.getOrElse(expr).applyShapeResolveForExpectedType(
+          anotherType,
+          exprs,
+          call)
         if (cand.length == 1) {
           cand(0) match {
             case r @ ScalaResolveResult(fun: ScFunction, subst) =>

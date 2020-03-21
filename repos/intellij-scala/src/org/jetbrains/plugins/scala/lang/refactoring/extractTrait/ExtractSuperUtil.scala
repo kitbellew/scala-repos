@@ -43,12 +43,9 @@ object ExtractSuperUtil {
       file: PsiFile,
       isSuitableClass: PsiClass => Boolean)(action: => Unit) {
     try {
-      val classes = ScalaPsiUtil
-        .getParents(element, file)
-        .collect {
-          case t: ScTemplateDefinition if isSuitableClass(t) => t
-        }
-        .toArray[PsiClass]
+      val classes = ScalaPsiUtil.getParents(element, file).collect {
+        case t: ScTemplateDefinition if isSuitableClass(t) => t
+      }.toArray[PsiClass]
       classes.size match {
         case 0 =>
         case 1 => action
@@ -60,18 +57,16 @@ object ExtractSuperUtil {
               false
             }
           }
-          NavigationUtil
-            .getPsiElementPopup(
-              classes,
-              new PsiClassListCellRenderer() {
-                override def getElementText(element: PsiClass): String =
-                  super.getElementText(element).replace("$", "")
-              },
-              "Choose class",
-              processor,
-              selection
-            )
-            .showInBestPositionFor(editor)
+          NavigationUtil.getPsiElementPopup(
+            classes,
+            new PsiClassListCellRenderer() {
+              override def getElementText(element: PsiClass): String =
+                super.getElementText(element).replace("$", "")
+            },
+            "Choose class",
+            processor,
+            selection
+          ).showInBestPositionFor(editor)
       }
     } catch {
       case _: IntroduceException => return
@@ -117,8 +112,10 @@ object ExtractSuperUtil {
           clazz.getManager)
         tp.replace(newTp).asInstanceOf[ScTemplateParents]
       case None =>
-        val (extKeyword, newTp) = ScalaPsiElementFactory
-          .createClassTemplateParents(text, clazz.getManager)
+        val (extKeyword, newTp) =
+          ScalaPsiElementFactory.createClassTemplateParents(
+            text,
+            clazz.getManager)
         oldExtBlock.addRangeBefore(extKeyword, newTp, oldExtBlock.getFirstChild)
         oldExtBlock.templateParents.get
     }
@@ -154,9 +151,8 @@ object ExtractSuperUtil {
       targetPackageName: String,
       targetClassName: String,
       sourceClass: PsiClass): String = {
-    val pckg: PsiPackage = JavaPsiFacade
-      .getInstance(sourceClass.getProject)
-      .findPackage(targetPackageName)
+    val pckg: PsiPackage = JavaPsiFacade.getInstance(
+      sourceClass.getProject).findPackage(targetPackageName)
     if (pckg == null)
       return s"Cannot find package with name: $targetPackageName"
 
@@ -178,16 +174,13 @@ object ExtractSuperUtil {
 
   def possibleMembersToExtract(
       clazz: ScTemplateDefinition): util.List[ScalaExtractMemberInfo] = {
-    clazz.members
-      .filter {
-        case m if m.isPrivate                     => false
-        case fun: ScFunction if fun.isConstructor => false
-        case td: ScTypeDefinition                 => false
-        case _: ScPrimaryConstructor              => false
-        case _                                    => true
-      }
-      .map(new ScalaExtractMemberInfo(_))
-      .asJava
+    clazz.members.filter {
+      case m if m.isPrivate                     => false
+      case fun: ScFunction if fun.isConstructor => false
+      case td: ScTypeDefinition                 => false
+      case _: ScPrimaryConstructor              => false
+      case _                                    => true
+    }.map(new ScalaExtractMemberInfo(_)).asJava
   }
 
   def declarationScope(m: ScMember): Seq[PsiElement] = {

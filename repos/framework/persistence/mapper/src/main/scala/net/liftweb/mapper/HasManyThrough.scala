@@ -39,10 +39,9 @@ class HasManyThrough[
       val query =
         "SELECT DISTINCT " + otherSingleton._dbTableNameLC + ".* FROM " + otherSingleton._dbTableNameLC + "," +
           through._dbTableNameLC + " WHERE " +
-          otherSingleton._dbTableNameLC + "." + otherSingleton
-          .indexedField(otherSingleton.asInstanceOf[To])
-          .openOrThrowException("legacy code")
-          ._dbColumnNameLC + " = " +
+          otherSingleton._dbTableNameLC + "." + otherSingleton.indexedField(
+          otherSingleton.asInstanceOf[To]).openOrThrowException(
+          "legacy code")._dbColumnNameLC + " = " +
           through._dbTableNameLC + "." + throughToField._dbColumnNameLC + " AND " +
           through._dbTableNameLC + "." + throughFromField._dbColumnNameLC + " = ?"
       DB.prepareStatement(query, conn) { st =>
@@ -53,8 +52,11 @@ class HasManyThrough[
             st.setObject(1, indVal.jdbcFriendly, indVal.targetSQLType)
 
           DB.exec(st) { rs =>
-            otherSingleton
-              .createInstances(owner.connectionIdentifier, rs, Empty, Empty)
+            otherSingleton.createInstances(
+              owner.connectionIdentifier,
+              rs,
+              Empty,
+              Empty)
           }
         } openOr Nil
       }

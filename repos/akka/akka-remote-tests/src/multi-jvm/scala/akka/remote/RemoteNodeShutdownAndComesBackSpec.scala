@@ -90,8 +90,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec
         testConductor.blackhole(second, first, Direction.Send).await
         // Shut down all existing connections so that the system can enter recovery mode (association attempts)
         Await.result(
-          RARP(system).provider.transport
-            .managementCommand(ForceDisassociate(node(second).address)),
+          RARP(system).provider.transport.managementCommand(
+            ForceDisassociate(node(second).address)),
           3.seconds)
 
         // Trigger reconnect attempt and also queue up a system message to be in limbo state (UID of remote system
@@ -109,9 +109,10 @@ abstract class RemoteNodeShutdownAndComesBackSpec
           // retry because the Subject actor might not be started yet
           awaitAssert {
             val p = TestProbe()
-            system
-              .actorSelection(RootActorPath(secondAddress) / "user" / "subject")
-              .tell(Identify("subject"), p.ref)
+            system.actorSelection(
+              RootActorPath(secondAddress) / "user" / "subject").tell(
+              Identify("subject"),
+              p.ref)
             p.expectMsgPF(1 second) {
               case ActorIdentity("subject", Some(ref)) ⇒ true
             }

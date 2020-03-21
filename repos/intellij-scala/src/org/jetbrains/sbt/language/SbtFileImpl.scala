@@ -74,8 +74,7 @@ class SbtFileImpl(provider: FileViewProvider)
   }
 
   private def implicitImportExpressions =
-    projectDefinitionModule
-      .orElse(fileModule)
+    projectDefinitionModule.orElse(fileModule)
       .fold(Seq.empty[String])(SbtModule.getImportsFrom)
 
   private def localObjectsWithDefinitions: Seq[PsiClass] = {
@@ -85,8 +84,8 @@ class SbtFileImpl(provider: FileViewProvider)
       val moduleScope = module.getModuleScope
       val moduleWithLibrariesScope = module.getModuleWithLibrariesScope
 
-      Sbt.DefinitionHolderClasses
-        .flatMap(manager.getCachedClasses(moduleWithLibrariesScope, _))
+      Sbt.DefinitionHolderClasses.flatMap(
+        manager.getCachedClasses(moduleWithLibrariesScope, _))
         .flatMap(
           ClassInheritorsSearch.search(_, moduleScope, true).findAll.asScala)
     }
@@ -99,9 +98,8 @@ class SbtFileImpl(provider: FileViewProvider)
   private def projectDefinitionModule: Option[Module] =
     fileModule.flatMap { module =>
       Option(
-        ModuleManager
-          .getInstance(getProject)
-          .findModuleByName(module.getName + Sbt.BuildModuleSuffix))
+        ModuleManager.getInstance(getProject).findModuleByName(
+          module.getName + Sbt.BuildModuleSuffix))
     }
 
   private def fileModule: Option[Module] =

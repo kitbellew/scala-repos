@@ -78,8 +78,7 @@ class AssociationRules private[fpm] (private var minConfidence: Double)
     }
 
     // Join to get (X, ((Y, freq(X union Y)), freq(X))), generate rules, and filter by confidence
-    candidates
-      .join(freqItemsets.map(x => (x.items.toSeq, x.freq)))
+    candidates.join(freqItemsets.map(x => (x.items.toSeq, x.freq)))
       .map {
         case (antecendent, ((consequent, freqUnion), freqAntecedent)) =>
           new Rule(
@@ -87,8 +86,7 @@ class AssociationRules private[fpm] (private var minConfidence: Double)
             consequent.toArray,
             freqUnion,
             freqAntecedent)
-      }
-      .filter(_.confidence >= minConfidence)
+      }.filter(_.confidence >= minConfidence)
   }
 
   /** Java-friendly version of [[run]]. */

@@ -26,28 +26,23 @@ object LoggingReceiveSpec {
 class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
 
   import LoggingReceiveSpec._
-  val config = ConfigFactory
-    .parseString(
-      """
+  val config = ConfigFactory.parseString(
+    """
     akka.loglevel=DEBUG
     akka.actor.serialize-messages = off # debug noise from serialization
-    """)
-    .withFallback(AkkaSpec.testConf)
+    """).withFallback(AkkaSpec.testConf)
   val appLogging = ActorSystem(
     "logging",
-    ConfigFactory
-      .parseMap(Map("akka.actor.debug.receive" -> true).asJava)
-      .withFallback(config))
+    ConfigFactory.parseMap(
+      Map("akka.actor.debug.receive" -> true).asJava).withFallback(config))
   val appAuto = ActorSystem(
     "autoreceive",
-    ConfigFactory
-      .parseMap(Map("akka.actor.debug.autoreceive" -> true).asJava)
-      .withFallback(config))
+    ConfigFactory.parseMap(
+      Map("akka.actor.debug.autoreceive" -> true).asJava).withFallback(config))
   val appLifecycle = ActorSystem(
     "lifecycle",
-    ConfigFactory
-      .parseMap(Map("akka.actor.debug.lifecycle" -> true).asJava)
-      .withFallback(config))
+    ConfigFactory.parseMap(
+      Map("akka.actor.debug.lifecycle" -> true).asJava).withFallback(config))
 
   val filter = TestEvent.Mute(EventFilter.custom {
     case _: Logging.Debug ⇒ true

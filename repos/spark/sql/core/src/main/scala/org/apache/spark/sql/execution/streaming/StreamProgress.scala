@@ -26,10 +26,8 @@ class StreamProgress {
   private val currentOffsets = new mutable.HashMap[Source, Offset]
 
   private[streaming] def update(source: Source, newOffset: Offset): Unit = {
-    currentOffsets
-      .get(source)
-      .foreach(old =>
-        assert(newOffset > old, s"Stream going backwards $newOffset -> $old"))
+    currentOffsets.get(source).foreach(old =>
+      assert(newOffset > old, s"Stream going backwards $newOffset -> $old"))
     currentOffsets.put(source, newOffset)
   }
 

@@ -68,19 +68,18 @@ class BaseUniformHaltonGenerator(val dimension: Int)
   private val bases = java.util.Arrays.copyOfRange(Halton.PRIMES, 0, dimension)
 
   private var count: Long = 0
-  private val counters: Array[UnboxedIntVector] =
-    List.fill(dimension)({ new UnboxedIntVector(16) }).toArray
+  private val counters: Array[UnboxedIntVector] = List.fill(dimension)({
+    new UnboxedIntVector(16)
+  }).toArray
   val permutations: Array[Array[Long]] =
-    (0 to dimension)
-      .map(i => {
-        val vv = new Array[Long](Halton.PRIMES(i))
-        cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => {
-          vv(j) = j
-        })
-        shuffle(vv)
-        vv
+    (0 to dimension).map(i => {
+      val vv = new Array[Long](Halton.PRIMES(i))
+      cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => {
+        vv(j) = j
       })
-      .toArray
+      shuffle(vv)
+      vv
+    }).toArray
 
   private val currentValue = new Array[Double](dimension)
 

@@ -74,10 +74,8 @@ abstract class CoderSpec
     }
     "properly round-trip encode/decode an HttpRequest" in {
       val request = HttpRequest(POST, entity = HttpEntity(largeText))
-      Coder
-        .decode(Coder.encode(request))
-        .toStrict(1.second)
-        .awaitResult(1.second) should equal(request)
+      Coder.decode(Coder.encode(request)).toStrict(1.second).awaitResult(
+        1.second) should equal(request)
     }
 
     if (corruptInputCheck) {
@@ -140,11 +138,9 @@ abstract class CoderSpec
       val compressed = streamEncode(ByteString(array))
       val limit = 10000
       val resultBs =
-        Source
-          .single(compressed)
+        Source.single(compressed)
           .via(Coder.withMaxBytesPerChunk(limit).decoderFlow)
-          .limit(4200)
-          .runWith(Sink.seq)
+          .limit(4200).runWith(Sink.seq)
           .awaitResult(1.second)
 
       forAll(resultBs) { bs ⇒
@@ -164,8 +160,7 @@ abstract class CoderSpec
         ByteString(Array.fill(size)(1.toByte))
 
       val sizesAfterRoundtrip =
-        Source
-          .fromIterator(() ⇒ sizes.toIterator.map(createByteString))
+        Source.fromIterator(() ⇒ sizes.toIterator.map(createByteString))
           .via(Coder.encoderFlow)
           .via(Coder.decoderFlow)
           .runFold(Seq.empty[Int])(_ :+ _.size)

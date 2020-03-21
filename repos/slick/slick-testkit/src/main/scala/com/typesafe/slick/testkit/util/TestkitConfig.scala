@@ -27,20 +27,17 @@ object TestkitConfig {
     val testkitConfig = {
       val c =
         if (conf.hasPath("testkit"))
-          conf
-            .getConfig("testkit")
-            .withFallback(ref.getObject("testkit"))
-            .resolve()
+          conf.getConfig("testkit").withFallback(
+            ref.getObject("testkit")).resolve()
         else ref.getConfig("testkit").resolve()
       c.withValue(
         "absTestDir",
         ConfigValueFactory.fromAnyRef(
           new File(c.getString("testDir")).getAbsolutePath))
     }
-    val defaults = ref
-      .getObject("defaults")
-      .withValue("testkit", testkitConfig.root())
-      .toConfig
+    val defaults = ref.getObject("defaults").withValue(
+      "testkit",
+      testkitConfig.root()).toConfig
     (conf, testkitConfig, defaults, ref)
   }
 
@@ -69,12 +66,9 @@ object TestkitConfig {
 
   /** The `testkit.testClasses` setting */
   lazy val testClasses: Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] =
-    getStrings(testkitConfig, "testClasses")
-      .getOrElse(Nil)
-      .map(n =>
-        Class
-          .forName(n)
-          .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]])
+    getStrings(testkitConfig, "testClasses").getOrElse(Nil).map(n =>
+      Class.forName(n).asInstanceOf[Class[
+        _ <: GenericTest[_ >: Null <: TestDB]]])
 
   /** The duration after which asynchronous tests should be aborted and failed */
   lazy val asyncTimeout = Duration(

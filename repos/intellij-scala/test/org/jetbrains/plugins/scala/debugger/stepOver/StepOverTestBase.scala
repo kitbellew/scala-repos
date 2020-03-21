@@ -61,9 +61,8 @@ abstract class StepOverTestBase extends ScalaDebuggerTestCase {
     managed[Integer] {
       val location = suspendContext.getFrameProxy.location
       inReadAction {
-        new ScalaPositionManager(getDebugProcess)
-          .getSourcePosition(location)
-          .getLine
+        new ScalaPositionManager(getDebugProcess).getSourcePosition(
+          location).getLine
       }
     }
   }

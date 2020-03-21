@@ -63,14 +63,12 @@ object ForkRun {
       log: Logger,
       system: ActorSystem,
       forkRun: ActorRef): Unit = {
-    Runtime
-      .getRuntime()
-      .addShutdownHook(new Thread {
-        override def run(): Unit = {
-          log.info("JVM exiting, shutting down Play fork run ...")
-          doShutdown(log, system, forkRun)
-        }
-      })
+    Runtime.getRuntime().addShutdownHook(new Thread {
+      override def run(): Unit = {
+        log.info("JVM exiting, shutting down Play fork run ...")
+        doShutdown(log, system, forkRun)
+      }
+    })
   }
 
   def startServer(

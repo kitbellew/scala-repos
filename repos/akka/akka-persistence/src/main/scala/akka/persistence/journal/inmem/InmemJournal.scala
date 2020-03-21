@@ -38,8 +38,11 @@ private[persistence] class InmemJournal
       max: Long)(recoveryCallback: PersistentRepr ⇒ Unit): Future[Unit] = {
     val highest = highestSequenceNr(persistenceId)
     if (highest != 0L && max != 0L)
-      read(persistenceId, fromSequenceNr, math.min(toSequenceNr, highest), max)
-        .foreach(recoveryCallback)
+      read(
+        persistenceId,
+        fromSequenceNr,
+        math.min(toSequenceNr, highest),
+        max).foreach(recoveryCallback)
     Future.successful(())
   }
 
@@ -89,8 +92,8 @@ private[persistence] trait InmemMessages {
       max: Long): immutable.Seq[PersistentRepr] =
     messages.get(pid) match {
       case Some(ms) ⇒
-        ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
-          .take(safeLongToInt(max))
+        ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr).take(
+          safeLongToInt(max))
       case None ⇒ Nil
     }
 

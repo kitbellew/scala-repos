@@ -75,9 +75,8 @@ case class AppUpdate(
       container =
         container.filterNot(_ == Container.Empty).orElse(app.container),
       healthChecks = healthChecks.getOrElse(app.healthChecks),
-      dependencies = dependencies
-        .map(_.map(_.canonicalPath(app.id)))
-        .getOrElse(app.dependencies),
+      dependencies = dependencies.map(_.map(_.canonicalPath(app.id))).getOrElse(
+        app.dependencies),
       upgradeStrategy = upgradeStrategy.getOrElse(app.upgradeStrategy),
       labels = labels.getOrElse(app.labels),
       acceptedResourceRoles =

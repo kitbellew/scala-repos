@@ -658,12 +658,10 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       if (getter == NoSymbol) {
         this
       } else {
-        val result = owner
-          .newValue(
-            getter.name.toTermName,
-            newFlags = getter.flags & ~Flags.METHOD)
-          .setPrivateWithin(getter.privateWithin)
-          .setInfo(getter.info.resultType)
+        val result = owner.newValue(
+          getter.name.toTermName,
+          newFlags = getter.flags & ~Flags.METHOD).setPrivateWithin(
+          getter.privateWithin).setInfo(getter.info.resultType)
         val setter = setterIn(owner)
         if (setter != NoSymbol) result.setFlag(Flags.MUTABLE)
         result
@@ -2035,9 +2033,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
             oldsymbuf += sym
             newsymbuf += (
               if (sym.isClass)
-                tp.typeSymbol
-                  .newAbstractType(sym.name.toTypeName, sym.pos)
-                  .setInfo(sym.existentialBound)
+                tp.typeSymbol.newAbstractType(
+                  sym.name.toTypeName,
+                  sym.pos).setInfo(sym.existentialBound)
               else
                 sym.cloneSymbol(tp.typeSymbol))
           }
@@ -2356,9 +2354,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         // for a mixin accessor of such a field, we need to look for `name` instead.
         // The phase travel ensures that the field is found (`owner` is the trait class symbol, the
         // field gets removed from there in later phases).
-        enteringPhase(picklerPhase)(owner.info)
-          .decl(name)
-          .suchThat(!_.isAccessor)
+        enteringPhase(picklerPhase)(owner.info).decl(name).suchThat(
+          !_.isAccessor)
       } else {
         localField
       }
@@ -3246,9 +3243,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     override def moduleClass = referenced
     override def companionClass =
-      flatOwnerInfo
-        .decl(name.toTypeName)
-        .suchThat(sym => sym.isClass && (sym isCoDefinedWith this))
+      flatOwnerInfo.decl(name.toTypeName).suchThat(sym =>
+        sym.isClass && (sym isCoDefinedWith this))
 
     override def owner = {
       if (Statistics.hotEnabled) Statistics.incCounter(ownerCount)
@@ -3649,9 +3645,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       *  returned, otherwise, `NoSymbol` is returned.
       */
     protected final def companionModule0: Symbol =
-      flatOwnerInfo
-        .decl(name.toTermName)
-        .suchThat(sym => sym.isModuleNotMethod && (sym isCoDefinedWith this))
+      flatOwnerInfo.decl(name.toTermName).suchThat(sym =>
+        sym.isModuleNotMethod && (sym isCoDefinedWith this))
 
     override def companionModule = companionModule0
     override def companionSymbol = companionModule0

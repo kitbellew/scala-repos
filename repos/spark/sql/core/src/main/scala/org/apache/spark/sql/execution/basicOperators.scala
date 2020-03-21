@@ -78,8 +78,10 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
 
   protected override def doExecute(): RDD[InternalRow] = {
     child.execute().mapPartitionsInternal { iter =>
-      val project = UnsafeProjection
-        .create(projectList, child.output, subexpressionEliminationEnabled)
+      val project = UnsafeProjection.create(
+        projectList,
+        child.output,
+        subexpressionEliminationEnabled)
       iter.map(project)
     }
   }
@@ -113,8 +115,9 @@ case class Filter(condition: Expression, child: SparkPlan)
   }
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
     child.asInstanceOf[CodegenSupport].upstreams()
@@ -131,30 +134,26 @@ case class Filter(condition: Expression, child: SparkPlan)
     val numOutput = metricTerm(ctx, "numOutputRows")
 
     // filter out the nulls
-    val filterOutNull = notNullAttributes
-      .map { a =>
-        val idx = child.output.indexOf(a)
-        s"if (${input(idx).isNull}) continue;"
-      }
-      .mkString("\n")
+    val filterOutNull = notNullAttributes.map { a =>
+      val idx = child.output.indexOf(a)
+      s"if (${input(idx).isNull}) continue;"
+    }.mkString("\n")
 
     ctx.currentVars = input
-    val predicates = otherPreds
-      .map { e =>
-        val bound = ExpressionCanonicalizer.execute(
-          BindReferences.bindReference(e, output))
-        val ev = bound.gen(ctx)
-        val nullCheck = if (bound.nullable) {
-          s"${ev.isNull} || "
-        } else {
-          s""
-        }
-        s"""
+    val predicates = otherPreds.map { e =>
+      val bound =
+        ExpressionCanonicalizer.execute(BindReferences.bindReference(e, output))
+      val ev = bound.gen(ctx)
+      val nullCheck = if (bound.nullable) {
+        s"${ev.isNull} || "
+      } else {
+        s""
+      }
+      s"""
          |${ev.code}
          |if (${nullCheck}!${ev.value}) continue;
        """.stripMargin
-      }
-      .mkString("\n")
+    }.mkString("\n")
 
     // Reset the isNull to false for the not-null columns, then the followed operators could
     // generate better code (remove dead branches).
@@ -234,16 +233,16 @@ case class Range(
     with CodegenSupport {
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   // output attributes should not affect the results
   override lazy val cleanArgs: Seq[Any] =
     Seq(start, step, numSlices, numElements)
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
-    sqlContext.sparkContext
-      .parallelize(0 until numSlices, numSlices)
+    sqlContext.sparkContext.parallelize(0 until numSlices, numSlices)
       .map(i => InternalRow(i)) :: Nil
   }
 
@@ -332,7 +331,8 @@ case class Range(
 
   protected override def doExecute(): RDD[InternalRow] = {
     val numOutputRows = longMetric("numOutputRows")
-    sqlContext.sparkContext
+    sqlContext
+      .sparkContext
       .parallelize(0 until numSlices, numSlices)
       .mapPartitionsWithIndex((i, _) => {
         val partitionStart = (i * numElements) / numSlices * step + start
@@ -388,10 +388,8 @@ case class Range(
   */
 case class Union(children: Seq[SparkPlan]) extends SparkPlan {
   override def output: Seq[Attribute] =
-    children
-      .map(_.output)
-      .transpose
-      .map(attrs => attrs.head.withNullability(attrs.exists(_.nullable)))
+    children.map(_.output).transpose.map(attrs =>
+      attrs.head.withNullability(attrs.exists(_.nullable)))
 
   protected override def doExecute(): RDD[InternalRow] =
     sparkContext.union(children.map(_.execute()))

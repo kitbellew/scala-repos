@@ -29,8 +29,8 @@ class ScParamClauseStubImpl[ParentPsi <: PsiElement](
       implic: Boolean) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.implic = implic
   }
 

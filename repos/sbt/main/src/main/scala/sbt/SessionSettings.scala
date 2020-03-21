@@ -220,8 +220,9 @@ object SessionSettings {
         append = newAppend.toMap,
         original = newOriginal.flatten.toSeq)
       reapply(
-        newSession
-          .copy(original = newSession.mergeSettings, append = Map.empty),
+        newSession.copy(
+          original = newSession.mergeSettings,
+          append = Map.empty),
         s)
     }
 
@@ -231,13 +232,10 @@ object SessionSettings {
       settings: List[SessionSetting],
       original: Seq[Setting[_]],
       structure: BuildStructure): (Seq[SessionSetting], Seq[Setting[_]]) = {
-    val project = Project
-      .getProject(pref, structure)
-      .getOrElse(sys.error("Invalid project reference " + pref))
-    val writeTo: File = BuildPaths
-      .configurationSources(project.base)
-      .headOption
-      .getOrElse(new File(project.base, "build.sbt"))
+    val project = Project.getProject(pref, structure).getOrElse(
+      sys.error("Invalid project reference " + pref))
+    val writeTo: File = BuildPaths.configurationSources(
+      project.base).headOption.getOrElse(new File(project.base, "build.sbt"))
     writeTo.createNewFile()
 
     val path = writeTo.getAbsolutePath

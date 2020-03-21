@@ -32,16 +32,16 @@ trait NodePrinters {
         s = "List\\[List\\[.*?\\].*?\\]".r.replaceAllIn(s, "List")
         s = "List\\[.*?\\]".r.replaceAllIn(s, "List")
         s = s.replace("immutable.this.Nil", "List()")
-        s = """internal\.reificationSupport\.FlagsRepr\((\d+)[lL]\)""".r
-          .replaceAllIn(
+        s =
+          """internal\.reificationSupport\.FlagsRepr\((\d+)[lL]\)""".r.replaceAllIn(
             s,
             m => {
               flagsAreUsed = true
               show(m.group(1).toLong)
             })
         s = s.replace("Modifiers(0L, TypeName(\"\"), List())", "Modifiers()")
-        s = """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)""".r
-          .replaceAllIn(
+        s =
+          """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)""".r.replaceAllIn(
             s,
             m => {
               val buf = new scala.collection.mutable.ListBuffer[String]

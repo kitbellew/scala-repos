@@ -188,8 +188,7 @@ abstract class ShuffleSuite
     val pairs: RDD[MutablePair[Int, Int]] = sc.parallelize(data, 2)
     val results =
       new OrderedRDDFunctions[Int, Int, MutablePair[Int, Int]](pairs)
-        .sortByKey()
-        .collect()
+        .sortByKey().collect()
     results(0) should be((1, 11))
     results(1) should be((2, 22))
     results(2) should be((3, 33))
@@ -241,9 +240,9 @@ abstract class ShuffleSuite
 
   test("sort with Java non serializable class - Kryo") {
     // Use a local cluster with 2 processes to make sure there are both local and remote blocks
-    val myConf = conf
-      .clone()
-      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    val myConf = conf.clone().set(
+      "spark.serializer",
+      "org.apache.spark.serializer.KryoSerializer")
     sc = new SparkContext("local-cluster[2,1,1024]", "test", myConf)
     val a = sc.parallelize(1 to 10, 2)
     val b = a.map { x => (new NonJavaSerializableClass(x), x) }
@@ -270,8 +269,7 @@ abstract class ShuffleSuite
   test("shuffle with different compression settings (SPARK-3426)") {
     for (shuffleSpillCompress <- Set(true, false);
          shuffleCompress <- Set(true, false)) {
-      val myConf = conf
-        .clone()
+      val myConf = conf.clone()
         .setAppName("test")
         .setMaster("local")
         .set("spark.shuffle.spill.compress", shuffleSpillCompress.toString)
@@ -303,8 +301,8 @@ abstract class ShuffleSuite
     // Delete one of the local shuffle blocks.
     val hashFile =
       sc.env.blockManager.diskBlockManager.getFile(new ShuffleBlockId(0, 0, 0))
-    val sortFile = sc.env.blockManager.diskBlockManager
-      .getFile(new ShuffleDataBlockId(0, 0, 0))
+    val sortFile = sc.env.blockManager.diskBlockManager.getFile(
+      new ShuffleDataBlockId(0, 0, 0))
     assert(hashFile.exists() || sortFile.exists())
 
     if (hashFile.exists()) {

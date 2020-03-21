@@ -53,8 +53,9 @@ private[hive] case class HiveTableScan(
     "Partition pruning predicates only supported for partitioned tables.")
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   override def producedAttributes: AttributeSet =
     outputSet ++
@@ -111,7 +112,8 @@ private[hive] case class HiveTableScan(
         ObjectInspectorCopyOption.JAVA)
       .asInstanceOf[StructObjectInspector]
 
-    val columnTypeNames = structOI.getAllStructFieldRefs.asScala
+    val columnTypeNames = structOI
+      .getAllStructFieldRefs.asScala
       .map(_.getFieldObjectInspector)
       .map(TypeInfoUtils.getTypeInfoFromObjectInspector(_).getTypeName)
       .mkString(",")
@@ -134,8 +136,7 @@ private[hive] case class HiveTableScan(
       case Some(shouldKeep) =>
         partitions.filter { part =>
           val dataTypes = relation.partitionKeys.map(_.dataType)
-          val castedValues = part.getValues.asScala
-            .zip(dataTypes)
+          val castedValues = part.getValues.asScala.zip(dataTypes)
             .map { case (value, dataType) => castFromString(value, dataType) }
 
           // Only partitioned values are needed here, since the predicate has already been bound to

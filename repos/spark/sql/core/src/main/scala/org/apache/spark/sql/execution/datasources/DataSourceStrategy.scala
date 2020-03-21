@@ -196,16 +196,14 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         // this is because "partitionAndNormalColumnAttrs" may be different
         // from the original "projects", in elements or their ordering
 
-        partitionAndNormalColumnFilters
-          .reduceLeftOption(expressions.And)
-          .map(cf =>
+        partitionAndNormalColumnFilters.reduceLeftOption(expressions.And).map(
+          cf =>
             if (projects.isEmpty || projects == partitionAndNormalColumnProjs) {
               // if the original projection is empty, no need for the additional Project either
               execution.Filter(cf, scan)
             } else {
               execution.Project(projects, execution.Filter(cf, scan))
-            })
-          .getOrElse(scan) :: Nil
+            }).getOrElse(scan) :: Nil
 
       // TODO: The code for planning bucketed/unbucketed/partitioned/unpartitioned tables contains
       // a lot of duplication and produces overly complicated RDDs.
@@ -219,8 +217,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         // broadcast HadoopConf.
         val sharedHadoopConf = SparkHadoopUtil.get.conf
         val confBroadcast =
-          t.sqlContext.sparkContext
-            .broadcast(new SerializableConfiguration(sharedHadoopConf))
+          t.sqlContext.sparkContext.broadcast(
+            new SerializableConfiguration(sharedHadoopConf))
 
         t.bucketSpec match {
           case Some(spec) if t.sqlContext.conf.bucketingEnabled =>
@@ -240,17 +238,15 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                       }
 
                   val bucketedDataMap = bucketed.mapValues { bucketFiles =>
-                    t.fileFormat
-                      .buildInternalScan(
-                        t.sqlContext,
-                        t.dataSchema,
-                        requiredColumns.map(_.name).toArray,
-                        filters,
-                        None,
-                        bucketFiles,
-                        confBroadcast,
-                        t.options)
-                      .coalesce(1)
+                    t.fileFormat.buildInternalScan(
+                      t.sqlContext,
+                      t.dataSchema,
+                      requiredColumns.map(_.name).toArray,
+                      filters,
+                      None,
+                      bucketFiles,
+                      confBroadcast,
+                      t.options).coalesce(1)
                   }
 
                   val bucketedRDD = new UnionRDD(
@@ -315,8 +311,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // Otherwise, the cost of broadcasting HadoopConf in every RDD will be high.
     val sharedHadoopConf = SparkHadoopUtil.get.conf
     val confBroadcast =
-      relation.sqlContext.sparkContext
-        .broadcast(new SerializableConfiguration(sharedHadoopConf))
+      relation.sqlContext.sparkContext.broadcast(
+        new SerializableConfiguration(sharedHadoopConf))
     val partitionColumnNames = partitionColumns.fieldNames.toSet
 
     // Now, we create a scan builder, which will be used by pruneFilterProject. This scan builder
@@ -372,12 +368,10 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
               val bucketed = new UnionRDD(
                 relation.sqlContext.sparkContext,
                 (0 until spec.numBuckets).map { bucketId =>
-                  bucketedDataMap
-                    .get(bucketId)
-                    .map(i => i.reduce(_ ++ _).coalesce(1))
-                    .getOrElse {
-                      relation.sqlContext.emptyResult: RDD[InternalRow]
-                    }
+                  bucketedDataMap.get(bucketId).map(i =>
+                    i.reduce(_ ++ _).coalesce(1)).getOrElse {
+                    relation.sqlContext.emptyResult: RDD[InternalRow]
+                  }
                 })
               bucketed
 
@@ -448,9 +442,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         inputIdx += 1
       } else {
         require(
-          partitionColumnSchema.fields
-            .filter(_.name.equals(attr.name))
-            .length == 1)
+          partitionColumnSchema.fields.filter(
+            _.name.equals(attr.name)).length == 1)
         var partitionIdx = 0
         partitionColumnSchema.fields.foreach { f =>
           {
@@ -534,14 +527,12 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // This is an internal RDD whose call site the user should not be concerned with
       // Since we create many of these (one per partition), the time spent on computing
       // the call site may add up.
-      Utils
-        .withDummyCallSite(dataRows.sparkContext) {
-          new MapPartitionsRDD(
-            dataRows,
-            mapPartitionsFunc,
-            preservesPartitioning = false)
-        }
-        .asInstanceOf[RDD[InternalRow]]
+      Utils.withDummyCallSite(dataRows.sparkContext) {
+        new MapPartitionsRDD(
+          dataRows,
+          mapPartitionsFunc,
+          preservesPartitioning = false)
+      }.asInstanceOf[RDD[InternalRow]]
     } else {
       dataRows
     }
@@ -813,8 +804,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         Some(sources.IsNotNull(a.name))
 
       case expressions.And(left, right) =>
-        (translateFilter(left) ++ translateFilter(right))
-          .reduceOption(sources.And)
+        (translateFilter(left) ++ translateFilter(right)).reduceOption(
+          sources.And)
 
       case expressions.Or(left, right) =>
         for {
@@ -825,16 +816,19 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       case expressions.Not(child) =>
         translateFilter(child).map(sources.Not)
 
-      case expressions
-            .StartsWith(a: Attribute, Literal(v: UTF8String, StringType)) =>
+      case expressions.StartsWith(
+            a: Attribute,
+            Literal(v: UTF8String, StringType)) =>
         Some(sources.StringStartsWith(a.name, v.toString))
 
-      case expressions
-            .EndsWith(a: Attribute, Literal(v: UTF8String, StringType)) =>
+      case expressions.EndsWith(
+            a: Attribute,
+            Literal(v: UTF8String, StringType)) =>
         Some(sources.StringEndsWith(a.name, v.toString))
 
-      case expressions
-            .Contains(a: Attribute, Literal(v: UTF8String, StringType)) =>
+      case expressions.Contains(
+            a: Attribute,
+            Literal(v: UTF8String, StringType)) =>
         Some(sources.StringContains(a.name, v.toString))
 
       case _ => None

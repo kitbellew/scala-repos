@@ -53,8 +53,8 @@ object ConsumerGroupCommand {
         "List all consumer groups, describe a consumer group, or delete consumer group info.")
 
     // should have exactly one action
-    val actions = Seq(opts.listOpt, opts.describeOpt, opts.deleteOpt)
-      .count(opts.options.has _)
+    val actions = Seq(opts.listOpt, opts.describeOpt, opts.deleteOpt).count(
+      opts.options.has _)
     if (actions != 1)
       CommandLineUtils.printUsageAndDie(
         opts.parser,
@@ -144,9 +144,8 @@ object ConsumerGroupCommand {
         offsetOpt: Option[Long],
         ownerOpt: Option[String]) {
       def print(logEndOffset: Option[Long]): Unit = {
-        val lag = offsetOpt
-          .filter(_ != -1)
-          .flatMap(offset => logEndOffset.map(_ - offset))
+        val lag = offsetOpt.filter(_ != -1).flatMap(offset =>
+          logEndOffset.map(_ - offset))
         println(
           "%-30s %-30s %-10s %-15s %-15s %-15s %s".format(
             group,
@@ -221,11 +220,10 @@ object ConsumerGroupCommand {
       val topicPartitions = getTopicPartitions(topic)
       val groupDirs = new ZKGroupTopicDirs(group, topic)
       val ownerByTopicPartition = topicPartitions.flatMap { topicPartition =>
-        zkUtils
-          .readDataMaybeNull(
-            groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
-          ._1
-          .map { owner => topicPartition -> owner }
+        zkUtils.readDataMaybeNull(
+          groupDirs.consumerOwnerDir + "/" + topicPartition.partition)._1.map {
+          owner => topicPartition -> owner
+        }
       }.toMap
       val partitionOffsets = getPartitionOffsets(
         group,
@@ -251,23 +249,18 @@ object ConsumerGroupCommand {
       zkUtils.getLeaderForPartition(topic, partition) match {
         case Some(-1) => LogEndOffsetResult.Unknown
         case Some(brokerId) =>
-          getZkConsumer(brokerId)
-            .map { consumer =>
-              val topicAndPartition = new TopicAndPartition(topic, partition)
-              val request = OffsetRequest(
-                Map(
-                  topicAndPartition -> PartitionOffsetRequestInfo(
-                    OffsetRequest.LatestTime,
-                    1)))
-              val logEndOffset = consumer
-                .getOffsetsBefore(request)
-                .partitionErrorAndOffsets(topicAndPartition)
-                .offsets
-                .head
-              consumer.close()
-              LogEndOffsetResult.LogEndOffset(logEndOffset)
-            }
-            .getOrElse(LogEndOffsetResult.Ignore)
+          getZkConsumer(brokerId).map { consumer =>
+            val topicAndPartition = new TopicAndPartition(topic, partition)
+            val request = OffsetRequest(
+              Map(
+                topicAndPartition -> PartitionOffsetRequestInfo(
+                  OffsetRequest.LatestTime,
+                  1)))
+            val logEndOffset = consumer.getOffsetsBefore(
+              request).partitionErrorAndOffsets(topicAndPartition).offsets.head
+            consumer.close()
+            LogEndOffsetResult.LogEndOffset(logEndOffset)
+          }.getOrElse(LogEndOffsetResult.Ignore)
         case None =>
           println(
             s"No broker for partition ${new TopicPartition(topic, partition)}")
@@ -297,11 +290,8 @@ object ConsumerGroupCommand {
             // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
             // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
             try {
-              val offset = zkUtils
-                .readData(
-                  topicDirs.consumerOffsetDir + "/" + topicAndPartition.partition)
-                ._1
-                .toLong
+              val offset = zkUtils.readData(
+                topicDirs.consumerOffsetDir + "/" + topicAndPartition.partition)._1.toLong
               offsetMap.put(topicAndPartition, offset)
             } catch {
               case z: ZkNoNodeException =>
@@ -329,12 +319,12 @@ object ConsumerGroupCommand {
         try {
           if (AdminUtils.deleteConsumerGroupInZK(zkUtils, group))
             println(
-              "Deleted all consumer group information for group %s in zookeeper."
-                .format(group))
+              "Deleted all consumer group information for group %s in zookeeper.".format(
+                group))
           else
             println(
-              "Delete for group %s failed because its consumers are still active."
-                .format(group))
+              "Delete for group %s failed because its consumers are still active.".format(
+                group))
         } catch {
           case e: ZkNoNodeException =>
             println(
@@ -355,17 +345,20 @@ object ConsumerGroupCommand {
                 group,
                 topic))
             println(
-              "Deleted consumer group information for group %s topic %s in zookeeper."
-                .format(group, topic))
+              "Deleted consumer group information for group %s topic %s in zookeeper.".format(
+                group,
+                topic))
           else
             println(
-              "Delete for group %s topic %s failed because its consumers are still active."
-                .format(group, topic))
+              "Delete for group %s topic %s failed because its consumers are still active.".format(
+                group,
+                topic))
         } catch {
           case e: ZkNoNodeException =>
             println(
-              "Delete for group %s topic %s failed because group does not exist."
-                .format(group, topic))
+              "Delete for group %s topic %s failed because group does not exist.".format(
+                group,
+                topic))
         }
       }
     }
@@ -375,15 +368,14 @@ object ConsumerGroupCommand {
       Topic.validate(topic)
       AdminUtils.deleteAllConsumerGroupInfoForTopicInZK(zkUtils, topic)
       println(
-        "Deleted consumer group information for all inactive consumer groups for topic %s in zookeeper."
-          .format(topic))
+        "Deleted consumer group information for all inactive consumer groups for topic %s in zookeeper.".format(
+          topic))
     }
 
     private def getZkConsumer(brokerId: Int): Option[SimpleConsumer] = {
       try {
-        zkUtils
-          .readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + brokerId)
-          ._1 match {
+        zkUtils.readDataMaybeNull(
+          ZkUtils.BrokerIdsPath + "/" + brokerId)._1 match {
           case Some(brokerInfoString) =>
             Json.parseFull(brokerInfoString) match {
               case Some(m) =>
@@ -423,9 +415,8 @@ object ConsumerGroupCommand {
     private var consumer: KafkaConsumer[String, String] = null
 
     def list() {
-      adminClient
-        .listAllConsumerGroupsFlattened()
-        .foreach(x => println(x.groupId))
+      adminClient.listAllConsumerGroupsFlattened().foreach(x =>
+        println(x.groupId))
     }
 
     protected def describeGroup(group: String) {
@@ -546,23 +537,20 @@ object ConsumerGroupCommand {
     val CommandConfigDoc =
       "Property file containing configs to be passed to Admin Client and Consumer."
     val parser = new OptionParser
-    val zkConnectOpt = parser
-      .accepts("zookeeper", ZkConnectDoc)
+    val zkConnectOpt = parser.accepts("zookeeper", ZkConnectDoc)
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
-    val bootstrapServerOpt = parser
-      .accepts("bootstrap-server", BootstrapServerDoc)
-      .withRequiredArg
-      .describedAs("server to connect to")
-      .ofType(classOf[String])
-    val groupOpt = parser
-      .accepts("group", GroupDoc)
+    val bootstrapServerOpt =
+      parser.accepts("bootstrap-server", BootstrapServerDoc)
+        .withRequiredArg
+        .describedAs("server to connect to")
+        .ofType(classOf[String])
+    val groupOpt = parser.accepts("group", GroupDoc)
       .withRequiredArg
       .describedAs("consumer group")
       .ofType(classOf[String])
-    val topicOpt = parser
-      .accepts("topic", TopicDoc)
+    val topicOpt = parser.accepts("topic", TopicDoc)
       .withRequiredArg
       .describedAs("topic")
       .ofType(classOf[String])
@@ -570,8 +558,7 @@ object ConsumerGroupCommand {
     val describeOpt = parser.accepts("describe", DescribeDoc)
     val deleteOpt = parser.accepts("delete", DeleteDoc)
     val newConsumerOpt = parser.accepts("new-consumer", NewConsumerDoc)
-    val commandConfigOpt = parser
-      .accepts("command-config", CommandConfigDoc)
+    val commandConfigOpt = parser.accepts("command-config", CommandConfigDoc)
       .withRequiredArg
       .describedAs("command config property file")
       .ofType(classOf[String])
@@ -614,8 +601,10 @@ object ConsumerGroupCommand {
             topicOpt))
         CommandLineUtils.printUsageAndDie(
           parser,
-          "Option %s either takes %s, %s, or both"
-            .format(deleteOpt, groupOpt, topicOpt))
+          "Option %s either takes %s, %s, or both".format(
+            deleteOpt,
+            groupOpt,
+            topicOpt))
 
       // check invalid args
       CommandLineUtils.checkInvalidArgs(

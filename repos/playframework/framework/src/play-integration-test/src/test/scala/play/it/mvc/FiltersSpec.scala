@@ -129,8 +129,7 @@ trait GlobalFiltersSpec extends FiltersSpec {
               _.onClientError(request, 404, ""))
           }
         }
-      )
-      .build()
+      ).build()
 
     Server.withApplication(app) { implicit port =>
       import app.materializer
@@ -303,10 +302,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
           statusCode: Int,
           message: String) = {
         Future.successful(
-          Results.NotFound(
-            request.headers
-              .get(filterAddedHeaderKey)
-              .getOrElse("undefined header")))
+          Results.NotFound(request.headers.get(filterAddedHeaderKey).getOrElse(
+            "undefined header")))
       }
       def onServerError(request: RequestHeader, exception: Throwable) =
         Future.successful(Results.InternalServerError)
@@ -349,13 +346,11 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       new EssentialAction {
         override def apply(request: Http.RequestHeader) = {
           try {
-            next
-              .apply(request)
-              .recover(
-                new java.util.function.Function[Throwable, Result]() {
-                  def apply(t: Throwable) = getResult(t)
-                },
-                play.core.Execution.internalContext)
+            next.apply(request).recover(
+              new java.util.function.Function[Throwable, Result]() {
+                def apply(t: Throwable) = getResult(t)
+              },
+              play.core.Execution.internalContext)
           } catch {
             case t: Throwable => Accumulator.done(getResult(t))
           }

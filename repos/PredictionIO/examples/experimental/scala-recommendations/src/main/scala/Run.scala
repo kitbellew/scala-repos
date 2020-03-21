@@ -112,8 +112,7 @@ class ALSAlgorithm(val ap: AlgorithmParams)
       r => ((r.user, r.product), r.rating)
     }
 
-    feature
-      .map { _.swap }
+    feature.map { _.swap }
       .join(p)
       .map { case (up, (fi, r)) => (fi, r) }
   }

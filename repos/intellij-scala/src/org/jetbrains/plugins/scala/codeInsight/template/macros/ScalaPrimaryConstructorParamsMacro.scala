@@ -11,10 +11,8 @@ class ScalaPrimaryConstructorParamsMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result = {
-    MacroUtil
-      .getPrimaryConbstructorParams(context)
-      .map(new PsiElementResult(_))
-      .orNull
+    MacroUtil.getPrimaryConbstructorParams(context).map(
+      new PsiElementResult(_)).orNull
   }
 
   def getName: String = MacroUtil.scalaIdPrefix + "primaryConstructorParams"

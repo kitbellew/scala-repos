@@ -292,9 +292,8 @@ private[spark] class TaskSetManager(
       val failed = failedExecutors.get(taskId).get
 
       return failed.contains(execId) &&
-        clock.getTimeMillis() - failed
-          .get(execId)
-          .get < EXECUTOR_TASK_BLACKLIST_TIMEOUT
+        clock.getTimeMillis() - failed.get(
+          execId).get < EXECUTOR_TASK_BLACKLIST_TIMEOUT
     }
 
     false
@@ -357,9 +356,8 @@ private[spark] class TaskSetManager(
       if (TaskLocality.isAllowed(locality, TaskLocality.RACK_LOCAL)) {
         for (rack <- sched.getRackForHost(host)) {
           for (index <- speculatableTasks if canRunOnHost(index)) {
-            val racks = tasks(index).preferredLocations
-              .map(_.host)
-              .flatMap(sched.getRackForHost)
+            val racks = tasks(index).preferredLocations.map(_.host).flatMap(
+              sched.getRackForHost)
             if (racks.contains(rack)) {
               speculatableTasks -= index
               return Some((index, TaskLocality.RACK_LOCAL))
@@ -741,8 +739,11 @@ private[spark] class TaskSetManager(
             "Task %s in stage %s (TID %d) had a not serializable result: %s; not retrying"
               .format(info.id, taskSet.id, tid, ef.description))
           abort(
-            "Task %s in stage %s (TID %d) had a not serializable result: %s"
-              .format(info.id, taskSet.id, tid, ef.description))
+            "Task %s in stage %s (TID %d) had a not serializable result: %s".format(
+              info.id,
+              taskSet.id,
+              tid,
+              ef.description))
           return
         }
         val key = ef.description
@@ -787,9 +788,9 @@ private[spark] class TaskSetManager(
         None
     }
     // always add to failed executors
-    failedExecutors
-      .getOrElseUpdate(index, new HashMap[String, Long]())
-      .put(info.executorId, clock.getTimeMillis())
+    failedExecutors.getOrElseUpdate(index, new HashMap[String, Long]()).put(
+      info.executorId,
+      clock.getTimeMillis())
     sched.dagScheduler.taskEnded(tasks(index), reason, null, accumUpdates, info)
     addPendingTask(index)
     if (!isZombie && state != TaskState.KILLED
@@ -799,8 +800,10 @@ private[spark] class TaskSetManager(
       numFailures(index) += 1
       if (numFailures(index) >= maxTaskFailures) {
         logError(
-          "Task %d in stage %s failed %d times; aborting job"
-            .format(index, taskSet.id, maxTaskFailures))
+          "Task %d in stage %s failed %d times; aborting job".format(
+            index,
+            taskSet.id,
+            maxTaskFailures))
         abort(
           "Task %d in stage %s failed %d times, most recent failure: %s\nDriver stacktrace:"
             .format(index, taskSet.id, maxTaskFailures, failureReason),

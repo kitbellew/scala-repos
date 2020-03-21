@@ -48,14 +48,12 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-12404: Datatype Helper Serializability") {
-    val ds = sparkContext
-      .parallelize(
-        (
-          new Timestamp(0),
-          new Date(0),
-          java.math.BigDecimal.valueOf(1),
-          scala.math.BigDecimal(1)) :: Nil)
-      .toDS()
+    val ds = sparkContext.parallelize(
+      (
+        new Timestamp(0),
+        new Date(0),
+        java.math.BigDecimal.valueOf(1),
+        scala.math.BigDecimal(1)) :: Nil).toDS()
 
     ds.collect()
   }
@@ -138,11 +136,9 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     // We inject a group by here to make sure this test case is future proof
     // when we implement better pipelining and local execution mode.
     val ds: Dataset[(ClassData, Long)] =
-      Seq(ClassData("one", 1), ClassData("two", 2))
-        .toDS()
+      Seq(ClassData("one", 1), ClassData("two", 2)).toDS()
         .map(c => ClassData(c.a, c.b + 1))
-        .groupByKey(p => p)
-        .count()
+        .groupByKey(p => p).count()
 
     checkDataset(ds, (ClassData("one", 2), 1L), (ClassData("two", 3), 1L))
   }
@@ -260,10 +256,10 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds2 = Seq(ClassData("a", 1), ClassData("b", 2)).toDS()
 
     checkAnswer(
-      ds1
-        .joinWith(ds2, $"value" === $"b")
-        .toDF()
-        .select($"_1", $"_2.a", $"_2.b"),
+      ds1.joinWith(ds2, $"value" === $"b").toDF().select(
+        $"_1",
+        $"_2.a",
+        $"_2.b"),
       Row(1, "a", 1) :: Row(1, "a", 1) :: Row(2, "b", 2) :: Nil)
   }
 
@@ -273,10 +269,9 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds3 = Seq(("a", 1), ("b", 2)).toDS().as("c")
 
     checkDataset(
-      ds1
-        .joinWith(ds2, $"a._2" === $"b._2")
-        .as("ab")
-        .joinWith(ds3, $"ab._1._2" === $"c._2"),
+      ds1.joinWith(ds2, $"a._2" === $"b._2").as("ab").joinWith(
+        ds3,
+        $"ab._1._2" === $"c._2"),
       ((("a", 1), ("a", 1)), ("a", 1)),
       ((("b", 2), ("b", 2)), ("b", 2)))
   }
@@ -395,8 +390,10 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
 
     checkDataset(
-      ds.groupByKey(_._1)
-        .agg(sum("_2").as[Long], sum($"_2" + 1).as[Long], count("*")),
+      ds.groupByKey(_._1).agg(
+        sum("_2").as[Long],
+        sum($"_2" + 1).as[Long],
+        count("*")),
       ("a", 30L, 32L, 2L),
       ("b", 3L, 5L, 2L),
       ("c", 1L, 2L, 1L))
@@ -406,12 +403,11 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
 
     checkDataset(
-      ds.groupByKey(_._1)
-        .agg(
-          sum("_2").as[Long],
-          sum($"_2" + 1).as[Long],
-          count("*").as[Long],
-          avg("_2").as[Double]),
+      ds.groupByKey(_._1).agg(
+        sum("_2").as[Long],
+        sum($"_2" + 1).as[Long],
+        count("*").as[Long],
+        avg("_2").as[Double]),
       ("a", 30L, 32L, 2L, 15.0),
       ("b", 3L, 5L, 2L, 1.5),
       ("c", 1L, 2L, 1L, 1.0)

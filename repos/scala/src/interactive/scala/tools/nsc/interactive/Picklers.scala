@@ -63,13 +63,11 @@ trait Picklers { self: Global =>
   }
 
   implicit lazy val sourceFile: Pickler[SourceFile] =
-    (pkl[AbstractFile] ~ pkl[Diff])
-      .wrapped[SourceFile] {
-        case f ~ d => new BatchSourceFile(f, patch(f, d))
-      } {
-        f => f.file ~ delta(f.file, f.content)
-      }
-      .asClass(classOf[BatchSourceFile])
+    (pkl[AbstractFile] ~ pkl[Diff]).wrapped[SourceFile] {
+      case f ~ d => new BatchSourceFile(f, patch(f, d))
+    } {
+      f => f.file ~ delta(f.file, f.content)
+    }.asClass(classOf[BatchSourceFile])
 
   lazy val offsetPosition: CondPickler[Position] =
     (pkl[SourceFile] ~ pkl[Int])

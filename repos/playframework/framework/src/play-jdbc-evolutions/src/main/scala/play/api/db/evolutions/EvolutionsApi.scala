@@ -251,12 +251,11 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
           connection.rollback()
 
           val humanScript =
-            "# --- Rev:" + lastScript.evolution.revision + "," + (if (lastScript
-                                                                        .isInstanceOf[UpScript])
+            "# --- Rev:" + lastScript.evolution.revision + "," + (if (lastScript.isInstanceOf[
+                                                                        UpScript])
                                                                     "Ups"
                                                                   else
-                                                                    "Downs") + " - " + lastScript.evolution.hash + "\n\n" + (if (lastScript
-                                                                                                                                   .isInstanceOf[UpScript])
+                                                                    "Downs") + " - " + lastScript.evolution.hash + "\n\n" + (if (lastScript.isInstanceOf[UpScript])
                                                                                                                                lastScript.evolution.sql_up
                                                                                                                              else
                                                                                                                                lastScript.evolution.sql_down)
@@ -496,42 +495,36 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
       case _             => false
     }
 
-    Collections
-      .unfoldLeft(1) { revision =>
-        loadResource(db, revision).map { stream =>
-          (
-            revision + 1,
-            (revision, PlayIO.readStreamAsString(stream)(Codec.UTF8)))
-        }
+    Collections.unfoldLeft(1) { revision =>
+      loadResource(db, revision).map { stream =>
+        (
+          revision + 1,
+          (revision, PlayIO.readStreamAsString(stream)(Codec.UTF8)))
       }
-      .sortBy(_._1)
-      .map {
-        case (revision, script) => {
+    }.sortBy(_._1).map {
+      case (revision, script) => {
 
-          val parsed = Collections
-            .unfoldLeft(("", script.split('\n').toList.map(_.trim))) {
-              case (_, Nil) => None
-              case (context, lines) => {
-                val (some, next) = lines.span(l => !isMarker(l))
-                Some(
-                  (
-                    next.headOption
-                      .map(c => (mapUpsAndDowns(c), next.tail))
-                      .getOrElse("" -> Nil),
-                    context -> some.mkString("\n")))
-              }
+        val parsed =
+          Collections.unfoldLeft(("", script.split('\n').toList.map(_.trim))) {
+            case (_, Nil) => None
+            case (context, lines) => {
+              val (some, next) = lines.span(l => !isMarker(l))
+              Some(
+                (
+                  next.headOption.map(c =>
+                    (mapUpsAndDowns(c), next.tail)).getOrElse("" -> Nil),
+                  context -> some.mkString("\n")))
             }
-            .reverse
-            .drop(1)
-            .groupBy(i => i._1)
-            .mapValues { _.map(_._2).mkString("\n").trim }
+          }.reverse.drop(1).groupBy(i => i._1).mapValues {
+            _.map(_._2).mkString("\n").trim
+          }
 
-          Evolution(
-            revision,
-            parsed.getOrElse(UPS, ""),
-            parsed.getOrElse(DOWNS, ""))
-        }
+        Evolution(
+          revision,
+          parsed.getOrElse(UPS, ""),
+          parsed.getOrElse(DOWNS, ""))
       }
+    }
 
   }
 }
@@ -544,12 +537,10 @@ class EnvironmentEvolutionsReader @Inject() (environment: Environment)
     extends ResourceEvolutionsReader {
 
   def loadResource(db: String, revision: Int) = {
-    environment
-      .getExistingFile(Evolutions.fileName(db, revision))
-      .map(new FileInputStream(_))
-      .orElse {
-        environment.resourceAsStream(Evolutions.resourceName(db, revision))
-      }
+    environment.getExistingFile(Evolutions.fileName(db, revision)).map(
+      new FileInputStream(_)).orElse {
+      environment.resourceAsStream(Evolutions.resourceName(db, revision))
+    }
   }
 }
 

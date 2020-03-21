@@ -16,9 +16,9 @@ trait Resolvers {
 
     lazy val looksCredible: Boolean = {
       val Applied(core, _, _) = untypedMacroImplRef
-      typer
-        .silent(_.typed(markMacroImplRef(core)), reportAmbiguousErrors = false)
-        .nonEmpty
+      typer.silent(
+        _.typed(markMacroImplRef(core)),
+        reportAmbiguousErrors = false).nonEmpty
     }
 
     lazy val (macroImplRef, isBlackbox, macroImplOwner, macroImpl, targs) =

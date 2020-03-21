@@ -49,9 +49,8 @@ object BaseTypes {
           visitedAliases = visitedAliases + ta)
       case ScThisType(clazz) =>
         BaseTypes.get(
-          clazz
-            .getTypeWithProjections(TypingContext.empty)
-            .getOrElse(return Seq.empty),
+          clazz.getTypeWithProjections(TypingContext.empty).getOrElse(
+            return Seq.empty),
           visitedAliases = visitedAliases)
       case ScTypeParameterType(_, Nil, _, upper, _) =>
         get(upper.v, notAll, visitedAliases = visitedAliases)
@@ -98,7 +97,10 @@ object BaseTypes {
                   notAll,
                   visitedAliases = visitedAliases) ++ Seq(
                   p.substitutor.subst(tp))
-              else Seq(p.substitutor.subst(tp))
+              else
+                Seq(
+                  p
+                    .substitutor.subst(tp))
             })
           case Some(clazz) =>
             val s = p.substitutor

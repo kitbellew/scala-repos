@@ -105,10 +105,8 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
       dependencies(depNum) match {
         case oneToOneDependency: OneToOneDependency[_] =>
           val dependencyPartition = partition.narrowDeps(depNum).get.split
-          oneToOneDependency.rdd
-            .iterator(dependencyPartition, context)
-            .asInstanceOf[Iterator[Product2[K, V]]]
-            .foreach(op)
+          oneToOneDependency.rdd.iterator(dependencyPartition, context)
+            .asInstanceOf[Iterator[Product2[K, V]]].foreach(op)
 
         case shuffleDependency: ShuffleDependency[_, _, _] =>
           val iter = SparkEnv.get.shuffleManager

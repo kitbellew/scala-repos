@@ -8,8 +8,7 @@ import scala.util.Try
 class StatsTestJob1(args: Args) extends Job(args) with CounterVerification {
   val nonZero = Stat("number of non-zero records", "stats")
 
-  TypedPipe
-    .from(TypedTsv[(String, Int)](args("input")))
+  TypedPipe.from(TypedTsv[(String, Int)](args("input")))
     .map { kv =>
       if (kv._2 != 0) nonZero.inc
       (kv._1.toLowerCase, kv._2)

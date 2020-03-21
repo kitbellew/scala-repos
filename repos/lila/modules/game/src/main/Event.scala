@@ -220,13 +220,11 @@ object Event {
       extends Event {
     def typ = "redirect"
     def data =
-      Json
-        .obj(
-          "id" -> id,
-          "url" -> s"/$id",
-          "cookie" -> cookie
-        )
-        .noNull
+      Json.obj(
+        "id" -> id,
+        "url" -> s"/$id",
+        "cookie" -> cookie
+      ).noNull
     override def only = Some(color)
     override def owner = true
   }
@@ -319,27 +317,23 @@ object Event {
       extends Event {
     def typ = "state"
     def data =
-      Json
-        .obj(
-          "color" -> color,
-          "turns" -> turns,
-          "status" -> status,
-          "winner" -> winner,
-          "wDraw" -> whiteOffersDraw.option(true),
-          "bDraw" -> blackOffersDraw.option(true)
-        )
-        .noNull
+      Json.obj(
+        "color" -> color,
+        "turns" -> turns,
+        "status" -> status,
+        "winner" -> winner,
+        "wDraw" -> whiteOffersDraw.option(true),
+        "bDraw" -> blackOffersDraw.option(true)
+      ).noNull
   }
 
   case class TakebackOffers(white: Boolean, black: Boolean) extends Event {
     def typ = "takebackOffers"
     def data =
-      Json
-        .obj(
-          "white" -> white.option(true),
-          "black" -> black.option(true)
-        )
-        .noNull
+      Json.obj(
+        "white" -> white.option(true),
+        "black" -> black.option(true)
+      ).noNull
     override def owner = true
   }
 

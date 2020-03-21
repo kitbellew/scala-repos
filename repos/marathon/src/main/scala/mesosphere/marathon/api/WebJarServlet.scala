@@ -41,8 +41,9 @@ class WebJarServlet extends HttpServlet {
       resource = resource + "index.html" // welcome file
     val file = resource.split("/").last //e.g. icon.gif
     val mediaType = file.split("\\.").lastOption.getOrElse("") //e.g. gif
-    val mime = Option(getServletContext.getMimeType(file))
-      .getOrElse(mimeType(mediaType)) //e.g plain/text
+    val mime = Option(getServletContext.getMimeType(file)).getOrElse(
+      mimeType(mediaType)
+    ) //e.g plain/text
     val resourceURI = s"/META-INF/resources/webjars$jar$resource"
 
     //log request data, since the names are not very intuitive

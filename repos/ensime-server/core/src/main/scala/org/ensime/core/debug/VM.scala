@@ -37,8 +37,7 @@ class VM(
         arguments.get("suspend").setValue("true")
 
         log.info(
-          "Using Connector: " + connector.name + " : " + connector
-            .description())
+          "Using Connector: " + connector.name + " : " + connector.description())
         log.info("Connector class: " + connector.getClass.getName)
         log.info("Debugger VM args: " + allVMOpts)
         log.info("Debugger program args: " + commandLine)
@@ -54,8 +53,7 @@ class VM(
         env.get("hostname").setValue(hostname)
 
         log.info(
-          "Using Connector: " + connector.name + " : " + connector
-            .description())
+          "Using Connector: " + connector.name + " : " + connector.description())
         log.info("Debugger arguments: " + env)
         log.info("Attach to VM")
         val vm = connector.attach(env)
@@ -261,10 +259,8 @@ class VM(
       case v: ArrayReference =>
         val length = v.length()
         if (length > 3)
-          "Array[" + v
-            .getValues(0, 3)
-            .map(valueSummary)
-            .mkString(", ") + ",...]"
+          "Array[" + v.getValues(0, 3).map(valueSummary).mkString(
+            ", ") + ",...]"
         else
           "Array[" + v.getValues.map(valueSummary).mkString(", ") + "]"
       case v: ObjectReference =>
@@ -294,19 +290,16 @@ class VM(
         var tpe = tpeIn
         while (tpe != null) {
           var i = -1
-          fields = tpe
-            .fields()
-            .map { f =>
-              i += 1
-              val value = obj.getValue(f)
-              DebugClassField(
-                i,
-                f.name(),
-                f.typeName(),
-                valueSummary(value)
-              )
-            }
-            .toList ++ fields
+          fields = tpe.fields().map { f =>
+            i += 1
+            val value = obj.getValue(f)
+            DebugClassField(
+              i,
+              f.name(),
+              f.typeName(),
+              valueSummary(value)
+            )
+          }.toList ++ fields
           tpe = tpe.superclass
         }
         fields
@@ -386,18 +379,13 @@ class VM(
     if (name == "this") {
       Some(DebugObjectReference(remember(objRef).uniqueID))
     } else {
-      stackSlotForName(thread, name)
-        .map({ slot =>
-          DebugStackSlot(
-            DebugThreadId(thread.uniqueID),
-            slot.frame,
-            slot.offset)
-        })
-        .orElse(
-          fieldByName(objRef, name).flatMap { f =>
-            Some(DebugObjectField(DebugObjectId(objRef.uniqueID), f.name))
-          }
-        )
+      stackSlotForName(thread, name).map({ slot =>
+        DebugStackSlot(DebugThreadId(thread.uniqueID), slot.frame, slot.offset)
+      }).orElse(
+        fieldByName(objRef, name).flatMap { f =>
+          Some(DebugObjectField(DebugObjectId(objRef.uniqueID), f.name))
+        }
+      )
     }
   }
 
@@ -435,9 +423,9 @@ class VM(
       log.info(
         "DebugManager.callMethod(obj = " + obj + " of type " + obj.referenceType + ", name = " +
           name + ", signature = " + signature + ", args = " + args)
-      obj.referenceType
-        .methodsByName("toString", "()Ljava/lang/String;")
-        .headOption match {
+      obj.referenceType.methodsByName(
+        "toString",
+        "()Ljava/lang/String;").headOption match {
         case Some(m) =>
           log.info("Invoking: " + m)
           Some(
@@ -561,14 +549,12 @@ class VM(
     val numArgs = ignoreErr(frame.getArgumentValues.length, 0)
     val methodName = ignoreErr(frame.location.method().name(), "Method")
     val className = ignoreErr(frame.location.declaringType().name(), "Class")
-    val pcLocation = sourceMap
-      .locToPos(frame.location)
-      .getOrElse(
-        LineSourcePosition(
-          File(frame.location.sourcePath()).canon,
-          frame.location.lineNumber
-        )
+    val pcLocation = sourceMap.locToPos(frame.location).getOrElse(
+      LineSourcePosition(
+        File(frame.location.sourcePath()).canon,
+        frame.location.lineNumber
       )
+    )
     val thisObjId = ignoreErr(remember(frame.thisObject()).uniqueID, -1L)
     DebugStackFrame(
       index,

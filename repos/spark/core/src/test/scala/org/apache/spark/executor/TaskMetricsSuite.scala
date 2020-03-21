@@ -84,10 +84,8 @@ class TaskMetricsSuite extends SparkFunSuite {
 
   test("create shuffle read metrics") {
     import shuffleRead._
-    val accums = InternalAccumulator
-      .createShuffleReadAccums()
-      .map { a => (a.name.get, a) }
-      .toMap[String, Accumulator[_]]
+    val accums = InternalAccumulator.createShuffleReadAccums()
+      .map { a => (a.name.get, a) }.toMap[String, Accumulator[_]]
     accums(REMOTE_BLOCKS_FETCHED).setValueAny(1)
     accums(LOCAL_BLOCKS_FETCHED).setValueAny(2)
     accums(REMOTE_BYTES_READ).setValueAny(3L)
@@ -105,10 +103,8 @@ class TaskMetricsSuite extends SparkFunSuite {
 
   test("create shuffle write metrics") {
     import shuffleWrite._
-    val accums = InternalAccumulator
-      .createShuffleWriteAccums()
-      .map { a => (a.name.get, a) }
-      .toMap[String, Accumulator[_]]
+    val accums = InternalAccumulator.createShuffleWriteAccums()
+      .map { a => (a.name.get, a) }.toMap[String, Accumulator[_]]
     accums(BYTES_WRITTEN).setValueAny(1L)
     accums(RECORDS_WRITTEN).setValueAny(2L)
     accums(WRITE_TIME).setValueAny(3L)
@@ -120,10 +116,8 @@ class TaskMetricsSuite extends SparkFunSuite {
 
   test("create input metrics") {
     import input._
-    val accums = InternalAccumulator
-      .createInputAccums()
-      .map { a => (a.name.get, a) }
-      .toMap[String, Accumulator[_]]
+    val accums = InternalAccumulator.createInputAccums()
+      .map { a => (a.name.get, a) }.toMap[String, Accumulator[_]]
     accums(BYTES_READ).setValueAny(1L)
     accums(RECORDS_READ).setValueAny(2L)
     accums(READ_METHOD).setValueAny(DataReadMethod.Hadoop.toString)
@@ -135,10 +129,8 @@ class TaskMetricsSuite extends SparkFunSuite {
 
   test("create output metrics") {
     import output._
-    val accums = InternalAccumulator
-      .createOutputAccums()
-      .map { a => (a.name.get, a) }
-      .toMap[String, Accumulator[_]]
+    val accums = InternalAccumulator.createOutputAccums()
+      .map { a => (a.name.get, a) }.toMap[String, Accumulator[_]]
     accums(BYTES_WRITTEN).setValueAny(1L)
     accums(RECORDS_WRITTEN).setValueAny(2L)
     accums(WRITE_METHOD).setValueAny(DataWriteMethod.Hadoop.toString)

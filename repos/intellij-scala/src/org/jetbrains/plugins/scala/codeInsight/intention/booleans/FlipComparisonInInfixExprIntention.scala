@@ -78,23 +78,16 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
       "&&" -> "&&",
       "||" -> "||")
 
-    expr
-      .append(infixExpr.getArgExpr.getText)
-      .append(" ")
-      .append(replaceOper(infixExpr.operation.nameId.getText))
-      .append(" ")
-      .append(infixExpr.getBaseExpr.getText)
+    expr.append(infixExpr.getArgExpr.getText).append(" ").append(
+      replaceOper(infixExpr.operation.nameId.getText)).append(" ").append(
+      infixExpr.getBaseExpr.getText)
 
     val newInfixExpr = ScalaPsiElementFactory.createExpressionFromText(
       expr.toString(),
       element.getManager)
 
-    val size = newInfixExpr
-      .asInstanceOf[ScInfixExpr]
-      .operation
-      .nameId
-      .getTextRange
-      .getStartOffset -
+    val size = newInfixExpr.asInstanceOf[
+      ScInfixExpr].operation.nameId.getTextRange.getStartOffset -
       newInfixExpr.getTextRange.getStartOffset
 
     inWriteAction {

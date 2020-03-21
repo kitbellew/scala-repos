@@ -83,9 +83,8 @@ trait IntroduceTypeAlias {
         editor,
         INTRODUCE_TYPEALIAS_REFACTORING_NAME)
 
-      val typeElement: ScTypeElement = ScalaRefactoringUtil
-        .checkTypeElement(inTypeElement)
-        .getOrElse(
+      val typeElement: ScTypeElement =
+        ScalaRefactoringUtil.checkTypeElement(inTypeElement).getOrElse(
           showErrorMessageWithException(
             ScalaBundle.message("cannot.refactor.not.valid.type"),
             project,
@@ -97,8 +96,12 @@ trait IntroduceTypeAlias {
 
       if (currentDataObject.possibleScopes == null) {
         currentDataObject.setPossibleScopes(
-          ScopeSuggester
-            .suggestScopes(this, project, editor, file, typeElement))
+          ScopeSuggester.suggestScopes(
+            this,
+            project,
+            editor,
+            file,
+            typeElement))
       }
 
       if (currentDataObject.possibleScopes.isEmpty) {
@@ -122,8 +125,8 @@ trait IntroduceTypeAlias {
               range.getEndOffset,
               classOf[ScTypeElement]) match {
               case simpleType: ScSimpleTypeElement =>
-                if (simpleType.getNextSiblingNotWhitespace
-                      .isInstanceOf[ScTypeArgs]) {
+                if (simpleType.getNextSiblingNotWhitespace.isInstanceOf[
+                      ScTypeArgs]) {
                   PsiTreeUtil.getParentOfType(
                     simpleType,
                     classOf[ScParameterizedTypeElement])
@@ -212,8 +215,9 @@ trait IntroduceTypeAlias {
             project,
             new Runnable {
               def run() {
-                val computable = ApplicationManager.getApplication
-                  .runWriteAction(introduceRunnable)
+                val computable =
+                  ApplicationManager.getApplication.runWriteAction(
+                    introduceRunnable)
 
                 val namedElement: ScNamedElement =
                   computable._1.getElement match {
@@ -233,13 +237,11 @@ trait IntroduceTypeAlias {
                   editor.getSelectionModel.removeSelection()
                   if (ScalaRefactoringUtil.isInplaceAvailable(editor)) {
 
-                    PsiDocumentManager
-                      .getInstance(project)
-                      .commitDocument(editor.getDocument)
-                    PsiDocumentManager
-                      .getInstance(project)
-                      .doPostponedOperationsAndUnblockDocument(
-                        editor.getDocument)
+                    PsiDocumentManager.getInstance(project).commitDocument(
+                      editor.getDocument)
+                    PsiDocumentManager.getInstance(
+                      project).doPostponedOperationsAndUnblockDocument(
+                      editor.getDocument)
 
                     val typeAliasIntroducer =
                       ScalaInplaceTypeAliasIntroducer(
@@ -327,9 +329,9 @@ trait IntroduceTypeAlias {
           parent: PsiElement,
           firstOccurrence: PsiElement): Some[PsiElement] = {
         Some(
-          parent.getChildren
-            .find(_.getTextRange.contains(firstOccurrence.getTextRange))
-            .getOrElse(parent.getLastChild))
+          parent.getChildren.find(
+            _.getTextRange.contains(firstOccurrence.getTextRange)).getOrElse(
+            parent.getLastChild))
       }
 
       val mtext = typeElement.calcType.canonicalText
@@ -375,9 +377,8 @@ trait IntroduceTypeAlias {
     val typeAlias =
       addTypeAliasDefinition(typeName, occurrences.getAllOccurrences(0), parent)
     if (editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO) != null) {
-      editor
-        .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
-        .setTypeAlias(typeAlias)
+      editor.getUserData(
+        IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO).setTypeAlias(typeAlias)
     }
 
     val typeElementIdx =
@@ -406,12 +407,11 @@ trait IntroduceTypeAlias {
     }
 
     (
-      SmartPointerManager
-        .getInstance(file.getProject)
-        .createSmartPsiElementPointer(typeAlias.asInstanceOf[PsiElement]),
-      SmartPointerManager
-        .getInstance(file.getProject)
-        .createSmartPsiElementPointer(resultTypeElement))
+      SmartPointerManager.getInstance(
+        file.getProject).createSmartPsiElementPointer(
+        typeAlias.asInstanceOf[PsiElement]),
+      SmartPointerManager.getInstance(
+        file.getProject).createSmartPsiElementPointer(resultTypeElement))
   }
 
   def runRefactoringForTypes(
@@ -509,9 +509,8 @@ trait IntroduceTypeAlias {
     }
 
     def bindHelper(typeElement: ScTypeElement) = {
-      typeElement.getFirstChild
-        .asInstanceOf[ScStableCodeReferenceElement]
-        .bindToElement(typeAlias)
+      typeElement.getFirstChild.asInstanceOf[
+        ScStableCodeReferenceElement].bindToElement(typeAlias)
       typeElement
     }
 
@@ -592,29 +591,22 @@ trait IntroduceTypeAlias {
       }
     })
 
-    JBPopupFactory.getInstance
-      .createListPopupBuilder(list)
-      .setTitle(title)
-      .setMovable(false)
-      .setResizable(false)
-      .setRequestFocus(true)
-      .setItemChoosenCallback(new Runnable {
-        def run() {
-          pass(list.getSelectedValue.asInstanceOf[T])
-        }
-      })
-      .addListener(new JBPopupAdapter {
-        override def beforeShown(event: LightweightWindowEvent): Unit = {
-          selection.addHighlighter()
-        }
+    JBPopupFactory.getInstance.createListPopupBuilder(list).setTitle(
+      title).setMovable(false).setResizable(false).setRequestFocus(
+      true).setItemChoosenCallback(new Runnable {
+      def run() {
+        pass(list.getSelectedValue.asInstanceOf[T])
+      }
+    }).addListener(new JBPopupAdapter {
+      override def beforeShown(event: LightweightWindowEvent): Unit = {
+        selection.addHighlighter()
+      }
 
-        override def onClosed(event: LightweightWindowEvent) {
-          highlighter.dropHighlight()
-          selection.removeHighlighter()
-        }
-      })
-      .createPopup
-      .showInBestPositionFor(editor)
+      override def onClosed(event: LightweightWindowEvent) {
+        highlighter.dropHighlight()
+        selection.removeHighlighter()
+      }
+    }).createPopup.showInBestPositionFor(editor)
   }
 
   protected def createAndGetPackageObjectBody(
@@ -636,12 +628,11 @@ trait IntroduceTypeAlias {
     }
 
     val packageObject: ScTypeDefinition =
-      ScalaDirectoryService
-        .createClassFromTemplate(
-          newDir,
-          newDirectoryName,
-          "Package Object",
-          askToDefineVariables = false)
+      ScalaDirectoryService.createClassFromTemplate(
+        newDir,
+        newDirectoryName,
+        "Package Object",
+        askToDefineVariables = false)
         .asInstanceOf[ScTypeDefinition]
 
     PsiTreeUtil.getChildOfType(
@@ -680,10 +671,8 @@ trait IntroduceTypeAlias {
     dialog.show()
     if (!dialog.isOK) {
       if (occurrences.length > 1) {
-        WindowManager.getInstance
-          .getStatusBar(project)
-          .setInfo(
-            ScalaBundle.message("press.escape.to.remove.the.highlighting"))
+        WindowManager.getInstance.getStatusBar(project).setInfo(
+          ScalaBundle.message("press.escape.to.remove.the.highlighting"))
       }
     }
 

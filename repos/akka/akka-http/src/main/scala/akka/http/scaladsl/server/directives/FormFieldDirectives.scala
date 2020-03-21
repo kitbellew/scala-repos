@@ -214,8 +214,8 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[NameDefaultUnmarshallerReceptacle[T], T] { nr ⇒
         filter(
           nr.name,
-          (StrictForm.Field
-            .unmarshallerFromFSU(nr.um): FSFFOU[T]) withDefaultValue nr.default)
+          (StrictForm.Field.unmarshallerFromFSU(nr.um): FSFFOU[
+            T]) withDefaultValue nr.default)
       }
 
     //////////////////// required formField support ////////////////////

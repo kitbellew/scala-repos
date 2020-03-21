@@ -91,14 +91,14 @@ object Test extends ScaladocModelTest {
       // TODO: See why we need trim here, we already do trimming in the CommentFactory
       assert(
         dtpl.groupName(grp) == grpName,
-        "Group name for " + grp + " in " + dtpl.qualifiedName + " does not equal \"" + grpName + "\": \"" + dtpl
-          .groupName(grp) + "\"")
+        "Group name for " + grp + " in " + dtpl.qualifiedName + " does not equal \"" + grpName + "\": \"" + dtpl.groupName(
+          grp) + "\"")
 
     def checkGroupPrio(dtpl: DocTemplateEntity, grp: String, grpPrio: Int) =
       assert(
         dtpl.groupPriority(grp) == grpPrio,
-        "Group priority for " + grp + " in " + dtpl.qualifiedName + " does not equal " + grpPrio + ": " + dtpl
-          .groupPriority(grp))
+        "Group priority for " + grp + " in " + dtpl.qualifiedName + " does not equal " + grpPrio + ": " + dtpl.groupPriority(
+          grp))
 
     val A = base._trait("A")
     val B = base._trait("B")

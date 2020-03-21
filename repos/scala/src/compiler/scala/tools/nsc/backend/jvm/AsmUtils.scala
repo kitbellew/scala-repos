@@ -57,8 +57,10 @@ object AsmUtils {
 
   def readClass(bytes: Array[Byte]): ClassNode = {
     val node = new ClassNode()
-    new ClassReader(bytes)
-      .accept(node, Array[Attribute](InlineInfoAttributePrototype), 0)
+    new ClassReader(bytes).accept(
+      node,
+      Array[Attribute](InlineInfoAttributePrototype),
+      0)
     node
   }
 
@@ -73,8 +75,9 @@ object AsmUtils {
 
   def textifyClassStably(bytes: Array[Byte]): Unit = {
     val node = new ClassNode()
-    new ClassReader(bytes)
-      .accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
+    new ClassReader(bytes).accept(
+      node,
+      ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
 
     node.fields = node.fields.asScala.sortBy(_.name).asJava
     node.methods = node.methods.asScala.sortBy(_.name).asJava

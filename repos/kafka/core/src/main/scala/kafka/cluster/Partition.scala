@@ -108,11 +108,12 @@ class Partition(
           val offsetMap = checkpoint.read
           if (!offsetMap.contains(TopicAndPartition(topic, partitionId)))
             info(
-              "No checkpointed highwatermark is found for partition [%s,%d]"
-                .format(topic, partitionId))
-          val offset = offsetMap
-            .getOrElse(TopicAndPartition(topic, partitionId), 0L)
-            .min(log.logEndOffset)
+              "No checkpointed highwatermark is found for partition [%s,%d]".format(
+                topic,
+                partitionId))
+          val offset =
+            offsetMap.getOrElse(TopicAndPartition(topic, partitionId), 0L).min(
+              log.logEndOffset)
           val localReplica =
             new Replica(replicaId, this, time, offset, Some(log))
           addReplicaIfNotExists(localReplica)
@@ -167,8 +168,9 @@ class Partition(
       } catch {
         case e: IOException =>
           fatal(
-            "Error deleting the log for partition [%s,%d]"
-              .format(topic, partitionId),
+            "Error deleting the log for partition [%s,%d]".format(
+              topic,
+              partitionId),
             e)
           Runtime.getRuntime().halt(1)
       }
@@ -198,8 +200,8 @@ class Partition(
       val newInSyncReplicas =
         partitionStateInfo.isr.asScala.map(r => getOrCreateReplica(r)).toSet
       // remove assigned replicas that have been removed by the controller
-      (assignedReplicas().map(_.brokerId) -- allReplicas)
-        .foreach(removeReplica(_))
+      (assignedReplicas().map(_.brokerId) -- allReplicas).foreach(
+        removeReplica(_))
       inSyncReplicas = newInSyncReplicas
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
@@ -216,9 +218,8 @@ class Partition(
         // construct the high watermark metadata for the new leader replica
         leaderReplica.convertHWToLocalOffsetMetadata()
         // reset log end offset for remote replicas
-        assignedReplicas
-          .filter(_.brokerId != localBrokerId)
-          .foreach(_.updateLogReadResult(LogReadResult.UnknownLogReadResult))
+        assignedReplicas.filter(_.brokerId != localBrokerId).foreach(
+          _.updateLogReadResult(LogReadResult.UnknownLogReadResult))
       }
       (maybeIncrementLeaderHW(leaderReplica), isNewLeader)
     }
@@ -245,8 +246,8 @@ class Partition(
       // add replicas that are new
       allReplicas.foreach(r => getOrCreateReplica(r))
       // remove assigned replicas that have been removed by the controller
-      (assignedReplicas().map(_.brokerId) -- allReplicas)
-        .foreach(removeReplica(_))
+      (assignedReplicas().map(_.brokerId) -- allReplicas).foreach(
+        removeReplica(_))
       inSyncReplicas = Set.empty[Replica]
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
@@ -347,8 +348,11 @@ class Partition(
           if (!r.isLocal)
             if (r.logEndOffset.messageOffset >= requiredOffset) {
               trace(
-                "Replica %d of %s-%d received offset %d"
-                  .format(r.brokerId, topic, partitionId, requiredOffset))
+                "Replica %d of %s-%d received offset %d".format(
+                  r.brokerId,
+                  topic,
+                  partitionId,
+                  requiredOffset))
               true
             } else
               false
@@ -357,8 +361,10 @@ class Partition(
         })
 
         trace(
-          "%d acks satisfied for %s-%d with acks = -1"
-            .format(numAcks, topic, partitionId))
+          "%d acks satisfied for %s-%d with acks = -1".format(
+            numAcks,
+            topic,
+            partitionId))
 
         val minIsr = leaderReplica.log.get.config.minInSyncReplicas
 
@@ -395,12 +401,14 @@ class Partition(
     val newHighWatermark =
       allLogEndOffsets.min(new LogOffsetMetadata.OffsetOrdering)
     val oldHighWatermark = leaderReplica.highWatermark
-    if (oldHighWatermark.messageOffset < newHighWatermark.messageOffset || oldHighWatermark
-          .onOlderSegment(newHighWatermark)) {
+    if (oldHighWatermark.messageOffset < newHighWatermark.messageOffset || oldHighWatermark.onOlderSegment(
+          newHighWatermark)) {
       leaderReplica.highWatermark = newHighWatermark
       debug(
-        "High watermark for partition [%s,%d] updated to %s"
-          .format(topic, partitionId, newHighWatermark))
+        "High watermark for partition [%s,%d] updated to %s".format(
+          topic,
+          partitionId,
+          newHighWatermark))
       true
     } else {
       debug(
@@ -546,12 +554,13 @@ class Partition(
       inSyncReplicas = newIsr
       zkVersion = newVersion
       trace(
-        "ISR updated to [%s] and zkVersion updated to [%d]"
-          .format(newIsr.mkString(","), zkVersion))
+        "ISR updated to [%s] and zkVersion updated to [%d]".format(
+          newIsr.mkString(","),
+          zkVersion))
     } else {
       info(
-        "Cached zkVersion [%d] not equal to that in zookeeper, skip updating ISR"
-          .format(zkVersion))
+        "Cached zkVersion [%d] not equal to that in zookeeper, skip updating ISR".format(
+          zkVersion))
     }
   }
 

@@ -141,9 +141,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       case Nil => echo(cmd + ": no such command.  Type :help for help.")
       case xs =>
         echo(
-          cmd + " is ambiguous: did you mean " + xs
-            .map(":" + _.name)
-            .mkString(" or ") + "?")
+          cmd + " is ambiguous: did you mean " + xs.map(":" + _.name).mkString(
+            " or ") + "?")
     }
     Result(keepRunning = true, None)
   }
@@ -567,8 +566,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       }
       if (intp.namedDefinedTerms.nonEmpty)
         echo(
-          "Forgetting all expression results and named terms: " + intp.namedDefinedTerms
-            .mkString(", "))
+          "Forgetting all expression results and named terms: " + intp.namedDefinedTerms.mkString(
+            ", "))
       if (intp.definedTypes.nonEmpty)
         echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
       if (destructive) createInterpreter() else reset()
@@ -726,11 +725,13 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       addedClasspath = ClassPath.join(addedClasspath, f.path)
       intp.addUrlsToClassPath(f.toURI.toURL)
       echo(
-        "Added '%s' to classpath."
-          .format(f.path, intp.global.classPath.asClassPathString))
+        "Added '%s' to classpath.".format(
+          f.path,
+          intp.global.classPath.asClassPathString))
       repldbg(
-        "Added '%s'.  Your new classpath is:\n\"%s\""
-          .format(f.path, intp.global.classPath.asClassPathString))
+        "Added '%s'.  Your new classpath is:\n\"%s\"".format(
+          f.path,
+          intp.global.classPath.asClassPathString))
     } else echo("The path '" + f + "' doesn't seem to exist.")
   }
 
@@ -768,10 +769,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     }
     def alreadyDefined(clsName: String) =
       intp.classLoader.tryToLoadClass(clsName).isDefined
-    val exists = entries
-      .filter(_.hasExtension("class"))
-      .map(classNameOf)
-      .exists(alreadyDefined)
+    val exists = entries.filter(_.hasExtension("class")).map(
+      classNameOf).exists(alreadyDefined)
 
     if (!f.exists) echo(s"The path '$f' doesn't seem to exist.")
     else if (exists)
@@ -782,11 +781,13 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       addedClasspath = ClassPath.join(addedClasspath, f.path)
       intp.addUrlsToClassPath(f.toURI.toURL)
       echo(
-        "Added '%s' to classpath."
-          .format(f.path, intp.global.classPath.asClassPathString))
+        "Added '%s' to classpath.".format(
+          f.path,
+          intp.global.classPath.asClassPathString))
       repldbg(
-        "Added '%s'.  Your new classpath is:\n\"%s\""
-          .format(f.path, intp.global.classPath.asClassPathString))
+        "Added '%s'.  Your new classpath is:\n\"%s\"".format(
+          f.path,
+          intp.global.classPath.asClassPathString))
     }
   }
 
@@ -1013,11 +1014,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           if (settings.debug)
             Console.println(
               s"Trying to instantiate an InteractiveReader from $className")
-          Class
-            .forName(className)
-            .getConstructor(classOf[Completer])
-            .newInstance(completer)
-            .asInstanceOf[InteractiveReader]
+          Class.forName(className).getConstructor(
+            classOf[Completer]).newInstance(completer).asInstanceOf[
+            InteractiveReader]
         }
 
       def mkReader(maker: ReaderMaker) =
@@ -1041,8 +1040,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {
           case (cls, Failure(e)) =>
-            s"  - $cls --> \n\t" + scala.tools.nsc.util
-              .stackTraceString(e) + "\n"
+            s"  - $cls --> \n\t" + scala.tools.nsc.util.stackTraceString(
+              e) + "\n"
           case (cls, Success(_)) => s"  - $cls OK"
         }
         Console.println(

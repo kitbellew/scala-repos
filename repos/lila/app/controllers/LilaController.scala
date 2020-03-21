@@ -228,8 +228,9 @@ private[controllers] trait LilaController
 
   protected def FormResult[A](form: Form[A])(op: A => Fu[Result])(implicit
       req: Request[_]): Fu[Result] =
-    form.bindFromRequest
-      .fold(form => fuccess(BadRequest(form.errors mkString "\n")), op)
+    form.bindFromRequest.fold(
+      form => fuccess(BadRequest(form.errors mkString "\n")),
+      op)
 
   protected def FormFuResult[A, B: Writeable: ContentTypeOf](form: Form[A])(
       err: Form[A] => Fu[B])(op: A => Fu[Result])(implicit req: Request[_]) =
@@ -303,8 +304,9 @@ private[controllers] trait LilaController
     negotiate(
       html = fuccess {
         implicit val req = ctx.req
-        Redirect(routes.Auth.signup) withCookies LilaCookie
-          .session(Env.security.api.AccessUri, req.uri)
+        Redirect(routes.Auth.signup) withCookies LilaCookie.session(
+          Env.security.api.AccessUri,
+          req.uri)
       },
       api = _ => unauthorizedApiResult.fuccess
     )
@@ -316,9 +318,9 @@ private[controllers] trait LilaController
     Forbidden("no permission")
 
   protected def ensureSessionId(req: RequestHeader)(res: Result): Result =
-    req.session.data
-      .contains(LilaCookie.sessionId)
-      .fold(res, res withCookies LilaCookie.makeSessionId(req))
+    req.session.data.contains(LilaCookie.sessionId).fold(
+      res,
+      res withCookies LilaCookie.makeSessionId(req))
 
   protected def negotiate(html: => Fu[Result], api: Int => Fu[Result])(implicit
       ctx: Context): Fu[Result] =

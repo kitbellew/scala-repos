@@ -40,9 +40,8 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
     if (!commentText.endsWith(expectedCommentEnd)) return false
     val containingFile: PsiFile = comment.getContainingFile
     val language: Language = comment.getParent.getLanguage
-    val lexer: Lexer = LanguageParserDefinitions.INSTANCE
-      .forLanguage(language)
-      .createLexer(containingFile.getProject)
+    val lexer: Lexer = LanguageParserDefinitions.INSTANCE.forLanguage(
+      language).createLexer(containingFile.getProject)
     val commentPrefix: String =
       if (docComment) commenter.getDocumentationCommentPrefix
       else commenter.getBlockCommentPrefix
@@ -68,8 +67,8 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
           commentText.substring(lexer.getTokenStart, lexer.getTokenEnd)
         val endOffset: Int = comment.getTextRange.getEndOffset
         if (text.endsWith(
-              expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText
-              .charAt(endOffset) == '\n') {
+              expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText.charAt(
+              endOffset) == '\n') {
           return true
         }
       }

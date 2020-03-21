@@ -271,8 +271,8 @@ class HistoryServerSuite
 
   test("relative links are prefixed with uiRoot (spark.ui.proxyBase)") {
     val proxyBaseBeforeTest = System.getProperty("spark.ui.proxyBase")
-    val uiRoot = Option(System.getenv("APPLICATION_WEB_PROXY_BASE"))
-      .getOrElse("/testwebproxybase")
+    val uiRoot = Option(System.getenv("APPLICATION_WEB_PROXY_BASE")).getOrElse(
+      "/testwebproxybase")
     val page = new HistoryPage(server)
     val request = mock[HttpServletRequest]
 
@@ -411,17 +411,15 @@ class HistoryServerSuite
       json match {
         case JNothing => Seq()
         case apps: JArray =>
-          apps
-            .filter(app => {
-              (app \ "attempts") match {
-                case attempts: JArray =>
-                  val state =
-                    (attempts.children.head \ "completed").asInstanceOf[JBool]
-                  state.value == completed
-                case _ => false
-              }
-            })
-            .map(app => (app \ "id").asInstanceOf[JString].values)
+          apps.filter(app => {
+            (app \ "attempts") match {
+              case attempts: JArray =>
+                val state =
+                  (attempts.children.head \ "completed").asInstanceOf[JBool]
+                state.value == completed
+              case _ => false
+            }
+          }).map(app => (app \ "id").asInstanceOf[JString].values)
         case _ => Seq()
       }
     }

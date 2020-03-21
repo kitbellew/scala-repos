@@ -45,16 +45,14 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         c <- categories
         p <- posts if c.id === p.category
       } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
-      _ <- mark("q1", q1.map(p => (p._1, p._2)).result)
-        .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
+      _ <- mark("q1", q1.map(p => (p._1, p._2)).result).map(
+        _ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       // Explicit inner join
       q2 = (for {
         (c, p) <- categories join posts on (_.id === _.category)
       } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
-      _ <- q2
-        .map(p => (p._1, p._2))
-        .result
-        .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
+      _ <- q2.map(p => (p._1, p._2)).result.map(
+        _ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       q3 = posts.flatMap(_.withCategory)
       _ <- mark("q3", q3.result).map(_ should (_.length == 20))
       q4 = (for {
@@ -68,8 +66,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       q5 = (for {
         c <- categories
       } yield (c, Rep.None[Int])).sortBy(_._1.id)
-      _ <- mark("q5", q5.result.map(_.map(_._1._1)))
-        .map(_ shouldBe List(1, 2, 3, 4))
+      _ <- mark("q5", q5.result.map(_.map(_._1._1))).map(
+        _ shouldBe List(1, 2, 3, 4))
     } yield ()
   }
 
@@ -113,9 +111,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         ((2, "b"), Some((3, "b"))),
         ((2, "b"), Some((2, "b"))))
       // Left outer, lift non-primitive value, then map to primitive
-      q4 = (xs joinLeft ys on (_.b === _.b))
-        .map { case (x, yo) => (x.a, yo.map(_.a)) }
-        .to[Set]
+      q4 = (xs joinLeft ys on (_.b === _.b)).map {
+        case (x, yo) => (x.a, yo.map(_.a))
+      }.to[Set]
       r4 <- mark("q4", q4.result)
       r4t: Set[(Int, Option[Int])] = r4
       _ = r4 shouldBe Set(
@@ -127,8 +125,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         (1, Some(1)),
         (5, None))
       // Nested left outer, lift non-primitive value
-      q5 = ((xs joinLeft ys on (_.b === _.b)) joinLeft ys on (_._1.b === _.b))
-        .to[Set]
+      q5 = ((xs joinLeft ys on (_.b === _.b)) joinLeft ys on (_._1.b === _.b)).to[
+        Set]
       r5 <- mark("q5", q5.result)
       r5t: Set[
         (((Int, String), Option[(Int, String)]), Option[(Int, String)])] = r5
@@ -174,9 +172,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         (None, (5, "c"))
       )
       // Right outer, lift non-primitive value, then map to primitive
-      q9 = (ys joinRight xs on (_.b === _.b))
-        .map { case (yo, x) => (yo.map(_.a), x.a) }
-        .to[Set]
+      q9 = (ys joinRight xs on (_.b === _.b)).map {
+        case (yo, x) => (yo.map(_.a), x.a)
+      }.to[Set]
       r9 <- mark("q9", q9.result)
       r9t: Set[(Option[Int], Int)] = r9
       _ = r9 shouldBe Set(
@@ -286,43 +284,41 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         q1 = for {
           (c, i) <- categories.sortBy(_.id).zipWithIndex
         } yield (c.id, i)
-        _ <- mark("q1", q1.result)
-          .map(_ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
+        _ <- mark("q1", q1.result).map(
+          _ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
         q2 = for {
           (c, p) <- categories.sortBy(_.id) zip posts.sortBy(_.category)
         } yield (c.id, p.category)
-        _ <- mark("q2", q2.result)
-          .map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 2)))
+        _ <- mark("q2", q2.result).map(
+          _ shouldBe List((1, -1), (2, 1), (3, 2), (4, 2)))
         q3 = for {
           (c, p) <- categories.sortBy(_.id) zip posts.sortBy(_.id)
         } yield (c.id, p.category)
-        _ <- mark("q3", q3.result)
-          .map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
+        _ <- mark("q3", q3.result).map(
+          _ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
         q4 = for {
-          res <- categories
-            .sortBy(_.id)
-            .zipWith(
-              posts.sortBy(_.id),
-              (c: Categories, p: Posts) => (c.id, p.category))
+          res <- categories.sortBy(_.id).zipWith(
+            posts.sortBy(_.id),
+            (c: Categories, p: Posts) => (c.id, p.category))
         } yield res
-        _ <- mark("q4", q4.result)
-          .map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
+        _ <- mark("q4", q4.result).map(
+          _ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
         q5 = for {
           (c, i) <- categories.sortBy(_.id).zipWithIndex
         } yield (c.id, i)
-        _ <- mark("q5", q5.result)
-          .map(_ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
+        _ <- mark("q5", q5.result).map(
+          _ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
         q5b = for {
           (c, i) <- categories.zipWithIndex
         } yield (c.id, i)
-        _ <- mark("q5b", q5b.result)
-          .map(_.map(_._2).toSet shouldBe Set(0L, 1L, 2L, 3L))
+        _ <- mark("q5b", q5b.result).map(
+          _.map(_._2).toSet shouldBe Set(0L, 1L, 2L, 3L))
         q6 = for {
           ((c, p), i) <- (categories.sortBy(_.id) zip posts.sortBy(
             _.id)).zipWithIndex
         } yield (c.id, p.category, i)
-        _ <- mark("q6", q6.result)
-          .map(_ shouldBe List((1, -1, 0), (2, 1, 1), (3, 2, 2), (4, 3, 3)))
+        _ <- mark("q6", q6.result).map(
+          _ shouldBe List((1, -1, 0), (2, 1, 1), (3, 2, 2), (4, 3, 3)))
       } yield ()
     }
 
@@ -382,9 +378,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       as ++= Seq(1, 2, 3),
       bs ++= Seq(1, 2, 4, 5),
       cs ++= Seq(1, 2, 4, 6),
-      q1.result
-        .named("q1")
-        .map(_.toSet shouldBe Set((1, Some(1)), (2, Some(2)), (3, None))),
+      q1.result.named("q1").map(
+        _.toSet shouldBe Set((1, Some(1)), (2, Some(2)), (3, None))),
       q2.result.named("q2").map(_.toSet shouldBe Set((1, 1), (2, 2))),
       q3.result.named("q3").map(_.toSet shouldBe Set((1, 1), (2, 2)))
     )

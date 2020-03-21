@@ -58,10 +58,8 @@ class FlowSplitAfterSpec extends AkkaSpec {
         SubstreamCancelStrategy.drain) {
 
     val source = Source(1 to elementCount)
-    val groupStream = source
-      .splitAfter(substreamCancelStrategy)(_ == splitAfter)
-      .lift
-      .runWith(Sink.asPublisher(false))
+    val groupStream = source.splitAfter(substreamCancelStrategy)(
+      _ == splitAfter).lift.runWith(Sink.asPublisher(false))
     val masterSubscriber = TestSubscriber.manualProbe[Source[Int, _]]()
 
     groupStream.subscribe(masterSubscriber)
@@ -129,14 +127,11 @@ class FlowSplitAfterSpec extends AkkaSpec {
 
     "work with single elem splits" in assertAllStagesStopped {
       Await.result(
-        Source(1 to 10)
-          .splitAfter(_ ⇒ true)
-          .lift
+        Source(1 to 10).splitAfter(_ ⇒ true).lift
           .mapAsync(1)(
             _.runWith(Sink.head)
           ) // Please note that this line *also* implicitly asserts nonempty substreams
-          .grouped(10)
-          .runWith(Sink.head),
+          .grouped(10).runWith(Sink.head),
         3.second
       ) should ===(1 to 10)
     }
@@ -176,8 +171,7 @@ class FlowSplitAfterSpec extends AkkaSpec {
     "fail stream when splitAfter function throws" in assertAllStagesStopped {
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val exc = TE("test")
-      val publisher = Source
-        .fromPublisher(publisherProbeProbe)
+      val publisher = Source.fromPublisher(publisherProbeProbe)
         .splitAfter(elem ⇒ if (elem == 3) throw exc else elem % 3 == 0)
         .lift
         .runWith(Sink.asPublisher(false))
@@ -213,8 +207,7 @@ class FlowSplitAfterSpec extends AkkaSpec {
       pending
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val exc = TE("test")
-      val publisher = Source
-        .fromPublisher(publisherProbeProbe)
+      val publisher = Source.fromPublisher(publisherProbeProbe)
         .splitAfter(elem ⇒ if (elem == 3) throw exc else elem % 3 == 0)
         .lift
         .withAttributes(ActorAttributes.supervisionStrategy(resumingDecider))
@@ -265,12 +258,8 @@ class FlowSplitAfterSpec extends AkkaSpec {
       val up = TestPublisher.manualProbe[Int]()
       val down = TestSubscriber.manualProbe[Source[Int, NotUsed]]()
 
-      val flowSubscriber = Source
-        .asSubscriber[Int]
-        .splitAfter(_ % 3 == 0)
-        .lift
-        .to(Sink.fromSubscriber(down))
-        .run()
+      val flowSubscriber = Source.asSubscriber[Int].splitAfter(
+        _ % 3 == 0).lift.to(Sink.fromSubscriber(down)).run()
 
       val downstream = down.expectSubscription()
       downstream.cancel()

@@ -616,8 +616,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     (req: Req, parameterName: String) =>
       if (parameterName.startsWith("F"))
         logger.warn(
-          "Unmapped Lift-like parameter seen in request [%s]: %s"
-            .format(req.uri, parameterName))
+          "Unmapped Lift-like parameter seen in request [%s]: %s".format(
+            req.uri,
+            parameterName))
   }) {}
 
   /**
@@ -2411,10 +2412,8 @@ trait FormVendor {
       case Some(x :: _) => Full(x.func.asInstanceOf[(T, T => Any) => NodeSeq])
       case _ =>
         if (globalForms.containsKey(name)) {
-          globalForms
-            .get(name)
-            .headOption
-            .map(_.func.asInstanceOf[(T, T => Any) => NodeSeq])
+          globalForms.get(name).headOption.map(
+            _.func.asInstanceOf[(T, T => Any) => NodeSeq])
         } else Empty
     }
   }

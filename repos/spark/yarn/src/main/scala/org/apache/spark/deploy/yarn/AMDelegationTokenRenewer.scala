@@ -139,12 +139,11 @@ private[yarn] class AMDelegationTokenRenewer(
       val credentialsPath = new Path(credentialsFile)
       val thresholdTime =
         System.currentTimeMillis() - (daysToKeepFiles days).toMillis
-      hadoopUtil
-        .listFilesSorted(
-          remoteFs,
-          credentialsPath.getParent,
-          credentialsPath.getName,
-          SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)
+      hadoopUtil.listFilesSorted(
+        remoteFs,
+        credentialsPath.getParent,
+        credentialsPath.getName,
+        SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)
         .dropRight(numFilesToKeep)
         .takeWhile(_.getModificationTime < thresholdTime)
         .foreach(x => remoteFs.delete(x.getPath, true))
@@ -189,8 +188,10 @@ private[yarn] class AMDelegationTokenRenewer(
       override def run(): Void = {
         val nns = YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) + dst
         hadoopUtil.obtainTokensForNamenodes(nns, freshHadoopConf, tempCreds)
-        hadoopUtil
-          .obtainTokenForHiveMetastore(sparkConf, freshHadoopConf, tempCreds)
+        hadoopUtil.obtainTokenForHiveMetastore(
+          sparkConf,
+          freshHadoopConf,
+          tempCreds)
         hadoopUtil.obtainTokenForHBase(sparkConf, freshHadoopConf, tempCreds)
         null
       }
@@ -202,14 +203,12 @@ private[yarn] class AMDelegationTokenRenewer(
     // was restarted, then the lastCredentialsFileSuffix might be > 0, so find the newest file
     // and update the lastCredentialsFileSuffix.
     if (lastCredentialsFileSuffix == 0) {
-      hadoopUtil
-        .listFilesSorted(
-          remoteFs,
-          credentialsPath.getParent,
-          credentialsPath.getName,
-          SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)
-        .lastOption
-        .foreach { status =>
+      hadoopUtil.listFilesSorted(
+        remoteFs,
+        credentialsPath.getParent,
+        credentialsPath.getName,
+        SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)
+        .lastOption.foreach { status =>
           lastCredentialsFileSuffix =
             hadoopUtil.getSuffixForCredentialsPath(status.getPath)
         }

@@ -56,8 +56,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         }
         result
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
 
   @expand
@@ -92,8 +92,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           i += 1
         }
       }
-      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]].register(
+        this)
     }
 
   @expand
@@ -116,8 +116,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           a(i) = op(a(i), v)
         }
       }
-      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]].register(
+        this)
     }
 
   @expand
@@ -170,8 +170,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
         result
       }
-      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]].register(
+        this)
     }
 
   @expand
@@ -212,8 +212,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         }
         result
       }
-      implicitly[BinaryRegistry[T, Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[BinaryRegistry[T, Vector[T], Op.type, Vector[T]]].register(
+        this)
     }
 
   @expand
@@ -264,8 +264,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         }
         result
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]].register(this)
     }
   }
 
@@ -314,8 +314,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           }
         }
       }
-      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
-        .register(this)
+      implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]].register(
+        this)
     }
 
   @expand
@@ -414,8 +414,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         result
 
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]].register(this)
     }
   }
 
@@ -444,8 +444,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         result
 
       }
-      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
-        .register(this)
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]].register(this)
     }
 
   }
@@ -518,8 +518,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           i += 1
         }
       }
-      implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
-        .register(this)
+      implicitly[
+        TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]].register(
+        this)
     }
   }
 
@@ -538,8 +539,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           cforRange(0 until x.length) { i => y(i) += x(i) * s }
         }
       }
-      implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
-        .register(this)
+      implicitly[
+        TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]].register(
+        this)
     }
   }
 
@@ -711,8 +713,11 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
       def apply(a: DenseVector[Float], b: DenseVector[Float]) = {
         canSaxpy(a, 1.0f, b)
       }
-      implicitly[BinaryUpdateRegistry[Vector[Float], Vector[Float], OpAdd.type]]
-        .register(this)
+      implicitly[
+        BinaryUpdateRegistry[
+          Vector[Float],
+          Vector[Float],
+          OpAdd.type]].register(this)
     }
   }
 
@@ -743,9 +748,11 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
       cforRange(0 until x.length) { i => y(i) += x(i) * a }
     }
   }
-  implicitly[
-    TernaryUpdateRegistry[Vector[Float], Float, Vector[Float], scaleAdd.type]]
-    .register(canSaxpy)
+  implicitly[TernaryUpdateRegistry[
+    Vector[Float],
+    Float,
+    Vector[Float],
+    scaleAdd.type]].register(canSaxpy)
 
   implicit val canAddF: OpAdd.Impl2[
     DenseVector[Float],
@@ -753,9 +760,11 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
     DenseVector[Float]] = {
     pureFromUpdate_Float(canAddIntoF)
   }
-  implicitly[
-    BinaryRegistry[Vector[Float], Vector[Float], OpAdd.type, Vector[Float]]]
-    .register(canAddF)
+  implicitly[BinaryRegistry[
+    Vector[Float],
+    Vector[Float],
+    OpAdd.type,
+    Vector[Float]]].register(canAddF)
 
   implicit val canSubIntoF
       : OpSub.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] = {
@@ -763,8 +772,11 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
       def apply(a: DenseVector[Float], b: DenseVector[Float]) = {
         canSaxpy(a, -1.0f, b)
       }
-      implicitly[BinaryUpdateRegistry[Vector[Float], Vector[Float], OpSub.type]]
-        .register(this)
+      implicitly[
+        BinaryUpdateRegistry[
+          Vector[Float],
+          Vector[Float],
+          OpSub.type]].register(this)
     }
 
   }
@@ -817,9 +829,11 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
           blas.sdot(a.length, b.data, boff, b.stride, a.data, aoff, a.stride)
         }
       }
-      implicitly[
-        BinaryRegistry[Vector[Float], Vector[Float], OpMulInner.type, Float]]
-        .register(this)
+      implicitly[BinaryRegistry[
+        Vector[Float],
+        Vector[Float],
+        OpMulInner.type,
+        Float]].register(this)
     }
   }
 }

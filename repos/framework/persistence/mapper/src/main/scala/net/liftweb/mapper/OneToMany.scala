@@ -37,8 +37,8 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     new FieldFinder[MappedOneToManyBase[Rec]](
       getSingleton,
       net.liftweb.common.Logger(classOf[OneToMany[K, T]])
-    ).accessorMethods map (_.invoke(this)
-      .asInstanceOf[MappedOneToManyBase[Rec]])
+    ).accessorMethods map (_.invoke(this).asInstanceOf[
+      MappedOneToManyBase[Rec]])
   }
 
   /**
@@ -94,10 +94,9 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
           val ret =
             meta.findAll(By(foreign, primaryKeyField.get) :: qp.toList: _*)
           for (child <- ret) {
-            foreign
-              .actualField(child)
-              .asInstanceOf[MappedForeignKey[K, O, T]]
-              .primeObj(net.liftweb.common.Full(OneToMany.this: T))
+            foreign.actualField(child).asInstanceOf[
+              MappedForeignKey[K, O, T]].primeObj(
+              net.liftweb.common.Full(OneToMany.this: T))
           }
           ret
         },
@@ -250,9 +249,9 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       unlinked = Nil
       delegate = delegate.filter { e =>
         foreign(e).get == OneToMany.this.primaryKeyField.get ||
-        foreign(e).obj
-          .map(_ eq OneToMany.this)
-          .openOr(false) // obj is this but not Empty
+        foreign(e).obj.map(_ eq OneToMany.this).openOr(
+          false
+        ) // obj is this but not Empty
       }
       delegate.forall(_.save)
     }

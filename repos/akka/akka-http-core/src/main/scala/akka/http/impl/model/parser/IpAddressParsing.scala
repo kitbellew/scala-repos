@@ -44,8 +44,12 @@ private[parser] trait IpAddressParsing { this: Parser ⇒
     def ch16o(ix: Int) = rule { optional(':' ~ !':') ~ (h16(ix) | zero2(ix)) }
     def ls32 =
       rule {
-        h16(12) ~ ':' ~ h16(14) | `ip-v4-address` ~> (System
-          .arraycopy(_, 0, a, 12, 4))
+        h16(12) ~ ':' ~ h16(14) | `ip-v4-address` ~> (System.arraycopy(
+          _,
+          0,
+          a,
+          12,
+          4))
       }
     def cc(ix: Int) = rule { ':' ~ ':' ~ zero2(ix) }
     def tail2 = rule { h16c(2) ~ tail4 }

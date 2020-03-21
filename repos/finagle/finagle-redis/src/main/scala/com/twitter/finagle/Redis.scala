@@ -71,8 +71,8 @@ object Redis extends Client[Command, Reply] {
         transport: Transport[In, Out]): Service[Command, Reply] =
       new PipeliningDispatcher(
         transport,
-        params[finagle.param.Stats].statsReceiver
-          .scope(GenSerialClientDispatcher.StatsScope)
+        params[finagle.param.Stats].statsReceiver.scope(
+          GenSerialClientDispatcher.StatsScope)
       )
 
     // Java-friendly forwarders

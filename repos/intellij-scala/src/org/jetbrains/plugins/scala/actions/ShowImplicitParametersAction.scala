@@ -253,9 +253,8 @@ class ShowImplicitParametersAction
           } else {
             succeeded.set(false)
           }
-          IdeDocumentHistory
-            .getInstance(project)
-            .includeCurrentCommandAsNavigation()
+          IdeDocumentHistory.getInstance(
+            project).includeCurrentCommandAsNavigation()
         }
       },
       "Navigate",
@@ -291,23 +290,19 @@ class ShowImplicitParametersAction
     panel.add(scrollPane, BorderLayout.CENTER)
 
     val F4: Array[Shortcut] =
-      ActionManager.getInstance
-        .getAction(IdeActions.ACTION_EDIT_SOURCE)
-        .getShortcutSet
-        .getShortcuts
+      ActionManager.getInstance.getAction(
+        IdeActions.ACTION_EDIT_SOURCE).getShortcutSet.getShortcuts
     val ENTER: Array[Shortcut] =
       CustomShortcutSet.fromString("ENTER").getShortcuts
     val shortcutSet: CustomShortcutSet = new CustomShortcutSet(
       ArrayUtil.mergeArrays(F4, ENTER): _*)
 
-    val popup: JBPopup = JBPopupFactory
-      .getInstance()
-      .createComponentPopupBuilder(panel, jTree)
-      .setRequestFocus(true)
-      .setResizable(true)
-      .setTitle("Implicit parameters:")
-      .setMinSize(new Dimension(minSize.width + 500, minSize.height))
-      .createPopup
+    val popup: JBPopup =
+      JBPopupFactory.getInstance().createComponentPopupBuilder(
+        panel,
+        jTree).setRequestFocus(true).setResizable(true).setTitle(
+        "Implicit parameters:").setMinSize(
+        new Dimension(minSize.width + 500, minSize.height)).createPopup
 
     new AnAction {
       def actionPerformed(e: AnActionEvent) {

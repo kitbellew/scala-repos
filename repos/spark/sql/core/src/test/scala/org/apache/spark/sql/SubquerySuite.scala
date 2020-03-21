@@ -55,8 +55,7 @@ class SubquerySuite extends QueryTest with SharedSQLContext {
   test("runtime error when the number of rows is greater than 1") {
     val error2 = intercept[RuntimeException] {
       sql(
-        "select (select a from (select 1 as a union all select 2 as a) t) as b")
-        .collect()
+        "select (select a from (select 1 as a union all select 2 as a) t) as b").collect()
     }
     assert(
       error2.getMessage.contains(
@@ -69,8 +68,7 @@ class SubquerySuite extends QueryTest with SharedSQLContext {
 
     assertResult(Array(Row(4))) {
       sql(
-        "select (select key from subqueryData where key > 2 order by key limit 1) + 1")
-        .collect()
+        "select (select key from subqueryData where key > 2 order by key limit 1) + 1").collect()
     }
 
     assertResult(Array(Row(-3))) {

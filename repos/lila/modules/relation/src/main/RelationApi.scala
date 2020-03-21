@@ -30,15 +30,12 @@ final class RelationApi(
   import RelationRepo.makeId
 
   def fetchRelation(u1: ID, u2: ID): Fu[Option[Relation]] =
-    coll
-      .find(
-        BSONDocument("u1" -> u1, "u2" -> u2),
-        BSONDocument("r" -> true, "_id" -> false)
-      )
-      .one[BSONDocument]
-      .map {
-        _.flatMap(_.getAs[Boolean]("r"))
-      }
+    coll.find(
+      BSONDocument("u1" -> u1, "u2" -> u2),
+      BSONDocument("r" -> true, "_id" -> false)
+    ).one[BSONDocument].map {
+      _.flatMap(_.getAs[Boolean]("r"))
+    }
 
   def fetchFollowing = RelationRepo following _
 
@@ -47,35 +44,32 @@ final class RelationApi(
   def fetchBlocking = RelationRepo blocking _
 
   def fetchFriends(userId: ID) =
-    coll
-      .aggregate(
-        Match(
+    coll.aggregate(
+      Match(
+        BSONDocument(
+          "$or" -> BSONArray(
+            BSONDocument("u1" -> userId),
+            BSONDocument("u2" -> userId)),
+          "r" -> Follow
+        )),
+      List(
+        Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
+        Project(
           BSONDocument(
-            "$or" -> BSONArray(
-              BSONDocument("u1" -> userId),
-              BSONDocument("u2" -> userId)),
-            "r" -> Follow
-          )),
-        List(
-          Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
-          Project(BSONDocument(
             "_id" -> BSONDocument("$setIntersection" -> BSONArray("$u1", "$u2"))
           ))
-        )
       )
-      .map {
-        ~_.documents.headOption.flatMap(_.getAs[Set[String]]("_id")) - userId
-      }
+    ).map {
+      ~_.documents.headOption.flatMap(_.getAs[Set[String]]("_id")) - userId
+    }
 
   def fetchFollows(u1: ID, u2: ID) =
-    coll
-      .count(BSONDocument("_id" -> makeId(u1, u2), "r" -> Follow).some)
-      .map(0 !=)
+    coll.count(BSONDocument("_id" -> makeId(u1, u2), "r" -> Follow).some).map(
+      0 !=)
 
   def fetchBlocks(u1: ID, u2: ID) =
-    coll
-      .count(BSONDocument("_id" -> makeId(u1, u2), "r" -> Block).some)
-      .map(0 !=)
+    coll.count(BSONDocument("_id" -> makeId(u1, u2), "r" -> Block).some).map(
+      0 !=)
 
   def fetchAreFriends(u1: ID, u2: ID) =
     fetchFollows(u1, u2) flatMap { _ ?? fetchFollows(u2, u1) }
@@ -133,9 +127,8 @@ final class RelationApi(
                 countFollowersCache remove u2
                 countFollowingCache remove u1
                 reloadOnlineFriends(u1, u2)
-                timeline ! Propagate(FollowUser(u1, u2))
-                  .toFriendsOf(u1)
-                  .toUsers(List(u2))
+                timeline ! Propagate(FollowUser(u1, u2)).toFriendsOf(
+                  u1).toUsers(List(u2))
                 lila.mon.relation.follow()
               }
           }

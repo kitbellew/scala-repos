@@ -28,12 +28,10 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
 
   private def saveSteps(pov: Pov, steps: Forecast.Steps): Funit = {
     lila.mon.round.forecast.create()
-    coll
-      .update(
-        BSONDocument("_id" -> pov.fullId),
-        Forecast(_id = pov.fullId, steps = steps, date = DateTime.now).truncate,
-        upsert = true)
-      .void
+    coll.update(
+      BSONDocument("_id" -> pov.fullId),
+      Forecast(_id = pov.fullId, steps = steps, date = DateTime.now).truncate,
+      upsert = true).void
   }
 
   def save(pov: Pov, steps: Forecast.Steps): Funit =
@@ -60,9 +58,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
       }
 
   def loadForDisplay(pov: Pov): Fu[Option[Forecast]] =
-    pov.forecastable ?? coll
-      .find(BSONDocument("_id" -> pov.fullId))
-      .one[Forecast] flatMap {
+    pov.forecastable ?? coll.find(BSONDocument("_id" -> pov.fullId)).one[
+      Forecast] flatMap {
       case None => fuccess(none)
       case Some(fc) =>
         if (firstStep(fc.steps).exists(_.ply != pov.game.turns + 1))
@@ -71,9 +68,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
     }
 
   def loadForPlay(pov: Pov): Fu[Option[Forecast]] =
-    pov.game.forecastable ?? coll
-      .find(BSONDocument("_id" -> pov.fullId))
-      .one[Forecast] flatMap {
+    pov.game.forecastable ?? coll.find(BSONDocument("_id" -> pov.fullId)).one[
+      Forecast] flatMap {
       case None => fuccess(none)
       case Some(fc) =>
         if (firstStep(fc.steps).exists(_.ply != pov.game.turns))
@@ -102,12 +98,10 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
     steps.headOption.flatMap(_.headOption)
 
   def clearGame(g: Game) =
-    coll
-      .remove(
-        BSONDocument(
-          "_id" -> BSONDocument("$in" -> chess.Color.all.map(g.fullIdOf))
-        ))
-      .void
+    coll.remove(
+      BSONDocument(
+        "_id" -> BSONDocument("$in" -> chess.Color.all.map(g.fullIdOf))
+      )).void
 
   def clearPov(pov: Pov) = coll.remove(BSONDocument("_id" -> pov.fullId)).void
 }

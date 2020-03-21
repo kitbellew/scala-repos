@@ -44,8 +44,8 @@ class EnsembleTilePane extends EnsembleExample {
   def getContent = {
     // Image for buttons
     val image = new Image(
-      this.getClass
-        .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+      this.getClass.getResourceAsStream(
+        "/scalafx/ensemble/images/icon-48x48.png"))
 
     // Create buttons
     val buttons =

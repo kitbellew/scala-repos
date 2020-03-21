@@ -25,8 +25,7 @@ class Utf8CodingSpecs
         cp >= Utf8Encoder.SurrogateFirst && cp <= 0xdfff
 
       val cps =
-        Gen
-          .choose(0, 0x10ffff)
+        Gen.choose(0, 0x10ffff)
           .filter(!isSurrogate(_))
 
       def codePointAsString(cp: Int): String = {
@@ -51,8 +50,7 @@ class Utf8CodingSpecs
       str.map(ch ⇒ new String(Array(ch)))
     ) // chunk in smallest chunks possible
       .transform(() ⇒ new Utf8Encoder)
-      .runFold(ByteString.empty)(_ ++ _)
-      .awaitResult(1.second)
+      .runFold(ByteString.empty)(_ ++ _).awaitResult(1.second)
 
   def decodeUtf8(bytes: ByteString): String = {
     val builder = new StringBuilder

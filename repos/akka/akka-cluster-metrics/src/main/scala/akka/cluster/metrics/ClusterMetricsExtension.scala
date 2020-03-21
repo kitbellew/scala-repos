@@ -43,26 +43,25 @@ class ClusterMetricsExtension(system: ExtendedActorSystem) extends Extension {
     *
     * Supervision strategy.
     */
-  private[metrics] val strategy = system.dynamicAccess
-    .createInstanceFor[SupervisorStrategy](
+  private[metrics] val strategy =
+    system.dynamicAccess.createInstanceFor[SupervisorStrategy](
       SupervisorStrategyProvider,
       immutable.Seq(classOf[Config] -> SupervisorStrategyConfiguration))
-    .getOrElse {
-      val log: LoggingAdapter = Logging(system, getClass.getName)
-      log.error(
-        s"Configured strategy provider ${SupervisorStrategyProvider} failed to load, using default ${classOf[
-          ClusterMetricsStrategy].getName}.")
-      new ClusterMetricsStrategy(SupervisorStrategyConfiguration)
-    }
+      .getOrElse {
+        val log: LoggingAdapter = Logging(system, getClass.getName)
+        log.error(
+          s"Configured strategy provider ${SupervisorStrategyProvider} failed to load, using default ${classOf[
+            ClusterMetricsStrategy].getName}.")
+        new ClusterMetricsStrategy(SupervisorStrategyConfiguration)
+      }
 
   /**
     * Supervisor actor.
     * Accepts subtypes of [[CollectionControlMessage]]s to manage metrics collection at runtime.
     */
   val supervisor = system.systemActorOf(
-    Props(classOf[ClusterMetricsSupervisor])
-      .withDispatcher(MetricsDispatcher)
-      .withDeploy(Deploy.local),
+    Props(classOf[ClusterMetricsSupervisor]).withDispatcher(
+      MetricsDispatcher).withDeploy(Deploy.local),
     SupervisorName)
 
   /**
@@ -78,8 +77,9 @@ class ClusterMetricsExtension(system: ExtendedActorSystem) extends Extension {
     * events published by extension on the system event bus.
     */
   def unsubscribe(metricsListenter: ActorRef): Unit = {
-    system.eventStream
-      .unsubscribe(metricsListenter, classOf[ClusterMetricsEvent])
+    system.eventStream.unsubscribe(
+      metricsListenter,
+      classOf[ClusterMetricsEvent])
   }
 
 }

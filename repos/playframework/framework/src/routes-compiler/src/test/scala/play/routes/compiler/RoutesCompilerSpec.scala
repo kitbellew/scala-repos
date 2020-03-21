@@ -54,9 +54,8 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
     "check if there are no routes using overloaded handler methods" in withTempDir {
       tmp =>
         val file = new File(
-          this.getClass.getClassLoader
-            .getResource("duplicateHandlers.routes")
-            .toURI)
+          this.getClass.getClassLoader.getResource(
+            "duplicateHandlers.routes").toURI)
         RoutesCompiler.compile(
           RoutesCompilerTask(file, Seq.empty, true, true, false),
           StaticRoutesGenerator,

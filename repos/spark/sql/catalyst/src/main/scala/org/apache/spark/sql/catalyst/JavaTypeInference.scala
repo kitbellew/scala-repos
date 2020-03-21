@@ -252,17 +252,17 @@ object JavaTypeInference {
           case _                                => None
         }
 
-        primitiveMethod
-          .map { method => Invoke(getPath, method, ObjectType(c)) }
-          .getOrElse {
-            Invoke(
-              MapObjects(
-                p => constructorFor(typeToken.getComponentType, Some(p)),
-                getPath,
-                inferDataType(elementType)._1),
-              "array",
-              ObjectType(c))
-          }
+        primitiveMethod.map { method =>
+          Invoke(getPath, method, ObjectType(c))
+        }.getOrElse {
+          Invoke(
+            MapObjects(
+              p => constructorFor(typeToken.getComponentType, Some(p)),
+              getPath,
+              inferDataType(elementType)._1),
+            "array",
+            ObjectType(c))
+        }
 
       case c if listType.isAssignableFrom(typeToken) =>
         val et = elementType(typeToken)
@@ -352,8 +352,8 @@ object JavaTypeInference {
     */
   def extractorsFor(beanClass: Class[_]): CreateNamedStruct = {
     val inputObject = BoundReference(0, ObjectType(beanClass), nullable = true)
-    extractorFor(inputObject, TypeToken.of(beanClass))
-      .asInstanceOf[CreateNamedStruct]
+    extractorFor(inputObject, TypeToken.of(beanClass)).asInstanceOf[
+      CreateNamedStruct]
   }
 
   private def extractorFor(

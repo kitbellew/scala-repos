@@ -74,11 +74,13 @@ class RSIIndicator(rsiPeriod: Int = 14) extends BaseIndicator {
 
     //Get the sum of positive/negative Frame
     val avgPosSeries =
-      posSeries
-        .rolling[Double](rsiPeriod, (f: Series[DateTime, Double]) => f.mean)
+      posSeries.rolling[Double](
+        rsiPeriod,
+        (f: Series[DateTime, Double]) => f.mean)
     val avgNegSeries =
-      negSeries
-        .rolling[Double](rsiPeriod, (f: Series[DateTime, Double]) => f.mean)
+      negSeries.rolling[Double](
+        rsiPeriod,
+        (f: Series[DateTime, Double]) => f.mean)
 
     val rsSeries = avgPosSeries / avgNegSeries
     rsSeries

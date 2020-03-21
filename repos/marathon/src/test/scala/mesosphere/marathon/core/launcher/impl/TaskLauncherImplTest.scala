@@ -27,8 +27,9 @@ class TaskLauncherImplTest extends MarathonSpec {
     Collections.singleton[Protos.OfferID](offerId)
   private[this] def launch(taskInfoBuilder: TaskInfo.Builder): TaskOp.Launch = {
     val taskInfo = taskInfoBuilder.build()
-    new TaskOpFactoryHelper(Some("principal"), Some("role"))
-      .launch(taskInfo, MarathonTestHelper.makeTaskFromTaskInfo(taskInfo))
+    new TaskOpFactoryHelper(Some("principal"), Some("role")).launch(
+      taskInfo,
+      MarathonTestHelper.makeTaskFromTaskInfo(taskInfo))
   }
   private[this] val launch1 = launch(MarathonTestHelper.makeOneCPUTask("task1"))
   private[this] val launch2 = launch(MarathonTestHelper.makeOneCPUTask("task2"))
@@ -50,8 +51,10 @@ class TaskLauncherImplTest extends MarathonSpec {
 
     assert(!launcher.acceptOffer(offerId, ops))
 
-    verify(driverHolder.driver.get)
-      .acceptOffers(offerIdAsJava, opsAsJava, filter)
+    verify(driverHolder.driver.get).acceptOffers(
+      offerIdAsJava,
+      opsAsJava,
+      filter)
   }
 
   test("successful launchTasks") {
@@ -60,8 +63,10 @@ class TaskLauncherImplTest extends MarathonSpec {
 
     assert(launcher.acceptOffer(offerId, ops))
 
-    verify(driverHolder.driver.get)
-      .acceptOffers(offerIdAsJava, opsAsJava, filter)
+    verify(driverHolder.driver.get).acceptOffers(
+      offerIdAsJava,
+      opsAsJava,
+      filter)
   }
 
   test("declineOffer without driver") {
@@ -73,8 +78,9 @@ class TaskLauncherImplTest extends MarathonSpec {
   test("declineOffer with driver") {
     launcher.declineOffer(offerId, refuseMilliseconds = None)
 
-    verify(driverHolder.driver.get)
-      .declineOffer(offerId, Protos.Filters.getDefaultInstance)
+    verify(driverHolder.driver.get).declineOffer(
+      offerId,
+      Protos.Filters.getDefaultInstance)
   }
 
   test("declineOffer with driver and defined refuse seconds") {

@@ -219,24 +219,10 @@ class ZipperTests {
 
     val z2 = dept.toZipper
 
-    val z3 = z2.down
-      .put("King Agamemnon")
-      .right
-      .put(8000)
-      .up
-      .right
-      .down
-      .right
-      .down
-      .right
-      .put(3000)
-      .up
-      .right
-      .down
-      .right
-      .modify(_ * 2)
-      .root
-      .reify
+    val z3 =
+      z2.down.put("King Agamemnon").right.put(
+        8000).up.right.down.right.down.right.put(
+        3000).up.right.down.right.modify(_ * 2).root.reify
     typed[D](z3)
     assertEquals(
       Dept(

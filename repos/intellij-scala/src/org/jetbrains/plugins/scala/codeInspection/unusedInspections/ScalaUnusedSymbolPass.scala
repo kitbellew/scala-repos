@@ -69,9 +69,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
   def doApplyInformationToEditor() {
     file match {
       case sFile: ScalaFile
-          if HighlightingLevelManager
-            .getInstance(file.getProject)
-            .shouldInspect(file) =>
+          if HighlightingLevelManager.getInstance(
+            file.getProject).shouldInspect(file) =>
         processScalaFile(sFile)
         import scala.collection.JavaConversions._
         UpdateHighlightersUtil.setHighlightersToEditor(
@@ -113,9 +112,9 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
   }
 
   def readConfig(sFile: ScalaFile): UnusedConfig = {
-    val profile: InspectionProfile = InspectionProjectProfileManager
-      .getInstance(myProject)
-      .getInspectionProfile
+    val profile: InspectionProfile =
+      InspectionProjectProfileManager.getInstance(
+        myProject).getInspectionProfile
     def isEnabled(shortName: String) =
       profile.isToolEnabled(HighlightDisplayKey.find(shortName), sFile)
     def severity(shortName: String) = {
@@ -224,11 +223,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
           ("var could be a val", None)
       }
       val severity = state.config.localAssignSeverity
-      val start = declElementHolder
-        .asInstanceOf[ScVariableDefinition]
-        .varKeyword
-        .getTextRange
-        .getStartOffset
+      val start = declElementHolder.asInstanceOf[
+        ScVariableDefinition].varKeyword.getTextRange.getStartOffset
       val end = declElementHolder.getTextRange.getEndOffset
       val range = TextRange.create(start, end)
       val annotation = state.annotationHolder.createAnnotation(
@@ -312,7 +308,8 @@ class VarToValFix(varDef: ScVariableDefinition, name: Option[String])
     if (!varDef.isValid) return
     if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
     varDef.replace(
-      ScalaPsiElementFactory
-        .createValFromVarDefinition(varDef, varDef.getManager))
+      ScalaPsiElementFactory.createValFromVarDefinition(
+        varDef,
+        varDef.getManager))
   }
 }

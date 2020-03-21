@@ -30,10 +30,8 @@ object RunServer extends Logging {
       core: File,
       em: EngineManifest,
       engineInstanceId: String): Int = {
-    val pioEnvVars = sys.env
-      .filter(kv => kv._1.startsWith("PIO_"))
-      .map(kv => s"${kv._1}=${kv._2}")
-      .mkString(",")
+    val pioEnvVars = sys.env.filter(kv => kv._1.startsWith("PIO_")).map(kv =>
+      s"${kv._1}=${kv._2}").mkString(",")
 
     val sparkHome =
       ca.common.sparkHome.getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
@@ -76,8 +74,8 @@ object RunServer extends Logging {
 
     val jarFiles = (em.files ++ Option(
       new File(ca.common.pioHome.get, "plugins")
-        .listFiles()).getOrElse(Array.empty[File]).map(_.getAbsolutePath))
-      .mkString(",")
+        .listFiles()).getOrElse(Array.empty[File]).map(
+      _.getAbsolutePath)).mkString(",")
 
     val sparkSubmit =
       Seq(Seq(sparkHome, "bin", "spark-submit").mkString(File.separator)) ++
@@ -155,8 +153,7 @@ object RunServer extends Logging {
       engineInstanceId: String): Int = {
     val jarFiles = em.files.map(new URI(_)) ++
       Option(new File(ca.common.pioHome.get, "plugins").listFiles())
-        .getOrElse(Array.empty[File])
-        .map(_.toURI)
+        .getOrElse(Array.empty[File]).map(_.toURI)
     val args = Seq(
       "--engineInstanceId",
       engineInstanceId,

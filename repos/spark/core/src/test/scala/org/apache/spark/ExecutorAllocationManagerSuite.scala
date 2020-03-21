@@ -382,8 +382,10 @@ class ExecutorAllocationManagerSuite
     val manager = sc.executorAllocationManager.get
     manager.setClock(clock)
 
-    executorIds(manager)
-      .asInstanceOf[mutable.Set[String]] ++= List("1", "2", "3")
+    executorIds(manager).asInstanceOf[mutable.Set[String]] ++= List(
+      "1",
+      "2",
+      "3")
 
     // Starting remove timer is idempotent for each executor
     assert(removeTimes(manager).isEmpty)

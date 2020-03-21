@@ -107,8 +107,8 @@ class ModelCollectionSpec extends Specification {
 
     "collect models when provided as a list" in {
       val collected = Swagger.collectModels[List[Name]](Set.empty)
-      collected.map(_.id) must_== Set(Swagger.modelToSwagger[Name].get)
-        .map(_.id)
+      collected.map(_.id) must_== Set(Swagger.modelToSwagger[Name].get).map(
+        _.id)
     }
 
     "collect models when provided as a list inside an option" in {
@@ -125,10 +125,8 @@ class ModelCollectionSpec extends Specification {
     "collect models when hiding in an option" in {
       val collected = Swagger.collectModels[Thing](Set.empty)
       collected must containTheSameElementsAs(thingModels.flatten.toSeq)
-      collected
-        .find(_.id == "Thing")
-        .flatMap(
-          _.properties.find(_._1 == "thing").map(_._2.`type`)) must beSome(
+      collected.find(_.id == "Thing").flatMap(
+        _.properties.find(_._1 == "thing").map(_._2.`type`)) must beSome(
         DataType[TaggedThing])
     }
 

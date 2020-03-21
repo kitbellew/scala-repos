@@ -50,23 +50,21 @@ class TaskStatsByVersionFormatTest
     When("serializing to JSON")
     val json = Json.toJson(fullTaskStats)
     Then("we get the correct json")
-    JsonTestHelper
-      .assertThatJsonOf(json)
-      .correspondsToJsonOf(
-        Json.obj(
-          "stats" -> Json.obj(
-            "counts" -> Json.obj(
-              "staged" -> 1,
-              "running" -> 2,
-              "healthy" -> 3,
-              "unhealthy" -> 4
-            ),
-            "lifeTime" -> Json.obj(
-              "averageSeconds" -> 20.0,
-              "medianSeconds" -> 10.0
-            )
+    JsonTestHelper.assertThatJsonOf(json).correspondsToJsonOf(
+      Json.obj(
+        "stats" -> Json.obj(
+          "counts" -> Json.obj(
+            "staged" -> 1,
+            "running" -> 2,
+            "healthy" -> 3,
+            "unhealthy" -> 4
+          ),
+          "lifeTime" -> Json.obj(
+            "averageSeconds" -> 20.0,
+            "medianSeconds" -> 10.0
           )
-        ))
+        )
+      ))
   }
 
   test(
@@ -74,19 +72,17 @@ class TaskStatsByVersionFormatTest
     When("serializing to JSON")
     val json = Json.toJson(fullTaskStats.copy(maybeLifeTime = None))
     Then("we get the correct json")
-    JsonTestHelper
-      .assertThatJsonOf(json)
-      .correspondsToJsonOf(
-        Json.obj(
-          "stats" -> Json.obj(
-            "counts" -> Json.obj(
-              "staged" -> 1,
-              "running" -> 2,
-              "healthy" -> 3,
-              "unhealthy" -> 4
-            )
+    JsonTestHelper.assertThatJsonOf(json).correspondsToJsonOf(
+      Json.obj(
+        "stats" -> Json.obj(
+          "counts" -> Json.obj(
+            "staged" -> 1,
+            "running" -> 2,
+            "healthy" -> 3,
+            "unhealthy" -> 4
           )
-        ))
+        )
+      ))
   }
 
   test("full task stats by version get rendered correctly") {
@@ -106,14 +102,14 @@ class TaskStatsByVersionFormatTest
     val json = Json.toJson(fullStats)
     Then("the stats get rendered into the correct sub fields")
     withClue(Json.prettyPrint(json)) {
-      (json \ "startedAfterLastScaling" \ "stats" \ "counts" \ "running")
-        .as[Int] should be(100)
-      (json \ "withLatestConfig" \ "stats" \ "counts" \ "running")
-        .as[Int] should be(200)
-      (json \ "withOutdatedConfig" \ "stats" \ "counts" \ "running")
-        .as[Int] should be(300)
-      (json \ "totalSummary" \ "stats" \ "counts" \ "running")
-        .as[Int] should be(500)
+      (json \ "startedAfterLastScaling" \ "stats" \ "counts" \ "running").as[
+        Int] should be(100)
+      (json \ "withLatestConfig" \ "stats" \ "counts" \ "running").as[
+        Int] should be(200)
+      (json \ "withOutdatedConfig" \ "stats" \ "counts" \ "running").as[
+        Int] should be(300)
+      (json \ "totalSummary" \ "stats" \ "counts" \ "running").as[
+        Int] should be(500)
     }
   }
 }

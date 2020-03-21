@@ -39,9 +39,9 @@ class ImportStableMemberIntention extends PsiElementBaseIntentionAction {
     refAtCaret.resolve() match {
       case named: PsiNamedElement =>
         val importHolder = ScalaImportTypeFix.getImportHolder(element, project)
-        val usages = ReferencesSearch
-          .search(named, new LocalSearchScope(importHolder))
-          .findAll()
+        val usages = ReferencesSearch.search(
+          named,
+          new LocalSearchScope(importHolder)).findAll()
         sorted(usages, isQualifier = false).foreach {
           case usage: ScReferenceElement if checkReference(usage) =>
             replaceAndBind(usage, named.name, named)

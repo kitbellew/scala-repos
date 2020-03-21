@@ -458,13 +458,13 @@ object DataType {
     if (classOf[Unit].isAssignableFrom(klass) || classOf[Void].isAssignableFrom(
           klass)) this.Void
     else if (isString(klass)) this.String
-    else if (classOf[Byte].isAssignableFrom(klass) || classOf[java.lang.Byte]
-               .isAssignableFrom(klass)) this.Byte
-    else if (classOf[Long].isAssignableFrom(klass) || classOf[java.lang.Long]
-               .isAssignableFrom(klass)) this.Long
+    else if (classOf[Byte].isAssignableFrom(klass) || classOf[
+               java.lang.Byte].isAssignableFrom(klass)) this.Byte
+    else if (classOf[Long].isAssignableFrom(klass) || classOf[
+               java.lang.Long].isAssignableFrom(klass)) this.Long
     else if (isInt(klass)) this.Int
-    else if (classOf[Float].isAssignableFrom(klass) || classOf[java.lang.Float]
-               .isAssignableFrom(klass)) this.Float
+    else if (classOf[Float].isAssignableFrom(klass) || classOf[
+               java.lang.Float].isAssignableFrom(klass)) this.Float
     else if (isDecimal(klass)) this.Double
     else if (isDate(klass)) this.Date
     else if (isDateTime(klass)) this.DateTime
@@ -480,9 +480,8 @@ object DataType {
                klass) || classOf[java.util.Set[_]].isAssignableFrom(klass)) {
       if (st.typeArgs.nonEmpty) GenSet(fromScalaType(st.typeArgs.head))
       else GenSet()
-    } else if (classOf[collection.Seq[_]]
-                 .isAssignableFrom(klass) || classOf[java.util.List[_]]
-                 .isAssignableFrom(klass)) {
+    } else if (classOf[collection.Seq[_]].isAssignableFrom(klass) || classOf[
+                 java.util.List[_]].isAssignableFrom(klass)) {
       if (st.typeArgs.nonEmpty) GenList(fromScalaType(st.typeArgs.head))
       else GenList()
     } else if (st.isArray || isCollection(klass)) {

@@ -24,13 +24,12 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
       exp: ScExpression,
       holder: AnnotationHolder,
       typeAware: Boolean) {
-    if (!ScalaProjectSettings
-          .getInstance(exp.getProject)
-          .isShowArgumentsToByNameParams) return
+    if (!ScalaProjectSettings.getInstance(
+          exp.getProject).isShowArgumentsToByNameParams) return
 
-    if (!ScalaProjectSettings
-          .getInstance(exp.getProject)
-          .isIncludeBlockExpressions && exp.isInstanceOf[ScBlockExpr]) return
+    if (!ScalaProjectSettings.getInstance(
+          exp.getProject).isIncludeBlockExpressions && exp.isInstanceOf[
+          ScBlockExpr]) return
 
     val parameter =
       ScalaPsiUtil.parameterOf(exp) //.orElse(conversionParameterOf(exp))
@@ -53,19 +52,14 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
   }
 
   private def nonLiteralRangesIn(exp: ScExpression): Seq[TextRange] = {
-    val literalRanges = exp
-      .depthFirst(parent => !parent.isInstanceOf[ScLiteral])
-      .filterByType(classOf[ScLiteral])
-      .map(_.getTextRange)
-      .toList
+    val literalRanges =
+      exp.depthFirst(parent => !parent.isInstanceOf[ScLiteral])
+        .filterByType(classOf[ScLiteral]).map(_.getTextRange).toList
     val literalIndices =
       literalRanges.flatMap(r => List(r.getStartOffset, r.getEndOffset))
     val allIndices =
       exp.getTextRange.getStartOffset :: literalIndices ::: exp.getTextRange.getEndOffset :: Nil
-    allIndices
-      .grouped(2)
-      .map(it => new TextRange(it.head, it(1)))
-      .filterNot(_.isEmpty)
-      .toList
+    allIndices.grouped(2).map(it => new TextRange(it.head, it(1))).filterNot(
+      _.isEmpty).toList
   }
 }

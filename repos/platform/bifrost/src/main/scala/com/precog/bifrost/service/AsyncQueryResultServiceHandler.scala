@@ -62,10 +62,14 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                 case Finished(_, _) =>
                   for {
                     result <- jobManager.getResult(jobId)
-                    warnings <- jobManager
-                      .listMessages(jobId, channels.Warning, None)
-                    errors <- jobManager
-                      .listMessages(jobId, channels.Error, None)
+                    warnings <- jobManager.listMessages(
+                      jobId,
+                      channels.Warning,
+                      None)
+                    errors <- jobManager.listMessages(
+                      jobId,
+                      channels.Error,
+                      None)
                   } yield {
                     result.fold(
                       { _ => HttpResponse[ByteChunk](NotFound) },
@@ -89,8 +93,9 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                                 JArray(
                                   warnings.toList map (_.value)).renderCompact
                               )).getBytes(Utf8)
-                            val suffix = " }".getBytes(Utf8) :: StreamT
-                              .empty[Future, Array[Byte]]
+                            val suffix = " }".getBytes(Utf8) :: StreamT.empty[
+                              Future,
+                              Array[Byte]]
 
                             val chunks = Right(prefix :: (data ++ suffix))
                             HttpResponse[ByteChunk](OK, headers, Some(chunks))

@@ -29,13 +29,11 @@ class PostToEventStreamStepImplTest
     When("we receive a running status update")
     val status = runningTaskStatus
     val (logs, events) = f.captureLogAndEvents {
-      f.step
-        .processUpdate(
-          timestamp = updateTimestamp,
-          task = existingTask,
-          status = status
-        )
-        .futureValue
+      f.step.processUpdate(
+        timestamp = updateTimestamp,
+        task = existingTask,
+        status = status
+      ).futureValue
     }
 
     Then("the appropriate event is posted")
@@ -71,13 +69,11 @@ class PostToEventStreamStepImplTest
     When("we receive a running update")
     val status = runningTaskStatus
     val (logs, events) = f.captureLogAndEvents {
-      f.step
-        .processUpdate(
-          timestamp = updateTimestamp,
-          task = existingTask,
-          status = status
-        )
-        .futureValue
+      f.step.processUpdate(
+        timestamp = updateTimestamp,
+        task = existingTask,
+        status = status
+      ).futureValue
     }
 
     Then("no event is posted to the event stream")
@@ -111,13 +107,11 @@ class PostToEventStreamStepImplTest
     When("we receive a terminal status update")
     val status = runningTaskStatus.toBuilder.setState(terminalTaskState).build()
     val (logs, events) = f.captureLogAndEvents {
-      f.step
-        .processUpdate(
-          timestamp = updateTimestamp,
-          task = existingTask,
-          status = status
-        )
-        .futureValue
+      f.step.processUpdate(
+        timestamp = updateTimestamp,
+        task = existingTask,
+        status = status
+      ).futureValue
     }
 
     Then("the appropriate event is posted")
@@ -164,8 +158,7 @@ class PostToEventStreamStepImplTest
 
   import MarathonTestHelper.Implicits._
   private[this] val stagedMarathonTask =
-    MarathonTestHelper
-      .stagedTask(taskId.idString, appVersion = version)
+    MarathonTestHelper.stagedTask(taskId.idString, appVersion = version)
       .withAgentInfo(_.copy(host = host))
       .withNetworking(Task.HostPorts(portsList))
 

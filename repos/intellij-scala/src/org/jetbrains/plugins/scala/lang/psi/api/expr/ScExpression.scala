@@ -133,13 +133,11 @@ trait ScExpression
                       res.importsUsed,
                       Some(res.getElement))
                   case _ =>
-                    ScalaPsiManager
-                      .instance(getProject)
-                      .getCachedClass(
-                        "scala.Function1",
-                        getResolveScope,
-                        ScalaPsiManager.ClassCategory.TYPE
-                      ) match {
+                    ScalaPsiManager.instance(getProject).getCachedClass(
+                      "scala.Function1",
+                      getResolveScope,
+                      ScalaPsiManager.ClassCategory.TYPE
+                    ) match {
                       case function1: ScTrait =>
                         ScParameterizedType(
                           ScType.designator(function1),
@@ -149,9 +147,9 @@ trait ScExpression
                               1))) match {
                           case funTp: ScParameterizedType =>
                             val secondArg = funTp.typeArgs(1)
-                            Conformance
-                              .undefinedSubst(funTp, paramType)
-                              .getSubstitutor match {
+                            Conformance.undefinedSubst(
+                              funTp,
+                              paramType).getSubstitutor match {
                               case Some(subst) =>
                                 val rt = subst.subst(secondArg)
                                 if (rt.isInstanceOf[ScUndefinedType])
@@ -448,9 +446,8 @@ trait ScExpression
       case assign: ScAssignStmt
           if !ignoreAssign && assign.assignName.isDefined =>
         (
-          assign.getRExpression
-            .map(_.getShape(ignoreAssign = true)._1)
-            .getOrElse(Nothing),
+          assign.getRExpression.map(
+            _.getShape(ignoreAssign = true)._1).getOrElse(Nothing),
           assign.assignName.get)
       case expr: ScExpression =>
         ScalaPsiUtil.isAnonymousExpression(expr) match {
@@ -458,9 +455,8 @@ trait ScExpression
           case (i, expr: ScFunctionExpr) =>
             (
               ScFunctionType(
-                expr.result
-                  .map(_.getShape(ignoreAssign = true)._1)
-                  .getOrElse(Nothing),
+                expr.result.map(_.getShape(ignoreAssign = true)._1).getOrElse(
+                  Nothing),
                 Seq.fill(i)(Any))(getProject, getResolveScope),
               "")
           case (i, _) =>
@@ -516,11 +512,9 @@ trait ScExpression
       else {
         val params = unders.zipWithIndex.map {
           case (u, index) =>
-            val tpe = u
-              .getNonValueType(TypingContext.empty, ignoreBaseType)
-              .getOrAny
-              .inferValueType
-              .unpackedType
+            val tpe = u.getNonValueType(
+              TypingContext.empty,
+              ignoreBaseType).getOrAny.inferValueType.unpackedType
             new Parameter("", None, tpe, false, false, false, index)
         }
         val methType =
@@ -547,9 +541,9 @@ trait ScExpression
     val oldParent = getParent
     if (oldParent == null) throw new PsiInvalidElementAccessException(this)
     if (removeParenthesis && oldParent.isInstanceOf[ScParenthesisedExpr]) {
-      return oldParent
-        .asInstanceOf[ScExpression]
-        .replaceExpression(expr, removeParenthesis = true)
+      return oldParent.asInstanceOf[ScExpression].replaceExpression(
+        expr,
+        removeParenthesis = true)
     }
     val newExpr: ScExpression = if (ScalaPsiUtil.needParentheses(this, expr)) {
       ScalaPsiElementFactory.createExpressionFromText(
@@ -629,8 +623,9 @@ trait ScExpression
       Option[PsiNamedElement],
       Seq[PsiNamedElement],
       Seq[PsiNamedElement]) = {
-    val map = new ScImplicitlyConvertible(this)
-      .implicitMap(fromUnder = fromUnder, args = expectedTypes(fromUnder).toSeq)
+    val map = new ScImplicitlyConvertible(this).implicitMap(
+      fromUnder = fromUnder,
+      args = expectedTypes(fromUnder).toSeq)
     val implicits: Seq[PsiNamedElement] = map.map(_.element)
     val implicitFunction: Option[PsiNamedElement] = getParent match {
       case ref: ScReferenceExpression =>

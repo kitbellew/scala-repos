@@ -22,8 +22,7 @@ class TaskOpFactoryImplTest
   test("Copy SlaveID from Offer to Task") {
     val f = new Fixture
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer()
+    val offer = MarathonTestHelper.makeBasicOffer()
       .setHostname("some_host")
       .setSlaveId(SlaveID("some slave ID"))
       .build()
@@ -165,10 +164,9 @@ class TaskOpFactoryImplTest
 
     And("the taskInfo contains the correct persistent volume")
     import scala.collection.JavaConverters._
-    val taskInfoResources = taskOp.get.offerOperations.head.getLaunch
-      .getTaskInfos(0)
-      .getResourcesList
-      .asScala
+    val taskInfoResources =
+      taskOp.get.offerOperations.head.getLaunch.getTaskInfos(
+        0).getResourcesList.asScala
     val found = taskInfoResources.find { resource =>
       resource.hasDisk && resource.getDisk.hasPersistence &&
       resource.getDisk.getPersistence.getId == localVolumeIdMatch.idString
@@ -216,14 +214,12 @@ class TaskOpFactoryImplTest
     def offer = MTH.makeBasicOffer().build()
     def offerWithSpaceForLocalVolume = MTH.makeBasicOffer(disk = 1025).build()
     def insufficientOffer =
-      MTH
-        .makeBasicOffer(
-          cpus = 0.01,
-          mem = 1,
-          disk = 0.01,
-          beginPort = 31000,
-          endPort = 31001)
-        .build()
+      MTH.makeBasicOffer(
+        cpus = 0.01,
+        mem = 1,
+        disk = 0.01,
+        beginPort = 31000,
+        endPort = 31001).build()
 
     def offerWithVolumes(taskId: String, localVolumeIds: LocalVolumeId*) =
       MTH.offerWithVolumes(taskId, localVolumeIds: _*)

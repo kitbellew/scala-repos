@@ -115,16 +115,13 @@ object Metadata {
         m2: => Map[MetadataType, Metadata]) =
       m1.foldLeft(m2) { (acc, t) =>
         val (mtype, meta) = t
-        acc + (mtype -> acc
-          .get(mtype)
-          .map(combineMetadata(_, meta))
-          .getOrElse(meta))
+        acc + (mtype -> acc.get(mtype).map(combineMetadata(_, meta)).getOrElse(
+          meta))
       }
 
     def combineMetadata(m1: Metadata, m2: Metadata) =
-      m1.merge(m2)
-        .getOrElse(
-          sys.error("Invalid attempt to combine incompatible metadata"))
+      m1.merge(m2).getOrElse(
+        sys.error("Invalid attempt to combine incompatible metadata"))
   }
 }
 

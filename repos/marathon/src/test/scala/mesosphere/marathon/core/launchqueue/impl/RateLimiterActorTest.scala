@@ -18,8 +18,8 @@ class RateLimiterActorTest extends MarathonSpec {
   test("GetDelay gets current delay") {
     rateLimiter.addDelay(app)
 
-    val delay = askLimiter(RateLimiterActor.GetDelay(app))
-      .asInstanceOf[RateLimiterActor.DelayUpdate]
+    val delay = askLimiter(RateLimiterActor.GetDelay(app)).asInstanceOf[
+      RateLimiterActor.DelayUpdate]
     assert(delay.delayUntil == clock.now() + backoff)
   }
 
@@ -27,8 +27,8 @@ class RateLimiterActorTest extends MarathonSpec {
     limiterRef ! RateLimiterActor.AddDelay(app)
     updateReceiver.expectMsg(
       RateLimiterActor.DelayUpdate(app, clock.now() + backoff))
-    val delay = askLimiter(RateLimiterActor.GetDelay(app))
-      .asInstanceOf[RateLimiterActor.DelayUpdate]
+    val delay = askLimiter(RateLimiterActor.GetDelay(app)).asInstanceOf[
+      RateLimiterActor.DelayUpdate]
     assert(delay.delayUntil == clock.now() + backoff)
   }
 
@@ -38,8 +38,8 @@ class RateLimiterActorTest extends MarathonSpec {
       RateLimiterActor.DelayUpdate(app, clock.now() + backoff))
     limiterRef ! RateLimiterActor.ResetDelay(app)
     updateReceiver.expectMsg(RateLimiterActor.DelayUpdate(app, clock.now()))
-    val delay = askLimiter(RateLimiterActor.GetDelay(app))
-      .asInstanceOf[RateLimiterActor.DelayUpdate]
+    val delay = askLimiter(RateLimiterActor.GetDelay(app)).asInstanceOf[
+      RateLimiterActor.DelayUpdate]
     assert(delay.delayUntil == clock.now())
   }
 

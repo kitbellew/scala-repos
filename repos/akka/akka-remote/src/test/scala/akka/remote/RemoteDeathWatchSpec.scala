@@ -37,8 +37,7 @@ akka {
 
   val other = ActorSystem(
     "other",
-    ConfigFactory
-      .parseString("akka.remote.netty.tcp.port=2666")
+    ConfigFactory.parseString("akka.remote.netty.tcp.port=2666")
       .withFallback(system.settings.config))
 
   override def beforeTermination() {

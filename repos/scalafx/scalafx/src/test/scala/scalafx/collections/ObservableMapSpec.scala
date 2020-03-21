@@ -67,8 +67,8 @@ class ObservableMapSpec[K, V]
       generatedMap should be theSameInstanceAs (originalMap)
     } else {
       generatedMap should not be theSameInstanceAs(originalMap)
-      generatedMap.getClass.getInterfaces
-        .contains(classOf[ObservableMap[Int, String]]) should be(true)
+      generatedMap.getClass.getInterfaces.contains(
+        classOf[ObservableMap[Int, String]]) should be(true)
     }
   }
 

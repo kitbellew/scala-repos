@@ -27,18 +27,16 @@ trait ScalaXmlSupport {
 
   def nodeSeqUnmarshaller(
       ranges: ContentTypeRange*): FromEntityUnmarshaller[NodeSeq] =
-    Unmarshaller.byteArrayUnmarshaller
-      .forContentTypes(ranges: _*)
-      .mapWithCharset { (bytes, charset) ⇒
-        if (bytes.length > 0) {
-          val reader = new InputStreamReader(
-            new ByteArrayInputStream(bytes),
-            charset.nioCharset)
-          XML
-            .withSAXParser(createSAXParser())
-            .load(reader): NodeSeq // blocking call! Ideally we'd have a `loadToFuture`
-        } else NodeSeq.Empty
-      }
+    Unmarshaller.byteArrayUnmarshaller.forContentTypes(
+      ranges: _*).mapWithCharset { (bytes, charset) ⇒
+      if (bytes.length > 0) {
+        val reader = new InputStreamReader(
+          new ByteArrayInputStream(bytes),
+          charset.nioCharset)
+        XML.withSAXParser(createSAXParser()).load(
+          reader): NodeSeq // blocking call! Ideally we'd have a `loadToFuture`
+      } else NodeSeq.Empty
+    }
 
   /**
     * Provides a SAXParser for the NodeSeqUnmarshaller to use. Override to provide a custom SAXParser implementation.

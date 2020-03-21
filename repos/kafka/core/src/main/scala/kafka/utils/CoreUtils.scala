@@ -191,12 +191,10 @@ object CoreUtils extends Logging {
     val map = new mutable.HashMap[String, String]
     if ("".equals(str))
       return map
-    val keyVals = str
-      .split("\\s*,\\s*")
-      .map(s => {
-        val lio = s.lastIndexOf(":")
-        (s.substring(0, lio).trim, s.substring(lio + 1).trim)
-      })
+    val keyVals = str.split("\\s*,\\s*").map(s => {
+      val lio = s.lastIndexOf(":")
+      (s.substring(0, lio).trim, s.substring(lio + 1).trim)
+    })
     keyVals.toMap
   }
 
@@ -216,9 +214,10 @@ object CoreUtils extends Logging {
     * Create an instance of the class with the given class name
     */
   def createObject[T <: AnyRef](className: String, args: AnyRef*): T = {
-    val klass = Class
-      .forName(className, true, Utils.getContextOrKafkaClassLoader())
-      .asInstanceOf[Class[T]]
+    val klass = Class.forName(
+      className,
+      true,
+      Utils.getContextOrKafkaClassLoader()).asInstanceOf[Class[T]]
     val constructor = klass.getConstructor(args.map(_.getClass): _*)
     constructor.newInstance(args: _*)
   }
@@ -237,8 +236,9 @@ object CoreUtils extends Logging {
   def replaceSuffix(s: String, oldSuffix: String, newSuffix: String): String = {
     if (!s.endsWith(oldSuffix))
       throw new IllegalArgumentException(
-        "Expected string to end with '%s' but string is '%s'"
-          .format(oldSuffix, s))
+        "Expected string to end with '%s' but string is '%s'".format(
+          oldSuffix,
+          s))
     s.substring(0, s.length - oldSuffix.length) + newSuffix
   }
 
@@ -309,9 +309,7 @@ object CoreUtils extends Logging {
   def listenerListToEndPoints(
       listeners: String): immutable.Map[SecurityProtocol, EndPoint] = {
     val listenerList = parseCsvList(listeners)
-    listenerList
-      .map(listener => EndPoint.createEndPoint(listener))
-      .map(ep => ep.protocolType -> ep)
-      .toMap
+    listenerList.map(listener => EndPoint.createEndPoint(listener)).map(ep =>
+      ep.protocolType -> ep).toMap
   }
 }

@@ -143,8 +143,9 @@ class RemoteRoundRobinSpec
       runOn(fourth) {
         enterBarrier("start")
         val actor = system.actorOf(
-          RoundRobinPool(nrOfInstances = 1, resizer = Some(new TestResizer))
-            .props(Props[SomeActor]),
+          RoundRobinPool(
+            nrOfInstances = 1,
+            resizer = Some(new TestResizer)).props(Props[SomeActor]),
           "service-hello2")
         actor.isInstanceOf[RoutedActorRef] should ===(true)
 
@@ -156,11 +157,8 @@ class RemoteRoundRobinSpec
           (for (n ← 3 to 9) yield {
             // each message trigger a resize, incrementing number of routees with 1
             actor ! "hit"
-            Await
-              .result(actor ? GetRoutees, timeout.duration)
-              .asInstanceOf[Routees]
-              .routees
-              .size should ===(n)
+            Await.result(actor ? GetRoutees, timeout.duration).asInstanceOf[
+              Routees].routees.size should ===(n)
             expectMsgType[ActorRef]
           }).toSet
 

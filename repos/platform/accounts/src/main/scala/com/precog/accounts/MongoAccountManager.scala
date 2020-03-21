@@ -134,8 +134,8 @@ abstract class MongoAccountManager(
           profile)
 
         database(
-          insert(account0.serialize.asInstanceOf[JObject])
-            .into(settings.accounts)) map {
+          insert(account0.serialize.asInstanceOf[JObject]).into(
+            settings.accounts)) map {
           _ => account0
         }
       }
@@ -182,19 +182,17 @@ abstract class MongoAccountManager(
 
     logger.debug("Saving new reset token " + token)
     database(
-      insert(token.serialize.asInstanceOf[JObject]).into(settings.resetTokens))
-      .map { _ =>
-        logger.debug("Save complete on reset token " + token)
-        tokenId
-      }
+      insert(token.serialize.asInstanceOf[JObject]).into(
+        settings.resetTokens)).map { _ =>
+      logger.debug("Save complete on reset token " + token)
+      tokenId
+    }
   }
 
   def markResetTokenUsed(tokenId: ResetTokenId): Future[PrecogUnit] = {
     logger.debug("Marking reset token %s as used".format(tokenId))
-    database(
-      update(settings.resetTokens)
-        .set("usedAt" set (new DateTime).serialize)
-        .where("tokenId" === tokenId)).map {
+    database(update(settings.resetTokens).set(
+      "usedAt" set (new DateTime).serialize).where("tokenId" === tokenId)).map {
       _ =>
         logger.debug("Reset token %s marked as used".format(tokenId));
         PrecogUnit
@@ -207,8 +205,8 @@ abstract class MongoAccountManager(
     findOneMatching[ResetToken]("tokenId", tokenId, settings.resetTokens)
 
   def findAccountByAPIKey(apiKey: String) =
-    findOneMatching[Account]("apiKey", apiKey, settings.accounts)
-      .map(_.map(_.accountId))
+    findOneMatching[Account]("apiKey", apiKey, settings.accounts).map(
+      _.map(_.accountId))
 
   def findAccountById(accountId: String) =
     findOneMatching[Account]("accountId", accountId, settings.accounts)
@@ -221,9 +219,8 @@ abstract class MongoAccountManager(
       case Some(existingAccount) =>
         database {
           val updateObj = account.serialize.asInstanceOf[JObject]
-          update(settings.accounts)
-            .set(updateObj)
-            .where("accountId" === account.accountId)
+          update(settings.accounts).set(updateObj).where(
+            "accountId" === account.accountId)
         } map {
           _ => true
         }
@@ -238,8 +235,8 @@ abstract class MongoAccountManager(
       case ot @ Some(account) =>
         for {
           _ <- database(
-            insert(account.serialize.asInstanceOf[JObject])
-              .into(settings.deletedAccounts))
+            insert(account.serialize.asInstanceOf[JObject]).into(
+              settings.deletedAccounts))
           _ <- database(
             remove.from(settings.accounts).where("accountId" === accountId))
         } yield { ot }

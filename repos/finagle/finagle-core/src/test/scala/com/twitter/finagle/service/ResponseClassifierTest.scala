@@ -42,8 +42,9 @@ class ResponseClassifierTest extends FunSuite {
 
     assert(!classifier.isDefinedAt(ReqRep(0, aReturn)))
     assert(
-      Success == classifier
-        .applyOrElse(ReqRep(0, aReturn), ResponseClassifier.Default))
+      Success == classifier.applyOrElse(
+        ReqRep(0, aReturn),
+        ResponseClassifier.Default))
   }
 
 }

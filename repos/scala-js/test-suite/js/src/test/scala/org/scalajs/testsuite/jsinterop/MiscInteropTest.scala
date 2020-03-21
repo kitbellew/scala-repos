@@ -100,8 +100,7 @@ class MiscInteropTest {
     val instance = {
       val tag = js.constructorTag[OtherwiseUnreferencedJSClassForTag]
       if (assumingES6) {
-        js.Dynamic
-          .newInstance(tag.constructor)(35)
+        js.Dynamic.newInstance(tag.constructor)(35)
           .asInstanceOf[OtherwiseUnreferencedJSClassForTag]
       } else {
         tag.newInstance(35)
@@ -173,21 +172,17 @@ class MiscInteropTest {
   }
 
   @Test def should_allow_to_define_direct_subtraits_of_js_Any(): Unit = {
-    val f = js.Dynamic
-      .literal(
-        foo = (x: Int) => x + 1
-      )
-      .asInstanceOf[DirectSubtraitOfJSAny]
+    val f = js.Dynamic.literal(
+      foo = (x: Int) => x + 1
+    ).asInstanceOf[DirectSubtraitOfJSAny]
 
     assertEquals(6, f.foo(5))
   }
 
   @Test def should_allow_to_define_direct_subclasses_of_js_Any(): Unit = {
-    val f = js.Dynamic
-      .literal(
-        bar = (x: Int) => x + 2
-      )
-      .asInstanceOf[DirectSubclassOfJSAny]
+    val f = js.Dynamic.literal(
+      bar = (x: Int) => x + 2
+    ).asInstanceOf[DirectSubclassOfJSAny]
 
     assertEquals(7, f.bar(5))
   }

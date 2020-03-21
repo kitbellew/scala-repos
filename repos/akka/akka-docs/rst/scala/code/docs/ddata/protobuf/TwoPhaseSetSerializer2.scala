@@ -50,14 +50,14 @@ class TwoPhaseSetSerializer2(val system: ExtendedActorSystem)
     val msg = TwoPhaseSetMessages.TwoPhaseSet2.parseFrom(bytes)
     val adds =
       if (msg.hasAdds)
-        otherMessageFromBinary(msg.getAdds.toByteArray)
-          .asInstanceOf[GSet[String]]
+        otherMessageFromBinary(msg.getAdds.toByteArray).asInstanceOf[GSet[
+          String]]
       else
         GSet.empty[String]
     val removals =
       if (msg.hasRemovals)
-        otherMessageFromBinary(msg.getRemovals.toByteArray)
-          .asInstanceOf[GSet[String]]
+        otherMessageFromBinary(msg.getRemovals.toByteArray).asInstanceOf[GSet[
+          String]]
       else
         GSet.empty[String]
     TwoPhaseSet(adds, removals)

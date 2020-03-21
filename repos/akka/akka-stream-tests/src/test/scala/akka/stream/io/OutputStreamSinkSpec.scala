@@ -42,8 +42,7 @@ class OutputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
     "close underlying stream when error received" in assertAllStagesStopped {
       val p = TestProbe()
-      Source
-        .failed(new TE("Boom!"))
+      Source.failed(new TE("Boom!"))
         .runWith(StreamConverters.fromOutputStream(() ⇒
           new OutputStream {
             override def write(i: Int): Unit = ()

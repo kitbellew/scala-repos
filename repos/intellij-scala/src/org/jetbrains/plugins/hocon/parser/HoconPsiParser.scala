@@ -52,8 +52,8 @@ class HoconPsiParser extends PsiParser {
                                           i - 1) == LineBreakingWhitespace
                                       else atStreamEdge)
           def noBlankLineWhitespace =
-            Whitespace
-              .contains(token) && text.charIterator.count(_ == '\n') <= 1
+            Whitespace.contains(token) && text.charIterator.count(
+              _ == '\n') <= 1
 
           if (i < 0) resultSoFar
           else if (noBlankLineWhitespace)
@@ -92,9 +92,8 @@ class HoconPsiParser extends PsiParser {
       matches(UnquotedChars) && builder.getTokenText == str
 
     def matchesUnquoted(pattern: Regex) =
-      matches(UnquotedChars) && pattern.pattern
-        .matcher(builder.getTokenText)
-        .matches
+      matches(UnquotedChars) && pattern.pattern.matcher(
+        builder.getTokenText).matches
 
     def pass(matcher: Matcher): Boolean = {
       val result = matches(matcher)
@@ -145,12 +144,11 @@ class HoconPsiParser extends PsiParser {
       val marker = builder.mark()
 
       val unclosedQuotedString = builder.getTokenType == QuotedString &&
-        !ProperlyClosedQuotedString.pattern
-          .matcher(builder.getTokenText)
-          .matches
+        !ProperlyClosedQuotedString.pattern.matcher(
+          builder.getTokenText).matches
       val unclosedMultilineString =
-        builder.getTokenType == MultilineString && !builder.getTokenText
-          .endsWith("\"\"\"")
+        builder.getTokenType == MultilineString && !builder.getTokenText.endsWith(
+          "\"\"\"")
 
       advanceLexer()
 

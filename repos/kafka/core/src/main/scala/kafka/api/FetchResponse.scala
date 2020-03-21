@@ -269,14 +269,15 @@ case class FetchResponse(
       case Some(partitionData) => partitionData
       case _ =>
         throw new IllegalArgumentException(
-          "No partition %s in fetch response %s"
-            .format(topicAndPartition, this.toString))
+          "No partition %s in fetch response %s".format(
+            topicAndPartition,
+            this.toString))
     }
   }
 
   def messageSet(topic: String, partition: Int): ByteBufferMessageSet =
-    partitionDataFor(topic, partition).messages
-      .asInstanceOf[ByteBufferMessageSet]
+    partitionDataFor(topic, partition).messages.asInstanceOf[
+      ByteBufferMessageSet]
 
   def highWatermark(topic: String, partition: Int) =
     partitionDataFor(topic, partition).hw

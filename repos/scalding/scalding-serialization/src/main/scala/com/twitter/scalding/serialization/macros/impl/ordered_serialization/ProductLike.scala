@@ -28,13 +28,12 @@ object ProductLike {
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(id))
 
-    elementData
-      .foldLeft(Option.empty[Tree]) {
-        case (existingTreeOpt, (tpe, accessorSymbol, tBuf)) =>
-          existingTreeOpt match {
-            case Some(t) =>
-              val lastCmp = freshT("lastCmp")
-              Some(q"""
+    elementData.foldLeft(Option.empty[Tree]) {
+      case (existingTreeOpt, (tpe, accessorSymbol, tBuf)) =>
+        existingTreeOpt match {
+          case Some(t) =>
+            val lastCmp = freshT("lastCmp")
+            Some(q"""
               val $lastCmp = $t
               if($lastCmp != 0) {
                 $lastCmp
@@ -42,11 +41,10 @@ object ProductLike {
                 ${tBuf.compareBinary(inputStreamA, inputStreamB)}
               }
               """)
-            case None =>
-              Some(tBuf.compareBinary(inputStreamA, inputStreamB))
-          }
-      }
-      .getOrElse(q"0")
+          case None =>
+            Some(tBuf.compareBinary(inputStreamA, inputStreamB))
+        }
+    }.getOrElse(q"0")
   }
 
   def hash(c: Context)(element: c.TermName)(elementData: List[
@@ -61,8 +59,8 @@ object ProductLike {
         val target = freshT("target")
         q"""
           val $target = $element.$accessorSymbol
-            $currentHash = _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${tBuf
-          .hash(target)})
+            $currentHash = _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${tBuf.hash(
+          target)})
           """
     }
 
@@ -105,18 +103,16 @@ object ProductLike {
           tBuf.length(q"$element.$accessorSymbol") match {
             case const: ConstantLengthCalculation[_] =>
               (
-                constantLength + const
-                  .asInstanceOf[ConstantLengthCalculation[c.type]]
-                  .toInt,
+                constantLength + const.asInstanceOf[ConstantLengthCalculation[
+                  c.type]].toInt,
                 dynamicLength,
                 maybeLength,
                 noLength)
             case f: FastLengthCalculation[_] =>
               (
                 constantLength,
-                dynamicLength :+ f
-                  .asInstanceOf[FastLengthCalculation[c.type]]
-                  .t,
+                dynamicLength :+ f.asInstanceOf[
+                  FastLengthCalculation[c.type]].t,
                 maybeLength,
                 noLength)
             case m: MaybeLengthCalculation[_] =>
@@ -181,19 +177,18 @@ object ProductLike {
     val innerElementA = freshT("innerElementA")
     val innerElementB = freshT("innerElementB")
 
-    elementData
-      .map {
-        case (tpe, accessorSymbol, tBuf) =>
-          val curCmp = freshT("curCmp")
-          val cmpTree = q"""
+    elementData.map {
+      case (tpe, accessorSymbol, tBuf) =>
+        val curCmp = freshT("curCmp")
+        val cmpTree = q"""
             val $curCmp: Int = {
               val $innerElementA = $elementA.$accessorSymbol
               val $innerElementB = $elementB.$accessorSymbol
               ${tBuf.compare(innerElementA, innerElementB)}
             }
           """
-          (cmpTree, curCmp)
-      }
+        (cmpTree, curCmp)
+    }
       .reverse // go through last to first
       .foldLeft(None: Option[Tree]) {
         case (Some(rest), (tree, valname)) =>

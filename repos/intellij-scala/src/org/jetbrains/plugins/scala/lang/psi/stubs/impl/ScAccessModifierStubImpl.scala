@@ -36,8 +36,8 @@ class ScAccessModifierStubImpl[ParentPsi <: PsiElement](
       idText: Option[StringRef]) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this._isPrivate = isPrivate
     this._isProtected = isProtected
     this._isThis = isThis

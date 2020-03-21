@@ -55,15 +55,13 @@ object PlayDocsValidation {
     */
   case class CodeSamplesReport(files: Seq[FileWithCodeSamples]) {
     lazy val byFile = files.map(f => f.name -> f).toMap
-    lazy val byName = files
-      .filterNot(_.name.endsWith("_Sidebar.md"))
-      .map { file =>
+    lazy val byName = files.filterNot(_.name.endsWith("_Sidebar.md")).map {
+      file =>
         val filename = file.name
         val name =
           filename.takeRight(filename.length - filename.lastIndexOf('/'))
         name -> file
-      }
-      .toMap
+    }.toMap
   }
   case class FileWithCodeSamples(
       name: String,
@@ -121,10 +119,8 @@ object PlayDocsValidation {
 
       val processor = new PegDownProcessor(
         Extensions.ALL,
-        PegDownPlugins
-          .builder()
-          .withPlugin(classOf[CodeReferenceParser])
-          .build)
+        PegDownPlugins.builder()
+          .withPlugin(classOf[CodeReferenceParser]).build)
 
       // Link renderer will also verify that all wiki links exist
       val linkRenderer = new LinkRenderer {
@@ -153,9 +149,9 @@ object PlayDocsValidation {
                     markdownFile,
                     node.getStartIndex + 2)
                 case relative =>
-                  val link = markdownFile.getParentFile.getCanonicalPath
-                    .stripPrefix(base.getCanonicalPath)
-                    .stripPrefix("/") + "/" + relative
+                  val link =
+                    markdownFile.getParentFile.getCanonicalPath.stripPrefix(
+                      base.getCanonicalPath).stripPrefix("/") + "/" + relative
                   resourceLinks += LinkRef(
                     link,
                     markdownFile,
@@ -210,9 +206,8 @@ object PlayDocsValidation {
               val sourceFile = if (source.startsWith("/")) {
                 source.drop(1)
               } else {
-                markdownFile.getParentFile.getCanonicalPath
-                  .stripPrefix(base.getCanonicalPath)
-                  .stripPrefix("/") + "/" + source
+                markdownFile.getParentFile.getCanonicalPath.stripPrefix(
+                  base.getCanonicalPath).stripPrefix("/") + "/" + source
               }
 
               val sourcePos = code.getStartIndex + code.getLabel.length + 4
@@ -237,8 +232,8 @@ object PlayDocsValidation {
       val astRoot = processor.parseMarkdown(IO.read(markdownFile).toCharArray)
       new ToHtmlSerializer(
         linkRenderer,
-        java.util.Arrays
-          .asList[ToHtmlSerializerPlugin](codeReferenceSerializer))
+        java.util.Arrays.asList[ToHtmlSerializerPlugin](
+          codeReferenceSerializer))
         .toHtml(astRoot)
     }
 
@@ -261,10 +256,8 @@ object PlayDocsValidation {
 
     val processor = new PegDownProcessor(
       Extensions.ALL,
-      PegDownPlugins
-        .builder()
-        .withPlugin(classOf[CodeReferenceParser])
-        .build)
+      PegDownPlugins.builder()
+        .withPlugin(classOf[CodeReferenceParser]).build)
 
     val codeReferenceSerializer = new ToHtmlSerializerPlugin() {
       def visit(node: Node, visitor: Visitor, printer: Printer) =
@@ -313,18 +306,14 @@ object PlayDocsValidation {
       case Some(jarFile) =>
         import scala.collection.JavaConversions._
         val jar = new JarFile(jarFile)
-        val parsedFiles = jar
-          .entries()
-          .toIterator
-          .collect {
-            case entry
-                if entry.getName.endsWith(".md") && entry.getName.startsWith(
-                  "play/docs/content/manual") =>
-              val fileName = entry.getName.stripPrefix("play/docs/content")
-              val contents = IO.readStream(jar.getInputStream(entry))
-              extractCodeSamples(fileName, contents)
-          }
-          .toList
+        val parsedFiles = jar.entries().toIterator.collect {
+          case entry
+              if entry.getName.endsWith(".md") && entry.getName.startsWith(
+                "play/docs/content/manual") =>
+            val fileName = entry.getName.stripPrefix("play/docs/content")
+            val contents = IO.readStream(jar.getInputStream(entry))
+            extractCodeSamples(fileName, contents)
+        }.toList
         jar.close()
         CodeSamplesReport(parsedFiles)
       case None =>
@@ -365,21 +354,19 @@ object PlayDocsValidation {
       }
     val (matchingFiles, changedPathFiles) =
       matchingFilesByName.partition(f => f._1.name == f._2.name)
-    val (codeSampleIssues, okFiles) = matchingFiles
-      .map {
-        case (actualFile, upstreamFile) =>
-          val missingCodeSamples = upstreamFile.codeSamples.filterNot(
-            hasCodeSample(actualFile.codeSamples))
-          val introducedCodeSamples = actualFile.codeSamples.filterNot(
-            hasCodeSample(actualFile.codeSamples))
-          TranslationCodeSamples(
-            actualFile.name,
-            missingCodeSamples,
-            introducedCodeSamples,
-            upstreamFile.codeSamples.size)
-      }
-      .partition(c =>
-        c.missingCodeSamples.nonEmpty || c.introducedCodeSamples.nonEmpty)
+    val (codeSampleIssues, okFiles) = matchingFiles.map {
+      case (actualFile, upstreamFile) =>
+        val missingCodeSamples = upstreamFile.codeSamples.filterNot(
+          hasCodeSample(actualFile.codeSamples))
+        val introducedCodeSamples = actualFile.codeSamples.filterNot(
+          hasCodeSample(actualFile.codeSamples))
+        TranslationCodeSamples(
+          actualFile.name,
+          missingCodeSamples,
+          introducedCodeSamples,
+          upstreamFile.codeSamples.size)
+    }.partition(c =>
+      c.missingCodeSamples.nonEmpty || c.introducedCodeSamples.nonEmpty)
 
     val result = TranslationReport(
       untranslatedFiles,
@@ -398,14 +385,11 @@ object PlayDocsValidation {
     val file = translationCodeSamplesReportFile.value
     if (!file.exists) {
       println("Generating report...")
-      Project
-        .runTask(translationCodeSamplesReport, state.value)
-        .get
-        ._2
-        .toEither
-        .fold(
-          { incomplete => throw incomplete.directCause.get },
-          result => result)
+      Project.runTask(
+        translationCodeSamplesReport,
+        state.value).get._2.toEither.fold(
+        { incomplete => throw incomplete.directCause.get },
+        result => result)
     } else {
       file
     }
@@ -481,9 +465,8 @@ object PlayDocsValidation {
       "Missing wiki links test",
       report.wikiLinks.filterNot { link =>
         pages.contains(link.link) || validationConfig.downstreamWikiPages(
-          link.link) || combinedRepo
-          .findFileWithName(link.link + ".md")
-          .nonEmpty
+          link.link) || combinedRepo.findFileWithName(
+          link.link + ".md").nonEmpty
       },
       "Could not find link"
     )
@@ -534,10 +517,8 @@ object PlayDocsValidation {
     def segmentExists(sample: CodeSampleRef) = {
       if (sample.segment.nonEmpty) {
         // Find the code segment
-        val sourceCode = combinedRepo
-          .loadFile(sample.source)(is =>
-            IO.readLines(new BufferedReader(new InputStreamReader(is))))
-          .get
+        val sourceCode = combinedRepo.loadFile(sample.source)(is =>
+          IO.readLines(new BufferedReader(new InputStreamReader(is)))).get
         val notLabel = (s: String) => !s.contains("#" + sample.segment)
         val segment =
           sourceCode dropWhile (notLabel) drop (1) takeWhile (notLabel)
@@ -588,8 +569,7 @@ object PlayDocsValidation {
         e._1.startsWith("http://localhost:") || e._1.contains(
           "example.com") || e._1.startsWith("http://127.0.0.1")
       }
-      .toSeq
-      .sortBy { _._1 }
+      .toSeq.sortBy { _._1 }
 
     implicit val ec =
       ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(50))

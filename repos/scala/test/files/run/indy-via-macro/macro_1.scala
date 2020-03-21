@@ -17,12 +17,10 @@ object Macro {
         bootstrapArgs: List[c.universe.Literal]): c.Tree = {
       val symtab = c.universe.asInstanceOf[SymbolTable]
       import symtab._
-      val dummySymbol = NoSymbol
-        .newTermSymbol(TermName("compile"))
-        .setInfo(NullaryMethodType(typeOf[Pattern]))
-      val args: List[Tree] =
-        Literal(Constant(bootstrapMethod)).setType(NoType) :: bootstrapArgs
-          .asInstanceOf[List[Tree]]
+      val dummySymbol = NoSymbol.newTermSymbol(TermName("compile")).setInfo(
+        NullaryMethodType(typeOf[Pattern]))
+      val args: List[Tree] = Literal(Constant(bootstrapMethod)).setType(
+        NoType) :: bootstrapArgs.asInstanceOf[List[Tree]]
       val result =
         ApplyDynamic(Ident(dummySymbol).setType(dummySymbol.info), args)
       result.setType(dummySymbol.info.resultType)

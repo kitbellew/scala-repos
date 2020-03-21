@@ -111,10 +111,8 @@ class IncludedFileReferenceSet(
 
       def orderEntryScope = allScopes.reduceOption(_ union _)
       def moduleScope =
-        pfi
-          .getModuleForFile(parent)
-          .toOption
-          .map(_.getModuleRuntimeScope(false))
+        pfi.getModuleForFile(parent).toOption.map(
+          _.getModuleRuntimeScope(false))
 
       (orderEntryScope orElse moduleScope).map { scope =>
         // If there are any source roots with package prefix and that package is a subpackage of
@@ -123,13 +121,11 @@ class IncludedFileReferenceSet(
         // `PackagePrefixFileSystemItem` instances, but implementation of `FileReference#innerResolveInContext`
         // straight away negates my efforts by explicitly ignoring package prefixes - not sure why.
         // TODO: possibly fix this in some other way?
-        DirectoryIndex
-          .getInstance(proj)
-          .getDirectoriesByPackageName(pkgName, false)
-          .iterator
-          .asScala
-          .filter(scope.contains)
-          .flatMap(dir => Option(psiManager.findDirectory(dir)))
+        DirectoryIndex.getInstance(proj).getDirectoriesByPackageName(
+          pkgName,
+          false).iterator.asScala
+          .filter(scope.contains).flatMap(dir =>
+            Option(psiManager.findDirectory(dir)))
           .toJList[PsiFileSystemItem]
 
       } getOrElse empty

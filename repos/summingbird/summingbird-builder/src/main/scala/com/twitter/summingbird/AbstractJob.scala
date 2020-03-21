@@ -28,8 +28,7 @@ import com.twitter.chill.IKryoRegistrar
   */
 object AbstractJob {
   def apply(jobName: String, env: Env): AbstractJob =
-    Class
-      .forName(jobName)
+    Class.forName(jobName)
       .getConstructor(classOf[Env])
       .newInstance(env)
       .asInstanceOf[AbstractJob]

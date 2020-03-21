@@ -35,8 +35,8 @@ import org.apache.spark.util.Utils
 
 object SQLConf {
 
-  private val sqlConfEntries = java.util.Collections
-    .synchronizedMap(new java.util.HashMap[String, SQLConfEntry[_]]())
+  private val sqlConfEntries = java.util.Collections.synchronizedMap(
+    new java.util.HashMap[String, SQLConfEntry[_]]())
 
   /**
     * An entry contains all meta information for a configuration.
@@ -700,8 +700,9 @@ class SQLConf
   import SQLConf._
 
   /** Only low degree of contention is expected for conf, thus NOT using ConcurrentHashMap. */
-  @transient protected[spark] val settings = java.util.Collections
-    .synchronizedMap(new java.util.HashMap[String, String]())
+  @transient protected[spark] val settings =
+    java.util.Collections.synchronizedMap(
+      new java.util.HashMap[String, String]())
 
   /** ************************ Spark SQL Params/Hints ******************* */
   def filesMaxPartitionBytes: Long = getConf(FILES_MAX_PARTITION_BYTES)
@@ -829,12 +830,10 @@ class SQLConf
   /** Return the value of Spark SQL configuration property for the given key. */
   @throws[NoSuchElementException]("if key is not set")
   def getConfString(key: String): String = {
-    Option(settings.get(key))
-      .orElse {
-        // Try to use the default value
-        Option(sqlConfEntries.get(key)).map(_.defaultValueString)
-      }
-      .getOrElse(throw new NoSuchElementException(key))
+    Option(settings.get(key)).orElse {
+      // Try to use the default value
+      Option(sqlConfEntries.get(key)).map(_.defaultValueString)
+    }.getOrElse(throw new NoSuchElementException(key))
   }
 
   /**
@@ -844,9 +843,8 @@ class SQLConf
     */
   def getConf[T](entry: SQLConfEntry[T], defaultValue: T): T = {
     require(sqlConfEntries.get(entry.key) == entry, s"$entry is not registered")
-    Option(settings.get(entry.key))
-      .map(entry.valueConverter)
-      .getOrElse(defaultValue)
+    Option(settings.get(entry.key)).map(entry.valueConverter).getOrElse(
+      defaultValue)
   }
 
   /**
@@ -855,10 +853,8 @@ class SQLConf
     */
   def getConf[T](entry: SQLConfEntry[T]): T = {
     require(sqlConfEntries.get(entry.key) == entry, s"$entry is not registered")
-    Option(settings.get(entry.key))
-      .map(entry.valueConverter)
-      .orElse(entry.defaultValue)
-      .getOrElse(throw new NoSuchElementException(entry.key))
+    Option(settings.get(entry.key)).map(entry.valueConverter).orElse(
+      entry.defaultValue).getOrElse(throw new NoSuchElementException(entry.key))
   }
 
   /**
@@ -887,10 +883,9 @@ class SQLConf
     */
   def getAllDefinedConfs: Seq[(String, String, String)] =
     sqlConfEntries.synchronized {
-      sqlConfEntries.values.asScala
-        .filter(_.isPublic)
-        .map { entry => (entry.key, entry.defaultValueString, entry.doc) }
-        .toSeq
+      sqlConfEntries.values.asScala.filter(_.isPublic).map { entry =>
+        (entry.key, entry.defaultValueString, entry.doc)
+      }.toSeq
     }
 
   private def setConfWithCheck(key: String, value: String): Unit = {

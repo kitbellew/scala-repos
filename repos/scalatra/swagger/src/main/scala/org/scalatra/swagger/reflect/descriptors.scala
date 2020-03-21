@@ -97,10 +97,9 @@ object ManifestScalaType {
     override def typeVars = {
       if (_typeVars == null)
         _typeVars = Map.empty[TypeVariable[_], ScalaType] ++
-          erasure.getTypeParameters
-            .map(_.asInstanceOf[TypeVariable[_]])
-            .toList
-            .zip(manifest.typeArguments map (ManifestScalaType(_)))
+          erasure.getTypeParameters.map(
+            _.asInstanceOf[TypeVariable[_]]).toList.zip(
+            manifest.typeArguments map (ManifestScalaType(_)))
       _typeVars
     }
   }
@@ -155,10 +154,9 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   def typeVars = {
     if (_typeVars == null)
       _typeVars = Map.empty ++
-        erasure.getTypeParameters
-          .map(_.asInstanceOf[TypeVariable[_]])
-          .toList
-          .zip(manifest.typeArguments map (ManifestScalaType(_)))
+        erasure.getTypeParameters.map(
+          _.asInstanceOf[TypeVariable[_]]).toList.zip(
+          manifest.typeArguments map (ManifestScalaType(_)))
     _typeVars
   }
 
@@ -182,9 +180,10 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
     rawSimpleName + (if (typeArgs.nonEmpty)
                        typeArgs.map(_.simpleName).mkString("[", ", ", "]")
                      else (if (typeVars.nonEmpty)
-                             typeVars
-                               .map(_._2.simpleName)
-                               .mkString("[", ", ", "]")
+                             typeVars.map(_._2.simpleName).mkString(
+                               "[",
+                               ", ",
+                               "]")
                            else ""))
 
   lazy val fullName: String =

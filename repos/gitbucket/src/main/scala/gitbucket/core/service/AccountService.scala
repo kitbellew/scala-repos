@@ -109,12 +109,9 @@ trait AccountService {
     if (needs.isEmpty) {
       map
     } else {
-      map ++ Accounts
-        .filter(t =>
-          (t.userName inSetBind needs) && (t.removed === false.bind, !includeRemoved))
-        .list
-        .map(a => a.userName -> a)
-        .toMap
+      map ++ Accounts.filter(t =>
+        (t.userName inSetBind needs) && (t.removed === false.bind, !includeRemoved)).list.map(
+        a => a.userName -> a).toMap
     }
   }
 
@@ -186,10 +183,8 @@ trait AccountService {
     Accounts.filter(_.userName === userName.bind).map(_.image.?).update(image)
 
   def updateLastLoginDate(userName: String)(implicit s: Session): Unit =
-    Accounts
-      .filter(_.userName === userName.bind)
-      .map(_.lastLoginDate)
-      .update(currentDate)
+    Accounts.filter(_.userName === userName.bind).map(_.lastLoginDate).update(
+      currentDate)
 
   def createGroup(groupName: String, url: Option[String])(implicit
       s: Session): Unit =
@@ -210,10 +205,8 @@ trait AccountService {
 
   def updateGroup(groupName: String, url: Option[String], removed: Boolean)(
       implicit s: Session): Unit =
-    Accounts
-      .filter(_.userName === groupName.bind)
-      .map(t => t.url.? -> t.removed)
-      .update(url, removed)
+    Accounts.filter(_.userName === groupName.bind).map(t =>
+      t.url.? -> t.removed).update(url, removed)
 
   def updateGroupMembers(groupName: String, members: List[(String, Boolean)])(
       implicit s: Session): Unit = {
@@ -246,11 +239,8 @@ trait AccountService {
 
   def getGroupNames(userName: String)(implicit s: Session): List[String] = {
     List(userName) ++
-      Collaborators
-        .filter(_.collaboratorName === userName.bind)
-        .sortBy(_.userName)
-        .map(_.userName)
-        .list
+      Collaborators.filter(_.collaboratorName === userName.bind).sortBy(
+        _.userName).map(_.userName).list
   }
 
 }

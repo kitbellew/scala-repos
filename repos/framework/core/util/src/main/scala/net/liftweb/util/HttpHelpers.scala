@@ -511,11 +511,9 @@ trait HttpHelpers {
     * @return a valid query string
     */
   def paramsToUrlParams(params: List[(String, String)]): String =
-    params
-      .map {
-        case (n, v) => urlEncode(n) + "=" + urlEncode(v)
-      }
-      .mkString("&")
+    params.map {
+      case (n, v) => urlEncode(n) + "=" + urlEncode(v)
+    }.mkString("&")
 
   /**
     * Append parameters to a URL
@@ -676,8 +674,9 @@ trait HttpHelpers {
           to =>
             to +
               (if (to.indexOf("?") >= 0) "&" else "?") +
-              ps.map { case (n, v) => urlEncode(n) + "=" + urlEncode(v) }
-                .mkString("&")
+              ps.map {
+                case (n, v) => urlEncode(n) + "=" + urlEncode(v)
+              }.mkString("&")
         }
     }
 

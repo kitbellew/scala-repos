@@ -75,19 +75,17 @@ class ReplicationUtilsTest extends ZooKeeperTestHarness {
     EasyMock.replay(log)
 
     val logManager = EasyMock.createMock(classOf[kafka.log.LogManager])
-    EasyMock
-      .expect(logManager.getLog(TopicAndPartition(topic, partitionId)))
-      .andReturn(Some(log))
-      .anyTimes()
+    EasyMock.expect(
+      logManager.getLog(TopicAndPartition(topic, partitionId))).andReturn(
+      Some(log)).anyTimes()
     EasyMock.replay(logManager)
 
     val replicaManager =
       EasyMock.createMock(classOf[kafka.server.ReplicaManager])
     EasyMock.expect(replicaManager.config).andReturn(configs.head)
     EasyMock.expect(replicaManager.logManager).andReturn(logManager)
-    EasyMock
-      .expect(replicaManager.replicaFetcherManager)
-      .andReturn(EasyMock.createMock(classOf[ReplicaFetcherManager]))
+    EasyMock.expect(replicaManager.replicaFetcherManager).andReturn(
+      EasyMock.createMock(classOf[ReplicaFetcherManager]))
     EasyMock.expect(replicaManager.zkUtils).andReturn(zkUtils)
     EasyMock.replay(replicaManager)
 
@@ -137,15 +135,20 @@ class ReplicationUtilsTest extends ZooKeeperTestHarness {
 
   @Test
   def testGetLeaderIsrAndEpochForPartition() {
-    val leaderIsrAndControllerEpoch = ReplicationUtils
-      .getLeaderIsrAndEpochForPartition(zkUtils, topic, partitionId)
+    val leaderIsrAndControllerEpoch =
+      ReplicationUtils.getLeaderIsrAndEpochForPartition(
+        zkUtils,
+        topic,
+        partitionId)
     assertEquals(
       topicDataLeaderIsrAndControllerEpoch,
       leaderIsrAndControllerEpoch.get)
     assertEquals(
       None,
-      ReplicationUtils
-        .getLeaderIsrAndEpochForPartition(zkUtils, topic, partitionId + 1))
+      ReplicationUtils.getLeaderIsrAndEpochForPartition(
+        zkUtils,
+        topic,
+        partitionId + 1))
   }
 
 }

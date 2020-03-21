@@ -11,9 +11,10 @@ import collection.JavaConverters._
 private class FacetProperties(element: Element) {
   def option(key: String): Option[String] =
     Option(
-      XPath
-        .selectSingleNode(element, s"configuration/option[@name='$key']/@value")
-        .asInstanceOf[Attribute]).map(_.getValue)
+      XPath.selectSingleNode(
+        element,
+        s"configuration/option[@name='$key']/@value").asInstanceOf[
+        Attribute]).map(_.getValue)
 
   def string(key: String, default: String): String =
     option(key).getOrElse(default)
@@ -28,10 +29,8 @@ private class FacetProperties(element: Element) {
     option(key).map(_.toInt).getOrElse(default)
 
   def array(key: String): Seq[String] =
-    XPath
-      .selectNodes(
-        element,
-        s"configuration/option[@name='$key']/array/option/@value")
-      .asScala
-      .map(_.asInstanceOf[Attribute].getValue)
+    XPath.selectNodes(
+      element,
+      s"configuration/option[@name='$key']/array/option/@value").asScala.map(
+      _.asInstanceOf[Attribute].getValue)
 }

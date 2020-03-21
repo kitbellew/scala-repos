@@ -48,8 +48,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     }
 
   implicit val arbTimestamp: Arbitrary[Timestamp] = Arbitrary {
-    Gen
-      .choose(1L, 100000L)
+    Gen.choose(1L, 100000L)
       .map { Timestamp(_) }
   }
 
@@ -159,8 +158,9 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                     _),
                   _)) => {
             //readInterval should start from the last written interval in the store
-            implicitly[Ordering[Timestamp]]
-              .lteq(readIntervalUpper, interval.upper.upper)
+            implicitly[Ordering[Timestamp]].lteq(
+              readIntervalUpper,
+              interval.upper.upper)
           }
           case Right(_) => false
           case Left(_)  => interval == Empty()
@@ -197,8 +197,9 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
               _)) = mergeResult
           val requestedEndingTimestamp: Timestamp = interval.upper.upper
           val readIntervalEndingTimestamp: Timestamp = readIntervalUpper
-          implicitly[Ordering[Timestamp]]
-            .lteq(readIntervalEndingTimestamp, requestedEndingTimestamp)
+          implicitly[Ordering[Timestamp]].lteq(
+            readIntervalEndingTimestamp,
+            requestedEndingTimestamp)
         }
     }
   }
@@ -240,12 +241,9 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                   ExclusiveUpper(_)) = time
 
                 //shrink the endTime so it does not cover a whole batch
-                val onDiskEndTime: Long = Gen
-                  .choose(
-                    startRequestedTime.milliSinceEpoch,
-                    nextBatchEnding.milliSinceEpoch)
-                  .sample
-                  .get
+                val onDiskEndTime: Long = Gen.choose(
+                  startRequestedTime.milliSinceEpoch,
+                  nextBatchEnding.milliSinceEpoch).sample.get
 
                 val readTime: Interval[Timestamp] =
                   if (startRequestedTime == nextBatchEnding)
@@ -272,9 +270,9 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
           mergeResult match {
             case Left(l) => {
-              l.mkString
-                .contains("readTimespan is not convering at least one batch")
-                .label("fail with right reason")
+              l.mkString.contains(
+                "readTimespan is not convering at least one batch").label(
+                "fail with right reason")
             }
             case Right(_) =>
               false.label(

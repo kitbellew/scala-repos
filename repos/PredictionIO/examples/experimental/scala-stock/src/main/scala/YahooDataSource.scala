@@ -97,16 +97,14 @@ class YahooDataSource(val params: YahooDataSource.Params)
     val adjCloseList = (yahooData \ "adjclose").extract[Array[Double]]
     val volumeList = (yahooData \ "volume").extract[Array[Double]]
 
-    val tList: Array[DateTime] = (yahooData \ "t")
-      .extract[Array[Long]]
+    val tList: Array[DateTime] = (yahooData \ "t").extract[Array[Long]]
       .map(t => new DateTime(t * 1000, timezone))
 
     // Add data either
     // 1. timeIndex exists and t is in timeIndex, or
     // 2. timeIndex is None.
     val newDailyMap: Map[DateTime, YahooDataSource.Daily] =
-      tList.zipWithIndex
-        .drop(1)
+      tList.zipWithIndex.drop(1)
         .filter { case (t, idx) => timeIndexSetOpt.map(_(t)).getOrElse(true) }
         .map {
           case (t, idx) =>
@@ -199,15 +197,17 @@ class YahooDataSource(val params: YahooDataSource.Params)
 
     var lastOpt: Option[A] = None
 
-    timeIndex.map { t =>
-      if (dailyMap.contains(t)) {
-        val v = valueFunc(dailyMap(t))
-        lastOpt = Some(v)
-        v
-      } else {
-        fillNAFunc(lastOpt)
+    timeIndex
+      .map { t =>
+        if (dailyMap.contains(t)) {
+          val v = valueFunc(dailyMap(t))
+          lastOpt = Some(v)
+          v
+        } else {
+          fillNAFunc(lastOpt)
+        }
       }
-    }.toArray
+      .toArray
   }
 
   def finalizeStock(
@@ -232,7 +232,8 @@ class YahooDataSource(val params: YahooDataSource.Params)
     val predicate = (e: Event) =>
       (e.entityType == params.entityType && e.entityId == marketTicker)
 
-    val tickerMap: Map[String, HistoricalData] = batchView.events
+    val tickerMap: Map[String, HistoricalData] = batchView
+      .events
       .filter(predicate)
       .aggregateByEntityOrdered(
         //predicate,
@@ -252,9 +253,11 @@ class YahooDataSource(val params: YahooDataSource.Params)
     val defaultTickerMap: Map[String, HistoricalData] =
       params.windowParams.tickerList.map {
         ticker => (ticker -> HistoricalData(ticker, timeIndex))
-      }.toMap
+      }
+        .toMap
 
-    val tickerMap: Map[String, HistoricalData] = batchView.events
+    val tickerMap: Map[String, HistoricalData] = batchView
+      .events
       .filter(predicate)
       .aggregateByEntityOrdered(
         //predicate,
@@ -275,13 +278,13 @@ class YahooDataSource(val params: YahooDataSource.Params)
   def getRawData(tickerMap: Map[String, HistoricalData]): RawData = {
     val allTickers = windowParams.tickerList :+ windowParams.marketTicker
 
-    val price: Array[(String, Array[Double])] = allTickers.map { ticker =>
-      (ticker, tickerMap(ticker).adjClose)
-    }.toArray
+    val price: Array[(String, Array[Double])] = allTickers
+      .map { ticker => (ticker, tickerMap(ticker).adjClose) }
+      .toArray
 
-    val active: Array[(String, Array[Boolean])] = allTickers.map { ticker =>
-      (ticker, tickerMap(ticker).active)
-    }.toArray
+    val active: Array[(String, Array[Boolean])] = allTickers
+      .map { ticker => (ticker, tickerMap(ticker).active) }
+      .toArray
 
     new RawData(
       tickers = windowParams.tickerList.toArray,

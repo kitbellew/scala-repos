@@ -370,8 +370,8 @@ object StructType extends AbstractDataType {
   override private[sql] def simpleString: String = "struct"
 
   private[sql] def fromString(raw: String): StructType = {
-    Try(DataType.fromJson(raw))
-      .getOrElse(LegacyTypeStringParser.parse(raw)) match {
+    Try(DataType.fromJson(raw)).getOrElse(
+      LegacyTypeStringParser.parse(raw)) match {
       case t: StructType => t
       case _             => throw new RuntimeException(s"Failed parsing StructType: $raw")
     }
@@ -426,8 +426,7 @@ object StructType extends AbstractDataType {
         val rightMapped = fieldsMap(rightFields)
         leftFields.foreach {
           case leftField @ StructField(leftName, leftType, leftNullable, _) =>
-            rightMapped
-              .get(leftName)
+            rightMapped.get(leftName)
               .map {
                 case rightField @ StructField(_, rightType, rightNullable, _) =>
                   leftField.copy(

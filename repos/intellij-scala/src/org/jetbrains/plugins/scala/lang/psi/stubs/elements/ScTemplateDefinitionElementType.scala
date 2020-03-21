@@ -80,8 +80,10 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
       res
     }
 
-    val isLocal: Boolean = psi.containingClass == null && PsiTreeUtil
-      .getParentOfType(psi, classOf[ScTemplateDefinition]) != null
+    val isLocal: Boolean =
+      psi.containingClass == null && PsiTreeUtil.getParentOfType(
+        psi,
+        classOf[ScTemplateDefinition]) != null
 
     new ScTemplateDefinitionStubImpl[ParentPsi](
       parent,

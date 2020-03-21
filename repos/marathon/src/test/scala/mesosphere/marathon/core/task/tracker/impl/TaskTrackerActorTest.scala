@@ -102,8 +102,9 @@ class TaskTrackerActorTest
     val runningTask1 = MarathonTestHelper.runningTaskProto("running1")
     val runningTask2 = MarathonTestHelper.runningTaskProto("running2")
     val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
+      TaskTracker.AppTasks(
+        appId,
+        Iterable(stagedTask, runningTask1, runningTask2))
     )
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
@@ -125,8 +126,9 @@ class TaskTrackerActorTest
     val runningTask1 = MarathonTestHelper.runningTaskProto(appId)
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
     val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
+      TaskTracker.AppTasks(
+        appId,
+        Iterable(stagedTask, runningTask1, runningTask2))
     )
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
@@ -164,8 +166,9 @@ class TaskTrackerActorTest
     val runningTask1 = MarathonTestHelper.runningTaskProto(appId)
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
     val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
+      TaskTracker.AppTasks(
+        appId,
+        Iterable(stagedTask, runningTask1, runningTask2))
     )
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
@@ -176,8 +179,9 @@ class TaskTrackerActorTest
     val taskState = TaskSerializer.fromProto(stagedTaskNowRunning)
     probe.send(
       f.taskTrackerActor,
-      TaskTrackerActor
-        .TaskUpdated(taskState, TaskTrackerActor.Ack(probe.ref, ())))
+      TaskTrackerActor.TaskUpdated(
+        taskState,
+        TaskTrackerActor.Ack(probe.ref, ())))
     probe.expectMsg(())
 
     Then("it will have set the correct metric counts")
@@ -193,8 +197,9 @@ class TaskTrackerActorTest
     val runningTask1 = MarathonTestHelper.runningTaskProto(appId)
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
     val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
+      TaskTracker.AppTasks(
+        appId,
+        Iterable(stagedTask, runningTask1, runningTask2))
     )
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
@@ -204,8 +209,9 @@ class TaskTrackerActorTest
     val taskState = TaskSerializer.fromProto(newTask)
     probe.send(
       f.taskTrackerActor,
-      TaskTrackerActor
-        .TaskUpdated(taskState, TaskTrackerActor.Ack(probe.ref, ())))
+      TaskTrackerActor.TaskUpdated(
+        taskState,
+        TaskTrackerActor.Ack(probe.ref, ())))
     probe.expectMsg(())
 
     Then("it will have set the correct metric counts")

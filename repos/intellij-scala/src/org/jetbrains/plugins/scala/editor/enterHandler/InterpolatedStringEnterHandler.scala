@@ -61,16 +61,14 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
               lexer.start(a.getText, 0, a.getTextLength)
 
               do {
-                if (lexer.getTokenStart + a.getTextOffset < caretOffset.get && caretOffset
-                      .get() < lexer.getTokenEnd + a.getTextOffset) {
+                if (lexer.getTokenStart + a.getTextOffset < caretOffset.get && caretOffset.get() < lexer.getTokenEnd + a.getTextOffset) {
                   if (StringEscapesTokenTypes.STRING_LITERAL_ESCAPES.contains(
                         lexer.getTokenType)) {
                     modifyOffset(
                       lexer.getTokenEnd + a.getTextOffset - caretOffset.get())
                   }
                 }
-              } while (caretOffset
-                .get() > lexer.getTokenEnd + a.getTextOffset && (
+              } while (caretOffset.get() > lexer.getTokenEnd + a.getTextOffset && (
                 lexer.advance(),
                 lexer.getTokenType != null)._2)
             }

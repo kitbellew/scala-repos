@@ -79,8 +79,7 @@ private[spark] class GraphiteSink(
       case Some(p)            => throw new Exception(s"Invalid Graphite protocol: $p")
     }
 
-  val reporter: GraphiteReporter = GraphiteReporter
-    .forRegistry(registry)
+  val reporter: GraphiteReporter = GraphiteReporter.forRegistry(registry)
     .convertDurationsTo(TimeUnit.MILLISECONDS)
     .convertRatesTo(TimeUnit.SECONDS)
     .prefixedWith(prefix)

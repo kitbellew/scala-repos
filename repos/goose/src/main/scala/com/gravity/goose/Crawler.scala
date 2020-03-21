@@ -115,8 +115,9 @@ class Crawler(config: Configuration) {
     if (crawlCandidate.rawHTML != null) {
       Some(crawlCandidate.rawHTML)
     } else {
-      config.getHtmlFetcher
-        .getHtml(config, parsingCandidate.url.toString) match {
+      config.getHtmlFetcher.getHtml(
+        config,
+        parsingCandidate.url.toString) match {
         case Some(html) => {
           Some(html)
         }

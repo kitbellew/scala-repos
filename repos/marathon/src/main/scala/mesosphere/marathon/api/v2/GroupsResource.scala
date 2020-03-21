@@ -81,9 +81,8 @@ class GroupsResource @Inject() (
 
       //format:off
       def appsResponse(id: PathId) =
-        infoService
-          .selectAppsInGroup(id, allAuthorized, appEmbed)
-          .map(info => ok(info))
+        infoService.selectAppsInGroup(id, allAuthorized, appEmbed).map(info =>
+          ok(info))
 
       def groupResponse(id: PathId) =
         infoService.selectGroup(id, allAuthorized, appEmbed, groupEmbed).map {
@@ -92,12 +91,14 @@ class GroupsResource @Inject() (
         }
 
       def groupVersionResponse(id: PathId, version: Timestamp) =
-        infoService
-          .selectGroupVersion(id, version, allAuthorized, groupEmbed)
-          .map {
-            case Some(info) => ok(info)
-            case None       => unknownGroup(id)
-          }
+        infoService.selectGroupVersion(
+          id,
+          version,
+          allAuthorized,
+          groupEmbed).map {
+          case Some(info) => ok(info)
+          case None       => unknownGroup(id)
+        }
 
       def versionsResponse(groupId: PathId) = {
         groupManager.group(groupId).map { maybeGroup =>
@@ -152,9 +153,8 @@ class GroupsResource @Inject() (
       @Context req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[GroupUpdate]) { groupUpdate =>
-        val effectivePath = groupUpdate.id
-          .map(_.canonicalPath(id.toRootPath))
-          .getOrElse(id.toRootPath)
+        val effectivePath = groupUpdate.id.map(
+          _.canonicalPath(id.toRootPath)).getOrElse(id.toRootPath)
         val rootGroup = result(groupManager.rootGroup())
 
         def throwIfConflicting[A](conflict: Option[Any], msg: String) = {
@@ -211,11 +211,9 @@ class GroupsResource @Inject() (
             applyGroupUpdate(originalGroup, groupUpdate, newVersion)
 
           ok(
-            Json
-              .obj(
-                "steps" -> DeploymentPlan(originalGroup, updatedGroup).steps
-              )
-              .toString()
+            Json.obj(
+              "steps" -> DeploymentPlan(originalGroup, updatedGroup).steps
+            ).toString()
           )
         } else {
           val (deployment, _) =

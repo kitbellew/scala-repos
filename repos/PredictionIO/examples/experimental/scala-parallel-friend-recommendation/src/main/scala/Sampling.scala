@@ -60,8 +60,7 @@ object Sampling {
     val targetVertexCount = (graph.vertices.count() * fraction).toInt
     var seedVertices = graph.vertices
       .sample(false, fraction, targetVertexCount)
-      .toArray
-      .iterator
+      .toArray.iterator
     var sampledVertices: HashSet[VertexId] = HashSet()
     var burnQueue: Queue[VertexId] = Queue()
 
@@ -73,8 +72,7 @@ object Sampling {
         val vertexId = burnQueue.dequeue()
         val numToSample = geometricSample(geoParam)
         val edgeCandidates = accumulateEdges(e, vertexId)
-        val burnCandidate = sc
-          .parallelize(edgeCandidates)
+        val burnCandidate = sc.parallelize(edgeCandidates)
           .filter((e: Edge[Int]) => {
             !sampledVertices.contains(e.dstId)
           })
@@ -90,7 +88,8 @@ object Sampling {
         }
       }
     }
-    val vertex: Seq[(VertexId, Int)] = sampledVertices.map(v => (v, 1)).toSeq
+    val vertex: Seq[(VertexId, Int)] = sampledVertices.map(v => (v, 1))
+      .toSeq
     val edges = graph.edges.filter(e =>
       sampledVertices.contains(e.srcId) && sampledVertices.contains(e.dstId))
     Graph(sc.parallelize(vertex), edges)

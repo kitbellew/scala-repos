@@ -22,9 +22,9 @@ object ScalaEditorFileSwapper {
     }
     val fqn: String = getFQN(psiFile)
     if (fqn == null) return null
-    val classes = ScalaPsiManager
-      .instance(project)
-      .getCachedClasses(psiFile.getResolveScope, fqn)
+    val classes = ScalaPsiManager.instance(project).getCachedClasses(
+      psiFile.getResolveScope,
+      fqn)
     var clazz: PsiClass = null
     for (cl <- classes if clazz == null) {
       if (cl.getContainingFile == psiFile) clazz = cl
@@ -54,8 +54,9 @@ class ScalaEditorFileSwapper extends EditorFileSwapper {
       editorWithProviderComposite: EditorWithProviderComposite)
       : Pair[VirtualFile, Integer] = {
     Pair.create(
-      ScalaEditorFileSwapper
-        .findSourceFile(project, editorWithProviderComposite.getFile),
+      ScalaEditorFileSwapper.findSourceFile(
+        project,
+        editorWithProviderComposite.getFile),
       null)
   }
 }

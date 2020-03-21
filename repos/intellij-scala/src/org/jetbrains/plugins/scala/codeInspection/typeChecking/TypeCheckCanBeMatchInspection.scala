@@ -102,9 +102,9 @@ class TypeCheckCanBeMatchQuickFix(
       buildMatchStmt(ifSt, isInstOf, onlyFirst = true)
     for (matchStmt <- matchStmtOption) {
       val newMatch = inWriteAction {
-        ifSt
-          .replaceExpression(matchStmt, removeParenthesis = true)
-          .asInstanceOf[ScMatchStmt]
+        ifSt.replaceExpression(
+          matchStmt,
+          removeParenthesis = true).asInstanceOf[ScMatchStmt]
       }
       if (!ApplicationManager.getApplication.isUnitTestMode) {
         val renameHelper = new InplaceRenameHelper(newMatch)
@@ -129,9 +129,9 @@ object TypeCheckToMatchUtil {
           buildCaseClausesText(ifStmt, isInstOfUnderFix, onlyFirst)
         val matchStmtText =
           s"$matchedExprText match { \n " + caseClausesText + "}"
-        val matchStmt = ScalaPsiElementFactory
-          .createExpressionFromText(matchStmtText, ifStmt.getManager)
-          .asInstanceOf[ScMatchStmt]
+        val matchStmt = ScalaPsiElementFactory.createExpressionFromText(
+          matchStmtText,
+          ifStmt.getManager).asInstanceOf[ScMatchStmt]
         (Some(matchStmt), renameData)
       case _ => (None, null)
     }
@@ -468,9 +468,9 @@ object TypeCheckToMatchUtil {
           conditions.filterNot(equiv(_, isInstOfCall))
         val guardConditionsText: String =
           guardConditions.map(_.getText).mkString(" && ")
-        val guard = ScalaPsiElementFactory
-          .createExpressionFromText(guardConditionsText, condition)
-          .asInstanceOf[ScExpression]
+        val guard = ScalaPsiElementFactory.createExpressionFromText(
+          guardConditionsText,
+          condition).asInstanceOf[ScExpression]
 
         Option(guard)
     }

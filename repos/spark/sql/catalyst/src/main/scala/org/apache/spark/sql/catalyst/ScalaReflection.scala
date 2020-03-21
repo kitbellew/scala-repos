@@ -291,22 +291,20 @@ object ScalaReflection extends ScalaReflection {
             case _                                 => None
           }
 
-          primitiveMethod
-            .map { method =>
-              Invoke(getPath, method, arrayClassFor(elementType))
-            }
-            .getOrElse {
-              val className = getClassNameFromType(elementType)
-              val newTypePath =
-                s"""- array element class: "$className"""" +: walkedTypePath
-              Invoke(
-                MapObjects(
-                  p => constructorFor(elementType, Some(p), newTypePath),
-                  getPath,
-                  schemaFor(elementType).dataType),
-                "array",
-                arrayClassFor(elementType))
-            }
+          primitiveMethod.map { method =>
+            Invoke(getPath, method, arrayClassFor(elementType))
+          }.getOrElse {
+            val className = getClassNameFromType(elementType)
+            val newTypePath =
+              s"""- array element class: "$className"""" +: walkedTypePath
+            Invoke(
+              MapObjects(
+                p => constructorFor(elementType, Some(p), newTypePath),
+                getPath,
+                schemaFor(elementType).dataType),
+              "array",
+              arrayClassFor(elementType))
+          }
 
         case t if t <:< localTypeOf[Seq[_]] =>
           val TypeRef(_, _, Seq(elementType)) = t
@@ -418,14 +416,10 @@ object ScalaReflection extends ScalaReflection {
 
         case t
             if Utils.classIsLoadable(className) &&
-              Utils
-                .classForName(className)
-                .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
-          val udt = Utils
-            .classForName(className)
-            .getAnnotation(classOf[SQLUserDefinedType])
-            .udt()
-            .newInstance()
+              Utils.classForName(className).isAnnotationPresent(
+                classOf[SQLUserDefinedType]) =>
+          val udt = Utils.classForName(className)
+            .getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance()
           val obj = NewInstance(
             udt.userClass.getAnnotation(classOf[SQLUserDefinedType]).udt(),
             Nil,
@@ -565,8 +559,9 @@ object ScalaReflection extends ScalaReflection {
 
                 expressions.If(
                   IsNull(unwrapped),
-                  expressions.Literal
-                    .create(null, silentSchemaFor(optType).dataType),
+                  expressions.Literal.create(
+                    null,
+                    silentSchemaFor(optType).dataType),
                   extractorFor(unwrapped, optType, newPath))
             }
 
@@ -678,14 +673,10 @@ object ScalaReflection extends ScalaReflection {
 
           case t
               if Utils.classIsLoadable(className) &&
-                Utils
-                  .classForName(className)
-                  .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
-            val udt = Utils
-              .classForName(className)
-              .getAnnotation(classOf[SQLUserDefinedType])
-              .udt()
-              .newInstance()
+                Utils.classForName(className).isAnnotationPresent(
+                  classOf[SQLUserDefinedType]) =>
+            val udt = Utils.classForName(className)
+              .getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance()
             val obj = NewInstance(
               udt.userClass.getAnnotation(classOf[SQLUserDefinedType]).udt(),
               Nil,
@@ -791,18 +782,14 @@ trait ScalaReflection {
 
         case t
             if Utils.classIsLoadable(className) &&
-              Utils
-                .classForName(className)
-                .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
+              Utils.classForName(className).isAnnotationPresent(
+                classOf[SQLUserDefinedType]) =>
           // Note: We check for classIsLoadable above since Utils.classForName uses Java reflection,
           //       whereas className is from Scala reflection.  This can make it hard to find classes
           //       in some cases, such as when a class is enclosed in an object (in which case
           //       Java appends a '$' to the object name but Scala does not).
-          val udt = Utils
-            .classForName(className)
-            .getAnnotation(classOf[SQLUserDefinedType])
-            .udt()
-            .newInstance()
+          val udt = Utils.classForName(className)
+            .getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance()
           Schema(udt, nullable = true)
         case t if t <:< localTypeOf[Option[_]] =>
           val TypeRef(_, _, Seq(optType)) = t
@@ -929,8 +916,9 @@ trait ScalaReflection {
     val formalTypeArgs = tpe.typeSymbol.asClass.typeParams
     val TypeRef(_, _, actualTypeArgs) = tpe
     constructParams(tpe).map { p =>
-      p.name.toString -> p.typeSignature
-        .substituteTypes(formalTypeArgs, actualTypeArgs)
+      p.name.toString -> p.typeSignature.substituteTypes(
+        formalTypeArgs,
+        actualTypeArgs)
     }
   }
 

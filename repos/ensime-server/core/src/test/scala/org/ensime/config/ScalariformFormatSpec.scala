@@ -13,9 +13,9 @@ class ScalariformFormatSpec extends EnsimeSpec {
   object ScalariformProtocol extends DefaultSexpProtocol with ScalariformFormat
   import ScalariformProtocol._
 
-  val prefs = FormattingPreferences()
-    .setPreference(DoubleIndentClassDeclaration, true)
-    .setPreference(IndentSpaces, 13)
+  val prefs = FormattingPreferences().setPreference(
+    DoubleIndentClassDeclaration,
+    true).setPreference(IndentSpaces, 13)
 
   "ScalariformFormat" should "parse some example config" in {
     val text = """(:doubleIndentClassDeclaration t

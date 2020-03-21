@@ -93,9 +93,9 @@ trait RandomCompanion[G <: Generator] { self =>
     size.random(this).flatMap(stringOfSize)
 
   def stringOfSize(n: Int): Random[String, G] =
-    char
-      .foldLeftOfSize(n)(new StringBuilder) { (sb, c) => sb.append(c); sb }
-      .map(_.toString)
+    char.foldLeftOfSize(n)(new StringBuilder) { (sb, c) =>
+      sb.append(c); sb
+    }.map(_.toString)
 
   implicit class RandomOps[A](lhs: R[A]) {
     def collection[CC[_]](size: Size)(implicit
@@ -176,9 +176,8 @@ abstract class Random[+A, G <: Generator](val op: Op[A]) { self =>
     size.random(companion).flatMap(listOfSize)
 
   def listOfSize(n: Int): Random[List[A], G] =
-    companion
-      .RandomOps(this)
-      .foldLeftOfSize(n)(List.empty[A])((as, a) => a :: as)
+    companion.RandomOps(this).foldLeftOfSize(n)(List.empty[A])((as, a) =>
+      a :: as)
 }
 
 class RandomCmwc5[+A](op: Op[A]) extends Random[A, rng.Cmwc5](op) {

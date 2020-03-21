@@ -139,8 +139,8 @@ object AtLeastOnceDeliveryFailureSpec {
       extends Actor
       with ChaosSupport
       with ActorLogging {
-    val config = context.system.settings.config
-      .getConfig("akka.persistence.destination.chaos")
+    val config = context.system.settings.config.getConfig(
+      "akka.persistence.destination.chaos")
     val confirmFailureRate = config.getDouble("confirm-failure-rate")
 
     def receive = {
@@ -169,8 +169,9 @@ object AtLeastOnceDeliveryFailureSpec {
 
     def createSender(): ActorRef =
       context.watch(
-        context
-          .actorOf(Props(classOf[ChaosSender], destination, probe), "sender"))
+        context.actorOf(
+          Props(classOf[ChaosSender], destination, probe),
+          "sender"))
 
     def receive = {
       case Start ⇒ 1 to numMessages foreach (snd ! _)

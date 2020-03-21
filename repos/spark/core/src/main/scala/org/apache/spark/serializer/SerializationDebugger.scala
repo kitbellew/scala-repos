@@ -40,9 +40,8 @@ private[spark] object SerializationDebugger extends Logging {
     if (enableDebugging && reflect != null) {
       try {
         new NotSerializableException(
-          e.getMessage + "\nSerialization stack:\n" + find(obj)
-            .map("\t- " + _)
-            .mkString("\n"))
+          e.getMessage + "\nSerialization stack:\n" + find(obj).map(
+            "\t- " + _).mkString("\n"))
       } catch {
         case NonFatal(t) =>
           // Fall back to old exception
@@ -72,11 +71,9 @@ private[spark] object SerializationDebugger extends Logging {
   }
 
   private[serializer] var enableDebugging: Boolean = {
-    !AccessController
-      .doPrivileged(
-        new sun.security.action.GetBooleanAction(
-          "sun.io.serialization.extendedDebugInfo"))
-      .booleanValue()
+    !AccessController.doPrivileged(
+      new sun.security.action.GetBooleanAction(
+        "sun.io.serialization.extendedDebugInfo")).booleanValue()
   }
 
   private class SerializationDebugger {
@@ -413,8 +410,9 @@ private[spark] object SerializationDebugger extends Logging {
 
     /** ObjectStreamClass.invokeWriteReplace */
     val InvokeWriteReplace: Method = {
-      val f = classOf[ObjectStreamClass]
-        .getDeclaredMethod("invokeWriteReplace", classOf[Object])
+      val f = classOf[ObjectStreamClass].getDeclaredMethod(
+        "invokeWriteReplace",
+        classOf[Object])
       f.setAccessible(true)
       f
     }
@@ -439,9 +437,8 @@ private[spark] object SerializationDebugger extends Logging {
     /** ObjectStreamClass$ClassDataSlot.desc field */
     val DescField: Field = {
       // scalastyle:off classforname
-      val f = Class
-        .forName("java.io.ObjectStreamClass$ClassDataSlot")
-        .getDeclaredField("desc")
+      val f = Class.forName(
+        "java.io.ObjectStreamClass$ClassDataSlot").getDeclaredField("desc")
       // scalastyle:on classforname
       f.setAccessible(true)
       f

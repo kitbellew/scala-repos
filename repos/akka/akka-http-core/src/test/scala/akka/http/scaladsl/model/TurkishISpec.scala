@@ -11,9 +11,8 @@ import akka.http.impl.util._
 class TurkishISpec extends WordSpec with Matchers {
   "Model" should {
     "not suffer from turkish-i problem" in {
-      val charsetCons = Class
-        .forName("akka.http.scaladsl.model.HttpCharsets$")
-        .getDeclaredConstructor()
+      val charsetCons = Class.forName(
+        "akka.http.scaladsl.model.HttpCharsets$").getDeclaredConstructor()
       charsetCons.setAccessible(true)
 
       val previousLocale = Locale.getDefault

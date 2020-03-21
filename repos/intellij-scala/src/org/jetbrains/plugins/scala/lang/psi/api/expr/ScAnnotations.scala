@@ -44,9 +44,8 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
             ref.bind() match {
               case Some(r: ScalaResolveResult)
                   if r.getActualElement.isInstanceOf[PsiClass] &&
-                    r.getActualElement
-                      .asInstanceOf[PsiClass]
-                      .qualifiedName == "scala.throws" =>
+                    r.getActualElement.asInstanceOf[
+                      PsiClass].qualifiedName == "scala.throws" =>
                 constr.args match {
                   case Some(args) if args.exprs.length == 1 =>
                     args.exprs(0).getType(TypingContext.empty) match {
@@ -59,12 +58,10 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
                               arg(0),
                               Some(getProject)) match {
                               case Some(p) =>
-                                JavaPsiFacade
-                                  .getInstance(getProject)
-                                  .getElementFactory
-                                  .createTypeByFQClassName(
-                                    p.qualifiedName,
-                                    GlobalSearchScope.allScope(getProject))
+                                JavaPsiFacade.getInstance(
+                                  getProject).getElementFactory.createTypeByFQClassName(
+                                  p.qualifiedName,
+                                  GlobalSearchScope.allScope(getProject))
                               case _ => null
                             }
                           case _ => null

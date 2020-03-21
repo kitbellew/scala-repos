@@ -29,8 +29,7 @@ class NumberJoinerJob(args: Args) extends Job(args) {
   val in1 = Tsv("input1").read.mapTo((0, 1) -> ('x1, 'y1)) {
     input: (Long, Long) => input
   }
-  in0
-    .joinWithSmaller('x0 -> 'x1, in1)
+  in0.joinWithSmaller('x0 -> 'x1, in1)
     .write(Tsv("output"))
 }
 
@@ -57,18 +56,16 @@ class NumberJoinTest extends WordSpec with Matchers {
 }
 
 class SpillingJob(args: Args) extends Job(args) {
-  TypedTsv[(Int, Int)]("input").read
-    .rename((0, 1) -> ('n, 'v))
-    .groupBy('n) { group => group.spillThreshold(3).sum[Int]('v).size }
-    .write(Tsv("output"))
+  TypedTsv[(Int, Int)]("input").read.rename((0, 1) -> ('n, 'v))
+    .groupBy('n) { group => group.spillThreshold(3).sum[Int]('v).size }.write(
+      Tsv("output"))
 }
 
 class SpillingTest extends WordSpec with Matchers {
   import Dsl._
   "A SpillingJob" should {
     val src = (0 to 9).map(_ -> 1) ++ List(0 -> 4)
-    val result = src
-      .groupBy(_._1)
+    val result = src.groupBy(_._1)
       .mapValues { v => (v.map(_._2).sum, v.size) }
       .map { case (a, (b, c)) => (a, b, c) }
       .toSet
@@ -79,8 +76,7 @@ class SpillingTest extends WordSpec with Matchers {
         .source(TypedTsv[(Int, Int)]("input"), src)
         .sink[(Int, Int, Int)](Tsv("output")) { outBuf =>
           outBuf.toSet shouldBe result
-        }
-        .run
+        }.run
         .runHadoop
         .finish
     }
@@ -118,7 +114,8 @@ class GroupRandomlyJobTest extends WordSpec with Matchers {
 }
 
 class ShuffleJob(args: Args) extends Job(args) {
-  Tsv("fakeInput").read
+  Tsv("fakeInput")
+    .read
     .mapTo(0 -> 'num) { (line: String) => line.toInt }
     .shuffle(shards = 1, seed = 42L)
     .groupAll { _.toList[Int]('num -> 'num) }
@@ -147,8 +144,8 @@ class MapToGroupBySizeSumMaxJob(args: Args) extends Job(args) {
   mapTo(1 -> ('kx, 'x)) { line: String =>
     val x = line.toDouble
     ((x > 0.5), x)
-  }.groupBy('kx) { _.size.sum[Double]('x -> 'sx).max('x) }
-    .write(Tsv(args("output")))
+  }.groupBy('kx) { _.size.sum[Double]('x -> 'sx).max('x) }.write(
+    Tsv(args("output")))
 }
 
 class MapToGroupBySizeSumMaxTest extends WordSpec with Matchers {
@@ -157,20 +154,17 @@ class MapToGroupBySizeSumMaxTest extends WordSpec with Matchers {
     //Here is our input data:
     val input = (0 to 100).map { i: Int => (i.toString, r.nextDouble.toString) }
     //Here is our expected output:
-    val goldenOutput = input
-      .map {
-        case (line: String, x: String) =>
-          val xv = x.toDouble;
-          ((xv > 0.5), xv)
-      }
-      .groupBy { case (kx: Boolean, x: Double) => kx }
-      .mapValues { vals =>
-        val vlist = vals.map { case (k: Boolean, x: Double) => x }.toList
-        val size = vlist.size
-        val sum = vlist.sum
-        val max = vlist.max
-        (size, sum, max)
-      }
+    val goldenOutput = input.map {
+      case (line: String, x: String) =>
+        val xv = x.toDouble;
+        ((xv > 0.5), xv)
+    }.groupBy { case (kx: Boolean, x: Double) => kx }.mapValues { vals =>
+      val vlist = vals.map { case (k: Boolean, x: Double) => x }.toList
+      val size = vlist.size
+      val sum = vlist.sum
+      val max = vlist.max
+      (size, sum, max)
+    }
     //Now we have the expected input and output:
     JobTest(new MapToGroupBySizeSumMaxJob(_))
       .arg("input", "fakeInput")
@@ -242,12 +236,10 @@ class MRMJob(args: Args) extends Job(args) {
     } { (output: Set[Int]) => output.toList }
   }
 
-  setPipe
-    .flatten[Int]('y -> 'y)
+  setPipe.flatten[Int]('y -> 'y)
     .write(Tsv("outputSet"))
 
-  setPipe
-    .flattenTo[Int]('y -> 'y)
+  setPipe.flattenTo[Int]('y -> 'y)
     .write(Tsv("outputSetTo"))
 }
 
@@ -278,9 +270,11 @@ class MRMTest extends WordSpec with Matchers {
 }
 
 class JoinJob(args: Args) extends Job(args) {
-  val p1 = Tsv(args("input1")).read
+  val p1 = Tsv(args("input1"))
+    .read
     .mapTo((0, 1) -> ('k1, 'v1)) { v: (String, Int) => v }
-  val p2 = Tsv(args("input2")).read
+  val p2 = Tsv(args("input2"))
+    .read
     .mapTo((0, 1) -> ('k2, 'v2)) { v: (String, Int) => v }
   p1.joinWithSmaller('k1 -> 'k2, p2)
     .project('k1, 'v1, 'v2)
@@ -314,11 +308,13 @@ class JoinTest extends WordSpec with Matchers {
 }
 
 class CollidingKeyJoinJob(args: Args) extends Job(args) {
-  val p1 = Tsv(args("input1")).read
+  val p1 = Tsv(args("input1"))
+    .read
     .mapTo((0, 1) -> ('k1, 'v1)) { v: (String, Int) => v }
     // An an extra fake key to do a join
     .map('k1 -> 'k2) { (k: String) => k + k }
-  val p2 = Tsv(args("input2")).read
+  val p2 = Tsv(args("input2"))
+    .read
     .mapTo((0, 1) -> ('k1, 'v2)) { v: (String, Int) => v }
     // An an extra fake key to do a join
     .map('k1 -> 'k3) { (k: String) => k + k }
@@ -354,9 +350,11 @@ class CollidingKeyJoinTest extends WordSpec with Matchers {
 }
 
 class TinyJoinJob(args: Args) extends Job(args) {
-  val p1 = Tsv(args("input1")).read
+  val p1 = Tsv(args("input1"))
+    .read
     .mapTo((0, 1) -> ('k1, 'v1)) { v: (String, Int) => v }
-  val p2 = Tsv(args("input2")).read
+  val p2 = Tsv(args("input2"))
+    .read
     .mapTo((0, 1) -> ('k2, 'v2)) { v: (String, Int) => v }
   p1.joinWithTiny('k1 -> 'k2, p2)
     .project('k1, 'v1, 'v2)
@@ -392,9 +390,11 @@ class TinyJoinTest extends WordSpec with Matchers {
 }
 
 class TinyCollisionJoinJob(args: Args) extends Job(args) {
-  val p1 = Tsv(args("input1")).read
+  val p1 = Tsv(args("input1"))
+    .read
     .mapTo((0, 1) -> ('k1, 'v1)) { v: (String, Int) => v }
-  val p2 = Tsv(args("input2")).read
+  val p2 = Tsv(args("input2"))
+    .read
     .mapTo((0, 1) -> ('k1, 'v2)) { v: (String, Int) => v }
   p1.joinWithTiny('k1 -> 'k1, p2)
     .write(Tsv(args("output")))
@@ -431,8 +431,7 @@ class TinyThenSmallJoin(args: Args) extends Job(args) {
   val pipe1 = Tsv("in1", ('x1, 'y1)).read
   val pipe2 = Tsv("in2", ('x2, 'y2)).read
 
-  pipe0
-    .joinWithTiny('x0 -> 'x1, pipe1)
+  pipe0.joinWithTiny('x0 -> 'x1, pipe1)
     .joinWithSmaller('x0 -> 'x2, pipe2)
     .map(('y0, 'y1, 'y2) -> ('y0, 'y1, 'y2)) { v: (TC, TC, TC) =>
       (v._1.n, v._2.n, v._3.n)
@@ -570,12 +569,10 @@ class MergeTestJob(args: Args) extends Job(args) {
   }
   val big = in.filter('x) { (x: Double) => (x > 0.5) }
   val small = in.filter('x) { (x: Double) => (x <= 0.5) }
-  (big ++ small)
-    .groupBy('x) { _.max('y) }
+  (big ++ small).groupBy('x) { _.max('y) }
     .write(Tsv(args("out")))
   // Self merge should work
-  (big ++ big)
-    .groupBy('x) { _.max('y) }
+  (big ++ big).groupBy('x) { _.max('y) }
     .write(Tsv("out2"))
 }
 
@@ -606,31 +603,26 @@ class MergeTest extends WordSpec with Matchers {
         "correctly merge two pipes" in {
           golden shouldBe outBuf.toMap
         }
-      }
-      .sink[(Double, Double)](Tsv("out2")) { outBuf =>
+      }.sink[(Double, Double)](Tsv("out2")) { outBuf =>
         "correctly self merge" in {
           outBuf.toMap shouldBe (big.groupBy(_._1).mapValues { iter =>
             iter.map(_._2).max
           })
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 }
 
 class SizeAveStdJob(args: Args) extends Job(args) {
-  TextLine(args("input"))
-    .mapTo('x, 'y) { line =>
-      val p = line.split(" ").map { _.toDouble }.slice(0, 2)
-      (p(0), p(1))
-    }
-    .map('x -> 'x) { (x: Double) => (4 * x).toInt }
+  TextLine(args("input")).mapTo('x, 'y) { line =>
+    val p = line.split(" ").map { _.toDouble }.slice(0, 2)
+    (p(0), p(1))
+  }.map('x -> 'x) { (x: Double) => (4 * x).toInt }
     .groupBy('x) {
       _.sizeAveStdev('y -> ('size, 'yave, 'ystdev))
       //Make sure this doesn't ruin the calculation
-        .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2))
-        .average('y)
+      .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2))
+      .average('y)
     }
     .project('x, 'size, 'yave, 'ystdev, 'y)
     .write(Tsv(args("output")))
@@ -647,8 +639,9 @@ class SizeAveStdSpec extends WordSpec with Matchers {
     val input = (0 to 10000).map { i =>
       (i.toString, r.nextDouble.toString + " " + powerLawRand.toString)
     }
-    val output = input
-      .map { numline => numline._2.split(" ").map { _.toDouble } }
+    val output = input.map { numline =>
+      numline._2.split(" ").map { _.toDouble }
+    }
       .map { vec => ((vec(0) * 4).toInt, vec(1)) }
       .groupBy { tup => tup._1 }
       .mapValues { tups =>
@@ -685,11 +678,10 @@ class SizeAveStdSpec extends WordSpec with Matchers {
 }
 
 class DoubleGroupJob(args: Args) extends Job(args) {
-  TextLine(args("in"))
-    .mapTo('x, 'y) { line =>
-      val p = line.split(" ")
-      (p(0), p(1))
-    }
+  TextLine(args("in")).mapTo('x, 'y) { line =>
+    val p = line.split(" ")
+    (p(0), p(1))
+  }
     .groupBy('x) { _.size }
     .groupBy('size) { _.size('cnt) }
     .write(Tsv(args("out")))
@@ -724,11 +716,10 @@ class DoubleGroupSpec extends WordSpec with Matchers {
 }
 
 class GroupUniqueJob(args: Args) extends Job(args) {
-  TextLine(args("in"))
-    .mapTo('x, 'y) { line =>
-      val p = line.split(" ")
-      (p(0), p(1))
-    }
+  TextLine(args("in")).mapTo('x, 'y) { line =>
+    val p = line.split(" ")
+    (p(0), p(1))
+  }
     .groupBy('x) { _.size }
     .unique('size)
     .write(Tsv(args("out")))
@@ -760,8 +751,7 @@ class GroupUniqueSpec extends WordSpec with Matchers {
 }
 
 class DiscardTestJob(args: Args) extends Job(args) {
-  TextLine(args("in"))
-    .flatMapTo('words) { line => line.split("\\s+") }
+  TextLine(args("in")).flatMapTo('words) { line => line.split("\\s+") }
     .map('words -> 'wsize) { word: String => word.length }
     .discard('words)
     .map('* -> 'correct) { te: TupleEntry => !te.getFields.contains('words) }
@@ -1045,7 +1035,7 @@ class ScanJob(args: Args) extends Job(args) {
   Tsv("in", ('x, 'y, 'z))
     .groupBy('x) {
       _.sortBy('y)
-        .scanLeft('y -> 'ys)(0) { (oldV: Int, newV: Int) => oldV + newV }
+      .scanLeft('y -> 'ys)(0) { (oldV: Int, newV: Int) => oldV + newV }
     }
     .project('x, 'ys, 'z)
     .map('z -> 'z) { z: Int => z } //Make sure the null z is converted to an int
@@ -1135,13 +1125,11 @@ class PivotJob(args: Args) extends Job(args) {
     .write(Tsv("unpivot"))
     .groupBy('k) {
       _.pivot(('col, 'val) -> ('w, 'y, 'z))
-    }
-    .write(Tsv("pivot"))
+    }.write(Tsv("pivot"))
     .unpivot(('w, 'y, 'z) -> ('col, 'val))
     .groupBy('k) {
       _.pivot(('col, 'val) -> ('w, 'y, 'z, 'default), 2.0)
-    }
-    .write(Tsv("pivot_with_default"))
+    }.write(Tsv("pivot_with_default"))
 }
 
 class PivotTest extends WordSpec with Matchers with FieldConversions {
@@ -1194,8 +1182,7 @@ class IterableSourceJob(args: Args) extends Job(args) {
     .write(Tsv("tiny"))
   //Now without fields and using the implicit:
   Tsv("in", ('x, 'w))
-    .joinWithTiny('x -> 0, list)
-    .write(Tsv("imp"))
+    .joinWithTiny('x -> 0, list).write(Tsv("imp"))
 }
 
 class IterableSourceTest extends WordSpec with Matchers with FieldConversions {
@@ -1229,13 +1216,10 @@ class IterableSourceTest extends WordSpec with Matchers with FieldConversions {
 }
 
 class HeadLastJob(args: Args) extends Job(args) {
-  Tsv("input", ('x, 'y))
-    .groupBy('x) {
-      _.sortBy('y)
-        .head('y -> 'yh)
-        .last('y -> 'yl)
-    }
-    .write(Tsv("output"))
+  Tsv("input", ('x, 'y)).groupBy('x) {
+    _.sortBy('y)
+    .head('y -> 'yh).last('y -> 'yl)
+  }.write(Tsv("output"))
 }
 
 class HeadLastTest extends WordSpec with Matchers {
@@ -1255,11 +1239,9 @@ class HeadLastTest extends WordSpec with Matchers {
 }
 
 class HeadLastUnsortedJob(args: Args) extends Job(args) {
-  Tsv("input", ('x, 'y))
-    .groupBy('x) {
-      _.head('y -> 'yh).last('y -> 'yl)
-    }
-    .write(Tsv("output"))
+  Tsv("input", ('x, 'y)).groupBy('x) {
+    _.head('y -> 'yh).last('y -> 'yl)
+  }.write(Tsv("output"))
 }
 
 class HeadLastUnsortedTest extends WordSpec with Matchers {
@@ -1279,13 +1261,11 @@ class HeadLastUnsortedTest extends WordSpec with Matchers {
 }
 
 class MkStringToListJob(args: Args) extends Job(args) {
-  Tsv("input", ('x, 'y))
-    .groupBy('x) {
-      _.sortBy('y)
-        .mkString('y -> 'ystring, ",")
-        .toList[Int]('y -> 'ylist)
-    }
-    .write(Tsv("output"))
+  Tsv("input", ('x, 'y)).groupBy('x) {
+    _.sortBy('y)
+    .mkString('y -> 'ystring, ",")
+    .toList[Int]('y -> 'ylist)
+  }.write(Tsv("output"))
 }
 
 class MkStringToListTest extends WordSpec with Matchers with FieldConversions {
@@ -1330,15 +1310,13 @@ class InsertJobTest extends WordSpec with Matchers {
 
 class FoldJob(args: Args) extends Job(args) {
   import scala.collection.mutable.{Set => MSet}
-  Tsv("input", ('x, 'y))
-    .groupBy('x) {
-      // DON'T USE MUTABLE, IT IS UNCOOL AND DANGEROUS!, but we test, just in case
-      _.foldLeft('y -> 'yset)(MSet[Int]()) { (ms: MSet[Int], y: Int) =>
-        ms += y
-        ms
-      }
+  Tsv("input", ('x, 'y)).groupBy('x) {
+    // DON'T USE MUTABLE, IT IS UNCOOL AND DANGEROUS!, but we test, just in case
+    _.foldLeft('y -> 'yset)(MSet[Int]()) { (ms: MSet[Int], y: Int) =>
+      ms += y
+      ms
     }
-    .write(Tsv("output"))
+  }.write(Tsv("output"))
 }
 
 class FoldJobTest extends WordSpec with Matchers {
@@ -1389,7 +1367,8 @@ class InnerCaseTest extends WordSpec with Matchers {
 }
 
 class NormalizeJob(args: Args) extends Job(args) {
-  Tsv("in").read
+  Tsv("in")
+    .read
     .mapTo((0, 1) -> ('x, 'y)) { tup: (Double, Int) => tup }
     .normalize('x)
     .project('x, 'y)
@@ -1414,10 +1393,12 @@ class NormalizeTest extends WordSpec with Matchers {
 }
 
 class ForceToDiskJob(args: Args) extends Job(args) {
-  val x = Tsv("in", ('x, 'y)).read
+  val x = Tsv("in", ('x, 'y))
+    .read
     .filter('x) { x: Int => x > 0 }
     .rename('x -> 'x1)
-  Tsv("in", ('x, 'y)).read
+  Tsv("in", ('x, 'y))
+    .read
     .joinWithTiny('y -> 'y, x.forceToDisk)
     .project('x, 'x1, 'y)
     .write(Tsv("out"))
@@ -1448,7 +1429,8 @@ class ForceToDiskTest extends WordSpec with Matchers {
 }
 
 class ThrowsErrorsJob(args: Args) extends Job(args) {
-  Tsv("input", ('letter, 'x)).read
+  Tsv("input", ('letter, 'x))
+    .read
     .addTrap(Tsv("trapped"))
     .map(('letter, 'x) -> 'yPrime) { fields: Product =>
       val x = fields.productElement(1).asInstanceOf[Int]
@@ -1498,8 +1480,7 @@ object TypedThrowsErrorsJob {
 class TypedThrowsErrorsJob(args: Args) extends Job(args) {
   import TypedThrowsErrorsJob._
 
-  TypedPipe
-    .from(input)
+  TypedPipe.from(input)
     .map { trans1(_) }
     .addTrap(trap1)
     .map { tup =>
@@ -1527,8 +1508,7 @@ object TypedThrowsErrorsJob2 {
 class TypedThrowsErrorsJob2(args: Args) extends Job(args) {
   import TypedThrowsErrorsJob2._
 
-  TypedPipe
-    .from(input)
+  TypedPipe.from(input)
     .map { trans1(_) }
     .addTrap(trap)
     .map { tup =>
@@ -1720,9 +1700,9 @@ class HangingTest extends Specification {
 
 class Function2Job(args: Args) extends Job(args) {
   import FunctionImplicits._
-  Tsv("in", ('x, 'y))
-    .mapTo(('x, 'y) -> 'xy) { (x: String, y: String) => x + y }
-    .write(Tsv("output"))
+  Tsv("in", ('x, 'y)).mapTo(('x, 'y) -> 'xy) { (x: String, y: String) =>
+    x + y
+  }.write(Tsv("output"))
 }
 
 class Function2Test extends WordSpec with Matchers {
@@ -1752,23 +1732,18 @@ class SampleWithReplacementTest extends WordSpec with Matchers {
   import com.twitter.scalding.mathematics.Poisson
 
   val p = new Poisson(1.0, 0)
-  val simulated = (1 to 100)
-    .map {
-      i => i -> p.nextInt
-    }
-    .filterNot(_._2 == 0)
-    .toSet
+  val simulated = (1 to 100).map {
+    i => i -> p.nextInt
+  }.filterNot(_._2 == 0).toSet
 
   "A SampleWithReplacementJob" should {
     JobTest(new SampleWithReplacementJob(_))
       .source(Tsv("in"), (1 to 100).map(i => i))
       .sink[Int](Tsv("output")) { outBuf =>
         "sampleWithReplacement must sample items according to a poisson distribution" in {
-          outBuf.toList
-            .groupBy(i => i)
+          outBuf.toList.groupBy(i => i)
             .map(p => p._1 -> p._2.size)
-            .filterNot(_._2 == 0)
-            .toSet shouldBe simulated
+            .filterNot(_._2 == 0).toSet shouldBe simulated
         }
       }
       .run
@@ -1818,7 +1793,8 @@ class VerifyTypesJobTest extends WordSpec with Matchers {
 }
 
 class SortingJob(args: Args) extends Job(args) {
-  Tsv("in", ('x, 'y, 'z)).read
+  Tsv("in", ('x, 'y, 'z))
+    .read
     .groupAll(_.sortBy('y))
     .write(Tsv("output"))
 }
@@ -1956,8 +1932,9 @@ class CounterJobTest extends WordSpec with Matchers {
       ("s smith", 12),
       ("jill q", 55),
       ("some child", 8))
-    val expectedOutput =
-      input.collect { case (name, age) if age > 18 => age }.sum.toString
+    val expectedOutput = input.collect {
+      case (name, age) if age > 18 => age
+    }.sum.toString
 
     "have the right counter and output values" in {
       JobTest(new CounterJob(_))
@@ -1994,11 +1971,8 @@ object DailySuffixTsvJob {
 
 class DailySuffixTsvJob(args: Args) extends Job(args) with UtcDateRangeJob {
   import TDsl._
-  DailySuffixTsvJob
-    .source("input0")
-    .read
-    .toTypedPipe[(String, Int)]((0, 1))
-    .write(TypedTsv[(String, Int)]("output0"))
+  DailySuffixTsvJob.source("input0").read.toTypedPipe[(String, Int)](
+    (0, 1)).write(TypedTsv[(String, Int)]("output0"))
 }
 
 class DailySuffixTsvTest extends WordSpec with Matchers {

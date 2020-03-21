@@ -48,8 +48,7 @@ class HBLEvents(
 
   override def init(appId: Int, channelId: Option[Int] = None): Boolean = {
     // check namespace exist
-    val existingNamespace = client.admin
-      .listNamespaceDescriptors()
+    val existingNamespace = client.admin.listNamespaceDescriptors()
       .map(_.getName)
     if (!existingNamespace.contains(namespace)) {
       val nameDesc = NamespaceDescriptor.create(namespace).build()

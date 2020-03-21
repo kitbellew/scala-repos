@@ -364,11 +364,8 @@ class ClusterClientTest
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("Ketama ClusterClient using a distributor - set & get") {
       val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
+        .clientBuilder(ClientBuilder().hostConnectionLimit(1).codec(
+          Memcached()).failFast(false))
         .failureAccrualParams(Int.MaxValue, Duration.Top)
         .dest(dest)
         .build()
@@ -384,11 +381,8 @@ class ClusterClientTest
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("Ketama ClusterClient using a distributor - many keys") {
       val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
+        .clientBuilder(ClientBuilder().hostConnectionLimit(1).codec(
+          Memcached()).failFast(false))
         .failureAccrualParams(Int.MaxValue, Duration.Top)
         .dest(dest)
         .build()
@@ -417,8 +411,7 @@ class ClusterClientTest
   test("Ketama ClusterClient using a distributor - use custom keys") {
     // create my cluster client solely based on a zk client and a path
     val mycluster = CachePoolCluster.newZkCluster(zkPath, zookeeperClient)
-    mycluster
-      .ready() // give it sometime for the cluster to get the initial set of memberships
+    mycluster.ready() // give it sometime for the cluster to get the initial set of memberships
 
     val customKey = "key-"
     var shardId = -1
@@ -433,11 +426,8 @@ class ClusterClientTest
       }
     }
     val client = KetamaClientBuilder()
-      .clientBuilder(
-        ClientBuilder()
-          .hostConnectionLimit(1)
-          .codec(Memcached())
-          .failFast(false))
+      .clientBuilder(ClientBuilder().hostConnectionLimit(1).codec(
+        Memcached()).failFast(false))
       .failureAccrualParams(Int.MaxValue, Duration.Top)
       .cachePoolCluster(myClusterWithCustomKey)
       .build()
@@ -451,11 +441,8 @@ class ClusterClientTest
       val mycluster = initializePool(5)
 
       val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
+        .clientBuilder(ClientBuilder().hostConnectionLimit(1).codec(
+          Memcached()).failFast(false))
         .failureAccrualParams(Int.MaxValue, Duration.Top)
         .cachePoolCluster(mycluster)
         .build()
@@ -567,11 +554,8 @@ class ClusterClientTest
       val mycluster = initializePool(5, ignoreConfigData = true)
 
       val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
+        .clientBuilder(ClientBuilder().hostConnectionLimit(1).codec(
+          Memcached()).failFast(false))
         .failureAccrualParams(Int.MaxValue, Duration.Top)
         .cachePoolCluster(mycluster)
         .build()

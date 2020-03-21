@@ -37,16 +37,13 @@ case class StormEnv(override val jobName: String, override val args: Args)
     val ajob = abstractJob
 
     val classSuffix =
-      args
-        .optional("name")
+      args.optional("name")
         .getOrElse(jobName.split("\\.").last)
 
-    Storm
-      .remote(builder.opts)
+    Storm.remote(builder.opts)
       .withRegistrars(
         ajob.registrars ++ builder.registrar.getRegistrars.asScala)
-      .withConfigUpdater { c => c.updated(ajob.transformConfig(c.toMap)) }
-      .run(
+      .withConfigUpdater { c => c.updated(ajob.transformConfig(c.toMap)) }.run(
         builder.node.name(builder.id).asInstanceOf[TailProducer[Storm, _]],
         classSuffix
       )

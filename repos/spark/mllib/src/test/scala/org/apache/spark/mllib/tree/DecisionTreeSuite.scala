@@ -296,8 +296,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test(
     "Multiclass classification with ordered categorical features: split and bin calculations") {
-    val arr = DecisionTreeSuite
-      .generateCategoricalDataPointsForMulticlassForOrderedFeatures()
+    val arr =
+      DecisionTreeSuite.generateCategoricalDataPointsForMulticlassForOrderedFeatures()
     assert(arr.length === 3000)
     val rdd = sc.parallelize(arr)
     val strategy = new Strategy(
@@ -849,9 +849,9 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
   test(
     "Multiclass classification stump with unordered categorical features," +
       " with just enough bins") {
-    val maxBins = 2 * (math
-      .pow(2, 3 - 1)
-      .toInt - 1) // just enough bins to allow unordered features
+    val maxBins = 2 * (math.pow(
+      2,
+      3 - 1).toInt - 1) // just enough bins to allow unordered features
     val arr = DecisionTreeSuite.generateCategoricalDataPointsForMulticlass()
     val rdd = sc.parallelize(arr)
     val strategy = new Strategy(
@@ -938,8 +938,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test(
     "Multiclass classification stump with 10-ary (ordered) categorical features") {
-    val arr = DecisionTreeSuite
-      .generateCategoricalDataPointsForMulticlassForOrderedFeatures()
+    val arr =
+      DecisionTreeSuite.generateCategoricalDataPointsForMulticlassForOrderedFeatures()
     val rdd = sc.parallelize(arr)
     val strategy = new Strategy(
       algo = Classification,
@@ -965,8 +965,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
   test(
     "Multiclass classification tree with 10-ary (ordered) categorical features," +
       " with just enough bins") {
-    val arr = DecisionTreeSuite
-      .generateCategoricalDataPointsForMulticlassForOrderedFeatures()
+    val arr =
+      DecisionTreeSuite.generateCategoricalDataPointsForMulticlassForOrderedFeatures()
     val rdd = sc.parallelize(arr)
     val strategy = new Strategy(
       algo = Classification,
@@ -1113,14 +1113,11 @@ object DecisionTreeSuite extends SparkFunSuite {
       input: Seq[LabeledPoint],
       requiredMSE: Double) {
     val predictions = input.map(x => model.predict(x.features))
-    val squaredError = predictions
-      .zip(input)
-      .map {
-        case (prediction, expected) =>
-          val err = prediction - expected.label
-          err * err
-      }
-      .sum
+    val squaredError = predictions.zip(input).map {
+      case (prediction, expected) =>
+        val err = prediction - expected.label
+        err * err
+    }.sum
     val mse = squaredError / input.length
     assert(
       mse <= requiredMSE,

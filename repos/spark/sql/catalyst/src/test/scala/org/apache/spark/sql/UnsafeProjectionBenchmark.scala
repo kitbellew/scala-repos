@@ -31,9 +31,8 @@ object UnsafeProjectionBenchmark {
   def generateRows(schema: StructType, numRows: Int): Array[InternalRow] = {
     val generator = RandomDataGenerator.forType(schema, nullable = false).get
     val encoder = RowEncoder(schema)
-    (1 to numRows)
-      .map(_ => encoder.toRow(generator().asInstanceOf[Row]).copy())
-      .toArray
+    (1 to numRows).map(_ =>
+      encoder.toRow(generator().asInstanceOf[Row]).copy()).toArray
   }
 
   def main(args: Array[String]) {

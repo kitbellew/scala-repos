@@ -35,8 +35,7 @@ class MutatedSourceJob(args: Args) extends Job(args) {
   val in0: TypedPipe[(Int, Int)] =
     TypedPipe.from(BijectedSourceSink(TypedTsv[Long]("input0")))
 
-  in0
-    .map { tup: (Int, Int) => (tup._1 * 2, tup._2 * 2) }
+  in0.map { tup: (Int, Int) => (tup._1 * 2, tup._2 * 2) }
     .write(BijectedSourceSink(TypedTsv[Long]("output")))
 }
 
@@ -67,10 +66,9 @@ class MutatedSourceTest extends WordSpec with Matchers {
 }
 
 class ContraMappedAndThenSourceJob(args: Args) extends Job(args) {
-  TypedPipe
-    .from(TypedTsv[Long]("input0").andThen { x =>
-      (LongIntPacker.l(x), LongIntPacker.r(x))
-    })
+  TypedPipe.from(TypedTsv[Long]("input0").andThen { x =>
+    (LongIntPacker.l(x), LongIntPacker.r(x))
+  })
     .map { case (l, r) => (l * 2, r * 2) }
     .write(TypedTsv[Long]("output").contraMap {
       case (l, r) => LongIntPacker.lr(l, r)

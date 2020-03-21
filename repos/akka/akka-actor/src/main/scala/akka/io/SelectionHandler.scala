@@ -96,9 +96,9 @@ private[io] object SelectionHandler {
     override def supervisorStrategy = connectionSupervisorStrategy
 
     val selectorPool = context.actorOf(
-      props = RandomPool(nrOfSelectors)
-        .props(Props(classOf[SelectionHandler], selectorSettings))
-        .withDeploy(Deploy.local),
+      props = RandomPool(nrOfSelectors).props(
+        Props(classOf[SelectionHandler], selectorSettings)).withDeploy(
+        Deploy.local),
       name = "selectors")
 
     final def workerForCommandHandler(
@@ -323,8 +323,11 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
               }
             case e ⇒ e.getMessage
           }
-          context.system.eventStream.publish(Logging
-            .Debug(child.path.toString, classOf[SelectionHandler], logMessage))
+          context.system.eventStream.publish(
+            Logging.Debug(
+              child.path.toString,
+              classOf[SelectionHandler],
+              logMessage))
         } catch { case NonFatal(_) ⇒ }
     }
   }
@@ -337,10 +340,8 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
       val newName = sequenceNumber.toString
       sequenceNumber += 1
       val child = context.actorOf(
-        props = cmd
-          .childProps(registry)
-          .withDispatcher(WorkerDispatcher)
-          .withDeploy(Deploy.local),
+        props = cmd.childProps(registry).withDispatcher(
+          WorkerDispatcher).withDeploy(Deploy.local),
         name = newName)
       childCount += 1
       if (MaxChannelsPerSelector > 0)

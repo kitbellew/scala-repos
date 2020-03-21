@@ -838,8 +838,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       rhow: JoinType = LeftJoin,
       chow: JoinType = RightJoin)(f: (T, U) => V): Frame[RX, CX, V] = {
     val (l, r) = align(other, rhow, chow)
-    val result =
-      l.values.zip(r.values).map { case (v1, v2) => VecImpl.zipMap(v1, v2)(f) }
+    val result = l.values.zip(r.values).map {
+      case (v1, v2) => VecImpl.zipMap(v1, v2)(f)
+    }
     Frame(result, l.rowIx, l.colIx)
   }
 
@@ -1364,9 +1365,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
               taker
             ) //   take values corresponding to current pivot label
           val v =
-            ixer.rTake
-              .map(vals.take(_))
-              .getOrElse(vals) //   map values to be in correspondence to rix
+            ixer.rTake.map(vals.take(_)).getOrElse(
+              vals
+            ) //   map values to be in correspondence to rix
           result(loc) = v //   and save vec in array.
 
           loc += len // Increment offset into result array
@@ -1637,9 +1638,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
           val fmt = "%" + clen(c) + "s "
           val res =
-            if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
-                  .get(c)
-                  .getOrElse(false)) {
+            if (l == labs.length - 1 || currLab != prevColLabel || prevColMask.get(
+                  c).getOrElse(false)) {
               prevColMask = prevColMask.updated(c, true)
               currLab.formatted(fmt)
             } else {
@@ -1698,8 +1698,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       // for building frame entries
       def createVals(r: Int) = {
         val elem = (col: Int) =>
-          "%" + clen(col) + "s " format values(col).scalarTag
-            .show(values(r, col))
+          "%" + clen(col) + "s " format values(col).scalarTag.show(
+            values(r, col))
         util.buildStr(ncols, numCols, elem) + "\n"
       }
 

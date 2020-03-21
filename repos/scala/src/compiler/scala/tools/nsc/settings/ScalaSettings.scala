@@ -410,12 +410,12 @@ trait ScalaSettings
     "Infer types for arguments of overridden methods.")
   val etaExpandKeepsStar = BooleanSetting(
     "-Yeta-expand-keeps-star",
-    "Eta-expand varargs methods to T* rather than Seq[T].  This is a temporary option to ease transition.")
-    .withDeprecationMessage(removalIn212)
+    "Eta-expand varargs methods to T* rather than Seq[T].  This is a temporary option to ease transition.").withDeprecationMessage(
+    removalIn212)
   val inferByName = BooleanSetting(
     "-Yinfer-by-name",
-    "Allow inference of by-name types. This is a temporary option to ease transition. See SI-7899.")
-    .withDeprecationMessage(removalIn212)
+    "Allow inference of by-name types. This is a temporary option to ease transition. See SI-7899.").withDeprecationMessage(
+    removalIn212)
   val YclasspathImpl = ChoiceSetting(
     "-YclasspathImpl",
     "implementation",
@@ -493,22 +493,28 @@ trait ScalaSettings
       closureInvocations)
     val lMethod = Choice(
       "l:method",
-      "Enable intra-method optimizations: " + methodChoices
-        .mkString("", ",", "."),
+      "Enable intra-method optimizations: " + methodChoices.mkString(
+        "",
+        ",",
+        "."),
       expandsTo = methodChoices)
 
     private val projectChoices = List(lMethod, inlineProject)
     val lProject = Choice(
       "l:project",
-      "Enable cross-method optimizations within the current project: " + projectChoices
-        .mkString("", ",", "."),
+      "Enable cross-method optimizations within the current project: " + projectChoices.mkString(
+        "",
+        ",",
+        "."),
       expandsTo = projectChoices)
 
     private val classpathChoices = List(lProject, inlineGlobal)
     val lClasspath = Choice(
       "l:classpath",
-      "Enable cross-method optimizations across the entire classpath: " + classpathChoices
-        .mkString("", ",", "."),
+      "Enable cross-method optimizations across the entire classpath: " + classpathChoices.mkString(
+        "",
+        ",",
+        "."),
       expandsTo = classpathChoices)
   }
 
@@ -717,9 +723,10 @@ trait ScalaSettings
   /**
     * -P "Plugin" settings
     */
-  val pluginOptions =
-    MultiStringSetting("-P", "plugin:opt", "Pass an option to a plugin")
-      .withHelpSyntax("-P:<plugin>:<opt>")
+  val pluginOptions = MultiStringSetting(
+    "-P",
+    "plugin:opt",
+    "Pass an option to a plugin").withHelpSyntax("-P:<plugin>:<opt>")
 
   /** Test whether this is scaladoc we're looking at */
   def isScaladoc = false

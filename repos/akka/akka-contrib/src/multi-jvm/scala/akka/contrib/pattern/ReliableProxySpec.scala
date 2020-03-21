@@ -203,9 +203,11 @@ class ReliableProxySpec
       runOn(local) {
         // the rateMBit value is derived from empirical studies so that it will trigger resends,
         // the exact value is not important, but it should not be too large
-        testConductor
-          .throttle(local, remote, Direction.Send, rateMBit = 0.02)
-          .await
+        testConductor.throttle(
+          local,
+          remote,
+          Direction.Send,
+          rateMBit = 0.02).await
         sendN(50)
         within(5 seconds) {
           expectTransition(Idle, Active)
@@ -231,9 +233,11 @@ class ReliableProxySpec
         testConductor.passThrough(local, remote, Direction.Send).await
         // the rateMBit value is derived from empirical studies so that it will trigger resends,
         // the exact value is not important, but it should not be too large
-        testConductor
-          .throttle(local, remote, Direction.Receive, rateMBit = 0.02)
-          .await
+        testConductor.throttle(
+          local,
+          remote,
+          Direction.Receive,
+          rateMBit = 0.02).await
         sendN(50)
         within(5 seconds) {
           expectTransition(Idle, Active)

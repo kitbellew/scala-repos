@@ -77,8 +77,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
       buf().writeMessageEnd()
       val validate = newValidate()
       val arr = buf.toArray
-      when(service(Matchers.any[ThriftClientRequest]))
-        .thenReturn(Future.value(arr))
+      when(service(Matchers.any[ThriftClientRequest])).thenReturn(
+        Future.value(arr))
       assert(validate.isAvailable)
       val f = validate(req)
       assert(f.isDefined)
@@ -112,8 +112,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
       buf().writeMessageEnd()
       val validate = newValidate()
       val arr = buf.toArray
-      when(service(Matchers.any[ThriftClientRequest]))
-        .thenReturn(Future.value(arr))
+      when(service(Matchers.any[ThriftClientRequest])).thenReturn(
+        Future.value(arr))
       assert(validate.isAvailable)
       val f = validate(req)
       assert(f.isDefined)

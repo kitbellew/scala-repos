@@ -128,16 +128,14 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     */
   def resolve(schema: StructType, resolver: Resolver): Seq[Attribute] = {
     schema.map { field =>
-      resolveQuoted(field.name, resolver)
-        .map {
-          case a: AttributeReference => a
-          case other =>
-            sys.error(s"can not handle nested schema yet...  plan $this")
-        }
-        .getOrElse {
-          throw new AnalysisException(
-            s"Unable to resolve ${field.name} given [${output.map(_.name).mkString(", ")}]")
-        }
+      resolveQuoted(field.name, resolver).map {
+        case a: AttributeReference => a
+        case other =>
+          sys.error(s"can not handle nested schema yet...  plan $this")
+      }.getOrElse {
+        throw new AnalysisException(
+          s"Unable to resolve ${field.name} given [${output.map(_.name).mkString(", ")}]")
+      }
     }
   }
 
@@ -296,12 +294,10 @@ abstract class UnaryNode extends LogicalPlan {
       projectList: Seq[NamedExpression]): Set[Expression] = {
     projectList.flatMap {
       case a @ Alias(e, _) =>
-        child.constraints
-          .map(_ transform {
-            case expr: Expression if expr.semanticEquals(e) =>
-              a.toAttribute
-          })
-          .union(Set(EqualNullSafe(e, a.toAttribute)))
+        child.constraints.map(_ transform {
+          case expr: Expression if expr.semanticEquals(e) =>
+            a.toAttribute
+        }).union(Set(EqualNullSafe(e, a.toAttribute)))
       case _ =>
         Set.empty[Expression]
     }.toSet

@@ -512,16 +512,14 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
               new Echo.FinagledService(fi, Protocols.binaryFactory()))),
       "ServerBuilder(stack)" ->
         ((sr, fi) =>
-          ServerBuilder()
-            .stack(Thrift.server)
+          ServerBuilder().stack(Thrift.server)
             .name("server")
             .reportTo(sr)
             .bindTo(new InetSocketAddress(0))
             .build(new Echo.FinagledService(fi, Protocols.binaryFactory()))),
       "ServerBuilder(codec)" ->
         ((sr, fi) =>
-          ServerBuilder()
-            .codec(ThriftServerFramedCodec())
+          ServerBuilder().codec(ThriftServerFramedCodec())
             .name("server")
             .reportTo(sr)
             .bindTo(new InetSocketAddress(0))
@@ -538,8 +536,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     "ClientBuilder(stack)" ->
       ((sr, addr) =>
         new Echo.FinagledClient(
-          ClientBuilder()
-            .stack(Thrift.client)
+          ClientBuilder().stack(Thrift.client)
             .name("client")
             .hostConnectionLimit(1)
             .reportTo(sr)
@@ -548,8 +545,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     "ClientBuilder(codec)" ->
       ((sr, addr) =>
         new Echo.FinagledClient(
-          ClientBuilder()
-            .codec(ThriftClientFramedCodec())
+          ClientBuilder().codec(ThriftClientFramedCodec())
             .name("client")
             .hostConnectionLimit(1)
             .reportTo(sr)

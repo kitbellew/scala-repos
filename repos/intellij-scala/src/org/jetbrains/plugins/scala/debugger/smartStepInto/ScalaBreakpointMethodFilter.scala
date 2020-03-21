@@ -48,8 +48,7 @@ class ScalaBreakpointMethodFilter(
       val sameNameMethods =
         method.declaringType().methodsByName(method.name()).asScala
       sameNameMethods.exists { candidate =>
-        candidate != method && candidate.isBridge && expSign == candidate
-          .signature()
+        candidate != method && candidate.isBridge && expSign == candidate.signature()
       }
     }
 
@@ -123,13 +122,11 @@ object ScalaBreakpointMethodFilter {
       tp: ScTemplateDefinition): Seq[ScBlockStatement] = {
     val membersAndExprs = tp.extendsBlock.templateBody.toSeq
       .flatMap(tb => tb.members ++ tb.exprs)
-    membersAndExprs
-      .collect {
-        case x @ (_: ScPatternDefinition | _: ScVariableDefinition |
-            _: ScExpression) =>
-          x.asInstanceOf[ScBlockStatement]
-      }
-      .sortBy(_.getTextOffset)
+    membersAndExprs.collect {
+      case x @ (_: ScPatternDefinition | _: ScVariableDefinition |
+          _: ScExpression) =>
+        x.asInstanceOf[ScBlockStatement]
+    }.sortBy(_.getTextOffset)
   }
 
   private def createSourcePosition(elem: PsiElement): SourcePosition = {

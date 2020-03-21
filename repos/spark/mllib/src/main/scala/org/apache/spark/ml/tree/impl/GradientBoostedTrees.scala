@@ -152,9 +152,8 @@ private[ml] object GradientBoostedTrees extends Logging {
     val newPredError = data.zip(predictionAndError).mapPartitions { iter =>
       iter.map {
         case (lp, (pred, error)) =>
-          val newPred = pred + tree.rootNode
-            .predictImpl(lp.features)
-            .prediction * treeWeight
+          val newPred = pred + tree.rootNode.predictImpl(
+            lp.features).prediction * treeWeight
           val newError = loss.computeError(newPred, lp.label)
           (newPred, newError)
       }

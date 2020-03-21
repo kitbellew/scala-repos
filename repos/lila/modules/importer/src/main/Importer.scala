@@ -51,8 +51,8 @@ final class Importer(
           val started = forceId.fold(g)(g.withId).start
           val game = applyResult(started, result, replay.state.situation)
           (GameRepo insertDenormalized game) >> {
-            game.pgnImport.flatMap(_.user).isDefined ?? GameRepo
-              .setImportCreatedAt(game)
+            game.pgnImport.flatMap(
+              _.user).isDefined ?? GameRepo.setImportCreatedAt(game)
           } >> {
             GameRepo.finish(
               id = game.id,

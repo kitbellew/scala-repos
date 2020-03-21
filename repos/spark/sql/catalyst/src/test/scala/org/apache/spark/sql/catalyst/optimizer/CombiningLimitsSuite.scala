@@ -51,8 +51,7 @@ class CombiningLimitsSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .limit(5)
-        .analyze
+        .limit(5).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -69,8 +68,7 @@ class CombiningLimitsSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .limit(2)
-        .analyze
+        .limit(2).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -87,8 +85,7 @@ class CombiningLimitsSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .limit(2)
-        .analyze
+        .limit(2).analyze
 
     comparePlans(optimized, correctAnswer)
   }

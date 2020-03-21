@@ -65,21 +65,19 @@ private[rhino] class LazyScalaJSScope(
        */
       Scriptable.NOT_FOUND
     } else {
-      fields
-        .getOrElse(
-          name, {
-            try {
-              load(name)
-              fields.getOrElse(name, Scriptable.NOT_FOUND)
-            } catch {
-              // We need to re-throw the exception if `load` fails, otherwise the
-              // JavaScript runtime will not catch it.
-              case t: RhinoJSEnv.ClassNotFoundException =>
-                throw Context.throwAsScriptRuntimeEx(t)
-            }
+      fields.getOrElse(
+        name, {
+          try {
+            load(name)
+            fields.getOrElse(name, Scriptable.NOT_FOUND)
+          } catch {
+            // We need to re-throw the exception if `load` fails, otherwise the
+            // JavaScript runtime will not catch it.
+            case t: RhinoJSEnv.ClassNotFoundException =>
+              throw Context.throwAsScriptRuntimeEx(t)
           }
-        )
-        .asInstanceOf[AnyRef]
+        }
+      ).asInstanceOf[AnyRef]
     }
   }
 

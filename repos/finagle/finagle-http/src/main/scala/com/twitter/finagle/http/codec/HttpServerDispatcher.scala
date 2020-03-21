@@ -106,9 +106,9 @@ class HttpServerDispatcher(
       // interrupted in the middle of a write, or when there otherwise isn’t
       // an outstanding read (e.g. read-write race).
       f.onFailure { t =>
-        Logger
-          .get(this.getClass.getName)
-          .debug(t, "Failed mid-stream. Terminating stream, closing connection")
+        Logger.get(this.getClass.getName).debug(
+          t,
+          "Failed mid-stream. Terminating stream, closing connection")
         failureReceiver.counter(Throwables.mkString(t): _*).incr()
         rep.reader.discard()
       }

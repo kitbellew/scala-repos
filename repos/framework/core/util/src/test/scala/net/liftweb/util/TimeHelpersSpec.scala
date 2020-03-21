@@ -151,10 +151,12 @@ object TimeHelpersSpec
     }
 
     "make sure noTime does not change the day" in forAllTimeZones {
-      dateFormatter.format(0.days.ago.noTime.toDate) must_== dateFormatter
-        .format(new DateTime().toDate)
-      dateFormatter.format(3.days.ago.noTime.toDate) must_== dateFormatter
-        .format(new Date(millis - (3 * 24 * 60 * 60 * 1000)))
+      dateFormatter.format(
+        0.days.ago.noTime.toDate) must_== dateFormatter.format(
+        new DateTime().toDate)
+      dateFormatter.format(
+        3.days.ago.noTime.toDate) must_== dateFormatter.format(
+        new Date(millis - (3 * 24 * 60 * 60 * 1000)))
     }
 
     "provide a day function returning the day of month corresponding to a given date (relative to UTC)" in forAllTimeZones {
@@ -169,21 +171,12 @@ object TimeHelpersSpec
     "provide a millisToDays function returning the number of days since the epoch time" in forAllTimeZones {
       millisToDays(new Date(0).getTime) must_== 0
       millisToDays(
-        today
-          .setYear(1970)
-          .setMonth(0)
-          .setDay(1)
-          .getTime
-          .getTime) must_== 0 // the epoch time
+        today.setYear(1970).setMonth(0).setDay(
+          1).getTime.getTime) must_== 0 // the epoch time
       // on the 3rd day after the epoch time, 2 days are passed
       millisToDays(
-        today
-          .setTimezone(utc)
-          .setYear(1970)
-          .setMonth(0)
-          .setDay(3)
-          .getTime
-          .getTime) must_== 2
+        today.setTimezone(utc).setYear(1970).setMonth(0).setDay(
+          3).getTime.getTime) must_== 2
     }
     "provide a daysSinceEpoch function returning the number of days since the epoch time" in forAllTimeZones {
       daysSinceEpoch must_== millisToDays(now.getTime)
@@ -267,12 +260,11 @@ object forAllTimeZones extends Around {
       import collection.convert.wrapAsScala._
       // some timezones for java (used in formatters) and for Joda (other computations) has other offset
       val commonJavaAndJodaTimeZones =
-        (TimeZone.getAvailableIDs.toSet & DateTimeZone.getAvailableIDs.toSet)
-          .filter { timeZoneId =>
-            TimeZone.getTimeZone(timeZoneId).getOffset(millis) == DateTimeZone
-              .forID(timeZoneId)
-              .getOffset(millis)
-          }
+        (TimeZone.getAvailableIDs.toSet & DateTimeZone.getAvailableIDs.toSet).filter {
+          timeZoneId =>
+            TimeZone.getTimeZone(timeZoneId).getOffset(
+              millis) == DateTimeZone.forID(timeZoneId).getOffset(millis)
+        }
       val tzBefore = TimeZone.getDefault
       val dtzBefore = DateTimeZone.getDefault
       try {

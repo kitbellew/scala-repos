@@ -48,9 +48,8 @@ object FakeKeyStore {
 
   def certificateTooWeak(c: java.security.cert.Certificate): Boolean = {
     val key: RSAPublicKey = c.getPublicKey.asInstanceOf[RSAPublicKey]
-    key.getModulus.bitLength < 2048 || c
-      .asInstanceOf[X509CertImpl]
-      .getSigAlgName != SignatureAlgorithmName
+    key.getModulus.bitLength < 2048 || c.asInstanceOf[
+      X509CertImpl].getSigAlgName != SignatureAlgorithmName
   }
 
   def keyManagerFactory(appPath: File): KeyManagerFactory = {

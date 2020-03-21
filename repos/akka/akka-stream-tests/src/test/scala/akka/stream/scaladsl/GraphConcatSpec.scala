@@ -29,21 +29,19 @@ class GraphConcatSpec extends TwoStreamsSetup {
     "work in the happy case" in assertAllStagesStopped {
       val probe = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val concat1 = b add Concat[Int]()
-          val concat2 = b add Concat[Int]()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        val concat1 = b add Concat[Int]()
+        val concat2 = b add Concat[Int]()
 
-          Source(List.empty[Int]) ~> concat1.in(0)
-          Source(1 to 4) ~> concat1.in(1)
+        Source(List.empty[Int]) ~> concat1.in(0)
+        Source(1 to 4) ~> concat1.in(1)
 
-          concat1.out ~> concat2.in(0)
-          Source(5 to 10) ~> concat2.in(1)
+        concat1.out ~> concat2.in(0)
+        Source(5 to 10) ~> concat2.in(1)
 
-          concat2.out ~> Sink.fromSubscriber(probe)
-          ClosedShape
-        })
-        .run()
+        concat2.out ~> Sink.fromSubscriber(probe)
+        ClosedShape
+      }).run()
 
       val subscription = probe.expectSubscription()
 
@@ -108,21 +106,21 @@ class GraphConcatSpec extends TwoStreamsSetup {
 
       var errorSignalled = false
       if (!errorSignalled)
-        errorSignalled ||= subscriber2
-          .expectNextOrError(1, TestException)
-          .isLeft
+        errorSignalled ||= subscriber2.expectNextOrError(
+          1,
+          TestException).isLeft
       if (!errorSignalled)
-        errorSignalled ||= subscriber2
-          .expectNextOrError(2, TestException)
-          .isLeft
+        errorSignalled ||= subscriber2.expectNextOrError(
+          2,
+          TestException).isLeft
       if (!errorSignalled)
-        errorSignalled ||= subscriber2
-          .expectNextOrError(3, TestException)
-          .isLeft
+        errorSignalled ||= subscriber2.expectNextOrError(
+          3,
+          TestException).isLeft
       if (!errorSignalled)
-        errorSignalled ||= subscriber2
-          .expectNextOrError(4, TestException)
-          .isLeft
+        errorSignalled ||= subscriber2.expectNextOrError(
+          4,
+          TestException).isLeft
       if (!errorSignalled) subscriber2.expectError(TestException)
     }
 
@@ -151,15 +149,13 @@ class GraphConcatSpec extends TwoStreamsSetup {
       val promise = Promise[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val concat = b add Concat[Int]()
-          Source(List(1, 2, 3)) ~> concat.in(0)
-          Source.fromFuture(promise.future) ~> concat.in(1)
-          concat.out ~> Sink.fromSubscriber(subscriber)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        val concat = b add Concat[Int]()
+        Source(List(1, 2, 3)) ~> concat.in(0)
+        Source.fromFuture(promise.future) ~> concat.in(1)
+        concat.out ~> Sink.fromSubscriber(subscriber)
+        ClosedShape
+      }).run()
 
       val subscription = subscriber.expectSubscription()
       subscription.request(4)

@@ -26,9 +26,9 @@ object StripMarginParser extends StringParser {
       case Both(
             lit: ScInterpolatedStringLiteral,
             WithStrippedMargin(_, marginChar)) =>
-        val parts = InterpolatedStringParser
-          .parse(lit, checkStripMargin = false)
-          .getOrElse(return None)
+        val parts = InterpolatedStringParser.parse(
+          lit,
+          checkStripMargin = false).getOrElse(return None)
         parts.flatMap {
           case Text(s) =>
             val stripped = s.stripMargin(marginChar)
@@ -36,8 +36,8 @@ object StripMarginParser extends StringParser {
           case part => List(part)
         }
       case Both(lit: ScLiteral, WithStrippedMargin(_, marginChar)) =>
-        Text(lit.getValue.toString.stripMargin(marginChar))
-          .withEscapedPercent(element.getManager)
+        Text(lit.getValue.toString.stripMargin(marginChar)).withEscapedPercent(
+          element.getManager)
     }
 
 }

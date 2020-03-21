@@ -970,9 +970,8 @@ object MimaExcludes {
           (problem: Problem) =>
             problem match {
               case MissingTypesProblem(_, missing)
-                  if missing
-                    .map(_.fullName)
-                    .sameElements(Seq("org.apache.spark.Logging")) =>
+                  if missing.map(_.fullName).sameElements(
+                    Seq("org.apache.spark.Logging")) =>
                 false
               case _ => true
             }

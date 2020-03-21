@@ -73,18 +73,16 @@ class JavaAnalyzer(
       sender() ! javaCompiler.askDocSignatureAtPoint(file, range.from)
 
     case TypeAtPointReq(file, range) =>
-      sender() ! javaCompiler
-        .askTypeAtPoint(file, range.from)
-        .getOrElse(FalseResponse)
+      sender() ! javaCompiler.askTypeAtPoint(file, range.from).getOrElse(
+        FalseResponse)
 
     case SymbolDesignationsReq(f, start, end, tpes) =>
       // NOT IMPLEMENTED YET
       sender ! SymbolDesignations(f.file, Nil)
 
     case SymbolAtPointReq(file, point) =>
-      sender() ! javaCompiler
-        .askSymbolAtPoint(file, point)
-        .getOrElse(FalseResponse)
+      sender() ! javaCompiler.askSymbolAtPoint(file, point).getOrElse(
+        FalseResponse)
 
     case ImplicitInfoReq(file, range: OffsetRange) =>
       // Implicit type conversion information is not applicable for Java, so we

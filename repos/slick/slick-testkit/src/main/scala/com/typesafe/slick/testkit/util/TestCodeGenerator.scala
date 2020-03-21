@@ -62,21 +62,18 @@ trait TestCodeGenerator {
           var current: String = null
           initScripts.foreach { initScript =>
             import tdb.profile.api._
-            Source
-              .fromURL(self.getClass.getResource(initScript))(Codec.UTF8)
-              .getLines()
-              .foreach { s =>
-                if (current eq null) current = s
-                else current = current + "\n" + s
-                if (s.trim.endsWith(";")) {
-                  if (useSingleLineStatements) {
-                    current = current.substring(0, current.length - 1)
-                    current = current.replace("\r", "").replace('\n', ' ')
-                  }
-                  init = init >> sqlu"#$current"
-                  current = null
+            Source.fromURL(self.getClass.getResource(initScript))(
+              Codec.UTF8).getLines().foreach { s =>
+              if (current eq null) current = s else current = current + "\n" + s
+              if (s.trim.endsWith(";")) {
+                if (useSingleLineStatements) {
+                  current = current.substring(0, current.length - 1)
+                  current = current.replace("\r", "").replace('\n', ' ')
                 }
+                init = init >> sqlu"#$current"
+                current = null
               }
+            }
             if (current ne null) {
               if (useSingleLineStatements)
                 current = current.replace("\r", "").replace('\n', ' ')
@@ -129,11 +126,8 @@ trait TestCodeGenerator {
 
 class TestCodeRunner(tests: TestCodeRunner.AllTests) {
   def run(cln: String): Unit = {
-    val t = Class
-      .forName(cln + "$")
-      .getField("MODULE$")
-      .get(null)
-      .asInstanceOf[TestCodeRunner.TestCase]
+    val t = Class.forName(cln + "$").getField("MODULE$").get(null).asInstanceOf[
+      TestCodeRunner.TestCase]
     val tdb = t.tdb
     println(s"Running test $cln on ${tdb.confName}")
     if (tdb.isEnabled) {

@@ -18,11 +18,9 @@ class TestKitSettings(val config: Config) extends Extension {
 
   import akka.util.Helpers._
 
-  val TestTimeFactor = config
-    .getDouble("akka.test.timefactor")
-    .requiring(
-      tf ⇒ !tf.isInfinite && tf > 0,
-      "akka.test.timefactor must be positive finite double")
+  val TestTimeFactor = config.getDouble("akka.test.timefactor").requiring(
+    tf ⇒ !tf.isInfinite && tf > 0,
+    "akka.test.timefactor must be positive finite double")
   val SingleExpectDefaultTimeout: FiniteDuration =
     config.getMillisDuration("akka.test.single-expect-default")
   val TestEventFilterLeeway: FiniteDuration =

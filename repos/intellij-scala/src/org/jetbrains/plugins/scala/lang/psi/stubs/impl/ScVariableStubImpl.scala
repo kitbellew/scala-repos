@@ -49,8 +49,8 @@ class ScVariableStubImpl[ParentPsi <: PsiElement](
       isLocal: Boolean) = {
     this(
       parent,
-      elemType
-        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+      elemType.asInstanceOf[
+        IStubElementType[StubElement[PsiElement], PsiElement]])
     this.names = for (name <- names) yield StringRef.fromString(name)
     this.declaration = isDeclaration
     this.typeText = StringRef.fromString(typeText)
@@ -76,8 +76,10 @@ class ScVariableStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScPatternList] =
       if (getBindingsContainerText != "") {
         Some(
-          ScalaPsiElementFactory
-            .createPatterListFromText(getBindingsContainerText, getPsi, null))
+          ScalaPsiElementFactory.createPatterListFromText(
+            getBindingsContainerText,
+            getPsi,
+            null))
       } else None
     myPatterns = new SofterReference[Option[ScPatternList]](res)
     res
@@ -94,8 +96,10 @@ class ScVariableStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScExpression] =
       if (getBodyText != "")
         Some(
-          ScalaPsiElementFactory
-            .createExpressionWithContextFromText(getBodyText, getPsi, null))
+          ScalaPsiElementFactory.createExpressionWithContextFromText(
+            getBodyText,
+            getPsi,
+            null))
       else None
     myBodyExpression = new SofterReference[Option[ScExpression]](res)
     res
@@ -110,8 +114,10 @@ class ScVariableStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScTypeElement] =
       if (getTypeText != "")
         Some(
-          ScalaPsiElementFactory
-            .createTypeElementFromText(getTypeText, getPsi, null))
+          ScalaPsiElementFactory.createTypeElementFromText(
+            getTypeText,
+            getPsi,
+            null))
       else None
     myTypeElement = new SofterReference(res)
     res
@@ -127,8 +133,10 @@ class ScVariableStubImpl[ParentPsi <: PsiElement](
     val res: Option[ScIdList] =
       if (getBindingsContainerText != "") {
         Some(
-          ScalaPsiElementFactory
-            .createIdsListFromText(getBindingsContainerText, getPsi, null))
+          ScalaPsiElementFactory.createIdsListFromText(
+            getBindingsContainerText,
+            getPsi,
+            null))
       } else None
     myIds = new SofterReference[Option[ScIdList]](res)
     res

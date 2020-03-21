@@ -690,8 +690,9 @@ private[internal] trait TypeMaps {
       private def newThis(): Tree = {
         wroteAnnotation = true
         val presym = seenFromPrefix.widen.typeSymbol
-        val thisSym = presym.owner
-          .newValue(presym.name.toTermName, presym.pos) setInfo seenFromPrefix
+        val thisSym = presym.owner.newValue(
+          presym.name.toTermName,
+          presym.pos) setInfo seenFromPrefix
         gen.mkAttributedQualifier(seenFromPrefix, thisSym)
       }
 
@@ -746,9 +747,8 @@ private[internal] trait TypeMaps {
       if (pre1 eq pre) tp
       else if (pre1.isStable) singleType(pre1, sym)
       else
-        pre1
-          .memberType(sym)
-          .resultType //todo: this should be rolled into existential abstraction
+        pre1.memberType(
+          sym).resultType //todo: this should be rolled into existential abstraction
     }
 
     override def toString = s"AsSeenFromMap($seenFromPrefix, $seenFromClass)"

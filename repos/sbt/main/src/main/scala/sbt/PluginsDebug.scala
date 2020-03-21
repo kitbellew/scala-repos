@@ -47,13 +47,9 @@ private[sbt] class PluginsDebug(
     if (possible.nonEmpty) {
       val explained = possible.map(explainPluginEnable)
       val possibleString =
-        if (explained.size > 1)
-          explained.zipWithIndex
-            .map { case (s, i) => s"$i. $s" }
-            .mkString(
-              "Multiple plugins are available that can provide $notFoundKey:\n",
-              "\n",
-              "")
+        if (explained.size > 1) explained.zipWithIndex.map {
+          case (s, i) => s"$i. $s"
+        }.mkString("Multiple plugins are available that can provide $notFoundKey:\n", "\n", "")
         else
           s"$notFoundKey is provided by an available (but not activated) plugin:\n${explained.mkString}"
       def impossiblePlugins = impossible.map(_.plugin.label).mkString(", ")
@@ -116,9 +112,8 @@ private[sbt] object PluginsDebug {
       import extracted._
       def helpBuild(uri: URI, build: LoadedBuildUnit): String = {
         val pluginStrings = for (plugin <- availableAutoPlugins(build)) yield {
-          val activatedIn = build.defined.values.toList
-            .filter(_.autoPlugins.contains(plugin))
-            .map(_.id)
+          val activatedIn = build.defined.values.toList.filter(
+            _.autoPlugins.contains(plugin)).map(_.id)
           val actString =
             if (activatedIn.nonEmpty)
               activatedIn.mkString(": enabled in ", ", ", "")
@@ -135,10 +130,8 @@ private[sbt] object PluginsDebug {
   def autoPluginMap(s: State): Map[String, AutoPlugin] = {
     val extracted = Project.extract(s)
     import extracted._
-    structure.units.values.toList
-      .flatMap(availableAutoPlugins)
-      .map(plugin => (plugin.label, plugin))
-      .toMap
+    structure.units.values.toList.flatMap(availableAutoPlugins).map(plugin =>
+      (plugin.label, plugin)).toMap
   }
   private[this] def availableAutoPlugins(
       build: LoadedBuildUnit): Seq[AutoPlugin] =
@@ -169,10 +162,8 @@ private[sbt] object PluginsDebug {
     } else if (definesPlugin(currentProject))
       debug.activatedHelp(plugin)
     else {
-      val thisAggregated = BuildUtil
-        .dependencies(structure.units)
-        .aggregateTransitive
-        .getOrElse(currentRef, Nil)
+      val thisAggregated = BuildUtil.dependencies(
+        structure.units).aggregateTransitive.getOrElse(currentRef, Nil)
       val definedInAggregated =
         thisAggregated.filter(ref => definesPlugin(projectForRef(ref)))
       if (definedInAggregated.nonEmpty) {
@@ -180,8 +171,7 @@ private[sbt] object PluginsDebug {
           definedInAggregated.map(
             _.project
           ) // TODO: usually in this build, but could technically require the build to be qualified
-        s"Plugin ${plugin.label} is not activated on this project, but this project aggregates projects where it is activated:\n\t${projectNames
-          .mkString("\n\t")}"
+        s"Plugin ${plugin.label} is not activated on this project, but this project aggregates projects where it is activated:\n\t${projectNames.mkString("\n\t")}"
       } else {
         val base = debug.deactivatedHelp(plugin, context)
         val aggNote =
@@ -481,9 +471,10 @@ private[sbt] object PluginsDebug {
       deactivate: List[DeactivatePlugin]): String =
     str(deactivate)(deactivate1, deactivateN)
   private[this] def deactivateN(plugins: List[DeactivatePlugin]): String =
-    plugins
-      .map(deactivateString)
-      .mkString("These plugins need to be deactivated:\n\t", "\n\t", "")
+    plugins.map(deactivateString).mkString(
+      "These plugins need to be deactivated:\n\t",
+      "\n\t",
+      "")
   private[this] def deactivate1(deactivate: DeactivatePlugin): String =
     s"Need to deactivate ${deactivateString(deactivate)}"
   private[this] def deactivateString(d: DeactivatePlugin): String = {

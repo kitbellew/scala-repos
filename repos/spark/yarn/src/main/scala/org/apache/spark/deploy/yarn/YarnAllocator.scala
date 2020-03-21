@@ -112,13 +112,11 @@ private[yarn] class YarnAllocator(
   // Executor memory in MB.
   protected val executorMemory = args.executorMemory
   // Additional memory overhead.
-  protected val memoryOverhead: Int = sparkConf
-    .get(EXECUTOR_MEMORY_OVERHEAD)
-    .getOrElse(
+  protected val memoryOverhead: Int =
+    sparkConf.get(EXECUTOR_MEMORY_OVERHEAD).getOrElse(
       math.max(
         (MEMORY_OVERHEAD_FACTOR * executorMemory).toInt,
-        MEMORY_OVERHEAD_MIN))
-    .toInt
+        MEMORY_OVERHEAD_MIN)).toInt
   // Number of cores per executor.
   protected val executorCores = args.executorCores
   // Resource capability requested for each executors
@@ -181,9 +179,10 @@ private[yarn] class YarnAllocator(
     * fulfilled.
     */
   private def getPendingAtLocation(location: String): Seq[ContainerRequest] = {
-    amClient
-      .getMatchingRequests(RM_REQUEST_PRIORITY, location, resource)
-      .asScala
+    amClient.getMatchingRequests(
+      RM_REQUEST_PRIORITY,
+      location,
+      resource).asScala
       .flatMap(_.asScala)
       .toSeq
   }
@@ -355,12 +354,8 @@ private[yarn] class YarnAllocator(
       val matchingRequests =
         amClient.getMatchingRequests(RM_REQUEST_PRIORITY, ANY_HOST, resource)
       if (!matchingRequests.isEmpty) {
-        matchingRequests
-          .iterator()
-          .next()
-          .asScala
-          .take(numToCancel)
-          .foreach(amClient.removeContainerRequest)
+        matchingRequests.iterator().next().asScala
+          .take(numToCancel).foreach(amClient.removeContainerRequest)
       } else {
         logWarning("Expected to find pending requests, but found none.")
       }
@@ -382,18 +377,16 @@ private[yarn] class YarnAllocator(
       resource: Resource,
       nodes: Array[String],
       racks: Array[String]): ContainerRequest = {
-    nodeLabelConstructor
-      .map { constructor =>
-        constructor.newInstance(
-          resource,
-          nodes,
-          racks,
-          RM_REQUEST_PRIORITY,
-          true: java.lang.Boolean,
-          labelExpression.orNull)
-      }
-      .getOrElse(
-        new ContainerRequest(resource, nodes, racks, RM_REQUEST_PRIORITY))
+    nodeLabelConstructor.map { constructor =>
+      constructor.newInstance(
+        resource,
+        nodes,
+        racks,
+        RM_REQUEST_PRIORITY,
+        true: java.lang.Boolean,
+        labelExpression.orNull)
+    }.getOrElse(
+      new ContainerRequest(resource, nodes, racks, RM_REQUEST_PRIORITY))
   }
 
   /**
@@ -420,9 +413,9 @@ private[yarn] class YarnAllocator(
     // Match remaining by rack
     val remainingAfterRackMatches = new ArrayBuffer[Container]
     for (allocatedContainer <- remainingAfterHostMatches) {
-      val rack = RackResolver
-        .resolve(conf, allocatedContainer.getNodeId.getHost)
-        .getNetworkLocation
+      val rack = RackResolver.resolve(
+        conf,
+        allocatedContainer.getNodeId.getHost).getNetworkLocation
       matchContainerToRequest(
         allocatedContainer,
         rack,
@@ -509,8 +502,9 @@ private[yarn] class YarnAllocator(
       assert(container.getResource.getMemory >= resource.getMemory)
 
       logInfo(
-        "Launching container %s for on host %s"
-          .format(containerId, executorHostname))
+        "Launching container %s for on host %s".format(
+          containerId,
+          executorHostname))
       executorIdToContainer(executorId) = container
       containerIdToExecutorId(container.getId) = executorId
 
@@ -534,8 +528,9 @@ private[yarn] class YarnAllocator(
         securityMgr)
       if (launchContainers) {
         logInfo(
-          "Launching ExecutorRunnable. driverUrl: %s,  executorHostname: %s"
-            .format(driverUrl, executorHostname))
+          "Launching ExecutorRunnable. driverUrl: %s,  executorHostname: %s".format(
+            driverUrl,
+            executorHostname))
         launcherPool.execute(executorRunnable)
       }
     }

@@ -858,9 +858,9 @@ abstract class TreeGen {
         val pos1 =
           if (t.pos == NoPosition) NoPosition
           else rangePos(t.pos.source, t.pos.start, t.pos.point, rhs1.pos.end)
-        val vfrom1 =
-          ValFrom(atPos(wrappingPos(allpats)) { mkTuple(allpats) }, rhs1)
-            .setPos(pos1)
+        val vfrom1 = ValFrom(
+          atPos(wrappingPos(allpats)) { mkTuple(allpats) },
+          rhs1).setPos(pos1)
         mkFor(vfrom1 :: rest1, sugarBody)
       case _ =>
         EmptyTree //may happen for erroneous input

@@ -212,11 +212,9 @@ abstract class Source extends java.io.Serializable {
       conv: TupleConverter[T]): Stream[T] = {
     validateTaps(mode)
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(Config.defaultFrom(mode), tap)
-      .asScala
-      .map { conv(_) }
-      .toStream
+    mode.openForRead(Config.defaultFrom(mode), tap).asScala.map {
+      conv(_)
+    }.toStream
   }
 }
 
@@ -237,8 +235,9 @@ trait Mappable[+T] extends Source with TypedSource[T] {
       flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe = {
-    RichPipe(read(flowDef, mode))
-      .mapTo[T, U](sourceFields -> out)(mf)(converter, setter)
+    RichPipe(read(flowDef, mode)).mapTo[T, U](sourceFields -> out)(mf)(
+      converter,
+      setter)
   }
 
   /**
@@ -249,8 +248,9 @@ trait Mappable[+T] extends Source with TypedSource[T] {
       flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe = {
-    RichPipe(read(flowDef, mode))
-      .flatMapTo[T, U](sourceFields -> out)(mf)(converter, setter)
+    RichPipe(read(flowDef, mode)).flatMapTo[T, U](sourceFields -> out)(mf)(
+      converter,
+      setter)
   }
 
   /**

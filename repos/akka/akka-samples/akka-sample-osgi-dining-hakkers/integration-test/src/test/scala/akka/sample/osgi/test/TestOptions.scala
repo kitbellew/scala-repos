@@ -17,16 +17,11 @@ object TestOptions {
   def karafOptions(
       useDeployFolder: Boolean = false,
       extractInTargetFolder: Boolean = true): PaxOption = {
-    val kdc = karafDistributionConfiguration
-      .frameworkUrl(
-        maven
-          .groupId("org.apache.karaf")
-          .artifactId("apache-karaf")
-          .`type`("zip")
-          .version(System.getProperty("karaf.version")))
-      .karafVersion(System.getProperty("karaf.version"))
-      .name("Apache Karaf")
-      .useDeployFolder(useDeployFolder)
+    val kdc = karafDistributionConfiguration.frameworkUrl(
+      maven.groupId("org.apache.karaf").artifactId("apache-karaf").`type`(
+        "zip").version(System.getProperty("karaf.version")))
+      .karafVersion(System.getProperty("karaf.version")).name(
+        "Apache Karaf").useDeployFolder(useDeployFolder)
 
     new DefaultCompositeOption(
       if (extractInTargetFolder)
@@ -74,11 +69,9 @@ object TestOptions {
 
   def akkaFeature(feature: String): PaxOption = {
     scanFeatures(
-      maven
-        .groupId("com.typesafe.akka.akka-sample-osgi-dining-hakkers")
-        .artifactId("akka-sample-osgi-dining-hakkers")
-        .`type`("xml")
-        .classifier("features")
+      maven.groupId("com.typesafe.akka.akka-sample-osgi-dining-hakkers")
+        .artifactId("akka-sample-osgi-dining-hakkers").`type`("xml").classifier(
+          "features")
         .version(System.getProperty("project.version")),
       feature
     )

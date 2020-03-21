@@ -201,8 +201,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
 
     // 'src_id_r, 'mass_n_r
     // random jump probability plus dead page rank
-    val randomPagerank = nodeJoined
-      .crossWithTiny(deadPagerank)
+    val randomPagerank = nodeJoined.crossWithTiny(deadPagerank)
       .mapTo(
         (
           'src_id,
@@ -225,7 +224,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
     (randomPagerank ++ pagerankNextScaled)
       .groupBy('src_id) {
         _.sum[Double]('mass_input) // keep the input pagerank
-          .sum[Double]('mass_n) // take the sum
+        .sum[Double]('mass_n) // take the sum
       }
   }
 }

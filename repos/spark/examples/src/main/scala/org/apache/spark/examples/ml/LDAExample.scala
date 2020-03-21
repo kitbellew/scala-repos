@@ -47,12 +47,8 @@ object LDAExample {
 
     // $example on$
     // Loads data
-    val rowRDD = sc
-      .textFile(input)
-      .filter(_.nonEmpty)
-      .map(_.split(" ").map(_.toDouble))
-      .map(Vectors.dense)
-      .map(Row(_))
+    val rowRDD = sc.textFile(input).filter(_.nonEmpty)
+      .map(_.split(" ").map(_.toDouble)).map(Vectors.dense).map(Row(_))
     val schema = StructType(
       Array(StructField(FEATURES_COL, new VectorUDT, false)))
     val dataset = sqlContext.createDataFrame(rowRDD, schema)

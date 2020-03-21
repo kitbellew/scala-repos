@@ -300,10 +300,12 @@ import scala.language.implicitConversions"""
         "@unboxRunTimeDoc@" -> """
  *  Runtime implementation determined by `scala.runtime.BoxesRunTime.unboxTo%s`. See [[https://github.com/scala/scala src/library/scala/runtime/BoxesRunTime.java]].
  *""".format(name),
-        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()"
-          .format(boxedName, lcname),
-        "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`"
-          .format(name, lcname)
+        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()".format(
+          boxedName,
+          lcname),
+        "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`".format(
+          name,
+          lcname)
       )
     def interpolations =
       Map(

@@ -63,9 +63,8 @@ class AdminClient(
         return future.value().responseBody()
 
       now = time.milliseconds()
-    } while (now < deadline && future
-      .exception()
-      .isInstanceOf[SendFailedException])
+    } while (now < deadline && future.exception().isInstanceOf[
+      SendFailedException])
 
     throw future.exception()
   }
@@ -96,10 +95,8 @@ class AdminClient(
     val responseBody = send(node, ApiKeys.LIST_GROUPS, new ListGroupsRequest())
     val response = new ListGroupsResponse(responseBody)
     Errors.forCode(response.errorCode()).maybeThrow()
-    response
-      .groups()
-      .map(group => GroupOverview(group.groupId(), group.protocolType()))
-      .toList
+    response.groups().map(group =>
+      GroupOverview(group.groupId(), group.protocolType())).toList
   }
 
   private def findAllBrokers(): List[Node] = {
@@ -155,19 +152,16 @@ class AdminClient(
         s"Response from broker contained no metadata for group ${groupId}")
 
     Errors.forCode(metadata.errorCode()).maybeThrow()
-    val members = metadata
-      .members()
-      .map { member =>
-        val metadata = Utils.readBytes(member.memberMetadata())
-        val assignment = Utils.readBytes(member.memberAssignment())
-        MemberSummary(
-          member.memberId(),
-          member.clientId(),
-          member.clientHost(),
-          metadata,
-          assignment)
-      }
-      .toList
+    val members = metadata.members().map { member =>
+      val metadata = Utils.readBytes(member.memberMetadata())
+      val assignment = Utils.readBytes(member.memberAssignment())
+      MemberSummary(
+        member.memberId(),
+        member.clientId(),
+        member.clientHost(),
+        metadata,
+        assignment)
+    }.toList
     GroupSummary(
       metadata.state(),
       metadata.protocolType(),

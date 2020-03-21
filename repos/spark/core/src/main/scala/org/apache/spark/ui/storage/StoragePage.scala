@@ -96,11 +96,8 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       // Don't show the tables if there is no stream block
       Nil
     } else {
-      val blocks = statuses
-        .flatMap(_.blocks)
-        .groupBy(_.blockId)
-        .toSeq
-        .sortBy(_._1.toString)
+      val blocks = statuses.flatMap(_.blocks).groupBy(_.blockId).toSeq.sortBy(
+        _._1.toString)
 
       <div>
         <h4>Receiver Blocks</h4>

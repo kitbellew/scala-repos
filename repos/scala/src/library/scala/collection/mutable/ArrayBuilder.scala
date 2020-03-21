@@ -56,8 +56,8 @@ object ArrayBuilder {
         new ArrayBuilder.ofUnit().asInstanceOf[ArrayBuilder[T]]
       case _ =>
         new ArrayBuilder.ofRef[T with AnyRef]()(
-          tag.asInstanceOf[ClassTag[T with AnyRef]])
-          .asInstanceOf[ArrayBuilder[T]]
+          tag.asInstanceOf[ClassTag[T with AnyRef]]).asInstanceOf[ArrayBuilder[
+          T]]
     }
   }
 

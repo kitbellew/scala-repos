@@ -192,8 +192,8 @@ private[csv] object CSVTypeCast {
       nullable: Boolean = true,
       nullValue: String = ""): Any = {
 
-    if (datum == nullValue && nullable && (!castType
-          .isInstanceOf[StringType])) {
+    if (datum == nullValue && nullable && (!castType.isInstanceOf[
+          StringType])) {
       null
     } else {
       castType match {
@@ -204,17 +204,13 @@ private[csv] object CSVTypeCast {
         case _: FloatType =>
           Try(datum.toFloat)
             .getOrElse(
-              NumberFormat
-                .getInstance(Locale.getDefault)
-                .parse(datum)
-                .floatValue())
+              NumberFormat.getInstance(Locale.getDefault).parse(
+                datum).floatValue())
         case _: DoubleType =>
           Try(datum.toDouble)
             .getOrElse(
-              NumberFormat
-                .getInstance(Locale.getDefault)
-                .parse(datum)
-                .doubleValue())
+              NumberFormat.getInstance(Locale.getDefault).parse(
+                datum).doubleValue())
         case _: BooleanType => datum.toBoolean
         case dt: DecimalType =>
           val value = new BigDecimal(datum.replaceAll(",", ""))

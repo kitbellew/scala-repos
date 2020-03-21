@@ -42,11 +42,9 @@ trait FunctionAnnotator {
     }
 
     val tailrecAnnotation = function.annotations.find(
-      _.typeElement
-        .getType(TypingContext.empty)
-        .map(_.canonicalText)
-        .filter(_ == "_root_.scala.annotation.tailrec")
-        .isDefined)
+      _.typeElement.getType(TypingContext.empty)
+      .map(_.canonicalText).filter(
+        _ == "_root_.scala.annotation.tailrec").isDefined)
 
     tailrecAnnotation.foreach { it =>
       if (!function.canBeTailRecursive) {
@@ -107,8 +105,8 @@ trait FunctionAnnotator {
         needsTypeAnnotation()
       } else if (unitFunction && explicitReturn && !emptyReturn) {
         redundantReturnExpression()
-      } else if (!unitFunction && !anyReturn && !underCatchBlock && !usageType
-                   .conforms(functionType)) {
+      } else if (!unitFunction && !anyReturn && !underCatchBlock && !usageType.conforms(
+                   functionType)) {
         typeMismatch()
       }
 

@@ -27,14 +27,11 @@ object SwaggerCommandSupportSpec {
         description "The API token for this request"
         notes "Invalid data kills kittens"
         allowableValues "123")
-    val skip: Field[Int] = asInt("skip")
-      .withDefaultValue(0)
-      .sourcedFrom(Query)
-      .description("The offset for this collection index")
-    val limit: Field[Int] = asType[Int]("limit")
-      .sourcedFrom(Query)
-      .withDefaultValue(20)
-      .description("the max number of items to return")
+    val skip: Field[Int] = asInt("skip").withDefaultValue(0).sourcedFrom(
+      Query).description("The offset for this collection index")
+    val limit: Field[Int] =
+      asType[Int]("limit").sourcedFrom(Query).withDefaultValue(20).description(
+        "the max number of items to return")
   }
 
   class CommandSupportServlet()(protected implicit val swagger: Swagger)

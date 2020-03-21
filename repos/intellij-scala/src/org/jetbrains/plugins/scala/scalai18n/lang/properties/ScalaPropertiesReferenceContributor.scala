@@ -25,14 +25,12 @@ class ScalaPropertiesReferenceContributor extends PsiReferenceContributor {
 
   def registerReferenceProviders(registrar: PsiReferenceRegistrar) {
     registrar.registerReferenceProvider(
-      ScalaPatterns
-        .scalaLiteral()
-        .andNot(ScalaPatterns.interpolatedScalaLiteral()),
+      ScalaPatterns.scalaLiteral().andNot(
+        ScalaPatterns.interpolatedScalaLiteral()),
       new ScalaPropertiesReferenceProvider)
     registrar.registerReferenceProvider(
-      ScalaPatterns
-        .scalaLiteral()
-        .withParent(psiNameValuePair.withName(
+      ScalaPatterns.scalaLiteral().withParent(
+        psiNameValuePair.withName(
           AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER)),
       new ResourceBundleReferenceProvider
     )

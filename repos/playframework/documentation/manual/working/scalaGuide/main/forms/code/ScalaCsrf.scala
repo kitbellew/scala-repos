@@ -74,8 +74,9 @@ object ScalaCsrf extends PlaySpecification {
       val result = tokenFormAction(app)(
         FakeRequest().withSession("csrfToken" -> originalToken))
       val body = contentAsString(result)
-      body must find("action=\"/items\\?csrfToken=[a-f0-9]+-\\d+-([a-f0-9]+)\"")
-        .withGroup(Crypto.extractSignedToken(originalToken).get)
+      body must find(
+        "action=\"/items\\?csrfToken=[a-f0-9]+-\\d+-([a-f0-9]+)\"").withGroup(
+        Crypto.extractSignedToken(originalToken).get)
     }
 
     "allow rendering a token in a hidden field" in new WithApplication() {
@@ -103,10 +104,9 @@ object ScalaCsrf extends PlaySpecification {
       //#csrf-check
 
       await(
-        save(FakeRequest("POST", "/")
-          .withCookies(Cookie("foo", "bar"))
-          .withHeaders(
-            CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
+        save(FakeRequest("POST", "/").withCookies(Cookie("foo", "bar"))
+          .withHeaders(CONTENT_TYPE -> "application/x-www-form-urlencoded")))
+        .header.status must_== FORBIDDEN
     }
 
     "allow per action token handling" in new WithApplication() {
@@ -167,10 +167,9 @@ object ScalaCsrf extends PlaySpecification {
       //#csrf-actions
 
       await(
-        save(FakeRequest("POST", "/")
-          .withCookies(Cookie("foo", "bar"))
-          .withHeaders(
-            CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
+        save(FakeRequest("POST", "/").withCookies(Cookie("foo", "bar"))
+          .withHeaders(CONTENT_TYPE -> "application/x-www-form-urlencoded")))
+        .header.status must_== FORBIDDEN
       val body =
         await(form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
       Crypto.extractSignedToken(body.utf8String) must beSome

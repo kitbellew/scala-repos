@@ -168,14 +168,12 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       sqlContext.emptyDataFrame
     } else {
       sqlContext.baseRelationToDataFrame(
-        DataSource
-          .apply(
-            sqlContext,
-            paths = paths,
-            userSpecifiedSchema = userSpecifiedSchema,
-            className = source,
-            options = extraOptions.toMap)
-          .resolveRelation())
+        DataSource.apply(
+          sqlContext,
+          paths = paths,
+          userSpecifiedSchema = userSpecifiedSchema,
+          className = source,
+          options = extraOptions.toMap).resolveRelation())
     }
   }
 
@@ -460,9 +458,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     */
   @scala.annotation.varargs
   def text(paths: String*): Dataset[String] = {
-    format("text")
-      .load(paths: _*)
-      .as[String](sqlContext.implicits.newStringEncoder)
+    format("text").load(paths: _*).as[String](
+      sqlContext.implicits.newStringEncoder)
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////

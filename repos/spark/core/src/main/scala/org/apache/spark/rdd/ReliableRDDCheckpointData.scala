@@ -36,8 +36,7 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
   // The directory to which the associated RDD has been checkpointed to
   // This is assumed to be a non-local path that points to some reliable storage
   private val cpDir: String =
-    ReliableRDDCheckpointData
-      .checkpointPath(rdd.context, rdd.id)
+    ReliableRDDCheckpointData.checkpointPath(rdd.context, rdd.id)
       .map(_.toString)
       .getOrElse {
         throw new SparkException("Checkpoint dir must be specified.")

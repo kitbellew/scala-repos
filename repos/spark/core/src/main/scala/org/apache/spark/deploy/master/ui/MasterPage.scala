@@ -130,14 +130,12 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
             <ul class="unstyled">
               <li><strong>URL:</strong> {state.uri}</li>
               {
-        state.restUri
-          .map { uri =>
-            <li>
+        state.restUri.map { uri =>
+          <li>
                     <strong>REST URL:</strong> {uri}
                     <span class="rest-uri"> (cluster mode)</span>
                   </li>
-          }
-          .getOrElse { Seq.empty }
+        }.getOrElse { Seq.empty }
       }
               <li><strong>Alive Workers:</strong> {aliveWorkers.length}</li>
               <li><strong>Cores in use:</strong> {aliveWorkers.map(_.cores).sum} Total,

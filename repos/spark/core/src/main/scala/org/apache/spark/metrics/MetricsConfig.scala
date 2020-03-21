@@ -80,9 +80,9 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
     prop.asScala.foreach { kv =>
       if (regex.findPrefixOf(kv._1.toString).isDefined) {
         val regex(prefix, suffix) = kv._1.toString
-        subProperties
-          .getOrElseUpdate(prefix, new Properties)
-          .setProperty(suffix, kv._2.toString)
+        subProperties.getOrElseUpdate(prefix, new Properties).setProperty(
+          suffix,
+          kv._2.toString)
       }
     }
     subProperties

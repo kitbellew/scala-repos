@@ -49,8 +49,9 @@ class MemcachedTest
       params[Transporter.ConnectTimeout] == Transporter.ConnectTimeout(
         100.milliseconds))
     assert(
-      params[Memcached.param.EjectFailedHost] == Memcached.param
-        .EjectFailedHost(false))
+      params[
+        Memcached.param.EjectFailedHost] == Memcached.param.EjectFailedHost(
+        false))
     assert(params[FailFastFactory.FailFast] == FailFastFactory.FailFast(false))
   }
 

@@ -91,16 +91,14 @@ trait TestEventService
     new InMemoryAPIKeyManager[Future](blueeyes.util.Clock.System)
 
   protected val rootAPIKey = Await.result(apiKeyManager.rootAPIKey, to)
-  protected val testAccount = TestAccounts
-    .createAccount(
-      "test@example.com",
-      "open sesame",
-      new DateTime,
-      AccountPlan.Free,
-      None,
-      None) {
-      accountId =>
-        apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey)
+  protected val testAccount = TestAccounts.createAccount(
+    "test@example.com",
+    "open sesame",
+    new DateTime,
+    AccountPlan.Free,
+    None,
+    None) {
+    accountId => apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey)
   } copoint
 
   private val accountFinder = new TestAccountFinder[Future](
@@ -118,26 +116,23 @@ trait TestEventService
     DeletePermission(testAccount.rootPath, WrittenByAny)
   )
 
-  val expiredAccount = TestAccounts
-    .createAccount(
-      "expired@example.com",
-      "open sesame",
-      new DateTime,
-      AccountPlan.Free,
-      None,
-      None) {
-      accountId =>
-        apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey).flatMap {
-          expiredAPIKey =>
-            apiKeyManager
-              .deriveAndAddGrant(
-                None,
-                None,
-                testAccount.apiKey,
-                accessTest,
-                expiredAPIKey,
-                Some(new DateTime().minusYears(1000)))
-              .map(_ => expiredAPIKey)
+  val expiredAccount = TestAccounts.createAccount(
+    "expired@example.com",
+    "open sesame",
+    new DateTime,
+    AccountPlan.Free,
+    None,
+    None) {
+    accountId =>
+      apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey).flatMap {
+        expiredAPIKey =>
+          apiKeyManager.deriveAndAddGrant(
+            None,
+            None,
+            testAccount.apiKey,
+            accessTest,
+            expiredAPIKey,
+            Some(new DateTime().minusYears(1000))).map(_ => expiredAPIKey)
       }
   } copoint
 
@@ -190,11 +185,10 @@ trait TestEventService
       bi: A => Future[JValue],
       t: AsyncHttpTranscoder[A, ByteChunk]
   ): Future[(HttpResponse[JValue], List[Ingest])] = {
-    val svc = client
-      .contentType[A](contentType)
-      .query("receipt", sync.toString)
-      .query("mode", if (batch) "batch" else "stream")
-      .path("/ingest/v2/fs/")
+    val svc =
+      client.contentType[A](contentType).query("receipt", sync.toString).query(
+        "mode",
+        if (batch) "batch" else "stream").path("/ingest/v2/fs/")
 
     val queries = List(
       apiKey.map(("apiKey", _)),

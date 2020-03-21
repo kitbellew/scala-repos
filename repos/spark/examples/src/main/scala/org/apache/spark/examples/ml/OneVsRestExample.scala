@@ -80,8 +80,9 @@ object OneVsRestExample {
           "input path to test dataset.  If given, option fracTest is ignored")
         .action((x, c) => c.copy(testInput = Some(x)))
       opt[Int]("maxIter")
-        .text(s"maximum number of iterations for Logistic Regression." +
-          s" default: ${defaultParams.maxIter}")
+        .text(
+          s"maximum number of iterations for Logistic Regression." +
+            s" default: ${defaultParams.maxIter}")
         .action((x, c) => c.copy(maxIter = x))
       opt[Double]("tol")
         .text(
@@ -89,8 +90,9 @@ object OneVsRestExample {
             s" default: ${defaultParams.tol}")
         .action((x, c) => c.copy(tol = x))
       opt[Boolean]("fitIntercept")
-        .text(s"fit intercept for Logistic Regression." +
-          s" default: ${defaultParams.fitIntercept}")
+        .text(
+          s"fit intercept for Logistic Regression." +
+            s" default: ${defaultParams.fitIntercept}")
         .action((x, c) => c.copy(fitIntercept = x))
       opt[Double]("regParam")
         .text(s"the regularization parameter for Logistic Regression.")
@@ -124,10 +126,9 @@ object OneVsRestExample {
       case Some(t) => {
         // compute the number of features in the training set.
         val numFeatures = inputData.first().getAs[Vector](1).size
-        val testData = sqlContext.read
-          .option("numFeatures", numFeatures.toString)
-          .format("libsvm")
-          .load(t)
+        val testData =
+          sqlContext.read.option("numFeatures", numFeatures.toString)
+            .format("libsvm").load(t)
         Array[DataFrame](inputData, testData)
       }
       case None => {
@@ -159,10 +160,8 @@ object OneVsRestExample {
     val (predictionDuration, predictions) = time(ovrModel.transform(test))
 
     // evaluate the model
-    val predictionsAndLabels = predictions
-      .select("prediction", "label")
-      .rdd
-      .map(row => (row.getDouble(0), row.getDouble(1)))
+    val predictionsAndLabels = predictions.select("prediction", "label")
+      .rdd.map(row => (row.getDouble(0), row.getDouble(1)))
 
     val metrics = new MulticlassMetrics(predictionsAndLabels)
 

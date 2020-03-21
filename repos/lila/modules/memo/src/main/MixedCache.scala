@@ -37,8 +37,9 @@ object MixedCache {
       default: K => V,
       logger: lila.log.Logger): MixedCache[K, V] = {
     val async = AsyncCache(f, maxCapacity = 10000, timeToLive = 1 minute)
-    val sync = Builder
-      .cache[K, V](timeToLive, (k: K) => async(k) await makeTimeout(awaitTime))
+    val sync = Builder.cache[K, V](
+      timeToLive,
+      (k: K) => async(k) await makeTimeout(awaitTime))
     new MixedCache(
       sync,
       default,

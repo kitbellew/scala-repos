@@ -40,26 +40,20 @@ class PartitionAssignorTest extends Logging {
       val topicCount = PartitionAssignorTest.MinTopicCount.max(
         TestUtils.random.nextInt(PartitionAssignorTest.MaxTopicCount + 1))
 
-      val topicPartitionCounts = Map(
-        (1 to topicCount)
-          .map(topic => {
-            (
-              "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
-          })
-          .toSeq: _*)
+      val topicPartitionCounts = Map((1 to topicCount).map(topic => {
+        (
+          "topic-" + topic,
+          PartitionAssignorTest.MinPartitionCount.max(
+            TestUtils.random.nextInt(PartitionAssignorTest.MaxPartitionCount)))
+      }).toSeq: _*)
 
-      val subscriptions = Map(
-        (1 to consumerCount)
-          .map(consumer => {
-            val streamCount = 1.max(TestUtils.random.nextInt(
-              PartitionAssignorTest.MaxStreamCount + 1))
-            (
-              "g1c" + consumer,
-              WildcardSubscriptionInfo(streamCount, ".*", isWhitelist = true))
-          })
-          .toSeq: _*)
+      val subscriptions = Map((1 to consumerCount).map(consumer => {
+        val streamCount = 1.max(
+          TestUtils.random.nextInt(PartitionAssignorTest.MaxStreamCount + 1))
+        (
+          "g1c" + consumer,
+          WildcardSubscriptionInfo(streamCount, ".*", isWhitelist = true))
+      }).toSeq: _*)
       val scenario = Scenario("g1", topicPartitionCounts, subscriptions)
       val zkUtils = PartitionAssignorTest.setupZkClientMock(scenario)
       EasyMock.replay(zkUtils.zkClient)
@@ -80,30 +74,21 @@ class PartitionAssignorTest extends Logging {
       val topicCount = PartitionAssignorTest.MinTopicCount.max(
         TestUtils.random.nextInt(PartitionAssignorTest.MaxTopicCount + 1))
 
-      val topicPartitionCounts = Map(
-        (1 to topicCount)
-          .map(topic => {
-            (
-              "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
-          })
-          .toSeq: _*)
+      val topicPartitionCounts = Map((1 to topicCount).map(topic => {
+        (
+          "topic-" + topic,
+          PartitionAssignorTest.MinPartitionCount.max(
+            TestUtils.random.nextInt(PartitionAssignorTest.MaxPartitionCount)))
+      }).toSeq: _*)
 
-      val subscriptions = Map(
-        (1 to consumerCount)
-          .map(consumer => {
-            val streamCounts = Map(
-              (1 to topicCount)
-                .map(topic => {
-                  val streamCount = 1.max(TestUtils.random.nextInt(
-                    PartitionAssignorTest.MaxStreamCount + 1))
-                  ("topic-" + topic, streamCount)
-                })
-                .toSeq: _*)
-            ("g1c" + consumer, StaticSubscriptionInfo(streamCounts))
-          })
-          .toSeq: _*)
+      val subscriptions = Map((1 to consumerCount).map(consumer => {
+        val streamCounts = Map((1 to topicCount).map(topic => {
+          val streamCount = 1.max(
+            TestUtils.random.nextInt(PartitionAssignorTest.MaxStreamCount + 1))
+          ("topic-" + topic, streamCount)
+        }).toSeq: _*)
+        ("g1c" + consumer, StaticSubscriptionInfo(streamCounts))
+      }).toSeq: _*)
       val scenario = Scenario("g1", topicPartitionCounts, subscriptions)
       val zkUtils = PartitionAssignorTest.setupZkClientMock(scenario)
       EasyMock.replay(zkUtils.zkClient)
@@ -183,18 +168,17 @@ private object PartitionAssignorTest extends Logging {
     val zkUtils = ZkUtils(zkClient, false)
     EasyMock.checkOrder(zkClient, false)
 
-    EasyMock
-      .expect(zkClient.getChildren("/consumers/%s/ids".format(scenario.group)))
-      .andReturn(consumers)
+    EasyMock.expect(
+      zkClient.getChildren(
+        "/consumers/%s/ids".format(scenario.group))).andReturn(consumers)
     EasyMock.expectLastCall().anyTimes()
 
     scenario.subscriptions.foreach {
       case (consumerId, subscriptionInfo) =>
-        EasyMock
-          .expect(
-            zkClient.readData(
-              "/consumers/%s/ids/%s".format(scenario.group, consumerId),
-              new Stat()))
+        EasyMock.expect(
+          zkClient.readData(
+            "/consumers/%s/ids/%s".format(scenario.group, consumerId),
+            new Stat()))
           .andReturn(subscriptionInfo.registrationString)
         EasyMock.expectLastCall().anyTimes()
     }
@@ -203,17 +187,14 @@ private object PartitionAssignorTest extends Logging {
       case (topic, partitionCount) =>
         val replicaAssignment = Map((0 until partitionCount).map(partition =>
           (partition.toString, Seq(0))): _*)
-        EasyMock
-          .expect(
-            zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))
+        EasyMock.expect(
+          zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))
           .andReturn(zkUtils.replicaAssignmentZkData(replicaAssignment))
         EasyMock.expectLastCall().anyTimes()
     }
 
-    EasyMock
-      .expect(zkUtils.zkClient.getChildren("/brokers/topics"))
-      .andReturn(
-        java.util.Arrays.asList(scenario.topicPartitionCounts.keys.toSeq: _*))
+    EasyMock.expect(zkUtils.zkClient.getChildren("/brokers/topics")).andReturn(
+      java.util.Arrays.asList(scenario.topicPartitionCounts.keys.toSeq: _*))
     EasyMock.expectLastCall().anyTimes()
 
     zkUtils
@@ -242,8 +223,9 @@ private object PartitionAssignorTest extends Logging {
         case (topicPartition, owner) =>
           val previousOwnerOpt = globalAssignment.put(topicPartition, owner)
           assertTrue(
-            "Scenario %s: %s is assigned to two owners."
-              .format(scenario, topicPartition),
+            "Scenario %s: %s is assigned to two owners.".format(
+              scenario,
+              topicPartition),
             previousOwnerOpt.isEmpty)
       }
     })
@@ -256,8 +238,8 @@ private object PartitionAssignorTest extends Logging {
           TopicAndPartition(topic, partition))
     }.toSet
     assertTrue(
-      "Scenario %s: the list of given partitions and assigned partitions are different."
-        .format(scenario),
+      "Scenario %s: the list of given partitions and assigned partitions are different.".format(
+        scenario),
       givenPartitions == assignedPartitions)
 
     // check for uniform assignment

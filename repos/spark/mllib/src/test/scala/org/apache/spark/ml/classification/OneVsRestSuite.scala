@@ -92,9 +92,8 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
       row => (row.getDouble(0), row.getDouble(1))
     }
 
-    val lr = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
-      .setNumClasses(numClasses)
+    val lr = new LogisticRegressionWithLBFGS().setIntercept(true).setNumClasses(
+      numClasses)
     lr.optimizer.setRegParam(0.1).setNumIterations(100)
 
     val model = lr.run(rdd)
@@ -134,8 +133,7 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
       .withColumnRenamed("features", "f")
 
     val ova = new OneVsRest()
-    ova
-      .setClassifier(new LogisticRegression())
+    ova.setClassifier(new LogisticRegression())
       .setLabelCol(labelIndexer.getOutputCol)
       .setFeaturesCol("f")
       .setPredictionCol("p")

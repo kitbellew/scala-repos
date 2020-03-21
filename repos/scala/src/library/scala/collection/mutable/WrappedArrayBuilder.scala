@@ -36,36 +36,35 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
     val runtimeClass = arrayElementClass(tag)
     val newelems = runtimeClass match {
       case java.lang.Byte.TYPE =>
-        new WrappedArray.ofByte(new Array[Byte](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofByte(new Array[Byte](size)).asInstanceOf[
+          WrappedArray[A]]
       case java.lang.Short.TYPE =>
-        new WrappedArray.ofShort(new Array[Short](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofShort(new Array[Short](size)).asInstanceOf[
+          WrappedArray[A]]
       case java.lang.Character.TYPE =>
-        new WrappedArray.ofChar(new Array[Char](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofChar(new Array[Char](size)).asInstanceOf[
+          WrappedArray[A]]
       case java.lang.Integer.TYPE =>
-        new WrappedArray.ofInt(new Array[Int](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofInt(new Array[Int](size)).asInstanceOf[WrappedArray[
+          A]]
       case java.lang.Long.TYPE =>
-        new WrappedArray.ofLong(new Array[Long](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofLong(new Array[Long](size)).asInstanceOf[
+          WrappedArray[A]]
       case java.lang.Float.TYPE =>
-        new WrappedArray.ofFloat(new Array[Float](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofFloat(new Array[Float](size)).asInstanceOf[
+          WrappedArray[A]]
       case java.lang.Double.TYPE =>
-        new WrappedArray.ofDouble(new Array[Double](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofDouble(new Array[Double](size)).asInstanceOf[
+          WrappedArray[A]]
       case java.lang.Boolean.TYPE =>
-        new WrappedArray.ofBoolean(new Array[Boolean](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofBoolean(new Array[Boolean](size)).asInstanceOf[
+          WrappedArray[A]]
       case java.lang.Void.TYPE =>
-        new WrappedArray.ofUnit(new Array[Unit](size))
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofUnit(new Array[Unit](size)).asInstanceOf[
+          WrappedArray[A]]
       case _ =>
-        new WrappedArray.ofRef[A with AnyRef](
-          tag.newArray(size).asInstanceOf[Array[A with AnyRef]])
-          .asInstanceOf[WrappedArray[A]]
+        new WrappedArray.ofRef[A with AnyRef](tag.newArray(size).asInstanceOf[
+          Array[A with AnyRef]]).asInstanceOf[WrappedArray[A]]
     }
     if (this.size > 0) Array.copy(elems.array, 0, newelems.array, 0, this.size)
     newelems

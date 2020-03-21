@@ -113,12 +113,11 @@ object SerializerPropertiesSuite extends Assertions {
       }
       val reorderedSerializedData: Array[Byte] =
         itemsAndSerializedItems.flatMap(_._2).toArray
-      val deserializedItemsStream = serializer
-        .newInstance()
-        .deserializeStream(new ByteArrayInputStream(reorderedSerializedData))
+      val deserializedItemsStream = serializer.newInstance().deserializeStream(
+        new ByteArrayInputStream(reorderedSerializedData))
       assert(
-        deserializedItemsStream.asIterator.toSeq === itemsAndSerializedItems
-          .map(_._1))
+        deserializedItemsStream.asIterator.toSeq === itemsAndSerializedItems.map(
+          _._1))
       deserializedItemsStream.close()
     }
   }

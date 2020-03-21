@@ -146,9 +146,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   private def getPackageImplicitObjectsCached(
       fqn: String,
       scope: GlobalSearchScope): Seq[ScObject] = {
-    ScalaShortNamesCacheManager
-      .getInstance(project)
-      .getImplicitObjectsByPackage(fqn, scope)
+    ScalaShortNamesCacheManager.getInstance(
+      project).getImplicitObjectsByPackage(fqn, scope)
   }
 
   @CachedWithoutModificationCount(
@@ -170,14 +169,14 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         scope: GlobalSearchScope,
         fqn: String): Option[PsiClass] = {
       val clazz = JavaPsiFacade.getInstance(project).findClass(fqn, scope)
-      if (clazz == null || clazz.isInstanceOf[ScTemplateDefinition] || clazz
-            .isInstanceOf[PsiClassWrapper]) None
+      if (clazz == null || clazz.isInstanceOf[
+            ScTemplateDefinition] || clazz.isInstanceOf[PsiClassWrapper]) None
       else Option(clazz)
     }
 
-    val res = ScalaShortNamesCacheManager
-      .getInstance(project)
-      .getClassByFQName(fqn, scope)
+    val res = ScalaShortNamesCacheManager.getInstance(project).getClassByFQName(
+      fqn,
+      scope)
     Option(res).orElse(getCachedFacadeClass(scope, fqn))
   }
 
@@ -198,15 +197,12 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   def getClassesByName(
       name: String,
       scope: GlobalSearchScope): Seq[PsiClass] = {
-    val scalaClasses = ScalaShortNamesCacheManager
-      .getInstance(project)
-      .getClassesByName(name, scope)
-    val buffer: mutable.Buffer[PsiClass] = PsiShortNamesCache
-      .getInstance(project)
-      .getClassesByName(name, scope)
-      .filterNot(p =>
-        p.isInstanceOf[ScTemplateDefinition] || p.isInstanceOf[PsiClassWrapper])
-      .toBuffer
+    val scalaClasses = ScalaShortNamesCacheManager.getInstance(
+      project).getClassesByName(name, scope)
+    val buffer: mutable.Buffer[PsiClass] = PsiShortNamesCache.getInstance(
+      project).getClassesByName(name, scope).filterNot(p =>
+      p.isInstanceOf[ScTemplateDefinition] || p.isInstanceOf[
+        PsiClassWrapper]).toBuffer
     val classesIterator = scalaClasses.iterator
     while (classesIterator.hasNext) {
       val clazz = classesIterator.next()
@@ -251,13 +247,9 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       pack: PsiPackage,
       scope: GlobalSearchScope): Array[PsiClass] = {
     val classes =
-      JavaPsiFacade
-        .getInstance(project)
-        .asInstanceOf[JavaPsiFacadeImpl]
-        .getClasses(pack, scope)
-        .filterNot(p =>
-          p.isInstanceOf[ScTemplateDefinition] || p
-            .isInstanceOf[PsiClassWrapper])
+      JavaPsiFacade.getInstance(project).asInstanceOf[
+        JavaPsiFacadeImpl].getClasses(pack, scope).filterNot(p =>
+        p.isInstanceOf[ScTemplateDefinition] || p.isInstanceOf[PsiClassWrapper])
     val scalaClasses =
       ScalaShortNamesCacheManager.getInstance(project).getClasses(pack, scope)
     classes ++ scalaClasses
@@ -276,8 +268,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       val classes =
         JavaPsiFacade.getInstance(project).findClasses(fqn, scope).filterNot {
           p =>
-            p.isInstanceOf[ScTemplateDefinition] || p
-              .isInstanceOf[PsiClassWrapper]
+            p.isInstanceOf[ScTemplateDefinition] || p.isInstanceOf[
+              PsiClassWrapper]
         }
 
       ArrayUtil.mergeArrays(
@@ -287,9 +279,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     if (DumbService.getInstance(project).isDumb) return Array.empty
 
     val classes = getCachedFacadeClasses(scope, fqn)
-    val fromScala = ScalaShortNamesCacheManager
-      .getInstance(project)
-      .getClassesByFQName(fqn, scope)
+    val fromScala = ScalaShortNamesCacheManager.getInstance(
+      project).getClassesByFQName(fqn, scope)
     ArrayUtil.mergeArrays(
       classes,
       ArrayUtil.mergeArrays(
@@ -391,9 +382,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       new PsiModificationTracker.Listener {
         def modificationCountChanged() {
           clearOnChange()
-          val count = PsiModificationTracker.SERVICE
-            .getInstance(project)
-            .getOutOfCodeBlockModificationCount
+          val count = PsiModificationTracker.SERVICE.getInstance(
+            project).getOutOfCodeBlockModificationCount
           if (outOfCodeBlockModCount != count) {
             outOfCodeBlockModCount = count
             clearOnOutOfCodeBlockChange()
@@ -488,15 +478,16 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   }
 
   def getStableTypeAliasesNames: Seq[String] = {
-    val keys = StubIndex.getInstance
-      .getAllKeys(ScalaIndexKeys.STABLE_ALIAS_NAME_KEY, project)
+    val keys = StubIndex.getInstance.getAllKeys(
+      ScalaIndexKeys.STABLE_ALIAS_NAME_KEY,
+      project)
     import scala.collection.JavaConversions._
     keys.toSeq
   }
 
-  PsiManager
-    .getInstance(project)
-    .addPsiTreeChangeListener(CacheInvalidator, project)
+  PsiManager.getInstance(project).addPsiTreeChangeListener(
+    CacheInvalidator,
+    project)
 
   object CacheInvalidator extends PsiTreeChangeAdapter {
     override def childRemoved(event: PsiTreeChangeEvent): Unit = {
@@ -527,10 +518,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   private[this] val myRawModificationCount = new AtomicLong(0)
 
   def getModificationCount: Long = {
-    myRawModificationCount.get() + PsiManager
-      .getInstance(project)
-      .getModificationTracker
-      .getOutOfCodeBlockModificationCount
+    myRawModificationCount.get() + PsiManager.getInstance(
+      project).getModificationTracker.getOutOfCodeBlockModificationCount
   }
 
   def incModificationCount(): Long = myRawModificationCount.incrementAndGet()

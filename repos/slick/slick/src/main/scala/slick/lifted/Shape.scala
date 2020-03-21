@@ -116,8 +116,8 @@ trait RepShapeImplicits extends OptionShapeImplicits {
   @inline implicit def optionShape[M, U, P, Level <: ShapeLevel](implicit
       sh: Shape[_ <: Level, Rep[M], U, Rep[P]])
       : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
-    RepShape
-      .asInstanceOf[Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]]]
+    RepShape.asInstanceOf[
+      Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]]]
 }
 
 trait OptionShapeImplicits {
@@ -126,8 +126,8 @@ trait OptionShapeImplicits {
   @inline implicit def anyOptionShape[M, U, P, Level <: ShapeLevel](implicit
       sh: Shape[_ <: Level, M, U, P])
       : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
-    RepShape
-      .asInstanceOf[Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]]]
+    RepShape.asInstanceOf[
+      Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]]]
 }
 
 /** Shape for Rep values (always fully packed) */
@@ -181,8 +181,13 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
   }
   def packedShape: Shape[Level, Packed, Unpacked, Packed] =
     copy(
-      shapes.map(_.packedShape.asInstanceOf[Shape[_ <: ShapeLevel, _, _, _]]))
-      .asInstanceOf[Shape[Level, Packed, Unpacked, Packed]]
+      shapes.map(
+        _.packedShape.asInstanceOf[
+          Shape[_ <: ShapeLevel, _, _, _]])).asInstanceOf[Shape[
+      Level,
+      Packed,
+      Unpacked,
+      Packed]]
   def buildParams(extract: Any => Unpacked): Packed = {
     val elems = shapes.iterator.zipWithIndex.map {
       case (p, idx) =>
@@ -202,14 +207,9 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
     buildValue(elems.toIndexedSeq)
   }
   def toNode(value: Mixed): Node =
-    ProductNode(
-      ConstArray.from(
-        shapes.iterator
-          .zip(getIterator(value))
-          .map {
-            case (p, f) => p.toNode(f.asInstanceOf[p.Mixed])
-          }
-          .toIterable))
+    ProductNode(ConstArray.from(shapes.iterator.zip(getIterator(value)).map {
+      case (p, f) => p.toNode(f.asInstanceOf[p.Mixed])
+    }.toIterable))
 }
 
 /** Base class for ProductNodeShapes with a type mapping */
@@ -409,8 +409,7 @@ object ShapedValue {
           TermName(c.freshName()))
     }.toIndexedSeq
     val (f, g) =
-      if (uTag.tpe <:< c
-            .typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
+      if (uTag.tpe <:< c.typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
         val rTypeAsHList = fields.foldRight[Tree](
           tq"_root_.slick.collection.heterogeneous.HNil.type") {
           case ((_, t, _), z) =>
@@ -440,9 +439,8 @@ object ShapedValue {
       }
 
     val fpName = Constant(
-      "Fast Path of (" + fields
-        .map(_._2)
-        .mkString(", ") + ").mapTo[" + rTag.tpe + "]")
+      "Fast Path of (" + fields.map(_._2).mkString(
+        ", ") + ").mapTo[" + rTag.tpe + "]")
     val fpChildren = fields.map { case (_, t, n)     => q"val $n = next[$t]" }
     val fpReadChildren = fields.map { case (_, _, n) => q"$n.read(r)" }
     val fpSetChildren = fields.map {
@@ -506,12 +504,11 @@ object ProvenShape {
       : Shape[FlatShapeLevel, ProvenShape[T], T, P] =
     new Shape[FlatShapeLevel, ProvenShape[T], T, P] {
       def pack(value: Mixed): Packed =
-        value.shape
-          .pack(value.value.asInstanceOf[value.shape.Mixed])
-          .asInstanceOf[Packed]
+        value.shape.pack(
+          value.value.asInstanceOf[value.shape.Mixed]).asInstanceOf[Packed]
       def packedShape: Shape[FlatShapeLevel, Packed, Unpacked, Packed] =
-        shape.packedShape
-          .asInstanceOf[Shape[FlatShapeLevel, Packed, Unpacked, Packed]]
+        shape.packedShape.asInstanceOf[
+          Shape[FlatShapeLevel, Packed, Unpacked, Packed]]
       def buildParams(extract: Any => Unpacked): Packed =
         shape.buildParams(extract.asInstanceOf[Any => shape.Unpacked])
       def encodeRef(value: Mixed, path: Node) =

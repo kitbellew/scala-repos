@@ -51,9 +51,8 @@ case class TopicMetadata(
   def sizeInBytes: Int = {
     2 /* error code */ +
       shortStringLength(topic) +
-      4 + partitionsMetadata
-      .map(_.sizeInBytes)
-      .sum /* size and partition data array */
+      4 + partitionsMetadata.map(
+      _.sizeInBytes).sum /* size and partition data array */
   }
 
   def writeTo(buffer: ByteBuffer) {
@@ -89,17 +88,17 @@ case class TopicMetadata(
                   partitionMetadata.toString()))
             case error: Errors =>
               topicMetadataInfo.append(
-                "\nMetadata for partition [%s,%d] is not available due to %s"
-                  .format(
-                    topic,
-                    partitionMetadata.partitionId,
-                    error.exceptionName))
+                "\nMetadata for partition [%s,%d] is not available due to %s".format(
+                  topic,
+                  partitionMetadata.partitionId,
+                  error.exceptionName))
           }
         }
       case error: Errors =>
         topicMetadataInfo.append(
-          "\nNo partition metadata for topic %s due to %s"
-            .format(topic, error.exceptionName))
+          "\nNo partition metadata for topic %s due to %s".format(
+            topic,
+            error.exceptionName))
     }
     topicMetadataInfo.append("}")
     topicMetadataInfo.toString()

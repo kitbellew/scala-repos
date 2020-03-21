@@ -71,8 +71,9 @@ case class SkewReplicationB(
     val numReducers = if (reducers <= 0) DEFAULT_NUM_REDUCERS else reducers
 
     val left = scala.math.max(1, rightCount / maxKeysInMemory)
-    val right = scala.math
-      .min(numReducers, (leftCount * rightCount) / (maxReducerOutput * left))
+    val right = scala.math.min(
+      numReducers,
+      (leftCount * rightCount) / (maxReducerOutput * left))
 
     (left, if (right == 0) 1 else right)
   }

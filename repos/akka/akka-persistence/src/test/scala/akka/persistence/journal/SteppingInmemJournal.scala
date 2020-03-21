@@ -67,8 +67,8 @@ final class SteppingInmemJournal extends InmemJournal {
   import SteppingInmemJournal._
   import context.dispatcher
 
-  val instanceId = context.system.settings.config
-    .getString("akka.persistence.journal.stepping-inmem.instance-id")
+  val instanceId = context.system.settings.config.getString(
+    "akka.persistence.journal.stepping-inmem.instance-id")
 
   var queuedOps: Seq[() ⇒ Future[Unit]] = Seq.empty
   var queuedTokenRecipients = List.empty[ActorRef]

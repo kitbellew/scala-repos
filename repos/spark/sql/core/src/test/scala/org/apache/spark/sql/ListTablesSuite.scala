@@ -41,8 +41,8 @@ class ListTablesSuite
   }
 
   after {
-    sqlContext.sessionState.catalog
-      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog.unregisterTable(
+      TableIdentifier("ListTablesSuiteTable"))
   }
 
   test("get all tables") {
@@ -54,13 +54,11 @@ class ListTablesSuite
       sql("SHOW tables").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog
-      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog.unregisterTable(
+      TableIdentifier("ListTablesSuiteTable"))
     assert(
-      sqlContext
-        .tables()
-        .filter("tableName = 'ListTablesSuiteTable'")
-        .count() === 0)
+      sqlContext.tables().filter(
+        "tableName = 'ListTablesSuiteTable'").count() === 0)
   }
 
   test(
@@ -73,13 +71,11 @@ class ListTablesSuite
       sql("show TABLES in DB").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog
-      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog.unregisterTable(
+      TableIdentifier("ListTablesSuiteTable"))
     assert(
-      sqlContext
-        .tables()
-        .filter("tableName = 'ListTablesSuiteTable'")
-        .count() === 0)
+      sqlContext.tables().filter(
+        "tableName = 'ListTablesSuiteTable'").count() === 0)
   }
 
   test("query the returned DataFrame of tables") {
@@ -98,10 +94,9 @@ class ListTablesSuite
           Row(true, "ListTablesSuiteTable")
         )
         checkAnswer(
-          sqlContext
-            .tables()
-            .filter("tableName = 'tables'")
-            .select("tableName", "isTemporary"),
+          sqlContext.tables().filter("tableName = 'tables'").select(
+            "tableName",
+            "isTemporary"),
           Row("tables", true))
         sqlContext.dropTempTable("tables")
     }

@@ -283,8 +283,8 @@ object WorksheetSourceProcessor {
           val qualifierName = lastQualifier.qualName
           val lineNums = psiToLineNumbers(imp)
           val memberName =
-            if (el.isInstanceOf[ScValue] || el
-                  .isInstanceOf[ScVariable]) //variable to avoid weird errors
+            if (el.isInstanceOf[ScValue] || el.isInstanceOf[
+                  ScVariable]) //variable to avoid weird errors
               variableInstanceName(qualifierName)
             else qualifierName
 
@@ -354,8 +354,8 @@ object WorksheetSourceProcessor {
         withPrecomputeLines(
           fun, {
             objectRes append (printMethodName + "(\"" + fun.getName + ": \" + " + macroPrinterName +
-              s".printGeneric({import $instanceName._ ;" + fun.getText
-              .stripPrefix(hadMods) + " })" + eraseClassName + ")\n")
+              s".printGeneric({import $instanceName._ ;" + fun.getText.stripPrefix(
+              hadMods) + " })" + eraseClassName + ")\n")
           }
         )
       case tpeDef: ScTypeDefinition =>
@@ -405,12 +405,10 @@ object WorksheetSourceProcessor {
               case (tpe, el) => el.name + ": " + tpe.getText
             }).mkString("(", ",", ")") + " = { " + expr.getText + ";}"
           case (_, Some(expr)) =>
-            "var " + varDef.declaredElements
-              .map {
-                case tpePattern: ScTypedPattern => writeTypedPatter(tpePattern)
-                case a                          => a.name
-              }
-              .mkString("(", ",", ")") + " = { " + expr.getText + ";}"
+            "var " + varDef.declaredElements.map {
+              case tpePattern: ScTypedPattern => writeTypedPatter(tpePattern)
+              case a                          => a.name
+            }.mkString("(", ",", ")") + " = { " + expr.getText + ";}"
           case _ => varDef.getText
         }
 
@@ -462,17 +460,16 @@ object WorksheetSourceProcessor {
     classRes append "}"
     objectRes append (printMethodName + "(\"" + END_OUTPUT_MARKER + "\")\n") append s"} \n $PRINT_ARRAY_TEXT \n }"
 
-    val codeResult = objectPrologue + importStmts.mkString(";") + classRes
-      .toString() + "\n\n\n" + objectRes.toString()
+    val codeResult = objectPrologue + importStmts.mkString(
+      ";") + classRes.toString() + "\n\n\n" + objectRes.toString()
     Left(
       (codeResult, packOpt.map(_ + ".").getOrElse("") + name)
     )
   }
 
   private def isForObject(file: ScalaFile) = {
-    val isEclipseMode = ScalaProjectSettings
-      .getInstance(file.getProject)
-      .isUseEclipseCompatibility
+    val isEclipseMode = ScalaProjectSettings.getInstance(
+      file.getProject).isUseEclipseCompatibility
 
     @tailrec
     def isObjectOk(psi: PsiElement): Boolean =

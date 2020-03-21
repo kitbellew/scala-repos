@@ -75,14 +75,12 @@ class OfflinePartitionLeaderSelector(
           case true =>
             // Prior to electing an unclean (i.e. non-ISR) leader, ensure that doing so is not disallowed by the configuration
             // for unclean leader election.
-            if (!LogConfig
-                  .fromProps(
-                    config.originals,
-                    AdminUtils.fetchEntityConfig(
-                      controllerContext.zkUtils,
-                      ConfigType.Topic,
-                      topicAndPartition.topic))
-                  .uncleanLeaderElectionEnable) {
+            if (!LogConfig.fromProps(
+                  config.originals,
+                  AdminUtils.fetchEntityConfig(
+                    controllerContext.zkUtils,
+                    ConfigType.Topic,
+                    topicAndPartition.topic)).uncleanLeaderElectionEnable) {
               throw new NoReplicaOnlineException(
                 ("No broker in ISR for partition " +
                   "%s is alive. Live brokers are: [%s],".format(
@@ -135,8 +133,9 @@ class OfflinePartitionLeaderSelector(
               currentLeaderIsrZkPathVersion + 1)
         }
         info(
-          "Selected new leader and ISR %s for offline partition %s"
-            .format(newLeaderAndIsr.toString(), topicAndPartition))
+          "Selected new leader and ISR %s for offline partition %s".format(
+            newLeaderAndIsr.toString(),
+            topicAndPartition))
         (newLeaderAndIsr, liveAssignedReplicas)
       case None =>
         throw new NoReplicaOnlineException(
@@ -184,13 +183,15 @@ class ReassignedPartitionLeaderSelector(controllerContext: ControllerContext)
           case 0 =>
             throw new NoReplicaOnlineException(
               "List of reassigned replicas for partition " +
-                " %s is empty. Current leader and ISR: [%s]"
-                  .format(topicAndPartition, currentLeaderAndIsr))
+                " %s is empty. Current leader and ISR: [%s]".format(
+                  topicAndPartition,
+                  currentLeaderAndIsr))
           case _ =>
             throw new NoReplicaOnlineException(
               "None of the reassigned replicas for partition " +
-                "%s are in-sync with the leader. Current leader and ISR: [%s]"
-                  .format(topicAndPartition, currentLeaderAndIsr))
+                "%s are in-sync with the leader. Current leader and ISR: [%s]".format(
+                  topicAndPartition,
+                  currentLeaderAndIsr))
         }
     }
   }
@@ -214,18 +215,17 @@ class PreferredReplicaPartitionLeaderSelector(
       controllerContext.partitionReplicaAssignment(topicAndPartition)
     val preferredReplica = assignedReplicas.head
     // check if preferred replica is the current leader
-    val currentLeader = controllerContext
-      .partitionLeadershipInfo(topicAndPartition)
-      .leaderAndIsr
-      .leader
+    val currentLeader = controllerContext.partitionLeadershipInfo(
+      topicAndPartition).leaderAndIsr.leader
     if (currentLeader == preferredReplica) {
       throw new LeaderElectionNotNeededException(
         "Preferred replica %d is already the current leader for partition %s"
           .format(preferredReplica, topicAndPartition))
     } else {
       info(
-        "Current leader %d for partition %s is not the preferred replica."
-          .format(currentLeader, topicAndPartition) +
+        "Current leader %d for partition %s is not the preferred replica.".format(
+          currentLeader,
+          topicAndPartition) +
           " Trigerring preferred replica leader election")
       // check if preferred replica is not the current leader and is alive and in the isr
       if (controllerContext.liveBrokerIds.contains(
@@ -241,8 +241,9 @@ class PreferredReplicaPartitionLeaderSelector(
       } else {
         throw new StateChangeFailedException(
           "Preferred replica %d for partition ".format(preferredReplica) +
-            "%s is either not alive or not in the isr. Current leader and ISR: [%s]"
-              .format(topicAndPartition, currentLeaderAndIsr))
+            "%s is either not alive or not in the isr. Current leader and ISR: [%s]".format(
+              topicAndPartition,
+              currentLeaderAndIsr))
       }
     }
   }

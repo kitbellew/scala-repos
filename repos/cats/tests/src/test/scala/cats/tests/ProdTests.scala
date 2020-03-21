@@ -19,8 +19,10 @@ class ProdTests extends CatsSuite {
 
   checkAll(
     "Prod[Option, List, Int]",
-    AlternativeTests[Lambda[X => Prod[Option, List, X]]]
-      .alternative[Int, Int, Int])
+    AlternativeTests[Lambda[X => Prod[Option, List, X]]].alternative[
+      Int,
+      Int,
+      Int])
   checkAll(
     "Alternative[Prod[Option, List, Int]]",
     SerializableTests.serializable(

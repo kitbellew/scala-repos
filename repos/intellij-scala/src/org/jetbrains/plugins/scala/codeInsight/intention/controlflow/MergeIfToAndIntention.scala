@@ -74,16 +74,13 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
     val innerThenBranch = innerIfStmt.thenBranch.get
     val innerCondition = innerIfStmt.condition.get.getText
 
-    expr
-      .append("if (")
-      .append(outerCondition)
-      .append(" && ")
-      .append(innerCondition)
-      .append(") ")
-      .append(innerThenBranch.getText)
+    expr.append("if (").append(outerCondition).append(" && ").append(
+      innerCondition).append(") ").append(innerThenBranch.getText)
 
-    val newIfStmt: ScExpression = ScalaPsiElementFactory
-      .createExpressionFromText(expr.toString(), element.getManager)
+    val newIfStmt: ScExpression =
+      ScalaPsiElementFactory.createExpressionFromText(
+        expr.toString(),
+        element.getManager)
 
     inWriteAction {
       ifStmt.replaceExpression(newIfStmt, true)

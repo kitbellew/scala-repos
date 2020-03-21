@@ -231,12 +231,10 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
             StructType(fields.map(nodeToStructField))
           case _ => parseFailed("Invalid CREATE TABLE command", node)
         }
-        val provider = providerNameParts
-          .map {
-            case Token(name, Nil) => name
-            case _                => parseFailed("Invalid CREATE TABLE command", node)
-          }
-          .mkString(".")
+        val provider = providerNameParts.map {
+          case Token(name, Nil) => name
+          case _                => parseFailed("Invalid CREATE TABLE command", node)
+        }.mkString(".")
         val options = tableOpts.toSeq.flatMap {
           case Token("TOK_TABLEOPTIONS", opts) =>
             extractProps(opts, "TOK_TABLEOPTION")

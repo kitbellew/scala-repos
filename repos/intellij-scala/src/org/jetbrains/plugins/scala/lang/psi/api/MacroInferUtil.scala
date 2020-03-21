@@ -27,9 +27,8 @@ object MacroInferUtil {
       f: ScFunction,
       expectedType: Option[ScType],
       place: PsiElement): Option[ScType] = {
-    if (!f.isInstanceOf[ScMacroDefinition] && !f
-          .hasAnnotation("scala.reflect.macros.internal.macroImpl")
-          .isDefined) {
+    if (!f.isInstanceOf[ScMacroDefinition] && !f.hasAnnotation(
+          "scala.reflect.macros.internal.macroImpl").isDefined) {
       return None
     }
 
@@ -130,10 +129,13 @@ object MacroInferUtil {
       }
     }
 
-    new Checker()
-      .withCheck("product", "shapeless.Generic", calcProduct)
-      .withCheck("apply", "shapeless.LowPriorityGeneric", calcProduct)
-      .check()
+    new Checker().withCheck(
+      "product",
+      "shapeless.Generic",
+      calcProduct).withCheck(
+      "apply",
+      "shapeless.LowPriorityGeneric",
+      calcProduct).check()
   }
 
   def isMacro(n: PsiNamedElement): Option[ScFunction] = {
@@ -141,9 +143,8 @@ object MacroInferUtil {
       case f: ScMacroDefinition => Some(f)
       //todo: fix decompiler to avoid this check:
       case f: ScFunction
-          if f
-            .hasAnnotation("scala.reflect.macros.internal.macroImpl")
-            .isDefined =>
+          if f.hasAnnotation(
+            "scala.reflect.macros.internal.macroImpl").isDefined =>
         Some(f)
       case _ => None
     }

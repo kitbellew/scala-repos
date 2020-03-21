@@ -29,14 +29,12 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
       index: Int,
       isSelected: Boolean,
       cellHasFocus: Boolean) = {
-    val attrFirstPart = EditorColorsManager
-      .getInstance()
-      .getGlobalScheme
-      .getAttributes(DefaultHighlighter.IMPLICIT_FIRST_PART)
-    val attrSecondPart = EditorColorsManager
-      .getInstance()
-      .getGlobalScheme
-      .getAttributes(DefaultHighlighter.IMPLICIT_SECOND_PART)
+    val attrFirstPart =
+      EditorColorsManager.getInstance().getGlobalScheme.getAttributes(
+        DefaultHighlighter.IMPLICIT_FIRST_PART)
+    val attrSecondPart =
+      EditorColorsManager.getInstance().getGlobalScheme.getAttributes(
+        DefaultHighlighter.IMPLICIT_SECOND_PART)
     val implicitFirstPart =
       if (attrFirstPart == null)
         DefaultHighlighter.IMPLICIT_FIRST_PART.getDefaultAttributes.getForegroundColor

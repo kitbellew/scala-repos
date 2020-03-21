@@ -156,8 +156,9 @@ private[deploy] class ExecutorRunner(
       logInfo(s"Launch command: $formattedCommand")
 
       builder.directory(executorDir)
-      builder.environment
-        .put("SPARK_EXECUTOR_DIRS", appLocalDirs.mkString(File.pathSeparator))
+      builder.environment.put(
+        "SPARK_EXECUTOR_DIRS",
+        appLocalDirs.mkString(File.pathSeparator))
       // In case we are running this from within the Spark Shell, avoid creating a "scala"
       // parent process for the executor command
       builder.environment.put("SPARK_LAUNCH_WITH_SCALA", "0")

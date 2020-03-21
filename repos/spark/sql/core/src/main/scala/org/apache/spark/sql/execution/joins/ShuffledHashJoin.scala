@@ -41,8 +41,9 @@ case class ShuffledHashJoin(
     with HashJoin {
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"))
 
   override def outputPartitioning: Partitioning =
     joinType match {

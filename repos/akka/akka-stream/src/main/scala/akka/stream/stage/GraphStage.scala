@@ -418,9 +418,8 @@ abstract class GraphStageLogic private[stream] (
     // Fast path
     if ((interpreter.portStates(
           connection) & (InReady | InFailed)) == InReady &&
-        (interpreter
-          .connectionSlots(connection)
-          .asInstanceOf[AnyRef] ne Empty)) {
+        (interpreter.connectionSlots(connection).asInstanceOf[
+          AnyRef] ne Empty)) {
       val elem = interpreter.connectionSlots(connection)
       interpreter.connectionSlots(connection) = Empty
       elem.asInstanceOf[T]
@@ -1403,7 +1402,9 @@ trait OutHandler {
     */
   @throws(classOf[Exception])
   def onDownstreamFinish(): Unit = {
-    GraphInterpreter.currentInterpreter.activeStage
+    GraphInterpreter
+      .currentInterpreter
+      .activeStage
       .completeStage()
   }
 }

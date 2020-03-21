@@ -45,8 +45,10 @@ class WorksheetCompiler {
     import org.jetbrains.plugins.scala.worksheet.processor.WorksheetCompiler._
 
     val worksheetVirtual = worksheetFile.getVirtualFile
-    val (iteration, tempFile, outputDir) = WorksheetBoundCompilationInfo
-      .updateOrCreate(worksheetVirtual.getCanonicalPath, worksheetFile.getName)
+    val (iteration, tempFile, outputDir) =
+      WorksheetBoundCompilationInfo.updateOrCreate(
+        worksheetVirtual.getCanonicalPath,
+        worksheetFile.getName)
 
     val project = worksheetFile.getProject
 
@@ -77,12 +79,9 @@ class WorksheetCompiler {
         worksheetPrinter.scheduleWorksheetUpdate()
 
         val onError = (msg: String) => {
-          NotificationUtil
-            .builder(project, msg)
-            .setGroup("Scala")
-            .setNotificationType(NotificationType.ERROR)
-            .setTitle(CONFIG_ERROR_HEADER)
-            .show()
+          NotificationUtil.builder(project, msg).setGroup(
+            "Scala").setNotificationType(NotificationType.ERROR).setTitle(
+            CONFIG_ERROR_HEADER).show()
         }
 
         val consumer = new RemoteServerConnector.CompilerInterfaceImpl(
@@ -140,8 +139,10 @@ class WorksheetCompiler {
               pos.column,
               null)
 
-            val errorContent = ContentFactory.SERVICE.getInstance
-              .createContent(treeError.getComponent, ERROR_CONTENT_NAME, true)
+            val errorContent = ContentFactory.SERVICE.getInstance.createContent(
+              treeError.getComponent,
+              ERROR_CONTENT_NAME,
+              true)
             contentManager addContent errorContent
             contentManager setSelectedContent errorContent
 

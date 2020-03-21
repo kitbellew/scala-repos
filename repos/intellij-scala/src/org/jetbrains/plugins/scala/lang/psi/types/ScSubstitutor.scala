@@ -730,16 +730,14 @@ class ScUndefinedSubstitutor(
 
   val additionalNames: Set[Name] = {
     //We need to exclude Nothing names from this set, see SCL-5736
-    lowerAdditionalMap
-      .filter(_._2.exists(!_.equiv(Nothing)))
-      .keySet ++ upperAdditionalMap.keySet
+    lowerAdditionalMap.filter(
+      _._2.exists(!_.equiv(Nothing))).keySet ++ upperAdditionalMap.keySet
   }
 
   val names: Set[Name] = {
     //We need to exclude Nothing names from this set, see SCL-5736
-    upperMap.keySet ++ lowerMap
-      .filter(_._2.exists(!_.equiv(Nothing)))
-      .keySet ++ additionalNames
+    upperMap.keySet ++ lowerMap.filter(
+      _._2.exists(!_.equiv(Nothing))).keySet ++ additionalNames
   }
 
   import scala.collection.immutable.{HashMap => IHashMap}
@@ -759,13 +757,11 @@ class ScUndefinedSubstitutor(
       tvMap.get(name) match {
         case Some(tp) => Some(tp)
         case _ =>
-          (lowerMap
-            .get(name)
-            .map(set =>
-              lowerAdditionalMap.get(name) match {
-                case Some(set1) => set ++ set1
-                case _          => set
-              }) match {
+          (lowerMap.get(name).map(set =>
+            lowerAdditionalMap.get(name) match {
+              case Some(set1) => set ++ set1
+              case _          => set
+            }) match {
             case Some(set) => Some(set)
             case _         => lowerAdditionalMap.get(name)
           }) match {
@@ -820,13 +816,11 @@ class ScUndefinedSubstitutor(
               }
             case None =>
           }
-          (upperMap
-            .get(name)
-            .map(set =>
-              upperAdditionalMap.get(name) match {
-                case Some(set1) => set ++ set1
-                case _          => set
-              }) match {
+          (upperMap.get(name).map(set =>
+            upperAdditionalMap.get(name) match {
+              case Some(set1) => set ++ set1
+              case _          => set
+            }) match {
             case Some(set) => Some(set)
             case _         => upperAdditionalMap.get(name)
           }) match {

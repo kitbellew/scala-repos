@@ -61,9 +61,8 @@ object ServerProvider {
       classLoader: ClassLoader,
       configuration: Configuration): ServerProvider = {
     val ClassNameConfigKey = "play.server.provider"
-    val className: String = configuration
-      .getString(ClassNameConfigKey)
-      .getOrElse(
+    val className: String =
+      configuration.getString(ClassNameConfigKey).getOrElse(
         throw new ServerStartException(
           s"No ServerProvider configured with key '$ClassNameConfigKey'"))
     val clazz =

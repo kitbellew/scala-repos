@@ -31,13 +31,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       _ = r1 shouldBe Set((1, "123"), (2, "45"))
     } yield ()
     if (implicitly[ColumnType[Array[Byte]]].hasLiteralForm) {
-      as1 >> ts
-        .filter(_.data === Array[Byte](4, 5))
-        .map(_.data)
-        .to[Set]
-        .result
-        .map(_.map(_.mkString))
-        .map(_ shouldBe Set("45"))
+      as1 >> ts.filter(_.data === Array[Byte](4, 5)).map(_.data).to[
+        Set].result.map(_.map(_.mkString)).map(_ shouldBe Set("45"))
     } else as1
   }
 
@@ -55,11 +50,9 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       ts += (1, Some(Array[Byte](6, 7))),
       ifCap(rcap.setByteArrayNull)(ts += (2, None)),
       ifNotCap(rcap.setByteArrayNull)(ts.map(_.id) += 2),
-      ts.result
-        .map(_.map {
-          case (id, data) => (id, data.map(_.mkString).getOrElse(""))
-        }.toSet)
-        .map(_ shouldBe Set((1, "67"), (2, "")))
+      ts.result.map(_.map {
+        case (id, data) => (id, data.map(_.mkString).getOrElse(""))
+      }.toSet).map(_ shouldBe Set((1, "67"), (2, "")))
     )
   }
 
@@ -122,12 +115,10 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       seq(
         ts.schema.create,
         ts.map(_.b) ++= Seq(Serialized(List(1, 2, 3)), Serialized(List(4, 5))),
-        ts.to[Set]
-          .result
-          .map(
-            _ shouldBe Set(
-              (1, Serialized(List(1, 2, 3))),
-              (2, Serialized(List(4, 5)))))
+        ts.to[Set].result.map(
+          _ shouldBe Set(
+            (1, Serialized(List(1, 2, 3))),
+            (2, Serialized(List(4, 5)))))
       ).transactionally
     }
 
@@ -143,22 +134,13 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       t1.schema.create,
       t1 += (1, v),
       t1.map(_.data).result.head.map(_ shouldBe v),
-      t1.filter(_.data === v)
-        .map(_.id)
-        .result
-        .headOption
-        .map(_ shouldBe Some(1)),
+      t1.filter(_.data === v).map(_.id).result.headOption.map(
+        _ shouldBe Some(1)),
       t1.filter(_.data =!= v).map(_.id).result.headOption.map(_ shouldBe None),
-      t1.filter(_.data === v.bind)
-        .map(_.id)
-        .result
-        .headOption
-        .map(_ shouldBe Some(1)),
-      t1.filter(_.data =!= v.bind)
-        .map(_.id)
-        .result
-        .headOption
-        .map(_ shouldBe None)
+      t1.filter(_.data === v.bind).map(_.id).result.headOption.map(
+        _ shouldBe Some(1)),
+      t1.filter(_.data =!= v.bind).map(_.id).result.headOption.map(
+        _ shouldBe None)
     )
   }
 

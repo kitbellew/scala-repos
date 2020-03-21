@@ -39,8 +39,10 @@ object ReplicationUtils extends Logging {
       controllerEpoch: Int,
       zkVersion: Int): (Boolean, Int) = {
     debug(
-      "Updated ISR for partition [%s,%d] to %s"
-        .format(topic, partitionId, newLeaderAndIsr.isr.mkString(",")))
+      "Updated ISR for partition [%s,%d] to %s".format(
+        topic,
+        partitionId,
+        newLeaderAndIsr.isr.mkString(",")))
     val path = getTopicPartitionLeaderAndIsrPath(topic, partitionId)
     val newLeaderData =
       zkUtils.leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch)
@@ -115,8 +117,12 @@ object ReplicationUtils extends Logging {
         leaderIsrAndEpochInfo.get("controller_epoch").get.asInstanceOf[Int]
       val zkPathVersion = stat.getVersion
       debug(
-        "Leader %d, Epoch %d, Isr %s, Zk path version %d for leaderAndIsrPath %s"
-          .format(leader, epoch, isr.toString(), zkPathVersion, path))
+        "Leader %d, Epoch %d, Isr %s, Zk path version %d for leaderAndIsrPath %s".format(
+          leader,
+          epoch,
+          isr.toString(),
+          zkPathVersion,
+          path))
       Some(
         LeaderIsrAndControllerEpoch(
           LeaderAndIsr(leader, epoch, isr, zkPathVersion),
@@ -126,9 +132,8 @@ object ReplicationUtils extends Logging {
 
   private def generateIsrChangeJson(
       isrChanges: Set[TopicAndPartition]): String = {
-    val partitions = isrChanges
-      .map(tp => Map("topic" -> tp.topic, "partition" -> tp.partition))
-      .toArray
+    val partitions = isrChanges.map(tp =>
+      Map("topic" -> tp.topic, "partition" -> tp.partition)).toArray
     Json.encode(
       Map(
         "version" -> IsrChangeNotificationListener.version,

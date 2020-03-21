@@ -224,8 +224,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         new java.io.File(getUserUploadDir(userName), image))
     } getOrElse {
       contentType = "image/png"
-      Thread.currentThread.getContextClassLoader
-        .getResourceAsStream("noimage.png")
+      Thread.currentThread.getContextClassLoader.getResourceAsStream(
+        "noimage.png")
     }
   }
 
@@ -366,14 +366,11 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     createGroup(form.groupName, form.url)
     updateGroupMembers(
       form.groupName,
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList)
+      }.toList)
     updateImage(form.groupName, form.fileId, false)
     redirect(s"/${form.groupName}")
   })
@@ -409,14 +406,11 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   post("/:groupName/_editgroup", editGroupForm)(managersOnly { form =>
     defining(
       params("groupName"),
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList) {
+      }.toList) {
       case (groupName, members) =>
         getAccountByUserName(groupName, true).map {
           account =>
@@ -498,16 +492,17 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
       LockUtil.lock(s"${accountName}/${repository.name}") {
         if (getRepository(accountName, repository.name).isDefined ||
-            (accountName != loginUserName && !getGroupsByUserName(loginUserName)
-              .contains(accountName))) {
+            (accountName != loginUserName && !getGroupsByUserName(
+              loginUserName).contains(accountName))) {
           // redirect to the repository if repository already exists
           redirect(s"/${accountName}/${repository.name}")
         } else {
           // Insert to the database at first
           val originUserName =
             repository.repository.originUserName.getOrElse(repository.owner)
-          val originRepositoryName = repository.repository.originRepositoryName
-            .getOrElse(repository.name)
+          val originRepositoryName =
+            repository.repository.originRepositoryName.getOrElse(
+              repository.name)
 
           insertRepository(
             repositoryName = repository.name,
@@ -572,9 +567,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           params: Map[String, String],
           messages: Messages): Option[String] =
         params.get("owner").flatMap { userName =>
-          getRepositoryNamesOfUser(userName)
-            .find(_ == value)
-            .map(_ => "Repository already exists.")
+          getRepositoryNamesOfUser(userName).find(_ == value).map(_ =>
+            "Repository already exists.")
         }
     }
 

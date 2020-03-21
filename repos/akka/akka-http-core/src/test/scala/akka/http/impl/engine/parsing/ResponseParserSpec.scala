@@ -311,8 +311,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       override def equals(other: scala.Any): Boolean =
         other match {
           case other: StrictEqualHttpResponse ⇒
-            this.resp.copy(entity = HttpEntity.Empty) == other.resp
-              .copy(entity = HttpEntity.Empty) &&
+            this.resp.copy(entity = HttpEntity.Empty) == other.resp.copy(
+              entity = HttpEntity.Empty) &&
               Await.result(this.resp.entity.toStrict(250.millis), 250.millis) ==
                 Await.result(other.resp.entity.toStrict(250.millis), 250.millis)
         }
@@ -377,8 +377,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         input: String*): Source[Either[ResponseOutput, HttpResponse], NotUsed] =
       Source(input.toList)
         .map(bytes ⇒ SessionBytes(TLSPlacebo.dummySession, ByteString(bytes)))
-        .transform(() ⇒ newParserStage(requestMethod))
-        .named("parser")
+        .transform(() ⇒ newParserStage(requestMethod)).named("parser")
         .splitWhen(x ⇒
           x.isInstanceOf[MessageStart] || x.isInstanceOf[EntityStreamError])
         .prefixAndTail(1)
@@ -404,8 +403,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                 tail) ⇒
             tail.runWith(Sink.ignore)
             Left(x)
-        }
-        .concatSubstreams
+        }.concatSubstreams
 
     def collectBlocking[T](source: Source[T, Any]): Seq[T] =
       Await.result(source.limit(100000).runWith(Sink.seq), 500.millis)
@@ -431,13 +429,9 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
     private def compactEntityChunks(data: Source[ChunkStreamPart, Any])
         : Future[Source[ChunkStreamPart, Any]] =
-      data
-        .limit(100000)
-        .runWith(Sink.seq)
-        .fast
-        .map(source(_: _*))
-        .fast
-        .recover { case _: NoSuchElementException ⇒ source() }
+      data.limit(100000).runWith(Sink.seq)
+        .fast.map(source(_: _*))
+        .fast.recover { case _: NoSuchElementException ⇒ source() }
 
     def prep(response: String) = response.stripMarginWithNewline("\r\n")
 

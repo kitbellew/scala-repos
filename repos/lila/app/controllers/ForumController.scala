@@ -24,8 +24,9 @@ private[controllers] trait ForumController extends forum.Granter {
 
   protected def CategGrantRead[A <: Result](categSlug: String)(a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =
-    isGrantedRead(categSlug)
-      .fold(a, fuccess(Forbidden("You cannot access to this category")))
+    isGrantedRead(categSlug).fold(
+      a,
+      fuccess(Forbidden("You cannot access to this category")))
 
   protected def CategGrantWrite[A <: Result](categSlug: String)(a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =

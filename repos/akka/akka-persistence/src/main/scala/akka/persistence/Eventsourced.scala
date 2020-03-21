@@ -624,8 +624,9 @@ private[persistence] trait Eventsourced
             sequenceNr = highestSeqNr
             setLastSequenceNr(highestSeqNr)
             internalStash.unstashAll()
-            Eventsourced.super
-              .aroundReceive(recoveryBehavior, RecoveryCompleted)
+            Eventsourced.super.aroundReceive(
+              recoveryBehavior,
+              RecoveryCompleted)
           case ReplayMessagesFailure(cause) ⇒
             try onRecoveryFailure(cause, event = None)
             finally context.stop(self)

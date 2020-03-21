@@ -86,10 +86,8 @@ class AccessTokenServiceSpec extends FunSuite with ServiceSpecBase {
       val (id, token) = AccessTokenService.generateAccessToken("user2", "note")
       import gitbucket.core.model.Profile._
       import profile.simple._
-      Accounts
-        .filter(_.userName === "user2".bind)
-        .map(_.userName)
-        .update("user3")
+      Accounts.filter(_.userName === "user2".bind).map(_.userName).update(
+        "user3")
 
       assert(AccessTokenService.getAccountByAccessToken(token) match {
         case Some(user) => user.userName == "user3"

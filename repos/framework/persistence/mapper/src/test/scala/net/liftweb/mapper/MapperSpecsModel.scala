@@ -427,18 +427,11 @@ object Dog2 extends Dog2 with LongKeyedMetaMapper[Dog2] {
     create.name("Elwood").actualAge(66).save
     create.name("Madeline").save
     create.name("Archer").save
-    create
-      .name("fido")
-      .owner(User.find(By(User.firstName, "Elwood")))
-      .isDog(true)
-      .save
-    create
-      .name("toto")
-      .owner(User.find(By(User.firstName, "Archer")))
-      .actualAge(3)
-      .isDog(true)
-      .createdTime(Dog2.getRefDate)
-      .save
+    create.name("fido").owner(User.find(By(User.firstName, "Elwood"))).isDog(
+      true).save
+    create.name("toto").owner(
+      User.find(By(User.firstName, "Archer"))).actualAge(3).isDog(true)
+      .createdTime(Dog2.getRefDate).save
   }
 
   // Get new instance of fixed point-in-time reference date

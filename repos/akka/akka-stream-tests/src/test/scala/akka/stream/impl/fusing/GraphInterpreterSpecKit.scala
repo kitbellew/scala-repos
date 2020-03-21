@@ -417,8 +417,8 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       outOwners(0) = Boundary
 
       while (i < ops.length) {
-        val stage = ops(i)
-          .asInstanceOf[GraphStageWithMaterializedValue[FlowShape[_, _], _]]
+        val stage = ops(i).asInstanceOf[
+          GraphStageWithMaterializedValue[FlowShape[_, _], _]]
         ins(i) = stage.shape.in
         inOwners(i) = i
         outs(i + 1) = stage.shape.out

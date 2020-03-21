@@ -40,8 +40,8 @@ class AkkaProtocolSpec
       """akka.actor.provider = "akka.remote.RemoteActorRefProvider" """)
     with ImplicitSender {
 
-  val conf = ConfigFactory
-    .parseString("""
+  val conf = ConfigFactory.parseString(
+    """
       akka.remote {
 
         transport-failure-detector {
@@ -64,8 +64,7 @@ class AkkaProtocolSpec
 
         use-passive-connections = on
       }
-  """)
-    .withFallback(system.settings.config)
+  """).withFallback(system.settings.config)
 
   val localAddress = Address("test", "testsystem", "testhost", 1234)
   val localAkkaAddress = Address("akka.test", "testsystem", "testhost", 1234)
@@ -75,11 +74,8 @@ class AkkaProtocolSpec
 
   val codec = AkkaPduProtobufCodec
 
-  val testMsg = WireFormats.SerializedMessage
-    .newBuilder()
-    .setSerializerId(0)
-    .setMessage(PByteString.copyFromUtf8("foo"))
-    .build
+  val testMsg = WireFormats.SerializedMessage.newBuilder().setSerializerId(
+    0).setMessage(PByteString.copyFromUtf8("foo")).build
   val testEnvelope =
     codec.constructMessage(localAkkaAddress, testActor, testMsg, None)
   val testMsgPdu: ByteString = codec.constructPayload(testEnvelope)
@@ -279,10 +275,8 @@ class AkkaProtocolSpec
             cookie = Some("abcde")),
           handle,
           ActorAssociationEventListener(testActor),
-          new AkkaProtocolSettings(
-            ConfigFactory
-              .parseString("akka.remote.require-cookie = on")
-              .withFallback(conf)),
+          new AkkaProtocolSettings(ConfigFactory.parseString(
+            "akka.remote.require-cookie = on").withFallback(conf)),
           codec,
           failureDetector
         ))
@@ -306,10 +300,8 @@ class AkkaProtocolSpec
             cookie = Some("abcde")),
           handle,
           ActorAssociationEventListener(testActor),
-          new AkkaProtocolSettings(
-            ConfigFactory
-              .parseString("akka.remote.require-cookie = on")
-              .withFallback(conf)),
+          new AkkaProtocolSettings(ConfigFactory.parseString(
+            "akka.remote.require-cookie = on").withFallback(conf)),
           codec,
           failureDetector
         ))
@@ -348,10 +340,8 @@ class AkkaProtocolSpec
           remoteAddress,
           statusPromise,
           transport,
-          new AkkaProtocolSettings(
-            ConfigFactory
-              .parseString("akka.remote.require-cookie = on")
-              .withFallback(conf)),
+          new AkkaProtocolSettings(ConfigFactory.parseString(
+            "akka.remote.require-cookie = on").withFallback(conf)),
           codec,
           failureDetector,
           refuseUid = None
@@ -528,9 +518,8 @@ class AkkaProtocolSpec
 
       val statusPromise: Promise[AssociationHandle] = Promise()
 
-      val conf2 = ConfigFactory
-        .parseString("akka.remote.netty.tcp.connection-timeout = 500 ms")
-        .withFallback(conf)
+      val conf2 = ConfigFactory.parseString(
+        "akka.remote.netty.tcp.connection-timeout = 500 ms").withFallback(conf)
 
       val stateActor = system.actorOf(
         ProtocolStateActor.outboundProps(
@@ -554,9 +543,8 @@ class AkkaProtocolSpec
     "give up inbound after connection timeout" in {
       val (failureDetector, registry, _, handle) = collaborators
 
-      val conf2 = ConfigFactory
-        .parseString("akka.remote.netty.tcp.connection-timeout = 500 ms")
-        .withFallback(conf)
+      val conf2 = ConfigFactory.parseString(
+        "akka.remote.netty.tcp.connection-timeout = 500 ms").withFallback(conf)
 
       val reader = system.actorOf(
         ProtocolStateActor.inboundProps(

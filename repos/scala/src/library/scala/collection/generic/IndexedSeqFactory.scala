@@ -20,6 +20,6 @@ abstract class IndexedSeqFactory[
     CC[X] <: IndexedSeq[X] with GenericTraversableTemplate[X, CC]]
     extends SeqFactory[CC] {
   override def ReusableCBF: GenericCanBuildFrom[Nothing] =
-    scala.collection.IndexedSeq.ReusableCBF
-      .asInstanceOf[GenericCanBuildFrom[Nothing]]
+    scala.collection.IndexedSeq.ReusableCBF.asInstanceOf[GenericCanBuildFrom[
+      Nothing]]
 }

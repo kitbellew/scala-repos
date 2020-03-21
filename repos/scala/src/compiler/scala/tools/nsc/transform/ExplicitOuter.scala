@@ -179,9 +179,9 @@ abstract class ExplicitOuter
 
         val paramsWithOuter =
           if (sym.isClassConstructor && isInner(sym.owner)) // 1
-            sym
-              .newValueParameter(innerClassConstructorParamName, sym.pos)
-              .setInfo(sym.owner.outerClass.thisType) :: params
+            sym.newValueParameter(
+              innerClassConstructorParamName,
+              sym.pos).setInfo(sym.owner.outerClass.thisType) :: params
           else params
 
         if ((resTpTransformed ne resTp) || (paramsWithOuter ne params))
@@ -413,8 +413,8 @@ abstract class ExplicitOuter
         "No outer accessor for inner mixin " + mixinClass + " in " + currentClass)
       assert(
         outerAcc.alternatives.size == 1,
-        s"Multiple outer accessors match inner mixin $mixinClass in $currentClass : ${outerAcc.alternatives
-          .map(_.defString)}")
+        s"Multiple outer accessors match inner mixin $mixinClass in $currentClass : ${outerAcc.alternatives.map(
+          _.defString)}")
       // I added the mixinPrefix.typeArgs.nonEmpty condition to address the
       // crash in SI-4970.  I feel quite sure this can be improved.
       val path =
@@ -509,8 +509,8 @@ abstract class ExplicitOuter
 
           val qsym = qual.tpe.widen.typeSymbol
           if (sym.isProtected && //(4)
-              (qsym.isTrait || !(qual
-                .isInstanceOf[Super] || (qsym isSubClass currentClass))))
+              (qsym.isTrait || !(qual.isInstanceOf[
+                Super] || (qsym isSubClass currentClass))))
             sym setFlag notPROTECTED
           super.transform(tree)
 
@@ -558,8 +558,10 @@ abstract class ExplicitOuter
             // println("(b, tpsym, outerForI, outerFor, outerClass)= "+ (base, base.tpe.typeSymbol, outerFor, sel.symbol.owner, outerFor.outerClass))
             // println("outerSelect = "+ outerSelect)
             transform(
-              treeCopy
-                .Apply(tree, treeCopy.Select(eqsel, outerSelect, eq), args))
+              treeCopy.Apply(
+                tree,
+                treeCopy.Select(eqsel, outerSelect, eq),
+                args))
           }
 
         case _ =>

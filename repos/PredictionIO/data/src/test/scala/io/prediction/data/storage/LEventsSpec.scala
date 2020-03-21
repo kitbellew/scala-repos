@@ -93,8 +93,7 @@ class LEventsSpec extends Specification with TestEvents {
 
     val insertedEventId: List[String] = insertResp
 
-    val insertedEvent: List[Option[Event]] = listOfEvents
-      .zip(insertedEventId)
+    val insertedEvent: List[Option[Event]] = listOfEvents.zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
     val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
@@ -111,8 +110,7 @@ class LEventsSpec extends Specification with TestEvents {
 
     val insertedEventId: List[String] = insertResp
 
-    val insertedEvent: List[Option[Event]] = listOfEvents
-      .zip(insertedEventId)
+    val insertedEvent: List[Option[Event]] = listOfEvents.zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
     val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
@@ -149,10 +147,10 @@ class LEventsSpec extends Specification with TestEvents {
 
   def findUserEvents(eventClient: LEvents) = {
 
-    val results: List[Event] = eventClient
-      .find(appId = appId, entityType = Some("user"))
-      .toList
-      .map(e => e.copy(eventId = None)) // ignore eventID
+    val results: List[Event] =
+      eventClient.find(appId = appId, entityType = Some("user"))
+        .toList
+        .map(e => e.copy(eventId = None)) // ignore eventID
 
     // same events in insertTestUserEvents
     val expected = List(u1e5, u2e2, u1e3, u1e1, u2e3, u2e1, u1e4, u1e2)
@@ -228,11 +226,10 @@ class LEventsSpec extends Specification with TestEvents {
 
   def findChannel(eventClient: LEvents) = {
 
-    val results: List[Event] = eventClient
-      .find(
-        appId = appId,
-        channelId = Some(channelId)
-      )
+    val results: List[Event] = eventClient.find(
+      appId = appId,
+      channelId = Some(channelId)
+    )
       .toList
       .map(e => e.copy(eventId = None)) // ignore eventId
 

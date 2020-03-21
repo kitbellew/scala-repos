@@ -29,8 +29,8 @@ trait Compat210Component {
       vparamss: List[List[ValDef]] =
         mapParamss(sym)(sym => newValDef(sym, EmptyTree)()),
       tpt: Tree = TypeTreeMemberType(sym)): DefDef = {
-    atPos(sym.pos)(DefDef(mods, name, tparams, vparamss, tpt, rhs))
-      .setSymbol(sym)
+    atPos(sym.pos)(DefDef(mods, name, tparams, vparamss, tpt, rhs)).setSymbol(
+      sym)
   }
 
   def TypeTreeMemberType(sym: Symbol): TypeTree = {

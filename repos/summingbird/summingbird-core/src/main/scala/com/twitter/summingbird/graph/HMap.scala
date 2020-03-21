@@ -74,9 +74,7 @@ sealed abstract class HMap[K[_], V[_]] {
       }
     }
 
-    map
-      .asInstanceOf[Map[K[Any], V[Any]]]
-      .collectFirst(collector)
+    map.asInstanceOf[Map[K[Any], V[Any]]].collectFirst(collector)
       .map { kv => (this + kv, kv._1) }
   }
 

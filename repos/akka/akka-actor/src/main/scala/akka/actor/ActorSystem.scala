@@ -169,8 +169,12 @@ object ActorSystem {
       defaultExecutionContext: Option[ExecutionContext] = None): ActorSystem = {
     val cl = classLoader.getOrElse(findClassLoader())
     val appConfig = config.getOrElse(ConfigFactory.load(cl))
-    new ActorSystemImpl(name, appConfig, cl, defaultExecutionContext, None)
-      .start()
+    new ActorSystemImpl(
+      name,
+      appConfig,
+      cl,
+      defaultExecutionContext,
+      None).start()
   }
 
   /**
@@ -711,9 +715,9 @@ private[akka] class ActorSystemImpl(
         classOf[EventStream] -> eventStream,
         classOf[DynamicAccess] -> dynamicAccess)
 
-      dynamicAccess
-        .createInstanceFor[ActorRefProvider](ProviderClass, arguments)
-        .get
+      dynamicAccess.createInstanceFor[ActorRefProvider](
+        ProviderClass,
+        arguments).get
     } catch {
       case NonFatal(e) ⇒
         Try(stopScheduler())
@@ -739,10 +743,9 @@ private[akka] class ActorSystemImpl(
   val dispatcher: ExecutionContextExecutor = dispatchers.defaultGlobalDispatcher
 
   val internalCallingThreadExecutionContext: ExecutionContext =
-    dynamicAccess
-      .getObjectFor[ExecutionContext](
-        "scala.concurrent.Future$InternalCallbackExecutor$")
-      .getOrElse(new ExecutionContext with BatchingExecutor {
+    dynamicAccess.getObjectFor[ExecutionContext](
+      "scala.concurrent.Future$InternalCallbackExecutor$").getOrElse(
+      new ExecutionContext with BatchingExecutor {
         override protected def unbatchedExecute(r: Runnable): Unit = r.run()
         override protected def resubmitOnBlock: Boolean =
           false // Since we execute inline, no gain in resubmitting
@@ -825,16 +828,14 @@ private[akka] class ActorSystemImpl(
     * executed upon close(), the task may execute before its timeout.
     */
   protected def createScheduler(): Scheduler =
-    dynamicAccess
-      .createInstanceFor[Scheduler](
-        settings.SchedulerClass,
-        immutable.Seq(
-          classOf[Config] -> settings.config,
-          classOf[LoggingAdapter] -> log,
-          classOf[ThreadFactory] -> threadFactory.withName(
-            threadFactory.name + "-scheduler"))
-      )
-      .get
+    dynamicAccess.createInstanceFor[Scheduler](
+      settings.SchedulerClass,
+      immutable.Seq(
+        classOf[Config] -> settings.config,
+        classOf[LoggingAdapter] -> log,
+        classOf[ThreadFactory] -> threadFactory.withName(
+          threadFactory.name + "-scheduler"))
+    ).get
   //#create-scheduler
 
   /*
@@ -871,8 +872,7 @@ private[akka] class ActorSystemImpl(
     findExtension(ext) match {
       case null ⇒ //Doesn't already exist, commence registration
         val inProcessOfRegistration = new CountDownLatch(1)
-        extensions
-          .putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
+        extensions.putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
           case null ⇒
             try { // Signal was successfully sent
               ext.createExtension(this) match { // Create and initialize the extension

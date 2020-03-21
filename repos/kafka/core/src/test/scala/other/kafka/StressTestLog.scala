@@ -56,21 +56,20 @@ object StressTestLog {
     val reader = new ReaderThread(log)
     reader.start()
 
-    Runtime
-      .getRuntime()
-      .addShutdownHook(new Thread() {
-        override def run() = {
-          running.set(false)
-          writer.join()
-          reader.join()
-          CoreUtils.rm(dir)
-        }
-      })
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      override def run() = {
+        running.set(false)
+        writer.join()
+        reader.join()
+        CoreUtils.rm(dir)
+      }
+    })
 
     while (running.get) {
       println(
-        "Reader offset = %d, writer offset = %d"
-          .format(reader.offset, writer.offset))
+        "Reader offset = %d, writer offset = %d".format(
+          reader.offset,
+          writer.offset))
       Thread.sleep(1000)
     }
   }
@@ -116,8 +115,9 @@ object StressTestLog {
               "We should either read nothing or the message we asked for.")
             require(
               MessageSet.entrySize(first.message) == read.sizeInBytes,
-              "Expected %d but got %d."
-                .format(MessageSet.entrySize(first.message), read.sizeInBytes))
+              "Expected %d but got %d.".format(
+                MessageSet.entrySize(first.message),
+                read.sizeInBytes))
             offset += 1
           }
           case _ =>

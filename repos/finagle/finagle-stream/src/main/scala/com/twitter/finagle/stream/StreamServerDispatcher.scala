@@ -61,15 +61,12 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
         HttpHeaders.Values.CLOSE)
     }
 
-    val f = trans
-      .write(httpRes)
-      .before {
-        writeChunks(rep)
-      }
-      .ensure {
-        rep.release()
-        trans.close()
-      }
+    val f = trans.write(httpRes).before {
+      writeChunks(rep)
+    }.ensure {
+      rep.release()
+      trans.close()
+    }
 
     val p = new Promise[Unit]()
     f.proxyTo(p)

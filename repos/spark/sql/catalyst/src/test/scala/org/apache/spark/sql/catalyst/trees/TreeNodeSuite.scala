@@ -68,12 +68,10 @@ class TreeNodeSuite extends SparkFunSuite {
 
     assert(before === after)
     // Ensure that the objects after are the same objects before the transformation.
-    before
-      .map(identity[Expression])
-      .zip(after.map(identity[Expression]))
-      .foreach {
-        case (b, a) => assert(b eq a)
-      }
+    before.map(identity[Expression]).zip(
+      after.map(identity[Expression])).foreach {
+      case (b, a) => assert(b eq a)
+    }
   }
 
   test("collect") {

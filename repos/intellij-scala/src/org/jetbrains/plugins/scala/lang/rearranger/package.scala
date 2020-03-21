@@ -150,8 +150,10 @@ package object rearranger {
       StdArrangementTokenType.ENTRY_TYPE)
   //this is a special token that is not used in arrangement GUI and always has canBeMatched = false
   val UNSEPARABLE_RANGE_ID = "SCALA_UNSEPARABLE_RANGE"
-  val UNSEPARABLE_RANGE: ArrangementSettingsToken = StdArrangementSettingsToken
-    .tokenById(UNSEPARABLE_RANGE_ID, StdArrangementTokenType.ENTRY_TYPE)
+  val UNSEPARABLE_RANGE: ArrangementSettingsToken =
+    StdArrangementSettingsToken.tokenById(
+      UNSEPARABLE_RANGE_ID,
+      StdArrangementTokenType.ENTRY_TYPE)
 
   //maps and sets of tokens
   val scalaTypesValues = immutable.HashSet(

@@ -163,14 +163,12 @@ class TcpConnectionSpec extends AkkaSpec("""
         userHandler.expectMsg(
           Connected(
             serverAddress,
-            clientSideChannel.socket.getLocalSocketAddress
-              .asInstanceOf[InetSocketAddress]))
+            clientSideChannel.socket.getLocalSocketAddress.asInstanceOf[
+              InetSocketAddress]))
 
         userHandler.send(connectionActor, Register(userHandler.ref))
-        userHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===("immediatedata")
+        userHandler.expectMsgType[Received].data.decodeString(
+          "ASCII") should ===("immediatedata")
         ignoreWindowsWorkaroundForTicket15766()
         interestCallReceiver.expectMsg(OP_READ)
       }
@@ -254,8 +252,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       run {
         // hacky: we need a file for testing purposes, so try to get the biggest one from our own classpath
         val testFile =
-          classOf[TcpConnectionSpec].getClassLoader
-            .asInstanceOf[URLClassLoader]
+          classOf[TcpConnectionSpec].getClassLoader.asInstanceOf[URLClassLoader]
             .getURLs
             .filter(_.getProtocol == "file")
             .map(url ⇒ new File(url.toURI))
@@ -389,8 +386,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       // override config to decrease default buffer size
       val config =
         ConfigFactory.load(
-          ConfigFactory
-            .parseString("akka.io.tcp.direct-buffer-size = 1k")
+          ConfigFactory.parseString("akka.io.tcp.direct-buffer-size = 1k")
             .withFallback(AkkaSpec.testConf))
       override implicit def system: ActorSystem =
         ActorSystem("respectPullModeTest", config)
@@ -408,10 +404,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         connectionActor ! ResumeReading
         interestCallReceiver.expectMsg(OP_READ)
         selector.send(connectionActor, ChannelReadable)
-        connectionHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===(ts)
+        connectionHandler.expectMsgType[Received].data.decodeString(
+          "ASCII") should ===(ts)
 
         interestCallReceiver.expectNoMsg(100.millis)
         connectionHandler.expectNoMsg(100.millis)
@@ -419,10 +413,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         connectionActor ! ResumeReading
         interestCallReceiver.expectMsg(OP_READ)
         selector.send(connectionActor, ChannelReadable)
-        connectionHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===(us)
+        connectionHandler.expectMsgType[Received].data.decodeString(
+          "ASCII") should ===(us)
 
         // make sure that after reading all pending data we don't yet register for reading more data
         interestCallReceiver.expectNoMsg(100.millis)
@@ -435,10 +427,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         interestCallReceiver.expectMsg(OP_READ)
         selector.send(connectionActor, ChannelReadable)
 
-        connectionHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===(vs)
+        connectionHandler.expectMsgType[Received].data.decodeString(
+          "ASCII") should ===(vs)
       } finally system.terminate()
     }
 
@@ -712,8 +702,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         userHandler.expectMsg(
           Connected(
             serverAddress,
-            clientSideChannel.socket.getLocalSocketAddress
-              .asInstanceOf[InetSocketAddress]))
+            clientSideChannel.socket.getLocalSocketAddress.asInstanceOf[
+              InetSocketAddress]))
 
         watch(connectionActor)
         expectTerminated(connectionActor)
@@ -943,8 +933,9 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     def register(channel: SelectableChannel, initialOps: Int)(implicit
         channelActor: ActorRef): Unit =
-      registerCallReceiver.ref
-        .tell(Registration(channel, initialOps), channelActor)
+      registerCallReceiver.ref.tell(
+        Registration(channel, initialOps),
+        channelActor)
 
     def setServerSocketOptions() = ()
 
@@ -1047,8 +1038,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           userHandler.expectMsg(
             Connected(
               serverAddress,
-              clientSideChannel.socket.getLocalSocketAddress
-                .asInstanceOf[InetSocketAddress]))
+              clientSideChannel.socket.getLocalSocketAddress.asInstanceOf[
+                InetSocketAddress]))
 
           userHandler.send(
             connectionActor,
@@ -1171,10 +1162,10 @@ class TcpConnectionSpec extends AkkaSpec("""
         def apply(key: SelectionKey) =
           MatchResult(
             checkFor(key, interest, duration.toMillis.toInt),
-            "%s key was not selected for %s after %s" format (key
-              .attachment(), interestsDesc(interest), duration),
-            "%s key was selected for %s after %s" format (key
-              .attachment(), interestsDesc(interest), duration)
+            "%s key was not selected for %s after %s" format (key.attachment(), interestsDesc(
+              interest), duration),
+            "%s key was selected for %s after %s" format (key.attachment(), interestsDesc(
+              interest), duration)
           )
       }
 
@@ -1185,14 +1176,14 @@ class TcpConnectionSpec extends AkkaSpec("""
         OP_READ -> "reading",
         OP_WRITE -> "writing")
     def interestsDesc(interests: Int): String =
-      interestsNames
-        .filter(i ⇒ (i._1 & interests) != 0)
-        .map(_._2)
-        .mkString(", ")
+      interestsNames.filter(i ⇒ (i._1 & interests) != 0).map(_._2).mkString(
+        ", ")
 
     def abortClose(channel: SocketChannel): Unit = {
-      try channel.socket
-        .setSoLinger(true, 0) // causes the following close() to send TCP RST
+      try channel.socket.setSoLinger(
+        true,
+        0
+      ) // causes the following close() to send TCP RST
       catch {
         case NonFatal(e) ⇒
           // setSoLinger can fail due to http://bugs.sun.com/view_bug.do?bug_id=6799574

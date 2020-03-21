@@ -142,10 +142,10 @@ final class VectorSlicer(override val uid: String)
       s" sets of features, but they overlap." +
       s" indices: ${indFeatures.mkString("[", ",", "]")}." +
       s" names: " +
-      nameFeatures
-        .zip($(names))
-        .map { case (i, n) => s"$i:$n" }
-        .mkString("[", ",", "]")
+      nameFeatures.zip($(names)).map { case (i, n) => s"$i:$n" }.mkString(
+        "[",
+        ",",
+        "]")
     require(
       nameFeatures.length + indFeatures.length == numDistinctFeatures,
       errMsg)

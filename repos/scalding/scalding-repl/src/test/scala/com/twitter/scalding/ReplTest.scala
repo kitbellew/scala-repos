@@ -70,8 +70,7 @@ class ReplTest extends WordSpec {
       }
 
       "can be mapped and saved -- TypedPipe[String]" in {
-        val s = TypedPipe
-          .from(TextLine(helloPath))
+        val s = TypedPipe.from(TextLine(helloPath))
           .flatMap(_.split("\\s+"))
           .snapshot
 
@@ -85,22 +84,18 @@ class ReplTest extends WordSpec {
       }
 
       "tuples -- TypedPipe[(String,Int)]" in {
-        val s = TypedPipe
-          .from(TextLine(helloPath))
+        val s = TypedPipe.from(TextLine(helloPath))
           .flatMap(_.split("\\s+"))
           .map(w => (w.toLowerCase, w.length))
           .snapshot
 
         val output = s.toList
-        assert(
-          output === helloRef
-            .flatMap(_.split("\\s+"))
-            .map(w => (w.toLowerCase, w.length)))
+        assert(output === helloRef.flatMap(_.split("\\s+")).map(w =>
+          (w.toLowerCase, w.length)))
       }
 
       "grouped -- Grouped[String,String]" which {
-        val grp = TypedPipe
-          .from(TextLine(helloPath))
+        val grp = TypedPipe.from(TextLine(helloPath))
           .groupBy(_.toLowerCase)
 
         val correct = helloRef.map(l => (l.toLowerCase, l))
@@ -116,16 +111,13 @@ class ReplTest extends WordSpec {
       }
 
       "joined -- CoGrouped[String, Long]" which {
-        val linesByWord = TypedPipe
-          .from(TextLine(helloPath))
+        val linesByWord = TypedPipe.from(TextLine(helloPath))
           .flatMap(_.split("\\s+"))
           .groupBy(_.toLowerCase)
-        val wordScores = TypedPipe
-          .from(TypedTsv[(String, Double)](tutorialData + "/word_scores.tsv"))
-          .group
+        val wordScores = TypedPipe.from(
+          TypedTsv[(String, Double)](tutorialData + "/word_scores.tsv")).group
 
-        val grp = linesByWord
-          .join(wordScores)
+        val grp = linesByWord.join(wordScores)
           .mapValues { case (text, score) => score }
           .sum
 
@@ -155,8 +147,7 @@ class ReplTest extends WordSpec {
 
     "run entire flow" in {
       resetFlowDef()
-      val hello = TypedPipe
-        .from(TextLine(helloPath))
+      val hello = TypedPipe.from(TextLine(helloPath))
         .flatMap(_.split("\\s+"))
         .map(_.toLowerCase)
         .distinct

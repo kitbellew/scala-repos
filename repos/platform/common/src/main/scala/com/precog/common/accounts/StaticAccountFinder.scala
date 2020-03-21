@@ -49,8 +49,8 @@ class StaticAccountFinder[M[+_]: Monad](
       AccountPlan.Root))
 
   logger.debug(
-    "Constructed new static account manager. All queries resolve to \"%s\""
-      .format(details.get))
+    "Constructed new static account manager. All queries resolve to \"%s\"".format(
+      details.get))
 
   def findAccountByAPIKey(apiKey: APIKey) = Some(accountId).point[M]
 

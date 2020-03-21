@@ -51,9 +51,9 @@ private[http] class PoolGateway(
 
   private val state = {
     val shutdownCompletedPromise = Promise[Done]()
-    val props =
-      Props(new PoolInterfaceActor(hcps, shutdownCompletedPromise, this))
-        .withDeploy(Deploy.local)
+    val props = Props(
+      new PoolInterfaceActor(hcps, shutdownCompletedPromise, this)).withDeploy(
+      Deploy.local)
     val ref = system.actorOf(props, PoolInterfaceActor.name.next())
     new AtomicReference[State](
       Running(ref, _shutdownStartedPromise, shutdownCompletedPromise))

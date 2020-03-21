@@ -349,8 +349,9 @@ private[akka] class RemoteActorRefProvider(
               try {
                 // for consistency we check configuration of dispatcher and mailbox locally
                 val dispatcher = system.dispatchers.lookup(props.dispatcher)
-                system.mailboxes
-                  .getMailboxType(props, dispatcher.configurator.config)
+                system.mailboxes.getMailboxType(
+                  props,
+                  dispatcher.configurator.config)
               } catch {
                 case NonFatal(e) ⇒
                   throw new ConfigurationException(
@@ -359,8 +360,8 @@ private[akka] class RemoteActorRefProvider(
               }
               val localAddress = transport.localAddressForRemote(addr)
               val rpath = (RootActorPath(
-                addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
-                .withUid(path.uid)
+                addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements).withUid(
+                path.uid)
               new RemoteActorRef(
                 transport,
                 localAddress,
@@ -558,8 +559,8 @@ private[akka] class RemoteActorRefProvider(
   def getDefaultAddress: Address = transport.defaultAddress
 
   private def hasAddress(address: Address): Boolean =
-    address == local.rootPath.address || address == rootPath.address || transport
-      .addresses(address)
+    address == local.rootPath.address || address == rootPath.address || transport.addresses(
+      address)
 
   /**
     * Marks a remote system as out of sync and prevents reconnects until the quarantine timeout elapses.

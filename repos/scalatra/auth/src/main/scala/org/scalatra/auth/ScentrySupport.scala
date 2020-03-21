@@ -43,10 +43,8 @@ trait ScentrySupport[UserType <: AnyRef] extends Initializable {
 
   private def registerStrategiesFromConfig =
     _strategiesFromConfig foreach { strategyClassName ⇒
-      val strategy = Class
-        .forName(strategyClassName)
-        .newInstance
-        .asInstanceOf[ScentryStrategy[UserType]]
+      val strategy = Class.forName(strategyClassName).newInstance.asInstanceOf[
+        ScentryStrategy[UserType]]
       strategy registerWith scentry
     }
 
@@ -73,8 +71,8 @@ trait ScentrySupport[UserType <: AnyRef] extends Initializable {
   }
   protected def scentryOption(implicit
       request: HttpServletRequest): Option[Scentry[UserType]] =
-    Option(request(Scentry.ScentryRequestKey))
-      .map(_.asInstanceOf[Scentry[UserType]])
+    Option(request(Scentry.ScentryRequestKey)).map(
+      _.asInstanceOf[Scentry[UserType]])
   protected def userOption(implicit
       request: HttpServletRequest): Option[UserType] = scentry.userOption
   implicit protected def user(implicit request: HttpServletRequest): UserType =

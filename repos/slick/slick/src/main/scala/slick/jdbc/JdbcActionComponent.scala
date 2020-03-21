@@ -103,10 +103,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       * action. */
     def transactionally: DBIOAction[R, S, E with Effect.Transactional] =
       SynchronousDatabaseAction.fuseUnsafe(
-        StartTransaction
-          .andThen(a)
-          .cleanUp(eo => if (eo.isEmpty) Commit else Rollback)(
-            DBIO.sameThreadExecutionContext)
+        StartTransaction.andThen(a).cleanUp(eo =>
+          if (eo.isEmpty) Commit else Rollback)(DBIO.sameThreadExecutionContext)
           .asInstanceOf[DBIOAction[R, S, E with Effect.Transactional]]
       )
 
@@ -259,13 +257,10 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         else {
           val inv = createQueryInvoker[T](rsm, param, sql)
           new Mutator(
-            inv
-              .results(
-                0,
-                defaultConcurrency = invokerMutateConcurrency,
-                defaultType = invokerMutateType)(ctx.session)
-              .right
-              .get,
+            inv.results(
+              0,
+              defaultConcurrency = invokerMutateConcurrency,
+              defaultType = invokerMutateType)(ctx.session).right.get,
             ctx.bufferNext,
             inv)
         }
@@ -297,10 +292,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
             c.extra.asInstanceOf[SQLBuilder.Result].sql
           case ParameterSwitch(cases, default) =>
             findSql(
-              cases
-                .find { case (f, n) => f(param) }
-                .map(_._2)
-                .getOrElse(default))
+              cases.find { case (f, n) => f(param) }.map(_._2).getOrElse(
+                default))
         }
       (tree match {
         case (rsm @ ResultSetMapping(
@@ -312,9 +305,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
             protected[this] def createInvoker(sql: Iterable[String]) =
               createQueryInvoker(rsm, param, sql.head)
             protected[this] def createBuilder =
-              ct.cons
-                .createBuilder(ct.elementType.classTag)
-                .asInstanceOf[Builder[Any, R]]
+              ct.cons.createBuilder(ct.elementType.classTag).asInstanceOf[
+                Builder[Any, R]]
             def statements = List(sql)
             override def getDumpInfo = super.getDumpInfo.copy(name = "result")
           }
@@ -353,13 +345,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       Nothing,
       Streaming[ResultSetMutator[T]],
       Effect.Read with Effect.Write] = {
-      val sql = tree
-        .findNode(_.isInstanceOf[CompiledStatement])
-        .get
-        .asInstanceOf[CompiledStatement]
-        .extra
-        .asInstanceOf[SQLBuilder.Result]
-        .sql
+      val sql = tree.findNode(_.isInstanceOf[CompiledStatement]).get
+        .asInstanceOf[CompiledStatement].extra.asInstanceOf[
+          SQLBuilder.Result].sql
       val (rsm @ ResultSetMapping(
         _,
         _,
@@ -716,10 +704,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           Vector(a.sql)) {
       def run(ctx: Backend#Context, sql: Vector[String]) = {
         val sql1 = sql.head
-        if (!useBatchUpdates(ctx.session) || (values
-              .isInstanceOf[IndexedSeq[_]] && values
-              .asInstanceOf[IndexedSeq[_]]
-              .length < 2))
+        if (!useBatchUpdates(ctx.session) || (values.isInstanceOf[
+              IndexedSeq[_]] && values.asInstanceOf[IndexedSeq[_]].length < 2))
           retMany(
             values,
             values.map { v =>
@@ -915,13 +901,15 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         st: Statement,
         values: Iterable[U],
         updateCounts: Array[Int]) =
-      (values, buildKeysResult(st).buildColl[Vector](null, implicitly)).zipped
-        .map(mux)(collection.breakOut)
+      (
+        values,
+        buildKeysResult(st).buildColl[Vector](null, implicitly)).zipped.map(
+        mux)(collection.breakOut)
 
     protected def retQuery(st: Statement, updateCount: Int) =
-      buildKeysResult(st)
-        .buildColl[Vector](null, implicitly)
-        .asInstanceOf[QueryInsertResult] // Not used with "into"
+      buildKeysResult(st).buildColl[Vector](null, implicitly).asInstanceOf[
+        QueryInsertResult
+      ] // Not used with "into"
 
     protected def retOneInsertOrUpdate(
         st: Statement,

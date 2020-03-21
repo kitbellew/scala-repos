@@ -131,9 +131,8 @@ private[concurrent] object ExecutionContextImpl {
         case e: SecurityException => default
       }) match {
         case s if s.charAt(0) == 'x' =>
-          (Runtime.getRuntime.availableProcessors * s
-            .substring(1)
-            .toDouble).ceil.toInt
+          (Runtime.getRuntime.availableProcessors * s.substring(
+            1).toDouble).ceil.toInt
         case other => other.toInt
       }
 

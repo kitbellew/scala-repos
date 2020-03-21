@@ -138,19 +138,14 @@ private[server] class NettyModelConversion(
       override lazy val queryString: Map[String, Seq[String]] = {
         // Very rough parse of query string that doesn't decode
         if (request.getUri.contains("?")) {
-          request.getUri
-            .split("\\?", 2)(1)
-            .split('&')
-            .map { keyPair =>
-              keyPair.split("=", 2) match {
-                case Array(key)        => key -> ""
-                case Array(key, value) => key -> value
-              }
+          request.getUri.split("\\?", 2)(1).split('&').map { keyPair =>
+            keyPair.split("=", 2) match {
+              case Array(key)        => key -> ""
+              case Array(key, value) => key -> value
             }
-            .groupBy(_._1)
-            .map {
-              case (name, values) => name -> values.map(_._2).toSeq
-            }
+          }.groupBy(_._1).map {
+            case (name, values) => name -> values.map(_._2).toSeq
+          }
         } else {
           Map.empty
         }
@@ -184,9 +179,9 @@ private[server] class NettyModelConversion(
   /** Convert an HttpContent object to a ByteString */
   private def httpContentToByteString(content: HttpContent): ByteString = {
     val builder = ByteString.newBuilder
-    content
-      .content()
-      .readBytes(builder.asOutputStream, content.content().readableBytes())
+    content.content().readBytes(
+      builder.asOutputStream,
+      content.content().readableBytes())
     val bytes = builder.result()
     ReferenceCountUtil.release(content)
     bytes
@@ -275,9 +270,9 @@ private[server] class NettyModelConversion(
     } catch {
       case NonFatal(e) =>
         if (logger.isErrorEnabled) {
-          val prettyHeaders = headers
-            .map { case (name, value) => s"$name -> $value" }
-            .mkString("[", ",", "]")
+          val prettyHeaders = headers.map {
+            case (name, value) => s"$name -> $value"
+          }.mkString("[", ",", "]")
           val msg =
             s"Exception occurred while setting response's headers to $prettyHeaders. Action taken is to set the response's status to ${HttpResponseStatus.INTERNAL_SERVER_ERROR} and discard all headers."
           logger.error(msg, e)

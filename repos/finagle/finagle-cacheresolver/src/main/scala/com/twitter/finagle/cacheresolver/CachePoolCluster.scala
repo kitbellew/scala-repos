@@ -88,8 +88,7 @@ class TwitterCacheResolver extends Resolver {
 object CacheNodeGroup {
   // <host1>:<port>:<weight>:<key>,<host2>:<port>:<weight>:<key>,<host3>:<port>:<weight>:<key>
   def apply(hosts: String) = {
-    val hostSeq = hosts
-      .split(Array(' ', ','))
+    val hostSeq = hosts.split(Array(' ', ','))
       .filter((_ != ""))
       .map(_.split(":"))
       .map {
@@ -205,8 +204,10 @@ object CachePoolCluster {
       zkClient: ZooKeeperClient
   ) =
     new ZookeeperServerSetCluster(
-      ServerSets
-        .create(zkClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)
+      ServerSets.create(
+        zkClient,
+        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+        zkPath)
     ) map {
       case addr: InetSocketAddress =>
         CacheNode(addr.getHostName, addr.getPort, 1)
@@ -267,9 +268,8 @@ object CachePoolConfig {
   val jsonCodec: Codec[CachePoolConfig] =
     JsonCodec.create(
       classOf[CachePoolConfig],
-      new GsonBuilder()
-        .setExclusionStrategies(JsonCodec.getThriftExclusionStrategy())
-        .create())
+      new GsonBuilder().setExclusionStrategies(
+        JsonCodec.getThriftExclusionStrategy()).create())
 }
 
 /**
@@ -324,8 +324,11 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   import ZookeeperCachePoolCluster._
 
   private[this] val zkServerSetCluster =
-    new ZookeeperServerSetCluster(ServerSets
-      .create(zkClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)) map {
+    new ZookeeperServerSetCluster(
+      ServerSets.create(
+        zkClient,
+        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+        zkPath)) map {
       case addr: InetSocketAddress =>
         CacheNode(addr.getHostName, addr.getPort, 1)
     }

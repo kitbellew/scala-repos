@@ -52,9 +52,9 @@ object CustomRuntime {
         }
 
         val length = reader.readLength()
-        val newArray = java.lang.reflect.Array
-          .newInstance(elemClass, length)
-          .asInstanceOf[Array[AnyRef]]
+        val newArray = java.lang.reflect.Array.newInstance(
+          elemClass,
+          length).asInstanceOf[Array[AnyRef]]
 
         var i = 0
         while (i < length) {
@@ -108,9 +108,10 @@ class Tuple2RTKnownTagUnpickler[L, R](lhs: Unpickler[L], rhs: Unpickler[R])
     (unpickleField("_1", reader, lhs), unpickleField("_2", reader, rhs))
   }
   override def tag: FastTypeTag[(L, R)] =
-    FastTypeTag
-      .apply(currentMirror, s"scala.Tuple2[${lhs.tag.key},${rhs.tag.key}}]")
-      .asInstanceOf[FastTypeTag[(L, R)]]
+    FastTypeTag.apply(
+      currentMirror,
+      s"scala.Tuple2[${lhs.tag.key},${rhs.tag.key}}]").asInstanceOf[FastTypeTag[
+      (L, R)]]
 }
 
 // TODO - This pickler should actually use the known tag if it is passed.  Currently it is never used.
@@ -124,12 +125,13 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
         Defaults.nullPickler.asInstanceOf[Pickler[Any]])
     } else {
       val clazz = value.getClass
-      val tag = FastTypeTag
-        .mkRaw(clazz, reflectRuntime.currentMirror)
-        .asInstanceOf[FastTypeTag[Any]]
-      val pickler = scala.pickling.internal.currentRuntime.picklers
-        .genPickler(clazz.getClassLoader, clazz, tag)
-        .asInstanceOf[Pickler[Any]]
+      val tag = FastTypeTag.mkRaw(
+        clazz,
+        reflectRuntime.currentMirror).asInstanceOf[FastTypeTag[Any]]
+      val pickler = scala.pickling.internal.currentRuntime.picklers.genPickler(
+        clazz.getClassLoader,
+        clazz,
+        tag).asInstanceOf[Pickler[Any]]
       (tag, pickler)
     }
 
@@ -165,8 +167,9 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
       if (reader1.atPrimitive) {
         reader1.readPrimitive()
       } else {
-        val unpickler1 = internal.currentRuntime.picklers
-          .genUnpickler(reflectRuntime.currentMirror, tag1)
+        val unpickler1 = internal.currentRuntime.picklers.genUnpickler(
+          reflectRuntime.currentMirror,
+          tag1)
         try {
           unpickler1.unpickle(tag1, reader1)
         } catch {

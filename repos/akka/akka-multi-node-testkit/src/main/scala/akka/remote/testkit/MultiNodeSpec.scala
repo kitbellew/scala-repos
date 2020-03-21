@@ -491,9 +491,8 @@ abstract class MultiNodeSpec(
     * system.
     */
   protected def startNewSystem(): ActorSystem = {
-    val config = ConfigFactory
-      .parseString(
-        s"akka.remote.netty.tcp{port=${myAddress.port.get}\nhostname=${myAddress.host.get}}")
+    val config = ConfigFactory.parseString(
+      s"akka.remote.netty.tcp{port=${myAddress.port.get}\nhostname=${myAddress.host.get}}")
       .withFallback(system.settings.config)
     val sys = ActorSystem(system.name, config)
     injectDeployments(sys, myself)

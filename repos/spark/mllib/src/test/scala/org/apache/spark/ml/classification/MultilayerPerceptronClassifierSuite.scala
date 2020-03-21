@@ -32,14 +32,12 @@ class MultilayerPerceptronClassifierSuite
 
   test(
     "XOR function learning as binary classification problem with two outputs.") {
-    val dataFrame = sqlContext
-      .createDataFrame(
-        Seq(
-          (Vectors.dense(0.0, 0.0), 0.0),
-          (Vectors.dense(0.0, 1.0), 1.0),
-          (Vectors.dense(1.0, 0.0), 1.0),
-          (Vectors.dense(1.0, 1.0), 0.0)))
-      .toDF("features", "label")
+    val dataFrame = sqlContext.createDataFrame(
+      Seq(
+        (Vectors.dense(0.0, 0.0), 0.0),
+        (Vectors.dense(0.0, 1.0), 1.0),
+        (Vectors.dense(1.0, 0.0), 1.0),
+        (Vectors.dense(1.0, 1.0), 0.0))).toDF("features", "label")
     val layers = Array[Int](2, 5, 2)
     val trainer = new MultilayerPerceptronClassifier()
       .setLayers(layers)
@@ -96,8 +94,7 @@ class MultilayerPerceptronClassifierSuite
     val lr = new LogisticRegressionWithLBFGS()
       .setIntercept(true)
       .setNumClasses(numClasses)
-    lr.optimizer
-      .setRegParam(0.0)
+    lr.optimizer.setRegParam(0.0)
       .setNumIterations(numIterations)
     val lrModel = lr.run(rdd)
     val lrPredictionAndLabels =

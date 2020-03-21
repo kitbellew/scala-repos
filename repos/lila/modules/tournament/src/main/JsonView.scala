@@ -37,40 +37,38 @@ final class JsonView(
         case _            => standing(tour, 1)
       }
       playerInfoJson <- playerInfoExt ?? { pie => playerInfo(pie).map(_.some) }
-    } yield Json
-      .obj(
-        "id" -> tour.id,
-        "createdBy" -> tour.createdBy,
-        "system" -> tour.system.toString.toLowerCase,
-        "fullName" -> tour.fullName,
-        "greatPlayer" -> GreatPlayer.wikiUrl(tour.name).map { url =>
-          Json.obj("name" -> tour.name, "url" -> url)
-        },
-        "nbPlayers" -> tour.nbPlayers,
-        "minutes" -> tour.minutes,
-        "clock" -> clockJson(tour.clock),
-        "position" -> tour.position.some.filterNot(_.initial).map(positionJson),
-        "private" -> tour.`private`.option(true),
-        "variant" -> tour.variant.key,
-        "isStarted" -> tour.isStarted,
-        "isFinished" -> tour.isFinished,
-        "isRecentlyFinished" -> tour.isRecentlyFinished.option(true),
-        "schedule" -> tour.schedule.map(scheduleJson),
-        "secondsToFinish" -> tour.isStarted.option(tour.secondsToFinish),
-        "secondsToStart" -> tour.isCreated.option(tour.secondsToStart),
-        "startsAt" -> tour.isCreated.option(
-          ISODateTimeFormat.dateTime.print(tour.startsAt)),
-        "pairings" -> data.pairings,
-        "standing" -> stand,
-        "me" -> myInfo.map(myInfoJson),
-        "featured" -> data.featured,
-        "podium" -> data.podium,
-        "playerInfo" -> playerInfoJson,
-        "quote" -> tour.isCreated.option(lila.quote.Quote.one(tour.id)),
-        "spotlight" -> tour.spotlight,
-        "socketVersion" -> socketVersion
-      )
-      .noNull
+    } yield Json.obj(
+      "id" -> tour.id,
+      "createdBy" -> tour.createdBy,
+      "system" -> tour.system.toString.toLowerCase,
+      "fullName" -> tour.fullName,
+      "greatPlayer" -> GreatPlayer.wikiUrl(tour.name).map { url =>
+        Json.obj("name" -> tour.name, "url" -> url)
+      },
+      "nbPlayers" -> tour.nbPlayers,
+      "minutes" -> tour.minutes,
+      "clock" -> clockJson(tour.clock),
+      "position" -> tour.position.some.filterNot(_.initial).map(positionJson),
+      "private" -> tour.`private`.option(true),
+      "variant" -> tour.variant.key,
+      "isStarted" -> tour.isStarted,
+      "isFinished" -> tour.isFinished,
+      "isRecentlyFinished" -> tour.isRecentlyFinished.option(true),
+      "schedule" -> tour.schedule.map(scheduleJson),
+      "secondsToFinish" -> tour.isStarted.option(tour.secondsToFinish),
+      "secondsToStart" -> tour.isCreated.option(tour.secondsToStart),
+      "startsAt" -> tour.isCreated.option(
+        ISODateTimeFormat.dateTime.print(tour.startsAt)),
+      "pairings" -> data.pairings,
+      "standing" -> stand,
+      "me" -> myInfo.map(myInfoJson),
+      "featured" -> data.featured,
+      "podium" -> data.podium,
+      "playerInfo" -> playerInfoJson,
+      "quote" -> tour.isCreated.option(lila.quote.Quote.one(tour.id)),
+      "spotlight" -> tour.spotlight,
+      "socketVersion" -> socketVersion
+    ).noNull
 
   def standing(tour: Tournament, page: Int): Fu[JsObject] =
     if (page == 1) firstPageCache(tour.id)
@@ -85,39 +83,37 @@ final class JsonView(
       pairings <- PairingRepo.finishedByPlayerChronological(
         info.tour.id,
         info.user.id)
-      sheet = info.tour.system.scoringSystem
-        .sheet(info.tour, info.user.id, pairings)
+      sheet = info.tour.system.scoringSystem.sheet(
+        info.tour,
+        info.user.id,
+        pairings)
       tpr <- performance(info.tour, info.player, pairings)
     } yield info match {
       case PlayerInfoExt(tour, user, player, povs) =>
         Json.obj(
-          "player" -> Json
-            .obj(
-              "id" -> user.id,
-              "name" -> user.username,
-              "title" -> user.title,
-              "rank" -> ranking.get(user.id).map(1 +),
-              "rating" -> player.rating,
-              "provisional" -> player.provisional.option(true),
-              "withdraw" -> player.withdraw.option(true),
-              "score" -> player.score,
-              "ratingDiff" -> player.ratingDiff,
-              "fire" -> player.fire,
-              "nb" -> sheetNbs(user.id, sheet, pairings),
-              "performance" -> tpr
-            )
-            .noNull,
+          "player" -> Json.obj(
+            "id" -> user.id,
+            "name" -> user.username,
+            "title" -> user.title,
+            "rank" -> ranking.get(user.id).map(1 +),
+            "rating" -> player.rating,
+            "provisional" -> player.provisional.option(true),
+            "withdraw" -> player.withdraw.option(true),
+            "score" -> player.score,
+            "ratingDiff" -> player.ratingDiff,
+            "fire" -> player.fire,
+            "nb" -> sheetNbs(user.id, sheet, pairings),
+            "performance" -> tpr
+          ).noNull,
           "pairings" -> povs.map { pov =>
-            Json
-              .obj(
-                "id" -> pov.gameId,
-                "color" -> pov.color.name,
-                "op" -> gameUserJson(pov.opponent.userId, pov.opponent.rating),
-                "win" -> pov.win,
-                "status" -> pov.game.status.id,
-                "berserk" -> pov.player.berserk.option(true)
-              )
-              .noNull
+            Json.obj(
+              "id" -> pov.gameId,
+              "color" -> pov.color.name,
+              "op" -> gameUserJson(pov.opponent.userId, pov.opponent.rating),
+              "win" -> pov.win,
+              "status" -> pov.game.status.id,
+              "berserk" -> pov.player.berserk.option(true)
+            ).noNull
           }
         )
     }
@@ -162,19 +158,16 @@ final class JsonView(
         tour.id,
         10,
         page max 1)
-      sheets <- rankedPlayers
-        .map { p =>
-          PairingRepo.finishedByPlayerChronological(
-            tour.id,
-            p.player.userId) map { pairings =>
-            p.player.userId -> tour.system.scoringSystem.sheet(
-              tour,
-              p.player.userId,
-              pairings)
-          }
+      sheets <- rankedPlayers.map { p =>
+        PairingRepo.finishedByPlayerChronological(
+          tour.id,
+          p.player.userId) map { pairings =>
+          p.player.userId -> tour.system.scoringSystem.sheet(
+            tour,
+            p.player.userId,
+            pairings)
         }
-        .sequenceFu
-        .map(_.toMap)
+      }.sequenceFu.map(_.toMap)
     } yield Json.obj(
       "page" -> page,
       "players" -> rankedPlayers.map(playerJson(sheets, tour))
@@ -205,16 +198,14 @@ final class JsonView(
     val game = featured.game
     def playerJson(rp: RankedPlayer, p: lila.game.Player) = {
       val light = getLightUser(rp.player.userId)
-      Json
-        .obj(
-          "rank" -> rp.rank,
-          "name" -> light.fold(rp.player.userId)(_.name),
-          "title" -> light.flatMap(_.title),
-          "rating" -> rp.player.rating,
-          "ratingDiff" -> rp.player.ratingDiff,
-          "berserk" -> p.berserk.option(true)
-        )
-        .noNull
+      Json.obj(
+        "rank" -> rp.rank,
+        "name" -> light.fold(rp.player.userId)(_.name),
+        "title" -> light.flatMap(_.title),
+        "rating" -> rp.player.rating,
+        "ratingDiff" -> rp.player.ratingDiff,
+        "berserk" -> p.berserk.option(true)
+      ).noNull
     }
     Json.obj(
       "id" -> game.id,
@@ -239,13 +230,11 @@ final class JsonView(
       userId: Option[String],
       rating: Option[Int]): JsObject = {
     val light = userId flatMap getLightUser
-    Json
-      .obj(
-        "name" -> light.map(_.name),
-        "title" -> light.flatMap(_.title),
-        "rating" -> rating
-      )
-      .noNull
+    Json.obj(
+      "name" -> light.map(_.name),
+      "title" -> light.flatMap(_.title),
+      "rating" -> rating
+    ).noNull
   }
 
   private def sheetJson(sheet: ScoreSheet) =
@@ -271,19 +260,17 @@ final class JsonView(
       rankedPlayer: RankedPlayer): JsObject = {
     val p = rankedPlayer.player
     val light = getLightUser(p.userId)
-    Json
-      .obj(
-        "rank" -> rankedPlayer.rank,
-        "name" -> light.fold(p.userId)(_.name),
-        "title" -> light.flatMap(_.title),
-        "rating" -> p.rating,
-        "provisional" -> p.provisional.option(true),
-        "withdraw" -> p.withdraw.option(true),
-        "score" -> p.score,
-        "ratingDiff" -> p.ratingDiff,
-        "sheet" -> sheet.map(sheetJson)
-      )
-      .noNull
+    Json.obj(
+      "rank" -> rankedPlayer.rank,
+      "name" -> light.fold(p.userId)(_.name),
+      "title" -> light.flatMap(_.title),
+      "rating" -> p.rating,
+      "provisional" -> p.provisional.option(true),
+      "withdraw" -> p.withdraw.option(true),
+      "score" -> p.score,
+      "ratingDiff" -> p.ratingDiff,
+      "sheet" -> sheet.map(sheetJson)
+    ).noNull
   }
 
   private def podiumJson(id: String): Fu[Option[JsArray]] =
@@ -293,10 +280,13 @@ final class JsonView(
           _.map {
             case rp @ RankedPlayer(_, player) =>
               for {
-                pairings <- PairingRepo
-                  .finishedByPlayerChronological(tour.id, player.userId)
-                sheet = tour.system.scoringSystem
-                  .sheet(tour, player.userId, pairings)
+                pairings <- PairingRepo.finishedByPlayerChronological(
+                  tour.id,
+                  player.userId)
+                sheet = tour.system.scoringSystem.sheet(
+                  tour,
+                  player.userId,
+                  pairings)
                 tpr <- performance(tour, player, pairings)
               } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
                 "nb" -> sheetNbs(player.userId, sheet, pairings),
@@ -335,11 +325,9 @@ object JsonView {
 
   private[tournament] implicit def spotlightWrites: OWrites[Spotlight] =
     OWrites { s =>
-      Json
-        .obj(
-          "iconImg" -> s.iconImg,
-          "iconFont" -> s.iconFont
-        )
-        .noNull
+      Json.obj(
+        "iconImg" -> s.iconImg,
+        "iconFont" -> s.iconFont
+      ).noNull
     }
 }

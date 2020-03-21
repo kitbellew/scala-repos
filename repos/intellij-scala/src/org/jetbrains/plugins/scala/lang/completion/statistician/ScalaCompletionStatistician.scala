@@ -38,8 +38,8 @@ class ScalaCompletionStatistician extends CompletionStatistician {
       // return empty statistic when using  scala completion but ScalaLookupItem didn't use.
       // otherwise will be computed java statistic that may lead to ClassCastError
       case e
-          if location.getCompletionParameters.getOriginalFile
-            .isInstanceOf[ScalaFile] =>
+          if location.getCompletionParameters.getOriginalFile.isInstanceOf[
+            ScalaFile] =>
         StatisticsInfo.EMPTY
       case _ =>
         null //don't impact on java Lookups, no statistics for scala keyword elements
@@ -51,9 +51,8 @@ class ScalaCompletionStatistician extends CompletionStatistician {
       location: CompletionLocation): StatisticsInfo = {
     element match {
       case member: PsiMember =>
-        val key = ScalaStatisticManager
-          .memberKey(member)
-          .getOrElse(return StatisticsInfo.EMPTY)
+        val key = ScalaStatisticManager.memberKey(member).getOrElse(
+          return StatisticsInfo.EMPTY)
         member match {
           case (_: ScTypeAlias) | (_: ScTypeDefinition) | (_: PsiClass) =>
             new StatisticsInfo("scalaMember", key)

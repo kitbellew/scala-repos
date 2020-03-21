@@ -156,14 +156,12 @@ package object util {
   // this should be a separate trait but Scala is freaking out
   class SeqExtras[T](s: Seq[T]) {
     def argmax(implicit ordering: Ordering[T]) = {
-      s.zipWithIndex
-        .reduceLeft((a, b) => if (ordering.gt(a._1, b._1)) a else b)
-        ._2
+      s.zipWithIndex.reduceLeft((a, b) =>
+        if (ordering.gt(a._1, b._1)) a else b)._2
     }
     def argmin(implicit ordering: Ordering[T]) = {
-      s.zipWithIndex
-        .reduceLeft((a, b) => if (ordering.lt(a._1, b._1)) a else b)
-        ._2
+      s.zipWithIndex.reduceLeft((a, b) =>
+        if (ordering.lt(a._1, b._1)) a else b)._2
     }
 
     def unfold[U, To](init: U)(f: (U, T) => U)(implicit

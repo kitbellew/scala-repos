@@ -75,25 +75,17 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
     // should have central and spark-packages by default
     assert(res1.getResolvers.size() === 4)
     assert(
-      res1.getResolvers
-        .get(0)
-        .asInstanceOf[IBiblioResolver]
-        .getName === "local-m2-cache")
+      res1.getResolvers.get(0).asInstanceOf[
+        IBiblioResolver].getName === "local-m2-cache")
     assert(
-      res1.getResolvers
-        .get(1)
-        .asInstanceOf[FileSystemResolver]
-        .getName === "local-ivy-cache")
+      res1.getResolvers.get(1).asInstanceOf[
+        FileSystemResolver].getName === "local-ivy-cache")
     assert(
-      res1.getResolvers
-        .get(2)
-        .asInstanceOf[IBiblioResolver]
-        .getName === "central")
+      res1.getResolvers.get(2).asInstanceOf[
+        IBiblioResolver].getName === "central")
     assert(
-      res1.getResolvers
-        .get(3)
-        .asInstanceOf[IBiblioResolver]
-        .getName === "spark-packages")
+      res1.getResolvers.get(3).asInstanceOf[
+        IBiblioResolver].getName === "spark-packages")
 
     val repos = "a/1,b/2,c/3"
     val resolver2 =
@@ -244,9 +236,8 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
       "network-yarn_")
 
     val coordinates =
-      components
-        .map(comp => s"org.apache.spark:spark-${comp}2.10:1.2.0")
-        .mkString(",") +
+      components.map(comp =>
+        s"org.apache.spark:spark-${comp}2.10:1.2.0").mkString(",") +
         ",org.apache.spark:spark-core_fake:1.2.0"
 
     val path = SparkSubmitUtils.resolveMavenCoordinates(

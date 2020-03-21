@@ -64,7 +64,8 @@ private[summingbird] object HDFSMetadata {
 
   /** Get from the most recent version */
   def get[T: JsonNodeInjection](conf: Configuration, path: String): Option[T] =
-    apply(conf, path).mostRecentVersion
+    apply(conf, path)
+      .mostRecentVersion
       .flatMap { _.get[T].toOption }
 
   /** Put to the most recent version */
@@ -72,7 +73,9 @@ private[summingbird] object HDFSMetadata {
       conf: Configuration,
       path: String,
       obj: Option[T]) =
-    apply(conf, path).mostRecentVersion.get.put(obj)
+    apply(conf, path)
+      .mostRecentVersion
+      .get.put(obj)
 }
 
 /**
@@ -123,7 +126,12 @@ class HDFSMetadata(conf: Configuration, rootPath: String) {
     * last we checked
     */
   def versions: Iterable[Long] =
-    versionedStore.getAllVersions.asScala.toList.sorted.reverse
+    versionedStore
+      .getAllVersions
+      .asScala
+      .toList
+      .sorted
+      .reverse
       .map { _.longValue }
 
   /** Refer to a specific version, even if it does not exist on disk */
@@ -166,8 +174,7 @@ private[summingbird] class HDFSVersionMetadata private[store] (
   /** Put a new meta-data file, or overwrite on HDFS */
   def put[T: JsonNodeInjection](obj: Option[T]) =
     putString {
-      obj
-        .map { JsonInjection.toString[T].apply(_) }
+      obj.map { JsonInjection.toString[T].apply(_) }
         .getOrElse("")
     }
 }

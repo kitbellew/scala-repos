@@ -60,13 +60,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val similarUserStringIntMap = userStringIntMap
 
     // collect SimilarUser as Map and convert ID to Int index
-    val similarUsers: Map[Int, User] = data.users
-      .map {
-        case (id, similarUser) =>
-          (similarUserStringIntMap(id), similarUser)
-      }
-      .collectAsMap()
-      .toMap
+    val similarUsers: Map[Int, User] = data.users.map {
+      case (id, similarUser) =>
+        (similarUserStringIntMap(id), similarUser)
+    }.collectAsMap().toMap
 
     val mllibRatings = data.followEvents
       .map { r =>
@@ -75,8 +72,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         val iindex = similarUserStringIntMap.getOrElse(r.followedUser, -1)
 
         if (uindex == -1)
-          logger.info(s"Couldn't convert nonexistent user ID ${r.user}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent user ID ${r.user}"
+              + " to Int index.")
 
         if (iindex == -1)
           logger.info(
@@ -84,8 +82,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
               + " to Int index.")
 
         ((uindex, iindex), 1)
-      }
-      .filter {
+      }.filter {
         case ((u, i), v) =>
           // keep events with valid user and user index
           (u != -1) && (i != -1)
@@ -127,12 +124,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val similarUserFeatures = model.similarUserFeatures
 
     // convert similarUsers to Int index
-    val queryList: Set[Int] =
-      query.users.map(model.similarUserStringIntMap.get).flatten.toSet
+    val queryList: Set[Int] = query.users.map(model.similarUserStringIntMap.get)
+      .flatten.toSet
 
     val queryFeatures: Vector[Array[Double]] = queryList.toVector
     // similarUserFeatures may not contain the requested user
-    .map { similarUser => similarUserFeatures.get(similarUser) }.flatten
+      .map { similarUser => similarUserFeatures.get(similarUser) }
+      .flatten
 
     val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
       set.map(model.similarUserStringIntMap.get).flatten)

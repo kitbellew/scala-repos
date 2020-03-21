@@ -29,8 +29,13 @@ class ConstTests extends CatsSuite {
 
   checkAll(
     "Const[String, Int] with Option",
-    TraverseTests[Const[String, ?]]
-      .traverse[Int, Int, Int, Int, Option, Option])
+    TraverseTests[Const[String, ?]].traverse[
+      Int,
+      Int,
+      Int,
+      Int,
+      Option,
+      Option])
   checkAll(
     "Traverse[Const[String, ?]]",
     SerializableTests.serializable(Traverse[Const[String, ?]]))
@@ -39,8 +44,9 @@ class ConstTests extends CatsSuite {
   {
     implicit def nonEmptyListSemigroup[A]: Semigroup[NonEmptyList[A]] =
       SemigroupK[NonEmptyList].algebra
-    implicit val iso = CartesianTests.Isomorphisms
-      .invariant[Const[NonEmptyList[String], ?]](Const.constContravariant)
+    implicit val iso =
+      CartesianTests.Isomorphisms.invariant[Const[NonEmptyList[String], ?]](
+        Const.constContravariant)
     checkAll(
       "Apply[Const[NonEmptyList[String], Int]]",
       ApplyTests[Const[NonEmptyList[String], ?]].apply[Int, Int, Int])

@@ -21,12 +21,11 @@ object MBeanMultiJvmSpec extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("""
+    debugConfig(on = false).withFallback(
+      ConfigFactory.parseString("""
     akka.cluster.jmx.enabled = on
     akka.cluster.roles = [testNode]
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 
@@ -69,12 +68,10 @@ abstract class MBeanSpec
 
     "change attributes after startup" taggedAs LongRunningTest in {
       runOn(first) {
-        mbeanServer
-          .getAttribute(mbeanName, "Available")
-          .asInstanceOf[Boolean] should ===(false)
-        mbeanServer
-          .getAttribute(mbeanName, "Singleton")
-          .asInstanceOf[Boolean] should ===(false)
+        mbeanServer.getAttribute(mbeanName, "Available").asInstanceOf[
+          Boolean] should ===(false)
+        mbeanServer.getAttribute(mbeanName, "Singleton").asInstanceOf[
+          Boolean] should ===(false)
         mbeanServer.getAttribute(mbeanName, "Leader") should ===("")
         mbeanServer.getAttribute(mbeanName, "Members") should ===("")
         mbeanServer.getAttribute(mbeanName, "Unreachable") should ===("")
@@ -88,15 +85,13 @@ abstract class MBeanSpec
         awaitAssert(
           mbeanServer.getAttribute(mbeanName, "Leader") should ===(
             address(first).toString))
-        mbeanServer
-          .getAttribute(mbeanName, "Singleton")
-          .asInstanceOf[Boolean] should ===(true)
+        mbeanServer.getAttribute(mbeanName, "Singleton").asInstanceOf[
+          Boolean] should ===(true)
         mbeanServer.getAttribute(mbeanName, "Members") should ===(
           address(first).toString)
         mbeanServer.getAttribute(mbeanName, "Unreachable") should ===("")
-        mbeanServer
-          .getAttribute(mbeanName, "Available")
-          .asInstanceOf[Boolean] should ===(true)
+        mbeanServer.getAttribute(mbeanName, "Available").asInstanceOf[
+          Boolean] should ===(true)
       }
       enterBarrier("after-3")
     }
@@ -123,9 +118,8 @@ abstract class MBeanSpec
       awaitAssert(
         mbeanServer.getAttribute(mbeanName, "Leader") should ===(
           expectedLeader.toString))
-      mbeanServer
-        .getAttribute(mbeanName, "Singleton")
-        .asInstanceOf[Boolean] should ===(false)
+      mbeanServer.getAttribute(mbeanName, "Singleton").asInstanceOf[
+        Boolean] should ===(false)
 
       enterBarrier("after-4")
     }

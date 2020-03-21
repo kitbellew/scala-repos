@@ -93,8 +93,10 @@ trait Config extends Serializable {
       try {
         Success(
           // Make sure we are using the class-loader for the current thread
-          Class
-            .forName(str, true, Thread.currentThread().getContextClassLoader))
+          Class.forName(
+            str,
+            true,
+            Thread.currentThread().getContextClassLoader))
       } catch { case err: Throwable => Failure(err) }
     }
 
@@ -147,20 +149,18 @@ trait Config extends Serializable {
     */
   def getKryoRegisteredClasses: Set[Class[_]] = {
     // Get an instance of the Kryo serializer (which is populated with registrations)
-    getKryo
-      .map { kryo =>
-        val cr = kryo.newKryo.getClassResolver
+    getKryo.map { kryo =>
+      val cr = kryo.newKryo.getClassResolver
 
-        @annotation.tailrec
-        def kryoClasses(idx: Int, acc: Set[Class[_]]): Set[Class[_]] =
-          Option(cr.getRegistration(idx)) match {
-            case Some(reg) => kryoClasses(idx + 1, acc + reg.getType)
-            case None      => acc // The first null is the end of the line
-          }
+      @annotation.tailrec
+      def kryoClasses(idx: Int, acc: Set[Class[_]]): Set[Class[_]] =
+        Option(cr.getRegistration(idx)) match {
+          case Some(reg) => kryoClasses(idx + 1, acc + reg.getType)
+          case None      => acc // The first null is the end of the line
+        }
 
-        kryoClasses(0, Set[Class[_]]())
-      }
-      .getOrElse(Set())
+      kryoClasses(0, Set[Class[_]]())
+    }.getOrElse(Set())
   }
 
   /*
@@ -191,8 +191,9 @@ trait Config extends Serializable {
     val last: Seq[Class[_ <: HSerialization[_]]] = Seq(
       classOf[com.twitter.chill.hadoop.KryoSerialization])
     val required =
-      (first ++ last)
-        .toSet[AnyRef] // Class is invariant, but we use it as a function
+      (first ++ last).toSet[
+        AnyRef
+      ] // Class is invariant, but we use it as a function
     // Make sure we keep the order correct and don't add the required fields twice
     val hadoopSer = first ++ (userHadoop.filterNot(required)) ++ last
 
@@ -237,11 +238,9 @@ trait Config extends Serializable {
 
   def getScaldingVersion: Option[String] = get(Config.ScaldingVersion)
   def setScaldingVersion: Config =
-    (this
-      .+(Config.ScaldingVersion -> scaldingVersion))
-      .+(
-        // This is setting a property for cascading/driven
-        (AppProps.APP_FRAMEWORKS -> ("scalding:" + scaldingVersion.toString)))
+    (this.+(Config.ScaldingVersion -> scaldingVersion)).+(
+      // This is setting a property for cascading/driven
+      (AppProps.APP_FRAMEWORKS -> ("scalding:" + scaldingVersion.toString)))
 
   def getUniqueIds: Set[UniqueID] =
     get(UniqueID.UNIQUE_JOB_ID)
@@ -295,9 +294,8 @@ trait Config extends Serializable {
    * Add this class name and the md5 hash of it into the config
    */
   def setScaldingFlowClass(clazz: Class[_]): Config =
-    this
-      .+(ScaldingFlowClassName -> clazz.getName)
-      .+(ScaldingFlowClassSignature -> Config.md5Identifier(clazz))
+    this.+(ScaldingFlowClassName -> clazz.getName).+(
+      ScaldingFlowClassSignature -> Config.md5Identifier(clazz))
 
   def getSubmittedTimestamp: Option[RichDate] =
     get(ScaldingFlowSubmittedTimestamp).map { ts => RichDate(ts.toLong) }
@@ -347,7 +345,8 @@ trait Config extends Serializable {
   }
 
   def getFlowListeners: List[Try[(Mode, Config) => FlowListener]] =
-    get(Config.FlowListeners).toIterable
+    get(Config.FlowListeners)
+      .toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowListenerSerializer.invert(_))
       .toList
@@ -362,7 +361,8 @@ trait Config extends Serializable {
   }
 
   def getFlowStepListeners: List[Try[(Mode, Config) => FlowStepListener]] =
-    get(Config.FlowStepListeners).toIterable
+    get(Config.FlowStepListeners)
+      .toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowStepListenerSerializer.invert(_))
       .toList
@@ -382,7 +382,8 @@ trait Config extends Serializable {
 
   def getFlowStepStrategies
       : List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
-    get(Config.FlowStepStrategies).toIterable
+    get(Config.FlowStepStrategies)
+      .toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowStepStrategiesSerializer.invert(_))
       .toList
@@ -517,13 +518,14 @@ object Config {
           case err: Throwable => Failure(err)
         }
       case None => Success((nonStrings, initConf))
-    }).flatMap {
-      case (unhandled, withJar) =>
-        if (unhandled.isEmpty) Success(withJar)
-        else
-          Failure(
-            new Exception("unhandled configurations: " + unhandled.toString))
-    }
+    })
+      .flatMap {
+        case (unhandled, withJar) =>
+          if (unhandled.isEmpty) Success(withJar)
+          else
+            Failure(
+              new Exception("unhandled configurations: " + unhandled.toString))
+      }
   }
 
   /**

@@ -48,43 +48,39 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
   }
 
   override def projectOpened() {
-    project.getMessageBus
-      .connect(project)
-      .subscribe(
-        FileEditorManagerListener.FILE_EDITOR_MANAGER,
-        WorksheetEditorListener)
-    project.getMessageBus
-      .connect(project)
-      .subscribe(
-        DumbService.DUMB_MODE,
-        new DumbModeListener {
-          override def enteredDumbMode() {}
+    project.getMessageBus.connect(project).subscribe(
+      FileEditorManagerListener.FILE_EDITOR_MANAGER,
+      WorksheetEditorListener)
+    project.getMessageBus.connect(project).subscribe(
+      DumbService.DUMB_MODE,
+      new DumbModeListener {
+        override def enteredDumbMode() {}
 
-          override def exitDumbMode() {
-            val editor =
-              FileEditorManager.getInstance(project).getSelectedTextEditor
-            if (editor == null) return
+        override def exitDumbMode() {
+          val editor =
+            FileEditorManager.getInstance(project).getSelectedTextEditor
+          if (editor == null) return
 
-            val file = PsiDocumentManager.getInstance(
-              project) getPsiFile editor.getDocument
-            if (file == null) return
+          val file = PsiDocumentManager.getInstance(
+            project) getPsiFile editor.getDocument
+          if (file == null) return
 
-            val vFile = file.getVirtualFile
-            if (vFile == null) return
+          val vFile = file.getVirtualFile
+          if (vFile == null) return
 
-            WorksheetFileHook getPanel vFile foreach {
-              case ref =>
-                val panel = ref.get()
-                if (panel != null) {
-                  panel.getComponents.foreach {
-                    case ab: ActionButton => ab.addNotify()
-                    case _                =>
-                  }
+          WorksheetFileHook getPanel vFile foreach {
+            case ref =>
+              val panel = ref.get()
+              if (panel != null) {
+                panel.getComponents.foreach {
+                  case ab: ActionButton => ab.addNotify()
+                  case _                =>
                 }
-            }
+              }
           }
         }
-      )
+      }
+    )
   }
 
   override def getComponentName: String = "Clean worksheet on editor close"
@@ -161,10 +157,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
 
       PsiManager.getInstance(project).findFile(file) match {
         case _: ScalaFile
-            if ScratchFileService
-              .getInstance()
-              .getRootType(file)
-              .isInstanceOf[ScratchRootType] =>
+            if ScratchFileService.getInstance().getRootType(file).isInstanceOf[
+              ScratchRootType] =>
           true
         case _ => false
       }
@@ -186,8 +180,9 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       WorksheetFileHook.this.initTopComponent(file, run = true)
       loadEvaluationResult(source, file)
 
-      WorksheetAutoRunner
-        .getInstance(source.getProject) addListener doc(source, file)
+      WorksheetAutoRunner.getInstance(source.getProject) addListener doc(
+        source,
+        file)
     }
 
     private def loadEvaluationResult(
@@ -214,9 +209,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
 
                       extensions.inWriteAction {
                         document setText result
-                        PsiDocumentManager
-                          .getInstance(project)
-                          .commitDocument(document)
+                        PsiDocumentManager.getInstance(project).commitDocument(
+                          document)
 
                         if (splitter != null) {
                           splitter setProportion ratio

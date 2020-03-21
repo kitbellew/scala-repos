@@ -27,8 +27,8 @@ class FieldFinder[T: ClassTag](
   logger.debug("Created FieldFinder for " + classTag[T].runtimeClass)
 
   def isMagicObject(m: Method) =
-    m.getReturnType.getName
-      .endsWith("$" + m.getName + "$") && m.getParameterTypes.length == 0
+    m.getReturnType.getName.endsWith(
+      "$" + m.getName + "$") && m.getParameterTypes.length == 0
 
   def typeFilter: Class[_] => Boolean =
     classTag[T].runtimeClass.isAssignableFrom
@@ -51,14 +51,12 @@ class FieldFinder[T: ClassTag](
         case c    =>
           // get the names of fields that represent the type we want
 
-          val fields = Map(c.getDeclaredFields
-            .filter { f =>
-              val ret = typeFilter(f.getType)
-              logger.trace(
-                "typeFilter(" + f.getType + "); T=" + classTag[T].runtimeClass)
-              ret
-            }
-            .map(f => (deMod(f.getName), f)): _*)
+          val fields = Map(c.getDeclaredFields.filter { f =>
+            val ret = typeFilter(f.getType)
+            logger.trace(
+              "typeFilter(" + f.getType + "); T=" + classTag[T].runtimeClass)
+            ret
+          }.map(f => (deMod(f.getName), f)): _*)
 
           logger.trace("fields: " + fields)
 
@@ -97,23 +95,23 @@ class FieldFinder[T: ClassTag](
             } catch {
               case e: Exception =>
                 logger.debug(
-                  "Not a valid mapped field: %s, got exception: %s"
-                    .format(meth.getName, e))
+                  "Not a valid mapped field: %s, got exception: %s".format(
+                    meth.getName,
+                    e))
                 false
             }
           }
 
           // find all the declared methods
-          val meths = c.getDeclaredMethods.toList
-            .filter(_.getParameterTypes.length == 0)
-            . // that take no parameters
-            filter(m => Modifier.isPublic(m.getModifiers))
-            . // that are public
-            filter(m =>
-              fields.contains(
-                m.getName) && // that are associated with private fields
-                fields(m.getName).getType == m.getReturnType)
-            .filter(validActualType) // and have a validated type
+          val meths = c.getDeclaredMethods.toList.filter(
+            _.getParameterTypes.length == 0). // that take no parameters
+          filter(m => Modifier.isPublic(m.getModifiers)). // that are public
+          filter(m =>
+            fields.contains(
+              m.getName) && // that are associated with private fields
+              fields(m.getName).getType == m.getReturnType).filter(
+            validActualType
+          ) // and have a validated type
 
           meths ::: findForClass(clz.getSuperclass)
       }

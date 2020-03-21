@@ -24,9 +24,9 @@ object PlayExceptions {
       extends PlayException(
         "Unexpected exception",
         message.getOrElse {
-          unexpected
-            .map(t => "%s: %s".format(t.getClass.getSimpleName, t.getMessage))
-            .getOrElse("")
+          unexpected.map(t =>
+            "%s: %s".format(t.getClass.getSimpleName, t.getMessage)).getOrElse(
+            "")
         },
         unexpected.orNull
       )
@@ -38,9 +38,8 @@ object PlayExceptions {
     def line =
       problem.position.line.map(m => m.asInstanceOf[java.lang.Integer]).orNull
     def position =
-      problem.position.pointer
-        .map(m => m.asInstanceOf[java.lang.Integer])
-        .orNull
+      problem.position.pointer.map(m =>
+        m.asInstanceOf[java.lang.Integer]).orNull
     def input = problem.position.sourceFile.map(IO.read(_)).orNull
     def sourceName = problem.position.sourceFile.map(_.getAbsolutePath).orNull
   }

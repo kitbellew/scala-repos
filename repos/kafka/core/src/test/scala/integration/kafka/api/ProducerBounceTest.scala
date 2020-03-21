@@ -48,11 +48,10 @@ class ProducerBounceTest extends KafkaServerTestHarness {
   // Since such quick rotation of servers is incredibly unrealistic, we allow this one test to preallocate ports, leaving
   // a small risk of hitting errors due to port conflicts. Hopefully this is infrequent enough to not cause problems.
   override def generateConfigs() = {
-    FixedPortTestUtils
-      .createBrokerConfigs(
-        numServers,
-        zkConnect,
-        enableControlledShutdown = false)
+    FixedPortTestUtils.createBrokerConfigs(
+      numServers,
+      zkConnect,
+      enableControlledShutdown = false)
       .map(KafkaConfig.fromProps(_, overridingProps))
   }
 
@@ -146,12 +145,12 @@ class ProducerBounceTest extends KafkaServerTestHarness {
           100,
           1024 * 1024,
           "")
-        val response = consumer
-          .fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic1, partition, 0, Int.MaxValue)
-              .build())
-          .messageSet(topic1, partition)
+        val response = consumer.fetch(
+          new FetchRequestBuilder().addFetch(
+            topic1,
+            partition,
+            0,
+            Int.MaxValue).build()).messageSet(topic1, partition)
         consumer.close
         response
     }

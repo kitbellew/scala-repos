@@ -88,16 +88,14 @@ object ActorDSL extends dsl.Inbox with dsl.Creators {
 
     private case class MkChild(props: Props, name: String)
         extends NoSerializationVerificationNeeded
-    private val boss = system
-      .systemActorOf(
-        Props(new Actor {
-          def receive = {
-            case MkChild(props, name) ⇒ sender() ! context.actorOf(props, name)
-            case any ⇒ sender() ! any
-          }
-        }),
-        "dsl")
-      .asInstanceOf[RepointableActorRef]
+    private val boss = system.systemActorOf(
+      Props(new Actor {
+        def receive = {
+          case MkChild(props, name) ⇒ sender() ! context.actorOf(props, name)
+          case any ⇒ sender() ! any
+        }
+      }),
+      "dsl").asInstanceOf[RepointableActorRef]
 
     lazy val config = system.settings.config.getConfig("akka.actor.dsl")
 
@@ -105,14 +103,14 @@ object ActorDSL extends dsl.Inbox with dsl.Creators {
 
     def mkChild(p: Props, name: String): ActorRef =
       if (boss.isStarted)
-        boss.underlying
-          .asInstanceOf[ActorCell]
-          .attachChild(p, name, systemService = true)
+        boss.underlying.asInstanceOf[ActorCell].attachChild(
+          p,
+          name,
+          systemService = true)
       else {
         implicit val timeout = system.settings.CreationTimeout
-        Await
-          .result(boss ? MkChild(p, name), timeout.duration)
-          .asInstanceOf[ActorRef]
+        Await.result(boss ? MkChild(p, name), timeout.duration).asInstanceOf[
+          ActorRef]
       }
   }
 

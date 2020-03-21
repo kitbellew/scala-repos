@@ -46,9 +46,9 @@ class ValidateThriftService(
       self(req) onSuccess { bytes =>
         if (!req.oneway && !isResponseValid(bytes)) {
           isValid = false
-          Logger
-            .getLogger("finagle-thrift")
-            .log(Level.WARNING, "Thrift connection was invalidated!")
+          Logger.getLogger("finagle-thrift").log(
+            Level.WARNING,
+            "Thrift connection was invalidated!")
         }
       }
 
@@ -69,9 +69,10 @@ class ValidateThriftService(
       }
     } catch {
       case exc: Throwable =>
-        Logger
-          .getLogger("finagle-thrift")
-          .log(Level.WARNING, "Exception while validating connection", exc)
+        Logger.getLogger("finagle-thrift").log(
+          Level.WARNING,
+          "Exception while validating connection",
+          exc)
         false
     }
 }

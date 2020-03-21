@@ -296,8 +296,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
       col2: TypedColumn[V, U2],
       col3: TypedColumn[V, U3],
       col4: TypedColumn[V, U4]): Dataset[(K, U1, U2, U3, U4)] =
-    aggUntyped(col1, col2, col3, col4)
-      .asInstanceOf[Dataset[(K, U1, U2, U3, U4)]]
+    aggUntyped(col1, col2, col3, col4).asInstanceOf[Dataset[
+      (K, U1, U2, U3, U4)]]
 
   /**
     * Returns a [[Dataset]] that contains a tuple with each key and the number of items present

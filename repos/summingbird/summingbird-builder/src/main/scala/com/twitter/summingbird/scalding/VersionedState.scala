@@ -58,20 +58,19 @@ private[scalding] class VersionedState(
   private class VersionedPrepareState
       extends PrepareState[Interval[Timestamp]] {
     def newestCompleted: Option[BatchID] =
-      meta.versions
-        .map { vers =>
-          val thisMeta = meta(vers)
-          thisMeta
-            .get[String]
-            .flatMap { str => ScalaTry(BatchID(str)) } match {
-            case Success(batchID) => Some(batchID)
-            case Failure(ex) =>
-              logger.warn(
-                "Path: {} missing or corrupt completion file. Ignoring and trying previous",
-                thisMeta.path)
-              None
-          }
+      meta.versions.map { vers =>
+        val thisMeta = meta(vers)
+        thisMeta
+          .get[String]
+          .flatMap { str => ScalaTry(BatchID(str)) } match {
+          case Success(batchID) => Some(batchID)
+          case Failure(ex) =>
+            logger.warn(
+              "Path: {} missing or corrupt completion file. Ignoring and trying previous",
+              thisMeta.path)
+            None
         }
+      }
         .flatten
         .headOption
 
@@ -82,21 +81,17 @@ private[scalding] class VersionedState(
       */
     lazy val requested: Interval[Timestamp] = {
       val beginning: BatchID =
-        startDate
-          .map(batcher.batchOf(_))
+        startDate.map(batcher.batchOf(_))
           .orElse(newestCompleted)
           .getOrElse {
             sys.error("You must supply a starting date on the job's first run!")
           }
 
       val end = beginning + maxBatches
-      Interval
-        .leftClosedRightOpen(
-          batcher.earliestTimeOf(beginning),
-          batcher.earliestTimeOf(end)
-        )
-        .right
-        .get
+      Interval.leftClosedRightOpen(
+        batcher.earliestTimeOf(beginning),
+        batcher.earliestTimeOf(end)
+      ).right.get
     }
 
     def willAccept(available: Interval[Timestamp]) =

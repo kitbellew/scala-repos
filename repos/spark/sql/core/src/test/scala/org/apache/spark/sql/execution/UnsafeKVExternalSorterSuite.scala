@@ -90,10 +90,8 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
     val inputData = Seq.fill(1024) {
       val k = kConverter(
         kExternalConverter.apply(keyDataGen.apply()).asInstanceOf[InternalRow])
-      val v = vConverter(
-        vExternalConverter
-          .apply(valueDataGen.apply())
-          .asInstanceOf[InternalRow])
+      val v = vConverter(vExternalConverter.apply(
+        valueDataGen.apply()).asInstanceOf[InternalRow])
       (k.asInstanceOf[InternalRow].copy(), v.asInstanceOf[InternalRow].copy())
     }
 

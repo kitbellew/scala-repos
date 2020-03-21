@@ -33,8 +33,8 @@ object HikariCPJdbcDataSource extends JdbcDataSourceFactory {
     if (c.hasPath("dataSourceClass")) {
       hconf.setDataSourceClassName(c.getString("dataSourceClass"))
     } else {
-      Option(c.getStringOr("driverClassName", c.getStringOr("driver")))
-        .map(hconf.setDriverClassName _)
+      Option(c.getStringOr("driverClassName", c.getStringOr("driver"))).map(
+        hconf.setDriverClassName _)
     }
     hconf.setJdbcUrl(c.getStringOr("url", null))
     c.getStringOpt("user").foreach(hconf.setUsername)
@@ -60,9 +60,8 @@ object HikariCPJdbcDataSource extends JdbcDataSourceFactory {
 
     // Equivalent of ConnectionPreparer
     hconf.setReadOnly(c.getBooleanOr("readOnly", false))
-    c.getStringOpt("isolation")
-      .map("TRANSACTION_" + _)
-      .foreach(hconf.setTransactionIsolation)
+    c.getStringOpt("isolation").map("TRANSACTION_" + _).foreach(
+      hconf.setTransactionIsolation)
     hconf.setCatalog(c.getStringOr("catalog", null))
 
     val ds = new HikariDataSource(hconf)

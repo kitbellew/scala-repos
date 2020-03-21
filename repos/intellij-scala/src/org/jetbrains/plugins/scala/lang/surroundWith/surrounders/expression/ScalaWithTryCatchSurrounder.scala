@@ -42,13 +42,8 @@ class ScalaWithTryCatchSurrounder extends ScalaExpressionSurrounder {
 
     val catchBlockPsiElement: ScCatchBlock = tryCatchStmt.catchBlock.get
     val caseClause =
-      catchBlockPsiElement.expression.get
-        .asInstanceOf[ScBlockExpr]
-        .caseClauses
-        .get
-        .caseClauses(0)
-        .pattern
-        .get
+      catchBlockPsiElement.expression.get.asInstanceOf[
+        ScBlockExpr].caseClauses.get.caseClauses(0).pattern.get
 
     val offset = caseClause.getTextRange.getStartOffset
     tryCatchStmt.getNode.removeChild(caseClause.getNode)

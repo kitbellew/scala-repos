@@ -25,9 +25,9 @@ object Test extends App {
     sym.info
     println(sym.toString)
     println(s"primary constructor: ${showCtor(sym.primaryConstructor)}")
-    val ctors = sym.info.members
-      .filter(_.name == termNames.CONSTRUCTOR)
-      .map(sym => showCtor(sym))
+    val ctors =
+      sym.info.members.filter(_.name == termNames.CONSTRUCTOR).map(sym =>
+        showCtor(sym))
     ctors.toList.sorted.foreach(println)
   }
 

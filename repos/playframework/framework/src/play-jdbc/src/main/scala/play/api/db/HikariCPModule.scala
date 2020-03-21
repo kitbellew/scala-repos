@@ -101,9 +101,8 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
     val config = configuration.get[PlayConfig]("hikaricp")
 
     // Essentials configurations
-    config
-      .get[Option[String]]("dataSourceClassName")
-      .foreach(hikariConfig.setDataSourceClassName)
+    config.get[Option[String]]("dataSourceClassName").foreach(
+      hikariConfig.setDataSourceClassName)
 
     dbConfig.url.foreach(hikariConfig.setJdbcUrl)
     dbConfig.driver.foreach(hikariConfig.setDriverClassName)
@@ -129,9 +128,8 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
       toMillis(config.get[Duration]("connectionTimeout")))
     hikariConfig.setIdleTimeout(toMillis(config.get[Duration]("idleTimeout")))
     hikariConfig.setMaxLifetime(toMillis(config.get[Duration]("maxLifetime")))
-    config
-      .get[Option[String]]("connectionTestQuery")
-      .foreach(hikariConfig.setConnectionTestQuery)
+    config.get[Option[String]]("connectionTestQuery").foreach(
+      hikariConfig.setConnectionTestQuery)
     config.get[Option[Int]]("minimumIdle").foreach(hikariConfig.setMinimumIdle)
     hikariConfig.setMaximumPoolSize(config.get[Int]("maximumPoolSize"))
     config.get[Option[String]]("poolName").foreach(hikariConfig.setPoolName)
@@ -145,13 +143,11 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
       config.get[Boolean]("allowPoolSuspension"))
     hikariConfig.setReadOnly(config.get[Boolean]("readOnly"))
     hikariConfig.setRegisterMbeans(config.get[Boolean]("registerMbeans"))
-    config
-      .get[Option[String]]("connectionInitSql")
-      .foreach(hikariConfig.setConnectionInitSql)
+    config.get[Option[String]]("connectionInitSql").foreach(
+      hikariConfig.setConnectionInitSql)
     config.get[Option[String]]("catalog").foreach(hikariConfig.setCatalog)
-    config
-      .get[Option[String]]("transactionIsolation")
-      .foreach(hikariConfig.setTransactionIsolation)
+    config.get[Option[String]]("transactionIsolation").foreach(
+      hikariConfig.setTransactionIsolation)
     hikariConfig.setValidationTimeout(
       config.get[FiniteDuration]("validationTimeout").toMillis)
     hikariConfig.setLeakDetectionThreshold(

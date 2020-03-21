@@ -95,8 +95,8 @@ class ScAccessModifierImpl private (
         def getElement = ScAccessModifierImpl.this
         def getRangeInElement = {
           val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
-          new TextRange(0, id.getTextLength)
-            .shiftRight(id.getStartOffsetInParent)
+          new TextRange(0, id.getTextLength).shiftRight(
+            id.getStartOffsetInParent)
         }
         def getCanonicalText =
           resolve() match {

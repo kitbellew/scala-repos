@@ -259,9 +259,8 @@ abstract class EndToEndEventAdapterSpec(
           occurrences = 1,
           pattern = ".*undefined event-adapter.*") intercept {
           intercept[IllegalArgumentException] {
-            Persistence(system2)
-              .adaptersFor(s"akka.persistence.journal.$journalName")
-              .get(classOf[String])
+            Persistence(system2).adaptersFor(
+              s"akka.persistence.journal.$journalName").get(classOf[String])
           }.getMessage should include(
             "was bound to undefined event-adapter: a (bindings: [a, b], known adapters: b)")
         }

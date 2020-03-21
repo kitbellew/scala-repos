@@ -102,8 +102,7 @@ abstract class ContextCleanerSuiteBase(
   protected def runGC() {
     val weakRef = new WeakReference(new Object())
     val startTime = System.currentTimeMillis
-    System
-      .gc() // Make a best effort to run the garbage collection. It *usually* runs GC.
+    System.gc() // Make a best effort to run the garbage collection. It *usually* runs GC.
     // Wait until a weak reference object has been GCed
     while (System.currentTimeMillis - startTime < 10000 && weakRef.get != null) {
       System.gc()
@@ -312,14 +311,12 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
-        .getMatchingBlockIds(
-          {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
-          },
-          askSlaves = true)
-        .isEmpty)
+      sc.env.blockManager.master.getMatchingBlockIds(
+        {
+          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+          case _                                             => false
+        },
+        askSlaves = true).isEmpty)
   }
 
   test("automatically cleanup RDD + shuffle + broadcast in distributed mode") {
@@ -357,14 +354,12 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
-        .getMatchingBlockIds(
-          {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
-          },
-          askSlaves = true)
-        .isEmpty)
+      sc.env.blockManager.master.getMatchingBlockIds(
+        {
+          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+          case _                                             => false
+        },
+        askSlaves = true).isEmpty)
   }
 }
 
@@ -443,14 +438,12 @@ class SortShuffleContextCleanerSuite
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
-        .getMatchingBlockIds(
-          {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
-          },
-          askSlaves = true)
-        .isEmpty)
+      sc.env.blockManager.master.getMatchingBlockIds(
+        {
+          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+          case _                                             => false
+        },
+        askSlaves = true).isEmpty)
   }
 }
 

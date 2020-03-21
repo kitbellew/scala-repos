@@ -57,12 +57,10 @@ class AppTasksResourceTest
     import MarathonTestHelper.Implicits._
     val appId = PathId("/my/app")
     val slaveId = SlaveID("some slave ID")
-    val task1 = MarathonTestHelper
-      .mininimalTask(appId)
-      .withAgentInfo(_.copy(agentId = Some(slaveId.value)))
-    val task2 = MarathonTestHelper
-      .mininimalTask(appId)
-      .withAgentInfo(_.copy(agentId = Some(slaveId.value)))
+    val task1 = MarathonTestHelper.mininimalTask(appId).withAgentInfo(
+      _.copy(agentId = Some(slaveId.value)))
+    val task2 = MarathonTestHelper.mininimalTask(appId).withAgentInfo(
+      _.copy(agentId = Some(slaveId.value)))
     val toKill = Set(task1)
 
     config.zkTimeoutDuration returns 5.seconds

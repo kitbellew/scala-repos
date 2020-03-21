@@ -185,12 +185,12 @@ class SbtModuleBuilder
     model.addContentEntry(vContentRootDir)
     model.inheritSdk()
     val settings =
-      ExternalSystemApiUtil
-        .getSettings(model.getProject, SbtProjectSystem.Id)
-        .asInstanceOf[AbstractExternalSystemSettings[
-          _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
-          SbtProjectSettings,
-          _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
+      ExternalSystemApiUtil.getSettings(
+        model.getProject,
+        SbtProjectSystem.Id).asInstanceOf[AbstractExternalSystemSettings[
+        _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
+        SbtProjectSettings,
+        _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
 //    model.commit()
 
     val externalProjectSettings = getExternalProjectSettings

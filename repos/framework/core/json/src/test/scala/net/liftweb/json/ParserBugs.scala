@@ -41,10 +41,10 @@ object ParserBugs extends Specification {
   }
 
   "Solo quote mark should fail cleanly (not StringIndexOutOfBoundsException) (1041)" in {
-    JsonParser.parse("\"", discardParser) must throwA[JsonParser.ParseException]
-      .like {
-        case e => e.getMessage must startWith("unexpected eof")
-      }
+    JsonParser.parse("\"", discardParser) must throwA[
+      JsonParser.ParseException].like {
+      case e => e.getMessage must startWith("unexpected eof")
+    }
   }
 
   "Field names must be quoted" in {

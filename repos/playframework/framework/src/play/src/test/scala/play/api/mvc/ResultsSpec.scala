@@ -56,9 +56,10 @@ object ResultsSpec extends Specification {
 
     "support headers manipulation" in {
       val Result(ResponseHeader(_, headers, _), _) =
-        Ok("hello")
-          .as("text/html")
-          .withHeaders("Set-Cookie" -> "yes", "X-YOP" -> "1", "X-Yop" -> "2")
+        Ok("hello").as("text/html").withHeaders(
+          "Set-Cookie" -> "yes",
+          "X-YOP" -> "1",
+          "X-Yop" -> "2")
 
       headers.size must_== 2
       headers must havePair("Set-Cookie" -> "yes")
@@ -68,12 +69,8 @@ object ResultsSpec extends Specification {
 
     "support date headers manipulation" in {
       val Result(ResponseHeader(_, headers, _), _) =
-        Ok("hello")
-          .as("text/html")
-          .withDateHeaders(
-            DATE ->
-              new DateTime(2015, 4, 1, 0, 0)
-                .withZoneRetainFields(DateTimeZone.UTC))
+        Ok("hello").as("text/html").withDateHeaders(DATE ->
+          new DateTime(2015, 4, 1, 0, 0).withZoneRetainFields(DateTimeZone.UTC))
       headers must havePair(DATE -> "Wed, 01 Apr 2015 00:00:00 GMT")
     }
 
@@ -81,10 +78,9 @@ object ResultsSpec extends Specification {
       val setCookieHeader = Cookies.encodeSetCookieHeader(
         Seq(Cookie("session", "items"), Cookie("preferences", "blue")))
 
-      val decodedCookies = Cookies
-        .decodeSetCookieHeader(setCookieHeader)
-        .map(c => c.name -> c)
-        .toMap
+      val decodedCookies =
+        Cookies.decodeSetCookieHeader(setCookieHeader).map(c =>
+          c.name -> c).toMap
       decodedCookies.size must be_==(2)
       decodedCookies("session").value must be_==("items")
       decodedCookies("preferences").value must be_==("blue")
@@ -93,28 +89,25 @@ object ResultsSpec extends Specification {
         setCookieHeader,
         Seq(Cookie("lang", "fr"), Cookie("session", "items2")))
 
-      val newDecodedCookies = Cookies
-        .decodeSetCookieHeader(newCookieHeader)
-        .map(c => c.name -> c)
-        .toMap
+      val newDecodedCookies =
+        Cookies.decodeSetCookieHeader(newCookieHeader).map(c =>
+          c.name -> c).toMap
       newDecodedCookies.size must be_==(3)
       newDecodedCookies("session").value must be_==("items2")
       newDecodedCookies("preferences").value must be_==("blue")
       newDecodedCookies("lang").value must be_==("fr")
 
       val Result(ResponseHeader(_, headers, _), _) =
-        Ok("hello")
-          .as("text/html")
+        Ok("hello").as("text/html")
           .withCookies(
             Cookie("session", "items"),
             Cookie("preferences", "blue"))
           .withCookies(Cookie("lang", "fr"), Cookie("session", "items2"))
           .discardingCookies(DiscardingCookie("logged"))
 
-      val setCookies = Cookies
-        .decodeSetCookieHeader(headers("Set-Cookie"))
-        .map(c => c.name -> c)
-        .toMap
+      val setCookies =
+        Cookies.decodeSetCookieHeader(headers("Set-Cookie")).map(c =>
+          c.name -> c).toMap
       setCookies must haveSize(4)
       setCookies("session").value must be_==("items2")
       setCookies("session").maxAge must beNone
@@ -130,9 +123,8 @@ object ResultsSpec extends Specification {
           expected: Option[Set[Cookie]]) = {
         val result =
           Ok("hello").withCookies(cookies1: _*).withCookies(cookies2: _*)
-        result.header.headers
-          .get("Set-Cookie")
-          .map(Cookies.decodeSetCookieHeader(_).to[Set]) must_== expected
+        result.header.headers.get("Set-Cookie").map(
+          Cookies.decodeSetCookieHeader(_).to[Set]) must_== expected
       }
       val preferencesCookie = Cookie("preferences", "blue")
       val sessionCookie = Cookie("session", "items")
@@ -161,30 +153,23 @@ object ResultsSpec extends Specification {
         Environment.simple(),
         Configuration.reference,
         new DefaultLangs(Configuration.reference))
-      val cookie = Cookies
-        .decodeSetCookieHeader(Ok.clearingLang.header.headers("Set-Cookie"))
-        .head
+      val cookie = Cookies.decodeSetCookieHeader(
+        Ok.clearingLang.header.headers("Set-Cookie")).head
       cookie.name must_== Play.langCookieName
       cookie.value must_== ""
     }
 
     "allow discarding a cookie by deprecated names method" in withApplication {
-      Cookies
-        .decodeSetCookieHeader(
-          Ok.discardingCookies(DiscardingCookie("blah"))
-            .header
-            .headers("Set-Cookie"))
-        .head
-        .name must_== "blah"
+      Cookies.decodeSetCookieHeader(
+        Ok.discardingCookies(DiscardingCookie("blah")).header.headers(
+          "Set-Cookie")).head.name must_== "blah"
     }
 
     "allow discarding multiple cookies by deprecated names method" in withApplication {
-      val cookies = Cookies
-        .decodeSetCookieHeader(
-          Ok.discardingCookies(DiscardingCookie("foo"), DiscardingCookie("bar"))
-            .header
-            .headers("Set-Cookie"))
-        .map(_.name)
+      val cookies = Cookies.decodeSetCookieHeader(
+        Ok.discardingCookies(
+          DiscardingCookie("foo"),
+          DiscardingCookie("bar")).header.headers("Set-Cookie")).map(_.name)
       cookies must containTheSameElementsAs(Seq("foo", "bar"))
     }
 
@@ -267,17 +252,15 @@ object ResultsSpec extends Specification {
     }
 
     "support redirects for reverse routed calls" in {
-      Results.Redirect(Call("GET", "/path")).header must_== Status(303)
-        .withHeaders(LOCATION -> "/path")
-        .header
+      Results.Redirect(Call("GET", "/path")).header must_== Status(
+        303).withHeaders(LOCATION -> "/path").header
     }
 
     "support redirects for reverse routed calls with custom statuses" in {
-      Results
-        .Redirect(Call("GET", "/path"), TEMPORARY_REDIRECT)
-        .header must_== Status(TEMPORARY_REDIRECT)
-        .withHeaders(LOCATION -> "/path")
-        .header
+      Results.Redirect(
+        Call("GET", "/path"),
+        TEMPORARY_REDIRECT).header must_== Status(
+        TEMPORARY_REDIRECT).withHeaders(LOCATION -> "/path").header
     }
   }
 }

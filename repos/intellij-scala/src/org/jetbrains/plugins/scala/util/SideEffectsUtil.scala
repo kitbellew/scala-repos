@@ -34,8 +34,7 @@ object SideEffectsUtil {
 
   private val methodsFromObjectWithSideEffects =
     Seq("wait", "finalize", "notifyAll", "notify")
-      .map("java.lang.Object." + _)
-      .toArray
+      .map("java.lang.Object." + _).toArray
 
   def hasNoSideEffects(expr: ScExpression): Boolean =
     expr match {
@@ -97,9 +96,8 @@ object SideEffectsUtil {
           case ResolvesTo(m: PsiMethod)             => methodHasNoSideEffects(m, typeOfQual)
           case ResolvesTo(_: ScSyntheticFunction)   => true
           case ResolvesTo(td: ScTypedDefinition) =>
-            val withApplyText = baseExpr.getText + ".apply" + args
-              .map(_.getText)
-              .mkString("(", ", ", ")")
+            val withApplyText = baseExpr.getText + ".apply" + args.map(
+              _.getText).mkString("(", ", ", ")")
             val withApply =
               ScalaPsiElementFactory.createExpressionWithContextFromText(
                 withApplyText,
@@ -159,10 +157,8 @@ object SideEffectsUtil {
   private def hasImplicitConversion(refExpr: ScExpression) = {
     refExpr match {
       case ref: ScReferenceExpression =>
-        ref
-          .bind()
-          .exists(rr =>
-            rr.implicitConversionClass.isDefined || rr.implicitFunction.isDefined)
+        ref.bind().exists(rr =>
+          rr.implicitConversionClass.isDefined || rr.implicitFunction.isDefined)
       case _ => false
     }
   }
@@ -182,9 +178,8 @@ object SideEffectsUtil {
       case _ =>
     }
 
-    val clazzName = typeOfQual
-      .flatMap(ScType.extractDesignatorSingletonType)
-      .orElse(typeOfQual) match {
+    val clazzName = typeOfQual.flatMap(
+      ScType.extractDesignatorSingletonType).orElse(typeOfQual) match {
       case Some(tp) => ScType.extractClass(tp).map(_.qualifiedName)
       case None     => methodClazzName
     }

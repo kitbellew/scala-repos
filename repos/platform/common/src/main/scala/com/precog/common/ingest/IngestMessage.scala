@@ -158,8 +158,8 @@ object IngestMessage {
     Iso.hlist(IngestMessage.apply _, IngestMessage.unapply _)
 
   val schemaV1 =
-    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: ("streamRef" ||| StreamRef.Append
-      .asInstanceOf[StreamRef]) :: HNil
+    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: ("streamRef" ||| StreamRef.Append.asInstanceOf[
+      StreamRef]) :: HNil
   implicit def seqExtractor[A: Extractor]: Extractor[Seq[A]] =
     implicitly[Extractor[List[A]]].map(_.toSeq)
 

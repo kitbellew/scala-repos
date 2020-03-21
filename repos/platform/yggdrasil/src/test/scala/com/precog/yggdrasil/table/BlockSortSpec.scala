@@ -69,15 +69,9 @@ trait BlockSortSpec[M[+_]]
     val globalIdPath = JPath(".globalId")
 
     val original = if (unique) {
-      sample.data
-        .map { jv =>
-          JArray(sortKeys.map(_.extract(jv \ "value")).toList) -> jv
-        }
-        .toMap
-        .toList
-        .unzip
-        ._2
-        .toStream
+      sample.data.map { jv =>
+        JArray(sortKeys.map(_.extract(jv \ "value")).toList) -> jv
+      }.toMap.toList.unzip._2.toStream
     } else {
       sample.data
     }
@@ -85,17 +79,13 @@ trait BlockSortSpec[M[+_]]
     // We have to add in and then later remove the global Id (insert
     // order) to match real sort semantics for disambiguation of equal
     // values
-    val sorted = original.zipWithIndex
-      .map {
-        case (jv, i) => JValue.unsafeInsert(jv, globalIdPath, JNum(i))
-      }
-      .sortBy { v =>
-        JArray(
-          sortKeys.map(_.extract(v \ "value")).toList ::: List(v \ "globalId"))
-          .asInstanceOf[JValue]
-      }(desiredJValueOrder)
-      .map(_.delete(globalIdPath).get)
-      .toList
+    val sorted = original.zipWithIndex.map {
+      case (jv, i) => JValue.unsafeInsert(jv, globalIdPath, JNum(i))
+    }.sortBy { v =>
+      JArray(
+        sortKeys.map(_.extract(v \ "value")).toList ::: List(
+          v \ "globalId")).asInstanceOf[JValue]
+    }(desiredJValueOrder).map(_.delete(globalIdPath).get).toList
 
     //def xyz(v: JValue): JValue = {
     //  JArray(sortKeys.map(_.extract(v \ "value")).toList ::: List(v \ "globalId"))
@@ -104,9 +94,9 @@ trait BlockSortSpec[M[+_]]
     val cSortKeys = sortKeys map { CPath(_) }
 
     val resultM = for {
-      sorted <- module
-        .fromSample(sample)
-        .sort(module.sortTransspec(cSortKeys: _*), sortOrder)
+      sorted <- module.fromSample(sample).sort(
+        module.sortTransspec(cSortKeys: _*),
+        sortOrder)
       json <- sorted.toJson
     } yield (json, sorted)
 

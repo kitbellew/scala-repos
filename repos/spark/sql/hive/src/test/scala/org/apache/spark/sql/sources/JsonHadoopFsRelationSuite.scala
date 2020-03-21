@@ -56,8 +56,7 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
           dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
-        hiveContext.read
-          .format(dataSourceName)
+        hiveContext.read.format(dataSourceName)
           .option("dataSchema", dataSchemaWithPartition.json)
           .load(file.getCanonicalPath))
     }
@@ -85,10 +84,8 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
 
       // Read it back and check the result.
       checkAnswer(
-        hiveContext.read
-          .format(dataSourceName)
-          .schema(schema)
-          .load(file.getCanonicalPath),
+        hiveContext.read.format(dataSourceName).schema(schema).load(
+          file.getCanonicalPath),
         df
       )
     }
@@ -114,10 +111,8 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
 
       // Read it back and check the result.
       checkAnswer(
-        hiveContext.read
-          .format(dataSourceName)
-          .schema(schema)
-          .load(file.getCanonicalPath),
+        hiveContext.read.format(dataSourceName).schema(schema).load(
+          file.getCanonicalPath),
         df
       )
     }

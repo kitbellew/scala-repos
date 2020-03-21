@@ -53,10 +53,8 @@ class EncoderResolutionSuite extends PlanTest {
     "real type doesn't match encoder schema but they are compatible: nested product") {
     val encoder = ExpressionEncoder[ComplexClass]
     val attrs = Seq('a.int, 'b.struct('a.int, 'b.long))
-    encoder
-      .resolve(attrs, null)
-      .bind(attrs)
-      .fromRow(InternalRow(1, InternalRow(2, 3L)))
+    encoder.resolve(attrs, null).bind(attrs).fromRow(
+      InternalRow(1, InternalRow(2, 3L)))
   }
 
   test(
@@ -65,10 +63,8 @@ class EncoderResolutionSuite extends PlanTest {
       ExpressionEncoder[StringLongClass],
       ExpressionEncoder[Long])
     val attrs = Seq('a.struct('a.string, 'b.byte), 'b.int)
-    encoder
-      .resolve(attrs, null)
-      .bind(attrs)
-      .fromRow(InternalRow(InternalRow(str, 1.toByte), 2))
+    encoder.resolve(attrs, null).bind(attrs).fromRow(
+      InternalRow(InternalRow(str, 1.toByte), 2))
   }
 
   test("nullability of array type element should not fail analysis") {
@@ -151,9 +147,9 @@ class EncoderResolutionSuite extends PlanTest {
        """.stripMargin.trim + " of the field in the target object")
 
     val msg2 = intercept[AnalysisException] {
-      val structType = new StructType()
-        .add("a", StringType)
-        .add("b", DecimalType.SYSTEM_DEFAULT)
+      val structType = new StructType().add("a", StringType).add(
+        "b",
+        DecimalType.SYSTEM_DEFAULT)
       ExpressionEncoder[ComplexClass].resolve(
         Seq('a.long, 'b.struct(structType)),
         null)

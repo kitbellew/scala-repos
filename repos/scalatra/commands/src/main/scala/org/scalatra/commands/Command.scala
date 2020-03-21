@@ -88,10 +88,8 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
     val f: FieldDescriptor[T] =
       if (mf.runtimeClass.isAssignableFrom(classOf[Option[_]])) {
         // Yay! not one but 2 casts in the same line
-        field
-          .asInstanceOf[FieldDescriptor[Option[_]]]
-          .withDefaultValue(None)
-          .asInstanceOf[FieldDescriptor[T]]
+        field.asInstanceOf[FieldDescriptor[Option[_]]].withDefaultValue(
+          None).asInstanceOf[FieldDescriptor[T]]
       } else field
     val b = Binding(f)
     bindings += b.name -> b
@@ -138,9 +136,10 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
     bindings = bindings map {
       case (name, b) =>
         val tcf = b.typeConverterFactory
-        val cv = typeConverterBuilder(
-          tcf.asInstanceOf[CommandTypeConverterFactory[_]])(data)
-          .asInstanceOf[TypeConverter[I, b.T]]
+        val cv =
+          typeConverterBuilder(
+            tcf.asInstanceOf[CommandTypeConverterFactory[_]])(
+            data).asInstanceOf[TypeConverter[I, b.T]]
         val fieldBinding =
           Binding(b.field, cv, b.typeConverterFactory)(mi, b.valueManifest)
 
@@ -158,16 +157,14 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
               Right(headers.get(name).map(_.asInstanceOf[headersBinding.S])))
           case ValueSource.Path | ValueSource.Query =>
             val pv = typeConverterBuilder(
-              tcf.asInstanceOf[CommandTypeConverterFactory[_]])(params)
-              .asInstanceOf[TypeConverter[Seq[String], b.T]]
+              tcf.asInstanceOf[CommandTypeConverterFactory[_]])(
+              params).asInstanceOf[TypeConverter[Seq[String], b.T]]
             val paramsBinding = Binding(b.field, pv, b.typeConverterFactory)(
               manifest[Seq[String]],
               b.valueManifest)
             paramsBinding(
-              params
-                .read(name)
-                .right
-                .map(_ map (_.asInstanceOf[paramsBinding.S])))
+              params.read(name).right.map(
+                _ map (_.asInstanceOf[paramsBinding.S])))
         }
 
         name -> result

@@ -39,10 +39,11 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
     sub.request(1)
     c.expectNext(1)
     c.expectNoMsg(100.millis)
-    EventFilter[IllegalStateException](message = "not two", occurrences = 1)
-      .intercept {
-        sub.request(2)
-      }
+    EventFilter[IllegalStateException](
+      message = "not two",
+      occurrences = 1).intercept {
+      sub.request(2)
+    }
     c.expectError().getMessage should be("not two")
     sub.request(2)
     c.expectNoMsg(100.millis)
@@ -172,10 +173,8 @@ abstract class AbstractFlowIteratorSpec extends AkkaSpec {
     }
 
     "produce elements with two transformation steps" in assertAllStagesStopped {
-      val p = createSource(4)
-        .filter(_ % 2 == 0)
-        .map(_ * 2)
-        .runWith(Sink.asPublisher(false))
+      val p = createSource(4).filter(_ % 2 == 0).map(_ * 2).runWith(
+        Sink.asPublisher(false))
       val c = TestSubscriber.manualProbe[Int]()
       p.subscribe(c)
       val sub = c.expectSubscription()

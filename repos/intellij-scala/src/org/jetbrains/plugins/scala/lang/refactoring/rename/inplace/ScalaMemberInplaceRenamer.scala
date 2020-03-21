@@ -74,9 +74,8 @@ class ScalaMemberInplaceRenamer(
     }
 
   override def restoreCaretOffset(offset: Int): Int = {
-    offset
-      .max(myCaretRangeMarker.getStartOffset)
-      .min(myCaretRangeMarker.getEndOffset)
+    offset.max(myCaretRangeMarker.getStartOffset).min(
+      myCaretRangeMarker.getEndOffset)
   }
 
   override def acceptReference(reference: PsiReference): Boolean = true
@@ -113,16 +112,17 @@ class ScalaMemberInplaceRenamer(
           val document = myEditor.getDocument
           if (revertInfo != null) {
             extensions.inWriteAction {
-              document
-                .replaceString(0, document.getTextLength, revertInfo.fileText)
+              document.replaceString(
+                0,
+                document.getTextLength,
+                revertInfo.fileText)
               PsiDocumentManager.getInstance(myProject).commitDocument(document)
             }
             val offset = revertInfo.caretOffset
             myEditor.getCaretModel.moveToOffset(offset)
             myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-            PsiDocumentManager
-              .getInstance(myEditor.getProject)
-              .commitDocument(document)
+            PsiDocumentManager.getInstance(myEditor.getProject).commitDocument(
+              document)
             val clazz = myElementToRename.getClass
             val element = TargetElementUtil.findTargetElement(
               myEditor,
@@ -131,9 +131,8 @@ class ScalaMemberInplaceRenamer(
               case null                                              => null
               case named: PsiNamedElement if named.getClass == clazz => named
               case _ =>
-                RenamePsiElementProcessor
-                  .forElement(element)
-                  .substituteElementToRename(element, myEditor) match {
+                RenamePsiElementProcessor.forElement(
+                  element).substituteElementToRename(element, myEditor) match {
                   case named: PsiNamedElement if named.getClass == clazz =>
                     named
                   case _ => null
@@ -153,8 +152,8 @@ class ScalaMemberInplaceRenamer(
 
   override def getVariable: PsiNamedElement = {
     Option(super.getVariable).getOrElse {
-      if (myElementToRename != null && myElementToRename.isValid && oldName == ScalaNamesUtil
-            .scalaName(myElementToRename))
+      if (myElementToRename != null && myElementToRename.isValid && oldName == ScalaNamesUtil.scalaName(
+            myElementToRename))
         myElementToRename
       else null
     }
@@ -166,9 +165,8 @@ class ScalaMemberInplaceRenamer(
     val subst = super.getSubstituted
     if (subst != null && subst.getText == substituted.getText) subst
     else {
-      val psiFile: PsiFile = PsiDocumentManager
-        .getInstance(myProject)
-        .getPsiFile(myEditor.getDocument)
+      val psiFile: PsiFile = PsiDocumentManager.getInstance(
+        myProject).getPsiFile(myEditor.getDocument)
       if (psiFile != null)
         PsiTreeUtil.getParentOfType(
           psiFile.findElementAt(substitutorOffset),
@@ -202,8 +200,10 @@ class ScalaMemberInplaceRenamer(
         val subst = getSubstituted
         val offset = editor.getCaretModel.getOffset
         val text = editor.getDocument.getText
-        val aroundCaret = text.substring(offset - 50, offset) + "<caret>" + text
-          .substring(offset, offset + 50)
+        val aroundCaret =
+          text.substring(offset - 50, offset) + "<caret>" + text.substring(
+            offset,
+            offset + 50)
         val message =
           s"""Could not perform inplace rename:
              |element to rename: $element ${element.getName}
@@ -217,8 +217,7 @@ class ScalaMemberInplaceRenamer(
     myElementToRename match {
       case lightPsi: PsiNamedElement if !lightPsi.isPhysical => null
       case nameIdentifierOwner: PsiNameIdentifierOwner
-          if myElementToRename.getContainingFile.getViewProvider.getAllFiles
-            .size() > 1 =>
+          if myElementToRename.getContainingFile.getViewProvider.getAllFiles.size() > 1 =>
         nameIdentifierOwner.getNameIdentifier
       case _ => super.getNameIdentifier
     }

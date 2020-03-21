@@ -60,10 +60,8 @@ object RichPipe extends java.io.Serializable {
   // A pipe can have more than one description when merged together, so we store them delimited with 255.toChar.
   // Cannot use 1.toChar as we get an error if it is not a printable character.
   private def encodePipeDescriptions(descriptions: Seq[String]): String = {
-    descriptions
-      .map(_.replace(255.toChar, ' '))
-      .filter(_.nonEmpty)
-      .mkString(255.toChar.toString)
+    descriptions.map(_.replace(255.toChar, ' ')).filter(_.nonEmpty).mkString(
+      255.toChar.toString)
   }
 
   private def decodePipeDescriptions(encoding: String): Seq[String] = {
@@ -89,10 +87,9 @@ object RichPipe extends java.io.Serializable {
   }
 
   def setPipeDescriptions(p: Pipe, descriptions: Seq[String]): Pipe = {
-    p.getStepConfigDef()
-      .setProperty(
-        Config.PipeDescriptions,
-        encodePipeDescriptions(getPipeDescriptions(p) ++ descriptions))
+    p.getStepConfigDef().setProperty(
+      Config.PipeDescriptions,
+      encodePipeDescriptions(getPipeDescriptions(p) ++ descriptions))
     p
   }
 
@@ -614,8 +611,7 @@ class RichPipe(val pipe: Pipe)
       fieldDef._2.size == 2,
       "Must specify exactly two Field names for the results")
     // toKeyValueList comes from TupleConversions
-    pipe
-      .flatMap(fieldDef) { te: TupleEntry => TupleConverter.KeyValueList(te) }
+    pipe.flatMap(fieldDef) { te: TupleEntry => TupleConverter.KeyValueList(te) }
       .discard(fieldDef._1)
   }
 

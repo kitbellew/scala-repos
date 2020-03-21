@@ -52,9 +52,9 @@ class SerializableResultSpec extends PlaySpecification {
       checkSerialization(
         Results.Ok("hello!").withHeaders(CONTENT_TYPE -> "text/banana"))
       checkSerialization(
-        Results
-          .Ok("hello!")
-          .withHeaders(CONTENT_TYPE -> "text/banana", "X-Foo" -> "bar"))
+        Results.Ok("hello!").withHeaders(
+          CONTENT_TYPE -> "text/banana",
+          "X-Foo" -> "bar"))
     }
   }
 }

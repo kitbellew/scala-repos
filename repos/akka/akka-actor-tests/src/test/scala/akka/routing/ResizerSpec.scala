@@ -50,19 +50,15 @@ class ResizerSpec
   }
 
   def routeeSize(router: ActorRef): Int =
-    Await
-      .result(router ? GetRoutees, timeout.duration)
-      .asInstanceOf[Routees]
-      .routees
-      .size
+    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[
+      Routees].routees.size
 
   "Resizer fromConfig" must {
     def parseCfg(cfgString: String): Config = {
       val referenceCfg =
         ConfigFactory.defaultReference(ActorSystem.findClassLoader())
-      ConfigFactory
-        .parseString(cfgString)
-        .withFallback(referenceCfg.getConfig("akka.actor.deployment.default"))
+      ConfigFactory.parseString(cfgString).withFallback(
+        referenceCfg.getConfig("akka.actor.deployment.default"))
     }
 
     "load DefaultResizer from config when resizer is enabled" in {
@@ -147,8 +143,8 @@ class ResizerSpec
 
       val resizer = DefaultResizer(lowerBound = 2, upperBound = 3)
       val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
-          .props(Props[TestActor]))
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
+          Props[TestActor]))
 
       router ! latch
       router ! latch
@@ -188,8 +184,8 @@ class ResizerSpec
         backoffThreshold = 0.0)
 
       val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
-          .props(Props(new Actor {
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
+          Props(new Actor {
             def receive = {
               case d: FiniteDuration ⇒
                 Thread.sleep(d.dilated.toMillis); sender() ! "done"
@@ -234,8 +230,8 @@ class ResizerSpec
         messagesPerResize = 2)
 
       val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
-          .props(Props(new Actor {
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
+          Props(new Actor {
             def receive = {
               case n: Int if n <= 0 ⇒ // done
               case n: Int ⇒ Thread.sleep((n millis).dilated.toMillis)

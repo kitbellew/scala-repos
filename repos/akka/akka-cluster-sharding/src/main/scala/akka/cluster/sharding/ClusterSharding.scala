@@ -163,8 +163,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   private lazy val guardian = {
     val guardianName: String =
       system.settings.config.getString("akka.cluster.sharding.guardian-name")
-    val dispatcher = system.settings.config
-      .getString("akka.cluster.sharding.use-dispatcher") match {
+    val dispatcher = system.settings.config.getString(
+      "akka.cluster.sharding.use-dispatcher") match {
       case "" ⇒ Dispatchers.DefaultDispatcherId
       case id ⇒ id
     }
@@ -491,41 +491,37 @@ private[akka] class ClusterShardingGuardian extends Actor {
             if (settings.stateStoreMode == "persistence")
               ShardCoordinator.props(typeName, settings, allocationStrategy)
             else
-              ShardCoordinator
-                .props(typeName, settings, allocationStrategy, replicator)
-          val singletonProps = BackoffSupervisor
-            .props(
-              childProps = coordinatorProps,
-              childName = "coordinator",
-              minBackoff = coordinatorFailureBackoff,
-              maxBackoff = coordinatorFailureBackoff * 5,
-              randomFactor = 0.2)
-            .withDeploy(Deploy.local)
+              ShardCoordinator.props(
+                typeName,
+                settings,
+                allocationStrategy,
+                replicator)
+          val singletonProps = BackoffSupervisor.props(
+            childProps = coordinatorProps,
+            childName = "coordinator",
+            minBackoff = coordinatorFailureBackoff,
+            maxBackoff = coordinatorFailureBackoff * 5,
+            randomFactor = 0.2).withDeploy(Deploy.local)
           val singletonSettings = settings.coordinatorSingletonSettings
-            .withSingletonName("singleton")
-            .withRole(role)
+            .withSingletonName("singleton").withRole(role)
           context.actorOf(
-            ClusterSingletonManager
-              .props(
-                singletonProps,
-                terminationMessage = PoisonPill,
-                singletonSettings)
-              .withDispatcher(context.props.dispatcher),
+            ClusterSingletonManager.props(
+              singletonProps,
+              terminationMessage = PoisonPill,
+              singletonSettings).withDispatcher(context.props.dispatcher),
             name = cName)
         }
 
         context.actorOf(
-          ShardRegion
-            .props(
-              typeName = typeName,
-              entityProps = entityProps,
-              settings = settings,
-              coordinatorPath = cPath,
-              extractEntityId = extractEntityId,
-              extractShardId = extractShardId,
-              handOffStopMessage = handOffStopMessage
-            )
-            .withDispatcher(context.props.dispatcher),
+          ShardRegion.props(
+            typeName = typeName,
+            entityProps = entityProps,
+            settings = settings,
+            coordinatorPath = cPath,
+            extractEntityId = extractEntityId,
+            extractShardId = extractShardId,
+            handOffStopMessage = handOffStopMessage
+          ).withDispatcher(context.props.dispatcher),
           name = encName
         )
       }
@@ -537,14 +533,13 @@ private[akka] class ClusterShardingGuardian extends Actor {
       val cPath = coordinatorPath(encName)
       val shardRegion = context.child(encName).getOrElse {
         context.actorOf(
-          ShardRegion
-            .proxyProps(
-              typeName = typeName,
-              settings = settings,
-              coordinatorPath = cPath,
-              extractEntityId = extractEntityId,
-              extractShardId = extractShardId)
-            .withDispatcher(context.props.dispatcher),
+          ShardRegion.proxyProps(
+            typeName = typeName,
+            settings = settings,
+            coordinatorPath = cPath,
+            extractEntityId = extractEntityId,
+            extractShardId = extractShardId).withDispatcher(
+            context.props.dispatcher),
           name = encName
         )
       }

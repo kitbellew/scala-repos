@@ -38,79 +38,76 @@ private[sql] class ExecutionPage(parent: SQLTab)
         "Missing execution id parameter")
 
       val executionId = parameterExecutionId.toLong
-      val content = listener
-        .getExecution(executionId)
-        .map { executionUIData =>
-          val currentTime = System.currentTimeMillis()
-          val duration =
-            executionUIData.completionTime.getOrElse(
-              currentTime) - executionUIData.submissionTime
+      val content = listener.getExecution(executionId).map { executionUIData =>
+        val currentTime = System.currentTimeMillis()
+        val duration =
+          executionUIData.completionTime.getOrElse(
+            currentTime) - executionUIData.submissionTime
 
-          val summary =
-            <div>
+        val summary =
+          <div>
           <ul class="unstyled">
             <li>
               <strong>Submitted Time: </strong>{
-              UIUtils.formatDate(executionUIData.submissionTime)
-            }
+            UIUtils.formatDate(executionUIData.submissionTime)
+          }
             </li>
             <li>
               <strong>Duration: </strong>{UIUtils.formatDuration(duration)}
             </li>
             {
-              if (executionUIData.runningJobs.nonEmpty) {
-                <li>
+            if (executionUIData.runningJobs.nonEmpty) {
+              <li>
                 <strong>Running Jobs: </strong>
                 {
-                  executionUIData.runningJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                executionUIData.runningJobs.sorted.map { jobId =>
+                  <a href={jobURL(jobId)}>{
+                    jobId.toString
+                  }</a><span>&nbsp;</span>
                 }
-              </li>
               }
+              </li>
             }
+          }
             {
-              if (executionUIData.succeededJobs.nonEmpty) {
-                <li>
+            if (executionUIData.succeededJobs.nonEmpty) {
+              <li>
                 <strong>Succeeded Jobs: </strong>
                 {
-                  executionUIData.succeededJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                executionUIData.succeededJobs.sorted.map { jobId =>
+                  <a href={jobURL(jobId)}>{
+                    jobId.toString
+                  }</a><span>&nbsp;</span>
                 }
-              </li>
               }
+              </li>
             }
+          }
             {
-              if (executionUIData.failedJobs.nonEmpty) {
-                <li>
+            if (executionUIData.failedJobs.nonEmpty) {
+              <li>
                 <strong>Failed Jobs: </strong>
                 {
-                  executionUIData.failedJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                executionUIData.failedJobs.sorted.map { jobId =>
+                  <a href={jobURL(jobId)}>{
+                    jobId.toString
+                  }</a><span>&nbsp;</span>
                 }
-              </li>
               }
+              </li>
             }
+          }
           </ul>
         </div>
 
-          val metrics = listener.getExecutionMetrics(executionId)
+        val metrics = listener.getExecutionMetrics(executionId)
 
-          summary ++
-            planVisualization(metrics, executionUIData.physicalPlanGraph) ++
-            physicalPlanDescription(executionUIData.physicalPlanDescription)
-        }
-        .getOrElse {
-          <div>No information to display for Plan {executionId}</div>
-        }
+        summary ++
+          planVisualization(metrics, executionUIData.physicalPlanGraph) ++
+          physicalPlanDescription(executionUIData.physicalPlanDescription)
+      }.getOrElse {
+        <div>No information to display for Plan {executionId}</div>
+      }
 
       UIUtils.headerSparkPage(
         s"Details for Query $executionId",

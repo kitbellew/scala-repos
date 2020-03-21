@@ -70,22 +70,17 @@ final class FishnetApi(
 
   private def acquireAnalysis(client: Client): Fu[Option[JsonApi.Work]] =
     sequencer {
-      analysisColl
-        .find(
-          BSONDocument(
-            "acquired" -> BSONDocument("$exists" -> false)
-          ))
-        .sort(
-          BSONDocument(
-            "sender.system" -> 1, // user requests first, then lichess auto analysis
-            "createdAt" -> 1 // oldest requests first
-          ))
-        .one[Work.Analysis]
-        .flatMap {
-          _ ?? { work =>
-            repo.updateAnalysis(work assignTo client) inject work.some
-          }
+      analysisColl.find(
+        BSONDocument(
+          "acquired" -> BSONDocument("$exists" -> false)
+        )).sort(BSONDocument(
+        "sender.system" -> 1, // user requests first, then lichess auto analysis
+        "createdAt" -> 1 // oldest requests first
+      )).one[Work.Analysis].flatMap {
+        _ ?? { work =>
+          repo.updateAnalysis(work assignTo client) inject work.some
         }
+      }
     }.map { _ map JsonApi.fromWork }
 
   def postMove(
@@ -109,10 +104,8 @@ final class FishnetApi(
           }
         case Some(work) => monitor.notAcquired(work, client)
       }
-    }.chronometer
-      .mon(_.fishnet.move.post)
-      .logIfSlow(100, logger)(_ => "post move")
-      .result
+    }.chronometer.mon(_.fishnet.move.post)
+      .logIfSlow(100, logger)(_ => "post move").result
 
   def postAnalysis(
       workId: Work.Id,
@@ -141,10 +134,10 @@ final class FishnetApi(
           monitor.notAcquired(work, client)
           fuccess(none)
       }
-    }.chronometer
-      .mon(_.fishnet.analysis.post)
-      .logIfSlow(200, logger) { res => s"post analysis for ${res.??(_.id)}" }
-      .result
+    }.chronometer.mon(_.fishnet.analysis.post)
+      .logIfSlow(200, logger) { res =>
+        s"post analysis for ${res.??(_.id)}"
+      }.result
       .flatMap { _ ?? saveAnalysis }
 
   def abort(workId: Work.Id, client: Client): Funit =
@@ -158,13 +151,11 @@ final class FishnetApi(
     }
 
   def prioritaryAnalysisExists(gameId: String): Fu[Boolean] =
-    analysisColl
-      .count(
-        BSONDocument(
-          "game.id" -> gameId,
-          "sender.system" -> false
-        ).some)
-      .map(0 !=)
+    analysisColl.count(
+      BSONDocument(
+        "game.id" -> gameId,
+        "sender.system" -> false
+      ).some).map(0 !=)
 
   private[fishnet] def createClient(
       userId: Client.UserId,

@@ -257,17 +257,18 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                 }
               bound0(hi, "<:") ++ bound0(lo, ">:")
             }
-            "[" + hk.typeParams
-              .map(tp =>
-                tp.variance + tp.name + tParams(tp) + boundsToString(
-                  tp.hi,
-                  tp.lo))
-              .mkString(", ") + "]"
+            "[" + hk.typeParams.map(tp =>
+              tp.variance + tp.name + tParams(tp) + boundsToString(
+                tp.hi,
+                tp.lo)).mkString(", ") + "]"
           case _ => ""
         }
 
-      (name + tParams(this) + defParams(this) + ":" + resultType.name)
-        .replaceAll("\\s", "") // no spaces allowed, they break links
+      (name + tParams(this) + defParams(
+        this) + ":" + resultType.name).replaceAll(
+        "\\s",
+        ""
+      ) // no spaces allowed, they break links
     }
     // these only apply for NonTemplateMemberEntities
     def useCaseOf: Option[MemberImpl] = None
@@ -358,9 +359,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       if (!settings.docsourceurl.isDefault)
         inSource map {
           case (file, _) =>
-            val filePath = fixPath(file.path)
-              .replaceFirst("^" + assumedSourceRoot, "")
-              .stripSuffix(".scala")
+            val filePath = fixPath(file.path).replaceFirst(
+              "^" + assumedSourceRoot,
+              "").stripSuffix(".scala")
             val tplOwner = this.inTemplate.qualifiedName
             val tplName = this.name
             val patches = new Regex("""€\{(FILE_PATH|TPL_OWNER|TPL_NAME)\}""")
@@ -373,8 +374,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             val patchedString = patches.replaceAllIn(
               settings.docsourceurl.value,
               m =>
-                java.util.regex.Matcher
-                  .quoteReplacement(substitute(m.group(1))))
+                java.util.regex.Matcher.quoteReplacement(
+                  substitute(m.group(1))))
             new java.net.URL(patchedString)
         }
       else None
@@ -619,15 +620,11 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       assert(modelFinished); conversion.isDefined
     }
     override def isShadowedImplicit =
-      isImplicitlyInherited && inTpl.implicitsShadowing
-        .get(this)
-        .map(_.isShadowed)
-        .getOrElse(false)
+      isImplicitlyInherited && inTpl.implicitsShadowing.get(this).map(
+        _.isShadowed).getOrElse(false)
     override def isAmbiguousImplicit =
-      isImplicitlyInherited && inTpl.implicitsShadowing
-        .get(this)
-        .map(_.isAmbiguous)
-        .getOrElse(false)
+      isImplicitlyInherited && inTpl.implicitsShadowing.get(this).map(
+        _.isAmbiguous).getOrElse(false)
     override def isShadowedOrAmbiguousImplicit =
       isShadowedImplicit || isAmbiguousImplicit
   }
@@ -835,9 +832,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
               val pack = new PackageImpl(bSym, inPkg) {}
               // Used to check package pruning works:
               //println(pack.qualifiedName)
-              if (pack.templates
-                    .filter(_.isDocTemplate)
-                    .isEmpty && pack.memberSymsLazy.isEmpty) {
+              if (pack.templates.filter(
+                    _.isDocTemplate).isEmpty && pack.memberSymsLazy.isEmpty) {
                 droppedPackages += pack
                 None
               } else
@@ -924,9 +920,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           if (bSym == definitions.Object_synchronized) {
             val cSymInfo = (bSym.info: @unchecked) match {
               case PolyType(ts, MethodType(List(bp), mt)) =>
-                val cp = bp.cloneSymbol
-                  .setPos(bp.pos)
-                  .setInfo(definitions.byNameType(bp.info))
+                val cp = bp.cloneSymbol.setPos(bp.pos).setInfo(
+                  definitions.byNameType(bp.info))
                 PolyType(ts, MethodType(List(cp), mt))
             }
             bSym.cloneSymbol.setPos(bSym.pos).setInfo(cSymInfo)
@@ -1164,9 +1159,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                 case TypeRef(pre, sym, args) =>
                   findTemplateMaybe(pre.typeSymbol) match {
                     case Some(tpl) =>
-                      findMember(parent.typeSymbol, tpl)
-                        .collect({ case t: TemplateImpl => t })
-                        .getOrElse(noDocTemplate)
+                      findMember(parent.typeSymbol, tpl).collect({
+                        case t: TemplateImpl => t
+                      }).getOrElse(noDocTemplate)
                     case None => noDocTemplate
                   }
                 case _ => noDocTemplate

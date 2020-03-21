@@ -23,9 +23,9 @@ class ScalaCompilerConfigurable(
   def isModified =
     form.getIncrementalityType != configuration.incrementalityType ||
       profiles.getDefaultProfile.getSettings.getState != configuration.defaultProfile.getSettings.getState ||
-      !profiles.getModuleProfiles.asScala
-        .corresponds(configuration.customProfiles)(
-          _.getSettings.getState == _.getSettings.getState)
+      !profiles.getModuleProfiles.asScala.corresponds(
+        configuration.customProfiles)(
+        _.getSettings.getState == _.getSettings.getState)
 
   def reset() {
     form.setIncrementalityType(configuration.incrementalityType)

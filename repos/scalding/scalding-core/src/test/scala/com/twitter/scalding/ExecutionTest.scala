@@ -37,15 +37,15 @@ import ExecutionContext._
 
 object ExecutionTestJobs {
   def wordCount(in: String, out: String) =
-    TypedPipe
-      .from(TextLine(in))
+    TypedPipe.from(TextLine(in))
       .flatMap(_.split("\\s+"))
       .map((_, 1L))
       .sumByKey
       .writeExecution(TypedTsv(out))
 
   def wordCount2(in: TypedPipe[String]) =
-    in.flatMap(_.split("\\s+"))
+    in
+      .flatMap(_.split("\\s+"))
       .map((_, 1L))
       .sumByKey
       .toIterableExecution
@@ -92,15 +92,18 @@ class ExecutionTest extends WordSpec with Matchers {
 
   "An Execution" should {
     "run" in {
-      ExecutionTestJobs
-        .wordCount2(TypedPipe.from(List("a b b c c c", "d d d d")))
-        .waitFor(Config.default, Local(false))
-        .get
-        .toMap shouldBe Map("a" -> 1L, "b" -> 2L, "c" -> 3L, "d" -> 4L)
+      ExecutionTestJobs.wordCount2(
+        TypedPipe.from(List("a b b c c c", "d d d d")))
+        .waitFor(Config.default, Local(false)).get.toMap shouldBe Map(
+        "a" -> 1L,
+        "b" -> 2L,
+        "c" -> 3L,
+        "d" -> 4L)
     }
     "run with zip" in {
-      (ExecutionTestJobs
-        .zipped(TypedPipe.from(0 until 100), TypedPipe.from(100 until 200))
+      (ExecutionTestJobs.zipped(
+        TypedPipe.from(0 until 100),
+        TypedPipe.from(100 until 200))
         .shouldSucceed() match {
         case (it1, it2) => (it1.head, it2.head)
       }) shouldBe ((0 until 100).sum, (100 until 200).sum)
@@ -131,27 +134,23 @@ class ExecutionTest extends WordSpec with Matchers {
         in.mapValues(_ * 2).toList ++ in.mapValues(_ * 3)
       }
       val input = (0 to 100).toList
-      val result = ExecutionTestJobs
-        .mergeFanout(input)
-        .waitFor(Config.default, Local(false))
-        .get
+      val result = ExecutionTestJobs.mergeFanout(input).waitFor(
+        Config.default,
+        Local(false)).get
       val cres = correct(input)
       unorderedEq(cres, result.toList) shouldBe true
     }
     "If either fails, zip fails, else we get success" in {
       val neverHappens = Promise[Int]().future
-      Execution
-        .fromFuture { _ => neverHappens }
+      Execution.fromFuture { _ => neverHappens }
         .zip(Execution.failed(new Exception("oh no")))
         .shouldFail()
 
-      Execution
-        .failed(new Exception("oh no"))
+      Execution.failed(new Exception("oh no"))
         .zip(Execution.fromFuture { _ => neverHappens })
         .shouldFail()
       // If both are good, we succeed:
-      Execution
-        .from(1)
+      Execution.from(1)
         .zip(Execution.from("1"))
         .shouldSucceed() shouldBe (1, "1")
     }
@@ -305,35 +304,22 @@ class ExecutionTest extends WordSpec with Matchers {
       import com.twitter.scalding.serialization.macros.impl.BinaryOrdering._
       // Attempt to use up 4 boxed classes for every execution
       def baseExecution(idx: Int): Execution[Unit] =
-        TypedPipe
-          .from(0 until 1000)
-          .map(_.toShort)
-          .flatMap { i =>
-            timesEvaluated += 1
-            List((i, i), (i, i))
-          }
-          .sumByKey
-          .map {
-            case (k, v) =>
-              (k.toInt, v)
-          }
-          .sumByKey
-          .map {
-            case (k, v) =>
-              (k.toLong, v)
-          }
-          .sumByKey
-          .map {
-            case (k, v) =>
-              (k.toString, v)
-          }
-          .sumByKey
-          .map {
-            case (k, v) =>
-              (MyCustomType(k), v)
-          }
-          .sumByKey
-          .writeExecution(TypedTsv(s"/tmp/asdf_${idx}"))
+        TypedPipe.from(0 until 1000).map(_.toShort).flatMap { i =>
+          timesEvaluated += 1
+          List((i, i), (i, i))
+        }.sumByKey.map {
+          case (k, v) =>
+            (k.toInt, v)
+        }.sumByKey.map {
+          case (k, v) =>
+            (k.toLong, v)
+        }.sumByKey.map {
+          case (k, v) =>
+            (k.toString, v)
+        }.sumByKey.map {
+          case (k, v) =>
+            (MyCustomType(k), v)
+        }.sumByKey.writeExecution(TypedTsv(s"/tmp/asdf_${idx}"))
 
       implicitly[OrderedSerialization[MyCustomType]] match {
         case mos: MacroEqualityOrderedSerialization[_] =>
@@ -358,13 +344,10 @@ class ExecutionTest extends WordSpec with Matchers {
     "evaluate shared portions just once, writeExecution" in {
 
       var timesEvaluated = 0
-      val baseTp = TypedPipe
-        .from(0 until 1000)
-        .flatMap { i =>
-          timesEvaluated += 1
-          List(i, i)
-        }
-        .fork
+      val baseTp = TypedPipe.from(0 until 1000).flatMap { i =>
+        timesEvaluated += 1
+        List(i, i)
+      }.fork
 
       val fde1 = baseTp.map { _ * 3 }.writeExecution(TypedTsv("/tmp/asdf"))
       val fde2 = baseTp.map { _ * 5 }.writeExecution(TypedTsv("/tmp/asdf2"))
@@ -380,13 +363,10 @@ class ExecutionTest extends WordSpec with Matchers {
     "evaluate shared portions just once, forceToDiskExecution" in {
 
       var timesEvaluated = 0
-      val baseTp = TypedPipe
-        .from(0 until 1000)
-        .flatMap { i =>
-          timesEvaluated += 1
-          List(i, i)
-        }
-        .fork
+      val baseTp = TypedPipe.from(0 until 1000).flatMap { i =>
+        timesEvaluated += 1
+        List(i, i)
+      }.fork
 
       val fde1 = baseTp.map { _ * 3 }.forceToDiskExecution
       val fde2 = baseTp.map { _ * 5 }.forceToDiskExecution
@@ -402,13 +382,10 @@ class ExecutionTest extends WordSpec with Matchers {
     "evaluate shared portions just once, forceToDiskExecution with execution cache" in {
 
       var timesEvaluated = 0
-      val baseTp = TypedPipe
-        .from(0 until 1000)
-        .flatMap { i =>
-          timesEvaluated += 1
-          List(i, i)
-        }
-        .fork
+      val baseTp = TypedPipe.from(0 until 1000).flatMap { i =>
+        timesEvaluated += 1
+        List(i, i)
+      }.fork
 
       val fde1 = baseTp.map { _ * 3 }.forceToDiskExecution
       val fde2 = baseTp.map { _ * 5 }.forceToDiskExecution
@@ -450,10 +427,9 @@ class ExecutionTest extends WordSpec with Matchers {
     }
 
     "handle an error running in parallel" in {
-      val executions = Execution.failed(new Exception("failed")) :: 0
-        .to(10)
-        .map(i => Execution.from[Int](i))
-        .toList
+      val executions =
+        Execution.failed(new Exception("failed")) :: 0.to(10).map(i =>
+          Execution.from[Int](i)).toList
 
       val result = Execution.withParallelism(executions, 3)
 
@@ -475,16 +451,12 @@ class ExecutionTest extends WordSpec with Matchers {
         seen += 1
       }
 
-      val executions = 0
-        .to(10)
-        .map { i =>
-          Execution
-            .from[Int](i)
-            .map { i => Thread.sleep(10 - i); i }
-            .onComplete(t => updateSeen(t.get))
-        }
-        .toList
-        .reverse
+      val executions = 0.to(10).map { i =>
+        Execution
+          .from[Int](i)
+          .map { i => Thread.sleep(10 - i); i }
+          .onComplete(t => updateSeen(t.get))
+      }.toList.reverse
 
       val result = Execution.withParallelism(executions, 1)
 

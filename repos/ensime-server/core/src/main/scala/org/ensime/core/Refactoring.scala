@@ -126,19 +126,17 @@ trait RefactoringHandler { self: Analyzer =>
 
   def handleFormatFiles(files: List[File]): Unit = {
     val cs = charset
-    val changeList = files
-      .map { f =>
-        FileUtils.readFile(f, cs) match {
-          case Right(contents) =>
-            Try(ScalaFormatter.format(contents, config.formattingPrefs))
-              .map((f, contents, _))
-          case Left(e) => throw e
-        }
+    val changeList = files.map { f =>
+      FileUtils.readFile(f, cs) match {
+        case Right(contents) =>
+          Try(ScalaFormatter.format(contents, config.formattingPrefs)).map(
+            (f, contents, _))
+        case Left(e) => throw e
       }
-      .collect {
-        case Success((f, contents, formatted)) =>
-          TextEdit(f, 0, contents.length, formatted)
-      }
+    }.collect {
+      case Success((f, contents, formatted)) =>
+        TextEdit(f, 0, contents.length, formatted)
+    }
     FileUtils.writeChanges(changeList, cs)
   }
 
@@ -156,8 +154,8 @@ trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
       procId: Int,
       refactor: RefactorDesc
   ): Either[RefactorFailure, RefactorEffect] = {
-    askOption(prepareRefactor(procId, refactor))
-      .getOrElse(Left(RefactorFailure(procId, "Refactor call failed")))
+    askOption(prepareRefactor(procId, refactor)).getOrElse(
+      Left(RefactorFailure(procId, "Refactor call failed")))
   }
 
   def askExecRefactor(
@@ -195,8 +193,9 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       val refactoring = new Rename with GlobalIndexes {
         val global = RefactoringImpl.this
         val invalidSet = toBeRemoved.synchronized { toBeRemoved.toSet }
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -212,8 +211,9 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new ExtractMethod with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -229,8 +229,9 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new ExtractLocal with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -245,8 +246,9 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new InlineLocal with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result =

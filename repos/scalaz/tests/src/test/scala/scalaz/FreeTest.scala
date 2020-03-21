@@ -40,13 +40,10 @@ object FreeList extends FreeListInstances {
   implicit def freeListArb[A](implicit
       A: Arbitrary[A]): Arbitrary[FreeList[A]] =
     Arbitrary(
-      FreeTest
-        .freeGen[List, A](
-          Gen
-            .choose(0, 2)
-            .flatMap(Gen.listOfN(_, freeListArb[A].arbitrary.map(_.f)))
-        )
-        .map(FreeList.apply))
+      FreeTest.freeGen[List, A](
+        Gen.choose(0, 2).flatMap(
+          Gen.listOfN(_, freeListArb[A].arbitrary.map(_.f)))
+      ).map(FreeList.apply))
 
   implicit def freeListEq[A](implicit A: Equal[A]): Equal[FreeList[A]] =
     new Equal[FreeList[A]] {
@@ -87,15 +84,10 @@ object FreeOption {
   implicit def freeOptionArb[A](implicit
       A: Arbitrary[A]): Arbitrary[FreeOption[A]] =
     Arbitrary(
-      FreeTest
-        .freeGen[Option, A](
-          Gen
-            .choose(0, 1)
-            .flatMap(Gen
-              .listOfN(_, freeOptionArb[A].arbitrary.map(_.f))
-              .map(_.headOption))
-        )
-        .map(FreeOption.apply))
+      FreeTest.freeGen[Option, A](
+        Gen.choose(0, 1).flatMap(
+          Gen.listOfN(_, freeOptionArb[A].arbitrary.map(_.f)).map(_.headOption))
+      ).map(FreeOption.apply))
 
   implicit def freeOptionEq[A](implicit A: Equal[A]): Equal[FreeOption[A]] =
     new Equal[FreeOption[A]] {

@@ -131,9 +131,8 @@ abstract class Delambdafy
         exprOwner: Symbol): List[Tree] = {
       // Need to remove from the lambdaClassDefs map: there may be multiple PackageDef for the same
       // package when defining a package object. We only add the lambda class to one. See SI-9097.
-      super.transformStats(stats, exprOwner) ++ lambdaClassDefs
-        .remove(exprOwner)
-        .getOrElse(Nil)
+      super.transformStats(stats, exprOwner) ++ lambdaClassDefs.remove(
+        exprOwner).getOrElse(Nil)
     }
 
     private def optionSymbol(sym: Symbol): Option[Symbol] =
@@ -181,11 +180,13 @@ abstract class Delambdafy
           targetParams.splitAt(numCaptures)
         val bridgeParams: List[Symbol] =
           targetCaptureParams.map(param =>
-            methSym
-              .newSyntheticValueParam(param.tpe, param.name.toTermName)) :::
+            methSym.newSyntheticValueParam(
+              param.tpe,
+              param.name.toTermName)) :::
             map2(targetFunctionParams, functionParamTypes)((param, tp) =>
-              methSym
-                .newSyntheticValueParam(boxedType(tp), param.name.toTermName))
+              methSym.newSyntheticValueParam(
+                boxedType(tp),
+                param.name.toTermName))
 
         val bridgeResultType: Type = {
           if (target.info.resultType == UnitTpe && functionResultType != UnitTpe) {
@@ -216,8 +217,10 @@ abstract class Delambdafy
                   val casted = cast(gen.mkAttributedRef(param), functionParam)
                   val unboxed = unbox(
                     casted,
-                    ErasedValueType(functionParam.typeSymbol, targetParam.tpe))
-                    .modifyType(postErasure.elimErasedValueType)
+                    ErasedValueType(
+                      functionParam.typeSymbol,
+                      targetParam.tpe)).modifyType(
+                    postErasure.elimErasedValueType)
                   unboxed
                 } else adaptToType(gen.mkAttributedRef(param), targetParam.tpe)
               }
@@ -235,10 +238,8 @@ abstract class Delambdafy
                 bridgeResultType)
             else adaptToType(body, bridgeResultType)
           val methDef0 = DefDef(methSym, List(bridgeParamTrees), body1)
-          postErasure
-            .newTransformer(unit)
-            .transform(methDef0)
-            .asInstanceOf[DefDef]
+          postErasure.newTransformer(unit).transform(methDef0).asInstanceOf[
+            DefDef]
         }
       }
 
@@ -431,9 +432,8 @@ abstract class Delambdafy
         val body = members ++ List(constr, applyMethodDef) ++ bridgeMethod
 
         // TODO if member fields are private this complains that they're not accessible
-        localTyper
-          .typedPos(decapturedFunction.pos)(ClassDef(lambdaClass, body))
-          .asInstanceOf[ClassDef]
+        localTyper.typedPos(decapturedFunction.pos)(
+          ClassDef(lambdaClass, body)).asInstanceOf[ClassDef]
       }
 
       val allCaptureArgs: List[Tree] = {
@@ -441,10 +441,8 @@ abstract class Delambdafy
           if (isStatic) Nil
           else
             (gen.mkAttributedThis(oldClass) setPos originalFunction.pos) :: Nil
-        val captureArgs = captures.iterator
-          .map(capture =>
-            gen.mkAttributedRef(capture) setPos originalFunction.pos)
-          .toList
+        val captureArgs = captures.iterator.map(capture =>
+          gen.mkAttributedRef(capture) setPos originalFunction.pos).toList
         thisArg ::: captureArgs
       }
 
@@ -502,9 +500,8 @@ abstract class Delambdafy
           }
 
         // We then apply this symbol to the captures.
-        val apply = localTyper
-          .typedPos(originalFunction.pos)(Apply(Ident(msym), allCaptureArgs))
-          .asInstanceOf[Apply]
+        val apply = localTyper.typedPos(originalFunction.pos)(
+          Apply(Ident(msym), allCaptureArgs)).asInstanceOf[Apply]
 
         // The backend needs to know the target of the lambda and the functional interface in order
         // to emit the invokedynamic instruction. We pass this information as tree attachment.
@@ -620,8 +617,8 @@ abstract class Delambdafy
           declared += tree.symbol
         case Ident(_) =>
           val sym = tree.symbol
-          if ((sym != NoSymbol) && sym.isLocalToBlock && sym.isTerm && !sym.isMethod && !declared
-                .contains(sym)) freeVars += sym
+          if ((sym != NoSymbol) && sym.isLocalToBlock && sym.isTerm && !sym.isMethod && !declared.contains(
+                sym)) freeVars += sym
         case _ =>
       }
       super.traverse(tree)

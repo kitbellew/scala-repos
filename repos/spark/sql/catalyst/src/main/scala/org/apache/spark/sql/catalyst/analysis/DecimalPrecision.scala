@@ -84,9 +84,8 @@ object DecimalPrecision extends Rule[LogicalPlan] {
       // fix decimal precision for expressions
       case q =>
         q.transformExpressions(
-          decimalAndDecimal
-            .orElse(integralAndDecimalLiteral)
-            .orElse(nondecimalAndDecimal))
+          decimalAndDecimal.orElse(integralAndDecimalLiteral).orElse(
+            nondecimalAndDecimal))
     }
 
   /** Decimal precision promotion for +, -, *, /, %, pmod, and binary comparison. */

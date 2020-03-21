@@ -101,8 +101,8 @@ object Menu extends DispatchSnippet {
     val outerTag: String = S.attr("outer_tag") openOr "ul"
     val innerTag: String = S.attr("inner_tag") openOr "li"
     val expandAll = (S.attr("expandAll") or S.attr("expandall")).isDefined
-    val linkToSelf: Boolean = (S.attr("linkToSelf") or S.attr("linktoself"))
-      .map(Helpers.toBoolean) openOr false
+    val linkToSelf: Boolean = (S.attr("linkToSelf") or S.attr(
+      "linktoself")).map(Helpers.toBoolean) openOr false
 
     val expandAny: Boolean = S.attr("expand").map(Helpers.toBoolean) openOr true
 
@@ -485,8 +485,8 @@ object Menu extends DispatchSnippet {
     */
   def item(_text: NodeSeq): NodeSeq = {
     val donthide = S.attr("donthide").map(Helpers.toBoolean) openOr false
-    val linkToSelf = (S.attr("linkToSelf") or S.attr("linktoself"))
-      .map(Helpers.toBoolean) openOr false
+    val linkToSelf = (S.attr("linkToSelf") or S.attr("linktoself")).map(
+      Helpers.toBoolean) openOr false
 
     val text = ("a" #> ((n: NodeSeq) =>
       n match {

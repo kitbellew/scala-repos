@@ -34,43 +34,39 @@ object SbtData {
       classLoader: ClassLoader,
       pluginRoot: File,
       javaClassVersion: String): Either[String, SbtData] = {
-    Either
-      .cond(
-        pluginRoot.exists,
-        pluginRoot,
-        "SBT home directory does not exist: " + pluginRoot)
-      .flatMap { sbtHome =>
-        Option(sbtHome.listFiles)
-          .toRight("Invalid SBT home directory: " + sbtHome.getPath)
-          .flatMap { files =>
-            files
-              .find(_.getName == "sbt-interface.jar")
-              .toRight("No 'sbt-interface.jar' in SBT home directory")
-              .flatMap { interfaceJar =>
-                files
-                  .find(_.getName == "compiler-interface-sources.jar")
-                  .toRight(
-                    "No 'compiler-interface-sources.jar' in SBT home directory")
-                  .flatMap { sourceJar =>
-                    readSbtVersionFrom(classLoader)
-                      .toRight("Unable to read SBT version from JVM classpath")
-                      .map { sbtVersion =>
-                        val checksum =
-                          DatatypeConverter.printHexBinary(md5(sourceJar))
-                        val interfacesHome = new File(
-                          compilerInterfacesDir,
-                          sbtVersion + "-idea-" + checksum)
+    Either.cond(
+      pluginRoot.exists,
+      pluginRoot,
+      "SBT home directory does not exist: " + pluginRoot).flatMap { sbtHome =>
+      Option(sbtHome.listFiles)
+        .toRight("Invalid SBT home directory: " + sbtHome.getPath)
+        .flatMap { files =>
+          files.find(_.getName == "sbt-interface.jar")
+            .toRight("No 'sbt-interface.jar' in SBT home directory")
+            .flatMap { interfaceJar =>
+              files.find(_.getName == "compiler-interface-sources.jar")
+                .toRight(
+                  "No 'compiler-interface-sources.jar' in SBT home directory")
+                .flatMap { sourceJar =>
+                  readSbtVersionFrom(classLoader)
+                    .toRight("Unable to read SBT version from JVM classpath")
+                    .map { sbtVersion =>
+                      val checksum =
+                        DatatypeConverter.printHexBinary(md5(sourceJar))
+                      val interfacesHome = new File(
+                        compilerInterfacesDir,
+                        sbtVersion + "-idea-" + checksum)
 
-                        new SbtData(
-                          interfaceJar,
-                          sourceJar,
-                          interfacesHome,
-                          javaClassVersion)
-                      }
-                  }
-              }
-          }
-      }
+                      new SbtData(
+                        interfaceJar,
+                        sourceJar,
+                        interfacesHome,
+                        javaClassVersion)
+                    }
+                }
+            }
+        }
+    }
   }
 
   private def readSbtVersionFrom(classLoader: ClassLoader): Option[String] = {

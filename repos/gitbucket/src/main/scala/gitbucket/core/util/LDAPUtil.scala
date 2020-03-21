@@ -87,16 +87,15 @@ object LDAPUtil {
         Right(
           LDAPUserInfo(
             userName = userName,
-            fullName = ldapSettings.fullNameAttribute
-              .flatMap { fullNameAttribute =>
+            fullName = ldapSettings.fullNameAttribute.flatMap {
+              fullNameAttribute =>
                 findFullName(
                   conn,
                   userDN,
                   ldapSettings.userNameAttribute,
                   userName,
                   fullNameAttribute)
-              }
-              .getOrElse(userName),
+            }.getOrElse(userName),
             mailAddress = createDummyMailAddress(userName)
           ))
       } else {
@@ -110,16 +109,15 @@ object LDAPUtil {
             Right(
               LDAPUserInfo(
                 userName = getUserNameFromMailAddress(userName),
-                fullName = ldapSettings.fullNameAttribute
-                  .flatMap { fullNameAttribute =>
+                fullName = ldapSettings.fullNameAttribute.flatMap {
+                  fullNameAttribute =>
                     findFullName(
                       conn,
                       userDN,
                       ldapSettings.userNameAttribute,
                       userName,
                       fullNameAttribute)
-                  }
-                  .getOrElse(userName),
+                }.getOrElse(userName),
                 mailAddress = mailAddress
               ))
           case None => Left("Can't find mail address.")
@@ -226,10 +224,14 @@ object LDAPUtil {
     }
 
     getEntries(
-      conn.search(baseDN, LDAPConnection.SCOPE_SUB, filterCond, null, false))
-      .collectFirst {
-        case x => x.getDN
-      }
+      conn.search(
+        baseDN,
+        LDAPConnection.SCOPE_SUB,
+        filterCond,
+        null,
+        false)).collectFirst {
+      case x => x.getDN
+    }
   }
 
   private def findMailAddress(

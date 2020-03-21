@@ -103,8 +103,9 @@ object LiteralGenerator {
       StringType)
 
   lazy val binaryLiteralGen: Gen[Literal] =
-    for { ab <- Gen.listOf[Byte](Arbitrary.arbByte.arbitrary) } yield Literal
-      .create(ab.toArray, BinaryType)
+    for {
+      ab <- Gen.listOf[Byte](Arbitrary.arbByte.arbitrary)
+    } yield Literal.create(ab.toArray, BinaryType)
 
   lazy val booleanLiteralGen: Gen[Literal] =
     for { b <- Arbitrary.arbBool.arbitrary } yield Literal.create(

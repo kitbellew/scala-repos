@@ -57,8 +57,7 @@ case class DefaultServer[Req, Rep, In, Out](
       TraceInitializerFilter.serverModule[Req, Rep]
 ) extends Server[Req, Rep] {
 
-  val stack = StackServer
-    .newStack[Req, Rep]
+  val stack = StackServer.newStack[Req, Rep]
     .replace(StackServer.Role.preparer, prepare)
     .replace(TraceInitializerFilter.role, newTraceInitializer)
 

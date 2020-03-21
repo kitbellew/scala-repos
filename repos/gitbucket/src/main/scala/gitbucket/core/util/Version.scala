@@ -54,10 +54,8 @@ object Versions {
         logger.warn(
           s"Skip migration because ${currentVersion.versionString} is illegal version.")
       } else {
-        versions
-          .takeWhile(_ != currentVersion)
-          .reverse
-          .foreach(_.update(conn, cl))
+        versions.takeWhile(_ != currentVersion).reverse.foreach(
+          _.update(conn, cl))
         save(conn)
         logger.debug(
           s"Updated from ${currentVersion.versionString} to ${headVersion.versionString}")

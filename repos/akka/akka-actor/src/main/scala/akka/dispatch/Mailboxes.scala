@@ -47,8 +47,9 @@ private[akka] class Mailboxes(
       envelope.message match {
         case _: DeadLetter ⇒ // actor subscribing to DeadLetter, drop it
         case msg ⇒
-          deadLetters
-            .tell(DeadLetter(msg, envelope.sender, receiver), envelope.sender)
+          deadLetters.tell(
+            DeadLetter(msg, envelope.sender, receiver),
+            envelope.sender)
       }
     def dequeue() = null
     def hasMessages = false
@@ -68,27 +69,19 @@ private[akka] class Mailboxes(
 
   private val mailboxBindings: Map[Class[_ <: Any], String] = {
     import scala.collection.JavaConverters._
-    settings.config
-      .getConfig("akka.actor.mailbox.requirements")
-      .root
-      .unwrapped
-      .asScala
-      .toMap
-      .foldLeft(Map.empty[Class[_ <: Any], String]) {
+    settings.config.getConfig(
+      "akka.actor.mailbox.requirements").root.unwrapped.asScala
+      .toMap.foldLeft(Map.empty[Class[_ <: Any], String]) {
         case (m, (k, v)) ⇒
-          dynamicAccess
-            .getClassFor[Any](k)
-            .map {
-              case x ⇒ m.updated(x, v.toString)
-            }
-            .recover {
-              case e ⇒
-                throw new ConfigurationException(
-                  s"Type [${k}] specified as akka.actor.mailbox.requirement " +
-                    s"[${v}] in config can't be loaded due to [${e.getMessage}]",
-                  e)
-            }
-            .get
+          dynamicAccess.getClassFor[Any](k).map {
+            case x ⇒ m.updated(x, v.toString)
+          }.recover {
+            case e ⇒
+              throw new ConfigurationException(
+                s"Type [${k}] specified as akka.actor.mailbox.requirement " +
+                  s"[${v}] in config can't be loaded due to [${e.getMessage}]",
+                e)
+          }.get
       }
   }
 
@@ -165,8 +158,8 @@ private[akka] class Mailboxes(
         dispatcherConfig.getString("mailbox-type") != Deploy.NoMailboxGiven
 
     // TODO remove in 2.3
-    if (!hasMailboxType && !mailboxSizeWarningIssued && dispatcherConfig
-          .hasPath("mailbox-size")) {
+    if (!hasMailboxType && !mailboxSizeWarningIssued && dispatcherConfig.hasPath(
+          "mailbox-size")) {
       eventStream.publish(
         Warning(
           "mailboxes",
@@ -242,16 +235,15 @@ private[akka] class Mailboxes(
                 val args = List(
                   classOf[ActorSystem.Settings] -> settings,
                   classOf[Config] -> conf)
-                dynamicAccess
-                  .createInstanceFor[MailboxType](fqcn, args)
-                  .recover({
-                    case exception ⇒
-                      throw new IllegalArgumentException(
-                        s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
-                          " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
-                        exception)
-                  })
-                  .get
+                dynamicAccess.createInstanceFor[MailboxType](
+                  fqcn,
+                  args).recover({
+                  case exception ⇒
+                    throw new IllegalArgumentException(
+                      s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
+                        " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
+                      exception)
+                }).get
             }
 
             if (!mailboxNonZeroPushTimeoutWarningIssued) {
@@ -287,8 +279,7 @@ private[akka] class Mailboxes(
   //INTERNAL API
   private def config(id: String): Config = {
     import scala.collection.JavaConverters._
-    ConfigFactory
-      .parseMap(Map("id" -> id).asJava)
+    ConfigFactory.parseMap(Map("id" -> id).asJava)
       .withFallback(settings.config.getConfig(id))
       .withFallback(defaultMailboxConfig)
   }

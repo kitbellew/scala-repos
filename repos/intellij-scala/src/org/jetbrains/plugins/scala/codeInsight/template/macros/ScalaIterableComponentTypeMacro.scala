@@ -16,9 +16,9 @@ class ScalaIterableComponentTypeMacro extends Macro {
       params: Array[Expression],
       context: ExpressionContext): Result = {
     if (params.length != 1) return null
-    Option(params(0).calculateResult(context))
-      .flatMap(MacroUtil.resultToScExpr(_, context))
-      .flatMap(_.getType().toOption.flatMap { exprType =>
+    Option(params(0).calculateResult(context)).flatMap(
+      MacroUtil.resultToScExpr(_, context)).flatMap(
+      _.getType().toOption.flatMap { exprType =>
         MacroUtil.getComponentFromArrayType(exprType) match {
           case Some(arrComponentType) => Some(arrComponentType)
           case None =>
@@ -29,9 +29,7 @@ class ScalaIterableComponentTypeMacro extends Macro {
               case _ => None
             }
         }
-      })
-      .map(new ScalaTypeResult(_))
-      .orNull
+      }).map(new ScalaTypeResult(_)).orNull
   }
 
   override def getName: String =

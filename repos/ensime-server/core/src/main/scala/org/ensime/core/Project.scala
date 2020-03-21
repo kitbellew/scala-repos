@@ -72,18 +72,16 @@ class Project(
     }
 
   private def init(): Unit = {
-    searchService
-      .refresh()
-      .onComplete {
-        case Success((deletes, inserts)) =>
-          // legacy clients expect to see IndexerReady on connection.
-          // we could also just blindly send this on each connection.
-          broadcaster ! Broadcaster.Persist(IndexerReadyEvent)
-          log.debug(s"created $inserts and removed $deletes searchable rows")
-        case Failure(problem) =>
-          log.warning(problem.toString)
-          throw problem
-      }(context.dispatcher)
+    searchService.refresh().onComplete {
+      case Success((deletes, inserts)) =>
+        // legacy clients expect to see IndexerReady on connection.
+        // we could also just blindly send this on each connection.
+        broadcaster ! Broadcaster.Persist(IndexerReadyEvent)
+        log.debug(s"created $inserts and removed $deletes searchable rows")
+      case Failure(problem) =>
+        log.warning(problem.toString)
+        throw problem
+    }(context.dispatcher)
     indexer = context.actorOf(Indexer(searchService), "indexer")
     if (config.scalaLibrary.isDefined || Set("scala", "dotty")(config.name)) {
 

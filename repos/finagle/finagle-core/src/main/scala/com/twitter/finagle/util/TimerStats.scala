@@ -86,25 +86,23 @@ private[finagle] object TimerStats {
       }
 
     def bucketTimeouts(hashedWheelBucket: Object): Int = {
-      bucketHeadField
-        .map { headField =>
-          val head =
-            headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
-          if (head == null) {
-            0
-          } else {
-            val nextField = head.getClass.getDeclaredField("next")
-            nextField.setAccessible(true)
-            var num = 1 // count the one we've started with.
-            var next = nextField.get(head)
-            while (next != null) {
-              num += 1
-              next = nextField.get(next)
-            }
-            num
+      bucketHeadField.map { headField =>
+        val head =
+          headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
+        if (head == null) {
+          0
+        } else {
+          val nextField = head.getClass.getDeclaredField("next")
+          nextField.setAccessible(true)
+          var num = 1 // count the one we've started with.
+          var next = nextField.get(head)
+          while (next != null) {
+            num += 1
+            next = nextField.get(next)
           }
+          num
         }
-        .getOrElse(0)
+      }.getOrElse(0)
     }
 
     def wheelTimeouts: Try[Int] =

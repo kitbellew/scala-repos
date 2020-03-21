@@ -380,10 +380,9 @@ trait Reshape {
     }
 
     private def reshapeLazyVals(stats: List[Tree]): List[Tree] = {
-      val lazyvaldefs: Map[Symbol, DefDef] = stats
-        .collect({ case ddef: DefDef if ddef.mods.isLazy => ddef })
-        .map((ddef: DefDef) => ddef.symbol -> ddef)
-        .toMap
+      val lazyvaldefs: Map[Symbol, DefDef] = stats.collect({
+        case ddef: DefDef if ddef.mods.isLazy => ddef
+      }).map((ddef: DefDef) => ddef.symbol -> ddef).toMap
       // lazy valdef and defdef are in the same block.
       // only that valdef needs to have its rhs rebuilt from defdef
       stats flatMap (stat =>

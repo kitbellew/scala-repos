@@ -85,8 +85,9 @@ class ScalaDocHeaderBalanceQuickFix(opening: PsiElement, closing: PsiElement)
     }
 
     cl.replace(
-      ScalaPsiElementFactory
-        .createDocHeaderElement(op.getText.length(), op.getManager))
+      ScalaPsiElementFactory.createDocHeaderElement(
+        op.getText.length(),
+        op.getManager))
   }
 }
 

@@ -50,11 +50,9 @@ private[stream] object Fusing {
     /*
      * Then create a copy of the original Shape with the new copied ports.
      */
-    val shape = g.shape
-      .copyFromPorts(
-        struct.newInlets(g.shape.inlets),
-        struct.newOutlets(g.shape.outlets))
-      .asInstanceOf[S]
+    val shape = g.shape.copyFromPorts(
+      struct.newInlets(g.shape.inlets),
+      struct.newOutlets(g.shape.outlets)).asInstanceOf[S]
     /*
      * Extract the full topological information from the builder before
      * removing assembly-internal (fused) wirings in the next step.
@@ -425,13 +423,11 @@ private[stream] object Fusing {
           val subMat = subMatBuilder.result()
           if (Debug)
             log(
-              subMat
-                .map(p ⇒
-                  s"${p._1.getClass.getName}[${struct.hash(p._1)}] -> ${p._2}")
-                .mkString(
-                  "subMat\n  " + "  " * indent,
-                  "\n  " + "  " * indent,
-                  ""))
+              subMat.map(p ⇒
+                s"${p._1.getClass.getName}[${struct.hash(p._1)}] -> ${p._2}").mkString(
+                "subMat\n  " + "  " * indent,
+                "\n  " + "  " * indent,
+                ""))
           // we need to remove all wirings that this module copied from nested modules so that we
           // don’t do wirings twice
           val oldDownstreams = m match {
@@ -451,19 +447,15 @@ private[stream] object Fusing {
             rewriteMat(subMat, m.materializedValueComputation, matNodeMapping)
           if (Debug)
             log(
-              matNodeMapping.asScala
-                .map(p ⇒ s"${p._1} -> ${p._2}")
-                .mkString(
-                  "matNodeMapping\n  " + "  " * indent,
-                  "\n  " + "  " * indent,
-                  ""))
+              matNodeMapping.asScala.map(p ⇒ s"${p._1} -> ${p._2}").mkString(
+                "matNodeMapping\n  " + "  " * indent,
+                "\n  " + "  " * indent,
+                ""))
           // and finally rewire all MaterializedValueSources to their new computation nodes
           val matSrcs = struct.exitMatCtx()
           matSrcs.foreach { c ⇒
-            val ms = c.copyOf
-              .asInstanceOf[GraphStageModule]
-              .stage
-              .asInstanceOf[MaterializedValueSource[Any]]
+            val ms = c.copyOf.asInstanceOf[GraphStageModule].stage.asInstanceOf[
+              MaterializedValueSource[Any]]
             val mapped = ms.computation match {
               case Atomic(sub) ⇒ subMat(sub)
               case Ignore => Ignore
@@ -704,9 +696,8 @@ private[stream] object Fusing {
 
     def hash(obj: AnyRef) = f"${System.identityHashCode(obj)}%08x"
     def printShape(s: Shape) =
-      s"${s.getClass.getSimpleName}(ins=${s.inlets
-        .map(hash)
-        .mkString(",")} outs=${s.outlets.map(hash).mkString(",")})"
+      s"${s.getClass.getSimpleName}(ins=${s.inlets.map(hash).mkString(
+        ",")} outs=${s.outlets.map(hash).mkString(",")})"
 
     /**
       * Create and return a new grouping (i.e. an AsyncBoundary-delimited context)

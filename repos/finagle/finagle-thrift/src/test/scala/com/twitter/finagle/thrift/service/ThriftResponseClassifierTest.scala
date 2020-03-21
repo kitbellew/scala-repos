@@ -47,8 +47,9 @@ class ThriftResponseClassifierTest extends FunSuite {
         assert(!classifier.isDefinedAt(ReqRep(in, Return(rep))))
         assert(
           expectedClass ==
-            classifier
-              .applyOrElse(ReqRep(in, Return(rep)), ResponseClassifier.Default))
+            classifier.applyOrElse(
+              ReqRep(in, Return(rep)),
+              ResponseClassifier.Default))
       }
     }
     testApplyOrElse("yep", Success)
@@ -81,8 +82,9 @@ class ThriftResponseClassifierTest extends FunSuite {
       val rep = in.getBytes(Charsets.Utf8)
       assert(
         expectedClass ==
-          classifier
-            .applyOrElse(ReqRep(in, Return(rep)), ResponseClassifier.Default))
+          classifier.applyOrElse(
+            ReqRep(in, Return(rep)),
+            ResponseClassifier.Default))
     }
     testApply("nope", Success)
     testApply("lol", Success)
@@ -97,8 +99,7 @@ class ThriftResponseClassifierTest extends FunSuite {
 
     val classifier = usingDeserializeCtx(ThriftExceptionsAsFailures)
     assert(
-      "Thrift.usingDeserializeCtx(ThriftExceptionsAsFailures)" == classifier
-        .toString())
+      "Thrift.usingDeserializeCtx(ThriftExceptionsAsFailures)" == classifier.toString())
 
     def testApply(in: String, expectedClass: ResponseClass): Unit = {
       val ctx = new DeserializeCtx(Echo.Echo.Args(in), deserializer)
@@ -115,8 +116,9 @@ class ThriftResponseClassifierTest extends FunSuite {
         assert(!classifier.isDefinedAt(ReqRep(in, Return(rep))))
         assert(
           expectedClass ==
-            classifier
-              .applyOrElse(ReqRep(in, Return(rep)), ResponseClassifier.Default))
+            classifier.applyOrElse(
+              ReqRep(in, Return(rep)),
+              ResponseClassifier.Default))
       }
     }
 

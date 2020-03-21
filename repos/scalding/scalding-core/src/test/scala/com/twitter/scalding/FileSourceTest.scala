@@ -23,8 +23,9 @@ import org.apache.hadoop.mapred.JobConf
 
 class MultiTsvInputJob(args: Args) extends Job(args) {
   try {
-    MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)).read
-      .write(Tsv("output0"))
+    MultipleTsvFiles(
+      List("input0", "input1"),
+      ('query, 'queryStats)).read.write(Tsv("output0"))
   } catch {
     case e: Exception => e.printStackTrace()
   }
@@ -34,8 +35,8 @@ class MultiTsvInputJob(args: Args) extends Job(args) {
 class SequenceFileInputJob(args: Args) extends Job(args) {
   try {
     SequenceFile("input0").read.write(SequenceFile("output0"))
-    WritableSequenceFile("input1", ('query, 'queryStats)).read
-      .write(WritableSequenceFile("output1", ('query, 'queryStats)))
+    WritableSequenceFile("input1", ('query, 'queryStats)).read.write(
+      WritableSequenceFile("output1", ('query, 'queryStats)))
   } catch {
     case e: Exception => e.printStackTrace()
   }
@@ -54,34 +55,33 @@ class FileSourceTest extends WordSpec with Matchers {
   import Dsl._
 
   "A MultipleTsvFile Source" should {
-    JobTest(new MultiTsvInputJob(_))
-      .source(
-        MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)),
-        List(("foobar", 1), ("helloworld", 2)))
-      .sink[(String, Int)](Tsv("output0")) {
-        outBuf =>
-          "take multiple Tsv files as input sources" in {
-            outBuf should have length 2
-            outBuf.toList shouldBe List(("foobar", 1), ("helloworld", 2))
-          }
-      }
+    JobTest(new MultiTsvInputJob(_)).source(
+      MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)),
+      List(("foobar", 1), ("helloworld", 2))).sink[(String, Int)](
+      Tsv("output0")) {
+      outBuf =>
+        "take multiple Tsv files as input sources" in {
+          outBuf should have length 2
+          outBuf.toList shouldBe List(("foobar", 1), ("helloworld", 2))
+        }
+    }
       .run
       .finish
   }
 
   "A WritableSequenceFile Source" should {
-    JobTest(new SequenceFileInputJob(_))
-      .source(SequenceFile("input0"), List(("foobar0", 1), ("helloworld0", 2)))
-      .source(
-        WritableSequenceFile("input1", ('query, 'queryStats)),
-        List(("foobar1", 1), ("helloworld1", 2)))
-      .sink[(String, Int)](SequenceFile("output0")) {
-        outBuf =>
-          "sequence file input" in {
-            outBuf should have length 2
-            outBuf.toList shouldBe List(("foobar0", 1), ("helloworld0", 2))
-          }
-      }
+    JobTest(new SequenceFileInputJob(_)).source(
+      SequenceFile("input0"),
+      List(("foobar0", 1), ("helloworld0", 2))).source(
+      WritableSequenceFile("input1", ('query, 'queryStats)),
+      List(("foobar1", 1), ("helloworld1", 2))).sink[(String, Int)](
+      SequenceFile("output0")) {
+      outBuf =>
+        "sequence file input" in {
+          outBuf should have length 2
+          outBuf.toList shouldBe List(("foobar0", 1), ("helloworld0", 2))
+        }
+    }
       .sink[(String, Int)](
         WritableSequenceFile("output1", ('query, 'queryStats))) {
         outBuf =>
@@ -112,9 +112,9 @@ class FileSourceTest extends WordSpec with Matchers {
 
   "TextLine.toIterator" should {
     "correctly read strings" in {
-      TextLine("../tutorial/data/hello.txt")
-        .toIterator(Config.default, Local(true))
-        .toList shouldBe List("Hello world", "Goodbye world")
+      TextLine("../tutorial/data/hello.txt").toIterator(
+        Config.default,
+        Local(true)).toList shouldBe List("Hello world", "Goodbye world")
     }
   }
 
@@ -292,8 +292,9 @@ class FileSourceTest extends WordSpec with Matchers {
     }
     "Throw in toIterator because no data is present" in {
       an[InvalidSourceException] should be thrownBy (
-        TestInvalidFileSource
-          .toIterator(Config.default, Hdfs(true, new JobConf())))
+        TestInvalidFileSource.toIterator(
+          Config.default,
+          Hdfs(true, new JobConf())))
     }
   }
 }

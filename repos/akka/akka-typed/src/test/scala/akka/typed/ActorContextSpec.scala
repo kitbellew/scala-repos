@@ -210,8 +210,8 @@ class ActorContextSpec
         : Future[TypedSpec.Status] =
       runTest(s"$suite-$name")(StepWise[Event] { (ctx, startWith) ⇒
         val steps =
-          startWith
-            .withKeepTraces(true)(ctx.spawn(Props(behavior(ctx)), "subject"))
+          startWith.withKeepTraces(true)(
+            ctx.spawn(Props(behavior(ctx)), "subject"))
             .expectMessage(500.millis) { (msg, ref) ⇒
               msg should ===(GotSignal(PreStart))
               ref
@@ -234,27 +234,26 @@ class ActorContextSpec
           inert: Boolean = false)
           : StepWise.Steps[Event, (ActorRef[Command], ActorRef[Command])] = {
         val s =
-          startWith
-            .keep { subj ⇒ subj ! MkChild(name, monitor, self) }
-            .expectMultipleMessages(500.millis, 2) { (msgs, subj) ⇒
-              val child = msgs match {
-                case Created(child) :: ChildEvent(GotSignal(PreStart)) :: Nil ⇒
-                  child
-                case ChildEvent(GotSignal(PreStart)) :: Created(child) :: Nil ⇒
-                  child
-              }
-              (subj, child)
+          startWith.keep { subj ⇒
+            subj ! MkChild(name, monitor, self)
+          }.expectMultipleMessages(500.millis, 2) { (msgs, subj) ⇒
+            val child = msgs match {
+              case Created(child) :: ChildEvent(GotSignal(PreStart)) :: Nil ⇒
+                child
+              case ChildEvent(GotSignal(PreStart)) :: Created(child) :: Nil ⇒
+                child
             }
+            (subj, child)
+          }
 
         if (!inert) s
         else
           s.keep {
-              case (subj, child) ⇒
-                child ! BecomeInert(self)
-            }
-            .expectMessageKeep(500.millis) { (msg, _) ⇒
-              msg should ===(BecameInert)
-            }
+            case (subj, child) ⇒
+              child ! BecomeInert(self)
+          }.expectMessageKeep(500.millis) { (msg, _) ⇒
+            msg should ===(BecameInert)
+          }
       }
     }
 
@@ -274,21 +273,17 @@ class ActorContextSpec
     def `00 must canonicalize behaviors`(): Unit =
       sync(setup("ctx00") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith
-          .keep { subj ⇒ subj ! Ping(self) }
-          .expectMessageKeep(500.millis) { (msg, subj) ⇒
-            msg should ===(Pong1)
-            subj ! Miss(self)
-          }
-          .expectMessageKeep(500.millis) { (msg, subj) ⇒
-            msg should ===(Missed)
-            subj ! Renew(self)
-          }
-          .expectMessage(500.millis) { (msg, subj) ⇒
-            msg should ===(Renewed)
-            subj ! Ping(self)
-          }
-          .expectMessage(500.millis) { (msg, _) ⇒ msg should ===(Pong1) }
+        startWith.keep { subj ⇒ subj ! Ping(self) }.expectMessageKeep(
+          500.millis) { (msg, subj) ⇒
+          msg should ===(Pong1)
+          subj ! Miss(self)
+        }.expectMessageKeep(500.millis) { (msg, subj) ⇒
+          msg should ===(Missed)
+          subj ! Renew(self)
+        }.expectMessage(500.millis) { (msg, subj) ⇒
+          msg should ===(Renewed)
+          subj ! Ping(self)
+        }.expectMessage(500.millis) { (msg, _) ⇒ msg should ===(Pong1) }
       })
 
     def `01 must correctly wire the lifecycle hooks`(): Unit =
@@ -300,97 +295,82 @@ class ActorContextSpec
           subj ! Throw(ex)
           (subj, log)
         }.expectFailureKeep(500.millis) {
-            case (f, (subj, _)) ⇒
-              f.cause should ===(ex)
-              f.child should ===(subj)
-              Failed.Restart
-          }
-          .expectMessage(500.millis) {
-            case (msg, (subj, log)) ⇒
-              msg should ===(GotSignal(PreRestart(ex)))
-              log.assertDone(500.millis)
-              subj
-          }
-          .expectMessage(500.millis) { (msg, subj) ⇒
-            msg should ===(GotSignal(PostRestart(ex)))
-            ctx.stop(subj)
-          }
-          .expectMessage(500.millis) { (msg, _) ⇒
-            msg should ===(GotSignal(PostStop))
-          }
+          case (f, (subj, _)) ⇒
+            f.cause should ===(ex)
+            f.child should ===(subj)
+            Failed.Restart
+        }.expectMessage(500.millis) {
+          case (msg, (subj, log)) ⇒
+            msg should ===(GotSignal(PreRestart(ex)))
+            log.assertDone(500.millis)
+            subj
+        }.expectMessage(500.millis) { (msg, subj) ⇒
+          msg should ===(GotSignal(PostRestart(ex)))
+          ctx.stop(subj)
+        }.expectMessage(500.millis) { (msg, _) ⇒
+          msg should ===(GotSignal(PostStop))
+        }
       })
 
     def `02 must not signal PostStop after voluntary termination`(): Unit =
       sync(setup("ctx02") { (ctx, startWith) ⇒
-        startWith
-          .keep { subj ⇒
-            ctx.watch(subj)
-            stop(subj)
-          }
-          .expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
+        startWith.keep { subj ⇒
+          ctx.watch(subj)
+          stop(subj)
+        }.expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
       })
 
     def `03 must restart and stop a child actor`(): Unit =
       sync(setup("ctx03") { (ctx, startWith) ⇒
         val self = ctx.self
         val ex = new Exception("KABOOM2")
-        startWith
-          .mkChild(None, ctx.spawnAdapter(ChildEvent), self) {
-            case (subj, child) ⇒
-              val log =
-                muteExpectedException[Exception]("KABOOM2", occurrences = 1)
-              child ! Throw(ex)
-              (subj, child, log)
-          }
-          .expectMultipleMessages(500.millis, 3) {
-            case (msgs, (subj, child, log)) ⇒
-              msgs should ===(GotSignal(Failed(`ex`, `child`)) ::
+        startWith.mkChild(None, ctx.spawnAdapter(ChildEvent), self) {
+          case (subj, child) ⇒
+            val log =
+              muteExpectedException[Exception]("KABOOM2", occurrences = 1)
+            child ! Throw(ex)
+            (subj, child, log)
+        }.expectMultipleMessages(500.millis, 3) {
+          case (msgs, (subj, child, log)) ⇒
+            msgs should ===(
+              GotSignal(Failed(`ex`, `child`)) ::
                 ChildEvent(GotSignal(PreRestart(`ex`))) ::
                 ChildEvent(GotSignal(PostRestart(`ex`))) :: Nil)
-              log.assertDone(500.millis)
-              child ! BecomeInert(
-                self
-              ) // necessary to avoid PostStop/Terminated interference
-              (subj, child)
-          }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(BecameInert)
-              stop(subj)
-              ctx.watch(child)
-              ctx.watch(subj)
-          }
-          .expectTermination(500.millis) {
-            case (t, (subj, child)) ⇒
-              if (t.ref === child) subj
-              else if (t.ref === subj) child
-              else
-                fail(
-                  s"expected termination of either $subj or $child but got $t")
-          }
-          .expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
+            log.assertDone(500.millis)
+            child ! BecomeInert(
+              self
+            ) // necessary to avoid PostStop/Terminated interference
+            (subj, child)
+        }.expectMessageKeep(500.millis) {
+          case (msg, (subj, child)) ⇒
+            msg should ===(BecameInert)
+            stop(subj)
+            ctx.watch(child)
+            ctx.watch(subj)
+        }.expectTermination(500.millis) {
+          case (t, (subj, child)) ⇒
+            if (t.ref === child) subj
+            else if (t.ref === subj) child
+            else
+              fail(s"expected termination of either $subj or $child but got $t")
+        }.expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
       })
 
     def `04 must stop a child actor`(): Unit =
       sync(setup("ctx04") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith
-          .mkChild(
-            Some("A"),
-            ctx.spawnAdapter(ChildEvent),
-            self,
-            inert = true) {
-            case (subj, child) ⇒
-              subj ! Kill(child, self)
-              child
-          }
-          .expectMessageKeep(500.millis) { (msg, child) ⇒
-            msg should ===(Killed)
-            ctx.watch(child)
-          }
-          .expectTermination(500.millis) { (t, child) ⇒
-            t.ref should ===(child)
-          }
+        startWith.mkChild(
+          Some("A"),
+          ctx.spawnAdapter(ChildEvent),
+          self,
+          inert = true) {
+          case (subj, child) ⇒
+            subj ! Kill(child, self)
+            child
+        }.expectMessageKeep(500.millis) { (msg, child) ⇒
+          msg should ===(Killed)
+          ctx.watch(child)
+        }.expectTermination(500.millis) { (t, child) ⇒ t.ref should ===(child) }
       })
 
     def `05 must reset behavior upon Restart`(): Unit =
@@ -403,20 +383,17 @@ class ActorContextSpec
             val log = muteExpectedException[Exception]("KABOOM05")
             subj ! Throw(ex)
             (subj, log)
-          }
-          .expectFailureKeep(500.millis) {
+          }.expectFailureKeep(500.millis) {
             case (f, (subj, log)) ⇒
               f.child should ===(subj)
               f.cause should ===(ex)
               Failed.Restart
-          }
-          .expectMessage(500.millis) {
+          }.expectMessage(500.millis) {
             case (msg, (subj, log)) ⇒
               msg should ===(GotSignal(PostRestart(ex)))
               log.assertDone(500.millis)
               subj
-          }
-          .stimulate(_ ! Ping(self), _ ⇒ Pong1)
+          }.stimulate(_ ! Ping(self), _ ⇒ Pong1)
       })
 
     def `06 must not reset behavior upon Resume`(): Unit =
@@ -425,14 +402,13 @@ class ActorContextSpec
         val ex = new Exception("KABOOM05")
         startWith
           .stimulate(_ ! BecomeInert(self), _ ⇒ BecameInert)
-          .stimulate(_ ! Ping(self), _ ⇒ Pong2)
-          .keep { subj ⇒ subj ! Throw(ex) }
-          .expectFailureKeep(500.millis) { (f, subj) ⇒
+          .stimulate(_ ! Ping(self), _ ⇒ Pong2).keep { subj ⇒
+            subj ! Throw(ex)
+          }.expectFailureKeep(500.millis) { (f, subj) ⇒
             f.child should ===(subj)
             f.cause should ===(ex)
             Failed.Resume
-          }
-          .stimulate(_ ! Ping(self), _ ⇒ Pong2)
+          }.stimulate(_ ! Ping(self), _ ⇒ Pong2)
       })
 
     def `07 must stop upon Stop`(): Unit =
@@ -440,140 +416,113 @@ class ActorContextSpec
         val self = ctx.self
         val ex = new Exception("KABOOM05")
         startWith
-          .stimulate(_ ! Ping(self), _ ⇒ Pong1)
-          .keep { subj ⇒
+          .stimulate(_ ! Ping(self), _ ⇒ Pong1).keep { subj ⇒
             subj ! Throw(ex)
             ctx.watch(subj)
-          }
-          .expectFailureKeep(500.millis) { (f, subj) ⇒
+          }.expectFailureKeep(500.millis) { (f, subj) ⇒
             f.child should ===(subj)
             f.cause should ===(ex)
             Failed.Stop
-          }
-          .expectMessageKeep(500.millis) { (msg, _) ⇒
+          }.expectMessageKeep(500.millis) { (msg, _) ⇒
             msg should ===(GotSignal(PostStop))
-          }
-          .expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
+          }.expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
       })
 
     def `08 must not stop non-child actor`(): Unit =
       sync(setup("ctx08") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith
-          .mkChild(Some("A"), ctx.spawnAdapter(ChildEvent), self) { pair ⇒
-            (pair._1, pair._2, ctx.spawn(Props(behavior(ctx)), "A"))
-          }
-          .expectMessage(500.millis) {
-            case (msg, (subj, child, other)) ⇒
-              msg should ===(GotSignal(PreStart))
-              subj ! Kill(other, ctx.self)
-              child
-          }
-          .expectMessageKeep(500.millis) { (msg, _) ⇒
-            msg should ===(NotKilled)
-          }
-          .stimulate(_ ! Ping(self), _ ⇒ Pong1)
+        startWith.mkChild(Some("A"), ctx.spawnAdapter(ChildEvent), self) {
+          pair ⇒ (pair._1, pair._2, ctx.spawn(Props(behavior(ctx)), "A"))
+        }.expectMessage(500.millis) {
+          case (msg, (subj, child, other)) ⇒
+            msg should ===(GotSignal(PreStart))
+            subj ! Kill(other, ctx.self)
+            child
+        }.expectMessageKeep(500.millis) { (msg, _) ⇒
+          msg should ===(NotKilled)
+        }.stimulate(_ ! Ping(self), _ ⇒ Pong1)
       })
 
     def `10 must watch a child actor before its termination`(): Unit =
       sync(setup("ctx10") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith
-          .mkChild(None, ctx.spawnAdapter(ChildEvent), self) {
-            case (subj, child) ⇒
-              subj ! Watch(child, self)
-              child
-          }
-          .expectMessageKeep(500.millis) { (msg, child) ⇒
-            msg should ===(Watched)
-            child ! Stop
-          }
-          .expectMessage(500.millis) { (msg, child) ⇒
-            msg should ===(GotSignal(Terminated(child)))
-          }
+        startWith.mkChild(None, ctx.spawnAdapter(ChildEvent), self) {
+          case (subj, child) ⇒
+            subj ! Watch(child, self)
+            child
+        }.expectMessageKeep(500.millis) { (msg, child) ⇒
+          msg should ===(Watched)
+          child ! Stop
+        }.expectMessage(500.millis) { (msg, child) ⇒
+          msg should ===(GotSignal(Terminated(child)))
+        }
       })
 
     def `11 must watch a child actor after its termination`(): Unit =
       sync(setup("ctx11") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith
-          .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              ctx.watch(child)
-              child ! Stop
-          }
-          .expectTermination(500.millis) {
-            case (t, (subj, child)) ⇒
-              t should ===(Terminated(child))
-              subj ! Watch(child, blackhole)
-              child
-          }
-          .expectMessage(500.millis) { (msg, child) ⇒
-            msg should ===(GotSignal(Terminated(child)))
-          }
+        startWith.mkChild(None, ctx.spawnAdapter(ChildEvent), self).keep {
+          case (subj, child) ⇒
+            ctx.watch(child)
+            child ! Stop
+        }.expectTermination(500.millis) {
+          case (t, (subj, child)) ⇒
+            t should ===(Terminated(child))
+            subj ! Watch(child, blackhole)
+            child
+        }.expectMessage(500.millis) { (msg, child) ⇒
+          msg should ===(GotSignal(Terminated(child)))
+        }
       })
 
     def `12 must unwatch a child actor before its termination`(): Unit =
       sync(setup("ctx12") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith
-          .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              subj ! Watch(child, self)
-          }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(Watched)
-              subj ! Unwatch(child, self)
-          }
-          .expectMessage(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(Unwatched)
-              ctx.watch(child)
-              child ! Stop
-              child
-          }
-          .expectTermination(500.millis) { (t, child) ⇒
-            t should ===(Terminated(child))
-          }
+        startWith.mkChild(None, ctx.spawnAdapter(ChildEvent), self).keep {
+          case (subj, child) ⇒
+            subj ! Watch(child, self)
+        }.expectMessageKeep(500.millis) {
+          case (msg, (subj, child)) ⇒
+            msg should ===(Watched)
+            subj ! Unwatch(child, self)
+        }.expectMessage(500.millis) {
+          case (msg, (subj, child)) ⇒
+            msg should ===(Unwatched)
+            ctx.watch(child)
+            child ! Stop
+            child
+        }.expectTermination(500.millis) { (t, child) ⇒
+          t should ===(Terminated(child))
+        }
       })
 
     def `13 must terminate upon not handling Terminated`(): Unit =
       sync(setup("ctx13") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith
-          .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              subj ! Watch(child, self)
-          }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(Watched)
-              subj ! BecomeCareless(self)
-          }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(BecameCareless)
-              child ! Stop
-          }
-          .expectFailureKeep(500.millis) {
-            case (f, (subj, child)) ⇒
-              f.child should ===(subj)
-              Failed.Stop
-          }
-          .expectMessage(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(GotSignal(PostStop))
-          }
+        startWith.mkChild(None, ctx.spawnAdapter(ChildEvent), self).keep {
+          case (subj, child) ⇒
+            subj ! Watch(child, self)
+        }.expectMessageKeep(500.millis) {
+          case (msg, (subj, child)) ⇒
+            msg should ===(Watched)
+            subj ! BecomeCareless(self)
+        }.expectMessageKeep(500.millis) {
+          case (msg, (subj, child)) ⇒
+            msg should ===(BecameCareless)
+            child ! Stop
+        }.expectFailureKeep(500.millis) {
+          case (f, (subj, child)) ⇒
+            f.child should ===(subj)
+            Failed.Stop
+        }.expectMessage(500.millis) {
+          case (msg, (subj, child)) ⇒
+            msg should ===(GotSignal(PostStop))
+        }
       })
 
     def `20 must return the right context info`(): Unit =
       sync(setup("ctx20") { (ctx, startWith) ⇒
-        startWith
-          .keep(_ ! GetInfo(ctx.self))
+        startWith.keep(_ ! GetInfo(ctx.self))
           .expectMessage(500.millis) {
             case (msg: Info, subj) ⇒
               msg.self should ===(subj)
@@ -625,26 +574,22 @@ class ActorContextSpec
 
     def `40 must create a working adapter`(): Unit =
       sync(setup("ctx40") { (ctx, startWith) ⇒
-        startWith
-          .keep { subj ⇒ subj ! GetAdapter(ctx.self) }
-          .expectMessage(500.millis) { (msg, subj) ⇒
-            val Adapter(adapter) = msg
-            ctx.watch(adapter)
-            adapter ! Ping(ctx.self)
-            (subj, adapter)
-          }
-          .expectMessage(500.millis) {
-            case (msg, (subj, adapter)) ⇒
-              msg should ===(Pong1)
-              ctx.stop(subj)
-              adapter
-          }
-          .expectMessageKeep(500.millis) { (msg, _) ⇒
-            msg should ===(GotSignal(PostStop))
-          }
-          .expectTermination(500.millis) { (t, adapter) ⇒
-            t.ref should ===(adapter)
-          }
+        startWith.keep { subj ⇒ subj ! GetAdapter(ctx.self) }.expectMessage(
+          500.millis) { (msg, subj) ⇒
+          val Adapter(adapter) = msg
+          ctx.watch(adapter)
+          adapter ! Ping(ctx.self)
+          (subj, adapter)
+        }.expectMessage(500.millis) {
+          case (msg, (subj, adapter)) ⇒
+            msg should ===(Pong1)
+            ctx.stop(subj)
+            adapter
+        }.expectMessageKeep(500.millis) { (msg, _) ⇒
+          msg should ===(GotSignal(PostStop))
+        }.expectTermination(500.millis) { (t, adapter) ⇒
+          t.ref should ===(adapter)
+        }
       })
   }
 

@@ -136,8 +136,8 @@ private[akka] trait ReliableProxyDebugLogging extends ActorLogging {
   this: Actor ⇒
   val debug: Boolean =
     Try(
-      context.system.settings.config
-        .getBoolean("akka.reliable-proxy.debug")) getOrElse false
+      context.system.settings.config.getBoolean(
+        "akka.reliable-proxy.debug")) getOrElse false
 
   def enabled: Boolean = debug && log.isDebugEnabled
 
@@ -272,10 +272,8 @@ class ReliableProxy(
     Try(
       context.system.settings.config.getDuration(
         "akka.reliable-proxy.default-connect-interval",
-        TimeUnit.MILLISECONDS))
-      .map(_.longValue)
-      .getOrElse(retryGateClosedFor)
-      .millis
+        TimeUnit.MILLISECONDS)).map(_.longValue).getOrElse(
+      retryGateClosedFor).millis
 
   val initialState = Connecting
 

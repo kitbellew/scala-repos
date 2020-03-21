@@ -149,15 +149,13 @@ object Grouped {
     }
 
   def valueConverter[V](optOrd: Option[Ordering[_ >: V]]): TupleConverter[V] =
-    optOrd
-      .map { ord =>
-        ord match {
-          case _: OrderedSerialization[_] =>
-            TupleConverter.singleConverter[Boxed[V]].andThen(_.get)
-          case _ => TupleConverter.singleConverter[V]
-        }
+    optOrd.map { ord =>
+      ord match {
+        case _: OrderedSerialization[_] =>
+          TupleConverter.singleConverter[Boxed[V]].andThen(_.get)
+        case _ => TupleConverter.singleConverter[V]
       }
-      .getOrElse(TupleConverter.singleConverter[V])
+    }.getOrElse(TupleConverter.singleConverter[V])
 
   def keyConverter[K](ord: Ordering[K]): TupleConverter[K] =
     ord match {
@@ -227,31 +225,30 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
     TypedPipeFactory({ (fd, mode) =>
       val pipe = Grouped.maybeBox[K, V1](keyOrdering, fd) {
         (tupleSetter, fields) =>
-          val (sortOpt, ts) =
-            valueSort
-              .map {
-                vs =>
-                  vs match {
-                    case ordser: OrderedSerialization[V1] =>
-                      // We get in here when we do a secondary sort
-                      // and that sort is an ordered serialization
-                      // We now need a boxed serializer for this type
-                      // Then we set the comparator on the field, and finally we box the value with our tupleSetter
-                      val (boxfn, boxordSer) =
-                        Grouped.getBoxFnAndOrder[V1](ordser, fd)
-                      val valueF = new Fields("value")
-                      valueF.setComparator(
-                        "value",
-                        new CascadingBinaryComparator(boxordSer))
-                      val ts2 = tupleSetter
-                        .asInstanceOf[TupleSetter[(K, Boxed[V1])]]
-                        .contraMap { kv1: (K, V1) => (kv1._1, boxfn(kv1._2)) }
-                      (Some(valueF), ts2)
-                    case _ =>
-                      (Some(Grouped.valueSorting(vs)), tupleSetter)
+          val (sortOpt, ts) = valueSort.map {
+            vs =>
+              vs match {
+                case ordser: OrderedSerialization[V1] =>
+                  // We get in here when we do a secondary sort
+                  // and that sort is an ordered serialization
+                  // We now need a boxed serializer for this type
+                  // Then we set the comparator on the field, and finally we box the value with our tupleSetter
+                  val (boxfn, boxordSer) =
+                    Grouped.getBoxFnAndOrder[V1](ordser, fd)
+                  val valueF = new Fields("value")
+                  valueF.setComparator(
+                    "value",
+                    new CascadingBinaryComparator(boxordSer))
+                  val ts2 = tupleSetter.asInstanceOf[TupleSetter[(
+                      K,
+                      Boxed[V1])]].contraMap { kv1: (K, V1) =>
+                    (kv1._1, boxfn(kv1._2))
                   }
+                  (Some(valueF), ts2)
+                case _ =>
+                  (Some(Grouped.valueSorting(vs)), tupleSetter)
               }
-              .getOrElse((None, tupleSetter))
+          }.getOrElse((None, tupleSetter))
 
           mapped
             .toPipe(Grouped.kvFields)(fd, mode, ts)
@@ -376,8 +373,9 @@ case class UnsortedIdentityReduce[K, V1](
       val fakeOrdering: Ordering[V1] = Ordering.by { v: V1 => v.hashCode }
       implicit val mon = new PriorityQueueMonoid[V1](n)(fakeOrdering)
       // Do the heap-sort on the mappers:
-      val pretake: TypedPipe[(K, V1)] = mapped
-        .mapValues { v: V1 => mon.build(v) }
+      val pretake: TypedPipe[(K, V1)] = mapped.mapValues { v: V1 =>
+        mon.build(v)
+      }
         .sumByLocalKeys
         .flatMap { case (k, vs) => vs.iterator.asScala.map((k, _)) }
       // We have removed the priority queues, so serialization is not greater
@@ -386,7 +384,8 @@ case class UnsortedIdentityReduce[K, V1](
         keyOrdering,
         pretake,
         reducers,
-        descriptions).forceToReducers // jump to ValueSortedReduce
+        descriptions)
+        .forceToReducers // jump to ValueSortedReduce
         .take(n)
     }
 
@@ -513,8 +512,9 @@ case class IdentityValueSortedReduce[K, V1](
       implicit val mon =
         new PriorityQueueMonoid[V1](n)(valueSort.asInstanceOf[Ordering[V1]])
       // Do the heap-sort on the mappers:
-      val pretake: TypedPipe[(K, V1)] = mapped
-        .mapValues { v: V1 => mon.build(v) }
+      val pretake: TypedPipe[(K, V1)] = mapped.mapValues { v: V1 =>
+        mon.build(v)
+      }
         .sumByLocalKeys
         .flatMap { case (k, vs) => vs.iterator.asScala.map((k, _)) }
       // Now finish on the reducers
@@ -523,7 +523,8 @@ case class IdentityValueSortedReduce[K, V1](
         pretake,
         valueSort,
         reducers,
-        descriptions).forceToReducers // jump to ValueSortedReduce
+        descriptions)
+        .forceToReducers // jump to ValueSortedReduce
         .take(n)
     }
 
@@ -632,8 +633,8 @@ case class ValueSortedReduce[K, V1, V2](
             reduceFn,
             Grouped.valueField),
           Fields.REPLACE))
-        .reducers(reducers.getOrElse(-1))
-        .setDescriptions(descriptions)
+      .reducers(reducers.getOrElse(-1))
+      .setDescriptions(descriptions)
     }
   }
 }
@@ -686,8 +687,8 @@ case class IteratorMappedReduce[K, V1, V2](
             reduceFn,
             Grouped.valueField),
           Fields.REPLACE))
-        .reducers(reducers.getOrElse(-1))
-        .setDescriptions(descriptions)
+      .reducers(reducers.getOrElse(-1))
+      .setDescriptions(descriptions)
     }
 
   override def joinFunction = {

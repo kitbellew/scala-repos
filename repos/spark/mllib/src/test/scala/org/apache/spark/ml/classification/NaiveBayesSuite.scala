@@ -160,8 +160,7 @@ class NaiveBayesSuite
       model.transform(validationDataset).select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
-    val featureAndProbabilities = model
-      .transform(validationDataset)
+    val featureAndProbabilities = model.transform(validationDataset)
       .select("features", "probability")
     validateProbabilities(featureAndProbabilities, model, "multinomial")
   }
@@ -195,8 +194,7 @@ class NaiveBayesSuite
       model.transform(validationDataset).select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
-    val featureAndProbabilities = model
-      .transform(validationDataset)
+    val featureAndProbabilities = model.transform(validationDataset)
       .select("features", "probability")
     validateProbabilities(featureAndProbabilities, model, "bernoulli")
   }

@@ -66,9 +66,8 @@ case class GroupUpdate(
     Group(
       gid,
       apps.getOrElse(Set.empty).map(toApp(gid, _, version)),
-      groups
-        .getOrElse(Set.empty)
-        .map(sub => sub.toGroup(sub.groupId.canonicalPath(gid), version)),
+      groups.getOrElse(Set.empty).map(sub =>
+        sub.toGroup(sub.groupId.canonicalPath(gid), version)),
       dependencies.fold(Set.empty[PathId])(_.map(_.canonicalPath(gid))),
       version
     )

@@ -117,8 +117,7 @@ class JsonExporter(registry: Metrics, timer: Timer)
         if (vals.exists(_ == "60")) true
         else {
           log.warning(
-            s"${getClass.getName} request ignored due to unsupported period: '${vals
-              .mkString(",")}'")
+            s"${getClass.getName} request ignored due to unsupported period: '${vals.mkString(",")}'")
           false
         }
       }

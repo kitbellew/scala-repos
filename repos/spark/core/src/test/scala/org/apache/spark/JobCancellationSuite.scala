@@ -98,16 +98,13 @@ class JobCancellationSuite
     sc = new SparkContext("local", "test")
 
     // Run from 1 to 10, and then block and wait for the task to be killed.
-    val rdd = sc
-      .parallelize(1 to 1000, 2)
-      .map { x =>
-        if (x > 10) {
-          taskStartedSemaphore.release()
-          taskCancelledSemaphore.acquire()
-        }
-        x
+    val rdd = sc.parallelize(1 to 1000, 2).map { x =>
+      if (x > 10) {
+        taskStartedSemaphore.release()
+        taskCancelledSemaphore.acquire()
       }
-      .cache()
+      x
+    }.cache()
 
     val rdd1 = rdd.map(x => x)
 
@@ -234,13 +231,10 @@ class JobCancellationSuite
     })
 
     // Create two actions that would share the some stages.
-    val rdd = sc
-      .parallelize(1 to 10, 2)
-      .map { i =>
-        JobCancellationSuite.twoJobsSharingStageSemaphore.acquire()
-        (i, i)
-      }
-      .reduceByKey(_ + _)
+    val rdd = sc.parallelize(1 to 10, 2).map { i =>
+      JobCancellationSuite.twoJobsSharingStageSemaphore.acquire()
+      (i, i)
+    }.reduceByKey(_ + _)
     val f1 = rdd.collectAsync()
     val f2 = rdd.countAsync()
 
@@ -260,10 +254,9 @@ class JobCancellationSuite
   def testCount() {
     // Cancel before launching any tasks
     {
-      val f = sc
-        .parallelize(1 to 10000, 2)
-        .map { i => Thread.sleep(10); i }
-        .countAsync()
+      val f = sc.parallelize(1 to 10000, 2).map { i =>
+        Thread.sleep(10); i
+      }.countAsync()
       Future { f.cancel() }
       val e = intercept[SparkException] { f.get() }
       assert(
@@ -280,10 +273,9 @@ class JobCancellationSuite
         }
       })
 
-      val f = sc
-        .parallelize(1 to 10000, 2)
-        .map { i => Thread.sleep(10); i }
-        .countAsync()
+      val f = sc.parallelize(1 to 10000, 2).map { i =>
+        Thread.sleep(10); i
+      }.countAsync()
       Future {
         // Wait until some tasks were launched before we cancel the job.
         sem.acquire()
@@ -298,10 +290,9 @@ class JobCancellationSuite
   def testTake() {
     // Cancel before launching any tasks
     {
-      val f = sc
-        .parallelize(1 to 10000, 2)
-        .map { i => Thread.sleep(10); i }
-        .takeAsync(5000)
+      val f = sc.parallelize(1 to 10000, 2).map { i =>
+        Thread.sleep(10); i
+      }.takeAsync(5000)
       Future { f.cancel() }
       val e = intercept[SparkException] { f.get() }
       assert(
@@ -317,10 +308,9 @@ class JobCancellationSuite
           sem.release()
         }
       })
-      val f = sc
-        .parallelize(1 to 10000, 2)
-        .map { i => Thread.sleep(10); i }
-        .takeAsync(5000)
+      val f = sc.parallelize(1 to 10000, 2).map { i =>
+        Thread.sleep(10); i
+      }.takeAsync(5000)
       Future {
         sem.acquire()
         f.cancel()

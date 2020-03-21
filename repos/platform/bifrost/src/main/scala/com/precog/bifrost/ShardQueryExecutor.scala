@@ -142,55 +142,55 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
       import EvaluationError._
 
-      val solution = EitherT
-        .fromTryCatch[N, EitherT[N, EvaluationError, (Set[Fault], Table)]] {
-          N point {
-            val (faults, bytecode) = asBytecode(query)
+      val solution = EitherT.fromTryCatch[
+        N,
+        EitherT[N, EvaluationError, (Set[Fault], Table)]] {
+        N point {
+          val (faults, bytecode) = asBytecode(query)
 
-            val resultVN: N[EvaluationError \/ Table] = {
-              bytecode map { instrs =>
-                ((systemError _) <-: (StackException(_)) <-: decorate(
-                  instrs).disjunction) traverse { dag =>
-                  applyQueryOptions(opts) {
-                    logger.debug("[QID:%d] Evaluating query".format(qid))
+          val resultVN: N[EvaluationError \/ Table] = {
+            bytecode map { instrs =>
+              ((systemError _) <-: (StackException(_)) <-: decorate(
+                instrs).disjunction) traverse { dag =>
+                applyQueryOptions(opts) {
+                  logger.debug("[QID:%d] Evaluating query".format(qid))
 
-                    if (queryLogger.isDebugEnabled) {
-                      eval(dag, evaluationContext, true) map {
-                        _.logged(
-                          queryLogger,
-                          "[QID:" + qid + "]",
-                          "begin result stream",
-                          "end result stream") {
-                          slice => "size: " + slice.size
-                        }
+                  if (queryLogger.isDebugEnabled) {
+                    eval(dag, evaluationContext, true) map {
+                      _.logged(
+                        queryLogger,
+                        "[QID:" + qid + "]",
+                        "begin result stream",
+                        "end result stream") {
+                        slice => "size: " + slice.size
                       }
-                    } else {
-                      eval(dag, evaluationContext, true)
                     }
+                  } else {
+                    eval(dag, evaluationContext, true)
                   }
                 }
-              } getOrElse {
-                // compilation errors will be reported as warnings, but there are no results so
-                // we just return an empty stream as the success
-                N.point(\/.right(Table.empty))
               }
+            } getOrElse {
+              // compilation errors will be reported as warnings, but there are no results so
+              // we just return an empty stream as the success
+              N.point(\/.right(Table.empty))
             }
+          }
 
-            EitherT(resultVN) flatMap { table =>
-              EitherT.right {
-                faults.toStream traverse {
-                  case Fault.Error(pos, msg) =>
-                    queryReport.error(pos, msg) map { _ => true }
-                  case Fault.Warning(pos, msg) =>
-                    queryReport.warn(pos, msg) map { _ => false }
-                } map { errors =>
-                  faults -> (if (errors.exists(_ == true)) Table.empty
-                             else table)
-                }
+          EitherT(resultVN) flatMap { table =>
+            EitherT.right {
+              faults.toStream traverse {
+                case Fault.Error(pos, msg) =>
+                  queryReport.error(pos, msg) map { _ => true }
+                case Fault.Warning(pos, msg) =>
+                  queryReport.warn(pos, msg) map { _ => false }
+              } map { errors =>
+                faults -> (if (errors.exists(_ == true)) Table.empty else table)
               }
             }
           }
         }
+      }
 
       for {
         solutionResult <- solution.leftMap(systemError).join

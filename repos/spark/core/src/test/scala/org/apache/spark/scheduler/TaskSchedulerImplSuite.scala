@@ -165,17 +165,17 @@ class TaskSchedulerImplSuite
     intercept[IllegalStateException] { taskScheduler.submitTasks(attempt2) }
 
     // OK to submit multiple if previous attempts are all zombie
-    taskScheduler
-      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
-      .get
-      .isZombie = true
+    taskScheduler.taskSetManagerForAttempt(
+      attempt1.stageId,
+      attempt1.stageAttemptId)
+      .get.isZombie = true
     taskScheduler.submitTasks(attempt2)
     val attempt3 = FakeTask.createTaskSet(1, 2)
     intercept[IllegalStateException] { taskScheduler.submitTasks(attempt3) }
-    taskScheduler
-      .taskSetManagerForAttempt(attempt2.stageId, attempt2.stageAttemptId)
-      .get
-      .isZombie = true
+    taskScheduler.taskSetManagerForAttempt(
+      attempt2.stageId,
+      attempt2.stageAttemptId)
+      .get.isZombie = true
     taskScheduler.submitTasks(attempt3)
   }
 
@@ -199,10 +199,10 @@ class TaskSchedulerImplSuite
     assert(1 === taskDescriptions.length)
 
     // now mark attempt 1 as a zombie
-    taskScheduler
-      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
-      .get
-      .isZombie = true
+    taskScheduler.taskSetManagerForAttempt(
+      attempt1.stageId,
+      attempt1.stageAttemptId)
+      .get.isZombie = true
 
     // don't schedule anything on another resource offer
     val taskDescriptions2 = taskScheduler.resourceOffers(workerOffers).flatten
@@ -241,9 +241,9 @@ class TaskSchedulerImplSuite
     assert(10 === taskDescriptions.length)
 
     // now mark attempt 1 as a zombie
-    val mgr1 = taskScheduler
-      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
-      .get
+    val mgr1 = taskScheduler.taskSetManagerForAttempt(
+      attempt1.stageId,
+      attempt1.stageAttemptId).get
     mgr1.isZombie = true
 
     // don't schedule anything on another resource offer

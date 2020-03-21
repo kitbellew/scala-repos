@@ -69,8 +69,7 @@ class NullnessAnalyzerTest extends ClearAfterClass {
           (0 until (f.getLocals + f.getStackSize)).iterator
             .map(f.getValue(_).toString)
             .map(s => "%8s".format(s))
-            .zipWithIndex
-            .map({ case (s, i) => s"$i: $s" })
+            .zipWithIndex.map({ case (s, i) => s"$i: $s" })
             .mkString(", ")
       }
       ("%" + instrLength + "s: %s").format(textify(i), frameString)

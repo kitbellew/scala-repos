@@ -94,21 +94,21 @@ class ScalaCodeFragment(project: Project, text: String) extends {
     val project: Project = myManager.getProject
     val psiDocumentManager = PsiDocumentManager.getInstance(project)
     val document: Document = psiDocumentManager.getDocument(this)
-    UndoManager
-      .getInstance(project)
-      .undoableActionPerformed(
-        new ScalaCodeFragment.ImportClassUndoableAction(path, document, imports)
-      )
+    UndoManager.getInstance(project).undoableActionPerformed(
+      new ScalaCodeFragment.ImportClassUndoableAction(path, document, imports)
+    )
     val newRef = ref match {
       case st: ScStableCodeReferenceElement if st.resolve() == null =>
         Some(
-          ScalaPsiElementFactory
-            .createReferenceFromText(st.getText, st.getParent, st))
+          ScalaPsiElementFactory.createReferenceFromText(
+            st.getText,
+            st.getParent,
+            st))
       case expr: ScReferenceExpression if expr.resolve() == null =>
         Some(
-          ScalaPsiElementFactory
-            .createExpressionFromText(expr.getText, expr)
-            .asInstanceOf[ScReferenceExpression])
+          ScalaPsiElementFactory.createExpressionFromText(
+            expr.getText,
+            expr).asInstanceOf[ScReferenceExpression])
       case _ => None
     }
     newRef match {
@@ -142,8 +142,9 @@ class ScalaCodeFragment(project: Project, text: String) extends {
   }
 
   override def clone(): PsiFileImpl = {
-    val clone = cloneImpl(calcTreeElement.clone.asInstanceOf[FileElement])
-      .asInstanceOf[ScalaCodeFragment]
+    val clone = cloneImpl(
+      calcTreeElement.clone.asInstanceOf[FileElement]).asInstanceOf[
+      ScalaCodeFragment]
     clone.imports = this.imports
     clone.vFile = new LightVirtualFile(
       "Dummy.scala",

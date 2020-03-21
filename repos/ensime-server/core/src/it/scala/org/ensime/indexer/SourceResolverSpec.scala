@@ -47,15 +47,13 @@ class SourceResolverSpec
 trait SourceResolverTestUtils {
   def find(pkg: String, file: String)(implicit resolver: SourceResolver) = {
     import org.ensime.util.RichFileObject._
-    resolver
-      .resolve(
-        PackageName(pkg.split('.').toList),
-        RawSource(Some(file), None)
-      )
-      .map(fo =>
-        fo.pathWithinArchive match {
-          case None => fo.asLocalFile.getAbsolutePath
-          case _    => fo.getName.getPath
-        })
+    resolver.resolve(
+      PackageName(pkg.split('.').toList),
+      RawSource(Some(file), None)
+    ).map(fo =>
+      fo.pathWithinArchive match {
+        case None => fo.asLocalFile.getAbsolutePath
+        case _    => fo.getName.getPath
+      })
   }
 }

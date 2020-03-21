@@ -119,10 +119,7 @@ class CachedTableSuite
 
   test("too big for memory") {
     val data = "*" * 1000
-    sparkContext
-      .parallelize(1 to 200000, 1)
-      .map(_ => BigData(data))
-      .toDF()
+    sparkContext.parallelize(1 to 200000, 1).map(_ => BigData(data)).toDF()
       .registerTempTable("bigData")
     sqlContext.table("bigData").persist(StorageLevel.MEMORY_AND_DISK)
     assert(sqlContext.table("bigData").count() === 200000L)
@@ -169,35 +166,25 @@ class CachedTableSuite
     assertResult(
       1,
       "InMemoryRelation not found, testData should have been cached") {
-      sqlContext
-        .table("testData")
-        .queryExecution
-        .withCachedData
-        .collect {
-          case r: InMemoryRelation => r
-        }
-        .size
+      sqlContext.table("testData").queryExecution.withCachedData.collect {
+        case r: InMemoryRelation => r
+      }.size
     }
 
     sqlContext.cacheTable("testData")
     assertResult(
       0,
       "Double InMemoryRelations found, cacheTable() is not idempotent") {
-      sqlContext
-        .table("testData")
-        .queryExecution
-        .withCachedData
-        .collect {
-          case r @ InMemoryRelation(
-                _,
-                _,
-                _,
-                _,
-                _: InMemoryColumnarTableScan,
-                _) =>
-            r
-        }
-        .size
+      sqlContext.table("testData").queryExecution.withCachedData.collect {
+        case r @ InMemoryRelation(
+              _,
+              _,
+              _,
+              _,
+              _: InMemoryColumnarTableScan,
+              _) =>
+          r
+      }.size
     }
 
     sqlContext.uncacheTable("testData")
@@ -381,11 +368,11 @@ class CachedTableSuite
 
   test(
     "SPARK-10327 Cache Table is not working while subquery has alias in its project list") {
-    sparkContext
-      .parallelize((1, 1) :: (2, 2) :: Nil)
-      .toDF("key", "value")
-      .selectExpr("key", "value", "key+1")
-      .registerTempTable("abc")
+    sparkContext.parallelize((1, 1) :: (2, 2) :: Nil)
+      .toDF("key", "value").selectExpr(
+        "key",
+        "value",
+        "key+1").registerTempTable("abc")
     sqlContext.cacheTable("abc")
 
     val sparkPlan = sql("""select a.key, b.key, c.key from
@@ -422,8 +409,8 @@ class CachedTableSuite
       0)
     checkAnswer(
       sql("SELECT key, count(*) FROM orderedTable GROUP BY key ORDER BY key"),
-      sql("SELECT key, count(*) FROM testData3x GROUP BY key ORDER BY key")
-        .collect()
+      sql(
+        "SELECT key, count(*) FROM testData3x GROUP BY key ORDER BY key").collect()
     )
     sqlContext.uncacheTable("orderedTable")
     sqlContext.dropTempTable("orderedTable")
@@ -470,9 +457,11 @@ class CachedTableSuite
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
       checkAnswer(
         query,
-        testData
-          .join(testData2, $"key" === $"a")
-          .select($"key", $"value", $"a", $"b"))
+        testData.join(testData2, $"key" === $"a").select(
+          $"key",
+          $"value",
+          $"a",
+          $"b"))
       sqlContext.uncacheTable("t1")
       sqlContext.uncacheTable("t2")
     }
@@ -491,9 +480,11 @@ class CachedTableSuite
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
       checkAnswer(
         query,
-        testData
-          .join(testData2, $"key" === $"a")
-          .select($"key", $"value", $"a", $"b"))
+        testData.join(testData2, $"key" === $"a").select(
+          $"key",
+          $"value",
+          $"a",
+          $"b"))
       sqlContext.uncacheTable("t1")
       sqlContext.uncacheTable("t2")
     }
@@ -511,9 +502,11 @@ class CachedTableSuite
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 12)
       checkAnswer(
         query,
-        testData
-          .join(testData2, $"key" === $"a")
-          .select($"key", $"value", $"a", $"b"))
+        testData.join(testData2, $"key" === $"a").select(
+          $"key",
+          $"value",
+          $"a",
+          $"b"))
       sqlContext.uncacheTable("t1")
       sqlContext.uncacheTable("t2")
     }
@@ -532,9 +525,11 @@ class CachedTableSuite
       verifyNumExchanges(query, 2)
       checkAnswer(
         query,
-        testData
-          .join(testData2, $"key" === $"a")
-          .select($"key", $"value", $"a", $"b"))
+        testData.join(testData2, $"key" === $"a").select(
+          $"key",
+          $"value",
+          $"a",
+          $"b"))
       sqlContext.uncacheTable("t1")
       sqlContext.uncacheTable("t2")
     }
@@ -571,9 +566,11 @@ class CachedTableSuite
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
       checkAnswer(
         query,
-        df1
-          .join(df2, $"key" === $"a" && $"value" === $"b")
-          .select($"key", $"value", $"a", $"b"))
+        df1.join(df2, $"key" === $"a" && $"value" === $"b").select(
+          $"key",
+          $"value",
+          $"a",
+          $"b"))
       sqlContext.uncacheTable("t1")
       sqlContext.uncacheTable("t2")
     }

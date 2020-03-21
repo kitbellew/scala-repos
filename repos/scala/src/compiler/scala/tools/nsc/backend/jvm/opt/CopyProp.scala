@@ -65,10 +65,9 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
       val it = method.instructions.iterator
       while (it.hasNext) it.next() match {
         case vi: VarInsnNode if vi.`var` >= numParams && isLoad(vi) =>
-          val aliases = aliasAnalysis
-            .frameAt(vi)
-            .asInstanceOf[AliasingFrame[_]]
-            .aliasesOf(vi.`var`)
+          val aliases =
+            aliasAnalysis.frameAt(vi).asInstanceOf[AliasingFrame[_]].aliasesOf(
+              vi.`var`)
           if (aliases.size > 1) {
             val alias = usedOrMinAlias(aliases.iterator, vi.`var`)
             if (alias != -1) {
@@ -245,8 +244,9 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                 case DUP2 => prodCons.frameAt(prod).peekStack(0).getSize == 2
                 case _ =>
                   InstructionStackEffect.prod(
-                    InstructionStackEffect
-                      .forAsmAnalysis(prod, prodCons.frameAt(prod))) == 1
+                    InstructionStackEffect.forAsmAnalysis(
+                      prod,
+                      prodCons.frameAt(prod))) == 1
               }
           }
 

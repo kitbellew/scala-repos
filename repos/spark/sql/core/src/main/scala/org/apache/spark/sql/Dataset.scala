@@ -225,20 +225,21 @@ class Dataset[T] private[sql] (
   private implicit def classTag = unresolvedTEncoder.clsTag
 
   protected[sql] def resolve(colName: String): NamedExpression = {
-    queryExecution.analyzed
-      .resolveQuoted(colName, sqlContext.sessionState.analyzer.resolver)
+    queryExecution.analyzed.resolveQuoted(
+      colName,
+      sqlContext.sessionState.analyzer.resolver)
       .getOrElse {
         throw new AnalysisException(
-          s"""Cannot resolve column name "$colName" among (${schema.fieldNames
-            .mkString(", ")})""")
+          s"""Cannot resolve column name "$colName" among (${schema.fieldNames.mkString(
+            ", ")})""")
       }
   }
 
   protected[sql] def numericColumns: Seq[Expression] = {
     schema.fields.filter(_.dataType.isInstanceOf[NumericType]).map { n =>
-      queryExecution.analyzed
-        .resolveQuoted(n.name, sqlContext.sessionState.analyzer.resolver)
-        .get
+      queryExecution.analyzed.resolveQuoted(
+        n.name,
+        sqlContext.sessionState.analyzer.resolver).get
     }
   }
 
@@ -258,25 +259,23 @@ class Dataset[T] private[sql] (
 
     // For array values, replace Seq and Array with square brackets
     // For cells that are beyond 20 characters, replace it with the first 17 and "..."
-    val rows: Seq[Seq[String]] = schema.fieldNames.toSeq +: data
-      .map {
-        case r: Row         => r
-        case tuple: Product => Row.fromTuple(tuple)
-        case o              => Row(o)
-      }
-      .map { row =>
-        row.toSeq.map { cell =>
-          val str = cell match {
-            case null => "null"
-            case binary: Array[Byte] =>
-              binary.map("%02X".format(_)).mkString("[", " ", "]")
-            case array: Array[_] => array.mkString("[", ", ", "]")
-            case seq: Seq[_]     => seq.mkString("[", ", ", "]")
-            case _               => cell.toString
-          }
-          if (truncate && str.length > 20) str.substring(0, 17) + "..." else str
-        }: Seq[String]
-      }
+    val rows: Seq[Seq[String]] = schema.fieldNames.toSeq +: data.map {
+      case r: Row         => r
+      case tuple: Product => Row.fromTuple(tuple)
+      case o              => Row(o)
+    }.map { row =>
+      row.toSeq.map { cell =>
+        val str = cell match {
+          case null => "null"
+          case binary: Array[Byte] =>
+            binary.map("%02X".format(_)).mkString("[", " ", "]")
+          case array: Array[_] => array.mkString("[", ", ", "]")
+          case seq: Seq[_]     => seq.mkString("[", ", ", "]")
+          case _               => cell.toString
+        }
+        if (truncate && str.length > 20) str.substring(0, 17) + "..." else str
+      }: Seq[String]
+    }
 
     formatString(rows, numRows, hasMoreData, truncate)
   }
@@ -332,9 +331,8 @@ class Dataset[T] private[sql] (
     require(
       schema.size == colNames.size,
       "The number of columns doesn't match.\n" +
-        s"Old column names (${schema.size}): " + schema.fields
-        .map(_.name)
-        .mkString(", ") + "\n" +
+        s"Old column names (${schema.size}): " + schema.fields.map(
+        _.name).mkString(", ") + "\n" +
         s"New column names (${colNames.size}): " + colNames.mkString(", ")
     )
 
@@ -585,15 +583,9 @@ class Dataset[T] private[sql] (
       joinType: String): DataFrame = {
     // Analyze the self join. The assumption is that the analyzer will disambiguate left vs right
     // by creating a new instance for one of the branch.
-    val joined = sqlContext
-      .executePlan(
-        Join(
-          logicalPlan,
-          right.logicalPlan,
-          joinType = JoinType(joinType),
-          None))
-      .analyzed
-      .asInstanceOf[Join]
+    val joined = sqlContext.executePlan(
+      Join(logicalPlan, right.logicalPlan, joinType = JoinType(joinType), None))
+      .analyzed.asInstanceOf[Join]
 
     withPlan {
       Join(
@@ -656,7 +648,8 @@ class Dataset[T] private[sql] (
         logicalPlan,
         right.logicalPlan,
         JoinType(joinType),
-        Some(joinExprs.expr))).queryExecution.analyzed.asInstanceOf[Join]
+        Some(joinExprs.expr)))
+      .queryExecution.analyzed.asInstanceOf[Join]
 
     // If auto self join alias is disabled, return the plan.
     if (!sqlContext.conf.dataFrameSelfJoinAutoResolveAmbiguity) {
@@ -675,9 +668,9 @@ class Dataset[T] private[sql] (
     // resolved and become AttributeReference.
     val cond = plan.condition.map {
       _.transform {
-        case catalyst.expressions
-              .EqualTo(a: AttributeReference, b: AttributeReference)
-            if a.sameRef(b) =>
+        case catalyst.expressions.EqualTo(
+              a: AttributeReference,
+              b: AttributeReference) if a.sameRef(b) =>
           catalyst.expressions.EqualTo(
             withPlan(plan.left).resolve(a.name),
             withPlan(plan.right).resolve(b.name))
@@ -1042,8 +1035,8 @@ class Dataset[T] private[sql] (
       c3: TypedColumn[T, U3],
       c4: TypedColumn[T, U4],
       c5: TypedColumn[T, U5]): Dataset[(U1, U2, U3, U4, U5)] =
-    selectUntyped(c1, c2, c3, c4, c5)
-      .asInstanceOf[Dataset[(U1, U2, U3, U4, U5)]]
+    selectUntyped(c1, c2, c3, c4, c5).asInstanceOf[Dataset[
+      (U1, U2, U3, U4, U5)]]
 
   /**
     * Filters rows using the given condition.
@@ -1545,15 +1538,12 @@ class Dataset[T] private[sql] (
       logicalPlan)
     val sum = weights.sum
     val normalizedCumWeights = weights.map(_ / sum).scanLeft(0.0d)(_ + _)
-    normalizedCumWeights
-      .sliding(2)
-      .map { x =>
-        new Dataset[T](
-          sqlContext,
-          Sample(x(0), x(1), withReplacement = false, seed, sorted)(),
-          encoder)
-      }
-      .toArray
+    normalizedCumWeights.sliding(2).map { x =>
+      new Dataset[T](
+        sqlContext,
+        Sample(x(0), x(1), withReplacement = false, seed, sorted)(),
+        encoder)
+    }.toArray
   }
 
   /**
@@ -1769,9 +1759,8 @@ class Dataset[T] private[sql] (
   def drop(colNames: String*): DataFrame = {
     val resolver = sqlContext.sessionState.analyzer.resolver
     val remainingCols =
-      schema
-        .filter(f => colNames.forall(n => !resolver(f.name, n)))
-        .map(f => Column(f.name))
+      schema.filter(f => colNames.forall(n => !resolver(f.name, n))).map(f =>
+        Column(f.name))
     if (remainingCols.size == this.schema.size) {
       toDF()
     } else {
@@ -1791,9 +1780,9 @@ class Dataset[T] private[sql] (
   def drop(col: Column): DataFrame = {
     val expression = col match {
       case Column(u: UnresolvedAttribute) =>
-        queryExecution.analyzed
-          .resolveQuoted(u.name, sqlContext.sessionState.analyzer.resolver)
-          .getOrElse(u)
+        queryExecution.analyzed.resolveQuoted(
+          u.name,
+          sqlContext.sessionState.analyzer.resolver).getOrElse(u)
       case Column(expr: Expression) => expr
     }
     val attrs = this.logicalPlan.output
@@ -2149,9 +2138,8 @@ class Dataset[T] private[sql] (
   def collectAsList(): java.util.List[T] =
     withCallback("collectAsList", toDF()) { _ =>
       withNewExecutionId {
-        val values = queryExecution.executedPlan
-          .executeCollect()
-          .map(boundTEncoder.fromRow)
+        val values = queryExecution.executedPlan.executeCollect().map(
+          boundTEncoder.fromRow)
         java.util.Arrays.asList(values: _*)
       }
     }

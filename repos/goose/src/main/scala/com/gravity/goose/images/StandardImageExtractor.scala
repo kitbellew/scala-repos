@@ -227,8 +227,8 @@ class StandardImageExtractor(
     val MAX_PARENT_DEPTH = 2
     if (parentDepth > MAX_PARENT_DEPTH) {
       trace(
-        logPrefix + "ParentDepth is greater than %d, aborting depth traversal"
-          .format(MAX_PARENT_DEPTH))
+        logPrefix + "ParentDepth is greater than %d, aborting depth traversal".format(
+          MAX_PARENT_DEPTH))
       None
     } else {
       try {
@@ -264,8 +264,9 @@ class StandardImageExtractor(
       parentDepthLevel: Int,
       siblingDepthLevel: Int) {
     trace(
-      logPrefix + "Checking for large images - parent depth %d sibling depth: %d"
-        .format(parentDepthLevel, siblingDepthLevel))
+      logPrefix + "Checking for large images - parent depth %d sibling depth: %d".format(
+        parentDepthLevel,
+        siblingDepthLevel))
 
     getImageCandidates(node) match {
       case Some(goodImages) => {
@@ -354,8 +355,8 @@ class StandardImageExtractor(
         val MAX_BYTES_SIZE: Int = 15728640
         if ((bytes == 0 || bytes > minBytesForImages) && bytes < MAX_BYTES_SIZE) {
           trace(
-            logPrefix + "findImagesThatPassByteSizeTest: Found potential image - size: " + bytes + " src: " + image
-              .attr("src"))
+            logPrefix + "findImagesThatPassByteSizeTest: Found potential image - size: " + bytes + " src: " + image.attr(
+              "src"))
           goodImages.add(image)
         } else {
           trace(logPrefix + " Removing image: " + image.attr("src"))

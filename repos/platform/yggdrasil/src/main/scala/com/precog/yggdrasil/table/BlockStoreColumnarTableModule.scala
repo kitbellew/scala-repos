@@ -189,8 +189,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
           def cells = allCells.values
 
           def compare(cl: Cell, cr: Cell): Ordering = {
-            comparatorMatrix(cl.index)(cr.index)
-              .compare(cl.position, cr.position)
+            comparatorMatrix(cl.index)(cr.index).compare(
+              cl.position,
+              cr.position)
           }
         }
       }
@@ -267,30 +268,27 @@ trait BlockStoreColumnarTableModule[M[+_]]
           val emission = new Slice {
             val size = finishedSize
             val columns: Map[ColumnRef, Column] = {
-              (completeSlices.flatMap(_.columns) ++ prefixes.flatMap(_.columns))
-                .groupBy(_._1)
-                .map {
-                  case (ref, columns) => {
-                    val cp: Pair[ColumnRef, Column] = if (columns.size == 1) {
-                      columns.head
-                    } else {
-                      (
-                        ref,
-                        ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
-                    }
-                    cp
+              (completeSlices.flatMap(_.columns) ++ prefixes.flatMap(
+                _.columns)).groupBy(_._1).map {
+                case (ref, columns) => {
+                  val cp: Pair[ColumnRef, Column] = if (columns.size == 1) {
+                    columns.head
+                  } else {
+                    (ref, ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
                   }
+                  cp
                 }
+              }
             }
           }
 
           blockModuleLogger.trace(
             "Emitting a new slice of size " + emission.size)
 
-          val successorStatesM = expired
-            .map(_.succ)
-            .sequence
-            .map(_.toStream.collect({ case Some(cs) => cs }))
+          val successorStatesM =
+            expired.map(_.succ).sequence.map(_.toStream.collect({
+              case Some(cs) => cs
+            }))
 
           successorStatesM map { successorStates =>
             Some((emission, successorStates ++ suffixes))
@@ -1307,9 +1305,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           case (SortedSlice(name, kslice, vslice, _, _, _, _), index) =>
             val slice = new Slice {
               val size = kslice.size
-              val columns = kslice.wrap(CPathIndex(0)).columns ++ vslice
-                .wrap(CPathIndex(1))
-                .columns
+              val columns = kslice.wrap(CPathIndex(0)).columns ++ vslice.wrap(
+                CPathIndex(1)).columns
             }
 
             // We can actually get the last key, but is that necessary?
@@ -1367,8 +1364,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         )
       )
 
-      Table(StreamT(M.point(head)), ExactSize(totalCount))
-        .transform(TransSpec1.DerefArray1)
+      Table(StreamT(M.point(head)), ExactSize(totalCount)).transform(
+        TransSpec1.DerefArray1)
     }
 
     override def join(
@@ -1448,9 +1445,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
       val right1 = right0.compact(rightKeySpec)
 
       if (yggConfig.hashJoins) {
-        (left1
-          .toInternalTable()
-          .toEither |@| right1.toInternalTable().toEither).tupled flatMap {
+        (left1.toInternalTable().toEither |@| right1.toInternalTable().toEither).tupled flatMap {
           case (Right(left), Right(right)) =>
             orderHint match {
               case Some(JoinOrder.LeftOrder) =>

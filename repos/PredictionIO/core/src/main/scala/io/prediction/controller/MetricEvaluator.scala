@@ -216,14 +216,17 @@ class MetricEvaluator[EI, Q, P, A, R](
       engineEvalDataSet: Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])],
       params: WorkflowParams): MetricEvaluatorResult[R] = {
 
-    val evalResultList: Seq[(EngineParams, MetricScores[R])] =
-      engineEvalDataSet.zipWithIndex.par.map {
+    val evalResultList: Seq[(EngineParams, MetricScores[R])] = engineEvalDataSet
+      .zipWithIndex
+      .par
+      .map {
         case ((engineParams, evalDataSet), idx) =>
           val metricScores = MetricScores[R](
             metric.calculate(sc, evalDataSet),
             otherMetrics.map(_.calculate(sc, evalDataSet)))
           (engineParams, metricScores)
-      }.seq
+      }
+      .seq
 
     implicit lazy val formats = Utils.json4sDefaultFormats +
       new NameParamsSerializer
@@ -237,7 +240,8 @@ class MetricEvaluator[EI, Q, P, A, R](
     }
 
     // use max. take implicit from Metric.
-    val ((bestEngineParams, bestScore), bestIdx) = evalResultList.zipWithIndex
+    val ((bestEngineParams, bestScore), bestIdx) = evalResultList
+      .zipWithIndex
       .reduce { (x, y) =>
         if (metric.compare(x._1._2.score, y._1._2.score) >= 0) x else y
       }

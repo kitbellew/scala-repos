@@ -194,9 +194,8 @@ class ScPackagingImpl private (
 
   def findPackageObject(scope: GlobalSearchScope): Option[ScTypeDefinition] = {
     Option(
-      ScalaShortNamesCacheManager
-        .getInstance(getProject)
-        .getPackageObjectByName(getPackageName, scope))
+      ScalaShortNamesCacheManager.getInstance(
+        getProject).getPackageObjectByName(getPackageName, scope))
   }
 
   def getBodyText: String = {

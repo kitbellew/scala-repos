@@ -54,8 +54,7 @@ class FlowErrorDocSpec extends AkkaSpec {
       case _                      => Supervision.Stop
     }
     val flow = Flow[Int]
-      .filter(100 / _ < 50)
-      .map(elem => 100 / (5 - elem))
+      .filter(100 / _ < 50).map(elem => 100 / (5 - elem))
       .withAttributes(ActorAttributes.supervisionStrategy(decider))
     val source = Source(0 to 5).via(flow)
 

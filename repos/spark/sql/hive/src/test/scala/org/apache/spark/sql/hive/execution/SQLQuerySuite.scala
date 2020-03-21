@@ -387,8 +387,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("explode nested Field") {
-    Seq(NestedArray1(NestedArray2(Seq(1, 2, 3)))).toDF
-      .registerTempTable("nestedArray")
+    Seq(NestedArray1(NestedArray2(Seq(1, 2, 3)))).toDF.registerTempTable(
+      "nestedArray")
     checkAnswer(
       sql("SELECT ints FROM nestedArray LATERAL VIEW explode(a.b) a AS ints"),
       Row(1) :: Row(2) :: Row(3) :: Nil)
@@ -505,8 +505,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("CTAS with serde") {
-    sql("CREATE TABLE ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
-      .collect()
+    sql(
+      "CREATE TABLE ctas1 AS SELECT key k, value FROM src ORDER BY k, value").collect()
     sql(
       """CREATE TABLE ctas2
         | ROW FORMAT SERDE "org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe"
@@ -530,8 +530,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         | SELECT 1 AS key, value FROM src LIMIT 1""".stripMargin).collect()
     // do nothing cause the table ctas4 already existed.
     sql("""CREATE TABLE IF NOT EXISTS ctas4 AS
-        | SELECT key, value FROM src ORDER BY key, value""".stripMargin)
-      .collect()
+        | SELECT key, value FROM src ORDER BY key, value""".stripMargin).collect()
 
     checkAnswer(
       sql("SELECT k, value FROM ctas1 ORDER BY k, value"),
@@ -552,8 +551,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     )
     intercept[AnalysisException] {
       sql("""CREATE TABLE ctas4 AS
-          | SELECT key, value FROM src ORDER BY key, value""".stripMargin)
-        .collect()
+          | SELECT key, value FROM src ORDER BY key, value""".stripMargin).collect()
     }
     checkAnswer(
       sql("SELECT key, value FROM ctas4 ORDER BY key, value"),
@@ -606,9 +604,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("specifying the column list for CTAS") {
-    Seq((1, "111111"), (2, "222222"))
-      .toDF("key", "value")
-      .registerTempTable("mytable1")
+    Seq((1, "111111"), (2, "222222")).toDF("key", "value").registerTempTable(
+      "mytable1")
 
     sql(
       "create table gen__tmp(a int, b string) as select key, value from mytable1")
@@ -621,8 +618,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       "create table gen__tmp(a double, b double) as select key, value from mytable1")
     checkAnswer(
       sql("SELECT a, b from gen__tmp"),
-      sql("select cast(key as double), cast(value as double) from mytable1")
-        .collect())
+      sql(
+        "select cast(key as double), cast(value as double) from mytable1").collect())
     sql("DROP TABLE gen__tmp")
 
     sql("drop table mytable1")
@@ -637,8 +634,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     sql("set hive.variable.substitute=false") // disable the substitution
     sql("set tbl2=src")
     intercept[Exception] {
-      sql("SELECT key FROM ${hiveconf:tbl2} ORDER BY key, value limit 1")
-        .collect()
+      sql(
+        "SELECT key FROM ${hiveconf:tbl2} ORDER BY key, value limit 1").collect()
     }
 
     sql("set hive.variable.substitute=true") // enable the substitution
@@ -650,9 +647,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test("ordering not in select") {
     checkAnswer(
       sql("SELECT key FROM src ORDER BY value"),
-      sql("SELECT key FROM (SELECT key, value FROM src ORDER BY value) a")
-        .collect()
-        .toSeq)
+      sql(
+        "SELECT key FROM (SELECT key, value FROM src ORDER BY value) a").collect().toSeq)
   }
 
   test("ordering not in agg") {
@@ -669,10 +665,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("double nested data") {
-    sparkContext
-      .parallelize(Nested1(Nested2(Nested3(1))) :: Nil)
-      .toDF()
-      .registerTempTable("nested")
+    sparkContext.parallelize(Nested1(Nested2(Nested3(1))) :: Nil)
+      .toDF().registerTempTable("nested")
     checkAnswer(sql("SELECT f1.f2.f3 FROM nested"), Row(1))
 
     sql("CREATE TABLE test_ctas_1234 AS SELECT * from nested")
@@ -704,9 +698,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       "CREATE TABLE test AS SELECT COUNT(a.value) FROM test1 a JOIN test2 b ON a.key = b.key")
     checkAnswer(
       table("test"),
-      sql("SELECT COUNT(a.value) FROM test1 a JOIN test2 b ON a.key = b.key")
-        .collect()
-        .toSeq)
+      sql(
+        "SELECT COUNT(a.value) FROM test1 a JOIN test2 b ON a.key = b.key").collect().toSeq)
   }
 
   test("SPARK-3708 Backticks aren't handled correctly is aliases") {
@@ -749,9 +742,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     "SPARK-4154 Query does not work if it has 'not between' in Spark SQL and HQL") {
     checkAnswer(
       sql("SELECT key FROM src WHERE key not between 0 and 10 order by key"),
-      sql("SELECT key FROM src WHERE key between 11 and 500 order by key")
-        .collect()
-        .toSeq
+      sql(
+        "SELECT key FROM src WHERE key between 11 and 500 order by key").collect().toSeq
     )
   }
 
@@ -921,14 +913,13 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("SPARK-5203 union with different decimal precision") {
-    Seq
-      .empty[(Decimal, Decimal)]
+    Seq.empty[(Decimal, Decimal)]
       .toDF("d1", "d2")
       .select($"d1".cast(DecimalType(10, 5)).as("d"))
       .registerTempTable("dn")
 
-    sql(
-      "select d from dn union all select d * 2 from dn").queryExecution.analyzed
+    sql("select d from dn union all select d * 2 from dn")
+      .queryExecution.analyzed
   }
 
   test("test script transform for stdout") {
@@ -936,8 +927,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(100000 ===
       sql(
-        "SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans").queryExecution.toRdd
-        .count())
+        "SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans")
+        .queryExecution.toRdd.count())
   }
 
   test("test script transform for stderr") {
@@ -945,9 +936,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(
       0 ===
-        sql(
-          "SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans").queryExecution.toRdd
-          .count())
+        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans")
+          .queryExecution.toRdd.count())
   }
 
   test("test script transform data type") {
@@ -1154,8 +1144,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("Sorting columns are not in Generate") {
     withTempTable("data") {
-      sqlContext
-        .range(1, 5)
+      sqlContext.range(1, 5)
         .select(
           array($"id", $"id" + 1).as("a"),
           $"id".as("b"),
@@ -1345,16 +1334,14 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("SPARK-7269 Check analysis failed in case in-sensitive") {
-    Seq(1, 2, 3)
-      .map { i => (i.toString, i.toString) }
-      .toDF("key", "value")
-      .registerTempTable("df_analysis")
+    Seq(1, 2, 3).map { i => (i.toString, i.toString) }.toDF(
+      "key",
+      "value").registerTempTable("df_analysis")
     sql("SELECT kEy from df_analysis group by key").collect()
     sql("SELECT kEy+3 from df_analysis group by key+3").collect()
     sql("SELECT kEy+3, a.kEy, A.kEy from df_analysis A group by key").collect()
     sql(
-      "SELECT cast(kEy+1 as Int) from df_analysis A group by cast(key+1 as int)")
-      .collect()
+      "SELECT cast(kEy+1 as Int) from df_analysis A group by cast(key+1 as int)").collect()
     sql("SELECT cast(kEy+1 as Int) from df_analysis A group by key+1").collect()
     sql("SELECT 2 from df_analysis A group by key+1").collect()
     intercept[AnalysisException] {
@@ -1503,9 +1490,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test(
     "SPARK-9371: fix the support for special chars in column names for hive context") {
-    read
-      .json(sparkContext.makeRDD(
-        """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
+    read.json(sparkContext.makeRDD(
+      """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
       .registerTempTable("t")
 
     checkAnswer(
@@ -1549,11 +1535,11 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test("specifying database name for a temporary table is not allowed") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
-      val df = sparkContext
-        .parallelize(1 to 10)
-        .map(i => (i, i.toString))
-        .toDF("num", "str")
-      df.write
+      val df = sparkContext.parallelize(1 to 10).map(i => (i, i.toString)).toDF(
+        "num",
+        "str")
+      df
+        .write
         .format("parquet")
         .save(path)
 
@@ -1848,12 +1834,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         sqlContext.range(10).write.saveAsTable("add_col")
         withView("v") {
           sql("CREATE VIEW v AS SELECT * FROM add_col")
-          sqlContext
-            .range(10)
-            .select('id, 'id as 'a)
-            .write
-            .mode("overwrite")
-            .saveAsTable("add_col")
+          sqlContext.range(10).select('id, 'id as 'a).write.mode(
+            "overwrite").saveAsTable("add_col")
           checkAnswer(sql("SELECT * FROM v"), sqlContext.range(10).toDF())
         }
       }
@@ -1864,18 +1846,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     // make sure the new flag can handle some complex cases like join and schema change.
     withSQLConf(SQLConf.NATIVE_VIEW.key -> "true") {
       withTable("jt1", "jt2") {
-        sqlContext
-          .range(1, 10)
-          .toDF("id1")
-          .write
-          .format("json")
-          .saveAsTable("jt1")
-        sqlContext
-          .range(1, 10)
-          .toDF("id2")
-          .write
-          .format("json")
-          .saveAsTable("jt2")
+        sqlContext.range(1, 10).toDF("id1").write.format("json").saveAsTable(
+          "jt1")
+        sqlContext.range(1, 10).toDF("id2").write.format("json").saveAsTable(
+          "jt2")
         sql("CREATE VIEW testView AS SELECT * FROM jt1 JOIN jt2 ON id1 == id2")
         checkAnswer(
           sql("SELECT * FROM testView ORDER BY id1"),
@@ -2027,29 +2001,18 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-11453: append data to partitioned table") {
     withTable("tbl11453") {
-      Seq("1" -> "10", "2" -> "20")
-        .toDF("i", "j")
-        .write
-        .partitionBy("i")
-        .saveAsTable("tbl11453")
+      Seq("1" -> "10", "2" -> "20").toDF("i", "j")
+        .write.partitionBy("i").saveAsTable("tbl11453")
 
-      Seq("3" -> "30")
-        .toDF("i", "j")
-        .write
-        .mode(SaveMode.Append)
-        .partitionBy("i")
-        .saveAsTable("tbl11453")
+      Seq("3" -> "30").toDF("i", "j")
+        .write.mode(SaveMode.Append).partitionBy("i").saveAsTable("tbl11453")
       checkAnswer(
         sqlContext.read.table("tbl11453").select("i", "j").orderBy("i"),
         Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Nil)
 
       // make sure case sensitivity is correct.
-      Seq("4" -> "40")
-        .toDF("i", "j")
-        .write
-        .mode(SaveMode.Append)
-        .partitionBy("I")
-        .saveAsTable("tbl11453")
+      Seq("4" -> "40").toDF("i", "j")
+        .write.mode(SaveMode.Append).partitionBy("I").saveAsTable("tbl11453")
       checkAnswer(
         sqlContext.read.table("tbl11453").select("i", "j").orderBy("i"),
         Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Row(
@@ -2099,8 +2062,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("multi-insert with lateral view") {
     withTempTable("t1") {
-      sqlContext
-        .range(10)
+      sqlContext.range(10)
         .select(array($"id", $"id" + 1).as("arr"), $"id")
         .registerTempTable("source")
       withTable("dest1", "dest2") {

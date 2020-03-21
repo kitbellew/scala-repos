@@ -117,13 +117,13 @@ object FieldSpec extends Specification {
       }
 
       if (canCheckDefaultValues) {
-        "which correctly clear back to the default box value" in S
-          .initIfUninitted(session) {
-            in.setBox(Full(example))
-            in.valueBox.isDefined must_== true
-            in.clear
-            in.valueBox must_== in.defaultValueBox
-          }
+        "which correctly clear back to the default box value" in S.initIfUninitted(
+          session) {
+          in.setBox(Full(example))
+          in.valueBox.isDefined must_== true
+          in.clear
+          in.valueBox must_== in.defaultValueBox
+        }
       }
 
       "which capture error conditions set in" in {

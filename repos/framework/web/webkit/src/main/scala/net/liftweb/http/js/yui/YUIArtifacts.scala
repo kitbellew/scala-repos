@@ -155,9 +155,8 @@ object YUIArtifacts extends JSArtifacts {
   private def toJson(info: AjaxInfo): String =
     ("timeout : " + info.timeout ::
       "cache : " + info.cache ::
-      "success : function(resp) { res = YAHOO.lift.eval(resp);" + info.successFunc
-        .map(_ + "(res);")
-        .openOr("") + "}" ::
+      "success : function(resp) { res = YAHOO.lift.eval(resp);" + info.successFunc.map(
+        _ + "(res);").openOr("") + "}" ::
       "failure : " + info.failFunc.openOr(
         "function (arg) {YAHOO.log('Ajax request failed');}") ::
       Nil) mkString ("{ ", ", ", " }")

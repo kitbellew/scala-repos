@@ -57,8 +57,11 @@ object TimePathedSource extends java.io.Serializable {
           case None => None
           case Some(newInit) if newInit.contains(init) =>
             sys.error(
-              "DateRange expansion ill-behaved: %s -> %s -> %s -> %s"
-                .format(init, expanded, subset, newInit))
+              "DateRange expansion ill-behaved: %s -> %s -> %s -> %s".format(
+                init,
+                expanded,
+                subset,
+                newInit))
           case Some(newInit) => minifyRec(newInit, expander, vertractor)
         }
     }
@@ -94,12 +97,10 @@ object TimePathedSource extends java.io.Serializable {
         .map(_._2)
 
     def allPaths(dateRange: DateRange): Iterable[(DateRange, String)] =
-      stepSize
-        .map {
-          dateRange
-            .each(_)
-            .map { dr => (dr, toPath(dr.start)) }
-        }
+      stepSize.map {
+        dateRange.each(_)
+          .map { dr => (dr, toPath(dr.start)) }
+      }
         .getOrElse(
           List((dateRange, pattern))
         ) // This must not have any time after all
@@ -110,8 +111,10 @@ object TimePathedSource extends java.io.Serializable {
         .map(_.length > 0)
         .getOrElse(false)
       logger.debug(
-        "Tested input %s, Valid: %s. Conditions: Any files present, DateRange: %s"
-          .format(p, valid, desired))
+        "Tested input %s, Valid: %s. Conditions: Any files present, DateRange: %s".format(
+          p,
+          valid,
+          desired))
       valid
     }
 

@@ -28,13 +28,12 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
          "\n/** DDL for all tables. Call .create to execute. */" +
            (
              if (tables.length > 5)
-               "\nlazy val schema: profile.SchemaDescription = Array(" + tables
-                 .map(_.TableValue.name + ".schema")
-                 .mkString(", ") + ").reduceLeft(_ ++ _)"
+               "\nlazy val schema: profile.SchemaDescription = Array(" + tables.map(
+                 _.TableValue.name + ".schema").mkString(
+                 ", ") + ").reduceLeft(_ ++ _)"
              else if (tables.nonEmpty)
-               "\nlazy val schema: profile.SchemaDescription = " + tables
-                 .map(_.TableValue.name + ".schema")
-                 .mkString(" ++ ")
+               "\nlazy val schema: profile.SchemaDescription = " + tables.map(
+                 _.TableValue.name + ".schema").mkString(" ++ ")
              else
                "\nlazy val schema: profile.SchemaDescription = profile.DDL(Nil, Nil)"
            ) +
@@ -76,18 +75,13 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
 
     trait EntityTypeDef extends super.EntityTypeDef {
       def code = {
-        val args = columns
-          .map(c =>
-            c.default
-              .map(v => s"${c.name}: ${c.exposedType} = $v")
-              .getOrElse(
-                s"${c.name}: ${c.exposedType}"
-              ))
-          .mkString(", ")
+        val args = columns.map(c =>
+          c.default.map(v => s"${c.name}: ${c.exposedType} = $v").getOrElse(
+            s"${c.name}: ${c.exposedType}"
+          )).mkString(", ")
         if (classEnabled) {
-          val prns = (parents.take(1).map(" extends " + _) ++ parents
-            .drop(1)
-            .map(" with " + _)).mkString("")
+          val prns = (parents.take(1).map(" extends " + _) ++ parents.drop(
+            1).map(" with " + _)).mkString("")
           s"""case class $name($args)$prns"""
         } else {
           s"""
@@ -107,12 +101,10 @@ def $name($args): $name = {
           columnsPositional.map(c =>
             (if (c.fakeNullable || c.model.nullable) s"<<?[${c.rawType}]"
              else s"<<[${c.rawType}]")))
-        val dependencies = columns
-          .map(_.exposedType)
-          .distinct
-          .zipWithIndex
-          .map { case (t, i) => s"""e$i: GR[$t]""" }
-          .mkString(", ")
+        val dependencies =
+          columns.map(_.exposedType).distinct.zipWithIndex.map {
+            case (t, i) => s"""e$i: GR[$t]"""
+          }.mkString(", ")
         val rearranged = compoundValue(
           desiredColumnOrder.map(i => if (hlistEnabled) s"r($i)" else tuple(i)))
         def result(args: String) =
@@ -176,8 +168,8 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
         val args = model.name.schema.map(n => s"""Some("$n")""") ++ Seq(
           "\"" + model.name.table + "\"")
         s"""
-class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
-          .mkString(", ")})$prns {
+class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args.mkString(
+          ", ")})$prns {
   ${indent(body.map(_.mkString("\n")).mkString("\n\n"))}
 }
         """.trim()
@@ -228,9 +220,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
       // Explicit type to allow overloading existing Slick method names.
       // Explicit type argument for better error message when implicit type mapper not found.
       def code =
-        s"""val $name: Rep[$actualType] = column[$actualType]("${model.name}"${options
-          .map(", " + _)
-          .mkString("")})"""
+        s"""val $name: Rep[$actualType] = column[$actualType]("${model.name}"${options.map(
+          ", " + _).mkString("")})"""
     }
 
     class PrimaryKeyDef(model: m.PrimaryKey)

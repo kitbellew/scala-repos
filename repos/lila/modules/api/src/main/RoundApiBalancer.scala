@@ -39,9 +39,8 @@ private[api] final class RoundApiBalancer(
         owner: Boolean)
 
     val router = system.actorOf(
-      akka.routing
-        .RoundRobinPool(nbActors)
-        .props(Props(new lila.hub.SequentialProvider {
+      akka.routing.RoundRobinPool(nbActors).props(
+        Props(new lila.hub.SequentialProvider {
           val futureTimeout = 20.seconds
           val logger = RoundApiBalancer.this.logger
           def process = {
@@ -49,9 +48,9 @@ private[api] final class RoundApiBalancer(
                 api.player(pov, apiVersion)(ctx) addFailureEffect { e =>
                   logger.error(pov.toString, e)
                 }
-              }.chronometer
-                .logIfSlow(500, logger) { _ => s"inner player $pov" }
-                .result
+              }.chronometer.logIfSlow(500, logger) { _ =>
+                s"inner player $pov"
+              }.result
             case Watcher(
                   pov,
                   apiVersion,

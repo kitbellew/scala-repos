@@ -57,9 +57,9 @@ class HDFSStateLaws extends WordSpec {
         case intersection @ Intersection(low, high) => {
           val startBatchTime: Timestamp =
             batcher.earliestTimeOf(batcher.batchOf(startDate))
-          val expectedNextRunStartMillis: Long = startBatchTime
-            .incrementMinutes(numBatches * batchLength)
-            .milliSinceEpoch
+          val expectedNextRunStartMillis: Long =
+            startBatchTime.incrementMinutes(
+              numBatches * batchLength).milliSinceEpoch
           assert(low.least.get.milliSinceEpoch == expectedNextRunStartMillis)
         }
         case _ => fail("requested interval should be an interseciton")
@@ -138,14 +138,12 @@ class HDFSStateLaws extends WordSpec {
     completeState(state.begin.willAccept(interval))
     interval match {
       case intersection @ Intersection(low, high) => {
-        BatchID
-          .range(
-            batcher.batchOf(low.least.get),
-            batcher.batchOf(high.greatest.get))
+        BatchID.range(
+          batcher.batchOf(low.least.get),
+          batcher.batchOf(high.greatest.get))
           .foreach { t =>
-            val totPath = (path + "/" + batcher
-              .earliestTimeOf(t)
-              .milliSinceEpoch + ".version")
+            val totPath = (path + "/" + batcher.earliestTimeOf(
+              t).milliSinceEpoch + ".version")
             assert(new java.io.File(totPath).exists)
           }
       }

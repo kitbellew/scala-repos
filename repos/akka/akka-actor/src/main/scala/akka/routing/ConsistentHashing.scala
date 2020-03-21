@@ -223,9 +223,8 @@ final case class ConsistentHashingRoutingLogic(
                 currentConsistenHash.nodeFor(bytes).routee
               case str: String ⇒ currentConsistenHash.nodeFor(str).routee
               case x: AnyRef ⇒
-                currentConsistenHash
-                  .nodeFor(SerializationExtension(system).serialize(x).get)
-                  .routee
+                currentConsistenHash.nodeFor(
+                  SerializationExtension(system).serialize(x).get).routee
             }
         } catch {
           case NonFatal(e) ⇒

@@ -35,9 +35,9 @@ object OptimizationPackage {
         fn: DF,
         init: Vector,
         options: OptimizationOption*): Iterator[LBFGS[Vector]#State] = {
-      options
-        .foldLeft(OptParams())((a, b) => b apply a)
-        .iterations(new CachedDiffFunction(fn)(space.copy), init)
+      options.foldLeft(OptParams())((a, b) => b apply a).iterations(
+        new CachedDiffFunction(fn)(space.copy),
+        init)
     }
   }
 
@@ -127,9 +127,9 @@ object OptimizationPackage {
         init: Vector,
         options: OptimizationOption*): Iterator[
       FirstOrderMinimizer[Vector, BatchDiffFunction[Vector]]#State] = {
-      options
-        .foldLeft(OptParams())((a, b) => b apply a)
-        .iterations(new CachedBatchDiffFunction(fn)(space.copy), init)
+      options.foldLeft(OptParams())((a, b) => b apply a).iterations(
+        new CachedBatchDiffFunction(fn)(space.copy),
+        init)
 
     }
   }

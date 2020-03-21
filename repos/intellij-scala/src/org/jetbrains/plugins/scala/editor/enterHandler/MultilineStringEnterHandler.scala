@@ -152,9 +152,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
 
       def prevLinePrefixAfterDelimiter(offsetInLine: Int): Int =
         if (prevLine.length > offsetInLine)
-          prevLine
-            .substring(offsetInLine)
-            .prefixLength(c => c == ' ' || c == '\t')
+          prevLine.substring(offsetInLine).prefixLength(c =>
+            c == ' ' || c == '\t')
         else 0
 
       val wasSingleLine =
@@ -176,8 +175,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         }
 
       if (wasSingleLine || lines.length == 3 &&
-          (lines(0).endsWith("(") && lines(2).trim.startsWith(")") || lines(0)
-            .endsWith("{") && lines(2).trim.startsWith("}"))) {
+          (lines(0).endsWith("(") && lines(2).trim.startsWith(")") || lines(
+            0).endsWith("{") && lines(2).trim.startsWith("}"))) {
         val trimmedStartLine =
           getLineByNumber(document.getLineNumber(offset) - 1).trim()
         val inConcatenation = literal.getParent match {
@@ -259,8 +258,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         val prefixStriped = prevLine.substring(wsPrefix)
 
         if (supportLevel == ScalaCodeStyleSettings.MULTILINE_STRING_QUOTES_AND_INDENT ||
-            !prefixStriped.startsWith(Seq(marginChar)) && !prefixStriped
-              .startsWith(firstMLQuote) ||
+            !prefixStriped.startsWith(
+              Seq(marginChar)) && !prefixStriped.startsWith(firstMLQuote) ||
             !lines.map(_.trim).exists(_.startsWith(Seq(marginChar)))) {
           if (prevLineStartOffset < literalOffset) {
             val beforeQuotes = prevLinePrefixAfterDelimiter(0)

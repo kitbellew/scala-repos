@@ -67,26 +67,27 @@ class BrokerPartitionInfo(
         throw new KafkaException(Errors.forCode(metadata.errorCode).exception)
       } else {
         throw new KafkaException(
-          "Topic metadata %s has empty partition metadata and no error code"
-            .format(metadata))
+          "Topic metadata %s has empty partition metadata and no error code".format(
+            metadata))
       }
     }
-    partitionMetadata
-      .map { m =>
-        m.leader match {
-          case Some(leader) =>
-            debug(
-              "Partition [%s,%d] has leader %d"
-                .format(topic, m.partitionId, leader.id))
-            new PartitionAndLeader(topic, m.partitionId, Some(leader.id))
-          case None =>
-            debug(
-              "Partition [%s,%d] does not have a leader yet"
-                .format(topic, m.partitionId))
-            new PartitionAndLeader(topic, m.partitionId, None)
-        }
+    partitionMetadata.map { m =>
+      m.leader match {
+        case Some(leader) =>
+          debug(
+            "Partition [%s,%d] has leader %d".format(
+              topic,
+              m.partitionId,
+              leader.id))
+          new PartitionAndLeader(topic, m.partitionId, Some(leader.id))
+        case None =>
+          debug(
+            "Partition [%s,%d] does not have a leader yet".format(
+              topic,
+              m.partitionId))
+          new PartitionAndLeader(topic, m.partitionId, None)
       }
-      .sortWith((s, t) => s.partitionId < t.partitionId)
+    }.sortWith((s, t) => s.partitionId < t.partitionId)
   }
 
   /**
@@ -115,12 +116,11 @@ class BrokerPartitionInfo(
       tmd.partitionsMetadata.foreach(pmd => {
         if (pmd.errorCode != Errors.NONE.code && pmd.errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
           warn(
-            "Error while fetching metadata %s for topic partition [%s,%d]: [%s]"
-              .format(
-                pmd,
-                tmd.topic,
-                pmd.partitionId,
-                Errors.forCode(pmd.errorCode).exception.getClass))
+            "Error while fetching metadata %s for topic partition [%s,%d]: [%s]".format(
+              pmd,
+              tmd.topic,
+              pmd.partitionId,
+              Errors.forCode(pmd.errorCode).exception.getClass))
         } // any other error code (e.g. ReplicaNotAvailable) can be ignored since the producer does not need to access the replica and isr metadata
       })
     })

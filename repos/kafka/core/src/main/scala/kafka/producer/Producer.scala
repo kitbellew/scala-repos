@@ -71,12 +71,15 @@ class Producer[K, V](
       config,
       new DefaultEventHandler[K, V](
         config,
-        CoreUtils
-          .createObject[Partitioner](config.partitionerClass, config.props),
-        CoreUtils
-          .createObject[Encoder[V]](config.serializerClass, config.props),
-        CoreUtils
-          .createObject[Encoder[K]](config.keySerializerClass, config.props),
+        CoreUtils.createObject[Partitioner](
+          config.partitionerClass,
+          config.props),
+        CoreUtils.createObject[Encoder[V]](
+          config.serializerClass,
+          config.props),
+        CoreUtils.createObject[Encoder[K]](
+          config.keySerializerClass,
+          config.props),
         new ProducerPool(config)))
 
   /**
@@ -126,10 +129,8 @@ class Producer[K, V](
           }
       }
       if (!added) {
-        producerTopicStats
-          .getProducerTopicStats(message.topic)
-          .droppedMessageRate
-          .mark()
+        producerTopicStats.getProducerTopicStats(
+          message.topic).droppedMessageRate.mark()
         producerTopicStats.getProducerAllTopicsStats.droppedMessageRate.mark()
         throw new QueueFullException(
           "Event queue is full of unsent messages, could not send event: " + message.toString)
@@ -155,8 +156,7 @@ class Producer[K, V](
           producerSendThread.shutdown
         eventHandler.close
         info(
-          "Producer shutdown completed in " + (System
-            .nanoTime() - startTime) / 1000000 + " ms")
+          "Producer shutdown completed in " + (System.nanoTime() - startTime) / 1000000 + " ms")
       }
     }
   }

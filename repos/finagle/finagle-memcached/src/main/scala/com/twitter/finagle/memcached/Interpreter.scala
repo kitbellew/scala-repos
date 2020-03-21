@@ -118,9 +118,8 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
           existing match {
             case Some(entry) if entry.valid =>
               val Buf.Utf8(existingString) = entry.value
-              if (!existingString.isEmpty && !DigitsPattern
-                    .matcher(existingString)
-                    .matches())
+              if (!existingString.isEmpty && !DigitsPattern.matcher(
+                    existingString).matches())
                 throw new ClientError(
                   "cannot increment or decrement non-numeric value")
 
@@ -172,8 +171,7 @@ private[memcached] object Interpreter {
    * used as a cas token.
    */
   private[memcached] def generateCasUnique(value: Buf): Buf = {
-    val hashAsUnsignedLong = Hashing
-      .goodFastHash(32)
+    val hashAsUnsignedLong = Hashing.goodFastHash(32)
       .newHasher(value.length)
       .putBytes(Buf.ByteArray.Owned.extract(value))
       .hash()

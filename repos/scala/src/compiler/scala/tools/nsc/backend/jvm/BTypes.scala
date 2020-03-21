@@ -200,8 +200,8 @@ abstract class BTypes {
         Some(classBTypeFromParsedClassfile(superName))
     }
 
-    val interfaces: List[ClassBType] = classNode.interfaces.asScala
-      .map(classBTypeFromParsedClassfile)(collection.breakOut)
+    val interfaces: List[ClassBType] = classNode.interfaces.asScala.map(
+      classBTypeFromParsedClassfile)(collection.breakOut)
 
     val flags = classNode.access
 
@@ -219,9 +219,8 @@ abstract class BTypes {
     def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
       (innerClassNode.outerName != null && innerClassNode.outerName == classNode.name) ||
       (innerClassNode.outerName == null && {
-        val classNodeForInnerClass = byteCodeRepository
-          .classNode(innerClassNode.name)
-          .get // TODO: don't get here, but set the info to Left at the end
+        val classNodeForInnerClass = byteCodeRepository.classNode(
+          innerClassNode.name).get // TODO: don't get here, but set the info to Left at the end
         classNodeForInnerClass.outerClass == classNode.name
       })
     }
@@ -276,10 +275,9 @@ abstract class BTypes {
     def fromClassfileAttribute: Option[InlineInfo] = {
       if (classNode.attrs == null) None
       else
-        classNode.attrs.asScala
-          .collect({ case a: InlineInfoAttribute => a })
-          .headOption
-          .map(_.inlineInfo)
+        classNode.attrs.asScala.collect({
+          case a: InlineInfoAttribute => a
+        }).headOption.map(_.inlineInfo)
     }
 
     def fromClassfileWithoutAttribute = {
@@ -295,16 +293,14 @@ abstract class BTypes {
       // require special handling. Excluding is OK because they are never inlined.
       // Here we are parsing from a classfile and we don't need to do anything special. Many of these
       // primitives don't even exist, for example Any.isInstanceOf.
-      val methodInfos = classNode.methods.asScala
-        .map(methodNode => {
-          val info = MethodInlineInfo(
-            effectivelyFinal = BytecodeUtils.isFinalMethod(methodNode),
-            traitMethodWithStaticImplementation = false,
-            annotatedInline = false,
-            annotatedNoInline = false)
-          (methodNode.name + methodNode.desc, info)
-        })
-        .toMap
+      val methodInfos = classNode.methods.asScala.map(methodNode => {
+        val info = MethodInlineInfo(
+          effectivelyFinal = BytecodeUtils.isFinalMethod(methodNode),
+          traitMethodWithStaticImplementation = false,
+          annotatedInline = false,
+          annotatedNoInline = false)
+        (methodNode.name + methodNode.desc, info)
+      }).toMap
       InlineInfo(
         traitImplClassSelfType = None,
         isEffectivelyFinal = BytecodeUtils.isFinalClass(classNode),
@@ -414,9 +410,8 @@ abstract class BTypes {
               else
                 other match {
                   case otherClassType: ClassBType =>
-                    classType
-                      .isSubtypeOf(otherClassType)
-                      .orThrow // e.g., java/lang/Double conforms to java/lang/Number
+                    classType.isSubtypeOf(
+                      otherClassType).orThrow // e.g., java/lang/Double conforms to java/lang/Number
                   case _ => false
                 }
             } else if (isNullType) {
@@ -1006,8 +1001,8 @@ abstract class BTypes {
       isNestedClass.flatMap(isNested => {
         // if isNested is true, we know that info.get is defined, and nestedInfo.get is also defined.
         if (isNested)
-          info.get.nestedInfo.get.enclosingClass.enclosingNestedClassesChain
-            .map(this :: _)
+          info.get.nestedInfo.get.enclosingClass.enclosingNestedClassesChain.map(
+            this :: _)
         else Right(Nil)
       })
     }

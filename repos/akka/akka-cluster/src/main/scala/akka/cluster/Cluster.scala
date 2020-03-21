@@ -124,23 +124,20 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         SchedulerTickDuration.toMillis
       )
 
-      val cfg = ConfigFactory
-        .parseString(
-          s"akka.scheduler.tick-duration=${SchedulerTickDuration.toMillis}ms")
-        .withFallback(system.settings.config)
+      val cfg = ConfigFactory.parseString(
+        s"akka.scheduler.tick-duration=${SchedulerTickDuration.toMillis}ms").withFallback(
+        system.settings.config)
       val threadFactory = system.threadFactory match {
         case tf: MonitorableThreadFactory ⇒
           tf.withName(tf.name + "-cluster-scheduler")
         case tf ⇒ tf
       }
-      system.dynamicAccess
-        .createInstanceFor[Scheduler](
-          system.settings.SchedulerClass,
-          immutable.Seq(
-            classOf[Config] -> cfg,
-            classOf[LoggingAdapter] -> log,
-            classOf[ThreadFactory] -> threadFactory))
-        .get
+      system.dynamicAccess.createInstanceFor[Scheduler](
+        system.settings.SchedulerClass,
+        immutable.Seq(
+          classOf[Config] -> cfg,
+          classOf[LoggingAdapter] -> log,
+          classOf[ThreadFactory] -> threadFactory)).get
     } else {
       // delegate to system.scheduler, but don't close over system
       val systemScheduler = system.scheduler
@@ -167,9 +164,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   // create supervisor for daemons under path "/system/cluster"
   private val clusterDaemons: ActorRef = {
     system.systemActorOf(
-      Props(classOf[ClusterDaemon], settings)
-        .withDispatcher(UseDispatcher)
-        .withDeploy(Deploy.local),
+      Props(classOf[ClusterDaemon], settings).withDispatcher(
+        UseDispatcher).withDeploy(Deploy.local),
       name = "cluster")
   }
 
@@ -180,8 +176,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     implicit val timeout = system.settings.CreationTimeout
     try {
       Await.result(
-        (clusterDaemons ? InternalClusterAction.GetClusterCoreRef)
-          .mapTo[ActorRef],
+        (clusterDaemons ? InternalClusterAction.GetClusterCoreRef).mapTo[
+          ActorRef],
         timeout.duration)
     } catch {
       case NonFatal(e) ⇒
@@ -258,7 +254,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       "at least one `ClusterDomainEvent` class is required")
     require(
       to.forall(classOf[ClusterDomainEvent].isAssignableFrom),
-      s"subscribe to `akka.cluster.ClusterEvent.ClusterDomainEvent` or subclasses, was [${to.map(_.getName).mkString(", ")}]"
+      s"subscribe to `akka.cluster.ClusterEvent.ClusterDomainEvent` or subclasses, was [${to.map(
+        _.getName).mkString(", ")}]"
     )
     clusterCore ! InternalClusterAction.Subscribe(
       subscriber,

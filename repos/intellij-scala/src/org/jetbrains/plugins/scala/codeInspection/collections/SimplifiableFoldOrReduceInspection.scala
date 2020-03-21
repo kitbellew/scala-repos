@@ -40,9 +40,8 @@ class FoldSimplificationType(
     expr match {
       case qual `.fold` (literal(`startElem`), binaryOperation(`opName`))
           if implicitParameterExistsFor(methodName, qual) =>
-        val simpl = replace(expr)
-          .withText(invocationText(qual, methodName))
-          .highlightFrom(qual)
+        val simpl = replace(expr).withText(
+          invocationText(qual, methodName)).highlightFrom(qual)
         Some(simpl)
       case _ => None
     }
@@ -63,9 +62,8 @@ class ReduceSimplificationType(
     expr match {
       case qual `.reduce`(binaryOperation(`opName`))
           if implicitParameterExistsFor(methodName, qual) =>
-        val simpl = replace(expr)
-          .withText(invocationText(qual, methodName))
-          .highlightFrom(qual)
+        val simpl = replace(expr).withText(
+          invocationText(qual, methodName)).highlightFrom(qual)
         Some(simpl)
       case _ => None
     }

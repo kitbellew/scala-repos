@@ -157,8 +157,8 @@ final class BtreeClientIntegrationSuite
       val target = client.bCard(StringToChannelBuffer(outerKey))
       assert(
         inner.size == Await.result(target),
-        "BCARD failed for " + outerKey + " expected " + inner.size + " got " + Await
-          .result(target))
+        "BCARD failed for " + outerKey + " expected " + inner.size + " got " + Await.result(
+          target))
     }
 
     println("Test BCARD succeeded")

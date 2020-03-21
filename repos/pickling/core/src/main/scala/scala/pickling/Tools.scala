@@ -50,13 +50,11 @@ class Tools[C <: Context](val c: C) {
 
   private def directSubclassesAnnotation(
       sym: TypeSymbol): Option[Seq[TypeSymbol]] = {
-    val annotatedSubclasses = sym.annotations
-      .collect({
-        case annotation
-            if annotation.tpe == typeOf[scala.pickling.directSubclasses] =>
-          annotation
-      })
-      .headOption map {
+    val annotatedSubclasses = sym.annotations.collect({
+      case annotation
+          if annotation.tpe == typeOf[scala.pickling.directSubclasses] =>
+        annotation
+    }).headOption map {
       annotation =>
         annotation.javaArgs(newTermName("value")) match {
           case ArrayArgument(klasses) =>
@@ -146,16 +144,13 @@ class Tools[C <: Context](val c: C) {
             Nil
           } else if (treatAsSealed(sym)) {
             val syms: List[ClassSymbol] =
-              directSubclasses(sym)
-                .map {
-                  case csym: ClassSymbol  => csym
-                  case msym: ModuleSymbol => msym.moduleClass.asClass
-                  case osym =>
-                    throw new Exception(
-                      s"unexpected known direct subclass: $osym <: $sym")
-                }
-                .toList
-                .flatMap(loop)
+              directSubclasses(sym).map {
+                case csym: ClassSymbol  => csym
+                case msym: ModuleSymbol => msym.moduleClass.asClass
+                case osym =>
+                  throw new Exception(
+                    s"unexpected known direct subclass: $osym <: $sym")
+              }.toList.flatMap(loop)
             syms
           } else {
             hierarchyIsSealed = false
@@ -172,46 +167,44 @@ class Tools[C <: Context](val c: C) {
 
     def sourcepathAndClasspathScan(): List[Symbol] = {
       println(s"full classpath scan: $tpe")
-      lazy val classpathCache = Tools
-        .subclassCache(
-          mirror, {
-            val cache = MutableMap[Symbol, MutableList[Symbol]]()
-            def updateCache(bc: Symbol, c: Symbol) = {
-              if (bc != c && isRelevantSubclass(
-                    bc,
-                    c
-                  )) // TODO: what else do we want to ignore?
-                cache.getOrElseUpdate(bc, MutableList()) += c
-            }
-            def loop(pkg: Symbol): Unit = {
-              // NOTE: only looking for top-level classes!
-              val pkgMembers = pkg.typeSignature.members
-              pkgMembers foreach (m => {
-                def analyze(m: Symbol): Unit = {
-                  if (m.name.decoded.contains("$")) () // SI-7251
-                  else if (m.isClass)
-                    m.asClass.baseClasses foreach (bc => updateCache(bc, m))
-                  else if (m.isModule) analyze(m.asModule.moduleClass)
-                  else ()
-                }
-                analyze(m)
-              })
-              def recurIntoPackage(pkg: Symbol) = {
-                pkg.name.toString != "_root_" &&
-                pkg.name.toString != "quicktime" && // TODO: pesky thing on my classpath, crashes ClassfileParser
-                pkg.name.toString != "j3d" && // TODO: another ClassfileParser crash
-                pkg.name.toString != "jansi" && // TODO: and another one (jline.jar)
-                pkg.name.toString != "jsoup" // TODO: SI-3809
-              }
-              val subpackages =
-                pkgMembers filter (m => m.isPackage && recurIntoPackage(m))
-              subpackages foreach loop
-            }
-            loop(mirror.RootClass)
-            cache // NOTE: 126873 cache entries for my classpath
+      lazy val classpathCache = Tools.subclassCache(
+        mirror, {
+          val cache = MutableMap[Symbol, MutableList[Symbol]]()
+          def updateCache(bc: Symbol, c: Symbol) = {
+            if (bc != c && isRelevantSubclass(
+                  bc,
+                  c
+                )) // TODO: what else do we want to ignore?
+              cache.getOrElseUpdate(bc, MutableList()) += c
           }
-        )
-        .asInstanceOf[MutableMap[Symbol, MutableList[Symbol]]]
+          def loop(pkg: Symbol): Unit = {
+            // NOTE: only looking for top-level classes!
+            val pkgMembers = pkg.typeSignature.members
+            pkgMembers foreach (m => {
+              def analyze(m: Symbol): Unit = {
+                if (m.name.decoded.contains("$")) () // SI-7251
+                else if (m.isClass)
+                  m.asClass.baseClasses foreach (bc => updateCache(bc, m))
+                else if (m.isModule) analyze(m.asModule.moduleClass)
+                else ()
+              }
+              analyze(m)
+            })
+            def recurIntoPackage(pkg: Symbol) = {
+              pkg.name.toString != "_root_" &&
+              pkg.name.toString != "quicktime" && // TODO: pesky thing on my classpath, crashes ClassfileParser
+              pkg.name.toString != "j3d" && // TODO: another ClassfileParser crash
+              pkg.name.toString != "jansi" && // TODO: and another one (jline.jar)
+              pkg.name.toString != "jsoup" // TODO: SI-3809
+            }
+            val subpackages =
+              pkgMembers filter (m => m.isPackage && recurIntoPackage(m))
+            subpackages foreach loop
+          }
+          loop(mirror.RootClass)
+          cache // NOTE: 126873 cache entries for my classpath
+        }
+      ).asInstanceOf[MutableMap[Symbol, MutableList[Symbol]]]
       classpathCache.getOrElse(baseSym, Nil).toList
     }
 
@@ -228,21 +221,19 @@ class Tools[C <: Context](val c: C) {
       // otherwise pattern match which uses this list might work funnily
       val subSyms = unsorted.distinct.sortWith((c1, c2) =>
         c1.asClass.baseClasses.contains(c2))
-      val subTpes = subSyms
-        .map(_.asClass)
-        .map(subSym => {
-          def tparamNames(sym: TypeSymbol) = sym.typeParams.map(_.name.toString)
-          // val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(baseSym) == tparamNames(subSym)
-          val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(
-            baseSym).length == tparamNames(subSym).length
-          val targsAreConcrete =
-            baseTargs.nonEmpty && baseTargs.forall(_.typeSymbol.isClass)
-          // NOTE: this is an extremely naïve heuristics
-          // see http://groups.google.com/group/scala-internals/browse_thread/thread/3a43a6364b97b521 for more information
-          if (tparamsMatch && targsAreConcrete)
-            appliedType(subSym.toTypeConstructor, baseTargs)
-          else existentialAbstraction(subSym.typeParams, subSym.toType)
-        })
+      val subTpes = subSyms.map(_.asClass).map(subSym => {
+        def tparamNames(sym: TypeSymbol) = sym.typeParams.map(_.name.toString)
+        // val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(baseSym) == tparamNames(subSym)
+        val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(
+          baseSym).length == tparamNames(subSym).length
+        val targsAreConcrete =
+          baseTargs.nonEmpty && baseTargs.forall(_.typeSymbol.isClass)
+        // NOTE: this is an extremely naïve heuristics
+        // see http://groups.google.com/group/scala-internals/browse_thread/thread/3a43a6364b97b521 for more information
+        if (tparamsMatch && targsAreConcrete)
+          appliedType(subSym.toTypeConstructor, baseTargs)
+        else existentialAbstraction(subSym.typeParams, subSym.toType)
+      })
       subTpes
     }
   }

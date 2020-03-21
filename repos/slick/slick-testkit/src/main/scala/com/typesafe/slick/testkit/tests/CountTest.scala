@@ -84,9 +84,8 @@ class CountTest extends AsyncTest[RelationalTestDB] {
         a,
         (for {
           b <- bs if b.aId === a.id
-        } yield b).length)).result
-        .named("directLength")
-        .map(_ shouldBe Seq((1L, 2))),
+        } yield b).length)).result.named("directLength").map(
+        _ shouldBe Seq((1L, 2))),
       (for {
         a <- as if a.id === 1L
         l <- Query((for {
@@ -95,9 +94,8 @@ class CountTest extends AsyncTest[RelationalTestDB] {
       } yield (a, l)).result.named("joinLength").map(_ shouldBe Seq((1L, 2))),
       (for {
         (a, b) <- as joinLeft bs on (_.id === _.aId)
-      } yield (a.id, b.map(_.data))).length.result
-        .named("outerJoinLength")
-        .map(_ shouldBe 3)
+      } yield (a.id, b.map(_.data))).length.result.named("outerJoinLength").map(
+        _ shouldBe 3)
     )
   }
 
@@ -115,12 +113,10 @@ class CountTest extends AsyncTest[RelationalTestDB] {
     }
     val ts = TableQuery[T]
 
-    DBIO
-      .seq(
-        ts.schema.create,
-        ts += (1L, "a", 1L, None, None),
-        ts.length.result.map(_ shouldBe 1)
-      )
-      .withPinnedSession
+    DBIO.seq(
+      ts.schema.create,
+      ts += (1L, "a", 1L, None, None),
+      ts.length.result.map(_ shouldBe 1)
+    ).withPinnedSession
   }
 }

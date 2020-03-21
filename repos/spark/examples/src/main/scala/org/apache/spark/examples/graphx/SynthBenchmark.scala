@@ -111,10 +111,9 @@ object SynthBenchmark {
     if (!degFile.isEmpty) {
       val fos = new FileOutputStream(degFile)
       val pos = new PrintWriter(fos)
-      val hist = graph.vertices
-        .leftJoin(graph.degrees)((id, _, optDeg) => optDeg.getOrElse(0))
-        .map(p => p._2)
-        .countByValue()
+      val hist = graph.vertices.leftJoin(graph.degrees)((id, _, optDeg) =>
+        optDeg.getOrElse(0))
+        .map(p => p._2).countByValue()
       hist.foreach {
         case (deg, count) => pos.println(s"$deg \t $count")
       }

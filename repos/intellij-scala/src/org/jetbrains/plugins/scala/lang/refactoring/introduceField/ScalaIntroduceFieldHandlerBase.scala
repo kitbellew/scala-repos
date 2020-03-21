@@ -40,12 +40,9 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       file: PsiFile,
       title: String)(action: IntroduceFieldContext[T] => Unit) {
     try {
-      val classes = ScalaPsiUtil
-        .getParents(elem, file)
-        .collect {
-          case t: ScTemplateDefinition if isSuitableClass(elem, t) => t
-        }
-        .toArray[PsiClass]
+      val classes = ScalaPsiUtil.getParents(elem, file).collect {
+        case t: ScTemplateDefinition if isSuitableClass(elem, t) => t
+      }.toArray[PsiClass]
       classes.size match {
         case 0 =>
         case 1 =>
@@ -72,18 +69,16 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
               false
             }
           }
-          NavigationUtil
-            .getPsiElementPopup(
-              classes,
-              new PsiClassListCellRenderer() {
-                override def getElementText(element: PsiClass): String =
-                  super.getElementText(element).replace("$", "")
-              },
-              title,
-              processor,
-              selection
-            )
-            .showInBestPositionFor(editor)
+          NavigationUtil.getPsiElementPopup(
+            classes,
+            new PsiClassListCellRenderer() {
+              override def getElementText(element: PsiClass): String =
+                super.getElementText(element).replace("$", "")
+            },
+            title,
+            processor,
+            selection
+          ).showInBestPositionFor(editor)
       }
     } catch {
       case _: IntroduceException => return
@@ -98,9 +93,8 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       aClass.getContainingFile,
       occurrences: _*)
     val firstOccOffset = occurrences.map(_.getStartOffset).min
-    val anchor = ScalaRefactoringUtil
-      .statementsAndMembersInClass(aClass)
-      .find(_.getTextRange.getEndOffset >= firstOccOffset)
+    val anchor = ScalaRefactoringUtil.statementsAndMembersInClass(aClass).find(
+      _.getTextRange.getEndOffset >= firstOccOffset)
     anchor.getOrElse {
       if (PsiTreeUtil.isAncestor(
             aClass.extendsBlock.templateBody.orNull,
@@ -138,9 +132,8 @@ object ScalaIntroduceFieldHandlerBase {
     val container = ScalaRefactoringUtil.container(parExpr, ifc.file)
     val stmtsAndMmbrs =
       ScalaRefactoringUtil.statementsAndMembersInClass(ifc.aClass)
-    val containerIsLocal =
-      (Iterator(container) ++ new ParentsIterator(container))
-        .exists(stmtsAndMmbrs.contains(_))
+    val containerIsLocal = (Iterator(container) ++ new ParentsIterator(
+      container)).exists(stmtsAndMmbrs.contains(_))
     if (!containerIsLocal) false
     else {
       ifc.element match {
@@ -159,8 +152,10 @@ object ScalaIntroduceFieldHandlerBase {
     val parExpr = ScalaRefactoringUtil.findParentExpr(commonParent)
     if (parExpr == null) return None
     val container: PsiElement = ScalaRefactoringUtil.container(parExpr, file)
-    val needBraces = !parExpr.isInstanceOf[ScBlock] && ScalaRefactoringUtil
-      .needBraces(parExpr, ScalaRefactoringUtil.nextParent(parExpr, file))
+    val needBraces =
+      !parExpr.isInstanceOf[ScBlock] && ScalaRefactoringUtil.needBraces(
+        parExpr,
+        ScalaRefactoringUtil.nextParent(parExpr, file))
     val parent =
       if (needBraces) {
         firstRange = firstRange.shiftRight(1)

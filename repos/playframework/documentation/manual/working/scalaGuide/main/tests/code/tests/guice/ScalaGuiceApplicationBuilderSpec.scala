@@ -115,8 +115,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
         .load(
           new play.api.inject.BuiltinModule,
           bind[Component].to[DefaultComponent]
-        )
-        .injector
+        ).injector
       // #load-modules
 
       injector.instanceOf[Component] must beAnInstanceOf[DefaultComponent]

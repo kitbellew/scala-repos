@@ -135,10 +135,8 @@ object Docs {
 
         val label = "Play " + version
         val apiMappings = Keys.apiMappings.value
-        val externalDocsScalacOption = Opts.doc
-          .externalAPI(apiMappings)
-          .head
-          .replace("-doc-external-doc:", "")
+        val externalDocsScalacOption = Opts.doc.externalAPI(
+          apiMappings).head.replace("-doc-external-doc:", "")
 
         val options = Seq(
           // Note, this is used by the doc-source-url feature to determine the relative path of a given source file.

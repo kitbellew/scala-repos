@@ -18,9 +18,8 @@ case class Association(kind: DependencyKind, var range: TextRange, path: Path) {
   def isSatisfiedIn(element: PsiElement): Boolean =
     element match {
       case reference: ScReferenceElement =>
-        Dependency
-          .dependencyFor(reference)
-          .exists(it => it.kind == kind && it.path == path)
+        Dependency.dependencyFor(reference).exists(it =>
+          it.kind == kind && it.path == path)
       case _ => false
     }
 }

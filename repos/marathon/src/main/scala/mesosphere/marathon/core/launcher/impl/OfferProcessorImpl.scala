@@ -78,8 +78,7 @@ private[launcher] class OfferProcessorImpl(
           matchErrorsMeter.mark()
           log.error(s"Could not process offer '${offer.getId.getValue}'", e)
           MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = true)
-      }
-      .flatMap {
+      }.flatMap {
         case MatchedTaskOps(offerId, tasks, resendThisOffer) =>
           savingTasksTimeMeter.timeFuture {
             saveTasks(tasks, savingDeadline).map { savedTasks =>
@@ -90,8 +89,7 @@ private[launcher] class OfferProcessorImpl(
                 resendThisOffer || notAllSaved)
             }
           }
-      }
-      .flatMap {
+      }.flatMap {
         case MatchedTaskOps(offerId, Nil, resendThisOffer) =>
           declineOffer(offerId, resendThisOffer)
         case MatchedTaskOps(offerId, tasks, _) => acceptOffer(offerId, tasks)
@@ -124,21 +122,19 @@ private[launcher] class OfferProcessorImpl(
 
   /** Revert the effects of the task ops on the task state. */
   private[this] def revertTaskOps(ops: Iterable[TaskOp]): Future[Unit] = {
-    ops
-      .foldLeft(Future.successful(())) { (terminatedFuture, nextOp) =>
-        terminatedFuture.flatMap { _ =>
-          nextOp.oldTask match {
-            case Some(existingTask) =>
-              taskCreationHandler.created(existingTask).map(_ => ())
-            case None =>
-              taskCreationHandler.terminated(nextOp.taskId).map(_ => ())
-          }
+    ops.foldLeft(Future.successful(())) { (terminatedFuture, nextOp) =>
+      terminatedFuture.flatMap { _ =>
+        nextOp.oldTask match {
+          case Some(existingTask) =>
+            taskCreationHandler.created(existingTask).map(_ => ())
+          case None =>
+            taskCreationHandler.terminated(nextOp.taskId).map(_ => ())
         }
       }
-      .recover {
-        case NonFatal(e) =>
-          throw new RuntimeException("while reverting task ops", e)
-      }
+    }.recover {
+      case NonFatal(e) =>
+        throw new RuntimeException("while reverting task ops", e)
+    }
   }
 
   /**
@@ -165,8 +161,7 @@ private[launcher] class OfferProcessorImpl(
           taskCreationHandler.terminated(taskId)
       }
 
-      persistedOp
-        .map(_ => Some(taskOpWithSource))
+      persistedOp.map(_ => Some(taskOpWithSource))
         .recoverWith {
           case NonFatal(e) =>
             savingTasksErrorMeter.mark()
@@ -175,8 +170,7 @@ private[launcher] class OfferProcessorImpl(
               s"error while storing task $taskId for app [${taskId.appId}]",
               e)
             revertTaskOps(Some(taskOpWithSource.op))
-        }
-        .map {
+        }.map {
           case Some(savedTask) => Some(taskOpWithSource)
           case None            => None
         }

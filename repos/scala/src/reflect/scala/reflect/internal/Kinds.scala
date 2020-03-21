@@ -381,9 +381,8 @@ trait Kinds {
     val order = 0
     private[internal] def buildState(sym: Symbol, v: Variance)(
         s: StringState): StringState = {
-      s.append(v.symbolicString)
-        .appendHead(order, sym)
-        .append(bounds.scalaNotation(_.toString))
+      s.append(v.symbolicString).appendHead(order, sym).append(
+        bounds.scalaNotation(_.toString))
     }
     def scalaNotation: String =
       Kind.Head(order, None, None) + bounds.scalaNotation(_.toString)

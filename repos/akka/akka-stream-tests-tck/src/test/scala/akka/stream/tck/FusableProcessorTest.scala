@@ -19,12 +19,8 @@ class FusableProcessorTest extends AkkaIdentityProcessorVerification[Int] {
     implicit val materializer = ActorMaterializer(settings)(system)
 
     // withAttributes "wraps" the underlying identity and protects it from automatic removal
-    Flow[Int]
-      .via(
-        GraphStages.Identity.asInstanceOf[Graph[FlowShape[Int, Int], NotUsed]])
-      .named("identity")
-      .toProcessor
-      .run()
+    Flow[Int].via(GraphStages.Identity.asInstanceOf[
+      Graph[FlowShape[Int, Int], NotUsed]]).named("identity").toProcessor.run()
   }
 
   override def createElement(element: Int): Int = element

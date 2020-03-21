@@ -152,10 +152,8 @@ object MultipleShapeDrawingDemo extends JFXApp {
             // Cancel current mouse event handler
             mouseHandlerSubscription.foreach(_.cancel())
             // Determine which shape is selected
-            val handlerId = alignToggleGroup
-              .selectedToggle()
-              .asInstanceOf[javafx.scene.control.ToggleButton]
-              .id()
+            val handlerId = alignToggleGroup.selectedToggle().asInstanceOf[
+              javafx.scene.control.ToggleButton].id()
             val selectedHandler = handlerId match {
               case "rectangle" => Some(RectangleInteractor.handler)
               case "ellipse"   => Some(EllipseInteractor.handler)

@@ -22,8 +22,8 @@ object Test extends App {
   baos.reset
 
   (scala.Console withOut ps) {
-    scala.tools.scalap.Main
-      .main(Array("-verbose", "-cp", "whatever", "java.lang.Object"))
+    scala.tools.scalap.Main.main(
+      Array("-verbose", "-cp", "whatever", "java.lang.Object"))
   }
 
   // now make sure we did not see the '.' in the classpath

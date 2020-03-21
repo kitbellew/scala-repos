@@ -113,14 +113,12 @@ object GameRepo {
     GameDiff(progress.origin, progress.game) match {
       case (Nil, Nil) => funit
       case (sets, unsets) =>
-        gameTube.coll
-          .update(
-            $select(progress.origin.id),
-            nonEmptyMod("$set", BSONDocument(sets)) ++ nonEmptyMod(
-              "$unset",
-              BSONDocument(unsets))
-          )
-          .void
+        gameTube.coll.update(
+          $select(progress.origin.id),
+          nonEmptyMod("$set", BSONDocument(sets)) ++ nonEmptyMod(
+            "$unset",
+            BSONDocument(unsets))
+        ).void
     }
 
   private def nonEmptyMod(mod: String, doc: BSONDocument) =
@@ -286,8 +284,8 @@ object GameRepo {
       .filter(Forsyth.initial !=)
     val bson = (gameTube.handler write g2) ++ BSONDocument(
       F.initialFen -> fen,
-      F.checkAt -> (!g2.isPgnImport)
-        .option(DateTime.now plusHours g2.hasClock.fold(1, 10 * 24)),
+      F.checkAt -> (!g2.isPgnImport).option(
+        DateTime.now plusHours g2.hasClock.fold(1, 10 * 24)),
       F.playingUids -> (g2.started && userIds.nonEmpty).option(userIds)
     )
     $insert bson bson
@@ -373,26 +371,24 @@ object GameRepo {
   // Can't be done on reactivemongo 0.11.9 :(
   def bestOpponents(userId: String, limit: Int): Fu[List[(String, Int)]] = {
     import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework._
-    gameTube.coll
-      .aggregate(
-        Match(BSONDocument(F.playerUids -> userId)),
-        List(
-          Match(BSONDocument(F.playerUids -> BSONDocument("$size" -> 2))),
-          Sort(Descending(F.createdAt)),
-          Limit(1000), // only look in the last 1000 games
-          Project(BSONDocument(F.playerUids -> true, F.id -> false)),
-          Unwind(F.playerUids),
-          Match(BSONDocument(F.playerUids -> BSONDocument("$ne" -> userId))),
-          GroupField(F.playerUids)("gs" -> SumValue(1)),
-          Sort(Descending("gs")),
-          Limit(limit)
-        )
+    gameTube.coll.aggregate(
+      Match(BSONDocument(F.playerUids -> userId)),
+      List(
+        Match(BSONDocument(F.playerUids -> BSONDocument("$size" -> 2))),
+        Sort(Descending(F.createdAt)),
+        Limit(1000), // only look in the last 1000 games
+        Project(BSONDocument(F.playerUids -> true, F.id -> false)),
+        Unwind(F.playerUids),
+        Match(BSONDocument(F.playerUids -> BSONDocument("$ne" -> userId))),
+        GroupField(F.playerUids)("gs" -> SumValue(1)),
+        Sort(Descending("gs")),
+        Limit(limit)
       )
-      .map(_.documents.flatMap { obj =>
-        obj.getAs[String]("_id") flatMap { id =>
-          obj.getAs[Int]("gs") map { id -> _ }
-        }
-      })
+    ).map(_.documents.flatMap { obj =>
+      obj.getAs[String]("_id") flatMap { id =>
+        obj.getAs[Int]("gs") map { id -> _ }
+      }
+    })
   }
 
   def random: Fu[Option[Game]] =
@@ -421,11 +417,9 @@ object GameRepo {
       ))
 
   def findPgnImport(pgn: String): Fu[Option[Game]] =
-    gameTube.coll
-      .find(
-        BSONDocument(s"${F.pgnImport}.h" -> PgnImport.hash(pgn))
-      )
-      .one[Game]
+    gameTube.coll.find(
+      BSONDocument(s"${F.pgnImport}.h" -> PgnImport.hash(pgn))
+    ).one[Game]
 
   def getPgn(id: ID): Fu[PgnMoves] = getOptionPgn(id) map (~_)
 
@@ -433,15 +427,13 @@ object GameRepo {
     getOptionPgn(id) map (_ filter (_.nonEmpty))
 
   def getOptionPgn(id: ID): Fu[Option[PgnMoves]] =
-    gameTube.coll
-      .find(
-        $select(id),
-        Json.obj(
-          F.id -> false,
-          F.binaryPgn -> true
-        )
+    gameTube.coll.find(
+      $select(id),
+      Json.obj(
+        F.id -> false,
+        F.binaryPgn -> true
       )
-      .one[BSONDocument] map { _ flatMap extractPgnMoves }
+    ).one[BSONDocument] map { _ flatMap extractPgnMoves }
 
   def lastGameBetween(
       u1: String,
@@ -455,15 +447,13 @@ object GameRepo {
   }
 
   def getUserIds(id: ID): Fu[List[String]] =
-    gameTube.coll
-      .find(
-        $select(id),
-        BSONDocument(
-          F.id -> false,
-          F.playerUids -> true
-        )
+    gameTube.coll.find(
+      $select(id),
+      BSONDocument(
+        F.id -> false,
+        F.playerUids -> true
       )
-      .one[BSONDocument] map { ~_.flatMap(_.getAs[List[String]](F.playerUids)) }
+    ).one[BSONDocument] map { ~_.flatMap(_.getAs[List[String]](F.playerUids)) }
 
   // #TODO this breaks it all since reactivemongo > 0.11.9
   def activePlayersSinceNOPENOPENOPE(
@@ -480,28 +470,26 @@ object GameRepo {
       Unwind
     }
 
-    gameTube.coll
-      .aggregate(
+    gameTube.coll.aggregate(
+      Match(
+        BSONDocument(
+          F.createdAt -> BSONDocument("$gt" -> since),
+          F.status -> BSONDocument("$gte" -> chess.Status.Mate.id),
+          s"${F.playerUids}.0" -> BSONDocument("$exists" -> true)
+        )),
+      List(
+        Unwind(F.playerUids),
         Match(
           BSONDocument(
-            F.createdAt -> BSONDocument("$gt" -> since),
-            F.status -> BSONDocument("$gte" -> chess.Status.Mate.id),
-            s"${F.playerUids}.0" -> BSONDocument("$exists" -> true)
+            F.playerUids -> BSONDocument("$ne" -> "")
           )),
-        List(
-          Unwind(F.playerUids),
-          Match(
-            BSONDocument(
-              F.playerUids -> BSONDocument("$ne" -> "")
-            )),
-          GroupField(F.playerUids)("nb" -> SumValue(1)),
-          Sort(Descending("nb")),
-          Limit(max)
-        )
+        GroupField(F.playerUids)("nb" -> SumValue(1)),
+        Sort(Descending("nb")),
+        Limit(max)
       )
-      .map(_.documents.flatMap { obj =>
-        obj.getAs[Int]("nb") map { nb => UidNb(~obj.getAs[String]("_id"), nb) }
-      })
+    ).map(_.documents.flatMap { obj =>
+      obj.getAs[Int]("nb") map { nb => UidNb(~obj.getAs[String]("_id"), nb) }
+    })
   }
 
   private def extractPgnMoves(doc: BSONDocument) =

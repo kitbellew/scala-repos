@@ -59,10 +59,8 @@ class TopicConfigHandler(
           None
     }
 
-    val logs = logManager.logsByTopicPartition
-      .filterKeys(_.topic == topic)
-      .values
-      .toBuffer
+    val logs = logManager.logsByTopicPartition.filterKeys(
+      _.topic == topic).values.toBuffer
     if (logs.nonEmpty) {
       /* combine the default properties with the overrides in zk to create the new LogConfig */
       val props = new Properties()
@@ -96,9 +94,8 @@ class ClientIdConfigHandler(
       quotaManagers(ApiKeys.PRODUCE.id).updateQuota(
         clientId,
         new Quota(
-          clientConfig
-            .getProperty(ClientConfigOverride.ProducerOverride)
-            .toLong,
+          clientConfig.getProperty(
+            ClientConfigOverride.ProducerOverride).toLong,
           true))
     }
 
@@ -106,9 +103,8 @@ class ClientIdConfigHandler(
       quotaManagers(ApiKeys.FETCH.id).updateQuota(
         clientId,
         new Quota(
-          clientConfig
-            .getProperty(ClientConfigOverride.ConsumerOverride)
-            .toLong,
+          clientConfig.getProperty(
+            ClientConfigOverride.ConsumerOverride).toLong,
           true))
     }
   }

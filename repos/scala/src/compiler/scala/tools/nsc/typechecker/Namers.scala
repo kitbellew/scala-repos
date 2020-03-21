@@ -423,8 +423,8 @@ trait Namers extends MethodSynthesis {
       clazz.associatedFile = contextFile
       if (clazz.sourceFile != null) {
         assert(
-          currentRun.canRedefine(clazz) || clazz.sourceFile == currentRun
-            .symSource(clazz),
+          currentRun.canRedefine(
+            clazz) || clazz.sourceFile == currentRun.symSource(clazz),
           clazz.sourceFile)
         currentRun.symSource(clazz) = clazz.sourceFile
       }
@@ -499,8 +499,8 @@ trait Namers extends MethodSynthesis {
     def enterModuleSymbol(tree: ModuleDef): Symbol = {
       var m: Symbol = context.scope lookupModule tree.name
       val moduleFlags = tree.mods.flags | MODULE
-      if (m.isModule && !m.hasPackageFlag && inCurrentScope(m) && (currentRun
-            .canRedefine(m) || m.isSynthetic)) {
+      if (m.isModule && !m.hasPackageFlag && inCurrentScope(
+            m) && (currentRun.canRedefine(m) || m.isSynthetic)) {
         // This code accounts for the way the package objects found in the classpath are opened up
         // early by the completer of the package itself. If the `packageobjects` phase then finds
         // the same package object in sources, we have to clean the slate and remove package object
@@ -510,10 +510,9 @@ trait Namers extends MethodSynthesis {
         //      opening up the package object on the classpath at all if one exists in source.
         if (m.isPackageObject) {
           val packageScope = m.enclosingPackageClass.rawInfo.decls
-          packageScope
-            .filter(_.owner != m.enclosingPackageClass)
-            .toList
-            .foreach(packageScope unlink _)
+          packageScope.filter(
+            _.owner != m.enclosingPackageClass).toList.foreach(
+            packageScope unlink _)
         }
         updatePosFlags(m, tree.pos, moduleFlags)
         setPrivateWithin(tree, m)
@@ -743,8 +742,10 @@ trait Namers extends MethodSynthesis {
     def enterPackage(tree: PackageDef) {
       val sym = assignSymbol(tree)
       newNamer(
-        context
-          .make(tree, sym.moduleClass, sym.info.decls)) enterSyms tree.stats
+        context.make(
+          tree,
+          sym.moduleClass,
+          sym.info.decls)) enterSyms tree.stats
     }
     def enterTypeDef(tree: TypeDef) = assignAndEnterFinishedSymbol(tree)
 
@@ -1063,8 +1064,8 @@ trait Namers extends MethodSynthesis {
           "Ensuring companion for derived value class " + cdef.name + " at " + cdef.pos.show)
         clazz setFlag FINAL
         // Don't force the owner's info lest we create cycles as in SI-6357.
-        enclosingNamerWithScope(clazz.owner.rawInfo.decls)
-          .ensureCompanionObject(cdef)
+        enclosingNamerWithScope(
+          clazz.owner.rawInfo.decls).ensureCompanionObject(cdef)
       }
       pluginsTp
     }
@@ -1177,11 +1178,10 @@ trait Namers extends MethodSynthesis {
           methodTypeSchema(
             resTp
           ) // OPT create once. Must be lazy to avoid cycles in neg/t5093.scala
-        intersectionType(methOwner.info.parents)
-          .nonPrivateMember(meth.name)
-          .filter { sym =>
-            sym != NoSymbol && (site.memberType(sym) matches schema)
-          }
+        intersectionType(methOwner.info.parents).nonPrivateMember(
+          meth.name).filter { sym =>
+          sym != NoSymbol && (site.memberType(sym) matches schema)
+        }
       }
       // TODO: see whether this or something similar would work instead:
       // def overriddenSymbol = meth.nextOverriddenSymbol
@@ -1204,8 +1204,7 @@ trait Namers extends MethodSynthesis {
         if (overridden == NoSymbol || overridden.isOverloaded) {
           methResTp
         } else {
-          overridden
-            .cookJavaRawInfo() // #3404 xform java rawtypes into existentials
+          overridden.cookJavaRawInfo() // #3404 xform java rawtypes into existentials
           var overriddenTp = site.memberType(overridden) match {
             case PolyType(tparams, rt) => rt.substSym(tparams, tparamSkolems)
             case mt                    => mt
@@ -1922,11 +1921,9 @@ trait Namers extends MethodSynthesis {
     //         use the lower-level scan through the current Context as a fall back.
     if (!currentRun.compiles(owner)) owner.initialize
     original.companionSymbol orElse {
-      ctx
-        .lookup(original.name.companionName, owner)
-        .suchThat(sym =>
-          (original.isTerm || sym.hasModuleFlag) &&
-            (sym isCoDefinedWith original))
+      ctx.lookup(original.name.companionName, owner).suchThat(sym =>
+        (original.isTerm || sym.hasModuleFlag) &&
+          (sym isCoDefinedWith original))
     }
   }
 

@@ -431,10 +431,9 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       "numBatches = " + numBatches + ", numExpectedOutput = " + numExpectedOutput)
 
     // Get the output buffer
-    val outputStream = ssc.graph.getOutputStreams
-      .filter(_.isInstanceOf[TestOutputStreamWithPartitions[_]])
-      .head
-      .asInstanceOf[TestOutputStreamWithPartitions[V]]
+    val outputStream = ssc.graph.getOutputStreams.filter(
+      _.isInstanceOf[TestOutputStreamWithPartitions[_]]).head.asInstanceOf[
+      TestOutputStreamWithPartitions[V]]
     val output = outputStream.output
 
     try {

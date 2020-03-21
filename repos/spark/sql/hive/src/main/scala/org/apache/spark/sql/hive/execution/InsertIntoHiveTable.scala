@@ -65,8 +65,9 @@ private[hive] case class InsertIntoHiveTable(
 
     FileOutputFormat.setOutputPath(
       conf.value,
-      SparkHiveWriterContainer
-        .createPathFromString(fileSinkConf.getDirName, conf.value))
+      SparkHiveWriterContainer.createPathFromString(
+        fileSinkConf.getDirName,
+        conf.value))
     log.debug("Saving as hadoop file of type " + valueClass.getSimpleName)
     writerContainer.driverSideSetup()
     sc.sparkContext.runJob(rdd, writerContainer.writeToFile _)
@@ -125,9 +126,9 @@ private[hive] case class InsertIntoHiveTable(
 
       // Report error if dynamic partition strict mode is on but no static partition is found
       if (numStaticPartitions == 0 &&
-          sc.hiveconf
-            .getVar(HiveConf.ConfVars.DYNAMICPARTITIONINGMODE)
-            .equalsIgnoreCase("strict")) {
+          sc.hiveconf.getVar(
+            HiveConf.ConfVars.DYNAMICPARTITIONINGMODE).equalsIgnoreCase(
+            "strict")) {
         throw new SparkException(ErrorMsg.DYNAMIC_PARTITION_STRICT_MODE.getMsg)
       }
 
@@ -252,7 +253,8 @@ private[hive] case class InsertIntoHiveTable(
   override def executeCollect(): Array[InternalRow] = sideEffectResult.toArray
 
   protected override def doExecute(): RDD[InternalRow] = {
-    sqlContext.sparkContext
-      .parallelize(sideEffectResult.asInstanceOf[Seq[InternalRow]], 1)
+    sqlContext.sparkContext.parallelize(
+      sideEffectResult.asInstanceOf[Seq[InternalRow]],
+      1)
   }
 }

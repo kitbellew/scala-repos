@@ -31,9 +31,9 @@ object InspectionsUtil {
       className: String,
       project: Project): Boolean = {
     def typeFromClassName(fqn: String, project: Project): Option[ScType] = {
-      val clazz = JavaPsiFacade
-        .getInstance(project)
-        .findClass(fqn, GlobalSearchScope.allScope(project))
+      val clazz = JavaPsiFacade.getInstance(project).findClass(
+        fqn,
+        GlobalSearchScope.allScope(project))
       Option(clazz).map { c =>
         val designatorType = ScDesignatorType(c)
         c.getTypeParameters.toSeq match {

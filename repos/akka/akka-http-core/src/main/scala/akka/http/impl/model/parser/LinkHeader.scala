@@ -61,8 +61,8 @@ private[parser] trait LinkHeader {
 
   def UriReference(terminationChar: Char) =
     rule {
-      capture(oneOrMore(!terminationChar ~ VCHAR)) ~> (newUriParser(_)
-        .parseUriReference())
+      capture(oneOrMore(!terminationChar ~ VCHAR)) ~> (newUriParser(
+        _).parseUriReference())
     }
 
   def URI =

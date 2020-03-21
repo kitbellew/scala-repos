@@ -25,17 +25,19 @@ class ORMultiMapSpec extends WordSpec with Matchers {
     }
 
     "be able to remove entry" in {
-      val m = ORMultiMap()
-        .addBinding(node1, "a", "A")
-        .addBinding(node1, "b", "B")
-        .removeBinding(node1, "a", "A")
+      val m = ORMultiMap().addBinding(node1, "a", "A").addBinding(
+        node1,
+        "b",
+        "B").removeBinding(node1, "a", "A")
       m.entries should be(Map("b" -> Set("B")))
     }
 
     "be able to replace an entry" in {
-      val m = ORMultiMap()
-        .addBinding(node1, "a", "A")
-        .replaceBinding(node1, "a", "A", "B")
+      val m = ORMultiMap().addBinding(node1, "a", "A").replaceBinding(
+        node1,
+        "a",
+        "A",
+        "B")
       m.entries should be(Map("a" -> Set("B")))
     }
 
@@ -85,10 +87,10 @@ class ORMultiMapSpec extends WordSpec with Matchers {
   }
 
   "be able to get all bindings for an entry and then reduce them upon putting them back" in {
-    val m = ORMultiMap()
-      .addBinding(node1, "a", "A1")
-      .addBinding(node1, "a", "A2")
-      .addBinding(node1, "b", "B1")
+    val m = ORMultiMap().addBinding(node1, "a", "A1").addBinding(
+      node1,
+      "a",
+      "A2").addBinding(node1, "b", "B1")
     val Some(a) = m.get("a")
 
     a should be(Set("A1", "A2"))
@@ -107,10 +109,10 @@ class ORMultiMapSpec extends WordSpec with Matchers {
   }
 
   "remove all bindings for a given key" in {
-    val m = ORMultiMap()
-      .addBinding(node1, "a", "A1")
-      .addBinding(node1, "a", "A2")
-      .addBinding(node1, "b", "B1")
+    val m = ORMultiMap().addBinding(node1, "a", "A1").addBinding(
+      node1,
+      "a",
+      "A2").addBinding(node1, "b", "B1")
     val m2 = m.remove(node1, "a")
     m2.entries should be(Map("b" -> Set("B1")))
   }

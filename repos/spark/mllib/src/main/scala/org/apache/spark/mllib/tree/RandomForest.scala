@@ -165,12 +165,9 @@ private class RandomForest(
     val (splits, bins) = DecisionTree.findSplitsBins(retaggedInput, metadata)
     timer.stop("findSplitsBins")
     logDebug("numBins: feature: number of bins")
-    logDebug(
-      Range(0, metadata.numFeatures)
-        .map { featureIndex =>
-          s"\t$featureIndex\t${metadata.numBins(featureIndex)}"
-        }
-        .mkString("\n"))
+    logDebug(Range(0, metadata.numFeatures).map { featureIndex =>
+      s"\t$featureIndex\t${metadata.numBins(featureIndex)}"
+    }.mkString("\n"))
 
     // Bin feature values (TreePoint representation).
     // Cache input RDD for speedup during multiple passes.
@@ -178,14 +175,12 @@ private class RandomForest(
 
     val withReplacement = if (numTrees > 1) true else false
 
-    val baggedInput = BaggedPoint
-      .convertToBaggedRDD(
-        treeInput,
-        strategy.subsamplingRate,
-        numTrees,
-        withReplacement,
-        seed)
-      .persist(StorageLevel.MEMORY_AND_DISK)
+    val baggedInput = BaggedPoint.convertToBaggedRDD(
+      treeInput,
+      strategy.subsamplingRate,
+      numTrees,
+      withReplacement,
+      seed).persist(StorageLevel.MEMORY_AND_DISK)
 
     // depth of the decision tree
     val maxDepth = strategy.maxDepth
@@ -202,10 +197,8 @@ private class RandomForest(
         if (metadata.subsamplingFeatures) {
           // Find numFeaturesPerNode largest bins to get an upper bound on memory usage.
           Some(
-            metadata.numBins.zipWithIndex
-              .sortBy(-_._1)
-              .take(metadata.numFeaturesPerNode)
-              .map(_._2))
+            metadata.numBins.zipWithIndex.sortBy(-_._1)
+              .take(metadata.numFeaturesPerNode).map(_._2))
         } else {
           None
         }
@@ -406,10 +399,8 @@ object RandomForest extends Serializable with Logging {
     trainClassifier(
       input.rdd,
       numClasses,
-      categoricalFeaturesInfo
-        .asInstanceOf[java.util.Map[Int, Int]]
-        .asScala
-        .toMap,
+      categoricalFeaturesInfo.asInstanceOf[
+        java.util.Map[Int, Int]].asScala.toMap,
       numTrees,
       featureSubsetStrategy,
       impurity,
@@ -511,10 +502,8 @@ object RandomForest extends Serializable with Logging {
       seed: Int): RandomForestModel = {
     trainRegressor(
       input.rdd,
-      categoricalFeaturesInfo
-        .asInstanceOf[java.util.Map[Int, Int]]
-        .asScala
-        .toMap,
+      categoricalFeaturesInfo.asInstanceOf[
+        java.util.Map[Int, Int]].asScala.toMap,
       numTrees,
       featureSubsetStrategy,
       impurity,
@@ -572,12 +561,10 @@ object RandomForest extends Serializable with Logging {
       val featureSubset: Option[Array[Int]] =
         if (metadata.subsamplingFeatures) {
           Some(
-            SamplingUtils
-              .reservoirSampleAndCount(
-                Range(0, metadata.numFeatures).iterator,
-                metadata.numFeaturesPerNode,
-                rng.nextLong)
-              ._1)
+            SamplingUtils.reservoirSampleAndCount(
+              Range(0, metadata.numFeatures).iterator,
+              metadata.numFeaturesPerNode,
+              rng.nextLong)._1)
         } else {
           None
         }
@@ -615,9 +602,8 @@ object RandomForest extends Serializable with Logging {
       metadata: DecisionTreeMetadata,
       featureSubset: Option[Array[Int]]): Long = {
     val totalBins = if (featureSubset.nonEmpty) {
-      featureSubset.get
-        .map(featureIndex => metadata.numBins(featureIndex).toLong)
-        .sum
+      featureSubset.get.map(featureIndex =>
+        metadata.numBins(featureIndex).toLong).sum
     } else {
       metadata.numBins.map(_.toLong).sum
     }

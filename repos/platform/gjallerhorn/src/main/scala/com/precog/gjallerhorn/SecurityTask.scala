@@ -32,8 +32,8 @@ class SecurityTask(settings: Settings)
     "create derivative apikeys" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
-      val req = (security / "")
-        .addQueryParameter("apiKey", apiKey) << ("""
+      val req =
+        (security / "").addQueryParameter("apiKey", apiKey) << ("""
 {"name":"MH Test Write",
  "description":"Foo",
  "grants":[

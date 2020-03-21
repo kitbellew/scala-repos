@@ -15,8 +15,8 @@ import org.mockito.Mockito._
 class AvatarImageProviderSpec extends FunSpec with MockitoSugar {
 
   val request = mock[HttpServletRequest]
-  when(request.getRequestURL)
-    .thenReturn(new StringBuffer("http://localhost:8080/path.html"))
+  when(request.getRequestURL).thenReturn(
+    new StringBuffer("http://localhost:8080/path.html"))
   when(request.getRequestURI).thenReturn("/path.html")
   when(request.getContextPath).thenReturn("")
 

@@ -150,19 +150,17 @@ package mongotestrecords {
       override def setFromDBObject(
           dbo: DBObject): Box[List[Map[String, String]]] = {
         val lst: List[Map[String, String]] =
-          dbo.keySet.toList
-            .map(k => {
-              dbo.get(k.toString) match {
-                case bdbo: BasicDBObject
-                    if (bdbo.containsField("name") && bdbo.containsField(
-                      "type")) =>
-                  Map(
-                    "name" -> bdbo.getString("name"),
-                    "type" -> bdbo.getString("type"))
-                case _ => null
-              }
-            })
-            .filter(_ != null)
+          dbo.keySet.toList.map(k => {
+            dbo.get(k.toString) match {
+              case bdbo: BasicDBObject
+                  if (bdbo.containsField("name") && bdbo.containsField(
+                    "type")) =>
+                Map(
+                  "name" -> bdbo.getString("name"),
+                  "type" -> bdbo.getString("type"))
+              case _ => null
+            }
+          }).filter(_ != null)
         Full(set(lst))
       }
     }
@@ -260,8 +258,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
       for (t <- fromDb) {
         t.id.value must_== tr.id.value
         t.booleanfield.value must_== tr.booleanfield.value
-        TstRecord.formats.dateFormat
-          .format(t.datetimefield.value.getTime) must_==
+        TstRecord.formats.dateFormat.format(
+          t.datetimefield.value.getTime) must_==
           TstRecord.formats.dateFormat.format(tr.datetimefield.value.getTime)
         t.doublefield.value must_== tr.doublefield.value
         t.intfield.value must_== tr.intfield.value
@@ -280,13 +278,11 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
         t.person.value.address.city must_== tr.person.value.address.city
         t.person.value.children.size must_== tr.person.value.children.size
         for (i <- List.range(0, t.person.value.children.size - 1)) {
-          t.person.value.children(i).name must_== tr.person.value
-            .children(i)
-            .name
+          t.person.value.children(i).name must_== tr.person.value.children(
+            i).name
           t.person.value.children(i).age must_== tr.person.value.children(i).age
-          t.person.value.children(i).birthdate must_== tr.person.value
-            .children(i)
-            .birthdate
+          t.person.value.children(i).birthdate must_== tr.person.value.children(
+            i).birthdate
         }
       }
 
@@ -341,22 +337,18 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     RefDoc.count must_== 2
 
     // get the docs back from the db
-    MainDoc
-      .find(md1.id.get)
-      .foreach(m => {
-        m.name.value must_== md1.name.value
-        m.cnt.value must_== md1.cnt.value
-        m.refdocId.value must_== md1.refdocId.value
-        m.refuuid.value must_== md1.refuuid.value
-      })
+    MainDoc.find(md1.id.get).foreach(m => {
+      m.name.value must_== md1.name.value
+      m.cnt.value must_== md1.cnt.value
+      m.refdocId.value must_== md1.refdocId.value
+      m.refuuid.value must_== md1.refuuid.value
+    })
 
     // fetch a refdoc
     val refFromFetch = md1.refdocId.obj
     refFromFetch.isDefined must_== true
-    refFromFetch
-      .openOrThrowException("we know this is Full")
-      .id
-      .get must_== ref1.id.get
+    refFromFetch.openOrThrowException(
+      "we know this is Full").id.get must_== ref1.id.get
 
     // query for a single doc with a JObject query
     val md1a = MainDoc.find(("name") -> "md1")

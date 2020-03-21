@@ -169,10 +169,9 @@ private[http] class HttpRequestRendererFactory(
       val stream = ctx.sendEntityTrigger match {
         case None ⇒ headerPart ++ body
         case Some(future) ⇒
-          val barrier = Source
-            .fromFuture(future)
-            .drop(1)
-            .asInstanceOf[Source[ByteString, Any]]
+          val barrier = Source.fromFuture(future).drop(1).asInstanceOf[Source[
+            ByteString,
+            Any]]
           (headerPart ++ barrier ++ body).recoverWith {
             case HttpResponseParser.OneHundredContinueError ⇒ Source.empty
           }

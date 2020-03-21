@@ -233,9 +233,8 @@ class ServiceDiscovererTest
 
       val currentValue =
         new AtomicReference[Activity.State[Seq[(Entry, Double)]]]
-      sd("/foo/bar").states
-        .filter(_ != Activity.Pending)
-        .register(Witness(currentValue))
+      sd("/foo/bar").states.filter(_ != Activity.Pending).register(
+        Witness(currentValue))
       val cache = sd.cache
 
       val ew @ ExistsWatch("/foo/bar") = watchedZk.value.opq(0)

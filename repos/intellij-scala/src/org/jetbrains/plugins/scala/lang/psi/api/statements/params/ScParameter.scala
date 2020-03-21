@@ -90,12 +90,10 @@ trait ScParameter
     if (!isRepeatedParameter) return getType(ctx)
     getType(ctx) match {
       case f @ Success(tp: ScType, elem) =>
-        val seq = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            "scala.collection.Seq",
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)
+        val seq = ScalaPsiManager.instance(getProject).getCachedClass(
+          "scala.collection.Seq",
+          getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE)
         if (seq != null) {
           Success(ScParameterizedType(ScType.designator(seq), Seq(tp)), elem)
         } else f

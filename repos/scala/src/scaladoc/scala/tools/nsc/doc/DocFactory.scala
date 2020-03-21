@@ -76,8 +76,9 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
         override def templateShouldDocument(
             sym: compiler.Symbol,
             inTpl: DocTemplateImpl) =
-          extraTemplatesToDocument(sym) || super
-            .templateShouldDocument(sym, inTpl)
+          extraTemplatesToDocument(sym) || super.templateShouldDocument(
+            sym,
+            inTpl)
       }
     )
 

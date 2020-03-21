@@ -59,14 +59,12 @@ class AbstractTestRerunFailedTestsAction(
         val patcher = state.asInstanceOf[TestCommandLinePatcher]
         val failedTests = getFailedTests(configuration.getProject)
         val buffer = new ArrayBuffer[(String, String)]
-        val classNames = patcher.getClasses
-          .map(s =>
-            {
-              val i = s.lastIndexOf(".")
-              if (i < 0) s
-              else s.substring(i + 1)
-            } -> s)
-          .toMap
+        val classNames = patcher.getClasses.map(s =>
+          {
+            val i = s.lastIndexOf(".")
+            if (i < 0) s
+            else s.substring(i + 1)
+          } -> s).toMap
         import scala.collection.JavaConversions._
         for (failed <- failedTests) { //todo: fix after adding location API
           def tail() {
@@ -86,15 +84,13 @@ class AbstractTestRerunFailedTestsAction(
               }
             }
           }
-          if (extensionConfiguration != this && extensionConfiguration
-                .isInstanceOf[MyRunProfileAdapter] &&
-              extensionConfiguration
-                .asInstanceOf[MyRunProfileAdapter]
-                .previoslyFailed != null) {
+          if (extensionConfiguration != this && extensionConfiguration.isInstanceOf[
+                MyRunProfileAdapter] &&
+              extensionConfiguration.asInstanceOf[
+                MyRunProfileAdapter].previoslyFailed != null) {
             var added = false
-            for (f <- extensionConfiguration
-                   .asInstanceOf[MyRunProfileAdapter]
-                   .previoslyFailed if !added) {
+            for (f <- extensionConfiguration.asInstanceOf[
+                   MyRunProfileAdapter].previoslyFailed if !added) {
               if (f._2 == getTestName(failed)) {
                 buffer += f
                 added = true

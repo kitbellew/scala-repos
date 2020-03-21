@@ -24,12 +24,12 @@ class StatementFilter extends ElementFilter {
       val parent = leaf.getParent
       if (parent.isInstanceOf[ScReferenceExpression] &&
           !parent.getParent.isInstanceOf[ScStableReferenceElementPattern] &&
-          (!parent.getParent
-            .isInstanceOf[ScInfixExpr]) && (parent.getPrevSibling == null ||
+          (!parent.getParent.isInstanceOf[
+            ScInfixExpr]) && (parent.getPrevSibling == null ||
           parent.getPrevSibling.getPrevSibling == null ||
           (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-          !parent.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[PsiErrorElement]))) {
+          !parent.getPrevSibling.getPrevSibling.getLastChild.isInstanceOf[
+            PsiErrorElement]))) {
         parent.getParent match {
           case _: ScBlockExpr | _: ScBlock | _: ScTemplateBody => return true
           case x: ScExpression =>

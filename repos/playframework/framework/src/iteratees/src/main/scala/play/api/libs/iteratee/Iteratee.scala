@@ -174,8 +174,8 @@ object Iteratee {
     * Consume all the chunks from the stream, and return a list.
     */
   def getChunks[E]: Iteratee[E, List[E]] =
-    fold[E, List[E]](Nil) { (els, chunk) => chunk +: els }(dec)
-      .map(_.reverse)(dec)
+    fold[E, List[E]](Nil) { (els, chunk) => chunk +: els }(dec).map(_.reverse)(
+      dec)
 
   /**
     * Read up to n chunks from the stream stopping when that number of chunks have
@@ -302,8 +302,8 @@ object Iteratee {
           i.pureFlatFold {
             case Step.Done(a, e) => Done(s :+ a, input)
             case Step.Cont(k) =>
-              k(input)
-                .flatMap(a => repeat(i).map(az => s ++ (a +: az))(dec))(dec)
+              k(input).flatMap(a => repeat(i).map(az => s ++ (a +: az))(dec))(
+                dec)
             case Step.Error(msg, e) => Error(msg, e)
           }(dec)
       }
@@ -607,12 +607,11 @@ trait Iteratee[E, +A] {
           ec /* still on same thread; let executeIteratee do preparation */ )
       case Step.Done(a, e) =>
         executeIteratee(f(a))(
-          ec /* still on same thread; let executeIteratee do preparation */ )
-          .pureFlatFold {
-            case Step.Done(a, _)    => Done(a, e)
-            case Step.Cont(k)       => k(e)
-            case Step.Error(msg, e) => Error(msg, e)
-          }(dec)
+          ec /* still on same thread; let executeIteratee do preparation */ ).pureFlatFold {
+          case Step.Done(a, _)    => Done(a, e)
+          case Step.Cont(k)       => k(e)
+          case Step.Error(msg, e) => Error(msg, e)
+        }(dec)
       case Step.Cont(k) => {
         implicit val pec = ec.prepare()
         Cont((in: Input[E]) => executeIteratee(k(in))(dec).flatMap(f)(pec))
@@ -730,8 +729,8 @@ trait Iteratee[E, +A] {
     implicit val pec = ec.prepare()
 
     def recoveringIteratee(it: Iteratee[E, A]): Iteratee[E, B] = {
-      val futureRecoveringIteratee: Future[Iteratee[E, B]] = it
-        .pureFlatFold[E, B] {
+      val futureRecoveringIteratee: Future[Iteratee[E, B]] =
+        it.pureFlatFold[E, B] {
           case Step.Cont(k) =>
             Cont { input: Input[E] =>
               val orig: Iteratee[E, A] = k(input)
@@ -741,10 +740,7 @@ trait Iteratee[E, +A] {
           case Step.Error(msg, _) =>
             throw new IterateeException(msg)
           case done => done.it
-        }(dec)
-        .unflatten
-        .map(_.it)(dec)
-        .recover(pf)(pec)
+        }(dec).unflatten.map(_.it)(dec).recover(pf)(pec)
       Iteratee.flatten(futureRecoveringIteratee)
     }
 

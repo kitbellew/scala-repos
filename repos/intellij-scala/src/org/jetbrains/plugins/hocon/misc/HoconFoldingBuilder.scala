@@ -15,10 +15,8 @@ class HoconFoldingBuilder extends FoldingBuilder {
       document: Document): Array[FoldingDescriptor] = {
     val foldableTypes = TokenSet.create(Object, Array, MultilineString)
     def nodesIterator(root: ASTNode): Iterator[ASTNode] =
-      Iterator(root) ++ Iterator
-        .iterate(root.getFirstChildNode)(_.getTreeNext)
-        .takeWhile(_ != null)
-        .flatMap(nodesIterator)
+      Iterator(root) ++ Iterator.iterate(root.getFirstChildNode)(
+        _.getTreeNext).takeWhile(_ != null).flatMap(nodesIterator)
 
     nodesIterator(node).collect {
       case n

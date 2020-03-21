@@ -9,8 +9,7 @@ import org.scalatra.cache.Cache
 import scala.concurrent.duration.Duration
 
 object GuavaCache extends Cache {
-  private[this] val cache = CacheBuilder
-    .newBuilder()
+  private[this] val cache = CacheBuilder.newBuilder()
     .maximumSize(10000L)
     .build[String, Object]
 

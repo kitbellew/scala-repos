@@ -88,8 +88,8 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
           maybeLeader match {
             case None =>
               debug(
-                "Error while fetching metadata for %s: leader not available"
-                  .format(topicPartition))
+                "Error while fetching metadata for %s: leader not available".format(
+                  topicPartition))
               new MetadataResponse.PartitionMetadata(
                 Errors.LEADER_NOT_AVAILABLE,
                 partitionId,
@@ -106,9 +106,8 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
                   "Error while fetching metadata for %s: replica information not available for following brokers %s"
                     .format(
                       topicPartition,
-                      replicas
-                        .filterNot(replicaInfo.map(_.id).contains)
-                        .mkString(",")))
+                      replicas.filterNot(
+                        replicaInfo.map(_.id).contains).mkString(",")))
 
                 new MetadataResponse.PartitionMetadata(
                   Errors.REPLICA_NOT_AVAILABLE,
@@ -270,14 +269,11 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
   }
 
   private def removePartitionInfo(topic: String, partitionId: Int): Boolean = {
-    cache
-      .get(topic)
-      .map { infos =>
-        infos.remove(partitionId)
-        if (infos.isEmpty) cache.remove(topic)
-        true
-      }
-      .getOrElse(false)
+    cache.get(topic).map { infos =>
+      infos.remove(partitionId)
+      if (infos.isEmpty) cache.remove(topic)
+      true
+    }.getOrElse(false)
   }
 
 }

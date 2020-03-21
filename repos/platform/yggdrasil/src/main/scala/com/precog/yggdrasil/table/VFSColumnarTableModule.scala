@@ -71,8 +71,9 @@ trait VFSColumnarTableModule
             Version.Current,
             AccessMode.Read) leftMap { error =>
             logger.warn(
-              "An error was encountered in loading path %s: %s"
-                .format(path, error))
+              "An error was encountered in loading path %s: %s".format(
+                path,
+                error))
             error
           }
         }

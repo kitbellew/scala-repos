@@ -29,8 +29,9 @@ trait InfoTransformers {
         next insert that
       } else {
         log(
-          "Inserting info transformer %s following %s"
-            .format(phaseOf(that.pid), phaseOf(this.pid)))
+          "Inserting info transformer %s following %s".format(
+            phaseOf(that.pid),
+            phaseOf(this.pid)))
         that.next = next
         that.prev = this
         next.prev = that

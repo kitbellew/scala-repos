@@ -58,9 +58,8 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
     if (element.isInstanceOf[CompositeElement]) {
       if (element.getElementType == ScalaElementTypes.REFERENCE || element.getElementType == ScalaElementTypes.REFERENCE_EXPRESSION ||
           element.getElementType == ScalaElementTypes.TYPE_PROJECTION) {
-        var ref = SourceTreeToPsiMap
-          .treeElementToPsi(element)
-          .asInstanceOf[ScReferenceElement]
+        var ref = SourceTreeToPsiMap.treeElementToPsi(element).asInstanceOf[
+          ScReferenceElement]
         val named: PsiNamedElement = element.getCopyableUserData(
           ScalaChangeUtilSupport.REFERENCED_MEMBER_KEY)
         if (named != null) {
@@ -76,9 +75,8 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
             } catch {
               case ignored: IncorrectOperationException =>
             }
-            return SourceTreeToPsiMap
-              .psiElementToTree(ref)
-              .asInstanceOf[TreeElement]
+            return SourceTreeToPsiMap.psiElementToTree(ref).asInstanceOf[
+              TreeElement]
           } //todo: else
         }
       }

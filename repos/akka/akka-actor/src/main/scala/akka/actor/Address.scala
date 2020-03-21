@@ -171,9 +171,8 @@ object ActorPathExtractor extends PathUtils {
       uri.getRawPath match {
         case null ⇒ None
         case path ⇒
-          AddressFromURIString
-            .unapply(uri)
-            .map((_, split(path, uri.getRawFragment).drop(1)))
+          AddressFromURIString.unapply(uri).map(
+            (_, split(path, uri.getRawFragment).drop(1)))
       }
     } catch {
       case _: URISyntaxException ⇒ None

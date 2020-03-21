@@ -244,9 +244,8 @@ private[twitter] object ThriftUtil {
         tryScroogeFinagleService(cls) orElse
         tryLegacyScroogeFinagleService(cls) orElse
         trySwiftService(cls) orElse
-        (Option(cls.getSuperclass) ++ cls.getInterfaces).view
-          .flatMap(tryClass)
-          .headOption
+        (Option(cls.getSuperclass) ++ cls.getInterfaces).view.flatMap(
+          tryClass).headOption
 
     tryClass(impl.getClass).getOrElse {
       throw new IllegalArgumentException(

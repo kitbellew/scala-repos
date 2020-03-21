@@ -60,8 +60,8 @@ class PipeTExtensions(pipe: Pipe, flowDef: FlowDef, mode: Mode)
       fn: TypedPipe[T] => TypedPipe[U])(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[U]): Pipe =
-    fn(TypedPipe.from(pipe, fielddef._1)(flowDef, mode, conv))
-      .toPipe(fielddef._2)(flowDef, mode, setter)
+    fn(TypedPipe.from(pipe, fielddef._1)(flowDef, mode, conv)).toPipe(
+      fielddef._2)(flowDef, mode, setter)
 
   def toTypedPipe[T](fields: Fields)(implicit
       conv: TupleConverter[T]): TypedPipe[T] =

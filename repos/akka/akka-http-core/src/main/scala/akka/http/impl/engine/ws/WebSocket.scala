@@ -39,10 +39,9 @@ private[http] object WebSocket {
   /** The lowest layer that implements the binary protocol */
   def framing
       : BidiFlow[ByteString, FrameEvent, FrameEvent, ByteString, NotUsed] =
-    BidiFlow
-      .fromFlows(
-        Flow[ByteString].via(FrameEventParser),
-        Flow[FrameEvent].transform(() ⇒ new FrameEventRenderer))
+    BidiFlow.fromFlows(
+      Flow[ByteString].via(FrameEventParser),
+      Flow[FrameEvent].transform(() ⇒ new FrameEventRenderer))
       .named("ws-framing")
 
   /** The layer that handles masking using the rules defined in the specification */
@@ -68,10 +67,9 @@ private[http] object WebSocket {
     FrameOutHandler.Input,
     FrameStart,
     NotUsed] =
-    BidiFlow
-      .fromFlows(
-        FrameHandler.create(server = serverSide),
-        FrameOutHandler.create(serverSide, closeTimeout, log))
+    BidiFlow.fromFlows(
+      FrameHandler.create(server = serverSide),
+      FrameOutHandler.create(serverSide, closeTimeout, log))
       .named("ws-frame-handling")
 
   /**
@@ -156,38 +154,34 @@ private[http] object WebSocket {
         .named("ws-prepare-messages")
 
     def renderMessages: Flow[Message, FrameStart, NotUsed] =
-      MessageToFrameRenderer
-        .create(serverSide)
+      MessageToFrameRenderer.create(serverSide)
         .named("ws-render-messages")
 
-    BidiFlow.fromGraph(
-      GraphDSL
-        .create() { implicit b ⇒
-          import GraphDSL.Implicits._
+    BidiFlow.fromGraph(GraphDSL.create() { implicit b ⇒
+      import GraphDSL.Implicits._
 
-          val split = b.add(BypassRouter)
-          val tick = Source.tick(closeTimeout, closeTimeout, Tick)
-          val merge = b.add(BypassMerge)
-          val messagePreparation = b.add(prepareMessages)
-          val messageRendering = b.add(renderMessages.via(LiftCompletions))
+      val split = b.add(BypassRouter)
+      val tick = Source.tick(closeTimeout, closeTimeout, Tick)
+      val merge = b.add(BypassMerge)
+      val messagePreparation = b.add(prepareMessages)
+      val messageRendering = b.add(renderMessages.via(LiftCompletions))
 
-          // user handler
-          split.out1 ~> messagePreparation
-          messageRendering.outlet ~> merge.in1
+      // user handler
+      split.out1 ~> messagePreparation
+      messageRendering.outlet ~> merge.in1
 
-          // bypass
-          split.out0 ~> merge.in0
+      // bypass
+      split.out0 ~> merge.in0
 
-          // timeout support
-          tick ~> merge.in2
+      // timeout support
+      tick ~> merge.in2
 
-          BidiShape(
-            split.in,
-            messagePreparation.out,
-            messageRendering.in,
-            merge.out)
-        }
-        .named("ws-message-api"))
+      BidiShape(
+        split.in,
+        messagePreparation.out,
+        messageRendering.in,
+        merge.out)
+    }.named("ws-message-api"))
   }
 
   private case object BypassRouter

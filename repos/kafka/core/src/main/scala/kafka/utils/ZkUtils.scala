@@ -205,9 +205,10 @@ class ZkUtils(
   def getLeaderAndIsrForPartition(
       topic: String,
       partition: Int): Option[LeaderAndIsr] = {
-    ReplicationUtils
-      .getLeaderIsrAndEpochForPartition(this, topic, partition)
-      .map(_.leaderAndIsr)
+    ReplicationUtils.getLeaderIsrAndEpochForPartition(
+      this,
+      topic,
+      partition).map(_.leaderAndIsr)
   }
 
   def setupCommonPaths() {
@@ -222,11 +223,8 @@ class ZkUtils(
       case Some(leaderAndIsr) =>
         Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
-            Some(
-              m.asInstanceOf[Map[String, Any]]
-                .get("leader")
-                .get
-                .asInstanceOf[Int])
+            Some(m.asInstanceOf[Map[String, Any]].get(
+              "leader").get.asInstanceOf[Int])
           case None => None
         }
       case None => None
@@ -246,13 +244,12 @@ class ZkUtils(
         Json.parseFull(leaderAndIsr) match {
           case None =>
             throw new NoEpochForPartitionException(
-              "No epoch, leaderAndISR data for partition [%s,%d] is invalid"
-                .format(topic, partition))
+              "No epoch, leaderAndISR data for partition [%s,%d] is invalid".format(
+                topic,
+                partition))
           case Some(m) =>
-            m.asInstanceOf[Map[String, Any]]
-              .get("leader_epoch")
-              .get
-              .asInstanceOf[Int]
+            m.asInstanceOf[Map[String, Any]].get(
+              "leader_epoch").get.asInstanceOf[Int]
         }
       case None =>
         throw new NoEpochForPartitionException(
@@ -279,10 +276,8 @@ class ZkUtils(
       case Some(leaderAndIsr) =>
         Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
-            m.asInstanceOf[Map[String, Any]]
-              .get("isr")
-              .get
-              .asInstanceOf[Seq[Int]]
+            m.asInstanceOf[Map[String, Any]].get("isr").get.asInstanceOf[Seq[
+              Int]]
           case None => Seq.empty[Int]
         }
       case None => Seq.empty[Int]
@@ -300,9 +295,8 @@ class ZkUtils(
           case Some(m) =>
             m.asInstanceOf[Map[String, Any]].get("partitions") match {
               case Some(replicaMap) =>
-                replicaMap
-                  .asInstanceOf[Map[String, Seq[Int]]]
-                  .get(partition.toString) match {
+                replicaMap.asInstanceOf[Map[String, Seq[Int]]].get(
+                  partition.toString) match {
                   case Some(seq) => seq
                   case None      => Seq.empty[Int]
                 }
@@ -357,8 +351,10 @@ class ZkUtils(
     registerBrokerInZk(brokerIdPath, brokerInfo)
 
     info(
-      "Registered broker %d at path %s with addresses: %s"
-        .format(id, brokerIdPath, advertisedEndpoints.mkString(",")))
+      "Registered broker %d at path %s with addresses: %s".format(
+        id,
+        brokerIdPath,
+        advertisedEndpoints.mkString(",")))
   }
 
   private def registerBrokerInZk(brokerIdPath: String, brokerInfo: String) {
@@ -566,13 +562,19 @@ class ZkUtils(
           case _             => debug("Checker method is not passed skipping zkData match")
         }
         warn(
-          "Conditional update of path %s with data %s and expected version %d failed due to %s"
-            .format(path, data, expectVersion, e1.getMessage))
+          "Conditional update of path %s with data %s and expected version %d failed due to %s".format(
+            path,
+            data,
+            expectVersion,
+            e1.getMessage))
         (false, -1)
       case e2: Exception =>
         warn(
-          "Conditional update of path %s with data %s and expected version %d failed due to %s"
-            .format(path, data, expectVersion, e2.getMessage))
+          "Conditional update of path %s with data %s and expected version %d failed due to %s".format(
+            path,
+            data,
+            expectVersion,
+            e2.getMessage))
         (false, -1)
     }
   }
@@ -595,8 +597,11 @@ class ZkUtils(
       case nne: ZkNoNodeException => throw nne
       case e: Exception =>
         error(
-          "Conditional update of path %s with data %s and expected version %d failed due to %s"
-            .format(path, data, expectVersion, e.getMessage))
+          "Conditional update of path %s with data %s and expected version %d failed due to %s".format(
+            path,
+            data,
+            expectVersion,
+            e.getMessage))
         (false, -1)
     }
   }
@@ -743,8 +748,10 @@ class ZkUtils(
                   for ((partition, replicas) <- replicaMap) {
                     ret.put(TopicAndPartition(topic, partition.toInt), replicas)
                     debug(
-                      "Replicas assigned to topic [%s], partition [%s] are [%s]"
-                        .format(topic, partition, replicas))
+                      "Replicas assigned to topic [%s], partition [%s] are [%s]".format(
+                        topic,
+                        partition,
+                        replicas))
                   }
                 case None =>
               }
@@ -776,8 +783,9 @@ class ZkUtils(
         case None => Map[Int, Seq[Int]]()
       }
       debug(
-        "Partition map for /brokers/topics/%s is %s"
-          .format(topic, partitionMap))
+        "Partition map for /brokers/topics/%s is %s".format(
+          topic,
+          partitionMap))
       ret += (topic -> partitionMap)
     }
     ret
@@ -789,8 +797,9 @@ class ZkUtils(
       val topic = topicAndPartitionMap._1
       val partitionMap = topicAndPartitionMap._2
       debug(
-        "partition assignment of /brokers/topics/%s is %s"
-          .format(topic, partitionMap))
+        "partition assignment of /brokers/topics/%s is %s".format(
+          topic,
+          partitionMap))
       (topic -> partitionMap.keys.toSeq.sortWith((s, t) => s < t))
     }
   }
@@ -816,14 +825,12 @@ class ZkUtils(
       case Some(m) =>
         m.asInstanceOf[Map[String, Any]].get("partitions") match {
           case Some(partitionsSeq) =>
-            partitionsSeq
-              .asInstanceOf[Seq[Map[String, Any]]]
-              .map(p => {
-                val topic = p.get("topic").get.asInstanceOf[String]
-                val partition = p.get("partition").get.asInstanceOf[Int]
-                val newReplicas = p.get("replicas").get.asInstanceOf[Seq[Int]]
-                TopicAndPartition(topic, partition) -> newReplicas
-              })
+            partitionsSeq.asInstanceOf[Seq[Map[String, Any]]].map(p => {
+              val topic = p.get("topic").get.asInstanceOf[String]
+              val partition = p.get("partition").get.asInstanceOf[Int]
+              val newReplicas = p.get("replicas").get.asInstanceOf[Seq[Int]]
+              TopicAndPartition(topic, partition) -> newReplicas
+            })
           case None =>
             Seq.empty
         }
@@ -875,8 +882,8 @@ class ZkUtils(
       case 0 => // need to delete the /admin/reassign_partitions path
         deletePath(zkPath)
         info(
-          "No more partitions need to be reassigned. Deleting zk path %s"
-            .format(zkPath))
+          "No more partitions need to be reassigned. Deleting zk path %s".format(
+            zkPath))
       case _ =>
         val jsonData = getPartitionReassignmentZkData(partitionsToBeReassigned)
         try {
@@ -886,8 +893,9 @@ class ZkUtils(
           case nne: ZkNoNodeException =>
             createPersistentPath(zkPath, jsonData)
             debug(
-              "Created path %s with %s for partition reassignment"
-                .format(zkPath, jsonData))
+              "Created path %s with %s for partition reassignment".format(
+                zkPath,
+                jsonData))
           case e2: Throwable => throw new AdminOperationException(e2.toString)
         }
     }
@@ -1012,14 +1020,10 @@ class ZkUtils(
     val topics = getChildrenParentMayNotExist(BrokerTopicsPath)
     if (topics == null) Set.empty[TopicAndPartition]
     else {
-      topics
-        .map { topic =>
-          getChildren(getTopicPartitionsPath(topic))
-            .map(_.toInt)
-            .map(TopicAndPartition(topic, _))
-        }
-        .flatten
-        .toSet
+      topics.map { topic =>
+        getChildren(getTopicPartitionsPath(topic)).map(_.toInt).map(
+          TopicAndPartition(topic, _))
+      }.flatten.toSet
     }
   }
 
@@ -1191,8 +1195,9 @@ class ZKCheckedEphemeral(
           setResult(Code.INVALIDACL)
         case _ =>
           warn(
-            "ZooKeeper event while creating registration node: %s %s"
-              .format(path, Code.get(rc)))
+            "ZooKeeper event while creating registration node: %s %s".format(
+              path,
+              Code.get(rc)))
           setResult(Code.get(rc))
       }
     }
@@ -1213,8 +1218,9 @@ class ZKCheckedEphemeral(
             setResult(Code.OK)
         case Code.NONODE =>
           info(
-            "The ephemeral node [%s] at %s has gone away while reading it, "
-              .format(data, path))
+            "The ephemeral node [%s] at %s has gone away while reading it, ".format(
+              data,
+              path))
           createEphemeral
         case Code.SESSIONEXPIRED =>
           error("Session has expired while reading znode %s".format(path))
@@ -1224,8 +1230,9 @@ class ZKCheckedEphemeral(
           setResult(Code.INVALIDACL)
         case _ =>
           warn(
-            "ZooKeeper event while getting znode data: %s %s"
-              .format(path, Code.get(rc)))
+            "ZooKeeper event while getting znode data: %s %s".format(
+              path,
+              Code.get(rc)))
           setResult(Code.get(rc))
       }
     }
@@ -1273,8 +1280,9 @@ class ZKCheckedEphemeral(
                 setResult(Code.INVALIDACL)
               case _ =>
                 warn(
-                  "ZooKeeper event while creating registration node: %s %s"
-                    .format(path, Code.get(rc)))
+                  "ZooKeeper event while creating registration node: %s %s".format(
+                    path,
+                    Code.get(rc)))
                 setResult(Code.get(rc))
             }
           }

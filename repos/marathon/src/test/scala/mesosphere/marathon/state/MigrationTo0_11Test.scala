@@ -155,15 +155,15 @@ class MigrationTo0_11Test
     f.appRepo.currentVersion(PathId("/test")).futureValue should be(
       Some(correctedAppV3))
     f.appRepo.listVersions(PathId("/test")).futureValue should have size (3)
-    f.appRepo
-      .app(PathId("/test"), correctedAppV1.version)
-      .futureValue should be(Some(correctedAppV1))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV2.version)
-      .futureValue should be(Some(correctedAppV2))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV3.version)
-      .futureValue should be(Some(correctedAppV3))
+    f.appRepo.app(
+      PathId("/test"),
+      correctedAppV1.version).futureValue should be(Some(correctedAppV1))
+    f.appRepo.app(
+      PathId("/test"),
+      correctedAppV2.version).futureValue should be(Some(correctedAppV2))
+    f.appRepo.app(
+      PathId("/test"),
+      correctedAppV3.version).futureValue should be(Some(correctedAppV3))
   }
 
   test(
@@ -217,14 +217,14 @@ class MigrationTo0_11Test
     f.appRepo.currentVersion(PathId("/test")).futureValue should be(
       Some(correctedAppV3))
     f.appRepo.listVersions(PathId("/test")).futureValue should have size (3)
-    f.appRepo
-      .app(PathId("/test"), correctedAppV1.version)
-      .futureValue should be(Some(correctedAppV1))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV2.version)
-      .futureValue should be(Some(correctedAppV2))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV3.version)
-      .futureValue should be(Some(correctedAppV3))
+    f.appRepo.app(
+      PathId("/test"),
+      correctedAppV1.version).futureValue should be(Some(correctedAppV1))
+    f.appRepo.app(
+      PathId("/test"),
+      correctedAppV2.version).futureValue should be(Some(correctedAppV2))
+    f.appRepo.app(
+      PathId("/test"),
+      correctedAppV3.version).futureValue should be(Some(correctedAppV3))
   }
 }

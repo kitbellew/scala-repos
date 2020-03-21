@@ -211,8 +211,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     try {
       // Any exception thrown in askWithRetry is wrapped with a SparkException and set as the cause
       val e = intercept[SparkException] {
-        rpcEndpointRef
-          .askWithRetry[String]("hello", new RpcTimeout(1 millis, shortProp))
+        rpcEndpointRef.askWithRetry[String](
+          "hello",
+          new RpcTimeout(1 millis, shortProp))
       }
       // The SparkException cause should be a RpcTimeoutException with message indicating the
       // controlling timeout property
